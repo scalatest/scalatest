@@ -167,19 +167,23 @@ object ScalatestBuild extends Build {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "com.google.inject" % "guice" % "2.0" % "optional",
+      "org.easymock" % "easymockclassextension" % "3.2" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
+      "org.mockito" % "mockito-all" % "1.10.19" % "optional",
+      "org.testng" % "testng" % "6.7" % "optional",
+      "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+      "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+    )
+
+  def scalatestTestLibraryDependencies =
+    Seq(
+      "commons-io" % "commons-io" % "1.3.2" % "test",
+      "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
   def scalatestJSLibraryDependencies =
@@ -421,10 +425,6 @@ object ScalatestBuild extends Build {
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-     ivyXML :=
-       <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
-         <artifact name="javax.servlet" type="orbit" ext="jar"/>
-       </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
      genMustMatchersTask,
@@ -507,6 +507,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= scalatestTestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
@@ -527,10 +528,6 @@ object ScalatestBuild extends Build {
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-      ivyXML :=
-        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
-          <artifact name="javax.servlet" type="orbit" ext="jar"/>
-        </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
