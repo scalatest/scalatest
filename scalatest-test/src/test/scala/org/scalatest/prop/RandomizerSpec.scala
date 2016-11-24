@@ -240,7 +240,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       edges should contain (PosZDouble.MaxValue)
     }
     it("should offer a chooseInt method that initially produces Int values between from and to") {
-      import GeneratorChecks._
+      import GeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
       forAll { (i: Int, j: Int) =>
         val (k, nextRandomizer) = rnd.chooseInt(i, j)
@@ -249,10 +249,11 @@ class RandomizerSpec extends FunSpec with Matchers {
         k should be <= max
         k should be >= min
         rnd = nextRandomizer
+        succeed
       }
     }
     it("should offer a chooseLong method that initially produces Long values between from and to") {
-      import GeneratorChecks._
+      import GeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
       forAll { (i: Long, j: Long) =>
         val (k, nextRandomizer) = rnd.chooseLong(i, j)
@@ -261,6 +262,7 @@ class RandomizerSpec extends FunSpec with Matchers {
         k should be <= max
         k should be >= min
         rnd = nextRandomizer
+        succeed
       }
     }
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {

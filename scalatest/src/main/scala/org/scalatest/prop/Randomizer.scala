@@ -231,7 +231,7 @@ class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
     def loop(acc: List[T], count: Int, nextRandomizer: Randomizer): (List[T], Randomizer) = {
       if (count == length) (acc, nextRandomizer)
       else {
-        val (o, r) = genOfT.next(length, nextRandomizer)
+        val (o, _, r) = genOfT.next(length, Nil, nextRandomizer)
         loop(o :: acc, count + 1, r)
       }
     }

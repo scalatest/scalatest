@@ -32,18 +32,18 @@ trait PropertyTest {
 
   def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
-
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, nextRnd) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
+      val (a, nextEdges, nextNextRnd) = genA.next(size, edges, nextRnd)
 
       val result: Try[RESULT] = Try { fun(a) }
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
@@ -52,7 +52,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, ar, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -62,7 +62,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, ar, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -70,18 +70,31 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
-    def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
+    def sizesLoop(sizes: List[Int], count: Int, rndm: Randomizer): (List[Int], Randomizer) = {
       sizes match {
-        case Nil => sizesLoop(List(config.minSize), 1, rnd)
+        case Nil => sizesLoop(List(config.minSize), 1, rndm)
         case szs if count < 10 =>
-          val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, maxSize)
-          sizesLoop(nextSize :: sizes, count + 1,  nextRandomizer)
-        case _ => sizes.sorted
+          val (nextSize, nextRndm) = rndm.chooseInt(config.minSize, maxSize)
+          sizesLoop(nextSize :: sizes, count + 1, nextRndm)
+        case _ => (sizes.sorted, rndm)
       }
     }
-    val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
-    loop(0, 0, Randomizer.default, initialSizes)
+*/
+/*
+Here I could grab config.minSuccessful and maybe divide it by 5, so that at most 20% are edges? If it is 10, then we get 2 edges.
+If 100, we get at most 20 edges. I could say
+We'd need to grab the random. Which could be random.default unless it is specified on the command line. I'd say it is the
+one and only? Yes, I think so. Each forAll uses the same key each run. And we just print it out. I can put it in the summary.
+Maybe they need to ask for it?
+val edgesA: List[A] = genA.edges(maxEdges, rnd)
+I'd then just feed the edges through along with the randomizer.
+*/
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val (initEdges, afterEdgesRnd) = genA.initEdges(config.minSuccessful / 5, afterSizesRnd)
+    loop(0, 0, initEdges, afterEdgesRnd, initialSizes) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
   }
 
   def checkForAll[A, B](names: List[String], config: Parameter,
@@ -89,19 +102,20 @@ trait PropertyTest {
                                  genB: org.scalatest.prop.Generator[B])
                                 (fun: (A, B) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, rnd1) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
-      val (b, br) = genB.next(size, ar)
+      val (a, nextAEdges, rnd2) = genA.next(size, aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(size, bEdges, rnd2)
       val result: Try[RESULT] = Try { fun(a, b) }
       val argsPassed =
         List(
@@ -113,7 +127,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, br, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -123,7 +137,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, br, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -131,6 +145,7 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
     def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
@@ -143,6 +158,14 @@ trait PropertyTest {
     }
     val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
     loop(0, 0, Randomizer.default, initialSizes)
+*/
+
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val maxEdges = config.minSuccessful / 5
+    val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+    val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+    loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes)
   }
 
   def checkForAll[A, B, C](names: List[String], config: Parameter,
@@ -151,20 +174,21 @@ trait PropertyTest {
                                     genC: org.scalatest.prop.Generator[C])
                                    (fun: (A, B, C) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, rnd1) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
-      val (b, br) = genB.next(size, ar)
-      val (c, cr) = genC.next(size, br)
+      val (a, nextAEdges, rnd2) = genA.next(size, aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(size, bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(size, cEdges, rnd3)
       val result: Try[RESULT] = Try { fun(a, b, c) }
       val argsPassed =
         List(
@@ -177,7 +201,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, cr, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -187,7 +211,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, cr, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -195,6 +219,7 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
     def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
@@ -207,6 +232,15 @@ trait PropertyTest {
     }
     val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
     loop(0, 0, Randomizer.default, initialSizes)
+*/
+
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val maxEdges = config.minSuccessful / 5
+    val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+    val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+    val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+    loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes)
   }
 
   def checkForAll[A, B, C, D](names: List[String], config: Parameter,
@@ -216,21 +250,22 @@ trait PropertyTest {
                                        genD: org.scalatest.prop.Generator[D])
                                       (fun: (A, B, C, D) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, rnd1) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
-      val (b, br) = genB.next(size, ar)
-      val (c, cr) = genC.next(size, br)
-      val (d, dr) = genD.next(size, cr)
+      val (a, nextAEdges, rnd2) = genA.next(size, aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(size, bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(size, cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(size, dEdges, rnd4)
       val result: Try[RESULT] = Try { fun(a, b, c, d) }
       val argsPassed =
         List(
@@ -244,7 +279,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, dr, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -254,7 +289,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, dr, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -262,6 +297,7 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
     def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
@@ -274,6 +310,16 @@ trait PropertyTest {
     }
     val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
     loop(0, 0, Randomizer.default, initialSizes)
+*/
+
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val maxEdges = config.minSuccessful / 5
+    val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+    val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+    val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+    val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
+    loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes)
   }
 
   def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
@@ -284,22 +330,23 @@ trait PropertyTest {
                                           genE: org.scalatest.prop.Generator[E])
                                          (fun: (A, B, C, D, E) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, rnd1) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
-      val (b, br) = genB.next(size, ar)
-      val (c, cr) = genC.next(size, br)
-      val (d, dr) = genD.next(size, cr)
-      val (e, er) = genE.next(size, dr)
+      val (a, nextAEdges, rnd2) = genA.next(size, aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(size, bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(size, cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(size, dEdges, rnd4)
+      val (e, nextEEdges, rnd6) = genE.next(size, eEdges, rnd5)
       val result: Try[RESULT] = Try { fun(a, b, c, d, e) }
       val argsPassed =
         List(
@@ -314,7 +361,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, er, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -324,7 +371,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, er, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -332,6 +379,7 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
     def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
@@ -344,6 +392,17 @@ trait PropertyTest {
     }
     val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
     loop(0, 0, Randomizer.default, initialSizes)
+*/
+
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val maxEdges = config.minSuccessful / 5
+    val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+    val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+    val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+    val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
+    val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
+    loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes)
   }
 
   def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
@@ -355,23 +414,24 @@ trait PropertyTest {
                                              genF: org.scalatest.prop.Generator[F])
                                             (fun: (A, B, C, D, E, F) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-    val maxSize = config.minSize + config.sizeRange
+    val minSize = config.minSize
+    val maxSize = minSize + config.sizeRange
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
-      val (size, nextInitialSizes, nextRandomizer2) =
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+      val (size, nextInitialSizes, rnd1) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRandomizer)
+          case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-            (sz, Nil, r2)
+            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            (sz, Nil, nextRnd)
         }
-      val (a, ar) = genA.next(size, nextRandomizer)
-      val (b, br) = genB.next(size, ar)
-      val (c, cr) = genC.next(size, br)
-      val (d, dr) = genD.next(size, cr)
-      val (e, er) = genE.next(size, dr)
-      val (f, fr) = genF.next(size, er)
+      val (a, nextAEdges, rnd2) = genA.next(size, aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(size, bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(size, cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(size, dEdges, rnd4)
+      val (e, nextEEdges, rnd6) = genE.next(size, eEdges, rnd5)
+      val (f, nextFEdges, rnd7) = genF.next(size, fEdges, rnd6)
       val result: Try[RESULT] = Try { fun(a, b, c, d, e, f) }
       val argsPassed =
         List(
@@ -387,7 +447,7 @@ trait PropertyTest {
           if (succeed(r)) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, fr, nextInitialSizes)
+              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
             else
               PropertyTest.CheckSuccess(argsPassed)
           }
@@ -398,7 +458,7 @@ trait PropertyTest {
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, fr, nextInitialSizes)
+            loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
@@ -406,6 +466,7 @@ trait PropertyTest {
       }
     }
 
+/*
     @tailrec
     def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
@@ -418,6 +479,18 @@ trait PropertyTest {
     }
     val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
     loop(0, 0, Randomizer.default, initialSizes)
+*/
+
+    val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+    val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+    val maxEdges = config.minSuccessful / 5
+    val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+    val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+    val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+    val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
+    val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
+    val (initFEdges, afterFEdgesRnd) = genF.initEdges(maxEdges, afterEEdgesRnd)
+    loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes)
   }
 }
 
@@ -512,4 +585,17 @@ object PropertyTest {
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE, genF)(fun)
     }
 
+    def calcSizes(minSize: Int, maxSize: Int, initRndm: Randomizer): (List[Int], Randomizer) = {
+      @tailrec
+      def sizesLoop(sizes: List[Int], count: Int, rndm: Randomizer): (List[Int], Randomizer) = {
+        sizes match {
+          case Nil => sizesLoop(List(minSize), 1, rndm)
+          case szs if count < 10 =>
+            val (nextSize, nextRndm) = rndm.chooseInt(minSize, maxSize)
+            sizesLoop(nextSize :: sizes, count + 1, nextRndm)
+          case _ => (sizes.sorted, rndm)
+      }
+    }
+    sizesLoop(Nil, 0, initRndm)
+  }
 }
