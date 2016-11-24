@@ -85,6 +85,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       jc shouldEqual ic
     }
 
+/*
     it("should offer a nextByteWithEdges method that initially produces Byte edge values") {
       val r0 = Randomizer(100)
       val (a1, r1) = r0.nextByteWithEdges
@@ -239,6 +240,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       edges should contain (PosZDouble(1.0))
       edges should contain (PosZDouble.MaxValue)
     }
+*/
     it("should offer a chooseInt method that initially produces Int values between from and to") {
       import GeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
