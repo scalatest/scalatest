@@ -124,6 +124,12 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   def chooseInt(from: Int, to: Int): Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
+      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Int], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
       def next(size: Int, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
