@@ -137,7 +137,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Byte], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(byteEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -157,7 +158,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Short], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(shortEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -177,7 +179,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val charEdges = List(Char.MinValue, Char.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Char], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(charEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -197,7 +200,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Int], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(intEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -218,7 +222,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Long], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(longEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -278,7 +283,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosInt], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posIntEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -298,7 +304,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZInt], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posZIntEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -318,7 +325,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosLong], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posLongEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -338,7 +346,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZLong], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posZLongEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -358,7 +367,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosFloat], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posFloatEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -378,7 +388,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posZFloatEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -398,7 +409,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosDouble], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posDoubleEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -418,7 +430,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
-        Randomizer.shuffle(posZDoubleEdges.take(maxLength), rnd)
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
       }
       def next(size: Int, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
