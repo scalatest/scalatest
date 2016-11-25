@@ -414,9 +414,9 @@ abstract class UnitInspectorAsserting {
  * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
-private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
+abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
@@ -451,7 +451,7 @@ private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInsp
  * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
-object InspectorAsserting extends /*UnitInspectorAsserting*/ ExpectationInspectorAsserting {
+object InspectorAsserting extends ExpectationInspectorAsserting {
 
   /**
    * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,

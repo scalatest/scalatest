@@ -445,6 +445,9 @@ object ScalatestBuild extends Build {
        genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
      }.taskValue,
      sourceGenerators in Compile += Def.task {
+       genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
        genFiles("gentables", "GenTable.scala")(GenTable.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
      }.taskValue,
      sourceGenerators in Compile += Def.task {
@@ -566,6 +569,9 @@ object ScalatestBuild extends Build {
       }.taskValue,
       sourceGenerators in Compile += Def.task {
         genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
       sourceGenerators in Compile += Def.task {
         genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -893,6 +899,14 @@ object ScalatestBuild extends Build {
       }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
+  lazy val genScalaCheckGenTests = Project("genScalaCheckGenTests", file("gentests/GenScalaCheckGen"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genGenTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
     .settings(
@@ -1125,6 +1139,16 @@ object ScalatestBuild extends Build {
     }
   }
 
+  val genScalaCheckGen = TaskKey[Unit]("genscalacheckgen", "Generate ScalaCheck driven Property Checks")
+  val genScalaCheckGenTask = genScalaCheckGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+    projName match {
+      case "scalatest" =>
+        GenGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
+      case "gentests" =>
+        GenGen.genTest(new File(testTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
+    }
+  }
+
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
   val genTablesTask = genTables := {
     val mainTargetDir = (sourceManaged in Compile).value
@@ -1269,6 +1293,7 @@ object ScalatestBuild extends Build {
     val theScalaVersion = scalaVersion.value
 
     GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
+    GenScalaCheckGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)

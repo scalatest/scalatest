@@ -1,0 +1,74 @@
+/*
+ * Copyright 2001-2014 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.scalatest.laws
+
+import org.scalacheck.{Arbitrary, Shrink}
+import org.scalactic.Every
+import org.scalactic.algebra._
+import org.scalatest.Matchers._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.Generator
+import org.scalactic.source
+
+import Monad.adapters
+
+import scala.language.higherKinds
+
+/**
+ * Represents the laws that should hold true for an algebraic structure (a Monad) which
+ * contains a "flatMap" operation and obeys the laws of associativity, right identity,
+ * and left identity.
+ */
+class MonadLaws[Context[_]] private (
+  implicit monad: Monad[Context],
+  genCa: Generator[Context[Int]],
+  genCab: Generator[Int => Context[String]],
+  genCbc: Generator[String => Context[Long]]
+) extends Laws {
+
+  val lawsName = "monad"
+
+  override def laws =
+    Vector(
+      law("associativity") {
+        forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Long]) =>
+          ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
+        }
+      },
+
+      law("left identity") {
+        forAll { (ca: Context[Int]) =>
+          ca.flatMap(a => monad.insert(a)) shouldEqual ca
+        }
+      },
+
+      law("right identity") {
+        forAll { (a: Int, f: Int => Context[String]) =>
+          (monad.insert(a) flatMap f) shouldEqual f(a)
+        }
+      }
+    )
+}
+
+object MonadLaws {
+  def apply[Context[_]](
+    implicit monad: Monad[Context],
+    genCa: Generator[Context[Int]],
+    genCab: Generator[Int => Context[String]],
+    genCbc: Generator[String => Context[Long]]
+  ) = new MonadLaws[Context]
+}
+

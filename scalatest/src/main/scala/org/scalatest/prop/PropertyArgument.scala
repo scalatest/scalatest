@@ -1,6 +1,5 @@
-
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +15,4 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals._
-
-private[prop] case class Edges(
-  byteEdges: List[Byte],
-  shortEdges: List[Short],
-  charEdges: List[Char],
-  intEdges: List[Int],
-  longEdges: List[Long],
-  floatEdges: List[Float],
-  doubleEdges: List[Double],
-  posIntEdges: List[PosInt],
-  posZIntEdges: List[PosZInt],
-  posLongEdges: List[PosLong],
-  posZLongEdges: List[PosZLong],
-  posFloatEdges: List[PosFloat],
-  posZFloatEdges: List[PosZFloat],
-  posDoubleEdges: List[PosDouble],
-  posZDoubleEdges: List[PosZDouble]
-)
+case class PropertyArgument(label: Option[String], value: Any)
