@@ -165,7 +165,7 @@ class RandomizerSpec extends FunSpec with Matchers {
 [info]     Occurred when passed generated values (
 [info]       arg0 = PropertyArgument(None,List())
 [info]     )
-This should just say arg0 = List()
+Chee Seng: This should just say arg0 = List()
 */
         shuffled should contain theSameElementsAs xs
       }
