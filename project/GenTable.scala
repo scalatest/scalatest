@@ -313,9 +313,8 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    *
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
-  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result =
     asserting.forAll(heading, rows: _*)(fun)
-  }
 
   def forEvery[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forEvery(heading, rows: _*)(fun)
@@ -994,12 +993,13 @@ val tableSuitePreamble = """
 import org.scalatest.Matchers._
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import org.scalatest.refspec.RefSpec
+import org.scalatest.Expectations._
 
 class TableSuite extends RefSpec with TableDrivenPropertyChecks {
 """
 
 val tableSuiteTemplate = """
-  def `table forAll $n$ that succeeds` {
+  def `table forAll $n$ assertion that succeeds` {
 
     val examples =
       Table(
@@ -1010,7 +1010,7 @@ $columnsOfOnes$
     forAll (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
   }
 
-  def `table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+  def `table forAll $n$ assertion, which succeeds even though DiscardedEvaluationException is thrown` {
     val numbers =
       Table(
         ($argNames$),
@@ -1026,7 +1026,7 @@ $columnsOfOnes$
     }
   }
 
-  def `table forAll $n$, which fails` {
+  def `table forAll $n$ assertion, which fails` {
 
     val examples =
       Table(
@@ -1039,7 +1039,7 @@ $columnsOfTwos$
     }
   }
 
-  def `table forEvery $n$ that succeeds` {
+  def `table forEvery $n$ assertion that succeeds` {
 
     val examples =
       Table(
@@ -1050,7 +1050,7 @@ $columnsOfOnes$
     forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
   }
 
-  def `table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+  def `table forEvery $n$ assertion, which succeeds even though DiscardedEvaluationException is thrown` {
     val numbers =
       Table(
         ($argNames$),
@@ -1065,7 +1065,7 @@ $columnsOfOnes$
     }
   }
 
-  def `table forEvery $n$, which fails` {
+  def `table forEvery $n$ assertion, which fails` {
     val examples =
       Table(
         ($argNames$),
@@ -1077,7 +1077,7 @@ $columnsOfTwos$
     }
   }
 
-  def `table exists $n$ that succeeds` {
+  def `table exists $n$ assertion that succeeds` {
 
     val examples =
       Table(
@@ -1089,7 +1089,7 @@ $columnsOfOnes$
     exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
   }
 
-  def `table exists $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+  def `table exists $n$ assertion, which succeeds even though DiscardedEvaluationException is thrown` {
     val numbers =
       Table(
         ($argNames$),
@@ -1104,7 +1104,7 @@ $columnsOfOnes$
     }
   }
 
-  def `table exists $n$, which fails` {
+  def `table exists $n$ assertion, which fails` {
     val examples =
       Table(
         ($argNames$),
@@ -1116,7 +1116,7 @@ $columnsOfTwos$
     }
   }
 
-  def `table for $n$ apply, length, and iterator methods work correctly` {
+  def `table for $n$ assertion apply, length, and iterator methods work correctly` {
 
     val examples =
       Table(
@@ -1138,6 +1138,130 @@ $columnsOfIndexes$
 
     assert(examples.iterator.length === (10))
   }
+
+  def `table forAll $n$ expectation that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    val result = forAll (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isYes)
+  }
+
+  def `table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    val result =
+      forAll (numbers) { ($names$) =>
+
+        whenever (a > 0) {
+          expect(a > 0)
+        }
+      }
+    assert(result.isYes)
+  }
+
+  def `table forAll $n$ expectation, which fails` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    val result = forAll (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isNo)
+  }
+
+  def `table forEvery $n$ expectation that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    val result = forEvery (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isYes)
+  }
+
+  def `table forEvery $n$ expectation, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    val result =
+      forEvery (numbers) { ($names$) =>
+        whenever (a > 0) {
+          expect(a > 0)
+        }
+      }
+    assert(result.isYes)
+  }
+
+  def `table forEvery $n$ expectation, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    val result = forEvery (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isNo)
+  }
+
+  def `table exists $n$ expectation that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    val result = exists (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isYes)
+  }
+
+  def `table exists $n$ expectation, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    val result =
+      exists (numbers) { ($names$) =>
+        whenever (a > 0) {
+          expect(a > 0)
+        }
+      }
+    assert(result.isYes)
+  }
+
+  def `table exists $n$ expectation, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    val result = exists (examples) { ($names$) => expect($sumOfArgs$ === ($n$)) }
+    assert(result.isNo)
+  }
+
 """
 
 // For some reason that I don't understand, I need to leave off the stars before the <pre> when 
@@ -1351,12 +1475,43 @@ $columnsOfIndexes$
     def doForAllMethodImpl(i: Int): String = {
       val forAllImplTemplate: String =
         doForAllMethodTemplate + """ = {
-          |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
-          |    try {
-          |      fun($alphaLower$)
-          |    }
-          |    catch {
-          |      case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
+          |  def recur(itr: Iterator[($alphaUpper$)], idx: Int): Option[Result] = {
+          |    if (itr.hasNext) {
+          |      val ($alphaLower$) = itr.next
+          |      try {
+          |        val funR = fun($alphaLower$)
+          |        val (succeeded, cause) = succeed(funR)
+          |        if (succeeded)
+          |          recur(itr, idx + 1)
+          |        else {
+          |          val ($alphaName$) = heading
+          |
+          |          // SKIP-SCALATESTJS-START
+          |          val stackDepth = 2
+          |          // SKIP-SCALATESTJS-END
+          |          //SCALATESTJS-ONLY val stackDepth = 1
+          |
+          |          Some(
+          |            indicateFailure(
+          |              (sde: StackDepthException) => FailureMessages.propertyCheckFailed +
+          |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |                $namesAndValues$
+          |                "  )",
+          |              FailureMessages.undecoratedPropertyCheckFailureMessage,
+          |              List($alphaLower$),
+          |              List($alphaName$),
+          |              cause,
+          |              None, // Payload
+          |              prettifier,
+          |              pos,
+          |              idx
+          |            )
+          |          )
+          |        }
+          |      }
+          |      catch {
+          |      case _: DiscardedEvaluationException => recur(itr, idx + 1) // discard this evaluation and move on to the next
           |      case ex: Throwable =>
           |        val ($alphaName$) = heading
           |
@@ -1365,32 +1520,43 @@ $columnsOfIndexes$
           |        // SKIP-SCALATESTJS-END
           |        //SCALATESTJS-ONLY val stackDepth = 1
           |
-          |        indicateFailure(
-          |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
-          |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-          |            (
-          |              ex match {
-          |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-          |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-          |                case _ => ""
-          |              }
-          |            ) +
-          |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-          |            $namesAndValues$
-          |            "  )",
-          |          FailureMessages.undecoratedPropertyCheckFailureMessage,
-          |          List($alphaLower$),
-          |          List($alphaName$),
-          |          Some(ex),
-          |          None, // Payload
-          |          prettifier,
-          |          pos,
-          |          idx
+          |        Some(
+          |          indicateFailure(
+          |            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+          |              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          |              "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+          |              (
+          |                ex match {
+          |                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+          |                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+          |                  case _ => ""
+          |                }
+          |              ) +
+          |              "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |              $namesAndValues$
+          |              "  )",
+          |            FailureMessages.undecoratedPropertyCheckFailureMessage,
+          |            List($alphaLower$),
+          |            List($alphaName$),
+          |            Some(ex),
+          |            None, // Payload
+          |            prettifier,
+          |            pos,
+          |            idx
+          |          )
           |        )
-          |      }
+          |    }
+          |
+          |
+          |    }
+          |    else
+          |      None
           |  }
-          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+          |
+          |  recur(rows.iterator, 0) match {
+          |    case Some(failed) => failed
+          |    case None => indicateSuccess(FailureMessages.propertyCheckSucceeded)
+          |  }
           |}
         """.stripMargin
 
@@ -1484,7 +1650,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doForEveryMethodTemplate + """ = {
-                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2, prettifier, pos)((row: $rowType$) => fun($row$), succeed)
                                    |}
                                  """.stripMargin
 
@@ -1583,7 +1749,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doExistsMethodTemplate + """ = {
-                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$), succeed)
                                      |}
                                    """.stripMargin
 
@@ -1649,6 +1815,8 @@ $columnsOfIndexes$
          |import org.scalatest.FailureMessages
          |import org.scalatest.UnquotedString
          |import org.scalatest.Resources
+         |import org.scalatest.Expectation
+         |import org.scalatest.Fact
          |import org.scalatest.exceptions.StackDepthException
          |import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
          |import org.scalatest.exceptions.DiscardedEvaluationException
@@ -1669,6 +1837,9 @@ $columnsOfIndexes$
          |   * Return type of <code>forAll</code>, <code>forEvery</code> and <code>exists</code> method.
          |   */
          |  type Result
+         |
+         |  def succeed(result: ASSERTION): (Boolean, Option[Throwable])
+         |
          |  $forAllMethods$
          |  $forEveryMethods$
          |  $existsMethods$
@@ -1695,7 +1866,7 @@ $columnsOfIndexes$
          |                          passedElements: IndexedSeq[(Int, E)] = IndexedSeq.empty,
          |                          failedElements: IndexedSeq[(Int, E, Throwable)] = IndexedSeq.empty)
          |
-         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION): ForResult[E] = {
+         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION, succeedFun: ASSERTION => (Boolean, Option[Throwable])): ForResult[E] = {
          |      import org.scalatest.InspectorsHelper.{shouldPropagate, indentErrorMessages}
          |
          |      @scala.annotation.tailrec
@@ -1704,8 +1875,32 @@ $columnsOfIndexes$
          |          val head = itr.next
          |          val newResult =
          |            try {
-         |              fun(head)
-         |              result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |              val r = fun(head)
+         |              val (succeeded, cause) = succeedFun(r)
+         |              if (succeeded)
+         |                result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |              else {
+         |                result.copy(failedElements =
+         |                  result.failedElements :+ ((index,
+         |                    head,
+         |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                      ((sde: StackDepthException) => FailureMessages.propertyCheckFailed + "\n" +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                          name + " = " + value
+         |                        }.toIndexedSeq).mkString("\n") +
+         |                        "  )"),
+         |                      None,
+         |                      pos,
+         |                      None,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      head.productIterator.toList,
+         |                      namesOfArgs,
+         |                      index
+         |                    ))
+         |                  )
+         |                )
+         |              }
          |            }
          |            catch {
          |              case _: org.scalatest.exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
@@ -1752,9 +1947,9 @@ $columnsOfIndexes$
          |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
          |    }
          |
-         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION, succeedFun: ASSERTION => (Boolean, Option[Throwable]))(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
-         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun, succeedFun)
          |      val messageList = result.failedElements.map(_._3)
          |      if (messageList.size > 0)
          |        indicateFailure(
@@ -1768,9 +1963,9 @@ $columnsOfIndexes$
          |
          |    $existsMethodImpls$
          |
-         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION, succeedFun: ASSERTION => (Boolean, Option[Throwable]))(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
-         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun, succeedFun)
          |      if (result.passedCount == 0) {
          |        val messageList = result.failedElements.map(_._3)
          |        indicateFailure(
@@ -1798,6 +1993,7 @@ $columnsOfIndexes$
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
+         |      def succeed(result: T): (Boolean, Option[Throwable]) = (true, None)
          |      def indicateSuccess(message: => String): Unit = ()
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
          |        throw new TableDrivenPropertyCheckFailedException(
@@ -1824,20 +2020,55 @@ $columnsOfIndexes$
          |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
          |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
          |  */
-         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting {
+         |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |
-         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
-         |    new TableAsserting[Expectation] {
+         |  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): TableAsserting[Expectation] { type Result = Expectation } = {
+         |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
+         |      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
+         |      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Expectation = {
+         |        val message: String = undecoratedMessage
+         |        new Fact.Leaf(
+         |          message,
+         |          message,
+         |          message,
+         |          message,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          false,
+         |          false,
+         |          prettifier,
+         |          optionalCause
+         |        )
+         |      }
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Expectation = {
+         |        new Fact.Leaf(
+         |          message,
+         |          message,
+         |          message,
+         |          message,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          Vector.empty,
+         |          false,
+         |          false,
+         |          prettifier,
+         |          optionalCause
+         |        )
+         |      }
          |    }
          |  }
-         |}*/
+         |}
          |
          |/**
          | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
          | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
          | */
-         |object TableAsserting extends UnitTableAsserting /*ExpectationTableAsserting*/ {
+         |object TableAsserting extends ExpectationTableAsserting {
          |
          |  /**
          |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
@@ -1847,6 +2078,7 @@ $columnsOfIndexes$
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
+         |      def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
          |      def indicateSuccess(message: => String): Assertion = Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
