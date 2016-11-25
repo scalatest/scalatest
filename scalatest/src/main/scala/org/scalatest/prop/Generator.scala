@@ -77,6 +77,24 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
   def shrink(init: T): Stream[T] = Stream.empty
+  def sample: T = {
+    val rnd = Randomizer.default
+    val (size, nextRnd) = rnd.chooseInt(1, 100)
+    val (value, _, _) = next(size, Nil, nextRnd)
+    value
+  }
+  def samples(length: PosInt): List[T] = {
+    @tailrec
+    def loop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
+      if (count == length.value) acc
+      else {
+        val (size, nextRnd) = rnd.chooseInt(1, 100)
+        val (value, _, nextNextRnd) = next(size, Nil, rnd)
+        loop(count + 1, nextNextRnd, value :: acc)
+      }
+    }
+    loop(0, Randomizer.default, Nil)
+  }
 }
 
 trait LowerPriorityGeneratorImplicits {

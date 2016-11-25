@@ -515,35 +515,24 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseInt method") {
-      import org.scalactic.anyvals._
-import Generator._
-      def posIntGen: Generator[PosInt] =
-        for (i <- Generator.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 
-      val aGen = posIntGenerator
-      val (a1, _, ar1) = aGen.next(rnd = Randomizer(100))
-      val (a2, _, ar2) = aGen.next(rnd = ar1)
-      val (a3, _, ar3) = aGen.next(rnd = ar2)
-      val (a4, _, ar4) = aGen.next(rnd = ar3)
-      val (a5, _, ar5) = aGen.next(rnd = ar4)
-      val (a6, _, ar6) = aGen.next(rnd = ar5)
-      val (a7, _, _) = aGen.next(rnd = ar6)
+      import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
-      val bGen = posIntGenerator
-      val (b1, _, br1) = bGen.next(rnd = Randomizer(100))
-      val (b2, _, br2) = bGen.next(rnd = br1)
-      val (b3, _, br3) = bGen.next(rnd = br2)
-      val (b4, _, br4) = bGen.next(rnd = br3)
-      val (b5, _, br5) = bGen.next(rnd = br4)
-      val (b6, _, br6) = bGen.next(rnd = br5)
-      val (b7, _, _) = bGen.next(rnd = br6)
-      a1 shouldEqual b1
-      a2 shouldEqual b2
-      a3 shouldEqual b3
-      a4 shouldEqual b4
-      a5 shouldEqual b5
-      a6 shouldEqual b6
-      a7 shouldEqual b7
+      val minMaxPairs: Generator[(Int, Int)] = 
+        for {
+          min <- Generator.chooseInt(Int.MinValue, Int.MaxValue - 1)
+          max <- Generator.chooseInt(min, Int.MaxValue)
+        } yield (min, max)
+
+      forAll (minMaxPairs) { case (min, max) =>
+        val minMaxGen: Generator[Int] = Generator.chooseInt(min, max) 
+        val samples = minMaxGen.samples(10)
+        import org.scalatest.Inspectors._
+        forAll (samples) { i =>
+          i should be >= min
+          i should be <= max
+        }
+      }
     }
     it("mapping and flatMapping a Generator should compose the edges") {
       // import prop._
