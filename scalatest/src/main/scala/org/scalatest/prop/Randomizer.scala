@@ -24,7 +24,7 @@ import org.scalactic.Requirements._
 // Maybe this should be a trait, so that people can, hmm. Could 
 // make subclasses with extra methods, like nextSmallInt or something,
 // and in a pattern match narrow the type and call that method.
-class Randomizer(seed: Long) { thisRandomizer =>
+class Randomizer(val seed: Long) { thisRandomizer =>
   def nextRandomizer: Randomizer = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     new Randomizer(newSeed)
@@ -47,7 +47,7 @@ class Randomizer(seed: Long) { thisRandomizer =>
   // common in practice anyway. So this generator does favor slightly
   // the first code block.
   def nextChar: (Char, Randomizer) = {
-    val (i, r) = nextRandomizer.next(16) 
+    val (i, r) = thisRandomizer.next(16) 
     if (i >= 0xD800 && i <= 0xDFFF) (((i - 0xD800) & 0xFF).toChar, r)
     else (i.toChar, r)
   }
@@ -126,10 +126,10 @@ class Randomizer(seed: Long) { thisRandomizer =>
   def nextString(length: Int): (String, Randomizer) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec
-    def loop(acc: List[Char], count: Int, nextRandomizer: Randomizer): (String, Randomizer) = {
-      if (count == length) (acc.mkString, nextRandomizer)
+    def loop(acc: List[Char], count: Int, nextRnd: Randomizer): (String, Randomizer) = {
+      if (count == length) (acc.mkString, nextRnd)
       else {
-        val (c, r) = nextRandomizer.nextChar
+        val (c, r) = nextRnd.nextChar
         loop(c :: acc, count + 1, r)
       }
     }
@@ -138,10 +138,10 @@ class Randomizer(seed: Long) { thisRandomizer =>
   def nextList[T](length: Int)(implicit genOfT: Generator[T]): (List[T], Randomizer) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec
-    def loop(acc: List[T], count: Int, nextRandomizer: Randomizer): (List[T], Randomizer) = {
-      if (count == length) (acc, nextRandomizer)
+    def loop(acc: List[T], count: Int, nextRnd: Randomizer): (List[T], Randomizer) = {
+      if (count == length) (acc, nextRnd)
       else {
-        val (o, _, r) = genOfT.next(length, Nil, nextRandomizer)
+        val (o, _, r) = genOfT.next(length, Nil, nextRnd)
         loop(o :: acc, count + 1, r)
       }
     }

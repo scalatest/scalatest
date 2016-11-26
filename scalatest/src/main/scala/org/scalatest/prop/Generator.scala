@@ -102,8 +102,7 @@ trait LowerPriorityGeneratorImplicits {
   import org.scalacheck.{Arbitrary, Gen}
   import org.scalacheck.rng.Seed
 
-  @deprecated("You may wish to define an org.scalatest.prop.Generator[T], as the ScalaCheck ones will eventually require an import or mix in.")
-  implicit def scalacheckArbitaryGenerator[T](arb: Arbitrary[T]): Generator[T] =
+  implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T]): Generator[T] =
     new Generator[T] {
       def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -111,8 +110,10 @@ trait LowerPriorityGeneratorImplicits {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
-            arb.arbitrary.apply(Gen.Parameters.default.withSize(size), Seed.random()) match {
-              case Some(nextT) => (nextT, Nil, rnd)
+            val scalaCheckSeed = Seed(rnd.seed)
+            val nextRnd = rnd.nextRandomizer
+            arb.arbitrary.apply(Gen.Parameters.default.withSize(size), scalaCheckSeed) match {
+              case Some(nextT) => (nextT, Nil, nextRnd)
               case None => throw new IllegalStateException("Unable to generate value using ScalaCheck Arbitary.")
             }
         }
