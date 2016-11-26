@@ -631,9 +631,16 @@ allOf complaining about duplicate values.
           tup21, tup22, tup23, tup24, tup25)
       values should contain theSameElementsAs expectedInitEdges
     }
-    it("should be able to use ScalaCheck Arbitary as underlying generator without problem") {
-      val dateGen = Generator.scalacheckArbitaryGenerator(org.scalacheck.Arbitrary.arbDate)
-      dateGen.next()
+    it("should be able to use a ScalaCheck Arbitary and Shrink") {
+      import org.scalacheck.{Arbitrary, Gen, Shrink}
+      import org.scalacheck.rng.Seed
+      val dateShrink = implicitly[Shrink[java.util.Date]] 
+      val dateArbitrary = implicitly[Arbitrary[java.util.Date]]
+      val dateGen = dateArbitrary.arbitrary
+      val dateGenerator = Generator.scalaCheckArbitaryGenerator(org.scalacheck.Arbitrary.arbDate)
+      val (edges, er) = dateGenerator.initEdges(100, Randomizer.default)
+      edges should equal (Nil) // A ScalaCheck-backed generator would have no edges
+      // dateGen.next()
     }
   }
 }
