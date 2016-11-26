@@ -345,18 +345,20 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
       override def shrink(d: Double): Stream[Double] = {
         if (d == 0.0) Stream.empty
-        else if (d < 1.0 && d > -1.0) 0.0 #:: Stream.empty
+        else if (d <= 1.0 && d >= -1.0) 0.0 #:: Stream.empty
         else if (!d.isWhole) {
           // Nearest whole numbers closer to zero
           val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
           nearest #:: nearestNeg #:: shrink(nearest)
         }
         else {
-          val half: Double = d / 2.0
-          if (half < 1.0 && half > -1.0) 0.0 #:: Stream.empty
+          val sqrt: Double = math.sqrt(d.abs)
+          if (sqrt < 1.0) 0.0 #:: Stream.empty
           else {
-            val halfWhole = if (half > 0.0) half.floor else half.ceil
-            halfWhole #:: -halfWhole #:: shrink(halfWhole)
+            val whole: Double = sqrt.floor
+            val negWhole: Double = math.rint(-whole)
+            val (first, second) = if (d > 0) (whole, negWhole) else (negWhole, whole)
+            first #:: second #:: shrink(first)
           }
         }
       }
