@@ -737,6 +737,29 @@ allOf complaining about duplicate values.
         shrinks shouldBe empty
       }
     }
+    it("should shrink Doubles by dropping the franction part then repeatedly halving and negating") {
+      import GeneratorDrivenPropertyChecks._
+      forAll { (d: Double) =>
+        val generator = implicitly[Generator[Double]]
+        val shrinks: List[Double] = generator.shrink(d).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (d == 0.0) {
+          shrinks shouldBe empty
+        }
+        else {
+          import org.scalatest.Inspectors._
+          if (!d.isWhole) {
+            shrinks.head shouldEqual (if (d > 0.0) d.floor else d.ceil)
+          }
+          val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            val half = x / 2.0
+            val halfWhole = if (half > 0.0) half.floor else half.ceil
+            assert(y == 0.0 || y == -x || y == -halfWhole)
+          }
+        }
+      }
+    }
   }
 }
 
