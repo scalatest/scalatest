@@ -644,28 +644,97 @@ allOf complaining about duplicate values.
       val scalaTestShrinkList = intGenerator.shrink(100).toList
       scalaTestShrinkList shouldEqual scalaCheckShrinkList
     }
-    it("should shrink Ints like ScalaCheck") {
-      import org.scalacheck.{Arbitrary, Gen, Shrink}
-      import org.scalacheck.rng.Seed
+    it("should shrink Ints by repeatedly halving and negating") {
       import GeneratorDrivenPropertyChecks._
       forAll { (i: Int) =>
-        val intShrink = implicitly[Shrink[Int]] 
-        val intGenerator = implicitly[Generator[Int]]
-        val scalaCheckShrinkList = intShrink.shrink(i).toList
-        val scalaTestShrinkList = intGenerator.shrink(i).toList
-        scalaTestShrinkList shouldEqual scalaCheckShrinkList
+        val generator = implicitly[Generator[Int]]
+        val shrinks: List[Int] = generator.shrink(i).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (i == 0)
+          shrinks shouldBe empty
+        else {
+          import org.scalatest.Inspectors._
+          val pairs: List[(Int, Int)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+          }
+        }
       }
     }
-    it("should shrink Longs like ScalaCheck") {
-      import org.scalacheck.{Arbitrary, Gen, Shrink}
-      import org.scalacheck.rng.Seed
+    it("should shrink Longs by repeatedly halving and negating") {
       import GeneratorDrivenPropertyChecks._
       forAll { (n: Long) =>
-        val intShrink = implicitly[Shrink[Long]] 
-        val intGenerator = implicitly[Generator[Long]]
-        val scalaCheckShrinkList = intShrink.shrink(n).toList
-        val scalaTestShrinkList = intGenerator.shrink(n).toList
-        scalaTestShrinkList shouldEqual scalaCheckShrinkList
+        val generator = implicitly[Generator[Long]]
+        val shrinks: List[Long] = generator.shrink(n).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (n == 0)
+          shrinks shouldBe empty
+        else {
+          import org.scalatest.Inspectors._
+          val pairs: List[(Long, Long)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+          }
+/*
+          all (pairs) should satisfy { case (x, y) =>
+            y == 0 || y == -x || y.abs == x.abs / 2
+          }
+*/
+        }
+      }
+    }
+    it("should shrink Shorts by repeatedly halving and negating") {
+      import GeneratorDrivenPropertyChecks._
+      forAll { (n: Short) =>
+        val generator = implicitly[Generator[Short]]
+        val shrinks: List[Short] = generator.shrink(n).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (n == 0)
+          shrinks shouldBe empty
+        else {
+          import org.scalatest.Inspectors._
+          val pairs: List[(Short, Short)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+          }
+        }
+      }
+    }
+    it("should shrink Bytes by repeatedly halving and negating") {
+      import GeneratorDrivenPropertyChecks._
+      forAll { (b: Byte) =>
+        val generator = implicitly[Generator[Byte]]
+        val shrinks: List[Byte] = generator.shrink(b).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (b == 0)
+          shrinks shouldBe empty
+        else {
+          import org.scalatest.Inspectors._
+          val pairs: List[(Byte, Byte)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+          }
+        }
+      }
+    }
+    it("should shrink Chars by trying selected printable characters") {
+      import GeneratorDrivenPropertyChecks._
+      val expectedChars = "zyxwvutsrqponmljkihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210".toList
+      forAll { (c: Char) =>
+        val generator = implicitly[Generator[Char]]
+        val shrinks: List[Char] = generator.shrink(c).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'Z') 
+          shrinks shouldBe empty
+        else {
+          shrinks shouldEqual expectedChars
+        }
+      }
+      import org.scalatest.Inspectors
+      Inspectors.forAll (expectedChars) { (c: Char) => 
+        val generator = implicitly[Generator[Char]]
+        val shrinks: List[Char] = generator.shrink(c).toList
+        shrinks shouldBe empty
       }
     }
   }

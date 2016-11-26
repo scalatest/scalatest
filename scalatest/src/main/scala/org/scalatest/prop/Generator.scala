@@ -174,6 +174,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (b, Nil, nextRnd)
         }
       }
+      override def shrink(n: Byte): Stream[Byte] = {
+        if (n == 0) Stream.empty
+        else {
+          val half: Byte = (n / 2).toByte
+          if (half == 0) 0.toByte #:: Stream.empty
+          else {
+            half #:: (-half).toByte #:: shrink(half)
+          }
+        }
+      }
       override def toString = "Generator[Byte]"
     }
 
@@ -193,6 +203,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
           case _ =>
             val (s, nextRnd) = rnd.nextShort
             (s, Nil, nextRnd)
+        }
+      }
+      override def shrink(n: Short): Stream[Short] = {
+        if (n == 0) Stream.empty
+        else {
+          val half: Short = (n / 2).toShort
+          if (half == 0) 0.toShort #:: Stream.empty
+          else {
+            half #:: (-half).toShort #:: shrink(half)
+          }
         }
       }
       override def toString = "Generator[Short]"
@@ -215,6 +235,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val (c, nextRnd) = rnd.nextChar
             (c, Nil, nextRnd)
         }
+      }
+      override def shrink(c: Char): Stream[Char] = {
+        val userFriendlyChars = "zyxwvutsrqponmljkihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210"
+        if (userFriendlyChars.indexOf(c) >= 0) Stream.empty
+        else userFriendlyChars.toStream
       }
       override def toString = "Generator[Char]"
     }
@@ -241,7 +266,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def shrink(i: Int): Stream[Int] = {
         if (i == 0) Stream.empty
         else {
-          val half = i / 2
+          val half: Int = i / 2
           if (half == 0) 0 #:: Stream.empty
           else {
             half #:: -half #:: shrink(half)
@@ -271,7 +296,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def shrink(n: Long): Stream[Long] = {
         if (n == 0L) Stream.empty
         else {
-          val half = n / 2
+          val half: Long = n / 2
           if (half == 0L) 0L #:: Stream.empty
           else {
             half #:: -half #:: shrink(half)
@@ -316,6 +341,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
           case _ =>
             val (d, nextRnd) = rnd.nextDouble
             (d, Nil, nextRnd)
+        }
+      }
+      override def shrink(d: Double): Stream[Double] = {
+        if (d == 0.0) Stream.empty
+        else {
+          val half: Double = d / 2
+          if (half == 0.0) 0.0 #:: Stream.empty
+          else {
+            half #:: -half #:: shrink(half)
+          }
         }
       }
       override def toString = "Generator[Double]"
