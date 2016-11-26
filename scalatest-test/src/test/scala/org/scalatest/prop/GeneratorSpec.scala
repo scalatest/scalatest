@@ -634,13 +634,15 @@ allOf complaining about duplicate values.
     it("should be able to use a ScalaCheck Arbitary and Shrink") {
       import org.scalacheck.{Arbitrary, Gen, Shrink}
       import org.scalacheck.rng.Seed
-      val dateShrink = implicitly[Shrink[java.util.Date]] 
-      val dateArbitrary = implicitly[Arbitrary[java.util.Date]]
-      val dateGen = dateArbitrary.arbitrary
-      val dateGenerator = Generator.scalaCheckArbitaryGenerator(org.scalacheck.Arbitrary.arbDate)
-      val (edges, er) = dateGenerator.initEdges(100, Randomizer.default)
+      val intShrink = implicitly[Shrink[Int]] 
+      val intArbitrary = implicitly[Arbitrary[Int]]
+      val intGen = intArbitrary.arbitrary
+      val intGenerator = Generator.scalaCheckArbitaryGenerator(intArbitrary, intShrink)
+      val (edges, er) = intGenerator.initEdges(100, Randomizer.default)
       edges should equal (Nil) // A ScalaCheck-backed generator would have no edges
-      // dateGen.next()
+      val scalaCheckShrinkList = intShrink.shrink(100).toList
+      val scalaTestShrinkList = intGenerator.shrink(100).toList
+      scalaTestShrinkList shouldEqual scalaCheckShrinkList
     }
   }
 }

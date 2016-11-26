@@ -99,10 +99,10 @@ trait Generator[T] { thisGeneratorOfT =>
 
 trait LowerPriorityGeneratorImplicits {
 
-  import org.scalacheck.{Arbitrary, Gen}
+  import org.scalacheck.{Arbitrary, Gen, Shrink}
   import org.scalacheck.rng.Seed
 
-  implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T]): Generator[T] =
+  implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T], shrk: Shrink[T]): Generator[T] =
     new Generator[T] {
       def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -110,14 +110,13 @@ trait LowerPriorityGeneratorImplicits {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
-            val scalaCheckSeed = Seed(rnd.seed)
-            val nextRnd = rnd.nextRandomizer
-            arb.arbitrary.apply(Gen.Parameters.default.withSize(size), scalaCheckSeed) match {
-              case Some(nextT) => (nextT, Nil, nextRnd)
+            arb.arbitrary.apply(Gen.Parameters.default.withSize(size), Seed(rnd.seed)) match {
+              case Some(nextT) => (nextT, Nil, rnd.nextRandomizer)
               case None => throw new IllegalStateException("Unable to generate value using ScalaCheck Arbitary.")
             }
         }
       }
+      override def shrink(value: T): Stream[T] = shrk.shrink(value)
     }
 }
 
