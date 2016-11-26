@@ -238,7 +238,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[Int]"
-      override def shrink(init: Int): Stream[Int] = 0 #:: 1 #:: -1 #:: Stream.empty
+      override def shrink(i: Int): Stream[Int] = {
+        if (i == 0) Stream.empty
+        else {
+          val half = i / 2
+          if (half == 0) 0 #:: Stream.empty
+          else {
+            half #:: -half #:: shrink(half)
+          }
+        }
+      }
     }
 
   implicit val longGenerator: Generator[Long] =

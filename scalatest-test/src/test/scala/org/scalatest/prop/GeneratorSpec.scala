@@ -644,6 +644,18 @@ allOf complaining about duplicate values.
       val scalaTestShrinkList = intGenerator.shrink(100).toList
       scalaTestShrinkList shouldEqual scalaCheckShrinkList
     }
+    it("should shrink Ints like ScalaCheck") {
+      import org.scalacheck.{Arbitrary, Gen, Shrink}
+      import org.scalacheck.rng.Seed
+      import GeneratorDrivenPropertyChecks._
+      forAll { (i: Int) =>
+        val intShrink = implicitly[Shrink[Int]] 
+        val intGenerator = implicitly[Generator[Int]]
+        val scalaCheckShrinkList = intShrink.shrink(i).toList
+        val scalaTestShrinkList = intGenerator.shrink(i).toList
+        scalaTestShrinkList shouldEqual scalaCheckShrinkList
+      }
+    }
   }
 }
 
