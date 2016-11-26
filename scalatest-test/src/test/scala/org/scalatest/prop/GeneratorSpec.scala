@@ -656,6 +656,18 @@ allOf complaining about duplicate values.
         scalaTestShrinkList shouldEqual scalaCheckShrinkList
       }
     }
+    it("should shrink Longs like ScalaCheck") {
+      import org.scalacheck.{Arbitrary, Gen, Shrink}
+      import org.scalacheck.rng.Seed
+      import GeneratorDrivenPropertyChecks._
+      forAll { (n: Long) =>
+        val intShrink = implicitly[Shrink[Long]] 
+        val intGenerator = implicitly[Generator[Long]]
+        val scalaCheckShrinkList = intShrink.shrink(n).toList
+        val scalaTestShrinkList = intGenerator.shrink(n).toList
+        scalaTestShrinkList shouldEqual scalaCheckShrinkList
+      }
+    }
   }
 }
 

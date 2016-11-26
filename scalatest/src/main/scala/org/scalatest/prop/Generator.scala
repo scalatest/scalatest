@@ -268,6 +268,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (n, Nil, nextRnd)
         }
       }
+      override def shrink(n: Long): Stream[Long] = {
+        if (n == 0L) Stream.empty
+        else {
+          val half = n / 2
+          if (half == 0L) 0L #:: Stream.empty
+          else {
+            half #:: -half #:: shrink(half)
+          }
+        }
+      }
       override def toString = "Generator[Long]"
     }
 
