@@ -737,7 +737,7 @@ allOf complaining about duplicate values.
         shrinks shouldBe empty
       }
     }
-    it("should shrink Doubles by dropping the franction part then repeatedly halving and negating") {
+    it("should shrink Doubles by dropping the franction part then repeatedly 'square-rooting' and negating") {
       import GeneratorDrivenPropertyChecks._
       forAll { (d: Double) =>
         val generator = implicitly[Generator[Double]]
@@ -754,6 +754,27 @@ allOf complaining about duplicate values.
           val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
             assert(y == 0.0 || y == -x || y.abs < x.abs)
+          }
+        }
+      }
+    }
+    it("should shrink Floats by dropping the franction part then repeatedly 'square-rooting' and negating") {
+      import GeneratorDrivenPropertyChecks._
+      forAll { (f: Float) =>
+        val generator = implicitly[Generator[Float]]
+        val shrinks: List[Float] = generator.shrink(f).toList
+        shrinks.distinct.length shouldEqual shrinks.length
+        if (f == 0.0f) {
+          shrinks shouldBe empty
+        }
+        else {
+          import org.scalatest.Inspectors._
+          if (!f.isWhole) {
+            shrinks.head shouldEqual (if (f > 0.0f) f.floor else f.ceil)
+          }
+          val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
+          forAll (pairs) { case (x, y) =>
+            assert(y == 0.0f || y == -x || y.abs < x.abs)
           }
         }
       }

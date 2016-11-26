@@ -323,6 +323,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (f, Nil, nextRnd)
         }
       }
+      override def shrink(f: Float): Stream[Float] = {
+        if (f == 0.0f) Stream.empty
+        else if (f <= 1.0f && f >= -1.0f) 0.0f #:: Stream.empty
+        else if (!f.isWhole) {
+          // Nearest whole numbers closer to zero
+          val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
+          nearest #:: nearestNeg #:: shrink(nearest)
+        }
+        else {
+          val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
+          if (sqrt < 1.0f) 0.0f #:: Stream.empty
+          else {
+            val whole: Float = sqrt.floor
+            val negWhole: Float = math.rint((-whole).toDouble).toFloat
+            val (first, second) = if (f > 0.0f) (whole, negWhole) else (negWhole, whole)
+            first #:: second #:: shrink(first)
+          }
+        }
+      }
       override def toString = "Generator[Float]"
     }
 
@@ -357,7 +376,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else {
             val whole: Double = sqrt.floor
             val negWhole: Double = math.rint(-whole)
-            val (first, second) = if (d > 0) (whole, negWhole) else (negWhole, whole)
+            val (first, second) = if (d > 0.0) (whole, negWhole) else (negWhole, whole)
             first #:: second #:: shrink(first)
           }
         }
