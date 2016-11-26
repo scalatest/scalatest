@@ -147,57 +147,51 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     }
     loop(List.empty, 0, thisRandomizer)
   }
+
   def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
-    if(from == to) {
-      (from, this.nextInt._2)
-    } else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-      @annotation.tailrec
-      def loop(state: Randomizer): (Int, Randomizer) = {
-        val next = state.nextInt
-        if (min <= next._1 && next._1 <= max) {
-          next
-        } else if(0 < (max - min)){
-          val x = (next._1 % (max - min + 1)) + min
-          if (min <= x && x <= max) {
-            x -> next._2
-          } else {
-            loop(next._2)
-          }
-        } else {
-          loop(next._2)
-        }
-      }
-      loop(this)
+
+    if (from == to) {
+      (from, nextRandomizer)
     }
-  }
-  def chooseLong(from: Long, to: Long): (Long, Randomizer) = {
-    if(from == to) {
-      (from, this.nextLong._2)
-    } else {
+    else {
       val min = math.min(from, to)
       val max = math.max(from, to)
-      @annotation.tailrec
-      def loop(state: Randomizer): (Long, Randomizer) = {
-        val next = state.nextLong
-        if (min <= next._1 && next._1 <= max) {
-          next
-        } else if(0 < (max - min)){
-          val x = (next._1 % (max - min + 1)) + min
-          if (min <= x && x <= max) {
-            x -> next._2
-          } else {
-            loop(next._2)
-          }
-        } else {
-          loop(next._2)
-        }
+
+      // generate a positive Int
+      val nextPair = next(31) // 31 ensures sign bit is 0
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (nextBetween, nextRnd)
       }
-      loop(this)
     }
   }
 
+  def chooseLong(from: Long, to: Long): (Long, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // Generate a positive Long
+      val (ia, nextRnd) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+      val (ib, nextNextRnd) = nextRnd.next(32)
+      val nextValue = (ia.toLong << 32) + ib
+
+      if (nextValue >= min && nextValue <= max)
+        (nextValue, nextNextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (nextBetween, nextNextRnd)
+      }
+    }
+  }
 }
 
 object Randomizer {
