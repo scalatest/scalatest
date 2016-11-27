@@ -811,6 +811,14 @@ allOf complaining about duplicate values.
       }
     }
     it("should shrink Strings using strategery") {
+/*
+I got
+info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalatest-test/target/scala-2.11/test-classes...
+[error] /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalatest-test/src/test/scala/org/scalatest/prop/GeneratorSpec.scala:815: could not find implicit value for parameter resultChecker: org.scalatest.prop.PropertyTestResultHandler[Any]
+[error]       forAll { (s: String) =>
+[error]              ^
+[error] one error found
+
       import GeneratorDrivenPropertyChecks._
       forAll { (s: String) =>
         val generator = implicitly[Generator[String]]
@@ -818,8 +826,59 @@ allOf complaining about duplicate values.
         val shrinks: List[String] = shrinkIt.toList
         if (s.isEmpty)
           shrinks shouldBe empty
-        else
-          shrinks.take(4) shouldBe List("", "b", "V", "3")
+        else {
+          shrinks(0) shouldBe ""
+          shrinks(1) should have length 1
+          shrinks(1).head should (be >= 'a' and be <= 'z')
+          shrinks(2) should have length 1
+          shrinks(2).head should (be >= 'A' and be <= 'Z')
+          shrinks(3) should have length 1
+          shrinks(3).head should (be >= '0' and be <= '9')
+
+          val theChars = shrinks.drop(4)
+          val distincts: List[String] = s.distinct.toList.map(_.toString)
+          theChars.take(distincts.length).toList shouldEqual distincts
+
+          val theHalves = shrinks.drop(4 + distincts.length)
+          if (theHalves.length > 1) {
+            import org.scalatest.Inspectors
+            val zipped = theHalves.zip(theHalves.tail) 
+            Inspectors.forAll (zipped) { case (s, t) => 
+              s.length should be < t.length
+            }
+          }
+        }
+      }
+*/
+      import GeneratorDrivenPropertyChecks._
+      forAll { (s: String) =>
+        val generator = implicitly[Generator[String]]
+        val (shrinkIt, _) = generator.shrink(s, Randomizer.default)
+        val shrinks: List[String] = shrinkIt.toList
+        if (s.isEmpty)
+          shrinks shouldBe empty
+        else {
+          shrinks(0) shouldBe ""
+          shrinks(1) should have length 1
+          shrinks(1).head should (be >= 'a' and be <= 'z')
+          shrinks(2) should have length 1
+          shrinks(2).head should (be >= 'A' and be <= 'Z')
+          shrinks(3) should have length 1
+          shrinks(3).head should (be >= '0' and be <= '9')
+
+          val theChars = shrinks.drop(4)
+          val distincts: List[String] = s.distinct.toList.map(_.toString)
+          theChars.take(distincts.length).toList shouldEqual distincts
+
+          val theHalves = shrinks.drop(4 + distincts.length)
+          if (theHalves.length > 1) {
+            import org.scalatest.Inspectors
+            val zipped = theHalves.zip(theHalves.tail) 
+            Inspectors.forAll (zipped) { case (s, t) => 
+              s.length should be < t.length
+            }
+          } else succeed
+        }
       }
     }
   }

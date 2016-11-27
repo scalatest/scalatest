@@ -589,8 +589,35 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(s: String, rnd: Randomizer): (Iterator[String], Randomizer) = {
+
+        val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
+        val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val numericChars = "0123456789"
+        val (lowerCharIndex, rnd1) = rnd.chooseInt(0, lowerAlphaChars.length - 1)
+        val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
+        val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
+        val lowerChar = lowerAlphaChars(lowerCharIndex)
+        val upperChar = upperAlphaChars(upperCharIndex)
+        val numericChar = numericChars(numericCharIndex)
+        val candidateChars: List[Char] = List(lowerChar, upperChar, numericChar) ++ s.distinct.toList
+        val candidateStrings: List[String] = candidateChars.map(_.toString)
+
+        val lastBatch =
+          new Iterator[String] {
+            private var nextString = s.take(2)
+            def hasNext: Boolean = nextString.length < s.length
+            def next: String = {
+              val result = nextString
+              nextString = s.take(result.length * 2)
+              result
+            }
+          }
+
         if (s.isEmpty) (Iterator.empty, rnd)
-        else (Iterator("", "b", "V", "3"), rnd)
+        else (
+          Iterator("") ++ candidateStrings ++ lastBatch,
+          rnd3
+        )
       }
       override def toString = "Generator[String]"
     }
