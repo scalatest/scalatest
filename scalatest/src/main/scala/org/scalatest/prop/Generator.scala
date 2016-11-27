@@ -241,7 +241,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(c: Char): Iterator[Char] = {
-        val userFriendlyChars = "zyxwvutsrqponmljkihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210"
+        val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         if (userFriendlyChars.indexOf(c) >= 0) Iterator.empty
         else userFriendlyChars.toIterator
       }
@@ -339,7 +339,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else if (!f.isWhole) {
             // Nearest whole numbers closer to zero
             val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
-            shrinkLoop(nearest, nearest :: nearestNeg :: acc)
+            shrinkLoop(nearest, nearestNeg :: nearest :: acc)
           }
           else {
             val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
@@ -347,7 +347,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else {
               val whole: Float = sqrt.floor
               val negWhole: Float = math.rint((-whole).toDouble).toFloat
-              val (first, second) = if (f > 0.0f) (whole, negWhole) else (negWhole, whole)
+              val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
               shrinkLoop(first, first :: second :: acc)
             }
           }

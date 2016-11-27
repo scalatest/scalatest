@@ -719,7 +719,7 @@ allOf complaining about duplicate values.
     }
     it("should shrink Chars by trying selected printable characters") {
       import GeneratorDrivenPropertyChecks._
-      val expectedChars = "zyxwvutsrqponmljkihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210".toList
+      val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
       forAll { (c: Char) =>
         val generator = implicitly[Generator[Char]]
         val shrinks: List[Char] = generator.shrink(c).toList
@@ -765,11 +765,10 @@ allOf complaining about duplicate values.
         shrinks.distinct.length shouldEqual shrinks.length
         if (f == 0.0f) {
           shrinks shouldBe empty
-        }
-        else {
+        } else {
           import org.scalatest.Inspectors._
           if (!f.isWhole) {
-            shrinks.head shouldEqual (if (f > 0.0f) f.floor else f.ceil)
+            shrinks.last shouldEqual (if (f > 0.0f) f.floor else f.ceil)
           }
           val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
