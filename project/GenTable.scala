@@ -1486,12 +1486,8 @@ $columnsOfTwos$
           |          case _: DiscardedEvaluationException => (true, None) // discard this evaluation and move on to the next
           |          case ex: Throwable =>
           |            (false, Some(ex))
-          |            /*val ($alphaName$) = heading
-          |
-          |            */
           |        }
           |
-          |      //val (succeeded, cause) = succeed(funR)
           |      if (succeeded)
           |        recur(itr, idx + 1)
           |      else {
