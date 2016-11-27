@@ -682,17 +682,26 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (listOfT, Nil, nextRnd)
         }
       }
+      override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = { 
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => List(t)), rnd1)
+      }
       override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = {
 
         val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
         val canonicalListOfTsIt: Iterator[List[T]] = canonicalTsIt.map(t => List(t))
-        val distinctListOfTsIt: Iterator[List[T]] = xs.distinct.map(t => List(t)).iterator
+        // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+        // just one element itself. If it does, then xs will appear in the output, which
+        // we don't need, since we already know it fails.
+        val distinctListOfTsIt: Iterator[List[T]] = if (xs.nonEmpty && xs.tail.nonEmpty) xs.distinct.map(t => List(t)).iterator else Iterator.empty
 
         val lastBatch =
           new Iterator[List[T]] {
             private var nextT = xs.take(2)
             def hasNext: Boolean = nextT.length < xs.length
             def next: List[T] = {
+              if (!hasNext)
+                throw new NoSuchElementException
               val result = nextT
               nextT = xs.take(result.length * 2)
               result

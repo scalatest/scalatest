@@ -1009,6 +1009,11 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
         function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
       }
     }
+    it("should not exhibit this bug in List shrinking") {
+      val lstGen = implicitly[Generator[List[List[Int]]]]
+      val xss = List(List(100, 200, 300, 400, 300))
+      lstGen.shrink(xss, Randomizer.default)._1.toList should not contain xss
+    }
     it("should shrink Lists using strategery") {
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
@@ -1030,12 +1035,14 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
           phase2 shouldEqual (intCanonicals.map(i => List(i)))
 
           // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-          val xsDistincts = xs.distinct
+          // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
+          val xsDistincts = if (xs.length > 1) xs.distinct else Nil
           val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
           phase3 shouldEqual (xsDistincts.map(i => List(i)))
 
           // Phase 4 should be n-element lists that are prefixes cut in half
           val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
+          theHalves should not contain xs // This was a bug I noticed
           if (theHalves.length > 1) {
             import org.scalatest.Inspectors
             val zipped = theHalves.zip(theHalves.tail) 
@@ -1045,6 +1052,16 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
           } else succeed
         }
       }
+    }
+    it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
+      import GeneratorDrivenPropertyChecks._
+      val intGenerator = Generator.intGenerator
+      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val intCanonicals = intCanonicalsIt.toList
+      val listOfIntGenerator = Generator.listGenerator[Int]
+      val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+      val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+      listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
     }
   }
 }
