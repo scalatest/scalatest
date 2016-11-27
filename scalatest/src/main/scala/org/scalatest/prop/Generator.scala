@@ -76,7 +76,7 @@ trait Generator[T] { thisGeneratorOfT =>
         }
       }
     }
-  def shrink(init: T): Iterator[T] = Iterator.empty
+  def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def sample: T = {
     val rnd = Randomizer.default
     val (size, nextRnd) = rnd.chooseInt(1, 100)
@@ -116,7 +116,7 @@ trait LowerPriorityGeneratorImplicits {
             }
         }
       }
-      override def shrink(value: T): Iterator[T] = shrk.shrink(value).toIterator
+      override def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (shrk.shrink(value).toIterator, rnd)
     }
 }
 
@@ -174,7 +174,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (b, Nil, nextRnd)
         }
       }
-      override def shrink(n: Byte): Iterator[Byte] = {
+      override def shrink(n: Byte, rnd: Randomizer): (Iterator[Byte], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Byte, acc: List[Byte]): List[Byte] = {
           if (n == 0) acc
@@ -184,7 +184,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else shrinkLoop(half, (-half).toByte :: half :: acc)
           }
         }
-        shrinkLoop(n, Nil).iterator
+        (shrinkLoop(n, Nil).iterator, rnd)
       }
       override def toString = "Generator[Byte]"
     }
@@ -207,7 +207,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
-      override def shrink(n: Short): Iterator[Short] = {
+      override def shrink(n: Short, rnd: Randomizer): (Iterator[Short], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Short, acc: List[Short]): List[Short] = {
           if (n == 0) acc
@@ -217,7 +217,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else shrinkLoop(half, (-half).toShort :: half :: acc)
           }
         }
-        shrinkLoop(n, Nil).iterator
+        (shrinkLoop(n, Nil).iterator, rnd)
       }
       override def toString = "Generator[Short]"
     }
@@ -240,10 +240,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (c, Nil, nextRnd)
         }
       }
-      override def shrink(c: Char): Iterator[Char] = {
+      override def shrink(c: Char, rnd: Randomizer): (Iterator[Char], Randomizer) = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if (userFriendlyChars.indexOf(c) >= 0) Iterator.empty
-        else userFriendlyChars.toIterator
+        if (userFriendlyChars.indexOf(c) >= 0) (Iterator.empty, rnd)
+        else (userFriendlyChars.toIterator, rnd)
       }
       override def toString = "Generator[Char]"
     }
@@ -267,7 +267,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[Int]"
-      override def shrink(i: Int): Iterator[Int] = {
+      override def shrink(i: Int, rnd: Randomizer): (Iterator[Int], Randomizer) = {
         @tailrec
         def shrinkLoop(i: Int, acc: List[Int]): List[Int] = {
           if (i == 0) acc
@@ -277,7 +277,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else shrinkLoop(half, -half :: half :: acc)
           }
         }
-        shrinkLoop(i, Nil).iterator
+        (shrinkLoop(i, Nil).iterator, rnd)
       }
     }
 
@@ -299,7 +299,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (n, Nil, nextRnd)
         }
       }
-      override def shrink(n: Long): Iterator[Long] = {
+      override def shrink(n: Long, rnd: Randomizer): (Iterator[Long], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Long, acc: List[Long]): List[Long] = {
           if (n == 0L) acc
@@ -309,7 +309,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else shrinkLoop(half, -half :: half :: acc)
           }
         }
-        shrinkLoop(n, Nil).iterator
+        (shrinkLoop(n, Nil).iterator, rnd)
       }
       override def toString = "Generator[Long]"
     }
@@ -331,7 +331,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (f, Nil, nextRnd)
         }
       }
-      override def shrink(f: Float): Iterator[Float] = {
+      override def shrink(f: Float, rnd: Randomizer): (Iterator[Float], Randomizer) = {
         @tailrec
         def shrinkLoop(f: Float, acc: List[Float]): List[Float] = {
           if (f == 0.0f) acc
@@ -352,7 +352,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             }
           }
         }
-        shrinkLoop(f, Nil).iterator
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[Float]"
     }
@@ -374,7 +374,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (d, Nil, nextRnd)
         }
       }
-      override def shrink(d: Double): Iterator[Double] = {
+      override def shrink(d: Double, rnd: Randomizer): (Iterator[Double], Randomizer) = {
         @tailrec
         def shrinkLoop(d: Double, acc: List[Double]): List[Double] = {
           if (d == 0.0) acc
@@ -395,7 +395,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             }
           }
         }
-        shrinkLoop(d, Nil).iterator
+        (shrinkLoop(d, Nil).iterator, rnd)
       }
       override def toString = "Generator[Double]"
     }
@@ -586,9 +586,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
-      override def shrink(init: String): Iterator[String] = {
-        if (init.isEmpty) Iterator.empty
-        else Iterator("", "b", "V", "3")
+      override def shrink(s: String, rnd: Randomizer): (Iterator[String], Randomizer) = {
+        if (s.isEmpty) (Iterator.empty, rnd)
+        else (Iterator("", "b", "V", "3"), rnd)
       }
       override def toString = "Generator[String]"
     }

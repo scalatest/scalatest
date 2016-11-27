@@ -640,15 +640,17 @@ allOf complaining about duplicate values.
       val intGenerator = Generator.scalaCheckArbitaryGenerator(intArbitrary, intShrink)
       val (edges, er) = intGenerator.initEdges(100, Randomizer.default)
       edges should equal (Nil) // A ScalaCheck-backed generator would have no edges
-      val scalaCheckShrinkList = intShrink.shrink(100).toList
-      val scalaTestShrinkList = intGenerator.shrink(100).toList
+      val scalaCheckShrinkList = intShrink.shrink(100)
+      val (scalaTestShrinkIt, _) = intGenerator.shrink(100, Randomizer.default)
+      val scalaTestShrinkList = scalaTestShrinkIt.toList
       scalaTestShrinkList shouldEqual scalaCheckShrinkList
     }
     it("should shrink Ints by repeatedly halving and negating") {
       import GeneratorDrivenPropertyChecks._
       forAll { (i: Int) =>
         val generator = implicitly[Generator[Int]]
-        val shrinks: List[Int] = generator.shrink(i).toList
+        val (shrinkIt, _) = generator.shrink(i, Randomizer.default)
+        val shrinks: List[Int] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (i == 0)
           shrinks shouldBe empty
@@ -669,7 +671,8 @@ allOf complaining about duplicate values.
       import GeneratorDrivenPropertyChecks._
       forAll { (n: Long) =>
         val generator = implicitly[Generator[Long]]
-        val shrinks: List[Long] = generator.shrink(n).toList
+        val (shrinkIt, _) = generator.shrink(n, Randomizer.default)
+        val shrinks: List[Long] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (n == 0)
           shrinks shouldBe empty
@@ -695,7 +698,8 @@ allOf complaining about duplicate values.
       import GeneratorDrivenPropertyChecks._
       forAll { (n: Short) =>
         val generator = implicitly[Generator[Short]]
-        val shrinks: List[Short] = generator.shrink(n).toList
+        val (shrinkIt, _) = generator.shrink(n, Randomizer.default)
+        val shrinks: List[Short] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (n == 0)
           shrinks shouldBe empty
@@ -716,7 +720,8 @@ allOf complaining about duplicate values.
       import GeneratorDrivenPropertyChecks._
       forAll { (b: Byte) =>
         val generator = implicitly[Generator[Byte]]
-        val shrinks: List[Byte] = generator.shrink(b).toList
+        val (shrinkIt, _) = generator.shrink(b, Randomizer.default)
+        val shrinks: List[Byte] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (b == 0)
           shrinks shouldBe empty
@@ -736,9 +741,10 @@ allOf complaining about duplicate values.
     it("should shrink Chars by trying selected printable characters") {
       import GeneratorDrivenPropertyChecks._
       val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
+      val generator = implicitly[Generator[Char]]
       forAll { (c: Char) =>
-        val generator = implicitly[Generator[Char]]
-        val shrinks: List[Char] = generator.shrink(c).toList
+        val (shrinkIt, _) = generator.shrink(c, Randomizer.default)
+        val shrinks: List[Char] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
           shrinks shouldBe empty
@@ -747,8 +753,8 @@ allOf complaining about duplicate values.
       }
       import org.scalatest.Inspectors
       Inspectors.forAll (expectedChars) { (c: Char) => 
-        val generator = implicitly[Generator[Char]]
-        val shrinks: List[Char] = generator.shrink(c).toList
+        val (shrinkIt, _) = generator.shrink(c, Randomizer.default)
+        val shrinks: List[Char] = shrinkIt.toList
         shrinks shouldBe empty
       }
     }
@@ -757,7 +763,8 @@ allOf complaining about duplicate values.
 // try with -173126.1489439121
       forAll { (d: Double) =>
         val generator = implicitly[Generator[Double]]
-        val shrinks: List[Double] = generator.shrink(d).toList
+        val (shrinkIt, _) = generator.shrink(d, Randomizer.default)
+        val shrinks: List[Double] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (d == 0.0) {
           shrinks shouldBe empty
@@ -782,7 +789,8 @@ allOf complaining about duplicate values.
       import GeneratorDrivenPropertyChecks._
       forAll { (f: Float) =>
         val generator = implicitly[Generator[Float]]
-        val shrinks: List[Float] = generator.shrink(f).toList
+        val (shrinkIt, _) = generator.shrink(f, Randomizer.default)
+        val shrinks: List[Float] = shrinkIt.toList
         shrinks.distinct.length shouldEqual shrinks.length
         if (f == 0.0f) {
           shrinks shouldBe empty
@@ -806,7 +814,8 @@ allOf complaining about duplicate values.
       import GeneratorDrivenPropertyChecks._
       forAll { (s: String) =>
         val generator = implicitly[Generator[String]]
-        val shrinks: List[String] = generator.shrink(s).toList
+        val (shrinkIt, _) = generator.shrink(s, Randomizer.default)
+        val shrinks: List[String] = shrinkIt.toList
         if (s.isEmpty)
           shrinks shouldBe empty
         else
