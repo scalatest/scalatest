@@ -1478,64 +1478,76 @@ $columnsOfTwos$
           |  def recur(itr: Iterator[($alphaUpper$)], idx: Int): Option[Result] = {
           |    if (itr.hasNext) {
           |      val ($alphaLower$) = itr.next
-          |      try {
-          |        val funR = fun($alphaLower$)
-          |        val (succeeded, cause) = succeed(funR)
-          |        if (succeeded)
-          |          recur(itr, idx + 1)
-          |        else {
-          |          val ($alphaName$) = heading
+          |      val (succeeded: Boolean, cause: Option[Throwable]) =
+          |        try {
+          |          succeed(fun($alphaLower$))
+          |        }
+          |        catch {
+          |          case _: DiscardedEvaluationException => (true, None) // discard this evaluation and move on to the next
+          |          case ex: Throwable =>
+          |            (false, Some(ex))
+          |            /*val ($alphaName$) = heading
           |
-          |          Some(
-          |            indicateFailure(
-          |              (sde: StackDepthException) => FailureMessages.propertyCheckFailed +
-          |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-          |                $namesAndValues$
-          |                "  )",
-          |              FailureMessages.undecoratedPropertyCheckFailureMessage,
-          |              List($alphaLower$),
-          |              List($alphaName$),
-          |              cause,
-          |              None, // Payload
-          |              prettifier,
-          |              pos,
-          |              idx
+          |            */
+          |        }
+          |
+          |      //val (succeeded, cause) = succeed(funR)
+          |      if (succeeded)
+          |        recur(itr, idx + 1)
+          |      else {
+          |        val ($alphaName$) = heading
+          |        cause match {
+          |          case Some(ex) =>
+          |            Some(
+          |              indicateFailure(
+          |                (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+          |                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          |                  "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+          |                  (
+          |                    ex match {
+          |                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+          |                        "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+          |                      case _ => ""
+          |                    }
+          |                  ) +
+          |                  "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |                  $namesAndValues$
+          |                  "  )",
+          |                FailureMessages.undecoratedPropertyCheckFailureMessage,
+          |                List($alphaLower$),
+          |                List($alphaName$),
+          |                Some(ex),
+          |                None, // Payload
+          |                prettifier,
+          |                pos,
+          |                idx
+          |              )
           |            )
-          |          )
+          |
+          |          case None =>
+          |             Some(
+          |               indicateFailure(
+          |                 (sde: StackDepthException) => FailureMessages.propertyCheckFailed +
+          |                   ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          |                   "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |                   $namesAndValues$
+          |                   "  )",
+          |                 FailureMessages.undecoratedPropertyCheckFailureMessage +
+          |                 "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |                 $namesAndValues$
+          |                 "  )",
+          |                 List($alphaLower$),
+          |                 List($alphaName$),
+          |                 cause,
+          |                 None, // Payload
+          |                 prettifier,
+          |                 pos,
+          |                 idx
+          |               )
+          |            )
           |        }
           |      }
-          |      catch {
-          |        case _: DiscardedEvaluationException => recur(itr, idx + 1) // discard this evaluation and move on to the next
-          |        case ex: Throwable =>
-          |          val ($alphaName$) = heading
           |
-          |          Some(
-          |            indicateFailure(
-          |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
-          |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-          |                (
-          |                  ex match {
-          |                    case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-          |                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-          |                    case _ => ""
-          |                  }
-          |                ) +
-          |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-          |                $namesAndValues$
-          |                "  )",
-          |              FailureMessages.undecoratedPropertyCheckFailureMessage,
-          |              List($alphaLower$),
-          |              List($alphaName$),
-          |              Some(ex),
-          |              None, // Payload
-          |              prettifier,
-          |              pos,
-          |              idx
-          |            )
-          |          )
-          |      }
           |    }
           |    else
           |      None
