@@ -76,7 +76,7 @@ trait Generator[T] { thisGeneratorOfT =>
         }
       }
     }
-  def shrink(init: T): Stream[T] = Stream.empty
+  def shrink(init: T): Iterator[T] = Iterator.empty
   def sample: T = {
     val rnd = Randomizer.default
     val (size, nextRnd) = rnd.chooseInt(1, 100)
@@ -116,7 +116,7 @@ trait LowerPriorityGeneratorImplicits {
             }
         }
       }
-      override def shrink(value: T): Stream[T] = shrk.shrink(value)
+      override def shrink(value: T): Iterator[T] = shrk.shrink(value).toIterator
     }
 }
 
@@ -174,15 +174,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (b, Nil, nextRnd)
         }
       }
-      override def shrink(n: Byte): Stream[Byte] = {
-        if (n == 0) Stream.empty
-        else {
-          val half: Byte = (n / 2).toByte
-          if (half == 0) 0.toByte #:: Stream.empty
+      override def shrink(n: Byte): Iterator[Byte] = {
+        def shrinkLoop(n: Byte): Stream[Byte] = {
+          if (n == 0) Stream.empty
           else {
-            half #:: (-half).toByte #:: shrink(half)
+            val half: Byte = (n / 2).toByte
+            if (half == 0) 0.toByte #:: Stream.empty
+            else {
+              half #:: (-half).toByte #:: shrinkLoop(half)
+            }
           }
         }
+        shrinkLoop(n).iterator
       }
       override def toString = "Generator[Byte]"
     }
@@ -205,15 +208,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
-      override def shrink(n: Short): Stream[Short] = {
-        if (n == 0) Stream.empty
-        else {
-          val half: Short = (n / 2).toShort
-          if (half == 0) 0.toShort #:: Stream.empty
+      override def shrink(n: Short): Iterator[Short] = {
+        def shrinkLoop(n: Short): Stream[Short] = {
+          if (n == 0) Stream.empty
           else {
-            half #:: (-half).toShort #:: shrink(half)
+            val half: Short = (n / 2).toShort
+            if (half == 0) 0.toShort #:: Stream.empty
+            else {
+              half #:: (-half).toShort #:: shrinkLoop(half)
+            }
           }
         }
+        shrinkLoop(n).iterator
       }
       override def toString = "Generator[Short]"
     }
@@ -236,10 +242,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (c, Nil, nextRnd)
         }
       }
-      override def shrink(c: Char): Stream[Char] = {
+      override def shrink(c: Char): Iterator[Char] = {
         val userFriendlyChars = "zyxwvutsrqponmljkihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210"
-        if (userFriendlyChars.indexOf(c) >= 0) Stream.empty
-        else userFriendlyChars.toStream
+        if (userFriendlyChars.indexOf(c) >= 0) Iterator.empty
+        else userFriendlyChars.toIterator
       }
       override def toString = "Generator[Char]"
     }
@@ -263,15 +269,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[Int]"
-      override def shrink(i: Int): Stream[Int] = {
-        if (i == 0) Stream.empty
-        else {
-          val half: Int = i / 2
-          if (half == 0) 0 #:: Stream.empty
+      override def shrink(i: Int): Iterator[Int] = {
+        def shrinkLoop(i: Int): Stream[Int] = {
+          if (i == 0) Stream.empty
           else {
-            half #:: -half #:: shrink(half)
+            val half: Int = i / 2
+            if (half == 0) 0 #:: Stream.empty
+            else {
+              half #:: -half #:: shrinkLoop(half)
+            }
           }
         }
+        shrinkLoop(i).iterator
       }
     }
 
@@ -293,15 +302,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (n, Nil, nextRnd)
         }
       }
-      override def shrink(n: Long): Stream[Long] = {
-        if (n == 0L) Stream.empty
-        else {
-          val half: Long = n / 2
-          if (half == 0L) 0L #:: Stream.empty
+      override def shrink(n: Long): Iterator[Long] = {
+        def shrinkLoop(n: Long): Stream[Long] = {
+          if (n == 0L) Stream.empty
           else {
-            half #:: -half #:: shrink(half)
+            val half: Long = n / 2
+            if (half == 0L) 0L #:: Stream.empty
+            else {
+              half #:: -half #:: shrinkLoop(half)
+            }
           }
         }
+        shrinkLoop(n).iterator
       }
       override def toString = "Generator[Long]"
     }
@@ -323,24 +335,27 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (f, Nil, nextRnd)
         }
       }
-      override def shrink(f: Float): Stream[Float] = {
-        if (f == 0.0f) Stream.empty
-        else if (f <= 1.0f && f >= -1.0f) 0.0f #:: Stream.empty
-        else if (!f.isWhole) {
-          // Nearest whole numbers closer to zero
-          val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
-          nearest #:: nearestNeg #:: shrink(nearest)
-        }
-        else {
-          val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
-          if (sqrt < 1.0f) 0.0f #:: Stream.empty
+      override def shrink(f: Float): Iterator[Float] = {
+        def shrinkLoop(f: Float): Stream[Float] = {
+          if (f == 0.0f) Stream.empty
+          else if (f <= 1.0f && f >= -1.0f) 0.0f #:: Stream.empty
+          else if (!f.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
+            nearest #:: nearestNeg #:: shrinkLoop(nearest)
+          }
           else {
-            val whole: Float = sqrt.floor
-            val negWhole: Float = math.rint((-whole).toDouble).toFloat
-            val (first, second) = if (f > 0.0f) (whole, negWhole) else (negWhole, whole)
-            first #:: second #:: shrink(first)
+            val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
+            if (sqrt < 1.0f) 0.0f #:: Stream.empty
+            else {
+              val whole: Float = sqrt.floor
+              val negWhole: Float = math.rint((-whole).toDouble).toFloat
+              val (first, second) = if (f > 0.0f) (whole, negWhole) else (negWhole, whole)
+              first #:: second #:: shrinkLoop(first)
+            }
           }
         }
+        shrinkLoop(f).iterator
       }
       override def toString = "Generator[Float]"
     }
@@ -362,24 +377,27 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (d, Nil, nextRnd)
         }
       }
-      override def shrink(d: Double): Stream[Double] = {
-        if (d == 0.0) Stream.empty
-        else if (d <= 1.0 && d >= -1.0) 0.0 #:: Stream.empty
-        else if (!d.isWhole) {
-          // Nearest whole numbers closer to zero
-          val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-          nearest #:: nearestNeg #:: shrink(nearest)
-        }
-        else {
-          val sqrt: Double = math.sqrt(d.abs)
-          if (sqrt < 1.0) 0.0 #:: Stream.empty
+      override def shrink(d: Double): Iterator[Double] = {
+        def shrinkLoop(d: Double): Stream[Double] = {
+          if (d == 0.0) Stream.empty
+          else if (d <= 1.0 && d >= -1.0) 0.0 #:: Stream.empty
+          else if (!d.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            nearest #:: nearestNeg #:: shrinkLoop(nearest)
+          }
           else {
-            val whole: Double = sqrt.floor
-            val negWhole: Double = math.rint(-whole)
-            val (first, second) = if (d > 0.0) (whole, negWhole) else (negWhole, whole)
-            first #:: second #:: shrink(first)
+            val sqrt: Double = math.sqrt(d.abs)
+            if (sqrt < 1.0) 0.0 #:: Stream.empty
+            else {
+              val whole: Double = sqrt.floor
+              val negWhole: Double = math.rint(-whole)
+              val (first, second) = if (d > 0.0) (whole, negWhole) else (negWhole, whole)
+              first #:: second #:: shrinkLoop(first)
+            }
           }
         }
+        shrinkLoop(d).iterator
       }
       override def toString = "Generator[Double]"
     }
