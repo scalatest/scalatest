@@ -1009,6 +1009,43 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
         function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
       }
     }
+    it("should shrink Lists using strategery") {
+      import GeneratorDrivenPropertyChecks._
+      val intGenerator = Generator.intGenerator
+      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val intCanonicals = intCanonicalsIt.toList
+      forAll { (xs: List[Int]) =>
+        val generator = implicitly[Generator[List[Int]]]
+        val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
+        val shrinks: List[List[Int]] = shrinkIt.toList
+        if (xs.isEmpty)
+          shrinks shouldBe empty
+        else {
+
+          // First one should be the empty list
+          shrinks(0) shouldBe Nil
+
+          // Then should come one-element Lists of the canonicals of the type
+          val phase2 = shrinks.drop(1).take(intCanonicals.length)
+          phase2 shouldEqual (intCanonicals.map(i => List(i)))
+
+          // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
+          val xsDistincts = xs.distinct
+          val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
+          phase3 shouldEqual (xsDistincts.map(i => List(i)))
+
+          // Phase 4 should be n-element lists that are prefixes cut in half
+          val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
+          if (theHalves.length > 1) {
+            import org.scalatest.Inspectors
+            val zipped = theHalves.zip(theHalves.tail) 
+            Inspectors.forAll (zipped) { case (s, t) => 
+              s.length should be < t.length
+            }
+          } else succeed
+        }
+      }
+    }
   }
 }
 

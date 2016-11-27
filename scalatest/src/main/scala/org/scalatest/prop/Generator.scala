@@ -682,6 +682,29 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (listOfT, Nil, nextRnd)
         }
       }
+      override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = {
+
+        val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+        val canonicalListOfTsIt: Iterator[List[T]] = canonicalTsIt.map(t => List(t))
+        val distinctListOfTsIt: Iterator[List[T]] = xs.distinct.map(t => List(t)).iterator
+
+        val lastBatch =
+          new Iterator[List[T]] {
+            private var nextT = xs.take(2)
+            def hasNext: Boolean = nextT.length < xs.length
+            def next: List[T] = {
+              val result = nextT
+              nextT = xs.take(result.length * 2)
+              result
+            }
+          }
+
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else (
+          Iterator(Nil) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch,
+          rnd1
+        )
+      }
       override def toString = "Generator[List[T]]"
     }
 
