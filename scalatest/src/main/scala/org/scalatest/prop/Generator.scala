@@ -208,17 +208,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(n: Short): Iterator[Short] = {
-        def shrinkLoop(n: Short): List[Short] = {
-          if (n == 0) Nil
+        @tailrec
+        def shrinkLoop(n: Short, acc: List[Short]): List[Short] = {
+          if (n == 0) acc
           else {
             val half: Short = (n / 2).toShort
-            if (half == 0) 0.toShort :: Nil
-            else {
-              half :: (-half).toShort :: shrinkLoop(half)
-            }
+            if (half == 0) 0.toShort :: acc
+            else shrinkLoop(half, half :: (-half).toShort :: acc)
           }
         }
-        shrinkLoop(n).iterator
+        shrinkLoop(n, Nil).iterator
       }
       override def toString = "Generator[Short]"
     }
@@ -269,17 +268,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
       override def toString = "Generator[Int]"
       override def shrink(i: Int): Iterator[Int] = {
-        def shrinkLoop(i: Int): List[Int] = {
-          if (i == 0) Nil
+        @tailrec
+        def shrinkLoop(i: Int, acc: List[Int]): List[Int] = {
+          if (i == 0) acc
           else {
             val half: Int = i / 2
-            if (half == 0) 0 :: Nil
-            else {
-              half :: -half :: shrinkLoop(half)
-            }
+            if (half == 0) 0 :: acc
+            else shrinkLoop(half, half :: -half :: acc)
           }
         }
-        shrinkLoop(i).iterator
+        shrinkLoop(i, Nil).iterator
       }
     }
 
@@ -302,17 +300,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(n: Long): Iterator[Long] = {
-        def shrinkLoop(n: Long): List[Long] = {
-          if (n == 0L) Nil
+        @tailrec
+        def shrinkLoop(n: Long, acc: List[Long]): List[Long] = {
+          if (n == 0L) acc
           else {
             val half: Long = n / 2
-            if (half == 0L) 0L :: Nil
-            else {
-              half :: -half :: shrinkLoop(half)
-            }
+            if (half == 0L) 0L :: acc
+            else shrinkLoop(half, half :: -half :: acc)
           }
         }
-        shrinkLoop(n).iterator
+        shrinkLoop(n, Nil).iterator
       }
       override def toString = "Generator[Long]"
     }

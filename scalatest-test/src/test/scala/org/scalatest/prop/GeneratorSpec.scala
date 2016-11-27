@@ -656,7 +656,7 @@ allOf complaining about duplicate values.
           import org.scalatest.Inspectors._
           val pairs: List[(Int, Int)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
-            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+            assert(x == 0 || x == -y || x.abs == y.abs / 2)
           }
         }
       }
@@ -673,7 +673,7 @@ allOf complaining about duplicate values.
           import org.scalatest.Inspectors._
           val pairs: List[(Long, Long)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
-            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+            assert(x == 0 || x == -y || x.abs == y.abs / 2)
           }
 /*
           all (pairs) should satisfy { case (x, y) =>
@@ -695,7 +695,7 @@ allOf complaining about duplicate values.
           import org.scalatest.Inspectors._
           val pairs: List[(Short, Short)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
-            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+            assert(x == 0 || x == -y || x.abs == y.abs / 2)
           }
         }
       }
@@ -724,11 +724,10 @@ allOf complaining about duplicate values.
         val generator = implicitly[Generator[Char]]
         val shrinks: List[Char] = generator.shrink(c).toList
         shrinks.distinct.length shouldEqual shrinks.length
-        if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'Z') 
+        if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
           shrinks shouldBe empty
-        else {
+        else
           shrinks shouldEqual expectedChars
-        }
       }
       import org.scalatest.Inspectors
       Inspectors.forAll (expectedChars) { (c: Char) => 
