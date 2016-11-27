@@ -903,7 +903,7 @@ allOf complaining about duplicate values.
 I got
 info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalatest-test/target/scala-2.11/test-classes...
 [error] /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalatest-test/src/test/scala/org/scalatest/prop/GeneratorSpec.scala:815: could not find implicit value for parameter resultChecker: org.scalatest.prop.PropertyTestResultHandler[Any]
-[error]       forAll { (s: String) =>
+[error]       forAll {} (s: String) =>
 [error]              ^
 [error] one error found
 
@@ -967,6 +967,46 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
             }
           } else succeed
         }
+      }
+    }
+    it("should offer an implicit provider for constant function0's with a pretty toString") {
+      val function0s = Generator.function0Generator[Int]
+      import GeneratorDrivenPropertyChecks._
+      forAll (function0s) { (f: () => Int) =>
+        val constantResult = f()
+        import org.scalactic.TimesOnInt._
+        10 times { f() shouldEqual constantResult }
+        f.toString shouldBe s"() => $constantResult"
+      }
+    }
+    it("should offer an implicit provider for constant function0's that returns the edges of the result type") {
+      val ints = Generator.intGenerator
+      val function0s = Generator.function0Generator[Int]
+      val (intEdgesIt, rnd1) = ints.initEdges(100, Randomizer.default)
+      val (function0EdgesIt, _) = function0s.initEdges(100, rnd1)
+      val intEdges = intEdgesIt.toList
+      val function0Edges = function0EdgesIt.toList
+      function0Edges.map(f => f()) should contain theSameElementsAs intEdges
+    }
+    it("should offer an implicit provider for constant function0's that returns the canonicals of the result type") {
+      val ints = Generator.intGenerator
+      val function0s = Generator.function0Generator[Int]
+      val (intCanonicalsIt, rnd1) = ints.canonicals(Randomizer.default)
+      val (function0CanonicalsIt, _) = function0s.canonicals(rnd1)
+      val intCanonicals = intCanonicalsIt.toList
+      val function0Canonicals = function0CanonicalsIt.toList
+      function0Canonicals.map(f => f()) should contain theSameElementsAs intCanonicals
+    }
+    it("should offer an implicit provider for constant function0's that returns the shrinks of the result type") {
+      val ints = Generator.intGenerator
+      val function0s = Generator.function0Generator[Int]
+      import GeneratorDrivenPropertyChecks._
+      forAll (ints) { (i: Int) =>
+        val (intShrinksIt, rnd1) = ints.shrink(i, Randomizer.default)
+        val (function0ShrinksIt, _) = function0s.shrink(() => i, rnd1)
+        val intShrinks = intShrinksIt.toList
+        val function0Shrinks = function0ShrinksIt.toList
+        function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
       }
     }
   }

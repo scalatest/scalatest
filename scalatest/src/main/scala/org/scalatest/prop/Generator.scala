@@ -685,6 +685,36 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[List[T]]"
     }
 
+  implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
+    new Generator[() => T] { thisGeneratorOfFunction0 =>
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[() => T], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to initEdges must be >= 0")
+        val (edgesOfT, nextRnd) = genOfT.initEdges(maxLength, rnd)
+        val edges = edgesOfT.map(t => PrettyFunction0(t))
+        (edges, nextRnd)
+      }
+      def next(size: Int = 100, edges: List[() => T] = Nil, rnd: Randomizer = Randomizer.default): (() => T, List[() => T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextT, _, nextRnd) = genOfT.next(size, Nil, rnd)
+            (PrettyFunction0(nextT), Nil, nextRnd)
+        }
+      }
+      override def canonicals(rnd: Randomizer): (Iterator[() => T], Randomizer) = {
+        val (canonicalsOfT, nextRnd) = genOfT.canonicals(rnd)
+        val canonicals = canonicalsOfT.map(t => PrettyFunction0(t))
+        (canonicals, nextRnd)
+      }
+      override def shrink(f: () => T, rnd: Randomizer): (Iterator[() => T], Randomizer) = {
+        val (shrinksOfT, nextRnd) = genOfT.shrink(f(), rnd)
+        val shrinks = shrinksOfT.map(t => PrettyFunction0(t))
+        (shrinks, nextRnd)
+      }
+    }
+  }
 
   implicit def function1IntToListOfStringGenerator: Generator[Int => List[String]] = {
     object IntToListOfStringIdentity extends PrettyFunction1[Int, List[String]] {
