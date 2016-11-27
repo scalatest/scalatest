@@ -586,6 +586,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
+      override def shrink(init: String): Iterator[String] = {
+        if (init.isEmpty) Iterator.empty
+        else Iterator("", "b", "V", "3")
+      }
       override def toString = "Generator[String]"
     }
 

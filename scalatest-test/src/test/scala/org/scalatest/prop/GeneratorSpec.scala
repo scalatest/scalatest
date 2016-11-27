@@ -752,7 +752,7 @@ allOf complaining about duplicate values.
         shrinks shouldBe empty
       }
     }
-    it("should shrink Doubles by dropping the franction part then repeatedly 'square-rooting' and negating") {
+    it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
       import GeneratorDrivenPropertyChecks._
 // try with -173126.1489439121
       forAll { (d: Double) =>
@@ -778,7 +778,7 @@ allOf complaining about duplicate values.
         }
       }
     }
-    it("should shrink Floats by dropping the franction part then repeatedly 'square-rooting' and negating") {
+    it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
       import GeneratorDrivenPropertyChecks._
       forAll { (f: Float) =>
         val generator = implicitly[Generator[Float]]
@@ -800,6 +800,17 @@ allOf complaining about duplicate values.
             assert(x == 0.0f || x == -y || x.abs < y.abs)
           }
         }
+      }
+    }
+    it("should shrink Strings using strategery") {
+      import GeneratorDrivenPropertyChecks._
+      forAll { (s: String) =>
+        val generator = implicitly[Generator[String]]
+        val shrinks: List[String] = generator.shrink(s).toList
+        if (s.isEmpty)
+          shrinks shouldBe empty
+        else
+          shrinks.take(4) shouldBe List("", "b", "V", "3")
       }
     }
   }
