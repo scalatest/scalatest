@@ -207,6 +207,49 @@ class GeneratorSpec extends FunSpec with Matchers {
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
+    it("should offer a map method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+
+      import Generator._
+
+      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val expectedTupCanonicals = intCanonicalsIt.map(i => ('A', i)).toList
+
+      val tupGen = for (i <- intGenerator) yield ('A', i)
+      val (tupShrinkIt, _) = tupGen.shrink(('A', 100), Randomizer.default)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
+      val tupShrink = tupShrinkIt.toList
+      val tupCanonicals = tupCanonicalsIt.toList
+
+      tupShrink shouldBe expectedTupCanonicals
+      tupCanonicals shouldBe expectedTupCanonicals
+    }
+    it("should offer a flatMap method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+
+      import Generator._
+
+      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val intCanonicals = intCanonicalsIt.toList
+      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(Randomizer.default)
+      val doubleCanonicals = doubleCanonicalsIt.toList
+      val expectedTupCanonicals: List[(Int, Double)] =
+        for {
+          i <- intCanonicals
+          d <- doubleCanonicals
+        } yield (i, d)
+
+      val tupGen =
+        for {
+          i <- intGenerator
+          d <- doubleGenerator
+        }  yield (i, d)
+      val (tupShrinkIt, _) = tupGen.shrink((100, 100.0), Randomizer.default)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
+      val tupShrink = tupShrinkIt.toList
+      val tupCanonicals = tupCanonicalsIt.toList
+
+      tupShrink shouldBe expectedTupCanonicals
+      tupCanonicals shouldBe expectedTupCanonicals
+    }
     it("should mix up both i and d when used in a for expression") {
       import Generator._
       def pairGen(): Generator[(Int, Double)] =

@@ -41,13 +41,11 @@ trait Generator[T] { thisGeneratorOfT =>
             (f(nextT), Nil, nextRandomizer)
         }
       }
-/*
       override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = { 
         val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
         (cansOfT.map(f), rnd1)
       }
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
-*/
     }
   def flatMap[U](f: T => Generator[U]): Generator[U] = 
     new Generator[U] { thisGeneratorOfU =>
@@ -82,6 +80,18 @@ trait Generator[T] { thisGeneratorOfT =>
             (u, Nil, nextNextRandomizer)
         }
       }
+      override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = { 
+        val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
+        var currentRnd = rnd1 // Local var, one thread; TODO: Do this with a tailrec loop
+        def getCanonicals(o: T): Iterator[U] = {
+          val genOfU: Generator[U] = f(o)
+          val (canonicals, nextRnd) = genOfU.canonicals(currentRnd)
+          currentRnd = nextRnd
+          canonicals
+        }
+        (cansOfT.flatMap(getCanonicals), currentRnd)
+      }
+      override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
   def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
