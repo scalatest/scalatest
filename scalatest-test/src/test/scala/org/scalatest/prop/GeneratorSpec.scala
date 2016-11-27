@@ -653,6 +653,10 @@ allOf complaining about duplicate values.
         if (i == 0)
           shrinks shouldBe empty
         else {
+          if (i > 1)
+            shrinks.last should be > 0
+          else if (i < -1)
+            shrinks.last should be < 0
           import org.scalatest.Inspectors._
           val pairs: List[(Int, Int)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
@@ -670,6 +674,10 @@ allOf complaining about duplicate values.
         if (n == 0)
           shrinks shouldBe empty
         else {
+          if (n > 1L)
+            shrinks.last should be > 0L
+          else if (n < -1L)
+            shrinks.last should be < 0L
           import org.scalatest.Inspectors._
           val pairs: List[(Long, Long)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
@@ -692,6 +700,10 @@ allOf complaining about duplicate values.
         if (n == 0)
           shrinks shouldBe empty
         else {
+          if (n > 1.toShort)
+            shrinks.last should be > 0.toShort
+          else if (n < -1.toShort)
+            shrinks.last should be < 0.toShort
           import org.scalatest.Inspectors._
           val pairs: List[(Short, Short)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
@@ -709,6 +721,10 @@ allOf complaining about duplicate values.
         if (b == 0)
           shrinks shouldBe empty
         else {
+          if (b > 1.toByte)
+            shrinks.last should be > 0.toByte
+          else if (b < -1.toByte)
+            shrinks.last should be < 0.toByte
           import org.scalatest.Inspectors._
           val pairs: List[(Byte, Byte)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
@@ -738,6 +754,7 @@ allOf complaining about duplicate values.
     }
     it("should shrink Doubles by dropping the franction part then repeatedly 'square-rooting' and negating") {
       import GeneratorDrivenPropertyChecks._
+// try with -173126.1489439121
       forAll { (d: Double) =>
         val generator = implicitly[Generator[Double]]
         val shrinks: List[Double] = generator.shrink(d).toList
@@ -747,8 +764,12 @@ allOf complaining about duplicate values.
         }
         else {
           import org.scalatest.Inspectors._
+          if (d > 1.0)
+            shrinks.last should be > 0.0
+          else if (d < -1.0)
+            shrinks.last should be < 0.0
           if (!d.isWhole) {
-            shrinks.head shouldEqual (if (d > 0.0) d.floor else d.ceil)
+            shrinks.last shouldEqual (if (d > 0.0) d.floor else d.ceil)
           }
           val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
@@ -766,6 +787,10 @@ allOf complaining about duplicate values.
         if (f == 0.0f) {
           shrinks shouldBe empty
         } else {
+          if (f > 1.0f)
+            shrinks.last should be > 0.0f
+          else if (f < -1.0f)
+            shrinks.last should be < 0.0f
           import org.scalatest.Inspectors._
           if (!f.isWhole) {
             shrinks.last shouldEqual (if (f > 0.0f) f.floor else f.ceil)

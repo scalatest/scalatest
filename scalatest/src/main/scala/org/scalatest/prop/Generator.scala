@@ -181,7 +181,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else {
             val half: Byte = (n / 2).toByte
             if (half == 0) 0.toByte :: acc
-            else shrinkLoop(half, half :: (-half).toByte :: acc)
+            else shrinkLoop(half, (-half).toByte :: half :: acc)
           }
         }
         shrinkLoop(n, Nil).iterator
@@ -214,7 +214,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else {
             val half: Short = (n / 2).toShort
             if (half == 0) 0.toShort :: acc
-            else shrinkLoop(half, half :: (-half).toShort :: acc)
+            else shrinkLoop(half, (-half).toShort :: half :: acc)
           }
         }
         shrinkLoop(n, Nil).iterator
@@ -274,7 +274,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else {
             val half: Int = i / 2
             if (half == 0) 0 :: acc
-            else shrinkLoop(half, half :: -half :: acc)
+            else shrinkLoop(half, -half :: half :: acc)
           }
         }
         shrinkLoop(i, Nil).iterator
@@ -306,7 +306,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else {
             val half: Long = n / 2
             if (half == 0L) 0L :: acc
-            else shrinkLoop(half, half :: -half :: acc)
+            else shrinkLoop(half, -half :: half :: acc)
           }
         }
         shrinkLoop(n, Nil).iterator
@@ -382,7 +382,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           else if (!d.isWhole) {
             // Nearest whole numbers closer to zero
             val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-            shrinkLoop(nearest, nearest :: nearestNeg :: acc)
+            shrinkLoop(nearest, nearestNeg :: nearest :: acc)
           }
           else {
             val sqrt: Double = math.sqrt(d.abs)
@@ -390,7 +390,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             else {
               val whole: Double = sqrt.floor
               val negWhole: Double = math.rint(-whole)
-              val (first, second) = if (d > 0.0) (whole, negWhole) else (negWhole, whole)
+              val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
               shrinkLoop(first, first :: second :: acc)
             }
           }
