@@ -643,7 +643,7 @@ allOf complaining about duplicate values.
       val scalaCheckShrinkList = intShrink.shrink(100)
       val (scalaTestShrinkIt, _) = intGenerator.shrink(100, Randomizer.default)
       val scalaTestShrinkList = scalaTestShrinkIt.toList
-      scalaTestShrinkList shouldEqual scalaCheckShrinkList
+      scalaTestShrinkList shouldEqual scalaCheckShrinkList.reverse
     }
     it("should shrink Ints by repeatedly halving and negating") {
       import GeneratorDrivenPropertyChecks._

@@ -116,7 +116,9 @@ trait LowerPriorityGeneratorImplicits {
             }
         }
       }
-      override def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (shrk.shrink(value).toIterator, rnd)
+      override def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = {
+        (shrk.shrink(value).take(10000).reverse.toIterator, rnd)
+      }
     }
 }
 
