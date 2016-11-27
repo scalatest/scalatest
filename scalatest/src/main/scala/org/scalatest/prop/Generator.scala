@@ -332,26 +332,27 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(f: Float): Iterator[Float] = {
-        def shrinkLoop(f: Float): List[Float] = {
-          if (f == 0.0f) Nil
-          else if (f <= 1.0f && f >= -1.0f) 0.0f :: Nil
+        @tailrec
+        def shrinkLoop(f: Float, acc: List[Float]): List[Float] = {
+          if (f == 0.0f) acc
+          else if (f <= 1.0f && f >= -1.0f) 0.0f :: acc
           else if (!f.isWhole) {
             // Nearest whole numbers closer to zero
             val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
-            nearest :: nearestNeg :: shrinkLoop(nearest)
+            shrinkLoop(nearest, nearest :: nearestNeg :: acc)
           }
           else {
             val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
-            if (sqrt < 1.0f) 0.0f :: Nil
+            if (sqrt < 1.0f) 0.0f :: acc
             else {
               val whole: Float = sqrt.floor
               val negWhole: Float = math.rint((-whole).toDouble).toFloat
               val (first, second) = if (f > 0.0f) (whole, negWhole) else (negWhole, whole)
-              first :: second :: shrinkLoop(first)
+              shrinkLoop(first, first :: second :: acc)
             }
           }
         }
-        shrinkLoop(f).iterator
+        shrinkLoop(f, Nil).iterator
       }
       override def toString = "Generator[Float]"
     }

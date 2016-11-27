@@ -773,7 +773,7 @@ allOf complaining about duplicate values.
           }
           val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
-            assert(y == 0.0f || y == -x || y.abs < x.abs)
+            assert(x == 0.0f || x == -y || x.abs < y.abs)
           }
         }
       }
