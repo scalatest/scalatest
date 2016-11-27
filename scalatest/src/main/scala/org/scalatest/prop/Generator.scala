@@ -175,17 +175,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def shrink(n: Byte): Iterator[Byte] = {
-        def shrinkLoop(n: Byte): List[Byte] = {
-          if (n == 0) Nil
+        @tailrec
+        def shrinkLoop(n: Byte, acc: List[Byte]): List[Byte] = {
+          if (n == 0) acc
           else {
             val half: Byte = (n / 2).toByte
-            if (half == 0) 0.toByte :: Nil
-            else {
-              half :: (-half).toByte :: shrinkLoop(half)
-            }
+            if (half == 0) 0.toByte :: acc
+            else shrinkLoop(half, half :: (-half).toByte :: acc)
           }
         }
-        shrinkLoop(n).iterator
+        shrinkLoop(n, Nil).iterator
       }
       override def toString = "Generator[Byte]"
     }

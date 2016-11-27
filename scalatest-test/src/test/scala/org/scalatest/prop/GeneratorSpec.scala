@@ -712,7 +712,7 @@ allOf complaining about duplicate values.
           import org.scalatest.Inspectors._
           val pairs: List[(Byte, Byte)] = shrinks.zip(shrinks.tail)
           forAll (pairs) { case (x, y) =>
-            assert(y == 0 || y == -x || y.abs == x.abs / 2)
+            assert(x == 0 || x == -y || x.abs == y.abs / 2)
           }
         }
       }
