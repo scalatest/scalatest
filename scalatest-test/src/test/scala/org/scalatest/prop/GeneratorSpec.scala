@@ -185,7 +185,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       a6 shouldEqual b6
       a7 shouldEqual b7
     }
-    it("should offer a map and flatMap method so I can use it in for expressions like a cowboy") {
+    it("should offer a map and flatMap method that composes the next methods") {
       import Generator._
       def pairGen(): Generator[(Int, Double)] =
         // doubleGen().flatMap(d => intGen().map(i => (i, d)))
@@ -306,6 +306,12 @@ class GeneratorSpec extends FunSpec with Matchers {
       edges should contain (Byte.MaxValue)
       edges should contain (Byte.MinValue)
     }
+    it("should produce Byte canonical values") {
+      import Generator._
+      val gen = byteGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toByte)
+    }
     it("should produce Short edge values first in random order") {
       import Generator._
       val gen = shortGenerator
@@ -322,6 +328,12 @@ class GeneratorSpec extends FunSpec with Matchers {
       edges should contain (Short.MaxValue)
       edges should contain (Short.MinValue)
     }
+    it("should produce Short canonical values") {
+      import Generator._
+      val gen = shortGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toShort)
+    }
     it("should produce Char edge values first in random order") {
       import Generator._
       val gen = charGenerator
@@ -331,6 +343,15 @@ class GeneratorSpec extends FunSpec with Matchers {
       val edges = List(a1, a2)
       edges should contain (Char.MinValue)
       edges should contain (Char.MaxValue)
+    }
+    it("should produce Char canonical values") {
+      import Generator._
+      val gen = charGenerator
+      val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
+      val canonicals = canonicalsIt.toList
+      canonicals(0) should (be >= 'a' and be <= 'z')
+      canonicals(1) should (be >= 'A' and be <= 'Z')
+      canonicals(2) should (be >= '0' and be <= '9')
     }
     it("should produce Int edge values first in random order") {
       import Generator._
@@ -348,6 +369,12 @@ class GeneratorSpec extends FunSpec with Matchers {
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
     }
+    it("should produce Int canonical values") {
+      import Generator._
+      val gen = intGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3)
+    }
     it("should produce Long edge values first in random order") {
       import Generator._
       val gen = longGenerator
@@ -364,6 +391,12 @@ class GeneratorSpec extends FunSpec with Matchers {
       edges should contain (Long.MaxValue)
       edges should contain (Long.MinValue)
     }
+    it("should produce Long canonical values") {
+      import Generator._
+      val gen = longGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0L, 1L, -1L, 2L, -2L, 3L, -3L)
+    }
     it("should produce the Float edge value first") {
       import Generator._
       val gen = floatGenerator
@@ -371,12 +404,24 @@ class GeneratorSpec extends FunSpec with Matchers {
       val (a1, _, _) = gen.next(edges = initEdges, rnd = ier)
       a1 shouldEqual 0.0f
     }
+    it("should produce Float canonical values") {
+      import Generator._
+      val gen = floatGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
+    }
     it("should produce the Double edge value first") {
       import Generator._
       val gen = doubleGenerator
       val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
       val (a1, _, _) = gen.next(edges = initEdges, rnd = ier)
       a1 shouldEqual 0.0
+    }
+    it("should produce Double canonical values") {
+      import Generator._
+      val gen = doubleGenerator
+      val (canonicals, _) = gen.canonicals(Randomizer.default)
+      canonicals.toList shouldBe List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
     }
     it("should produce PosInt edge values first in random order") {
       import Generator._

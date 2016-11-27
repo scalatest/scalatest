@@ -41,6 +41,13 @@ trait Generator[T] { thisGeneratorOfT =>
             (f(nextT), Nil, nextRandomizer)
         }
       }
+/*
+      override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = { 
+        val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
+        (cansOfT.map(f), rnd1)
+      }
+      override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
+*/
     }
   def flatMap[U](f: T => Generator[U]): Generator[U] = 
     new Generator[U] { thisGeneratorOfU =>
@@ -77,6 +84,7 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
   def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
+  def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def sample: T = {
     val rnd = Randomizer.default
     val (size, nextRnd) = rnd.chooseInt(1, 100)
@@ -176,6 +184,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (b, Nil, nextRnd)
         }
       }
+      private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
+      override def canonicals(rnd: Randomizer): (Iterator[Byte], Randomizer) = (byteCanonicals.iterator, rnd)
       override def shrink(n: Byte, rnd: Randomizer): (Iterator[Byte], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Byte, acc: List[Byte]): List[Byte] = {
@@ -209,6 +219,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
+      private val shortCanonicals: List[Short] = List(0, 1, -1, 2, -2, 3, -3)
+      override def canonicals(rnd: Randomizer): (Iterator[Short], Randomizer) = (shortCanonicals.iterator, rnd)
       override def shrink(n: Short, rnd: Randomizer): (Iterator[Short], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Short, acc: List[Short]): List[Short] = {
@@ -242,6 +254,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (c, Nil, nextRnd)
         }
       }
+      override def canonicals(rnd: Randomizer): (Iterator[Char], Randomizer) = {
+        val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
+        val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val numericChars = "0123456789"
+        val (lowerCharIndex, rnd1) = rnd.chooseInt(0, lowerAlphaChars.length - 1)
+        val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
+        val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
+        val lowerChar = lowerAlphaChars(lowerCharIndex)
+        val upperChar = upperAlphaChars(upperCharIndex)
+        val numericChar = numericChars(numericCharIndex)
+        (Iterator(lowerChar, upperChar, numericChar), rnd3)
+      }
       override def shrink(c: Char, rnd: Randomizer): (Iterator[Char], Randomizer) = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         if (userFriendlyChars.indexOf(c) >= 0) (Iterator.empty, rnd)
@@ -269,6 +293,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[Int]"
+      private val intCanonicals = List(0, 1, -1, 2, -2, 3, -3)
+      override def canonicals(rnd: Randomizer): (Iterator[Int], Randomizer) = (intCanonicals.iterator, rnd)
       override def shrink(i: Int, rnd: Randomizer): (Iterator[Int], Randomizer) = {
         @tailrec
         def shrinkLoop(i: Int, acc: List[Int]): List[Int] = {
@@ -301,6 +327,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (n, Nil, nextRnd)
         }
       }
+      private val longCanonicals: List[Long] = List(0, 1, -1, 2, -2, 3, -3)
+      override def canonicals(rnd: Randomizer): (Iterator[Long], Randomizer) = (longCanonicals.iterator, rnd)
       override def shrink(n: Long, rnd: Randomizer): (Iterator[Long], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Long, acc: List[Long]): List[Long] = {
@@ -333,6 +361,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (f, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[Float] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
+      override def canonicals(rnd: Randomizer): (Iterator[Float], Randomizer) = (floatCanonicals.iterator, rnd)
       override def shrink(f: Float, rnd: Randomizer): (Iterator[Float], Randomizer) = {
         @tailrec
         def shrinkLoop(f: Float, acc: List[Float]): List[Float] = {
@@ -376,6 +406,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (d, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[Double] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
+      override def canonicals(rnd: Randomizer): (Iterator[Double], Randomizer) = (doubleCanonicals.iterator, rnd)
       override def shrink(d: Double, rnd: Randomizer): (Iterator[Double], Randomizer) = {
         @tailrec
         def shrinkLoop(d: Double, acc: List[Double]): List[Double] = {
