@@ -28,6 +28,12 @@ trait PropCheckerAsserting[T] {
     */
   type Result
 
+  def succeed(result: T): (Boolean, Option[Throwable])
+
+  private[scalatest] def indicateSuccess(message: => String): Result
+
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
+
   /**
     * Perform the property check using the given <code>Prop</code> and <code>Test.Parameters</code>.
     *
@@ -123,6 +129,7 @@ abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting 
   implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
     new PropCheckerAssertingImpl[Expectation] {
       type Result = Expectation
+      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
       private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
         val gdpcfe =
@@ -148,6 +155,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
     new PropCheckerAssertingImpl[Assertion] {
       type Result = Assertion
+      def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         throw new GeneratorDrivenPropertyCheckFailedException(
