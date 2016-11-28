@@ -52,7 +52,7 @@ trait TestDataFixture { this: fixture.TestSuite =>
   type FixtureParam = TestData
 
   /**
-   * Invoke the test function, passing to the the test function 
+   * Invoke the test function, passing to the test function 
    * the <code>TestData</code> for the test.
    *
    * <p>

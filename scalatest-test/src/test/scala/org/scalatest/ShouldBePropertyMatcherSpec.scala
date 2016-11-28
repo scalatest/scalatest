@@ -152,7 +152,7 @@ class ShouldBePropertyMatcherSpec extends FunSpec with Checkers with ReturnsNorm
       assert(caught9.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead")
     }
 
-    it("should do nothing if the the property returns true, when used in a logical-and expression") {
+    it("should do nothing if the property returns true, when used in a logical-and expression") {
 
       myFile should ((be (file)) and (be (file)))
       myFile should (be (file) and (be (file)))

@@ -35,7 +35,7 @@ import exceptions.StackDepthException
  * </p>
  *
  * <p>
- * 1. Invoking <code>isReadyWithin</code>, to assert that a future is ready within a a specified time period.
+ * 1. Invoking <code>isReadyWithin</code>, to assert that a future is ready within a specified time period.
  * Here's an example:
  * </p>
  * 
