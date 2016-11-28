@@ -18,6 +18,7 @@ package org.scalatest.prop
 import org.scalatest.prop.Configuration.Parameter
 import org.scalatest.{FailureMessages, UnquotedString, _}
 import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.enablers.PropCheckerAsserting
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
@@ -28,7 +29,7 @@ trait PropertyTest {
 
   def check: PropertyTest.Result
 
-  def succeed(v: RESULT): Boolean
+  def succeed(v: RESULT): (Boolean, Option[Throwable])
 
   def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
@@ -49,7 +50,8 @@ trait PropertyTest {
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
@@ -57,7 +59,7 @@ trait PropertyTest {
               PropertyTest.CheckSuccess(argsPassed)
           }
           else
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -124,7 +126,8 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
@@ -132,7 +135,7 @@ I'd then just feed the edges through along with the randomizer.
               PropertyTest.CheckSuccess(argsPassed)
           }
           else
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -198,7 +201,8 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
@@ -206,7 +210,7 @@ I'd then just feed the edges through along with the randomizer.
               PropertyTest.CheckSuccess(argsPassed)
           }
           else
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -276,7 +280,8 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
@@ -284,7 +289,7 @@ I'd then just feed the edges through along with the randomizer.
               PropertyTest.CheckSuccess(argsPassed)
           }
           else
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -358,7 +363,8 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
@@ -366,7 +372,7 @@ I'd then just feed the edges through along with the randomizer.
               PropertyTest.CheckSuccess(argsPassed)
           }
           else
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -444,7 +450,8 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          if (succeed(r)) {
+          val (success, cause) = succeed(r)
+          if (success) {
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
               loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
@@ -452,7 +459,7 @@ I'd then just feed the edges through along with the randomizer.
               PropertyTest.CheckSuccess(argsPassed)
           }
           else {
-            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
           }
 
         case Failure(ex: DiscardedEvaluationException) =>
@@ -507,11 +514,11 @@ object PropertyTest {
   def forAll1[A, ASSERTION](names: List[String], config: Parameter)(fun: (A) => ASSERTION)
                                    (implicit
                                     genA: org.scalatest.prop.Generator[A],
-                                    resultChecker: PropertyTestResultHandler[ASSERTION]
+                                    asserting: PropCheckerAsserting[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA)(fun)
     }
 
@@ -519,11 +526,11 @@ object PropertyTest {
                                    (implicit
                                      genA: org.scalatest.prop.Generator[A],
                                      genB: org.scalatest.prop.Generator[B],
-                                     resultChecker: PropertyTestResultHandler[ASSERTION]
+                                     asserting: PropCheckerAsserting[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB)(fun)
     }
 
@@ -532,11 +539,11 @@ object PropertyTest {
                                      genA: org.scalatest.prop.Generator[A],
                                      genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C],
-                                     resultChecker: PropertyTestResultHandler[ASSERTION]
+                                     asserting: PropCheckerAsserting[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC)(fun)
     }
 
@@ -546,11 +553,11 @@ object PropertyTest {
                                         genB: org.scalatest.prop.Generator[B],
                                         genC: org.scalatest.prop.Generator[C],
                                         genD: org.scalatest.prop.Generator[D],
-                                        resultChecker: PropertyTestResultHandler[ASSERTION]
+                                        asserting: PropCheckerAsserting[ASSERTION]
                                       ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD)(fun)
     }
 
@@ -561,11 +568,11 @@ object PropertyTest {
                                            genC: org.scalatest.prop.Generator[C],
                                            genD: org.scalatest.prop.Generator[D],
                                            genE: org.scalatest.prop.Generator[E],
-                                           resultChecker: PropertyTestResultHandler[ASSERTION]
+                                           asserting: PropCheckerAsserting[ASSERTION]
                                          ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE)(fun)
     }
 
@@ -577,11 +584,11 @@ object PropertyTest {
                                                    genD: org.scalatest.prop.Generator[D],
                                                    genE: org.scalatest.prop.Generator[E],
                                                    genF: org.scalatest.prop.Generator[F],
-                                                   resultChecker: PropertyTestResultHandler[ASSERTION]
+                                                   asserting: PropCheckerAsserting[ASSERTION]
                                                   ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
-      def succeed(v: RESULT): Boolean = resultChecker.succeed(v)
+      def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE, genF)(fun)
     }
 

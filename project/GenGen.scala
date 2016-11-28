@@ -567,8 +567,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genA: org.scalatest.prop.Generator[A],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll1(List.empty, param)(fun)
@@ -600,8 +599,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genB: org.scalatest.prop.Generator[B],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll2(List.empty, param)(fun)
@@ -634,8 +632,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genC: org.scalatest.prop.Generator[C],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll3(List.empty, param)(fun)
@@ -669,8 +666,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genD: org.scalatest.prop.Generator[D],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll4(List.empty, param)(fun)
@@ -705,8 +701,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genE: org.scalatest.prop.Generator[E],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll5(List.empty, param)(fun)
@@ -742,8 +737,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         genF: org.scalatest.prop.Generator[F],
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        pos: source.Position,
-        resultChecker: PropertyTestResultHandler[ASSERTION]
+        pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll6(List.empty, param)(fun)
@@ -763,23 +757,21 @@ val propertyCheckForAllTemplate = """
     $gens$,
     prettifier: Prettifier,
     pos: source.Position,
-    resultChecker: PropertyTestResultHandler[ASSERTION]
-  ): ASSERTION =
-    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
+    asserting: PropCheckerAsserting[ASSERTION]
+  ): asserting.Result =
+    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => "too many discarded evaluations",
-          None,
-          Left(pos),
-          prettifier,
-          None,
           "too many discarded evaluations",
           argsPassed,
-          Some(names)
+          names,
+          None,
+          pos
         )
 
       case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
           ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -795,17 +787,15 @@ val propertyCheckForAllTemplate = """
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
           "", // getLabelDisplay(names),
-          ex,
-          Left(pos),
-          prettifier,
-          None,
           FailureMessages.propertyFailed(prettifier, succeeded),
           argsPassed,
-          Some(names)
+          names,
+          ex,
+          pos
         )
 
       case PropertyTest.CheckSuccess(args) =>
-        resultChecker.indicateSuccess
+        asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
@@ -814,23 +804,21 @@ val propertyCheckForAllTemplate = """
 $gens$,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION =
-      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
         case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => "too many discarded evaluations",
-            None,
-            Left(pos),
-            prettifier,
-            None,
             "too many discarded evaluations",
             argsPassed,
-            Some(names)
+            names,
+            None,
+            pos
           )
 
         case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
             ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
             "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -846,17 +834,15 @@ $gens$,
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +
             "", // getLabelDisplay(names),
-            ex,
-            Left(pos),
-            prettifier,
-            None,
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
-            Some(names)
+            names,
+            ex,
+            pos
           )
 
         case PropertyTest.CheckSuccess(args) =>
-          resultChecker.indicateSuccess
+          asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
       }
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
@@ -865,23 +851,21 @@ $gens$,
 $gens$,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION =
-      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
         case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => "too many discarded evaluations",
-            None,
-            Left(pos),
-            prettifier,
-            None,
             "too many discarded evaluations",
             argsPassed,
-            Some(names)
+            names,
+            None,
+            pos
           )
 
         case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
             ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
             "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -897,16 +881,14 @@ $gens$,
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +
             "", // getLabelDisplay(names),
-            ex,
-            Left(pos),
-            prettifier,
-            None,
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
-            Some(names)
+            names,
+            ex,
+            pos
           )
 
-        case PropertyTest.CheckSuccess(args) => resultChecker.indicateSuccess
+        case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
       }
 
   def forAll[$alphaUpper$, ASSERTION]($gens$)(fun: ($alphaUpper$) => ASSERTION)
@@ -914,23 +896,21 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION =
-    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => "too many discarded evaluations",
-          None,
-          Left(pos),
-          prettifier,
-          None,
           "too many discarded evaluations",
           argsPassed,
-          Some(names)
+          names,
+          None,
+          pos
         )
 
       case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
           ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -946,16 +926,14 @@ $gens$,
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
           "", // getLabelDisplay(names),
-          ex,
-          Left(pos),
-          prettifier,
-          None,
           FailureMessages.propertyFailed(prettifier, succeeded),
           argsPassed,
-          Some(names)
+          names,
+          ex,
+          pos
         )
 
-      case PropertyTest.CheckSuccess(args) => resultChecker.indicateSuccess
+      case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
   def forAll[$alphaUpper$, ASSERTION]($gens$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
@@ -963,24 +941,22 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION =
-    (PropertyTest.forAll$n$(List.empty, getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+    (PropertyTest.forAll$n$(List.empty, getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => "too many discarded evaluations",
-          None,
-          Left(pos),
-          prettifier,
-          None,
           "too many discarded evaluations",
           argsPassed,
-          Some(names)
+          names,
+          None,
+          pos
         )
         //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
 
       case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
           ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -996,15 +972,13 @@ $gens$,
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
           "", // getLabelDisplay(names),
-          ex,
-          Left(pos),
-          prettifier,
-          None,
           FailureMessages.propertyFailed(prettifier, succeeded),
           argsPassed,
-          Some(names)
+          names,
+          ex,
+          pos
         )
-      case PropertyTest.CheckSuccess(args) => resultChecker.indicateSuccess
+      case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
   def forAll[$alphaUpper$, ASSERTION]($gensAndNames$)(fun: ($alphaUpper$) => ASSERTION)
@@ -1012,24 +986,22 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION = {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result = {
     $tupleBusters$
-    (PropertyTest.forAll$n$(List($argNameNames$), getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
+    (PropertyTest.forAll$n$(List($argNameNames$), getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => "too many discarded evaluations",
-          None,
-          Left(pos),
-          prettifier,
-          None,
           "too many discarded evaluations",
           argsPassed,
-          Some(names)
+          names,
+          None,
+          pos
         )
 
       case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        resultChecker.indicateFailure(
+        asserting.indicateFailure(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
           ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -1045,15 +1017,13 @@ $gens$,
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
           "", // getLabelDisplay(names),
-          ex,
-          Left(pos),
-          prettifier,
-          None,
           FailureMessages.propertyFailed(prettifier, succeeded),
           argsPassed,
-          Some(names)
+          names,
+          ex,
+          pos
         )
-      case PropertyTest.CheckSuccess(args) =>  resultChecker.indicateSuccess
+      case PropertyTest.CheckSuccess(args) =>  asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
   }
 
@@ -1062,25 +1032,23 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultHandler[ASSERTION]
-    ): ASSERTION = {
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result = {
       $tupleBusters$
-      (PropertyTest.forAll$n$(List($argNameNames$), getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {
+      (PropertyTest.forAll$n$(List($argNameNames$), getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
         case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => "too many discarded evaluations",
-            None,
-            Left(pos),
-            prettifier,
-            None,
             "too many discarded evaluations",
             argsPassed,
-            Some(names)
+            names,
+            None,
+            pos
           )
           //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
 
         case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          resultChecker.indicateFailure(
+          asserting.indicateFailure(
             (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
             ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
             "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
@@ -1096,15 +1064,13 @@ $gens$,
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +
             "", // getLabelDisplay(names),
-            ex,
-            Left(pos),
-            prettifier,
-            None,
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
-            Some(names)
+            names,
+            ex,
+            pos
           )
-        case PropertyTest.CheckSuccess(args) => resultChecker.indicateSuccess
+        case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
       }
     }
 
