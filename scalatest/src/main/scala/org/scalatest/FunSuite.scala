@@ -701,7 +701,7 @@ package org.scalatest
  *
  * <p>
  * The &ldquo;<code>f.</code>&rdquo; in front of each use of a fixture object provides a visual indication of which objects 
- * are part of the fixture, but if you prefer, you can import the the members with &ldquo;<code>import f._</code>&rdquo; and use the names directly.
+ * are part of the fixture, but if you prefer, you can import the members with &ldquo;<code>import f._</code>&rdquo; and use the names directly.
  * </p>
  *
  * <p>

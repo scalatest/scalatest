@@ -2434,7 +2434,7 @@ trait WebBrowser {
      * <p>
      * If the string element does not already exist in this sequence, this method returns itself. If the element
      * is contained in this sequence, this method returns a new <code>MultiSelOptionSeq</code> with the passed value
-     * removed from the the original <code>MultiSelOptionSeq</code>, leaving any other elements in the same order.
+     * removed from the original <code>MultiSelOptionSeq</code>, leaving any other elements in the same order.
      * </p>
      *
      * @param the string element to append to this sequence

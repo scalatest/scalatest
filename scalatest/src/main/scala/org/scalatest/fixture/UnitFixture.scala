@@ -37,7 +37,7 @@ trait UnitFixture { this: fixture.TestSuite =>
   type FixtureParam = Unit
 
   /**
-   * Invoke the test function, passing <code>()</code>, the unit value, to the the test function.
+   * Invoke the test function, passing <code>()</code>, the unit value, to the test function.
    *
    * <p>
    * To enable stacking of traits that define <code>withFixture(NoArgTest)</code>, this method does not

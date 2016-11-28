@@ -233,7 +233,7 @@ trait NoArg extends DelayedInit with (() => Unit) {
    * <p>
    * This trait is intended to be mixed
    * into classes that are constructed within the body (or as the body) of tests, not mixed into <code>Suite</code>s themselves. For an example,
-   * the the main Scaladoc comment for this trait.
+   * the main Scaladoc comment for this trait.
    * </p>
    */
   final val styleName: Int = 0 // So can't mix into Suite
