@@ -1113,9 +1113,9 @@ val generatorSuitePostamble = """
 
   val sevenEleven: Generator[String] =
     new Generator[String] {
-      def next(size: Int, rnd: Randomizer): (String, Randomizer) = {
+      def next(size: Int, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
         if (size >= 7 && size <= 11)
-          ("OKAY", rnd)
+          ("OKAY", edges, rnd)
         else
           throw new Exception("expected 7 <= size <= 11 but got " + size)
       }
@@ -1124,9 +1124,9 @@ val generatorSuitePostamble = """
 
   val fiveFive: Generator[String] =
     new Generator[String] {
-      def next(size: Int, rnd: Randomizer): (String, Randomizer) = {
+      def next(size: Int, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
         if (size == 5)
-          ("OKAY", rnd)
+          ("OKAY", edges, rnd)
         else
           throw new Exception("expected size 5 but got " + size)
       }
