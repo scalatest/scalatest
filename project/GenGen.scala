@@ -790,6 +790,7 @@ val propertyCheckForAllTemplate = """
             case _ => ""
           }
           ) +
+          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
           "  " + FailureMessages.occurredOnValues + "\n" +
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
@@ -840,6 +841,7 @@ $gens$,
               case _ => ""
             }
             ) +
+            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
             "  " + FailureMessages.occurredOnValues + "\n" +
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +
@@ -890,6 +892,7 @@ $gens$,
               case _ => ""
             }
             ) +
+            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
             "  " + FailureMessages.occurredOnValues + "\n" +
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +
@@ -938,6 +941,7 @@ $gens$,
             case _ => ""
           }
           ) +
+          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
           "  " + FailureMessages.occurredOnValues + "\n" +
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
@@ -987,6 +991,7 @@ $gens$,
             case _ => ""
           }
           ) +
+          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
           "  " + FailureMessages.occurredOnValues + "\n" +
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
@@ -1035,6 +1040,7 @@ $gens$,
             case _ => ""
           }
           ) +
+          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
           "  " + FailureMessages.occurredOnValues + "\n" +
           prettyArgs(argsPassed, prettifier) + "\n" +
           "  )" +
@@ -1085,6 +1091,7 @@ $gens$,
               case _ => ""
             }
             ) +
+            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
             "  " + FailureMessages.occurredOnValues + "\n" +
             prettyArgs(argsPassed, prettifier) + "\n" +
             "  )" +

@@ -638,24 +638,6 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should (have length 1 or have length 2)
         edges should contain (min)
         edges should contain (max)
-/* 
-        edges should contain allOf (min, max)
-[info] Tests: succeeded 33, failed 1, canceled 0, ignored 0, pending 0
-[info] *** 1 TEST FAILED ***
-[info] GeneratorSpec:
-[info] A Generator 
-[info] - should offer a chooseInt method that returns a generator whose initEdges method includes min and max *** FAILED *** (13 milliseconds)
-[info]   GeneratorDrivenPropertyCheckFailedException was thrown during property evaluation.
-[info]    (GeneratorSpec.scala:547)
-[info]     Falsified after 0 successful property evaluations.
-[info]     Location: (GeneratorSpec.scala:547)
-[info]     Occurred when passed generated values (
-[info]       arg0 = PropertyArgument(None,(-2147483648,-2147483648))
-[info]     )
-Chee Seng: This should just say arg0 = (-2147483648,-2147483648)
-And it should include the nexted exception. It took me a while to figure out that the exception was
-allOf complaining about duplicate values.
-*/
       }
     }
     it("mapping and flatMapping a Generator should compose the edges") {

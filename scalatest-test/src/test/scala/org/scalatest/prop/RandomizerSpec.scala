@@ -156,17 +156,6 @@ class RandomizerSpec extends FunSpec with Matchers {
       forAll { (xs: List[Int]) =>
         val (shuffled, nr) = Randomizer.shuffle(xs, nextRnd)
         nextRnd = nr
-/* shuffled should not equal xs
-[info] - should offer a shuffle method in its companion object that shuffles a list. *** FAILED *** (13 milliseconds)
-[info]   GeneratorDrivenPropertyCheckFailedException was thrown during property evaluation.
-[info]    (RandomizerSpec.scala:156)
-[info]     Falsified after 0 successful property evaluations.
-[info]     Location: (RandomizerSpec.scala:156)
-[info]     Occurred when passed generated values (
-[info]       arg0 = PropertyArgument(None,List())
-[info]     )
-Chee Seng: This should just say arg0 = List()
-*/
         shuffled should contain theSameElementsAs xs
       }
     }
