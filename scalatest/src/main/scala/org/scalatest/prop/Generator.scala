@@ -630,6 +630,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
             (s, Nil, nextRnd)
         }
       }
+      override def canonicals(rnd: Randomizer): (Iterator[String], Randomizer) = { 
+        val (canonicalsOfChar, rnd1) = charGenerator.canonicals(rnd)
+        (Iterator("") ++ canonicalsOfChar.map(t => s"$t"), rnd1)
+      }
       override def shrink(s: String, rnd: Randomizer): (Iterator[String], Randomizer) = {
 
         val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
@@ -1543,31 +1547,38 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
     }
-  implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = {
-    new Generator[(A, B)] { thisGeneratorOfT =>
-      private val underlying: Generator[(A, B)] = {
+  implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] =
+    new Generator2[A, B, (A, B)]((a: A, b: B) => (a, b), (c: (A, B)) => c._1, (c: (A, B)) => c._2)(genOfA, genOfB)
+
+  implicit def tuple3Generator[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = {
+    new Generator[(A, B, C)] { thisGeneratorOfT =>
+      private val underlying: Generator[(A, B, C)] = {
         for {
           a <- genOfA
           b <- genOfB
-        } yield (a, b)
+          c <- genOfC
+        } yield (a, b, c)
       }
-      def next(size: Int, edges: List[(A, B)], rnd: Randomizer): ((A, B), List[(A, B)], Randomizer) = underlying.next(size, edges, rnd)
-      override def initEdges(maxLength: Int, rnd: Randomizer): (List[(A, B)], Randomizer) = underlying.initEdges(maxLength, rnd)
-      override def map[U](f: ((A, B)) => U): Generator[U] = underlying.map(f)
-      override def flatMap[U](f: ((A, B)) => Generator[U]): Generator[U] = underlying.flatMap(f)
-      override def canonicals(rnd: Randomizer): (Iterator[(A, B)], Randomizer) = underlying.canonicals(rnd) 
-      override def shrink(value: (A, B), rnd: Randomizer): (Iterator[(A, B)], Randomizer) = {
-        val (aValue, bValue) = value
+      def next(size: Int, edges: List[(A, B, C)], rnd: Randomizer): ((A, B, C), List[(A, B, C)], Randomizer) = underlying.next(size, edges, rnd)
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[(A, B, C)], Randomizer) = underlying.initEdges(maxLength, rnd)
+      override def map[U](f: ((A, B, C)) => U): Generator[U] = underlying.map(f)
+      override def flatMap[U](f: ((A, B, C)) => Generator[U]): Generator[U] = underlying.flatMap(f)
+      override def canonicals(rnd: Randomizer): (Iterator[(A, B, C)], Randomizer) = underlying.canonicals(rnd) 
+      override def shrink(value: (A, B, C), rnd: Randomizer): (Iterator[(A, B, C)], Randomizer) = {
+        val (aValue, bValue, cValue) = value
         val (itOfA, rnd1) = genOfA.shrink(aValue, rnd)
         val (itOfB, rnd2) = genOfB.shrink(bValue, rnd1)
+        val (itOfC, rnd3) = genOfC.shrink(cValue, rnd2)
         val streamOfA: Stream[A] = itOfA.toStream
         val streamOfB: Stream[B] = itOfB.toStream
-        val streamOfAB: Stream[(A, B)] =
+        val streamOfC: Stream[C] = itOfC.toStream
+        val streamOfABC: Stream[(A, B, C)] =
           for {
             a <- streamOfA
             b <- streamOfB
-          } yield (a, b)
-        (streamOfAB.iterator, rnd2)
+            c <- streamOfC
+          } yield (a, b, c)
+        (streamOfABC.iterator, rnd3)
       }
     }
   }

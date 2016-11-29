@@ -1059,6 +1059,26 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
         } yield (x, y)
       gen.shrink((8, 18), rnd2)._1.toList shouldEqual listTup
     }
+    it("should offer a String generator that offers cononicals based on Char canonicals") {
+      import Generator._
+      val gen = stringGenerator
+      val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
+      val canonicals = canonicalsIt.toList
+      canonicals(0) shouldBe empty
+      canonicals(1) should have length 1
+      canonicals(1).head should (be >= 'a' and be <= 'z')
+      canonicals(2) should have length 1
+      canonicals(2).head should (be >= 'A' and be <= 'Z')
+      canonicals(3) should have length 1
+      canonicals(3).head should (be >= '0' and be <= '9')
+    }
+    it("this should work") {
+      val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
+      case class Person(name: String, age: Int)
+      val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
+      val (it, _) = persons.shrink(Person("Harry Potter", 32), Randomizer.default())
+      it.toList should not be empty
+    }
   }
 }
 
