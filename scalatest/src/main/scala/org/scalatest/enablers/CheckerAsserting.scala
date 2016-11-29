@@ -47,6 +47,8 @@ trait CheckerAsserting[T] {
    */
   type Result
 
+  def succeed(result: T): (Boolean, Option[Throwable])
+
   /**
    * Perform the property check using the given <code>Prop</code> and <code>Test.Parameters</code>.
    *
@@ -176,6 +178,7 @@ abstract class UnitCheckerAsserting {
   implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } =
     new CheckerAssertingImpl[T] {
       type Result = Unit
+      def succeed(result: T) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Unit = ()
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Unit = {
         throw new GeneratorDrivenPropertyCheckFailedException(
@@ -201,6 +204,7 @@ abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
   implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): CheckerAsserting[Expectation] { type Result = Expectation } = {
     new CheckerAssertingImpl[Expectation] {
       type Result = Expectation
+      def succeed(result: Expectation) = (result.isYes, result.cause)
       private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
         val gdpcfe =
@@ -235,6 +239,7 @@ object CheckerAsserting extends ExpectationCheckerAsserting {
   implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
     new CheckerAssertingImpl[Assertion] {
       type Result = Assertion
+      def succeed(result: Assertion) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         throw new GeneratorDrivenPropertyCheckFailedException(
