@@ -1045,6 +1045,20 @@ info] Compiling 1 Scala source to /Users/bv/nobkp/delus/st-fly-to-nyc-1/scalates
       val listOfIntCanonicals = listOfIntCanonicalsIt.toList
       listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
     }
+    it("should offer a tuple2 generator") {
+      val gen = implicitly[Generator[(Int, Int)]]
+      val intGen = implicitly[Generator[Int]]
+      val (it8, rnd1) = intGen.shrink(8, Randomizer.default())
+      val (it18, rnd2)= intGen.shrink(18, rnd1)
+      val list8 = it8.toList
+      val list18 = it18.toList
+      val listTup =
+        for {
+          x <- list8
+          y <- list18
+        } yield (x, y)
+      gen.shrink((8, 18), rnd2)._1.toList shouldEqual listTup
+    }
   }
 }
 

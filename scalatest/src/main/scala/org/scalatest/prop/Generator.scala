@@ -29,7 +29,7 @@ trait Generator[T] { thisGeneratorOfT =>
     new Generator[U] { thisGeneratorOfU => 
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[U], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
-        (listOfT.map(f), rnd)
+        (listOfT.map(f), nextRnd)
       }
       def next(size: Int, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
@@ -42,8 +42,8 @@ trait Generator[T] { thisGeneratorOfT =>
         }
       }
       override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = { 
-        val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
-        (cansOfT.map(f), rnd1)
+        val (cansOfT, nextRnd) = thisGeneratorOfT.canonicals(rnd)
+        (cansOfT.map(f), nextRnd)
       }
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
@@ -1543,5 +1543,34 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
     }
+  implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = {
+    new Generator[(A, B)] { thisGeneratorOfT =>
+      private val underlying: Generator[(A, B)] = {
+        for {
+          a <- genOfA
+          b <- genOfB
+        } yield (a, b)
+      }
+      def next(size: Int, edges: List[(A, B)], rnd: Randomizer): ((A, B), List[(A, B)], Randomizer) = underlying.next(size, edges, rnd)
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[(A, B)], Randomizer) = underlying.initEdges(maxLength, rnd)
+      override def map[U](f: ((A, B)) => U): Generator[U] = underlying.map(f)
+      override def flatMap[U](f: ((A, B)) => Generator[U]): Generator[U] = underlying.flatMap(f)
+      override def canonicals(rnd: Randomizer): (Iterator[(A, B)], Randomizer) = underlying.canonicals(rnd) 
+      override def shrink(value: (A, B), rnd: Randomizer): (Iterator[(A, B)], Randomizer) = {
+        val (aValue, bValue) = value
+        val (itOfA, rnd1) = genOfA.shrink(aValue, rnd)
+        val (itOfB, rnd2) = genOfB.shrink(bValue, rnd1)
+        val streamOfA: Stream[A] = itOfA.toStream
+        val streamOfB: Stream[B] = itOfB.toStream
+        val streamOfAB: Stream[(A, B)] =
+          for {
+            a <- streamOfA
+            b <- streamOfB
+          } yield (a, b)
+        (streamOfAB.iterator, rnd2)
+      }
+    }
+  }
 }
+
 
