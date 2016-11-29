@@ -2466,7 +2466,7 @@ $okayExpressions$
       if (doItForCheckers)
         "Checkers"
       else {
-        if (withTables) "PropertyChecks" else "ScalaCheckDrivenPropertyChecks"
+        if (withTables) "ScalaCheckPropertyChecks" else "ScalaCheckDrivenPropertyChecks"
       }
     val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite"
     val fileName = suiteClassName + ".scala"
@@ -2572,9 +2572,9 @@ $okayExpressions$
     genGeneratorDrivenSuite(dir, false, false, false)
 
     // TODO: Re-enable these
-    //genGeneratorDrivenSuite(dir, true, true, false)
-    //genGeneratorDrivenSuite(dir, false, true, false)
-    //genGeneratorDrivenSuite(dir, true, true, true)
-    //genGeneratorDrivenSuite(dir, false, true, true)
+    genGeneratorDrivenSuite(dir, true, true, false)
+    genGeneratorDrivenSuite(dir, false, true, false)
+    genGeneratorDrivenSuite(dir, true, true, true)
+    genGeneratorDrivenSuite(dir, false, true, true)
   }
 }
