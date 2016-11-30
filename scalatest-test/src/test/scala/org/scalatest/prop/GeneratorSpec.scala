@@ -87,6 +87,9 @@ class GeneratorSpec extends FunSpec with Matchers {
       tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
+    it("should offer a filter method") {
+      """for ((a, b) <- tuple2s[String, Int]) yield (b, a)""" should compile
+    }
     it("should mix up both i and d when used in a for expression") {
       import Generator._
       def pairGen(): Generator[(Int, Double)] =

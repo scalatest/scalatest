@@ -93,6 +93,21 @@ trait Generator[T] { thisGeneratorOfT =>
       }
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
+  def withFilter(f: T => Boolean): Generator[T] = filter(f)
+  def filter(f: T => Boolean): Generator[T] =
+    new Generator[T] { thisFilteredGeneratorOfT =>
+      def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        @tailrec
+        def loop(nextEdges: List[T], nextRnd: Randomizer): (T, List[T], Randomizer) = {
+          val candidateResult = thisGeneratorOfT.next(size, nextEdges, nextRnd)
+          val (nextT, nextNextEdges, nextNextRnd) = candidateResult
+          if (!f(nextT)) loop(nextNextEdges, nextNextRnd)
+          else candidateResult
+        }
+        loop(edges, rnd)
+      }
+    }
   def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def sample: T = {
