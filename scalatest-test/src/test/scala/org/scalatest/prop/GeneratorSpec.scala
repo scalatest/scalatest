@@ -1040,46 +1040,6 @@ class GeneratorSpec extends FunSpec with Matchers {
         it.toList should not be empty
       }
     }
-
-    // Maybe in prop.intsBetween a la forAll (intsBetween(0, 10)) { ... }
-    it("should offer a chooseInt method the produces Ints between min and max") {
-
-      import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-
-      val minMaxPairs: Generator[(Int, Int)] = 
-        for {
-          min <- Generator.chooseInt(Int.MinValue, Int.MaxValue - 1)
-          max <- Generator.chooseInt(min, Int.MaxValue)
-        } yield (min, max)
-
-      forAll (minMaxPairs) { case (min, max) =>
-        val minMaxGen: Generator[Int] = Generator.chooseInt(min, max) 
-        val samples = minMaxGen.samples(10)
-        import org.scalatest.Inspectors._
-        forAll (samples) { i =>
-          i should be >= min
-          i should be <= max
-        }
-      }
-    }
-    it("should offer a chooseInt method that returns a generator whose initEdges method includes min and max") {
-
-      import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-
-      val minMaxPairs: Generator[(Int, Int)] = 
-        for {
-          min <- Generator.chooseInt(Int.MinValue, Int.MaxValue - 1)
-          max <- Generator.chooseInt(min, Int.MaxValue)
-        } yield (min, max)
-
-      forAll (minMaxPairs) { case (min, max) =>
-        val minMaxGen: Generator[Int] = Generator.chooseInt(min, max) 
-        val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
-        edges should (have length 1 or have length 2)
-        edges should contain (min)
-        edges should contain (max)
-      }
-    }
   }
 }
 
