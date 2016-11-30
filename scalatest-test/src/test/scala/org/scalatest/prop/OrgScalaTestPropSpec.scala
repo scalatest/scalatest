@@ -77,6 +77,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
       "requires at least two values be passed to it" in {
         """values()""" shouldNot compile
         """values(1)""" shouldNot compile
+        """values(1, 2)""" should compile
       }
     }
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         
