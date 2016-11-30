@@ -74,6 +74,10 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           x should (be ("nice") or be ("warm") or be ("fireplace"))
         }
       }
+      "requires at least two values be passed to it" in {
+        """values()""" shouldNot compile
+        """values(1)""" shouldNot compile
+      }
     }
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         
       @tailrec                                       

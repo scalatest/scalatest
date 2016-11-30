@@ -38,8 +38,9 @@ package object prop {
       }
     }
 
-  def values[T](seq: T*): Generator[T] =
+  def values[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
+      private val seq: Seq[T] = first +: second +: rest
       def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
@@ -83,51 +84,14 @@ package object prop {
   val posDoubleValues: Generator[Double] = Generator.posDoubleGenerator.map(_.value)
   val posZDoubleValues: Generator[Double] = Generator.posZDoubleGenerator.map(_.value)
 
-
-  // If I give them a method that offers (A, B) => C. C => A, and C => B functions, then
-  // they can get composed shrinkers. And that's the general one:
-  //
-  // trait Generator2[A, B, C](abc: (A, B) => C, ca: C => A, cb: C => B)(genOfA: Generator[A], genOfB: Generator[B]) extends Generator[C] {
-  // }
   def gen[A, B, C](make: (A, B) => C)(unmake: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new Generator2[A, B, C](make, unmake)(genOfA, genOfB)
-    // val tupGen: Generator[(A, B)] = Generator.tuple2Generator[A, B]
-    // for (tup <- tupGen) yield make(tup._1, tup._2)
-
-  // gen(
-  //   (name: String, age: Int) => Person(name, age), 
-  //   (p: Person) => p.name,
-  //   (p: Person) => p.age
-  // )  // This one takes the implicits at the back. I'd do overloading again as is my wont.
-
-  // gen { (name: String, age: Int) => Person(name, age), }  // This one also takes the implicits at the back. I'd do overloading again as is my wont. It uses canonicals in the shrink/grow method.
- // I wonder if I could just leave this off. They can get this with a for expression.
-
-  // gen(nonEmptyStringValues, posZIntValues)(
-  //   (name: String, age: Int) => Person(name, age), 
-  //   (p: Person) => p.name,
-  //   (p: Person) => p.age
-  // )
-  // Here I couldn't overload. Hmm.
 
   /*
-    ints
-    chars
-    longs
-    bytes
-    shorts
-    floats
-    doubles
-    booleans
-    posZInts
-    posZIntValues
-    nonEmptyStrings
-    nonEmptyStringValues
-    and so on...
-
-    mabye shrink can be growTo(target: T
+    maybe shrink can be growTo(target: T
     grower(value: T, ...)
     grow(value: T, ...)
+    or simplify(value: T, ...)
   */
 }
 
