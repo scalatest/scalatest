@@ -36,6 +36,21 @@ package object prop {
       }
     }
 
+  def values[T](seq: T*): Generator[T] =
+    new Generator[T] {
+      def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRandomizer) = rnd.chooseInt(0, seq.length - 1)
+            val nextT = seq(nextInt)
+            (nextT, Nil, nextRandomizer)
+        }
+      }
+    }
+
   // If I give them a method that offers (A, B) => C. C => A, and C => B functions, then
   // they can get composed shrinkers. And that's the general one:
   //

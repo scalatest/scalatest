@@ -63,6 +63,17 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         }
       }
     }
+    "offer a values method" that {
+      "returns a generator that produces from a given set of objects for any type T" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val values123 = org.scalatest.prop.values(1, 2, 3)
+        // forAll (values123) { x => x should be oneOf (1, 2, 3) }
+        forAll (values123) { x => x should (be (1) or be (2) or be (3)) }
+        forAll (values("nice", "warm", "fireplace")) { x =>
+          x should (be ("nice") or be ("warm") or be ("fireplace"))
+        }
+      }
+    }
   }
 }
 
