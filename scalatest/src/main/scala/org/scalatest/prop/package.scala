@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.anyvals._
+
 package object prop {
 
   def intsBetween(from: Int, to: Int): Generator[Int] =
@@ -60,6 +62,14 @@ package object prop {
   val doubles: Generator[Double] = Generator.doubleGenerator
   val strings: Generator[String] = Generator.stringGenerator
   def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] = Generator.listGenerator[T]
+  val posInts: Generator[PosInt] = Generator.posIntGenerator
+  val posZInts: Generator[PosZInt] = Generator.posZIntGenerator
+  val posLongs: Generator[PosLong] = Generator.posLongGenerator
+  val posZLongs: Generator[PosZLong] = Generator.posZLongGenerator
+  val posFloats: Generator[PosFloat] = Generator.posFloatGenerator
+  val posZFloats: Generator[PosZFloat] = Generator.posZFloatGenerator
+  val posDoubles: Generator[PosDouble] = Generator.posDoubleGenerator
+  val posZDoubles: Generator[PosZDouble] = Generator.posZDoubleGenerator
 
   // If I give them a method that offers (A, B) => C. C => A, and C => B functions, then
   // they can get composed shrinkers. And that's the general one:
