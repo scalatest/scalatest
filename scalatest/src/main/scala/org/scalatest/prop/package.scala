@@ -62,6 +62,8 @@ package object prop {
   val doubles: Generator[Double] = Generator.doubleGenerator
   val strings: Generator[String] = Generator.stringGenerator
   def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] = Generator.listGenerator[T]
+  def tuple2s[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
+  def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
 
   val posInts: Generator[PosInt] = Generator.posIntGenerator
   val posZInts: Generator[PosZInt] = Generator.posZIntGenerator
@@ -80,6 +82,7 @@ package object prop {
   val posZFloatValues: Generator[Float] = Generator.posZFloatGenerator.map(_.value)
   val posDoubleValues: Generator[Double] = Generator.posDoubleGenerator.map(_.value)
   val posZDoubleValues: Generator[Double] = Generator.posZDoubleGenerator.map(_.value)
+
 
   // If I give them a method that offers (A, B) => C. C => A, and C => B functions, then
   // they can get composed shrinkers. And that's the general one:
