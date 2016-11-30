@@ -51,6 +51,16 @@ package object prop {
       }
     }
 
+  val bytes: Generator[Byte] = Generator.byteGenerator
+  val shorts: Generator[Short] = Generator.shortGenerator
+  val ints: Generator[Int] = Generator.intGenerator
+  val longs: Generator[Long] = Generator.longGenerator
+  val chars: Generator[Char] = Generator.charGenerator
+  val floats: Generator[Float] = Generator.floatGenerator
+  val doubles: Generator[Double] = Generator.doubleGenerator
+  val strings: Generator[String] = Generator.stringGenerator
+  def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] = Generator.listGenerator[T]
+
   // If I give them a method that offers (A, B) => C. C => A, and C => B functions, then
   // they can get composed shrinkers. And that's the general one:
   //
