@@ -66,10 +66,10 @@ package object prop {
   //
   // trait Generator2[A, B, C](abc: (A, B) => C, ca: C => A, cb: C => B)(genOfA: Generator[A], genOfB: Generator[B]) extends Generator[C] {
   // }
-  def gen[A, B, C](f: (A, B) => C)(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] = {
-    val tupGen: Generator[(A, B)] = Generator.tuple2Generator[A, B]
-    for (tup <- tupGen) yield f(tup._1, tup._2)
-  }
+  def gen[A, B, C](make: (A, B) => C)(unmake: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
+    new Generator2[A, B, C](make, unmake)(genOfA, genOfB)
+    // val tupGen: Generator[(A, B)] = Generator.tuple2Generator[A, B]
+    // for (tup <- tupGen) yield make(tup._1, tup._2)
 
   // gen(
   //   (name: String, age: Int) => Person(name, age), 

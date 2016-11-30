@@ -17,8 +17,7 @@ package org.scalatest.prop
 
 private[prop] class Generator2[A, B, C](
   abc: (A, B) => C,
-  ca: C => A,
-  cb: C => B
+  cab: C => (A, B)
 )(
   genOfA: Generator[A],
   genOfB: Generator[B]
@@ -37,8 +36,7 @@ private[prop] class Generator2[A, B, C](
   override def flatMap[U](f: (C) => Generator[U]): Generator[U] = underlying.flatMap(f)
   override def canonicals(rnd: Randomizer): (Iterator[C], Randomizer) = underlying.canonicals(rnd) 
   override def shrink(cValue: C, rnd: Randomizer): (Iterator[C], Randomizer) = {
-    val aValue = ca(cValue)
-    val bValue = cb(cValue)
+    val (aValue, bValue) = cab(cValue)
     val (itOfA, rnd1) = genOfA.shrink(aValue, rnd)
     val (itOfB, rnd2) = genOfB.shrink(bValue, rnd1)
     val streamOfA: Stream[A] = itOfA.toStream
