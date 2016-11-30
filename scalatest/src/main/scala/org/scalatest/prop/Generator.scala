@@ -96,16 +96,19 @@ trait Generator[T] { thisGeneratorOfT =>
   def withFilter(f: T => Boolean): Generator[T] = filter(f)
   def filter(f: T => Boolean): Generator[T] =
     new Generator[T] { thisFilteredGeneratorOfT =>
+      private final val MaxLoopCount: Int = 100000
       def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         @tailrec
-        def loop(nextEdges: List[T], nextRnd: Randomizer): (T, List[T], Randomizer) = {
+        def loop(count: Int, nextEdges: List[T], nextRnd: Randomizer): (T, List[T], Randomizer) = {
+          if (count > MaxLoopCount)
+            throw new IllegalStateException(s"A Generator produced by calling filter or withFilter on another Generator (possibly by using an 'if' clause in a for expression) has filtered out $MaxLoopCount objects in a row in its next method, so aborting. Please define the Generator without using filter or withFilter.")
           val candidateResult = thisGeneratorOfT.next(size, nextEdges, nextRnd)
           val (nextT, nextNextEdges, nextNextRnd) = candidateResult
-          if (!f(nextT)) loop(nextNextEdges, nextNextRnd)
+          if (!f(nextT)) loop(count + 1, nextNextEdges, nextNextRnd)
           else candidateResult
         }
-        loop(edges, rnd)
+        loop(0, edges, rnd)
       }
     }
   def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)

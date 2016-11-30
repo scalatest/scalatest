@@ -87,8 +87,22 @@ class GeneratorSpec extends FunSpec with Matchers {
       tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
-    it("should offer a filter method") {
+    it("should offer a filter method so that pattern matching can be used in for expressions with Generator generators") {
       """for ((a, b) <- tuple2s[String, Int]) yield (b, a)""" should compile
+      case class Person(name: String, age: Int)
+      val persons = gen(Person) { p => (p.name, p.age) }
+      """for (Person(a, b) <- persons) yield (b, a)""" should compile
+
+    }
+    it("should offer a filter method that throws an exception if too many objects are filtered out") {
+      val doNotDoThisAtHome = ints.filter(i => i == 0) // Only keep zero
+      a [IllegalStateException] should be thrownBy {
+        doNotDoThisAtHome.next(100, Nil, Randomizer.default())
+      }
+      val okToDoThisAtHome = ints.filter(i => i != 0) // Only keep non-zeros
+      noException should be thrownBy {
+        okToDoThisAtHome.next(100, Nil, Randomizer.default())
+      }
     }
     it("should mix up both i and d when used in a for expression") {
       import Generator._
@@ -248,8 +262,6 @@ class GeneratorSpec extends FunSpec with Matchers {
       val scalaTestShrinkList = scalaTestShrinkIt.toList
       scalaTestShrinkList shouldEqual scalaCheckShrinkList.reverse
     }
-
-
 
     describe("for Bytes") {
       it("should produce the same Byte values in the same order given the same Randomizer") {
