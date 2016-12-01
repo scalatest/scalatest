@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalactic.anyvals._
+import scala.annotation.tailrec
 
 package object prop {
 
@@ -34,6 +35,25 @@ package object prop {
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(from, to)
             (nextInt, Nil, nextRandomizer)
+        }
+      }
+    }
+
+  def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
+    new Generator[PosInt] { thisIntGenerator =>
+      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosInt], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosInt, nextRandomizer) = rnd.choosePosInt(from, to)
+            (nextPosInt, Nil, nextRandomizer)
         }
       }
     }
@@ -87,6 +107,29 @@ package object prop {
   def gen[A, B, C](make: (A, B) => C)(unmake: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new Generator2[A, B, C](make, unmake)(genOfA, genOfB)
 
+  // classify will need to use the same sizing algo as forAll, and same edges approach
+  def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
+
+    val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default())
+    @tailrec
+    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, Int]): Map[String, Int] = {
+      if (currentCount >= count) acc
+      else {
+        val (nextA, nextEdges, nextRnd) = genOfA.next(100, edges, rnd)
+        if (pf.isDefinedAt(nextA)) {
+          val category = pf(nextA)
+          val prevTotal = acc.getOrElse(category, 0)
+          val nextAcc = acc + (category -> (prevTotal + 1))
+          loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
+        }
+        else {
+          loop(currentCount + 1, nextEdges, nextRnd, acc)
+        }
+      }
+    }
+    val theMap = loop(0, initEdges, rnd1, Map.empty)
+    Classification(count, theMap)
+  }
   /*
     maybe shrink can be growTo(target: T
     grower(value: T, ...)

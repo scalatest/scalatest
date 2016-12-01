@@ -151,7 +151,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
 
     if (from == to) {
-      (from, nextRandomizer)
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
     }
     else {
       val min = math.min(from, to)
@@ -166,6 +166,27 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       else {
         val nextBetween = (nextValue % (max - min + 1)) + min
         (nextBetween, nextRnd)
+      }
+    }
+  }
+
+  def choosePosInt(from: PosInt, to: PosInt): (PosInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // generate a positive Int
+      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
+
+      if (nextValue >= min && nextValue <= max)
+        (PosInt.from(nextValue).get, nextRnd) // Here should use unsafeFrom because proven above
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosInt.from(nextBetween).get, nextRnd) // And also here. Should be proven by the math that it is positive.
       }
     }
   }

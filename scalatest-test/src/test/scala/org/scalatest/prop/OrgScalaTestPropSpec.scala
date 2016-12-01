@@ -23,7 +23,6 @@ import scala.annotation.tailrec
 
 class OrgScalaTestPropSpec extends WordSpec with Matchers {
   "The org.scalatest.prop companion object" should {
-    // Maybe in prop.intsBetween a la forAll (intsBetween(0, 10)) { ... }
     "offer an intsBetween method" that {
       "produces Ints between min and max" in {
 
@@ -57,6 +56,47 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Int] = org.scalatest.prop.intsBetween(min, max) 
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should (have length 1 or have length 2)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+    }
+    "offer a posIntsBetween method" that {
+       val PosIntMaxValueMinusOne = PosInt(2147483646)
+      "produces PosInts between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosInt, PosInt)] = 
+          for {
+            min <- org.scalatest.prop.posIntsBetween(PosInt.MinValue, PosIntMaxValueMinusOne)
+            max <- org.scalatest.prop.posIntsBetween(min, PosInt.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosInt] = org.scalatest.prop.posIntsBetween(min, max) 
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosInt, PosInt)] = 
+          for {
+            min <- org.scalatest.prop.posIntsBetween(PosInt.MinValue, PosIntMaxValueMinusOne)
+            max <- org.scalatest.prop.posIntsBetween(min, PosInt.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosInt] = org.scalatest.prop.posIntsBetween(min, max) 
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should (have length 1 or have length 2)
           edges should contain (min)
@@ -469,6 +509,95 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a classify method" that {
+      "takes a partial function and returns an object containing a Map of String classifications to Int totals" in {
+        val classification: Classification =
+          classify(1000, ints) {
+            case 0 => "zero"
+            case i if i > 0 => "positive"
+            case _ => "negative"
+          }
+ 
+        val totals: Map[String, Int] = classification.totals
+        totals should have size 3
+        totals should (contain key "zero" and contain key "positive" and contain key "negative")
+      }
+      "allows users to leave some values unclassified" in {
+        val classification: Classification =
+          classify(1000, ints) {
+            case 0 => "zero"
+            case i if i > 0 => "positive"
+            // case _ => "negative" will leave negative ones unclassified
+          }
+ 
+        val totals: Map[String, Int] = classification.totals
+        totals should have size 2
+        totals should (contain key "zero" and contain key "positive")
+      }
+      "offer a method that gives back the total number of trials performed" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (posIntsBetween(100, 1000)) { (count: PosInt) =>
+          val fullClassification: Classification =
+            classify(count, ints) {
+              case 0 => "zero"
+              case i if i > 0 => "positive"
+              case _ => "negative"
+            }
+          fullClassification.totalGenerated shouldEqual count
+ 
+          val partialClassification: Classification =
+            classify(count, ints) {
+              case 0 => "zero"
+              case i if i > 0 => "positive"
+              // case _ => "negative" will leave negative ones unclassified
+            }
+          partialClassification.totalGenerated shouldEqual count
+        }
+      }
+      "offers a method returning a Map of String classification names to Double proportions (between 0.0 and 1.0)" in {
+        val classification: Classification =
+          classify(1000, ints) {
+            case 0 => "zero"
+            case i if i > 0 => "positive"
+            case _ => "negative"
+          }
+ 
+        val proportions: Map[String, Double] = classification.proportions
+        proportions should have size 3
+        proportions should (contain key "zero" and contain key "positive" and contain key "negative")
+        proportions.values.sum shouldEqual 1.0
+      }
+      "offers a method returning a Map of String classification names to Int percentages (between 0 and 100)" in {
+        val classification: Classification =
+          classify(1000, ints) {
+            case 0 => "zero"
+            case i if i > 0 => "positive"
+            case _ => "negative"
+          }
+ 
+        val percentages: Map[String, Int] = classification.percentages
+        percentages should have size 3
+        percentages should (contain key "zero" and contain key "positive" and contain key "negative")
+        percentages.values.sum shouldEqual 100 +- 1
+      }
+      "has a toString method that prints percentages and classifications on individual lines" in {
+        val classification: Classification =
+          classify(1000, ints) {
+            case 0 => "zero"
+            case i if i > 0 => "positive"
+            case _ => "negative"
+          }
+ 
+        val output: String = classification.toString
+        output.count(_ == '\n') shouldEqual 2
+        val lines: List[String] = output.split('\n').toList
+        lines.length shouldEqual 3
+        all (lines) should contain ('%')
+        exactly (1, lines) should include ("zero")
+        exactly (1, lines) should include ("positive")
+        exactly (1, lines) should include ("negative")
       }
     }
   }
