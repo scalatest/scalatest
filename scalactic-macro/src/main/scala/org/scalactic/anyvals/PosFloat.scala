@@ -476,7 +476,7 @@ object PosFloat {
 
   def ensuringValid(value: Float): PosFloat =
     if (PosFloatMacro.isValid(value)) new PosFloat(value) else {
-      throw new AssertionError(s"$value is not a valid PosFloat")
+      throw new AssertionError(s"$value was not a valid PosFloat")
     }
 
   import language.experimental.macros

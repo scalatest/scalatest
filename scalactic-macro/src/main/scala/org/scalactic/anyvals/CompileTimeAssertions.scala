@@ -81,7 +81,7 @@ import reflect.macros.Context
  *
  * <p>
  * Using the compile-time assertions provided by this trait, you can construct
- * a factory method implemented vai a macro wthat causes a compile failure
+ * a factory method implemented via a macro that causes a compile failure
  * if <code>OddInt.apply</code> is passed anything besides an odd
  * <code>Int</code> literal. Class <code>OddInt</code> would look exactly the
  * same as before:
@@ -97,11 +97,10 @@ import reflect.macros.Context
  * In the companion object, however, the <code>apply</code> method would
  * be implemented in terms of a macro. Because the <code>apply</code> method
  * will only work with literals, you'll need a second method that can work
- * an any expression of type <code>Int</code>. Although you could write
- * a factory method that throws a runtime exception if a non-odd
- * <code>Int</code> is passed, we recommend a <code>from</code> method
- * that returns an <code>Option</code>. The returned <code>Option</code>
- * can be processed to deal with the potential for non-odd values.
+ * an any expression of type <code>Int</code>. We recommend a <code>from</code> method
+ * that returns an <code>Option[OddInt]</code> that returns <code>Some[OddInt}</code> if the passed <code>Int</code> is odd,
+ * else returns <code>None</code>, and an <code>ensuringValid</code> method that returns an <code>OddInt</code>
+ * if the passed <code>Int</code> is valid, else throws <code>AssertionError</code>.
  * </p>
  *
  * <pre class="stHighlight">
@@ -110,6 +109,13 @@ import reflect.macros.Context
  *   // The from factory method validates at run time
  *   def from(value: Int): Option[OddInt] =
  *     if (OddIntMacro.isValid(value)) Some(new OddInt(value)) else None
+ *
+ *   // The ensuringValid factory method validates at run time, but throws
+ *   // an AssertionError if invalid
+ *   def ensuringValid(value: Int): OddInt =
+ *     if (OddIntMacro.isValid(value)) new OddInt(value) else {
+ *       throw new AssertionError(s"$value was not a valid OddInt")
+ *     }
  *
  *   // The apply factory method validates at compile time
  *   import scala.language.experimental.macros
@@ -145,7 +151,7 @@ import reflect.macros.Context
  *     ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid) 
  *
  *     // Validated, so rewrite the apply call to a from call
- *     c.universe.reify { OddInt.from(value.splice).get }
+ *     c.universe.reify { OddInt.ensuringValid(value.splice) }
  *   } 
  * }
  * </pre>
@@ -160,8 +166,8 @@ import reflect.macros.Context
  * contain an appropriate error message (one of the two you passed in) and cause a compiler error with that message.
  * If the assertion succeeds, <code>ensureValidIntLiteral</code> will just return normally. The next line of code
  * will then execute. This line of code must construct an AST (abstract syntax tree) of code that will replace
- * the <code>OddInt.apply</code> invocation. We invoke the other factory method that returns an <code>Option</code>,
- * and since we've proven at compile time that that <code>Option</code> will be defined, we call <code>get</code> on it.
+ * the <code>OddInt.apply</code> invocation. We invoke the other factory method that either returns an <code>OddInt</code>
+ * or throws an <code>AssertionError</code>, since we've proven at compile time that the call will succeed.
  * </p>
  *
  * <p>

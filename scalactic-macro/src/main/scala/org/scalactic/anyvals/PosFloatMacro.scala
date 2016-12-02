@@ -29,6 +29,6 @@ private[scalactic] object PosFloatMacro extends CompileTimeAssertions {
     import c.universe._
 
     ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    reify { PosFloat.from(value.splice).get }
+    reify { PosFloat.ensuringValid(value.splice) }
   }
 }

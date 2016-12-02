@@ -27,7 +27,7 @@ private[scalactic] object Percent {
 
   def ensuringValid(value: Int): Percent =
     if (PercentMacro.isValid(value)) new Percent(value) else {
-      throw new AssertionError(s"$value is not a valid Percent")
+      throw new AssertionError(s"$value was not a valid Percent")
     }
 
   import scala.language.experimental.macros

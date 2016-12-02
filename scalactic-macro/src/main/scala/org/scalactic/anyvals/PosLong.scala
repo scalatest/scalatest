@@ -766,7 +766,7 @@ object PosLong {
 
   def ensuringValid(value: Long): PosLong =
     if (PosLongMacro.isValid(value)) new PosLong(value) else {
-      throw new AssertionError(s"$value is not a valid PosLong")
+      throw new AssertionError(s"$value was not a valid PosLong")
     }
 
   import language.experimental.macros

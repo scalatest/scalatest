@@ -420,7 +420,7 @@ private[scalactic] object DigitChar {
 
   def ensuringValid(value: Char): DigitChar =
     if (DigitCharMacro.isValid(value)) new DigitChar(value) else {
-      throw new AssertionError(s"$value is not a valid DigitChar")
+      throw new AssertionError(s"$value was not a valid DigitChar")
     }
 
   import scala.language.experimental.macros

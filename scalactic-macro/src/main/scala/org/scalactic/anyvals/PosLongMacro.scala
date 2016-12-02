@@ -29,6 +29,6 @@ private[scalactic] object PosLongMacro extends CompileTimeAssertions {
     import c.universe._
 
     ensureValidLongLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    reify { PosLong.from(value.splice).get }
+    reify { PosLong.ensuringValid(value.splice) }
   }
 }

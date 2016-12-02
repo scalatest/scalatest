@@ -464,7 +464,7 @@ object PosDouble {
 
   def ensuringValid(value: Double): PosDouble =
     if (PosDoubleMacro.isValid(value)) new PosDouble(value) else {
-      throw new AssertionError(s"$value is not a valid PosDouble")
+      throw new AssertionError(s"$value was not a valid PosDouble")
     }
 
   import language.experimental.macros
