@@ -720,7 +720,7 @@ object PosZLong {
 
   def ensuringValid(value: Long): PosZLong =
     if (PosZLongMacro.isValid(value)) new PosZLong(value) else {
-      throw new AssertionError(s"$value is not a valid PosZLong")
+      throw new AssertionError(s"$value was not a valid PosZLong")
     }
 
   import language.experimental.macros

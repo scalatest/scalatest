@@ -29,7 +29,7 @@ private[scalactic] object PosZFloatMacro extends CompileTimeAssertions {
     import c.universe._
 
     ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    reify { PosZFloat.from(value.splice).get }
+    reify { PosZFloat.ensuringValid(value.splice) }
   }
 }
 

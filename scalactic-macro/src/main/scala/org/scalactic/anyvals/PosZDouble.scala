@@ -460,7 +460,7 @@ object PosZDouble {
 
   def ensuringValid(value: Double): PosZDouble =
     if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else {
-      throw new AssertionError(s"$value is not a valid PosZDouble")
+      throw new AssertionError(s"$value was not a valid PosZDouble")
     }
 
   import language.experimental.macros

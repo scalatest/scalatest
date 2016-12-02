@@ -25,7 +25,7 @@ private[scalactic] object DigitString {
 
   def ensuringValid(value: String): DigitString =
     if (DigitStringMacro.isValid(value)) new DigitString(value) else {
-      throw new AssertionError(s"$value is not a valid DigitString")
+      throw new AssertionError(s"$value was not a valid DigitString")
     }
 
   import scala.language.experimental.macros

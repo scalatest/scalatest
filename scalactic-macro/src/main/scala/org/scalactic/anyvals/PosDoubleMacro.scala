@@ -29,6 +29,6 @@ private[scalactic] object PosDoubleMacro extends CompileTimeAssertions {
     import c.universe._
 
     ensureValidDoubleLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    reify { PosDouble.from(value.splice).get }
+    reify { PosDouble.ensuringValid(value.splice) }
   }
 }

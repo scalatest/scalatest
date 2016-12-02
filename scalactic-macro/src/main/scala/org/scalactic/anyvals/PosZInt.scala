@@ -726,7 +726,7 @@ object PosZInt {
 
   def ensuringValid(value: Int): PosZInt =
     if (PosZIntMacro.isValid(value)) new PosZInt(value) else {
-      throw new AssertionError(s"$value is not a valid PosZInt")
+      throw new AssertionError(s"$value was not a valid PosZInt")
     }
 
   import language.experimental.macros

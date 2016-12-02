@@ -30,6 +30,6 @@ private[scalactic] object DigitCharMacro {
       "DigitChar.apply can only be invoked on Char literals that are digits, like '8'." +
       " Please use DigitChar.from instead."
     ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    c.universe.reify { DigitChar.from(value.splice).get }
+    c.universe.reify { DigitChar.ensuringValid(value.splice) }
   } 
 }

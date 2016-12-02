@@ -29,6 +29,6 @@ private[scalactic] object PosZIntMacro extends CompileTimeAssertions {
     import c.universe._
 
     ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    reify { PosZInt.from(value.splice).get }
+    reify { PosZInt.ensuringValid(value.splice) }
   }
 }
