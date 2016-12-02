@@ -1032,6 +1032,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+    describe("for arbitrary Function1s") {
+      it("should offer an implicit provider that uses hashCode to tweak a seed and has a pretty toString") {
+        "implicitly[Generator[Option[Int] => List[Int]]]" should compile
+      }
+    }
     describe("for Tuple2s") {
       it("should offer a tuple2 generator") {
         val gen = implicitly[Generator[(Int, Int)]]

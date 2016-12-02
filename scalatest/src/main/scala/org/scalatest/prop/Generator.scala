@@ -914,6 +914,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
+  implicit def function1AToBGenerator[A, B](implicit genOfB: Generator[B]): Generator[A => B] = {
+    new Generator[A => B] {
+      def next(size: Int, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
+
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object AToB extends PrettyFunction1[A, B] {
+          def apply(a: A): B = org.scalatest.prop.generate[B](a, intToInt)
+          override def toString = s"(a: A) => org.scalatest.prop.generate[B](a, $intToInt)"
+          val paramName: String = "a"
+          val paramTypeName: String = "A"
+        }
+
+        (AToB, Nil, rnd1)
+      }
+    }
+  }
+
   implicit def function1IntToOptionOfIntGenerator: Generator[Int => Option[Int]] = {
     object IntToOptionOfIntNonZero extends PrettyFunction1[Int, Option[Int]] {
       def apply(i: Int): Option[Int] = if (i != 0) Some(i) else None

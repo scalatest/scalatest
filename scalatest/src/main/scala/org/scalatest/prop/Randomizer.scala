@@ -216,12 +216,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 }
 
 object Randomizer {
+
   def default(): Randomizer =
     new Randomizer(
       (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1)
     )
-  // Note, this method where you pass the seed in will produce edges in always the same order, so it 
-  // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
+
   def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))
 
   def shuffle[T](xs: List[T], rnd: Randomizer): (List[T], Randomizer) = {

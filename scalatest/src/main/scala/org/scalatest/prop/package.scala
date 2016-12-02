@@ -20,6 +20,14 @@ import scala.annotation.tailrec
 
 package object prop {
 
+  def generate[B](a: Any, f: Int => Int)(implicit genOfB: Generator[B]): B = {
+   val seed = (f(a.hashCode)).toLong
+   val rnd = Randomizer(seed)
+   val (size, nextRnd) = rnd.chooseInt(1, 100)
+   val (result, _, _) = genOfB.next(size, Nil, nextRnd)
+   result
+  }
+
   def intsBetween(from: Int, to: Int): Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
       private val fromToEdges = List(from, to).distinct // distinct in case from equals to
