@@ -19,6 +19,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
 import org.scalactic.{Bad, Good, Or}
 import scala.annotation.tailrec
+import scala.reflect.runtime.universe.TypeTag
 
 trait Generator[T] { thisGeneratorOfT =>
 
@@ -914,7 +915,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1AToBGenerator[A, B](implicit genOfB: Generator[B]): Generator[A => B] = {
+  implicit def function1AToBGenerator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(size: Int, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
 
@@ -923,7 +924,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
         object AToB extends PrettyFunction1[A, B] {
           def apply(a: A): B = org.scalatest.prop.generate[B](a, intToInt)
-          override def toString = s"(a: A) => org.scalatest.prop.generate[B](a, $intToInt)"
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            s"(o: $typeOfA) => org.scalatest.prop.generate[$typeOfB](o, $intToInt)"
+          }
           val paramName: String = "a"
           val paramTypeName: String = "A"
         }
