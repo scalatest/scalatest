@@ -16,21 +16,20 @@
 package org.scalactic.anyvals
 
 import reflect.macros.Context
-import org.scalactic.Resources
 
 import CompileTimeAssertions._
-private[scalactic] object DigitStringMacro {
+private[scalactic] object PercentMacro {
 
-  def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
+  def isValid(i: Int): Boolean = i >= 0 && i <= 100
 
-  def apply(c: Context)(value: c.Expr[String]): c.Expr[DigitString] = {
+  def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
     val notValidMsg =
-      "DigitString.apply can only be invoked on String literals that contain all decimal digits ('0' through '9'), " +
-      "like \"123\"."
+      "Percent.apply can only be invoked on Int literals between 0 and 100, "+
+      "inclusive, like Percent(8)."
     val notLiteralMsg =
-      "DigitString.apply can only be invoked on String literals that contain all decimal digits ('0' through '9'), like \"123\"" +
-      " Please use DigitString.from instead."
-    ensureValidStringLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    c.universe.reify { DigitString.from(value.splice).get }
+      "Percent.apply can only be invoked on Int literals, like Percent(8)."+
+      " Please use Percent.from instead."
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
+    c.universe.reify { Percent.from(value.splice).get }
   } 
 }

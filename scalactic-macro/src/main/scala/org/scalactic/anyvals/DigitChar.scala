@@ -416,8 +416,13 @@ private[scalactic] final class DigitChar private (val value: Char) extends AnyVa
 
 private[scalactic] object DigitChar {
   def from(value: Char): Option[DigitChar] =
-    if (value >= MinValue && value <= MaxValue) Some(new DigitChar(value))
-    else None
+    if (DigitCharMacro.isValid(value)) Some(new DigitChar(value)) else None
+
+  def ensuringValid(value: Char): DigitChar =
+    if (DigitCharMacro.isValid(value)) new DigitChar(value) else {
+      throw new AssertionError(s"$value is not a valid DigitChar")
+    }
+
   import scala.language.experimental.macros
   implicit def apply(value: Char): DigitChar = macro DigitCharMacro.apply
 

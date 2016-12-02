@@ -716,7 +716,12 @@ object PosZLong {
    *     <code>None</code>.
    */
   def from(value: Long): Option[PosZLong] =
-    if (value >= 0L) Some(new PosZLong(value)) else None
+    if (PosZLongMacro.isValid(value)) Some(new PosZLong(value)) else None
+
+  def ensuringValid(value: Long): PosZLong =
+    if (PosZLongMacro.isValid(value)) new PosZLong(value) else {
+      throw new AssertionError(s"$value is not a valid PosZLong")
+    }
 
   import language.experimental.macros
   import scala.language.implicitConversions

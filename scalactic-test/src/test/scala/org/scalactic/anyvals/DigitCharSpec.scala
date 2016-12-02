@@ -36,6 +36,20 @@ class DigitCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/
         DigitChar.from(-1.toChar) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns DigitChar if the passed Char is between '0' and '9'") {
+        DigitChar.ensuringValid('0').value shouldBe '0'
+        DigitChar.ensuringValid('5').value shouldBe '5'
+        DigitChar.ensuringValid('9').value shouldBe '9'
+      }
+      it("throws AssertionError if the passed Char is NOT between '0' and '9'") {
+        an [AssertionError] should be thrownBy DigitChar.ensuringValid('a')
+        an [AssertionError] should be thrownBy DigitChar.ensuringValid('z')
+        an [AssertionError] should be thrownBy DigitChar.ensuringValid('A')
+        an [AssertionError] should be thrownBy DigitChar.ensuringValid(0)
+        an [AssertionError] should be thrownBy DigitChar.ensuringValid(-1.toChar)
+      }
+    } 
     it("should define min and max values") {
       DigitChar.MinValue shouldBe '0'
       DigitChar.MaxValue shouldBe '9'

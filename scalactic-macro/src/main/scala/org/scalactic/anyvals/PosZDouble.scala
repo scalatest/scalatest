@@ -456,7 +456,12 @@ object PosZDouble {
    *     <code>None</code>.
    */
   def from(value: Double): Option[PosZDouble] =
-    if (value >= 0.0) Some(new PosZDouble(value)) else None
+    if (PosZDoubleMacro.isValid(value)) Some(new PosZDouble(value)) else None
+
+  def ensuringValid(value: Double): PosZDouble =
+    if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else {
+      throw new AssertionError(s"$value is not a valid PosZDouble")
+    }
 
   import language.experimental.macros
   import scala.language.implicitConversions

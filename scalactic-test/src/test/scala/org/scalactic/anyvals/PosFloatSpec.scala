@@ -44,6 +44,17 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
         PosFloat.from(-99.9F) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns PosFloat if the passed Float is greater than 0") {
+        PosFloat.ensuringValid(50.23F).value shouldBe 50.23F
+        PosFloat.ensuringValid(100.0F).value shouldBe 100.0F
+      }
+      it("throws AssertionError if the passed Float is NOT greater than 0") {
+        an [AssertionError] should be thrownBy PosFloat.ensuringValid(0.0F)
+        an [AssertionError] should be thrownBy PosFloat.ensuringValid(-0.00001F)
+        an [AssertionError] should be thrownBy PosFloat.ensuringValid(-99.9F)
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual

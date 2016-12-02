@@ -21,57 +21,16 @@ private[scalactic] final class Percent private (val value: Int) extends AnyVal {
 }
 
 private[scalactic] object Percent {
+
   def from(value: Int): Option[Percent] =
-    if (value >= 0 && value <= 100) Some(new Percent(value)) else None
+    if (PercentMacro.isValid(value)) Some(new Percent(value)) else None
+
+  def ensuringValid(value: Int): Percent =
+    if (PercentMacro.isValid(value)) new Percent(value) else {
+      throw new AssertionError(s"$value is not a valid Percent")
+    }
+
   import scala.language.experimental.macros
   def apply(value: Int): Percent = macro PercentMacro.apply
-}
-
-private[scalactic] final class LPercent private (val value: Long) extends AnyVal {
-  override def toString: String = s"LPercent($value)"
-}
-
-private[scalactic] object LPercent {
-  def from(value: Long): Option[LPercent] =
-    if (value >= 0L && value <= 100L) Some(new LPercent(value)) else None
-}
-
-private[scalactic] final class FPercent private (val value: Float) extends AnyVal {
-  override def toString: String = s"FPercent($value)"
-}
-
-private[scalactic] object FPercent {
-  def from(value: Float): Option[FPercent] =
-    if (value >= 0.0F && value <= 100.0F) Some(new FPercent(value)) else None
-}
-
-private[scalactic] final class DPercent private (val value: Double) extends AnyVal {
-  override def toString: String = s"DPercent($value)"
-}
-
-private[scalactic] object DPercent {
-  def from(value: Double): Option[DPercent] =
-    if (value >= 0.0 && value <= 100.0) Some(new DPercent(value)) else None
-}
-
-private[scalactic] final class TLA private (val value: String) extends AnyVal {
-  override def toString: String = s"TLA($value)"
-}
-
-private[scalactic] object TLA {
-  def from(value: String): Option[TLA] =
-    if (value.length == 3) Some(new TLA(value)) else None
-  import scala.language.experimental.macros
-  def apply(value: String): TLA = macro TLAMacro.apply
-}
-
-private[scalactic] final class Digit private (val value: Char) extends AnyVal {
-  override def toString: String = s"Digit($value)"
-}
-private[scalactic] object Digit {
-  def from(value: Char): Option[Digit] =
-    if (value >= '0' && value <= '9') Some(new Digit(value)) else None
-  import scala.language.experimental.macros
-  def apply(value: Char): Digit = macro DigitMacro.apply
 }
 

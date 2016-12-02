@@ -722,7 +722,12 @@ object PosZInt {
    *     <code>None</code>.
    */
   def from(value: Int): Option[PosZInt] =
-    if (value >= 0) Some(new PosZInt(value)) else None
+    if (PosZIntMacro.isValid(value)) Some(new PosZInt(value)) else None
+
+  def ensuringValid(value: Int): PosZInt =
+    if (PosZIntMacro.isValid(value)) new PosZInt(value) else {
+      throw new AssertionError(s"$value is not a valid PosZInt")
+    }
 
   import language.experimental.macros
   import scala.language.implicitConversions

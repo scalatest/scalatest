@@ -712,6 +712,11 @@ object PosInt {
   def from(value: Int): Option[PosInt] =
     if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
 
+  def ensuringValid(value: Int): PosInt =
+    if (PosIntMacro.isValid(value)) new PosInt(value) else {
+      throw new AssertionError(s"$value is not a valid PosInt")
+    }
+
   import language.experimental.macros
 
   /**

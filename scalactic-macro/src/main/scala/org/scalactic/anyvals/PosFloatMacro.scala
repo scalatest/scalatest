@@ -20,13 +20,15 @@ import reflect.macros.Context
 
 private[scalactic] object PosFloatMacro extends CompileTimeAssertions {
 
+  def isValid(n: Float): Boolean = n > 0.0f
+
   def apply(c: Context)(value: c.Expr[Float]): c.Expr[PosFloat] = {
     val notValidMsg = Resources.notValidPosFloat
     val notLiteralMsg = Resources.notLiteralPosFloat
 
     import c.universe._
 
-    ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i > 0.0F }
+    ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
     reify { PosFloat.from(value.splice).get }
   }
 }

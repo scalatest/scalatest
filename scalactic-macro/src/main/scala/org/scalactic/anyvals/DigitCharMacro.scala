@@ -19,6 +19,9 @@ import reflect.macros.Context
 import CompileTimeAssertions._
 
 private[scalactic] object DigitCharMacro {
+
+  def isValid(c: Char): Boolean = c >= '0' && c <= '9'
+
   def apply(c: Context)(value: c.Expr[Char]): c.Expr[DigitChar] = {
     val notValidMsg =
       "DigitChar.apply can only be invoked on Char literals that are digits, " +
@@ -26,9 +29,7 @@ private[scalactic] object DigitCharMacro {
     val notLiteralMsg =
       "DigitChar.apply can only be invoked on Char literals that are digits, like '8'." +
       " Please use DigitChar.from instead."
-    ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg) { c =>
-      c >= '0' && c <= '9'
-    }
+    ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
     c.universe.reify { DigitChar.from(value.splice).get }
   } 
 }
