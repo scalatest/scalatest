@@ -24,11 +24,11 @@ case class Classification(val totalGenerated: PosInt, val totals: Map[String, Po
 
   def percentages: Map[String, PosZInt] =
     totals mapValues { count =>
-      PosInt.from((count * 100.0 / totalGenerated).round.toInt).get // Need unsafeFrom
+      PosZInt.from((count * 100.0 / totalGenerated).round.toInt).get // Need unsafeFrom
     }
 
   override def toString = {
-    val lines = percentages map { case (classification, percentage) => s"$percentage% $classification" }
+    val lines = percentages map { case (classification, percentage) => s"${percentage.value}% $classification" }
     lines.mkString("\n")
   }
 }

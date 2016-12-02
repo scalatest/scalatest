@@ -36,5 +36,27 @@ class ClassificationSpec extends WordSpec with Matchers {
         "one point three" -> PosZInt(1)
       )
     }
+    "handle percentages of 0" in {
+      val c =
+        Classification(
+          10000,
+          Map(
+            "zero" -> 0
+          )
+        )
+      c.percentages shouldEqual Map(
+        "zero" -> PosZInt(0)
+      )
+    }
+    "include the Int percentage in the toString" in {
+      val c =
+        Classification(
+          100,
+          Map(
+            "ten" -> 10
+          )
+        )
+      c.toString shouldBe "10% ten"
+    }
   }
 }
