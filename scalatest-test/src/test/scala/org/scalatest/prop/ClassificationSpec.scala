@@ -15,21 +15,26 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals.{PosInt,PosZInt}
+import org.scalatest._
+import org.scalactic.anyvals._
 
-case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
-
-  def proportions: Map[String, Double] =
-    totals.mapValues(count => count.toDouble / totalGenerated.toDouble)
-
-  def percentages: Map[String, PosZInt] =
-    totals mapValues { count =>
-      PosInt.from((count * 100.0 / totalGenerated).round.toInt).get // Need unsafeFrom
+class ClassificationSpec extends WordSpec with Matchers {
+  "A Classification" should {
+    "round to the nearest Int in its percentages method" in {
+      val c =
+        Classification(
+          10000,
+          Map(
+            "one point eight" -> 180,
+            "one point five" -> 150,
+            "one point three" -> 130
+          )
+        )
+      c.percentages shouldEqual Map(
+        "one point eight" -> PosZInt(2),
+        "one point five" -> PosZInt(2),
+        "one point three" -> PosZInt(1)
+      )
     }
-
-  override def toString = {
-    val lines = percentages map { case (classification, percentage) => s"$percentage% $classification" }
-    lines.mkString("\n")
   }
 }
-

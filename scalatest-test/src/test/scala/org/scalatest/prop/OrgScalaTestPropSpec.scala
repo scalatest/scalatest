@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -520,7 +520,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
             case _ => "negative"
           }
  
-        val totals: Map[String, Int] = classification.totals
+        val totals: Map[String, PosZInt] = classification.totals
         totals should have size 3
         totals should (contain key "zero" and contain key "positive" and contain key "negative")
       }
@@ -532,7 +532,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
             // case _ => "negative" will leave negative ones unclassified
           }
  
-        val totals: Map[String, Int] = classification.totals
+        val totals: Map[String, PosZInt] = classification.totals
         totals should have size 2
         totals should (contain key "zero" and contain key "positive")
       }
@@ -577,10 +577,10 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
             case _ => "negative"
           }
  
-        val percentages: Map[String, Int] = classification.percentages
+        val percentages: Map[String, PosZInt] = classification.percentages
         percentages should have size 3
         percentages should (contain key "zero" and contain key "positive" and contain key "negative")
-        percentages.values.sum shouldEqual 100 +- 1
+        percentages.values.map(_.value).sum shouldEqual 100 +- 1
       }
       "has a toString method that prints percentages and classifications on individual lines" in {
         val classification: Classification =

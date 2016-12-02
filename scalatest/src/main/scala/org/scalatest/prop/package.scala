@@ -112,14 +112,14 @@ package object prop {
 
     val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default())
     @tailrec
-    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, Int]): Map[String, Int] = {
+    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
         val (nextA, nextEdges, nextRnd) = genOfA.next(100, edges, rnd)
         if (pf.isDefinedAt(nextA)) {
           val category = pf(nextA)
-          val prevTotal = acc.getOrElse(category, 0)
-          val nextAcc = acc + (category -> (prevTotal + 1))
+          val prevTotal = acc.getOrElse(category, PosZInt(0))
+          val nextAcc = acc + (category -> PosZInt.from(prevTotal + 1).get) // Need unsafeFrom again
           loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
         }
         else {
