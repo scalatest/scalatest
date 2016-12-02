@@ -556,7 +556,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           partialClassification.totalGenerated shouldEqual count
         }
       }
-      "offers a method returning a Map of String classification names to Double proportions (between 0.0 and 1.0)" in {
+      "offers a method returning a Map of String classification names to Double portions (between 0.0 and 1.0)" in {
         val classification: Classification =
           classify(1000, ints) {
             case 0 => "zero"
@@ -564,10 +564,10 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
             case _ => "negative"
           }
  
-        val proportions: Map[String, Double] = classification.proportions
-        proportions should have size 3
-        proportions should (contain key "zero" and contain key "positive" and contain key "negative")
-        proportions.values.sum shouldEqual 1.0
+        val portions: Map[String, Double] = classification.portions
+        portions should have size 3
+        portions should (contain key "zero" and contain key "positive" and contain key "negative")
+        portions.values.sum shouldEqual 1.0
       }
       "offers a method returning a Map of String classification names to Int percentages (between 0 and 100)" in {
         val classification: Classification =

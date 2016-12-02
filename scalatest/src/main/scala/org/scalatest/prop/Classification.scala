@@ -19,7 +19,7 @@ import org.scalactic.anyvals.{PosInt,PosZInt}
 
 case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
 
-  def proportions: Map[String, Double] =
+  def portions: Map[String, Double] =
     totals.mapValues(count => count.toDouble / totalGenerated.toDouble)
 
   def percentages: Map[String, PosZInt] =
