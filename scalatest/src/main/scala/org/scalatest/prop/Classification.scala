@@ -24,7 +24,7 @@ case class Classification(val totalGenerated: PosInt, val totals: Map[String, Po
 
   def percentages: Map[String, PosZInt] =
     totals mapValues { count =>
-      PosZInt.from((count * 100.0 / totalGenerated).round.toInt).get // Need unsafeFrom
+      PosZInt.ensuringValid((count * 100.0 / totalGenerated).round.toInt)
     }
 
   override def toString = {

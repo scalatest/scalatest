@@ -143,11 +143,11 @@ trait Configuration {
   implicit def PropertyCheckConfig2PropertyCheckConfiguration(p: PropertyCheckConfig): PropertyCheckConfiguration = {
     val maxDiscardedFactor = PropertyCheckConfiguration.calculateMaxDiscardedFactor(p.minSuccessful, p.maxDiscarded)
       new PropertyCheckConfiguration(
-        minSuccessful = PosInt.from(p.minSuccessful).get,
-        maxDiscardedFactor = PosZDouble.from(maxDiscardedFactor).get,
-        minSize = PosZInt.from(p.minSize).get,
-        sizeRange = PosZInt.from(p.maxSize - p.minSize).get,
-        workers = PosInt.from(p.workers).get) {
+        minSuccessful = PosInt.ensuringValid(p.minSuccessful),
+        maxDiscardedFactor = PosZDouble.ensuringValid(maxDiscardedFactor),
+        minSize = PosZInt.ensuringValid(p.minSize),
+        sizeRange = PosZInt.ensuringValid(p.maxSize - p.minSize),
+        workers = PosInt.ensuringValid(p.workers)) {
         override private [scalatest]  val legacyMaxDiscarded = Some(p.maxDiscarded)
         override private [scalatest]  val legacyMaxSize      = Some(p.maxSize)
       }

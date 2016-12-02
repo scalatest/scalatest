@@ -119,7 +119,7 @@ package object prop {
         if (pf.isDefinedAt(nextA)) {
           val category = pf(nextA)
           val prevTotal = acc.getOrElse(category, PosZInt(0))
-          val nextAcc = acc + (category -> PosZInt.from(prevTotal + 1).get) // Need unsafeFrom again
+          val nextAcc = acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
           loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
         }
         else {

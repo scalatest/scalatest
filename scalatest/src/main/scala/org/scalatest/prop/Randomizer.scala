@@ -81,46 +81,46 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextPosInt: (PosInt, Randomizer) = {
     val (i, r) = next(31) // 31 ensures sign bit is 0
     val pos = if (i == 0) 1 else i
-    (PosInt.from(pos).get, r)
+    (PosInt.ensuringValid(pos), r)
   }
   def nextPosZInt: (PosZInt, Randomizer) = {
     val (i, r) = next(31) // 31 ensures sign bit is 0
-    (PosZInt.from(i).get, r)
+    (PosZInt.ensuringValid(i), r)
   }
   def nextPosLong: (PosLong, Randomizer) = {
     val (ia, ra) = thisRandomizer.next(31) // 31 ensures sign bit is 0
     val (ib, rb) = ra.next(32)
     val candidate = (ia.toLong << 32) + ib
     val pos = if (candidate == 0L) 1L else candidate
-    (PosLong.from(pos).get, rb)
+    (PosLong.ensuringValid(pos), rb)
   }
   def nextPosZLong: (PosZLong, Randomizer) = {
     val (ia, ra) = thisRandomizer.next(31) // 31 ensures sign bit is 0
     val (ib, rb) = ra.next(32)
     val pos = (ia.toLong << 32) + ib
-    (PosLong.from(pos).get, rb)
+    (PosLong.ensuringValid(pos), rb)
   }
   def nextPosFloat: (PosFloat, Randomizer) = {
     val (f, r) = nextFloat
     val candidate = f.abs // 0.0f or greater
     val pos = if (candidate <= 1.0f) candidate else candidate + 1.0f
-    (PosFloat.from(pos).get, r)
+    (PosFloat.ensuringValid(pos), r)
   }
   def nextPosZFloat: (PosZFloat, Randomizer) = {
     val (f, r) = nextFloat
     val pos = f.abs // 0.0f or greater
-    (PosZFloat.from(pos).get, r)
+    (PosZFloat.ensuringValid(pos), r)
   }
   def nextPosDouble: (PosDouble, Randomizer) = {
     val (d, r) = nextDouble
     val candidate = d.abs // 0.0 or greater
     val pos = if (candidate <= 1.0) candidate else candidate + 1.0
-    (PosDouble.from(pos).get, r)
+    (PosDouble.ensuringValid(pos), r)
   }
   def nextPosZDouble: (PosZDouble, Randomizer) = {
     val (d, r) = nextDouble
     val pos = d.abs // 0.0 or greater
-    (PosZDouble.from(pos).get, r)
+    (PosZDouble.ensuringValid(pos), r)
   }
   // Maybe add in some > 16 bit UTF-16 encodings
   def nextString(length: Int): (String, Randomizer) = {
@@ -183,10 +183,10 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
 
       if (nextValue >= min && nextValue <= max)
-        (PosInt.from(nextValue).get, nextRnd) // Here should use unsafeFrom because proven above
+        (PosInt.ensuringValid(nextValue), nextRnd)
       else {
         val nextBetween = (nextValue % (max - min + 1)) + min
-        (PosInt.from(nextBetween).get, nextRnd) // And also here. Should be proven by the math that it is positive.
+        (PosInt.ensuringValid(nextBetween), nextRnd)
       }
     }
   }
