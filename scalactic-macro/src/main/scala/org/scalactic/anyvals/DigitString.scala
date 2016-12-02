@@ -21,7 +21,13 @@ private[scalactic] final class DigitString private (val value: String) extends A
 
 private[scalactic] object DigitString {
   def from(value: String): Option[DigitString] =
-    if (value.forall(c => c >= '0' && c <= '9')) Some(new DigitString(value)) else None
+    if (DigitStringMacro.isValid(value)) Some(new DigitString(value)) else None
+
+  def ensuringValid(value: String): DigitString =
+    if (DigitStringMacro.isValid(value)) new DigitString(value) else {
+      throw new AssertionError(s"$value is not a valid DigitString")
+    }
+
   import scala.language.experimental.macros
   def apply(value: String): DigitString = macro DigitStringMacro.apply
 }

@@ -20,13 +20,15 @@ import reflect.macros.Context
 
 private[scalactic] object PosZLongMacro extends CompileTimeAssertions {
 
+  def isValid(n: Long): Boolean = n >= 0L
+
   def apply(c: Context)(value: c.Expr[Long]): c.Expr[PosZLong] = {
     val notValidMsg = Resources.notValidPosZLong
     val notLiteralMsg = Resources.notLiteralPosZLong
 
     import c.universe._
 
-    ensureValidLongLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0L }
+    ensureValidLongLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
     reify { PosZLong.from(value.splice).get }
   }
 }

@@ -454,7 +454,12 @@ object PosZFloat {
    *     <code>None</code>.
    */
   def from(value: Float): Option[PosZFloat] =
-    if (value >= 0.0F) Some(new PosZFloat(value)) else None
+    if (PosZFloatMacro.isValid(value)) Some(new PosZFloat(value)) else None
+
+  def ensuringValid(value: Float): PosZFloat =
+    if (PosZFloatMacro.isValid(value)) new PosZFloat(value) else {
+      throw new AssertionError(s"$value is not a valid PosZFloat")
+    }
 
   import language.experimental.macros
   import scala.language.implicitConversions

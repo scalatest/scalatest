@@ -69,6 +69,19 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
         PosInt.from(-99) shouldBe None
       }
     }
+    describe("should offer an ensuringValid factory method that") {
+      it("returns PosInt if the passed Int is greater than 0") {
+        PosInt.ensuringValid(50).value shouldBe 50
+        PosInt.ensuringValid(100).value shouldBe 100
+        pending
+      }
+
+      it("throws AssertionError if the passed Int is NOT greater than 0") {
+        an [AssertionError] should be thrownBy PosInt.ensuringValid(0)
+        an [AssertionError] should be thrownBy PosInt.ensuringValid(-1)
+        an [AssertionError] should be thrownBy PosInt.ensuringValid(-99)
+      }
+    }
     it("should offer MaxValue and MinValue factory methods") {
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
       PosInt.MinValue shouldEqual PosInt(1)

@@ -71,6 +71,17 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosLong.from(-99L) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns Some[PosLong if the passed Long is greater than 0") {
+        PosLong.ensuringValid(50L).value shouldBe 50L
+        PosLong.ensuringValid(100L).value shouldBe 100L
+      }
+      it("throws AssertionError if the passed Long is NOT greater than 0") {
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(0L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-1L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-99L)
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosLong.MaxValue shouldEqual PosLong.from(Long.MaxValue).get
       PosLong.MinValue shouldEqual PosLong(1L)
