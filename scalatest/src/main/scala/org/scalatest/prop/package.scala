@@ -29,6 +29,9 @@ package object prop {
    result
   }
 
+  // bytesBetween
+  // shortsBetween
+
   def intsBetween(from: Int, to: Int): Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
       private val fromToEdges = List(from, to).distinct // distinct in case from equals to
@@ -48,6 +51,9 @@ package object prop {
       }
     }
 
+  // longsBetween
+  // charsBetween
+
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
     new Generator[PosInt] { thisIntGenerator =>
       private val fromToEdges = List(from, to).distinct // distinct in case from equals to
@@ -66,6 +72,15 @@ package object prop {
         }
       }
     }
+
+  // posIntsBetween
+  // posZIntsBetween
+  // posLongsBetween
+  // posZLongsBetween
+  // posFloatsBetween
+  // posZFloatsBetween
+  // posDoublesBetween
+  // posZDoublesBetween
 
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
@@ -91,9 +106,12 @@ package object prop {
   val floats: Generator[Float] = Generator.floatGenerator
   val doubles: Generator[Double] = Generator.doubleGenerator
   val strings: Generator[String] = Generator.stringGenerator
-  def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] = Generator.listGenerator[T]
+  def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] = Generator.listGenerator[T]
   def tuple2s[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
+  // ... tuple22s
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
+  // function1s
+  // ... function22s
 
   val posInts: Generator[PosInt] = Generator.posIntGenerator
   val posZInts: Generator[PosZInt] = Generator.posZIntGenerator
@@ -115,6 +133,8 @@ package object prop {
 
   def gen[A, B, C](make: (A, B) => C)(unmake: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new Generator2[A, B, C](make, unmake)(genOfA, genOfB)
+  // gen[A, B, C, D]
+  // ... gen[A, B, C, D... 22 of them]
 
   // classify will need to use the same sizing algo as forAll, and same edges approach
   def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
@@ -139,12 +159,6 @@ package object prop {
     val theMap = loop(0, initEdges, rnd1, Map.empty)
     Classification(count, theMap)
   }
-  /*
-    maybe shrink can be growTo(target: T
-    grower(value: T, ...)
-    grow(value: T, ...)
-    or simplify(value: T, ...)
-  */
 }
 
 

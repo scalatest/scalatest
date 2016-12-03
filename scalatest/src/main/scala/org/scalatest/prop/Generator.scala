@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -654,8 +654,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
-  implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] =
-    new Generator[List[T]] {
+  implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
+    new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT => 
       private val listEdges = List(Nil)
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
@@ -704,6 +704,15 @@ object Generator extends LowerPriorityGeneratorImplicits {
         )
       }
       override def toString = "Generator[List[T]]"
+      def havingLength(len: PosZInt): Generator[List[T]] =
+        new Generator[List[T]] {
+          override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
+          def next(size: Int, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
+            outerGenOfListOfT.next(len, edges, rnd)
+          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
+          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
+          override def toString = s"Generator[List[T] /* having length $len */]"
+        }
     }
 
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
