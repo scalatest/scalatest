@@ -17,8 +17,8 @@ package org.scalactic.anyvals
 
 import scala.language.implicitConversions
 
-private[scalactic] final class DigitChar private (val value: Char) extends AnyVal {
-  override def toString: String = s"DigitChar($value)"
+private[scalactic] final class NumChar private (val value: Char) extends AnyVal {
+  override def toString: String = s"NumChar($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
   def toChar: Char = value.toChar
@@ -27,10 +27,10 @@ private[scalactic] final class DigitChar private (val value: Char) extends AnyVa
   def toFloat: Float = value.toFloat
   def toDouble: Double = value.toDouble
 
-  def max(that: DigitChar): DigitChar =
+  def max(that: NumChar): NumChar =
     if (math.max(value.toInt, that.value.toInt) == value.toInt) this
     else that
-  def min(that: DigitChar): DigitChar =
+  def min(that: NumChar): NumChar =
     if (math.min(value.toInt, that.value.toInt) == value.toInt) this
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
@@ -47,7 +47,7 @@ private[scalactic] final class DigitChar private (val value: Char) extends AnyVa
  */
   def unary_~ : Int = ~value.asDigit
   /** Returns this value, unmodified. */
-  def unary_+ : DigitChar = this
+  def unary_+ : NumChar = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
 
@@ -414,38 +414,38 @@ private[scalactic] final class DigitChar private (val value: Char) extends AnyVa
   def %(x: Double): Double = value % x
 }
 
-private[scalactic] object DigitChar {
-  def from(value: Char): Option[DigitChar] =
-    if (DigitCharMacro.isValid(value)) Some(new DigitChar(value)) else None
+private[scalactic] object NumChar {
+  def from(value: Char): Option[NumChar] =
+    if (NumCharMacro.isValid(value)) Some(new NumChar(value)) else None
 
-  def ensuringValid(value: Char): DigitChar =
-    if (DigitCharMacro.isValid(value)) new DigitChar(value) else {
-      throw new AssertionError(s"$value was not a valid DigitChar")
+  def ensuringValid(value: Char): NumChar =
+    if (NumCharMacro.isValid(value)) new NumChar(value) else {
+      throw new AssertionError(s"$value was not a valid NumChar")
     }
 
   import scala.language.experimental.macros
-  implicit def apply(value: Char): DigitChar = macro DigitCharMacro.apply
+  implicit def apply(value: Char): NumChar = macro NumCharMacro.apply
 
-  /** The smallest value representable as a DigitChar. */
+  /** The smallest value representable as a NumChar. */
   final val MinValue = '0'
 
-  /** The largest value representable as a DigitChar. */
+  /** The largest value representable as a NumChar. */
   final val MaxValue = '9'
 
   /** Language mandated coercions from Char to "wider" types. */
-  implicit def digitChar2Int(x: DigitChar): Int = x.toInt
-  implicit def digitChar2Long(x: DigitChar): Long = x.toLong
-  implicit def digitChar2Float(x: DigitChar): Float = x.toFloat
-  implicit def digitChar2Double(x: DigitChar): Double = x.toDouble
+  implicit def numChar2Int(x: NumChar): Int = x.toInt
+  implicit def numChar2Long(x: NumChar): Long = x.toLong
+  implicit def numChar2Float(x: NumChar): Float = x.toFloat
+  implicit def numChar2Double(x: NumChar): Double = x.toDouble
 
-  implicit def digitChar2PosInt(x: DigitChar): PosInt = PosInt.from(x.toInt).get
-  implicit def digitChar2PosLong(x: DigitChar): PosLong = PosLong.from(x.toLong).get
-  implicit def digitChar2PosFloat(x: DigitChar): PosFloat = PosFloat.from(x.toFloat).get
-  implicit def digitChar2PosDouble(x: DigitChar): PosDouble = PosDouble.from(x.toDouble).get
+  implicit def numChar2PosInt(x: NumChar): PosInt = PosInt.from(x.toInt).get
+  implicit def numChar2PosLong(x: NumChar): PosLong = PosLong.from(x.toLong).get
+  implicit def numChar2PosFloat(x: NumChar): PosFloat = PosFloat.from(x.toFloat).get
+  implicit def numChar2PosDouble(x: NumChar): PosDouble = PosDouble.from(x.toDouble).get
 
-  implicit def digitChar2PosZInt(x: DigitChar): PosZInt = PosZInt.from(x.toInt).get
-  implicit def digitChar2PosZLong(x: DigitChar): PosZLong = PosZLong.from(x.toLong).get
-  implicit def digitChar2PosZFloat(x: DigitChar): PosZFloat = PosZFloat.from(x.toFloat).get
-  implicit def digitChar2PosZDouble(x: DigitChar): PosZDouble = PosZDouble.from(x.toDouble).get
+  implicit def numChar2PosZInt(x: NumChar): PosZInt = PosZInt.from(x.toInt).get
+  implicit def numChar2PosZLong(x: NumChar): PosZLong = PosZLong.from(x.toLong).get
+  implicit def numChar2PosZFloat(x: NumChar): PosZFloat = PosZFloat.from(x.toFloat).get
+  implicit def numChar2PosZDouble(x: NumChar): PosZDouble = PosZDouble.from(x.toDouble).get
 }
 
