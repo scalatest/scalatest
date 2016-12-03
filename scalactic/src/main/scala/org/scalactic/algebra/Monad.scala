@@ -76,7 +76,8 @@ object Monad {
   def apply[Context[_]](implicit ev: Monad[Context]): Monad[Context] = ev
 
   private class ListMonad extends Monad[List] {
-    override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
+    override def flatMap[A, B](ca: List[A])(f: A => List[B]): List[B] = ca.flatMap(f)
+    override def applying[A, B](ca: List[A])(cab: List[A => B]): List[B] = ca.flatMap(a => cab.map(ab => ab(a)))
     override def insert[A](a: A): List[A] = List(a)
   }
 
@@ -84,6 +85,7 @@ object Monad {
 
   private class OptionMonad extends Monad[Option] {
     override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
+    override def applying[A, B](ca: Option[A])(cab: Option[A => B]): Option[B] = ca.flatMap(a => cab.map(ab => ab(a)))
     override def insert[A](a: A): Option[A] = Option(a)
   }
 
@@ -94,6 +96,7 @@ object Monad {
   private class OrMonad[BAD] extends Monad[Or.B[BAD]#G] {
     override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
       ca.flatMap(f)
+    override def applying[A, B](ca: Or.B[BAD]#G[A])(cab: Or.B[BAD]#G[A => B]): Or.B[BAD]#G[B] = ca.flatMap(a => cab.map(ab => ab(a)))
     override def insert[A](a: A): Or.B[BAD]#G[A] = Good(a)
   }
 

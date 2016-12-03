@@ -32,15 +32,19 @@ import scala.language.higherKinds
  * contains a "flatMap" operation and obeys the laws of associativity, right identity,
  * and left identity.
  */
-class MonadLaws[Context[_], A, B, C] private (
+class MonadLaws[Context[_], A, B, C] protected (
   implicit monad: Monad[Context],
   genA: Generator[A],
   genCa: Generator[Context[A]],
   genAcb: Generator[A => Context[B]],
-  genBcc: Generator[B => Context[C]]
-) extends Laws {
+  genBcc: Generator[B => Context[C]],
+  genAb: Generator[A => B],
+  genBc: Generator[B => C],
+  genCab: Generator[Context[A => B]],
+  genCbc: Generator[Context[B => C]]
+) extends ApplicativeLaws[Context, A, B, C] {
 
-  val lawsName = "monad"
+  override val lawsName = "monad"
 
   override def laws =
     Vector(
@@ -61,7 +65,7 @@ class MonadLaws[Context[_], A, B, C] private (
           (monad.insert(a) flatMap acb) shouldEqual acb(a)
         }
       }
-    )
+    ) ++ super.laws
 }
 
 object MonadLaws {
@@ -69,8 +73,12 @@ object MonadLaws {
     implicit monad: Monad[Context],
     genA: Generator[Int],
     genCa: Generator[Context[Int]],
-    genCab: Generator[Int => Context[Short]],
-    genCbc: Generator[Short => Context[Byte]]
+    genAcb: Generator[Int => Context[Short]],
+    genBcc: Generator[Short => Context[Byte]],
+    genAb: Generator[Int => Short],
+    genBc: Generator[Short => Byte],
+    genCab: Generator[Context[Int => Short]],
+    genCbc: Generator[Context[Short => Byte]]
   ): MonadLaws[Context, Int, Short, Byte] = new MonadLaws[Context, Int, Short, Byte]
 }
 

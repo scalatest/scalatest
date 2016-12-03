@@ -27,7 +27,7 @@ import Applicative.adapters
 
 import scala.language.higherKinds
 
-class ApplicativeLaws[Context[_], A, B, C] private (
+class ApplicativeLaws[Context[_], A, B, C] protected (
   implicit ap: Applicative[Context],
   genA: Generator[A],
   genCa: Generator[Context[A]],
@@ -35,11 +35,12 @@ class ApplicativeLaws[Context[_], A, B, C] private (
   genBc: Generator[B => C],
   genCab: Generator[Context[A => B]],
   genCbc: Generator[Context[B => C]]
-) extends Laws {
+) extends FunctorLaws[Context, A, B, C] {
 
-  val lawsName = "applicative"
+  override val lawsName = "applicative"
 
   override def laws =
+
     Vector(
       law("composition") {
         forAll { (ca: Context[A], cab: Context[A => B], cbc: Context[B => C]) =>
@@ -67,7 +68,7 @@ class ApplicativeLaws[Context[_], A, B, C] private (
           (ap.insert(a) applying cab) shouldEqual (cab applying ap.insert((f: A => B) => f(a)))
         }
       }
-    )
+    ) ++ super.laws
 }
 
 object ApplicativeLaws {

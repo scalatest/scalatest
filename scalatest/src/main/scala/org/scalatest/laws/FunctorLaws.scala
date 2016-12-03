@@ -27,7 +27,7 @@ import Functor.adapters
 
 import scala.language.higherKinds
 
-class FunctorLaws[Context[_], A, B, C] private (
+class FunctorLaws[Context[_], A, B, C] protected (
   implicit functor: Functor[Context],
   genCa: Generator[Context[A]],
   genAb: Generator[A => B],
@@ -62,4 +62,11 @@ object FunctorLaws {
     genAb: Generator[Int => Short],
     genBc: Generator[Short => Byte]
   ): FunctorLaws[Context, Int, Short, Byte] = new FunctorLaws[Context, Int, Short, Byte]
+
+  def using[Context[_], A, B, C](
+    implicit functor: Functor[Context],
+    genCa: Generator[Context[A]],
+    genAb: Generator[A => B],
+    genBc: Generator[B => C]
+  ): FunctorLaws[Context, A, B, C] = new FunctorLaws[Context, A, B, C]
 }
