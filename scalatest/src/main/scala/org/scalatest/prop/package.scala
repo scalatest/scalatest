@@ -20,7 +20,8 @@ import scala.annotation.tailrec
 
 package object prop {
 
-  def generate[B](a: Any, f: Int => Int)(implicit genOfB: Generator[B]): B = {
+  // Called by the general function1 generator.
+  def valueOf[B](a: Any, f: Int => Int)(implicit genOfB: Generator[B]): B = {
    val seed = (f(a.hashCode)).toLong
    val rnd = Randomizer(seed)
    val (size, nextRnd) = rnd.chooseInt(1, 100)

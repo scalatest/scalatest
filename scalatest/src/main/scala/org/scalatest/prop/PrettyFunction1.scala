@@ -18,23 +18,5 @@ package org.scalatest.prop
 trait PrettyFunction1[A, B] extends (A => B) {
   val paramName: String
   val paramTypeName: String
-}
-
-object PrettyFunction1 {
-  def chain[A, B, C](aToBPretty: PrettyFunction1[A, B], bToCPretty: PrettyFunction1[B, C]): PrettyFunction1[A, C] =
-    new PrettyFunction1[A, C] {
-      def apply(a: A): C = {
-        val f = aToBPretty
-        val g = bToCPretty
-        g(f(a))
-      }
-      val paramName = aToBPretty.paramName
-      val paramTypeName = aToBPretty.paramTypeName
-      override def toString = {
-        s"(${aToBPretty.paramName}: ${aToBPretty.paramTypeName}) => { " + 
-        s"val f = ${aToBPretty.toString}; " +
-        s"val g = ${bToCPretty.toString}; " +
-        s"g(f(${aToBPretty.paramName})) }"
-      }
-    }
+  val simpleName: String
 }
