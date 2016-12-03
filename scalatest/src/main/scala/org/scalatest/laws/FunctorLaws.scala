@@ -40,13 +40,13 @@ class FunctorLaws[Context[_], A, B, C] protected (
     Vector(
       law("identity") {
         forAll { (ctxOfA: Context[A]) =>
-          (ctxOfA map identity[A]) shouldEqual ctxOfA
+          ctxOfA.map(identity[A]) shouldEqual ctxOfA
         }
       },
 
       law("composition") {
         forAll { (ctxOfA: Context[A], aToB: A => B, bToC: B => C) =>
-          ((ctxOfA map aToB) map bToC) shouldEqual (ctxOfA map (bToC compose aToB))
+          ctxOfA.map(aToB).map(bToC) shouldEqual ctxOfA.map(bToC.compose(aToB))
         }
       }
     )

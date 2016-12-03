@@ -44,7 +44,7 @@ class ApplicativeLaws[Context[_], A, B, C] protected (
     Vector(
       law("composition") {
         forAll { (ctxOfA: Context[A], ctxOfAToB: Context[A => B], ctxOfBToC: Context[B => C]) =>
-          ((ctxOfA applying ctxOfAToB) applying ctxOfBToC) shouldEqual
+          ctxOfA.applying(ctxOfAToB).applying(ctxOfBToC) shouldEqual
             (ctxOfA applying (ctxOfAToB applying (ctxOfBToC map ( (g: B => C) => (f: A => B) => g compose f))))
         }
       },
@@ -52,20 +52,21 @@ class ApplicativeLaws[Context[_], A, B, C] protected (
       // ctxOfA ap (a => a) should be the same as ctxOfA
       law("identity") {
         forAll { (ctxOfA: Context[A]) =>
-          (ctxOfA applying ap.insert((a: A) => a)) shouldEqual ctxOfA
+// TODO: Change this to identity[A]
+          ctxOfA.applying(ap.insert((a: A) => a)) shouldEqual ctxOfA
         }
       },
 
       // (insert(a) ap insert(aToB)) should be the same as insert(aToB(a))
       law("homomorphism") {
         forAll { (a: A, aToB: A => B) =>
-          (ap.insert(a) applying ap.insert(aToB)) shouldEqual ap.insert(aToB(a))
+          ap.insert(a).applying(ap.insert(aToB)) shouldEqual ap.insert(aToB(a))
         }
       },
 
       law("interchange") {
         forAll { (a: A, ctxOfAToB: Context[A => B]) =>
-          (ap.insert(a) applying ctxOfAToB) shouldEqual (ctxOfAToB applying ap.insert((f: A => B) => f(a)))
+          ap.insert(a).applying(ctxOfAToB) shouldEqual ctxOfAToB.applying(ap.insert((f: A => B) => f(a)))
         }
       }
     ) ++ super.laws
