@@ -29,9 +29,9 @@ import scala.language.higherKinds
 
 class FunctorLaws[Context[_], A, B, C] protected (
   implicit functor: Functor[Context],
-  genCa: Generator[Context[A]],
-  genAb: Generator[A => B],
-  genBc: Generator[B => C]
+  genCtxOfA: Generator[Context[A]],
+  genAToB: Generator[A => B],
+  genBToC: Generator[B => C]
 ) extends Laws {
 
   val lawsName = "functor"
@@ -39,14 +39,14 @@ class FunctorLaws[Context[_], A, B, C] protected (
   override def laws =
     Vector(
       law("identity") {
-        forAll { (ca: Context[A]) =>
-          (ca map identity[A]) shouldEqual ca
+        forAll { (ctxOfA: Context[A]) =>
+          (ctxOfA map identity[A]) shouldEqual ctxOfA
         }
       },
 
       law("composition") {
-        forAll { (ca: Context[A], ab: A => B, bc: B => C) =>
-          ((ca map ab) map bc) shouldEqual (ca map (bc compose ab))
+        forAll { (ctxOfA: Context[A], aToB: A => B, bToC: B => C) =>
+          ((ctxOfA map aToB) map bToC) shouldEqual (ctxOfA map (bToC compose aToB))
         }
       }
     )
@@ -58,15 +58,15 @@ object FunctorLaws {
   // type C = Byte
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    genCa: Generator[Context[Int]],
-    genAb: Generator[Int => Short],
-    genBc: Generator[Short => Byte]
+    genCtxOfA: Generator[Context[Int]],
+    genAToB: Generator[Int => Short],
+    genBToC: Generator[Short => Byte]
   ): FunctorLaws[Context, Int, Short, Byte] = new FunctorLaws[Context, Int, Short, Byte]
 
   def using[Context[_], A, B, C](
     implicit functor: Functor[Context],
-    genCa: Generator[Context[A]],
-    genAb: Generator[A => B],
-    genBc: Generator[B => C]
+    genCtxOfA: Generator[Context[A]],
+    genAToB: Generator[A => B],
+    genBToC: Generator[B => C]
   ): FunctorLaws[Context, A, B, C] = new FunctorLaws[Context, A, B, C]
 }

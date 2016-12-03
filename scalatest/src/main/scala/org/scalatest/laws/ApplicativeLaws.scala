@@ -30,11 +30,11 @@ import scala.language.higherKinds
 class ApplicativeLaws[Context[_], A, B, C] protected (
   implicit ap: Applicative[Context],
   genA: Generator[A],
-  genCa: Generator[Context[A]],
-  genAb: Generator[A => B],
-  genBc: Generator[B => C],
-  genCab: Generator[Context[A => B]],
-  genCbc: Generator[Context[B => C]]
+  genCtxOfA: Generator[Context[A]],
+  genAToB: Generator[A => B],
+  genBToC: Generator[B => C],
+  genCtxOfAToB: Generator[Context[A => B]],
+  genCtxOfBToC: Generator[Context[B => C]]
 ) extends FunctorLaws[Context, A, B, C] {
 
   override val lawsName = "applicative"
@@ -43,29 +43,29 @@ class ApplicativeLaws[Context[_], A, B, C] protected (
 
     Vector(
       law("composition") {
-        forAll { (ca: Context[A], cab: Context[A => B], cbc: Context[B => C]) =>
-          ((ca applying cab) applying cbc) shouldEqual
-            (ca applying (cab applying (cbc map ( (g: B => C) => (f: A => B) => g compose f))))
+        forAll { (ctxOfA: Context[A], ctxOfAToB: Context[A => B], ctxOfBToC: Context[B => C]) =>
+          ((ctxOfA applying ctxOfAToB) applying ctxOfBToC) shouldEqual
+            (ctxOfA applying (ctxOfAToB applying (ctxOfBToC map ( (g: B => C) => (f: A => B) => g compose f))))
         }
       },
 
-      // ca ap (a => a) should be the same as ca
+      // ctxOfA ap (a => a) should be the same as ctxOfA
       law("identity") {
-        forAll { (ca: Context[A]) =>
-          (ca applying ap.insert((a: A) => a)) shouldEqual ca
+        forAll { (ctxOfA: Context[A]) =>
+          (ctxOfA applying ap.insert((a: A) => a)) shouldEqual ctxOfA
         }
       },
 
-      // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
+      // (insert(a) ap insert(aToB)) should be the same as insert(aToB(a))
       law("homomorphism") {
-        forAll { (a: A, ab: A => B) =>
-          (ap.insert(a) applying ap.insert(ab)) shouldEqual ap.insert(ab(a))
+        forAll { (a: A, aToB: A => B) =>
+          (ap.insert(a) applying ap.insert(aToB)) shouldEqual ap.insert(aToB(a))
         }
       },
 
       law("interchange") {
-        forAll { (a: A, cab: Context[A => B]) =>
-          (ap.insert(a) applying cab) shouldEqual (cab applying ap.insert((f: A => B) => f(a)))
+        forAll { (a: A, ctxOfAToB: Context[A => B]) =>
+          (ap.insert(a) applying ctxOfAToB) shouldEqual (ctxOfAToB applying ap.insert((f: A => B) => f(a)))
         }
       }
     ) ++ super.laws
@@ -78,13 +78,14 @@ object ApplicativeLaws {
   def apply[Context[_]](
     implicit ap: Applicative[Context],
     genA: Generator[Int],
-    genCa: Generator[Context[Int]],
-    genAb: Generator[Int => Short],
-    genBc: Generator[Short => Byte],
-    genCab: Generator[Context[Int => Short]],
-    genCbc: Generator[Context[Short => Byte]]
+    genCtxOfA: Generator[Context[Int]],
+    genAToB: Generator[Int => Short],
+    genBToC: Generator[Short => Byte],
+    genCtxOfAToB: Generator[Context[Int => Short]],
+    genCtxOfBToC: Generator[Context[Short => Byte]]
   ): ApplicativeLaws[Context, Int, Short, Byte] = new ApplicativeLaws[Context, Int, Short, Byte]
 
-  // Can offer a withTypes[List, Float, Double, String], etc., kind of factory method
+  // Can offer a usingTypes[List, Float, Double, String], etc., kind of factory method
+  // List should obey the FunctorLaws.usingTypes[List, String, Long, List[Int]]
 }
 

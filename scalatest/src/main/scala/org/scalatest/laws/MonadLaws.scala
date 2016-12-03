@@ -35,13 +35,13 @@ import scala.language.higherKinds
 class MonadLaws[Context[_], A, B, C] protected (
   implicit monad: Monad[Context],
   genA: Generator[A],
-  genCa: Generator[Context[A]],
+  genCtxOfA: Generator[Context[A]],
   genAcb: Generator[A => Context[B]],
-  genBcc: Generator[B => Context[C]],
-  genAb: Generator[A => B],
-  genBc: Generator[B => C],
-  genCab: Generator[Context[A => B]],
-  genCbc: Generator[Context[B => C]]
+  genBToCc: Generator[B => Context[C]],
+  genAToB: Generator[A => B],
+  genBToC: Generator[B => C],
+  genCtxOfAToB: Generator[Context[A => B]],
+  genCtxOfBToC: Generator[Context[B => C]]
 ) extends ApplicativeLaws[Context, A, B, C] {
 
   override val lawsName = "monad"
@@ -49,20 +49,20 @@ class MonadLaws[Context[_], A, B, C] protected (
   override def laws =
     Vector(
       law("associativity") {
-        forAll { (ca: Context[A], acb: A => Context[B], bcc: B => Context[C]) =>
-          ((ca flatMap acb) flatMap bcc) shouldEqual (ca flatMap (a => acb(a) flatMap bcc))
+        forAll { (ctxOfA: Context[A], aToCtxOfB: A => Context[B], bToCtxOfC: B => Context[C]) =>
+          ((ctxOfA flatMap aToCtxOfB) flatMap bToCtxOfC) shouldEqual (ctxOfA flatMap (a => aToCtxOfB(a) flatMap bToCtxOfC))
         }
       },
 
       law("left identity") {
-        forAll { (ca: Context[A]) =>
-          ca.flatMap(a => monad.insert(a)) shouldEqual ca
+        forAll { (ctxOfA: Context[A]) =>
+          ctxOfA.flatMap(a => monad.insert(a)) shouldEqual ctxOfA
         }
       },
 
       law("right identity") {
-        forAll { (a: A, acb: A => Context[B]) =>
-          (monad.insert(a) flatMap acb) shouldEqual acb(a)
+        forAll { (a: A, aToCtxOfB: A => Context[B]) =>
+          (monad.insert(a) flatMap aToCtxOfB) shouldEqual aToCtxOfB(a)
         }
       }
     ) ++ super.laws
@@ -72,13 +72,13 @@ object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
     genA: Generator[Int],
-    genCa: Generator[Context[Int]],
+    genCtxOfA: Generator[Context[Int]],
     genAcb: Generator[Int => Context[Short]],
-    genBcc: Generator[Short => Context[Byte]],
-    genAb: Generator[Int => Short],
-    genBc: Generator[Short => Byte],
-    genCab: Generator[Context[Int => Short]],
-    genCbc: Generator[Context[Short => Byte]]
+    genBToCc: Generator[Short => Context[Byte]],
+    genAToB: Generator[Int => Short],
+    genBToC: Generator[Short => Byte],
+    genCtxOfAToB: Generator[Context[Int => Short]],
+    genCtxOfBToC: Generator[Context[Short => Byte]]
   ): MonadLaws[Context, Int, Short, Byte] = new MonadLaws[Context, Int, Short, Byte]
 }
 
