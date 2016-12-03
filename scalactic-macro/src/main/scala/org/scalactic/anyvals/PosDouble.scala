@@ -347,9 +347,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PosZLong = PosZLong.from(math.round(value)).get // Also could be zero.
-  def ceil: PosDouble = PosDouble.from(math.ceil(value)).get // I think this one is safe, but try NaN
-  def floor: PosZDouble = PosZDouble.from(math.floor(value)).get // Could be zero.
+  def round: PosZLong = PosZLong.ensuringValid(math.round(value)) // Also could be zero.
+  def ceil: PosDouble = PosDouble.ensuringValid(math.ceil(value)) // I think this one is safe, but try NaN
+  def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value)) // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -425,13 +425,13 @@ object PosDouble {
    * The largest value representable as a positive <code>Double</code>,
    * which is <code>PosDouble(1.7976931348623157E308)</code>.
    */
-  final val MaxValue: PosDouble = PosDouble.from(Double.MaxValue).get
+  final val MaxValue: PosDouble = PosDouble.ensuringValid(Double.MaxValue)
 
   /**
    * The smallest value representable as a positive
    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
    */
-  final val MinValue: PosDouble = PosDouble.from(Double.MinPositiveValue).get // Can't use the macro here
+  final val MinValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosDouble]</code> given a
@@ -523,7 +523,7 @@ object PosDouble {
    * @return the <code>Double</code> value underlying the specified
    *     <code>PosDouble</code> wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
    * Implicit Ordering instance.

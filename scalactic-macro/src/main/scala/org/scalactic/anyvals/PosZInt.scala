@@ -685,13 +685,13 @@ object PosZInt {
    * The largest value representable as a non-negative <code>Int</code>,
    * which is <code>PosZInt(2147483647)</code>.
    */
-  final val MaxValue: PosZInt = PosZInt.from(Int.MaxValue).get
+  final val MaxValue: PosZInt = PosZInt.ensuringValid(Int.MaxValue)
 
   /**
    * The smallest value representable as a non-negative <code>Int</code>,
    * which is <code>PosZInt(0)</code>.
    */
-  final val MinValue: PosZInt = PosZInt.from(0).get // Can't use the macro here
+  final val MinValue: PosZInt = PosZInt.ensuringValid(0) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZInt]</code> given an
@@ -815,7 +815,7 @@ object PosZInt {
    *     <code>PosZInt</code>, widened to <code>Long</code> and
    *     wrapped in a <code>PosZLong</code>.
    */
-  implicit def widenToPosZLong(poz: PosZInt): PosZLong = PosZLong.from(poz.value).get
+  implicit def widenToPosZLong(poz: PosZInt): PosZLong = PosZLong.ensuringValid(poz.value)
 
   /**
    * Implicit widening conversion from <code>PosZInt</code> to
@@ -826,7 +826,7 @@ object PosZInt {
    *     <code>PosZInt</code>, widened to <code>Float</code> and
    *     wrapped in a <code>PosZFloat</code>.
    */
-  implicit def widenToPosZFloat(poz: PosZInt): PosZFloat = PosZFloat.from(poz.value).get
+  implicit def widenToPosZFloat(poz: PosZInt): PosZFloat = PosZFloat.ensuringValid(poz.value)
 
   /**
    * Implicit widening conversion from <code>PosZInt</code> to
@@ -837,7 +837,7 @@ object PosZInt {
    *     <code>PosZInt</code>, widened to <code>Double</code>
    *     and wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(poz: PosZInt): PosZDouble = PosZDouble.from(poz.value).get
+  implicit def widenToPosZDouble(poz: PosZInt): PosZDouble = PosZDouble.ensuringValid(poz.value)
 
   /**
    * Implicit Ordering instance.

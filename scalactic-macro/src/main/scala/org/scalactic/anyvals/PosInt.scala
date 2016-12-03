@@ -677,11 +677,11 @@ object PosInt {
   /**
    * The largest value representable as a positive <code>Int</code>, which is <code>PosInt(2147483647)</code>.
    */
-  final val MaxValue: PosInt = PosInt.from(Int.MaxValue).get
+  final val MaxValue: PosInt = PosInt.ensuringValid(Int.MaxValue)
   /**
    * The smallest value representable as a positive <code>Int</code>, which is <code>PosInt(1)</code>.
    */
-  final val MinValue: PosInt = PosInt.from(1).get // Can't use the macro here
+  final val MinValue: PosInt = PosInt.ensuringValid(1) // Can't use the macro here
 
   // TODO: Use one method for validation, as suggested in I think the UK.
 
@@ -791,7 +791,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Long</code> and wrapped in a <code>PosLong</code>.
    */
-  implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.from(pos.value).get
+  implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosFloat</code>.
@@ -800,7 +800,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Float</code> and wrapped in a <code>PosFloat</code>.
    */
-  implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.from(pos.value).get
+  implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosDouble</code>.
@@ -809,7 +809,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Double</code> and wrapped in a <code>PosDouble</code>.
    */
-  implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.from(pos.value).get
+  implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZInt</code>.
@@ -818,7 +818,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    wrapped in a <code>PosZInt</code>.
    */
-  implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.from(pos.value).get
+  implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZLong</code>.
@@ -827,7 +827,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Long</code> and wrapped in a <code>PosZLong</code>.
    */
-  implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.from(pos.value).get
+  implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZFloat</code>.
@@ -836,7 +836,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Float</code> and wrapped in a <code>PosZFloat</code>.
    */
-  implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZDouble</code>.
@@ -845,7 +845,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Double</code> and wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
    * Implicit Ordering instance.

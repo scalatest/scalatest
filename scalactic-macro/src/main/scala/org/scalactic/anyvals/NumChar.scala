@@ -34,8 +34,8 @@ private[scalactic] final class NumChar private (val value: Char) extends AnyVal 
     if (math.min(value.toInt, that.value.toInt) == value.toInt) this
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
-  def asDigitPosInt: PosInt = PosInt.from(asDigit).get
-  def asDigitPosZInt: PosZInt = PosZInt.from(asDigit).get
+  def asDigitPosInt: PosInt = PosInt.ensuringValid(asDigit)
+  def asDigitPosZInt: PosZInt = PosZInt.ensuringValid(asDigit)
 
  /**
  * Returns the bitwise negation of this value.
@@ -438,14 +438,14 @@ private[scalactic] object NumChar {
   implicit def numChar2Float(x: NumChar): Float = x.toFloat
   implicit def numChar2Double(x: NumChar): Double = x.toDouble
 
-  implicit def numChar2PosInt(x: NumChar): PosInt = PosInt.from(x.toInt).get
-  implicit def numChar2PosLong(x: NumChar): PosLong = PosLong.from(x.toLong).get
-  implicit def numChar2PosFloat(x: NumChar): PosFloat = PosFloat.from(x.toFloat).get
-  implicit def numChar2PosDouble(x: NumChar): PosDouble = PosDouble.from(x.toDouble).get
+  implicit def numChar2PosInt(x: NumChar): PosInt = PosInt.ensuringValid(x.toInt)
+  implicit def numChar2PosLong(x: NumChar): PosLong = PosLong.ensuringValid(x.toLong)
+  implicit def numChar2PosFloat(x: NumChar): PosFloat = PosFloat.ensuringValid(x.toFloat)
+  implicit def numChar2PosDouble(x: NumChar): PosDouble = PosDouble.ensuringValid(x.toDouble)
 
-  implicit def numChar2PosZInt(x: NumChar): PosZInt = PosZInt.from(x.toInt).get
-  implicit def numChar2PosZLong(x: NumChar): PosZLong = PosZLong.from(x.toLong).get
-  implicit def numChar2PosZFloat(x: NumChar): PosZFloat = PosZFloat.from(x.toFloat).get
-  implicit def numChar2PosZDouble(x: NumChar): PosZDouble = PosZDouble.from(x.toDouble).get
+  implicit def numChar2PosZInt(x: NumChar): PosZInt = PosZInt.ensuringValid(x.toInt)
+  implicit def numChar2PosZLong(x: NumChar): PosZLong = PosZLong.ensuringValid(x.toLong)
+  implicit def numChar2PosZFloat(x: NumChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
+  implicit def numChar2PosZDouble(x: NumChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
 }
 

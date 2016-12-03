@@ -347,10 +347,10 @@ final class PosFloat private (val value: Float) extends AnyVal {
 
   def round: PosZInt = {
     import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+    import scala.util.Success
+    import scala.util.Try
     val roundedInt: Int = math.round(value)
-    val result = Try(PosZInt.from(math.round(value)).get)
+    val result = Try(PosZInt.ensuringValid(math.round(value)))
     result match {
       case Failure(ex) => println("PosZInt round failed")
         println(s"value was $value")
@@ -358,10 +358,9 @@ import scala.util.Try
         throw ex
       case Success(v) => v
     }
-    // PosZInt.from(math.round(value)).get // Also could be zero.
   }
-  def ceil: PosFloat = PosFloat.from(math.ceil(value.toDouble).toFloat).get // I think this one is safe, but try NaN
-  def floor: PosZFloat = PosZFloat.from(math.floor(value.toDouble).toFloat).get // Could be zero.
+  def ceil: PosFloat = PosFloat.ensuringValid(math.ceil(value.toDouble).toFloat) // I think this one is safe, but try NaN
+  def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value.toDouble).toFloat) // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -437,13 +436,13 @@ object PosFloat {
    * The largest value representable as a positive <code>Float</code>,
    * which is <code>PosFloat(3.4028235E38)</code>.
    */
-  final val MaxValue: PosFloat = PosFloat.from(Float.MaxValue).get
+  final val MaxValue: PosFloat = PosFloat.ensuringValid(Float.MaxValue)
 
   /**
    * The smallest value representable as a positive
    * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
    */
-  final val MinValue: PosFloat = PosFloat.from(Float.MinPositiveValue).get // Can't use the macro here
+  final val MinValue: PosFloat = PosFloat.ensuringValid(Float.MinPositiveValue) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosFloat]</code> given a
@@ -548,7 +547,7 @@ object PosFloat {
    *     <code>Double</code> and wrapped in a
    *     <code>PosDouble</code>.
    */
-  implicit def widenToPosDouble(pos: PosFloat): PosDouble = PosDouble.from(pos.value).get
+  implicit def widenToPosDouble(pos: PosFloat): PosDouble = PosDouble.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosFloat</code> to
@@ -559,7 +558,7 @@ object PosFloat {
    * specified <code>PosFloat</code> wrapped in a
    * <code>PosZFloat</code>.
    */
-  implicit def widenToPosZFloat(pos: PosFloat): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosFloat): PosZFloat = PosZFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosFloat</code> to
@@ -571,7 +570,7 @@ object PosFloat {
    *     <code>Double</code> and wrapped in a
    *     <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
    * Implicit Ordering instance.
