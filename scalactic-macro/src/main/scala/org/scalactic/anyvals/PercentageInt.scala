@@ -16,21 +16,21 @@
 package org.scalactic.anyvals
 
 // These are here emporaritly for testing, because need to have the compile separate. Can't I just move them?
-private[scalactic] final class Percent private (val value: Int) extends AnyVal {
-  override def toString: String = s"Percent($value)"
+private[scalactic] final class PercentageInt private (val value: Int) extends AnyVal {
+  override def toString: String = s"PercentageInt($value)"
 }
 
-private[scalactic] object Percent {
+private[scalactic] object PercentageInt {
 
-  def from(value: Int): Option[Percent] =
-    if (PercentMacro.isValid(value)) Some(new Percent(value)) else None
+  def from(value: Int): Option[PercentageInt] =
+    if (PercentageIntMacro.isValid(value)) Some(new PercentageInt(value)) else None
 
-  def ensuringValid(value: Int): Percent =
-    if (PercentMacro.isValid(value)) new Percent(value) else {
-      throw new AssertionError(s"$value was not a valid Percent")
+  def ensuringValid(value: Int): PercentageInt =
+    if (PercentageIntMacro.isValid(value)) new PercentageInt(value) else {
+      throw new AssertionError(s"$value was not a valid PercentageInt")
     }
 
   import scala.language.experimental.macros
-  def apply(value: Int): Percent = macro PercentMacro.apply
+  def apply(value: Int): PercentageInt = macro PercentageIntMacro.apply
 }
 
