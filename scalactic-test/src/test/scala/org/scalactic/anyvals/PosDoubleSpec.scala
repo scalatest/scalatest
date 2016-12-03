@@ -69,6 +69,27 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(-99.9)
       }
     } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Double is greater than 0") {
+        PosDouble.isValid(50.23) shouldBe true
+        PosDouble.isValid(100.0) shouldBe true
+        PosDouble.isValid(0.0) shouldBe false
+        PosDouble.isValid(-0.0) shouldBe false
+        PosDouble.isValid(-0.00001) shouldBe false
+        PosDouble.isValid(-99.9) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosDouble if the passed Double is greater than 0") {
+        PosDouble.fromOrElse(50.23, PosDouble(42.0)).value shouldBe 50.23
+        PosDouble.fromOrElse(100.0, PosDouble(42.0)).value shouldBe 100.0
+      }
+      it("returns a given default if the passed Double is NOT greater than 0") {
+        PosDouble.fromOrElse(0.0, PosDouble(42.0)).value shouldBe 42.0
+        PosDouble.fromOrElse(-0.00001, PosDouble(42.0)).value shouldBe 42.0
+        PosDouble.fromOrElse(-99.9, PosDouble(42.0)).value shouldBe 42.0
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual

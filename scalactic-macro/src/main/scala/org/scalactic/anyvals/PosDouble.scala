@@ -498,6 +498,45 @@ object PosDouble {
       throw new AssertionError(s"$value was not a valid PosDouble")
     }
 
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Double</code> value is positive.
+   *
+   * @param value the <code>Double</code> to inspect, and if positive, return true.
+   * @return true if the specified <code>Double</code> is positive, else false.
+   */
+  def isValid(value: Double): Boolean = PosDoubleMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosDouble</code> given a
+   * <code>Double</code> value and a default <code>PosDouble</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value and if
+   * it is a positive <code>Double</code>, <em>i.e.</em>, a value greater
+   * than 0.0, it will return a <code>PosDouble</code> representing that value.
+   * Otherwise, the passed <code>Double</code> value is 0.0 or negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if positive, return.
+   * @param default the <code>PosDouble</code> to return if the passed
+   *     <code>Double</code> value is not positive.
+   * @return the specified <code>Double</code> value wrapped in a
+   *     <code>PosDouble</code>, if it is positive, else the
+   *     <code>default</code> <code>PosDouble</code> value.
+   */
+  def fromOrElse(value: Double, default: => PosDouble): PosDouble =
+    if (PosDoubleMacro.isValid(value)) new PosDouble(value) else default
+
   import language.experimental.macros
   import scala.language.implicitConversions
 

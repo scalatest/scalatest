@@ -493,6 +493,45 @@ object PosZFloat {
       throw new AssertionError(s"$value was not a valid PosZFloat")
     }
 
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Float</code> value is positive or zero.
+   *
+   * @param value the <code>Float</code> to inspect, and if positive or zero, return true.
+   * @return true if the specified <code>Float</code> is positive or zero, else false.
+   */
+  def isValid(value: Float): Boolean = PosZFloatMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosZFloat</code> given a
+   * <code>Float</code> value and a default <code>PosZFloat</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a positive or zero <code>Float</code>, <em>i.e.</em>, a value greater
+   * than or equal to 0.0f, it will return a <code>PosZFloat</code> representing that value.
+   * Otherwise, the passed <code>Float</code> value is negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if positive or zero, return.
+   * @param default the <code>PosZFloat</code> to return if the passed
+   *     <code>Float</code> value is not positive or zero.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>PosZFloat</code>, if it is positive or zero, else the
+   *     <code>default</code> <code>PosZFloat</code> value.
+   */
+  def fromOrElse(value: Float, default: => PosZFloat): PosZFloat =
+    if (PosZFloatMacro.isValid(value)) new PosZFloat(value) else default
+
   import language.experimental.macros
   import scala.language.implicitConversions
 

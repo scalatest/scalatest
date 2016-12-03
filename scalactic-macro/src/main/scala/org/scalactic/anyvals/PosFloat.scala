@@ -453,7 +453,7 @@ object PosFloat {
    * it is a positive <code>Float</code>, <em>i.e.</em>, a value greater
    * than 0.0, it will return a <code>PosFloat</code> representing that value,
    * wrapped in a <code>Some</code>. Otherwise, the passed <code>Float</code>
-   * value is 0.0 or negative, so this method will return <code>None</code>.
+   * value is 0.0f or negative, so this method will return <code>None</code>.
    * </p>
    *
    * <p>
@@ -482,7 +482,7 @@ object PosFloat {
    * This method will inspect the passed <code>Float</code> value and if
    * it is a positive <code>Float</code>, <em>i.e.</em>, a value greater
    * than 0.0, it will return a <code>PosFloat</code> representing that value.
-   * Otherwise, the passed <code>Float</code> value is 0.0 or negative, so
+   * Otherwise, the passed <code>Float</code> value is 0.0f or negative, so
    * this method will throw <code>AssertionError</code>.
    * </p>
    *
@@ -509,6 +509,45 @@ object PosFloat {
       throw new AssertionError(s"$value was not a valid PosFloat")
     }
 
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Float</code> value is positive.
+   *
+   * @param value the <code>Float</code> to inspect, and if positive, return true.
+   * @return true if the specified <code>Float</code> is positive, else false.
+   */
+  def isValid(value: Float): Boolean = PosFloatMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosFloat</code> given a
+   * <code>Float</code> value and a default <code>PosFloat</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a positive <code>Float</code>, <em>i.e.</em>, a value greater
+   * than 0.0, it will return a <code>PosFloat</code> representing that value.
+   * Otherwise, the passed <code>Float</code> value is 0.0f or negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if positive, return.
+   * @param default the <code>PosFloat</code> to return if the passed
+   *     <code>Float</code> value is not positive.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>PosFloat</code>, if it is positive, else the
+   *     <code>default</code> <code>PosFloat</code> value.
+   */
+  def fromOrElse(value: Float, default: => PosFloat): PosFloat =
+    if (PosFloatMacro.isValid(value)) new PosFloat(value) else default
+
   import language.experimental.macros
   import scala.language.implicitConversions
 
@@ -524,7 +563,7 @@ object PosFloat {
    * <em>i.e.</em>, with a value greater than 0.0, it will return
    * a <code>PosFloat</code> representing that value.  Otherwise,
    * the passed <code>Float</code> expression is either a literal
-   * that is 0.0 or negative, or is not a literal, so this method
+   * that is 0.0f or negative, or is not a literal, so this method
    * will give a compiler error.
    * </p>
    *

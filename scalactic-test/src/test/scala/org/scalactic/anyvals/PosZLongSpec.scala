@@ -84,6 +84,26 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
         an [AssertionError] should be thrownBy PosZLong.ensuringValid(-99L)
       }
     }
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Long is greater than or equal to 0") {
+        PosZLong.isValid(50L) shouldBe true
+        PosZLong.isValid(100L) shouldBe true
+        PosZLong.isValid(0L) shouldBe true
+        PosZLong.isValid(-0L) shouldBe true
+        PosZLong.isValid(-99L) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZLong if the passed Long is greater than or equal to 0") {
+        PosZLong.fromOrElse(50L, PosZLong(42L)).value shouldBe 50L
+        PosZLong.fromOrElse(100L, PosZLong(42L)).value shouldBe 100L
+        PosZLong.fromOrElse(0L, PosZLong(42L)).value shouldBe 0L
+      }
+      it("returns a given default if the passed Long is NOT greater than or equal to 0") {
+        PosZLong.fromOrElse(-1L, PosZLong(42L)).value shouldBe 42L
+        PosZLong.fromOrElse(-99L, PosZLong(42L)).value shouldBe 42L
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
       PosZLong.MinValue shouldEqual PosZLong(0L)

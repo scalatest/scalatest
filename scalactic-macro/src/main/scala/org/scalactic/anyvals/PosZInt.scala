@@ -761,6 +761,45 @@ object PosZInt {
       throw new AssertionError(s"$value was not a valid PosZInt")
     }
 
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Int</code> value is positive or zero.
+   *
+   * @param value the <code>Int</code> to inspect, and if positive or zero, return true.
+   * @return true if the specified <code>Int</code> is positive or zero, else false.
+   */
+  def isValid(value: Int): Boolean = PosZIntMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosZInt</code> given a
+   * <code>Int</code> value and a default <code>PosZInt</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive or zero <code>Int</code>, <em>i.e.</em>, a value greater
+   * than or equal to 0, it will return a <code>PosZInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> value is negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Int</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive or zero, return.
+   * @param default the <code>PosZInt</code> to return if the passed
+   *     <code>Int</code> value is not positive or zero.
+   * @return the specified <code>Int</code> value wrapped in a
+   *     <code>PosZInt</code>, if it is positive or zero, else the
+   *     <code>default</code> <code>PosZInt</code> value.
+   */
+  def fromOrElse(value: Int, default: => PosZInt): PosZInt =
+    if (PosZIntMacro.isValid(value)) new PosZInt(value) else default
+
   import language.experimental.macros
   import scala.language.implicitConversions
 
