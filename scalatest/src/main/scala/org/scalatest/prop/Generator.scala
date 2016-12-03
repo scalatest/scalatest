@@ -818,70 +818,130 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1IntToIntGenerator: Generator[Int => Int] = {
+  implicit val function1IntToIntGenerator: Generator[Int => Int] = {
     object IntToIntIdentity extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = i
       override def toString = "(i: Int) => i"
+      def simpleName: String = "i => i"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
     object IntToIntIncr extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = i + 1
       override def toString = "(i: Int) => i + 1"
+      def simpleName: String = "i => i + 1"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntIncrBy2 extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + 2
+      override def toString = "(i: Int) => i + 2"
+      def simpleName: String = "i => i + 2"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntIncrBy3 extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + 3
+      override def toString = "(i: Int) => i + 3"
+      def simpleName: String = "i => i + 3"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntIncrByMax extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + Int.MaxValue
+      override def toString = "(i: Int) => i + Int.MaxValue"
+      def simpleName: String = "i => i + Int.MaxValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntIncrByMin extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + Int.MinValue
+      override def toString = "(i: Int) => i + Int.MinValue"
+      def simpleName: String = "i => i + Int.MinValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntDecr extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - 1
+      override def toString = "(i: Int) => i - 1"
+      def simpleName: String = "i => i - 1"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntDecrBy2 extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - 2
+      override def toString = "(i: Int) => i - 2"
+      def simpleName: String = "i => i - 2"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntDecrBy3 extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - 3
+      override def toString = "(i: Int) => i - 3"
+      def simpleName: String = "i => i - 3"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntDecrByMax extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - Int.MaxValue
+      override def toString = "(i: Int) => i - Int.MaxValue"
+      def simpleName: String = "i => i - Int.MaxValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntDecrByMin extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - Int.MinValue
+      override def toString = "(i: Int) => i - Int.MinValue"
+      def simpleName: String = "i => i - Int.MinValue"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
     object IntToIntSquare extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i * 1
+      def apply(i: Int): Int = i * i
       override def toString = "(i: Int) => i * i"
+      def simpleName: String = "i => i"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntCube extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i * i * i
+      override def toString = "(i: Int) => i * i * i"
+      def simpleName: String = "i => i"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
     object IntToIntHalf extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = i / 2
       override def toString = "(i: Int) => i / 2"
+      def simpleName: String = "i => i / 2"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
-    object IntToIntAddMax extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i + Int.MaxValue
-      override def toString = "(i: Int) => i + Int.MaxValue"
+    object IntToIntThird extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i / 3
+      override def toString = "(i: Int) => i / 3"
+      def simpleName: String = "i => i / 3"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
-    object IntToIntAddMin extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i + Int.MinValue
-      override def toString = "(i: Int) => i + Int.MinValue"
-      val paramName: String = "i"
-      val paramTypeName: String = "Int"
-    }
-    object IntToIntSubtractMax extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i - Int.MaxValue
-      override def toString = "(i: Int) => i - Int.MaxValue"
-      val paramName: String = "i"
-      val paramTypeName: String = "Int"
-    }
-    object IntToIntSubtractMin extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i - Int.MinValue
-      override def toString = "(i: Int) => i - Int.MinValue"
-      val paramName: String = "i"
-      val paramTypeName: String = "Int"
-    }
-    object IntToIntAbs extends PrettyFunction1[Int, Int] {
-      def apply(i: Int): Int = i.abs
-      override def toString = "(i: Int) => i.abs"
+    object IntToIntFourth extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i / 3
+      override def toString = "(i: Int) => i / 4"
+      def simpleName: String = "i => i / 4"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
     object IntToIntNegate extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = -i
       override def toString = "(i: Int) => -i"
+      def simpleName: String = "i => -i"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
     object IntToIntComplement extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = ~i
       override def toString = "(i: Int) => ~i"
+      def simpleName: String = "i => ~i"
       val paramName: String = "i"
       val paramTypeName: String = "Int"
     }
@@ -889,13 +949,20 @@ object Generator extends LowerPriorityGeneratorImplicits {
       Vector(
         IntToIntIdentity,
         IntToIntIncr,
+        IntToIntIncrBy2,
+        IntToIntIncrBy3,
+        IntToIntIncrByMax,
+        IntToIntIncrByMin,
+        IntToIntDecr,
+        IntToIntDecrBy2,
+        IntToIntDecrBy3,
+        IntToIntDecrByMax,
+        IntToIntDecrByMin,
         IntToIntSquare,
+        IntToIntCube,
         IntToIntHalf,
-        IntToIntAddMax,
-        IntToIntAddMin,
-        IntToIntSubtractMax,
-        IntToIntSubtractMin,
-        IntToIntAbs,
+        IntToIntThird,
+        IntToIntFourth,
         IntToIntNegate,
         IntToIntComplement
       )
