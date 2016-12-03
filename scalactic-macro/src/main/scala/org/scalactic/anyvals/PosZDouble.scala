@@ -458,10 +458,82 @@ object PosZDouble {
   def from(value: Double): Option[PosZDouble] =
     if (PosZDoubleMacro.isValid(value)) Some(new PosZDouble(value)) else None
 
+  /**
+   * A factory/assertion method that produces an <code>PosZDouble</code> given a
+   * valid <code>Double</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Double</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value
+   * and if it is a non-negative <code>Double</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the passed <code>Double</code> value is negative,
+   * so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Double</code> is positive or zero.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if
+   *     non-negative, return wrapped in a
+   *     <code>PosZDouble</code>.
+   * @return the specified <code>Double</code> value wrapped
+   *     in a <code>PosZDouble</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not zero or positive
+   */
   def ensuringValid(value: Double): PosZDouble =
     if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else {
       throw new AssertionError(s"$value was not a valid PosZDouble")
     }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Double</code> value is positive or zero.
+   *
+   * @param value the <code>Double</code> to inspect, and if positive or zero, return true.
+   * @return true if the specified <code>Double</code> is positive or zero, else false.
+   */
+  def isValid(value: Double): Boolean = PosZDoubleMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosZDouble</code> given a
+   * <code>Double</code> value and a default <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value and if
+   * it is a positive or zero <code>Double</code>, <em>i.e.</em>, a value greater
+   * than or equal to 0.0, it will return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the passed <code>Double</code> value is negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if positive or zero, return.
+   * @param default the <code>PosZDouble</code> to return if the passed
+   *     <code>Double</code> value is not positive or zero.
+   * @return the specified <code>Double</code> value wrapped in a
+   *     <code>PosZDouble</code>, if it is positive or zero, else the
+   *     <code>default</code> <code>PosZDouble</code> value.
+   */
+  def fromOrElse(value: Double, default: => PosZDouble): PosZDouble =
+    if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else default
 
   import language.experimental.macros
   import scala.language.implicitConversions

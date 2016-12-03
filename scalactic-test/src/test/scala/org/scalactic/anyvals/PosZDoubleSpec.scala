@@ -77,6 +77,27 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-99.9)
       }
     } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Double is greater than or equal to 0") {
+        PosZDouble.isValid(50.23) shouldBe true
+        PosZDouble.isValid(100.0) shouldBe true
+        PosZDouble.isValid(0.0) shouldBe true
+        PosZDouble.isValid(-0.0) shouldBe true
+        PosZDouble.isValid(-0.00001) shouldBe false
+        PosZDouble.isValid(-99.9) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZDouble if the passed Double is greater than or equal to 0") {
+        PosZDouble.fromOrElse(50.23, PosZDouble(42.0)).value shouldBe 50.23
+        PosZDouble.fromOrElse(100.0, PosZDouble(42.0)).value shouldBe 100.0
+        PosZDouble.fromOrElse(0.0, PosZDouble(42.0)).value shouldBe 0.0
+      }
+      it("returns a given default if the passed Double is NOT greater than or equal to 0") {
+        PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)).value shouldBe 42.0
+        PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)

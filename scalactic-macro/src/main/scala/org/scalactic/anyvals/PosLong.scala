@@ -764,10 +764,80 @@ object PosLong {
   def from(value: Long): Option[PosLong] =
     if (PosLongMacro.isValid(value)) Some(new PosLong(value)) else None
 
+  /**
+   * A factory/assertion method that produces an <code>PosLong</code> given a
+   * valid <code>Long</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Long</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is 0 or negative, so
+   * this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Long</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Long</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Long</code> is positive.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return
+   *     wrapped in a <code>PosLong</code>.
+   * @return the specified <code>Long</code> value wrapped in a
+   *     <code>PosLong</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not positive
+   */
   def ensuringValid(value: Long): PosLong =
     if (PosLongMacro.isValid(value)) new PosLong(value) else {
       throw new AssertionError(s"$value was not a valid PosLong")
     }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Long</code> value is positive.
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return true.
+   * @return true if the specified <code>Long</code> is positive, else false.
+   */
+  def isValid(value: Long): Boolean = PosLongMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosLong</code> given a
+   * <code>Long</code> value and a default <code>PosLong</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+   * than 0.0, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is 0L or negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Long</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Long</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return.
+   * @param default the <code>PosLong</code> to return if the passed
+   *     <code>Long</code> value is not positive.
+   * @return the specified <code>Long</code> value wrapped in a
+   *     <code>PosLong</code>, if it is positive, else the
+   *     <code>default</code> <code>PosLong</code> value.
+   */
+  def fromOrElse(value: Long, default: => PosLong): PosLong =
+    if (PosLongMacro.isValid(value)) new PosLong(value) else default
 
   import language.experimental.macros
 

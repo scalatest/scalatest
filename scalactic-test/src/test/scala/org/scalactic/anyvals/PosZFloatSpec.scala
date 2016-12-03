@@ -75,6 +75,27 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(-99.9f)
       }
     } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Float is greater than or equal to 0") {
+        PosZFloat.isValid(50.23f) shouldBe true
+        PosZFloat.isValid(100.0f) shouldBe true
+        PosZFloat.isValid(0.0f) shouldBe true
+        PosZFloat.isValid(-0.0f) shouldBe true
+        PosZFloat.isValid(-0.00001f) shouldBe false
+        PosZFloat.isValid(-99.9f) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZFloat if the passed Float is greater than or equal to 0") {
+        PosZFloat.fromOrElse(50.23f, PosZFloat(42.0f)).value shouldBe 50.23f
+        PosZFloat.fromOrElse(100.0f, PosZFloat(42.0f)).value shouldBe 100.0f
+        PosZFloat.fromOrElse(0.0f, PosZFloat(42.0f)).value shouldBe 0.0f
+      }
+      it("returns a given default if the passed Float is NOT greater than or equal to 0") {
+        PosZFloat.fromOrElse(-0.00001f, PosZFloat(42.0f)).value shouldBe 42.0f
+        PosZFloat.fromOrElse(-99.9f, PosZFloat(42.0f)).value shouldBe 42.0f
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosZFloat.MaxValue shouldEqual PosZFloat.from(Float.MaxValue).get
       PosZFloat.MinValue shouldEqual PosZFloat(0.0f)
