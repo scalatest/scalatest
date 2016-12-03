@@ -15,20 +15,20 @@
 */
 package org.scalactic.anyvals
 
-private[scalactic] final class DigitString private (val value: String) extends AnyVal {
-  override def toString: String = s"DigitString($value)"
+private[scalactic] final class NumString private (val value: String) extends AnyVal {
+  override def toString: String = s"NumString($value)"
 }
 
-private[scalactic] object DigitString {
-  def from(value: String): Option[DigitString] =
-    if (DigitStringMacro.isValid(value)) Some(new DigitString(value)) else None
+private[scalactic] object NumString {
+  def from(value: String): Option[NumString] =
+    if (NumStringMacro.isValid(value)) Some(new NumString(value)) else None
 
-  def ensuringValid(value: String): DigitString =
-    if (DigitStringMacro.isValid(value)) new DigitString(value) else {
-      throw new AssertionError(s"$value was not a valid DigitString")
+  def ensuringValid(value: String): NumString =
+    if (NumStringMacro.isValid(value)) new NumString(value) else {
+      throw new AssertionError(s"$value was not a valid NumString")
     }
 
   import scala.language.experimental.macros
-  def apply(value: String): DigitString = macro DigitStringMacro.apply
+  def apply(value: String): NumString = macro NumStringMacro.apply
 }
 
