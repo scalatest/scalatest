@@ -1091,6 +1091,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+    describe("for Short => Bytes") {
+      it("should have toString and simpleName that doesn't include org.scalatest.prop.valueOf") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (f: Short => Byte) =>
+          f.toString should startWith ("(i: Short) => ")
+          f.toString should not include "org.scalatest.prop.valueOf"
+          import org.scalatest.Inside._
+          inside(f) { case prf: PrettyFunction1[_, _] => 
+            prf.simpleName should startWith ("i => ")
+            prf.simpleName should not include "org.scalatest.prop.valueOf"
+          }
+        }
+      }
+    }
   }
 }
 

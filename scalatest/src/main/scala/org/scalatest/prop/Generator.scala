@@ -1065,6 +1065,170 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
+  implicit val function1ShortToByteGenerator: Generator[Short => Byte] = {
+    object ShortToByteConvert extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = i.toByte
+      override def toString = "(i: Short) => i.toByte"
+      val simpleName: String = "i => i.toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteIncr extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i + 1).toByte
+      override def toString = "(i: Short) => (i + 1).toByte"
+      val simpleName: String = "i => (i + 1).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteIncrBy2 extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i + 2).toByte
+      override def toString = "(i: Short) => (i + 2).toByte"
+      val simpleName: String = "i => (i + 2).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteIncrBy3 extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i + 3).toByte
+      override def toString = "(i: Short) => (i + 3).toByte"
+      val simpleName: String = "i => (i + 3).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteIncrByMax extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i + Short.MaxValue).toByte
+      override def toString = "(i: Short) => (i + Short.MaxValue).toByte"
+      val simpleName: String = "i => (i + Short.MaxValue).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteIncrByMin extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i + Short.MinValue).toByte
+      override def toString = "(i: Short) => (i + Short.MinValue).toByte"
+      val simpleName: String = "i => (i + Short.MinValue).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteDecr extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i - 1).toByte
+      override def toString = "(i: Short) => (i - 1).toByte"
+      val simpleName: String = "i => (i - 1).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteDecrBy2 extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i - 2).toByte
+      override def toString = "(i: Short) => (i - 2).toByte"
+      val simpleName: String = "i => (i - 2).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteDecrBy3 extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i - 3).toByte
+      override def toString = "(i: Short) => (i - 3).toByte"
+      val simpleName: String = "i => (i - 3).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteDecrByMax extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i - Short.MaxValue).toByte
+      override def toString = "(i: Short) => (i - Short.MaxValue).toByte"
+      val simpleName: String = "i => (i - Short.MaxValue).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteDecrByMin extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i - Short.MinValue).toByte
+      override def toString = "(i: Short) => (i - Short.MinValue).toByte"
+      val simpleName: String = "i => (i - Short.MinValue).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteSquare extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i * i).toByte
+      override def toString = "(i: Short) => (i * i).toByte"
+      val simpleName: String = "i => (i).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteCube extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i * i * i).toByte
+      override def toString = "(i: Short) => (i * i * i).toByte"
+      val simpleName: String = "i => (i).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteHalf extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i / 2).toByte
+      override def toString = "(i: Short) => (i / 2).toByte"
+      val simpleName: String = "i => (i / 2).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteThird extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i / 3).toByte
+      override def toString = "(i: Short) => (i / 3).toByte"
+      val simpleName: String = "i => (i / 3).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteFourth extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (i / 3).toByte
+      override def toString = "(i: Short) => (i / 4).toByte"
+      val simpleName: String = "i => (i / 4).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteNegate extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (-i).toByte
+      override def toString = "(i: Short) => (-i).toByte"
+      val simpleName: String = "i => (-i).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    object ShortToByteComplement extends PrettyFunction1[Short, Byte] {
+      def apply(i: Short): Byte = (~i).toByte
+      override def toString = "(i: Short) => (~i).toByte"
+      val simpleName: String = "i => (~i).toByte"
+      val paramName: String = "i"
+      val paramTypeName: String = "Short"
+    }
+    val funs: Vector[Short => Byte] =
+      Vector(
+        ShortToByteConvert,
+        ShortToByteIncr,
+        ShortToByteIncrBy2,
+        ShortToByteIncrBy3,
+        ShortToByteIncrByMax,
+        ShortToByteIncrByMin,
+        ShortToByteDecr,
+        ShortToByteDecrBy2,
+        ShortToByteDecrBy3,
+        ShortToByteDecrByMax,
+        ShortToByteDecrByMin,
+        ShortToByteSquare,
+        ShortToByteCube,
+        ShortToByteHalf,
+        ShortToByteThird,
+        ShortToByteFourth,
+        ShortToByteNegate,
+        ShortToByteComplement
+      )
+    new Generator[Short => Byte] {
+      def next(size: Int, edges: List[Short => Byte], rnd: Randomizer): (Short => Byte, List[Short => Byte], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextShort, nextRnd) = rnd.nextShort
+            val idx = (if (nextShort == Short.MinValue) Short.MaxValue else nextShort.abs) % funs.length
+            (funs(idx), Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[Short => Byte]"
+    }
+  }
+
   implicit def function1AToBGenerator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(size: Int, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
