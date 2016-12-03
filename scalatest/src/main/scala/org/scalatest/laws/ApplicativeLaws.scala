@@ -27,13 +27,14 @@ import Applicative.adapters
 
 import scala.language.higherKinds
 
-class ApplicativeLaws[Context[_]] private (
+class ApplicativeLaws[Context[_], A, B, C] private (
   implicit ap: Applicative[Context],
-  genCa: Generator[Context[Int]],
-  genAb: Generator[Int => String],
-  genBc: Generator[String => Long],
-  genCab: Generator[Context[Int => String]],
-  genCbc: Generator[Context[String => Long]]
+  genA: Generator[A],
+  genCa: Generator[Context[A]],
+  genAb: Generator[A => B],
+  genBc: Generator[B => C],
+  genCab: Generator[Context[A => B]],
+  genCbc: Generator[Context[B => C]]
 ) extends Laws {
 
   val lawsName = "applicative"
@@ -41,41 +42,48 @@ class ApplicativeLaws[Context[_]] private (
   override def laws =
     Vector(
       law("composition") {
-        forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Long]) =>
-          ((ca applying cf) applying cg) shouldEqual
-            (ca applying (cf applying (cg map ( (g: String => Long) => (f: Int => String) => g compose f))))
+        forAll { (ca: Context[A], cab: Context[A => B], cbc: Context[B => C]) =>
+          ((ca applying cab) applying cbc) shouldEqual
+            (ca applying (cab applying (cbc map ( (g: B => C) => (f: A => B) => g compose f))))
         }
       },
 
       // ca ap (a => a) should be the same as ca
       law("identity") {
-        forAll { (ca: Context[Int]) =>
-          (ca applying ap.insert((a: Int) => a)) shouldEqual ca
+        forAll { (ca: Context[A]) =>
+          (ca applying ap.insert((a: A) => a)) shouldEqual ca
         }
       },
 
       // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
       law("homomorphism") {
-        forAll { (a: Int, f: Int => String) =>
-          (ap.insert(a) applying ap.insert(f)) shouldEqual ap.insert(f(a))
+        forAll { (a: A, ab: A => B) =>
+          (ap.insert(a) applying ap.insert(ab)) shouldEqual ap.insert(ab(a))
         }
       },
 
       law("interchange") {
-        forAll { (a: Int, cf: Context[Int => String]) =>
-          (ap.insert(a) applying cf) shouldEqual (cf applying ap.insert((f: Int => String) => f(a)))
+        forAll { (a: A, cab: Context[A => B]) =>
+          (ap.insert(a) applying cab) shouldEqual (cab applying ap.insert((f: A => B) => f(a)))
         }
       }
     )
 }
 
 object ApplicativeLaws {
+  // type A = Long
+  // type B = Int
+  // type C = Short
   def apply[Context[_]](
     implicit ap: Applicative[Context],
-    genCa: Generator[Context[Int]],
-    genAb: Generator[Int => String],
-    genBc: Generator[String => Long],
-    genCab: Generator[Context[Int => String]],
-    genCbc: Generator[Context[String => Long]]
-  ): ApplicativeLaws[Context] = new ApplicativeLaws[Context]
+    genA: Generator[Long],
+    genCa: Generator[Context[Long]],
+    genAb: Generator[Long => Int],
+    genBc: Generator[Int => Short],
+    genCab: Generator[Context[Long => Int]],
+    genCbc: Generator[Context[Int => Short]]
+  ): ApplicativeLaws[Context, Long, Int, Short] = new ApplicativeLaws[Context, Long, Int, Short]
+
+  // Can offer a withTypes[List, Float, Double, String], etc., kind of factory method
 }
+
