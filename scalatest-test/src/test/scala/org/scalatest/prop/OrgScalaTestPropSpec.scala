@@ -258,12 +258,25 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
       }
-      "returns a type that also offers a havingLength method that provies a generator for lists of a specific length" in {
+      "returns a type that also offers a havingLength method that provides a generator for lists of a specific length" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (posIntsBetween(1, 100)) { len => 
           forAll (lists[Int].havingLength(len)) { xs => xs.length shouldEqual len.value }
         }
-        // lists[Int].havingLengthsBetween(5, 20)
+      }
+      "returns a type that also offers a havingLengthsBetween method that provides a generator for lists of a specific length" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minsAndMaxes: Generator[(PosZInt, PosZInt)] =
+          for {
+            min <- posZIntsBetween(0, 99)
+            max <- posZIntsBetween(min, 100)
+          } yield (min, max)
+
+        forAll (minsAndMaxes) { case (min, max) => 
+          forAll (lists[Int].havingLengthsBetween(min, max)) { xs => xs.length should (be >= min.value and be <= max.value) }
+        }
       }
     }
     "offer a posInts method" that {

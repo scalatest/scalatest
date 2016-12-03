@@ -55,7 +55,7 @@ package object prop {
   // charsBetween
 
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
-    new Generator[PosInt] { thisIntGenerator =>
+    new Generator[PosInt] { thisPosIntGenerator =>
       private val fromToEdges = List(from, to).distinct // distinct in case from equals to
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosInt], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
@@ -72,8 +72,26 @@ package object prop {
         }
       }
     }
+  def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
+    // Probably disallow from >= to, and if =, then say use some alternative? constantValues(x) ?
+    new Generator[PosZInt] { thisPosZIntGenerator =>
+      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZInt], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZInt, nextRandomizer) = rnd.choosePosZInt(from, to)
+            (nextPosZInt, Nil, nextRandomizer)
+        }
+      }
+    }
 
-  // posIntsBetween
   // posZIntsBetween
   // posLongsBetween
   // posZLongsBetween

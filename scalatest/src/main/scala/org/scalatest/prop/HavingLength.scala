@@ -19,5 +19,6 @@ import org.scalactic.anyvals.PosZInt
 
 trait HavingLength[T] {
   def havingLength(len: PosZInt): Generator[T]
+  def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[T]
 }
 
