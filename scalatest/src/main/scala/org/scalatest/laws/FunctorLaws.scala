@@ -27,10 +27,11 @@ import Functor.adapters
 
 import scala.language.higherKinds
 
-class FunctorLaws[Context[_]] private (
+class FunctorLaws[Context[_], A, B, C] private (
   implicit functor: Functor[Context],
-  genCa: Generator[Context[Int]],
-  genAa: Generator[Int => Int]
+  genCa: Generator[Context[A]],
+  genAb: Generator[A => B],
+  genBc: Generator[B => C]
 ) extends Laws {
 
   val lawsName = "functor"
@@ -38,23 +39,27 @@ class FunctorLaws[Context[_]] private (
   override def laws =
     Vector(
       law("identity") {
-        forAll { (ca: Context[Int]) =>
-          (ca map identity[Int]) shouldEqual ca
+        forAll { (ca: Context[A]) =>
+          (ca map identity[A]) shouldEqual ca
         }
       },
 
       law("composition") {
-        forAll { (ca: Context[Int], f: Int => Int, g: Int => Int) =>
-          ((ca map f) map g) shouldEqual (ca map (g compose f))
+        forAll { (ca: Context[A], ab: A => B, bc: B => C) =>
+          ((ca map ab) map bc) shouldEqual (ca map (bc compose ab))
         }
       }
     )
 }
 
 object FunctorLaws {
+  // type A = Long
+  // type B = Int
+  // type C = Short
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    genCa: Generator[Context[Int]],
-    genAa: Generator[Int => Int]
-  ): FunctorLaws[Context] = new FunctorLaws[Context]
+    genCa: Generator[Context[Long]],
+    genAb: Generator[Long => Int],
+    genBc: Generator[Int => Short]
+  ): FunctorLaws[Context, Long, Int, Short] = new FunctorLaws[Context, Long, Int, Short]
 }
