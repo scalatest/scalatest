@@ -492,6 +492,9 @@ object PosFloat {
    * via a macro that inspects <code>Float</code> literals at
    * compile time, whereas <code>from</code> inspects
    * <code>Float</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Float</code> is positive.
    * </p>
    *
    * @param value the <code>Float</code> to inspect, and if positive, return

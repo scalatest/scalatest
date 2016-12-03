@@ -738,6 +738,9 @@ object PosZLong {
    * via a macro that inspects <code>Long</code> literals at
    * compile time, whereas <code>from</code> inspects
    * <code>Long</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Long</code> is positive or zero.
    * </p>
    *
    * @param value the <code>Long</code> to inspect, and if non-negative, return

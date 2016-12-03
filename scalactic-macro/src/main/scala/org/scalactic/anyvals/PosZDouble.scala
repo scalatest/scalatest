@@ -478,6 +478,9 @@ object PosZDouble {
    * via a macro that inspects <code>Double</code> literals at
    * compile time, whereas <code>from</code> inspects
    * <code>Double</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Double</code> is positive or zero.
    * </p>
    *
    * @param value the <code>Double</code> to inspect, and if
