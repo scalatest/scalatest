@@ -1241,12 +1241,22 @@ object Generator extends LowerPriorityGeneratorImplicits {
           val simpleName = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
-            s"o => org.scalatest.prop.valueOf[$typeOfB](o, $intToInt)"
+            val intToIntName: String = 
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"o => org.scalatest.prop.valueOf[$typeOfB](o, $intToIntName)"
           }
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
-            s"(o: $typeOfA) => org.scalatest.prop.valueOf[$typeOfB](o, $intToInt)"
+            val intToIntName: String = 
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(o: $typeOfA) => org.scalatest.prop.valueOf[$typeOfB](o, $intToIntName)"
           }
           val paramName: String = "a"
           val paramTypeName: String = "A"

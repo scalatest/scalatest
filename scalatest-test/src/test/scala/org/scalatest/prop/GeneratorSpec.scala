@@ -1105,6 +1105,17 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+    describe("for general functions A => B") {
+      it("should have toString and simpleName that doesn't include 'o, (i: Int) =>', because Int can be inferred there") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (f: List[Int] => Option[String]) =>
+          import org.scalatest.Inside._
+          inside(f) { case prf: PrettyFunction1[_, _] => 
+            prf.simpleName should not include "o, (i: Int) =>"
+          }
+        }
+      }
+    }
   }
 }
 
