@@ -32,11 +32,12 @@ import scala.language.higherKinds
  * contains a "flatMap" operation and obeys the laws of associativity, right identity,
  * and left identity.
  */
-class MonadLaws[Context[_]] private (
+class MonadLaws[Context[_], A, B, C] private (
   implicit monad: Monad[Context],
-  genCa: Generator[Context[Int]],
-  genCab: Generator[Int => Context[String]],
-  genCbc: Generator[String => Context[Long]]
+  genA: Generator[A],
+  genCa: Generator[Context[A]],
+  genAcb: Generator[A => Context[B]],
+  genBcc: Generator[B => Context[C]]
 ) extends Laws {
 
   val lawsName = "monad"
@@ -44,20 +45,20 @@ class MonadLaws[Context[_]] private (
   override def laws =
     Vector(
       law("associativity") {
-        forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Long]) =>
-          ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
+        forAll { (ca: Context[A], acb: A => Context[B], bcc: B => Context[C]) =>
+          ((ca flatMap acb) flatMap bcc) shouldEqual (ca flatMap (a => acb(a) flatMap bcc))
         }
       },
 
       law("left identity") {
-        forAll { (ca: Context[Int]) =>
+        forAll { (ca: Context[A]) =>
           ca.flatMap(a => monad.insert(a)) shouldEqual ca
         }
       },
 
       law("right identity") {
-        forAll { (a: Int, f: Int => Context[String]) =>
-          (monad.insert(a) flatMap f) shouldEqual f(a)
+        forAll { (a: A, acb: A => Context[B]) =>
+          (monad.insert(a) flatMap acb) shouldEqual acb(a)
         }
       }
     )
@@ -66,9 +67,10 @@ class MonadLaws[Context[_]] private (
 object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
-    genCa: Generator[Context[Int]],
-    genCab: Generator[Int => Context[String]],
-    genCbc: Generator[String => Context[Long]]
-  ) = new MonadLaws[Context]
+    genA: Generator[Long],
+    genCa: Generator[Context[Long]],
+    genCab: Generator[Long => Context[Int]],
+    genCbc: Generator[Int => Context[Short]]
+  ): MonadLaws[Context, Long, Int, Short] = new MonadLaws[Context, Long, Int, Short]
 }
 
