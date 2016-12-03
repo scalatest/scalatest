@@ -67,10 +67,10 @@ class MonadLaws[Context[_], A, B, C] private (
 object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
-    genA: Generator[Long],
-    genCa: Generator[Context[Long]],
-    genCab: Generator[Long => Context[Int]],
-    genCbc: Generator[Int => Context[Short]]
-  ): MonadLaws[Context, Long, Int, Short] = new MonadLaws[Context, Long, Int, Short]
+    genA: Generator[Int],
+    genCa: Generator[Context[Int]],
+    genCab: Generator[Int => Context[Short]],
+    genCbc: Generator[Short => Context[Byte]]
+  ): MonadLaws[Context, Int, Short, Byte] = new MonadLaws[Context, Int, Short, Byte]
 }
 

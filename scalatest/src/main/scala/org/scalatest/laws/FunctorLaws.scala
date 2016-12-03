@@ -53,13 +53,13 @@ class FunctorLaws[Context[_], A, B, C] private (
 }
 
 object FunctorLaws {
-  // type A = Long
-  // type B = Int
-  // type C = Short
+  // type A = Int
+  // type B = Short
+  // type C = Byte
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    genCa: Generator[Context[Long]],
-    genAb: Generator[Long => Int],
-    genBc: Generator[Int => Short]
-  ): FunctorLaws[Context, Long, Int, Short] = new FunctorLaws[Context, Long, Int, Short]
+    genCa: Generator[Context[Int]],
+    genAb: Generator[Int => Short],
+    genBc: Generator[Short => Byte]
+  ): FunctorLaws[Context, Int, Short, Byte] = new FunctorLaws[Context, Int, Short, Byte]
 }

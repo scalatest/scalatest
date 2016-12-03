@@ -71,18 +71,18 @@ class ApplicativeLaws[Context[_], A, B, C] private (
 }
 
 object ApplicativeLaws {
-  // type A = Long
-  // type B = Int
-  // type C = Short
+  // type A = Int
+  // type B = Short
+  // type C = Byte
   def apply[Context[_]](
     implicit ap: Applicative[Context],
-    genA: Generator[Long],
-    genCa: Generator[Context[Long]],
-    genAb: Generator[Long => Int],
-    genBc: Generator[Int => Short],
-    genCab: Generator[Context[Long => Int]],
-    genCbc: Generator[Context[Int => Short]]
-  ): ApplicativeLaws[Context, Long, Int, Short] = new ApplicativeLaws[Context, Long, Int, Short]
+    genA: Generator[Int],
+    genCa: Generator[Context[Int]],
+    genAb: Generator[Int => Short],
+    genBc: Generator[Short => Byte],
+    genCab: Generator[Context[Int => Short]],
+    genCbc: Generator[Context[Short => Byte]]
+  ): ApplicativeLaws[Context, Int, Short, Byte] = new ApplicativeLaws[Context, Int, Short, Byte]
 
   // Can offer a withTypes[List, Float, Double, String], etc., kind of factory method
 }
