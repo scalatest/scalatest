@@ -724,6 +724,35 @@ object PosZInt {
   def from(value: Int): Option[PosZInt] =
     if (PosZIntMacro.isValid(value)) Some(new PosZInt(value)) else None
 
+  /**
+   * A factory/assertion method that produces an <code>PosZInt</code> given a
+   * valid <code>Int</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Int</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value
+   * and if it is a non-negative <code>Int</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> value is negative, so this method
+   * will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Int</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if non-negative, return
+   *     wrapped in a <code>PosZInt</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>PosZInt</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not zero or positive
+   */
   def ensuringValid(value: Int): PosZInt =
     if (PosZIntMacro.isValid(value)) new PosZInt(value) else {
       throw new AssertionError(s"$value was not a valid PosZInt")

@@ -683,8 +683,6 @@ object PosInt {
    */
   final val MinValue: PosInt = PosInt.ensuringValid(1) // Can't use the macro here
 
-  // TODO: Use one method for validation, as suggested in I think the UK.
-
   /**
    * A factory method that produces an <code>Option[PosInt]</code> given an
    * <code>Int</code> value.
@@ -712,6 +710,32 @@ object PosInt {
   def from(value: Int): Option[PosInt] =
     if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
 
+  /**
+   * A factory/assertion method that produces an <code>PosInt</code> given a
+   * valid <code>Int</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Int</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>PosInt</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>PosInt</code>, if it is positive, else throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not positive
+   */
   def ensuringValid(value: Int): PosInt =
     if (PosIntMacro.isValid(value)) new PosInt(value) else {
       throw new AssertionError(s"$value was not a valid PosInt")

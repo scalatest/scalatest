@@ -456,6 +456,35 @@ object PosZFloat {
   def from(value: Float): Option[PosZFloat] =
     if (PosZFloatMacro.isValid(value)) Some(new PosZFloat(value)) else None
 
+  /**
+   * A factory/assertion method that produces an <code>PosZFloat</code> given a
+   * valid <code>Float</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Float</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value
+   * and if it is a non-negative <code>Float</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZFloat</code> representing that value.
+   * Otherwise, the passed * <code>Float</code> value is negative, so this method
+   * will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if non-negative, return
+   *     wrapped in a <code>PosZFloat</code>.
+   * @return the specified <code>Float</code> value wrapped
+   *     in a <code>PosZFloat</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not zero or positive
+   */
   def ensuringValid(value: Float): PosZFloat =
     if (PosZFloatMacro.isValid(value)) new PosZFloat(value) else {
       throw new AssertionError(s"$value was not a valid PosZFloat")
