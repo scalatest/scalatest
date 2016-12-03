@@ -16,21 +16,20 @@
 package org.scalactic.anyvals
 
 import reflect.macros.Context
-import org.scalactic.Resources
-
 import CompileTimeAssertions._
-private[scalactic] object DigitStringMacro {
 
-  def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
+private[scalactic] object NumCharMacro {
 
-  def apply(c: Context)(value: c.Expr[String]): c.Expr[DigitString] = {
+  def isValid(c: Char): Boolean = c >= '0' && c <= '9'
+
+  def apply(c: Context)(value: c.Expr[Char]): c.Expr[NumChar] = {
     val notValidMsg =
-      "DigitString.apply can only be invoked on String literals that contain all decimal digits ('0' through '9'), " +
-      "like \"123\"."
+      "NumChar.apply can only be invoked on Char literals that are numbers, " +
+      "like '8'."
     val notLiteralMsg =
-      "DigitString.apply can only be invoked on String literals that contain all decimal digits ('0' through '9'), like \"123\"" +
-      " Please use DigitString.from instead."
-    ensureValidStringLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    c.universe.reify { DigitString.ensuringValid(value.splice) }
+      "NumChar.apply can only be invoked on Char literals that are numbers, like '8'." +
+      " Please use NumChar.from instead."
+    ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
+    c.universe.reify { NumChar.ensuringValid(value.splice) }
   } 
 }

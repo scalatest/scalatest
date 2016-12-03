@@ -340,9 +340,9 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PosZLong = PosZLong.from(math.round(value)).get
-  def ceil: PosZDouble = PosZDouble.from(math.ceil(value)).get
-  def floor: PosZDouble = PosZDouble.from(math.floor(value)).get
+  def round: PosZLong = PosZLong.ensuringValid(math.round(value))
+  def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
+  def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -418,13 +418,13 @@ object PosZDouble {
    * The largest value representable as a non-negative <code>Double</code>,
    * which is <code>PosZDouble(1.7976931348623157E308)</code>.
    */
-  final val MaxValue: PosZDouble = PosZDouble.from(Double.MaxValue).get
+  final val MaxValue: PosZDouble = PosZDouble.ensuringValid(Double.MaxValue)
 
   /**
    * The smallest value representable as a non-negative <code>Double</code>,
    * which is <code>PosZDouble(0.0)</code>.
    */
-  final val MinValue: PosZDouble = PosZDouble.from(0.0).get // Can't use the macro here
+  final val MinValue: PosZDouble = PosZDouble.ensuringValid(0.0) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZDouble]</code> given a

@@ -339,22 +339,22 @@ final class PosZFloat private (val value: Float) extends AnyVal {
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
-  def round: PosZInt = PosZInt.from(math.round(value)).get
-  def ceil: PosZFloat = PosZFloat.from(math.ceil(value).toFloat).get
-  def floor: PosZFloat = PosZFloat.from(math.floor(value).toFloat).get
+  def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+  def ceil: PosZFloat = PosZFloat.ensuringValid(math.ceil(value).toFloat)
+  def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
   */
-  def toRadians: PosZFloat = PosZFloat.from(math.toRadians(value).toFloat).get
+  def toRadians: PosZFloat = PosZFloat.ensuringValid(math.toRadians(value).toFloat)
 
   /** Converts an angle measured in radians to an approximately equivalent
   * angle measured in degrees.
   * @return the measurement of the angle x in degrees.
   */
-  def toDegrees: PosZFloat = PosZFloat.from(math.toDegrees(value).toFloat).get
+  def toDegrees: PosZFloat = PosZFloat.ensuringValid(math.toDegrees(value).toFloat)
 
   // adapted from RichInt:
   /**
@@ -417,13 +417,13 @@ object PosZFloat {
    * The largest value representable as a non-negative <code>Float</code>,
    * which is <code>PosZFloat(3.4028235E38)</code>.
    */
-  final val MaxValue: PosZFloat = PosZFloat.from(Float.MaxValue).get
+  final val MaxValue: PosZFloat = PosZFloat.ensuringValid(Float.MaxValue)
 
   /**
    * The smallest value representable as a non-negative <code>Float</code>,
    * which is <code>PosZFloat(0.0F)</code>.
    */
-  final val MinValue: PosZFloat = PosZFloat.from(0.0f).get // Can't use the macro here
+  final val MinValue: PosZFloat = PosZFloat.ensuringValid(0.0f) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZFloat]</code> given a
@@ -528,7 +528,7 @@ object PosZFloat {
    *     <code>PosZFloat</code>, widened to <code>Double</code>
    *     and wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.from(poz.value).get
+  implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.ensuringValid(poz.value)
 
   /**
    * Implicit Ordering instance.
