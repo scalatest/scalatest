@@ -67,7 +67,7 @@ package object prop {
       }
     }
 
-  def values[T](first: T, second: T, rest: T*): Generator[T] =
+  def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
       def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
