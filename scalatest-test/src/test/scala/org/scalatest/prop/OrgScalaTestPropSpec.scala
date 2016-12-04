@@ -272,8 +272,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         val minsAndMaxes: Generator[(PosZInt, PosZInt)] =
           for {
             min <- posZIntsBetween(0, 99)
-            max <- posZIntsBetween(PosZInt.ensuringValid(min.value + 1), 100)
-            // max <- posZIntsBetween(min.ensuringValid(_ + 1), 100)
+            max <- posZIntsBetween(min.ensuringValid(_ + 1), 100)
           } yield (min, max)
 
         forAll (minsAndMaxes) { case (min, max) => 
