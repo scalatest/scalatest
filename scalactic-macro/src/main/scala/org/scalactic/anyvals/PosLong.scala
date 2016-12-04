@@ -713,6 +713,42 @@ final class PosLong private (val value: Long) extends AnyVal {
   */
   def to(end: Long, step: Long): NumericRange.Inclusive[Long] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Long =&gt; Long</code> function to the underlying <code>Long</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>PosLong</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosLong</code>'s underlying <code>Long</code> value and if the result
+   * is greater than <code>0L</code>, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the <code>Long</code> value returned by the given function is
+   * <code>0L</code> or negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Long</code> is positive. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosLong</code>'s
+   * value will not overflow. Instead of overflowing silently like <code>Long</code>, this
+   * method will signal an overflow with a loud <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Long =&gt; Long</code> function to apply to this <code>PosLong</code>'s
+   *     underlying <code>Long</code> value.
+   * @return the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
+   *     to the passed function, wrapped in a <code>PosLong</code> if it is positive (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
+   *     to the passed function is not positive.
+   */
+  def ensuringValid(f: Long => Long): PosLong = {
+    val candidateResult: Long = f(value)
+    if (PosLongMacro.isValid(candidateResult)) new PosLong(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosLong")
+  }
 }
 
 /**

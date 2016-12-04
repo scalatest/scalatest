@@ -621,6 +621,10 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         }
       }
     }
+    it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
+      PosLong(33L).ensuringValid(_ + 1L) shouldEqual PosLong(34L)
+      an [AssertionError] should be thrownBy { PosLong.MaxValue.ensuringValid(_ + 1L) }
+    }
   }
 }
 

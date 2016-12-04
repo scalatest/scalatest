@@ -21,6 +21,11 @@ import scala.collection.immutable.NumericRange
  * An <code>AnyVal</code> for non-negative <code>Double</code>s.
  *
  * <p>
+ * Note: A <code>PosZDouble</code> may have value <code>Double.PositiveInfinity</code>,
+ * but cannot have value <code>Double.NegativeInfinity</code> or <code>Double.NaN</code>.
+ * </p>
+ *
+ * <p>
  * Because <code>PosZDouble</code> is an <code>AnyVal</code> it will usually be
  * as efficient as an <code>Double</code>, being boxed only when a
  * <code>Double</code> would have been boxed.
@@ -404,6 +409,43 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   */
   def to(end: Double, step: Double): NumericRange.Inclusive[Double] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
+   * value, and if the result is positive or zero, returns the result wrapped in a <code>PosZDouble</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosZDouble</code>'s underlying <code>Double</code> value and if the result
+   * is positive or zero, <em>i.e.</em>, a value greater
+   * than or equal to <code>0.0</code>, it will return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the <code>Double</code> value returned by the given function is
+   * negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Double</code> is positive or zero. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosZDouble</code>'s
+   * value will not produce a negative number, including <code>Double.NegativeInfinity</code>, or <code>Double.NaN</code>.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Double =&gt; Double</code> function to apply to this <code>PosZDouble</code>'s
+   *     underlying <code>Double</code> value.
+   * @return the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function, wrapped in a <code>PosZDouble</code> if it is positive or zero (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function is not positive or zero.
+   */
+  def ensuringValid(f: Double => Double): PosZDouble = {
+    val candidateResult: Double = f(value)
+    if (PosZDoubleMacro.isValid(candidateResult)) new PosZDouble(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosZDouble")
+  }
 }
 
 /**
@@ -425,6 +467,11 @@ object PosZDouble {
    * which is <code>PosZDouble(0.0)</code>.
    */
   final val MinValue: PosZDouble = PosZDouble.ensuringValid(0.0) // Can't use the macro here
+
+  /**
+   * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
+   */
+  final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZDouble]</code> given a

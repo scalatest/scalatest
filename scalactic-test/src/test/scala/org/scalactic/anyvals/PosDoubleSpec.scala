@@ -62,11 +62,14 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
       it("returns PosDouble if the passed Double is greater than 0") {
         PosDouble.ensuringValid(50.23).value shouldBe 50.23
         PosDouble.ensuringValid(100.0).value shouldBe 100.0
+        PosDouble.ensuringValid(Double.PositiveInfinity).value shouldBe Double.PositiveInfinity
       }
       it("throws AssertionError if the passed Double is NOT greater than 0") {
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(0.0)
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(-0.00001)
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(-99.9)
+        an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NegativeInfinity)
+        an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NaN)
       }
     } 
     describe("should offer an isValid predicate method that") {
@@ -94,6 +97,9 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual
         PosDouble.from(Double.MinPositiveValue).get
+    }
+    it("should offer a PositiveInfinity factory method") {
+      PosDouble.PositiveInfinity shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
     }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
@@ -557,6 +563,13 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
           widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.toDouble).get)
         }
       }
+    }
+    it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
+      PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
+      PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NaN) }
     }
   }
 }

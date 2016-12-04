@@ -69,10 +69,13 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         PosZFloat.ensuringValid(0.0f).value shouldBe 0.0f
         PosZFloat.ensuringValid(50.23f).value shouldBe 50.23f
         PosZFloat.ensuringValid(100.0f).value shouldBe 100.0f
+        PosZFloat.ensuringValid(Float.PositiveInfinity).value shouldBe Float.PositiveInfinity
       }
       it("throws AssertionError if the passed Float is NOT greater than or equal to 0") {
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(-0.00001f)
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(-99.9f)
+        an [AssertionError] should be thrownBy PosZFloat.ensuringValid(Float.NegativeInfinity)
+        an [AssertionError] should be thrownBy PosZFloat.ensuringValid(Float.NaN)
       }
     } 
     describe("should offer an isValid predicate method that") {
@@ -99,6 +102,9 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
     it("should offer MaxValue and MinValue factory methods") {
       PosZFloat.MaxValue shouldEqual PosZFloat.from(Float.MaxValue).get
       PosZFloat.MinValue shouldEqual PosZFloat(0.0f)
+    }
+    it("should offer a PositiveInfinity factory method") {
+      PosZFloat.PositiveInfinity shouldEqual PosZFloat.ensuringValid(Float.PositiveInfinity)
     }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
@@ -564,6 +570,13 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         def widen(value: PosZDouble): PosZDouble = value
         widen(pzfloat) shouldEqual widen(PosZDouble.from(pzfloat.toFloat).get)
       }
+    }
+    it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
+      PosZFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosZFloat(34.0f)
+      PosZFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosZFloat.ensuringValid(Float.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ - PosZFloat.MaxValue - 1) }
+      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ => Float.NaN) }
     }
   }
 }

@@ -48,11 +48,14 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       it("returns PosFloat if the passed Float is greater than 0") {
         PosFloat.ensuringValid(50.23F).value shouldBe 50.23F
         PosFloat.ensuringValid(100.0F).value shouldBe 100.0F
+        PosFloat.ensuringValid(Float.PositiveInfinity).value shouldBe Float.PositiveInfinity
       }
       it("throws AssertionError if the passed Float is NOT greater than 0") {
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(0.0F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-0.00001F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-99.9F)
+        an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NegativeInfinity)
+        an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NaN)
       }
     } 
     describe("should offer an isValid predicate method that") {
@@ -80,6 +83,9 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual
         PosFloat.from(Float.MinPositiveValue).get
+    }
+    it("should offer a PositiveInfinity factory method") {
+      PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
@@ -545,6 +551,13 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
           widen(pfloat) shouldEqual widen(PosZDouble.from(pfloat.toFloat).get)
         }
       }
+    }
+    it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
+      PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)
+      PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
+      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NaN) }
     }
   }
 }
