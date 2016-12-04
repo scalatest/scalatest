@@ -26,7 +26,7 @@ trait Generator[T] { thisGeneratorOfT =>
 
   def initEdges(maxLength: Int, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
 
-  def next(size: Int = 100, edges: List[T] = Nil, rnd: Randomizer = Randomizer.default): (T, List[T], Randomizer)
+  def next(size: Int = 5, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU => 
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[U], Randomizer) = {
@@ -738,7 +738,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val edges = edgesOfT.map(t => PrettyFunction0(t))
         (edges, nextRnd)
       }
-      def next(size: Int = 100, edges: List[() => T] = Nil, rnd: Randomizer = Randomizer.default): (() => T, List[() => T], Randomizer) = {
+      def next(size: Int, edges: List[() => T], rnd: Randomizer): (() => T, List[() => T], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
