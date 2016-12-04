@@ -294,15 +294,16 @@ trait MatcherWords {
         val equality = implicitly[Equality[T]]
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
-            MatchResult(
+            new EqualMatchResult(
               equality.areEqual(left, right),
               Resources.rawDidNotEqual,
               Resources.rawEqualed,
-              Vector(leftee, rightee), 
+              Vector(left, right),
               Vector(left, right)
             )
+
           }
+
           override def toString: String = "equal (" + Prettifier.default(right) + ")"
         }
       }

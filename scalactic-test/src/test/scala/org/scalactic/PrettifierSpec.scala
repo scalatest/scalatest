@@ -65,7 +65,8 @@ class PrettifierSpec extends FunSpec with Matchers {
               case _ => Prettifier.default(o)
             }
         }
-      myLittlePretty(Yell("I like fruit loops"), Yell("I like raisin bran")) shouldBe PrettyPair("I LIKE FRUIT LOOPS!!!", "I LIKE RAISIN BRAN!!!", None)
+      val left = Yell("I like fruit loops")
+      myLittlePretty(left, Yell("I like raisin bran")) shouldBe PrettyPair("I LIKE FRUIT LOOPS!!!", "I LIKE RAISIN BRAN!!!", Some(Differ.simpleClassName(left) + "(secret: \"I like [fruit loops]\" -> \"I like [raisin bran]\")"))
     }
   }
 

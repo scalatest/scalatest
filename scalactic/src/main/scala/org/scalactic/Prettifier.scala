@@ -127,12 +127,9 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
    */
   def apply(o: Any): String
 
-  def apply(left: Any, right: Any): PrettyPair =
-    PrettyPair(
-      apply(left),
-      apply(right),
-      None
-    )
+  def apply(left: Any, right: Any): PrettyPair = {
+    AnyDiffer.difference(left, right, this)
+  }
 }
 
 /**

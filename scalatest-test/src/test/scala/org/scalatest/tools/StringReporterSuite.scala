@@ -396,5 +396,56 @@ import StringReporter.withPossibleLineNumber
     else
       assert(result endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.:" + (thisLineNumber - 5) + " **")
   }
+
+  class BuilderStringReporter(presentInColor: Boolean) extends StringReporter(
+    false,
+    presentInColor,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ) {
+    val builder = new StringBuilder
+
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
+      builder.append(fragment.toPossiblyColoredText(presentInColor) + scala.compat.Platform.EOL)
+    }
+
+    protected def printNoColor(text: String): Unit = {
+      builder.append(text)
+    }
+
+    def dispose(): Unit = {
+
+    }
+
+    def content: String = builder.toString
+
+  }
+
+  case class Person(name: String, age: Int)
+
+  /*test("StringReporter should include difference analysis in the content it display") {
+    class ExampleSpec extends FunSuite with Matchers {
+      test("test") {
+        Person("Student 1", 22) shouldEqual Person("Student 2", 23)
+      }
+    }
+    val rep = new BuilderStringReporter(false)
+    val suite = new ExampleSpec
+    suite.run(None, Args(rep))
+    assert(rep.content ==
+      """- test *** FAILED ***
+        |  Person(Student 1,22) did not equal Person(Student 2,23) (StringReporterSuite.scala:431)
+        |  Difference Analysis:
+        |  StringReporterSuite$Person(age: 22 -> 23, name: Student [1] -> Student [2])
+        |""".stripMargin
+    )
+  }*/
 }
 
