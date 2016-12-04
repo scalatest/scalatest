@@ -15,9 +15,9 @@
  */
 package org.scalatest.prop
 
-private[prop] class Generator2[A, B, C](
-  abc: (A, B) => C,
-  cab: C => (A, B)
+private[prop] class GeneratorFor2[A, B, C](
+  aBToC: (A, B) => C,
+  cToAB: C => (A, B)
 )(
   genOfA: Generator[A],
   genOfB: Generator[B]
@@ -27,7 +27,7 @@ private[prop] class Generator2[A, B, C](
     for {
       a <- genOfA
       b <- genOfB
-    } yield abc(a, b)
+    } yield aBToC(a, b)
   }
 
   def next(size: Int, edges: List[C], rnd: Randomizer): (C, List[C], Randomizer) = underlying.next(size, edges, rnd)
@@ -36,16 +36,16 @@ private[prop] class Generator2[A, B, C](
   override def flatMap[U](f: (C) => Generator[U]): Generator[U] = underlying.flatMap(f)
   override def canonicals(rnd: Randomizer): (Iterator[C], Randomizer) = underlying.canonicals(rnd) 
   override def shrink(cValue: C, rnd: Randomizer): (Iterator[C], Randomizer) = {
-    val (aValue, bValue) = cab(cValue)
+    val (aValue, bValue) = cToAB(cValue)
     val (itOfA, rnd1) = genOfA.shrink(aValue, rnd)
     val (itOfB, rnd2) = genOfB.shrink(bValue, rnd1)
     val streamOfA: Stream[A] = itOfA.toStream
     val streamOfB: Stream[B] = itOfB.toStream
-    val streamOfC: Stream[C] =
+    val streamOfC: Stream[C] = // TODO: check about the problem with streams and memory leaks, or do this a different way
       for {
         a <- streamOfA
         b <- streamOfB
-      } yield abc(a, b)
+      } yield aBToC(a, b)
     (streamOfC.iterator, rnd2)
   }
 }
