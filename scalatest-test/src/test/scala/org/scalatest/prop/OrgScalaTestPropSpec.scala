@@ -20,6 +20,7 @@ import org.scalatest.WordSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
+import org.scalatest.Resources
 
 class OrgScalaTestPropSpec extends WordSpec with Matchers {
   "The org.scalatest.prop companion object" should {
@@ -271,12 +272,20 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         val minsAndMaxes: Generator[(PosZInt, PosZInt)] =
           for {
             min <- posZIntsBetween(0, 99)
-            max <- posZIntsBetween(min, 100)
+            max <- posZIntsBetween(PosZInt.ensuringValid(min.value + 1), 100)
+            // max <- posZIntsBetween(min.ensuringValid(_ + 1), 100)
           } yield (min, max)
 
         forAll (minsAndMaxes) { case (min, max) => 
           forAll (lists[Int].havingLengthsBetween(min, max)) { xs => xs.length should (be >= min.value and be <= max.value) }
         }
+
+        the [IllegalArgumentException] thrownBy {
+          lists[Int].havingLengthsBetween(2, 1)
+        } should have message "requirement failed: " + Resources.fromGreaterThanToHavingLengthsBetween(PosZInt(2), PosZInt(1))
+        the [IllegalArgumentException] thrownBy {
+          lists[Int].havingLengthsBetween(1, 1)
+        } should have message "requirement failed: " + Resources.fromEqualToToHavingLengthsBetween(PosZInt(1))
       }
     }
     "offer a posInts method" that {

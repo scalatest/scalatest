@@ -20,6 +20,7 @@ import org.scalactic.anyvals._
 import org.scalactic.{Bad, Good, Or}
 import scala.annotation.tailrec
 import scala.reflect.runtime.universe.TypeTag
+import org.scalatest.Resources
 
 trait Generator[T] { thisGeneratorOfT =>
 
@@ -713,8 +714,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having length $len */]"
         }
-      def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[List[T]] =
-        // TODO, need to ensure from is less than to. Write a test first.
+      def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[List[T]] = {
+        require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
+        require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
         new Generator[List[T]] {
           // TODO: Think about whether edges should have one list each of length from and to
           override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
@@ -725,6 +727,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
+      }
     }
 
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
