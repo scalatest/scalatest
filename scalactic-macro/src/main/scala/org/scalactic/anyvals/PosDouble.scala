@@ -21,8 +21,12 @@ import scala.language.implicitConversions
 /**
  * An <code>AnyVal</code> for positive <code>Double</code>s.
  *
+ * <p>
  * Note: a <code>PosDouble</code> may not equal 0. If you want positive
  * number or 0, use [[PosZDouble]].
+ * A <code>PosDouble</code> may have value <code>Double.PositiveInfinity</code>,
+ * but cannot have value <code>Double.NegativeInfinity</code> or <code>Double.NaN</code>.
+ * </p>
  *
  * <p>
  * Because <code>PosDouble</code> is an <code>AnyVal</code> it
@@ -411,6 +415,42 @@ final class PosDouble private (val value: Double) extends AnyVal {
   */
   def to(end: Double, step: Double): NumericRange.Inclusive[Double] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>PosDouble</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosDouble</code>'s underlying <code>Double</code> value and if the result
+   * is greater than <code>0.0</code>, it will return a <code>PosDouble</code> representing that value.
+   * Otherwise, the <code>Double</code> value returned by the given function is
+   * <code>0.0</code> or negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Double</code> is positive. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosDouble</code>'s
+   * value will not produce zero, a negative number, including <code>Double.NegativeInfinity</code>, or <code>Double.NaN</code>.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Double =&gt; Double</code> function to apply to this <code>PosDouble</code>'s
+   *     underlying <code>Double</code> value.
+   * @return the result of applying this <code>PosDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function, wrapped in a <code>PosDouble</code> if it is positive (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function is not positive.
+   */
+  def ensuringValid(f: Double => Double): PosDouble = {
+    val candidateResult: Double = f(value)
+    if (PosDoubleMacro.isValid(candidateResult)) new PosDouble(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosDouble")
+  }
 }
 
 /**
@@ -432,6 +472,11 @@ object PosDouble {
    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
    */
   final val MinValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The positive infinity value, which is <code>PosDouble.ensuringValid(Double.PositiveInfinity)</code>.
+   */
+  final val PositiveInfinity: PosDouble = PosDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosDouble]</code> given a

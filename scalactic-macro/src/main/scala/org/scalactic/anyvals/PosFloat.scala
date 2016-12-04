@@ -21,15 +21,19 @@ import scala.language.implicitConversions
 /**
  * An <code>AnyVal</code> for positive <code>Float</code>s.
  *
+ * <p>
  * Note: a <code>PosFloat</code> may not equal 0. If you want positive
  * number or 0, use [[PosZFloat]].
+ * A <code>PosFloat</code> may have value <code>Float.PositiveInfinity</code>,
+ * but cannot have value <code>Float.NegativeInfinity</code> or <code>Float.NaN</code>.
+ * </p>
  *
  * <p>
  * Because <code>PosFloat</code> is an <code>AnyVal</code> it
  * will usually be as efficient as an <code>Float</code>, being
  * boxed only when an <code>Float</code> would have been boxed.
  * </p>
- * 
+ *
  * <p>
  * The <code>PosFloat.apply</code> factory method is implemented
  * in terms of a macro that checks literals for validity at
@@ -422,6 +426,42 @@ final class PosFloat private (val value: Float) extends AnyVal {
   */
   def to(end: Float, step: Float): NumericRange.Inclusive[Float] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>PosFloat</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosFloat</code>'s underlying <code>Float</code> value and if the result
+   * is greater than <code>0.0f</code>, it will return a <code>PosFloat</code> representing that value.
+   * Otherwise, the <code>Float</code> value returned by the given function is
+   * <code>0.0f</code> or negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Float</code> is positive. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosFloat</code>'s
+   * value will not produce zero, a negative number, including <code>Float.NegativeInfinity</code>, or <code>Float.NaN</code>.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Float =&gt; Float</code> function to apply to this <code>PosFloat</code>'s
+   *     underlying <code>Float</code> value.
+   * @return the result of applying this <code>PosFloat</code>'s underlying <code>Float</code> value to
+   *     to the passed function, wrapped in a <code>PosFloat</code> if it is positive (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosFloat</code>'s underlying <code>Float</code> value to
+   *     to the passed function is not positive.
+   */
+  def ensuringValid(f: Float => Float): PosFloat = {
+    val candidateResult: Float = f(value)
+    if (PosFloatMacro.isValid(candidateResult)) new PosFloat(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosFloat")
+  }
 }
 
 /**
@@ -443,6 +483,11 @@ object PosFloat {
    * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
    */
   final val MinValue: PosFloat = PosFloat.ensuringValid(Float.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The positive infinity value, which is <code>PosFloat.ensuringValid(Float.PositiveInfinity)</code>.
+   */
+  final val PositiveInfinity: PosFloat = PosFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosFloat]</code> given a

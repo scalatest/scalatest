@@ -608,6 +608,10 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         widen(pzint) shouldEqual widen(PosZDouble.from(pzint.toInt).get)
       }
     }
+    it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
+      PosZInt(33).ensuringValid(_ + 1) shouldEqual PosZInt(34)
+      an [AssertionError] should be thrownBy { PosZInt.MaxValue.ensuringValid(_ + 1) }
+    }
   }
 }
 

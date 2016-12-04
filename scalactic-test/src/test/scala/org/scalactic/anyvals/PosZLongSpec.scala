@@ -615,6 +615,10 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
         widen(pzlong) shouldEqual widen(PosZDouble.from(pzlong.toLong).get)
       }
     }
+    it("should offer an ensuringValid method that takes a Long => Long, throwing AssertionError if the result is invalid") {
+      PosZLong(33L).ensuringValid(_ + 1L) shouldEqual PosZLong(34L)
+      an [AssertionError] should be thrownBy { PosZLong.MaxValue.ensuringValid(_ + 1L) }
+    }
   }
 }
 
