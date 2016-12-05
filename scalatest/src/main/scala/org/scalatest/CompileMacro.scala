@@ -674,7 +674,7 @@ private[scalatest] object CompileMacro {
   }
 
   // used by willNot typeCheck syntax, delegate to expectNotTypeCheckImpl to generate code
-  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Fact] =
+  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(pos: c.Expr[source.Position]): c.Expr[Fact] =
     expectNotTypeCheckImpl(c)(typeCheckWord)
 
   // check that a code snippet compiles
@@ -859,7 +859,7 @@ private[scalatest] object CompileMacro {
   }
 
   // used by will compile syntax, delegate to expectCompileImpl to generate code
-  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] =
+  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(pos: c.Expr[source.Position]): c.Expr[Fact] =
     expectCompileImpl(c)(compileWord)
 
 }
