@@ -126,6 +126,7 @@ package object prop {
   val strings: Generator[String] = Generator.stringGenerator
   def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] = Generator.listGenerator[T]
   def tuple2s[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
+  def tuple3s[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = Generator.tuple3Generator[A, B, C]
   // ... tuple22s
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
   // function1s

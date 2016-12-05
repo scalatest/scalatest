@@ -525,6 +525,20 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a tuple3s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple3s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long)]]
+        val namedGen = org.scalatest.prop.tuple3s[String, Int, Long]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a function0s method" that {
       "returns the default implicit generator that produces arbitrary Function0s" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
