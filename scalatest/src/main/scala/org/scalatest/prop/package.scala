@@ -149,6 +149,9 @@ package object prop {
   val posDoubleValues: Generator[Double] = Generator.posDoubleGenerator.map(_.value)
   val posZDoubleValues: Generator[Double] = Generator.posZDoubleGenerator.map(_.value)
 
+  def gen[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
+    new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
+
   def gen[A, B, C](construct: (A, B) => C)(deconstruct: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new GeneratorFor2[A, B, C](construct, deconstruct)(genOfA, genOfB)
   // gen[A, B, C, D]

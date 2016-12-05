@@ -92,7 +92,6 @@ class GeneratorSpec extends FunSpec with Matchers {
       case class Person(name: String, age: Int)
       val persons = gen(Person) { p => (p.name, p.age) }
       """for (Person(a, b) <- persons) yield (b, a)""" should compile
-
     }
     it("should offer a filter method that throws an exception if too many objects are filtered out") {
       val doNotDoThisAtHome = ints.filter(i => i == 0) // Only keep zero

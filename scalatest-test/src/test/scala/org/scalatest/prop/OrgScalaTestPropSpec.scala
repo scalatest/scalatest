@@ -628,6 +628,22 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         exactly (1, lines) should include ("negative")
       }
     }
+    "offer a gen method" that {
+      "produces generators given construct and deconstruct functinos for one type" in {
+        case class Person(age: Int)
+        val persons = gen(Person) { p => p.age } (posZIntValues)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (persons) { case Person(ag) => ag should be >= 0 } // A contrived property check to do something with the generator
+      }
+      "produces generators given construct and deconstruct functinos for two types" in {
+        case class Person(name: String, age: Int)
+        val persons = gen(Person) { p =>
+          (p.name, p.age)
+        } (strings, posZIntValues)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (persons) { case Person(_, ag) => ag should be >= 0 } // A contrived property check to do something with the generator
+      }
+    }
   }
 }
 
