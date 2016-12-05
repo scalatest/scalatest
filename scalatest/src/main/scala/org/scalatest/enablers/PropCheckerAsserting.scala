@@ -126,11 +126,11 @@ abstract class UnitPropCheckerAsserting {
 
 abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting {
 
-  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfExpectation: PropCheckerAsserting[Expectation] { type Result = Expectation } = {
     new PropCheckerAssertingImpl[Expectation] {
       type Result = Expectation
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
-      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
         val gdpcfe =
           new GeneratorDrivenPropertyCheckFailedException(
@@ -144,7 +144,7 @@ abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting 
             scalaCheckLabels.toList
           )
         val message: String = gdpcfe.getMessage
-        Fact.No(message)(prettifier)
+        Fact.No(message)
       }
     }
   }

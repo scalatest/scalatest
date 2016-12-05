@@ -36,7 +36,6 @@ sealed abstract class Fact {
 
   val isLeaf: Boolean
   val isVacuousYes: Boolean
-  val prettifier: Prettifier
 
   val cause: Option[Throwable] = None
 
@@ -89,32 +88,32 @@ sealed abstract class Fact {
   final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
-   * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
+   * Construct failure message to report if a fact fails, using <code>rawFactMessage</code> and <code>factMessageArgs</code>
    *
    * @return failure message to report if a fact fails
    */
-  def factMessage: String =
+  def factMessage(implicit prettifier: Prettifier): String =
     if (factMessageArgs.isEmpty) rawFactMessage
-    else makeString(rawFactMessage, factMessageArgs)
+    else makeString(rawFactMessage, factMessageArgs, prettifier)
 
-  def simplifiedFactMessage: String =
+  def simplifiedFactMessage(implicit prettifier: Prettifier): String =
     if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage
-    else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
+    else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs, prettifier)
 
   /**
-   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
+   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code> and <code>midSentenceFactMessageArgs</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFactMessage: String =
+  def midSentenceFactMessage(implicit prettifier: Prettifier): String =
     if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage
-    else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
+    else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs, prettifier)
 
-  def midSentenceSimplifiedFactMessage: String =
+  def midSentenceSimplifiedFactMessage(implicit prettifier: Prettifier): String =
     if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage
-    else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
+    else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs, prettifier)
 
-  private def makeString(raw: String, args: IndexedSeq[Any]): String =
+  private def makeString(raw: String, args: IndexedSeq[Any], prettifier: Prettifier): String =
     Resources.formatString(raw, args.map(prettifier.apply).toArray)
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
@@ -147,7 +146,6 @@ object Fact {
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
     isVacuousYes: Boolean,
-    prettifier: Prettifier,
     override val cause: Option[Throwable] = None
   ) extends Fact {
     require(!isVacuousYes || isYes)
@@ -169,7 +167,6 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
 
     val isLeaf: Boolean = underlying.isLeaf
-    val prettifier: Prettifier = underlying.prettifier
 
     override val cause: Option[Throwable] = underlying.cause
 
@@ -202,7 +199,7 @@ object Fact {
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
       cause: Option[Throwable] = None
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -214,7 +211,6 @@ object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
-        prettifier,
         cause
       )
 
@@ -234,7 +230,7 @@ object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -246,7 +242,6 @@ object Fact {
         factMessageArgs,
 	false,
         false,
-        prettifier,
         None
       )
 
@@ -268,7 +263,7 @@ object Fact {
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -280,7 +275,6 @@ object Fact {
         midSentenceFactMessageArgs,
         false,
         false,
-        prettifier,
         None
       )
   
@@ -297,7 +291,7 @@ object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -309,7 +303,6 @@ object Fact {
         Vector.empty,
         false,
         false,
-        prettifier,
         None
       )
 
@@ -330,7 +323,7 @@ object Fact {
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -342,7 +335,6 @@ object Fact {
         Vector.empty,
         false,
         false,
-        prettifier,
         None
       )
 
@@ -367,7 +359,7 @@ object Fact {
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -379,7 +371,6 @@ object Fact {
         simplifiedFactMessageArgs,
         false,
         false,
-        prettifier,
         None
       )
 
@@ -408,7 +399,7 @@ object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -420,7 +411,6 @@ object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
-        prettifier,
         None
       )
   
@@ -437,7 +427,7 @@ object Fact {
      */
     def apply(
       rawFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -449,7 +439,6 @@ object Fact {
         Vector.empty,
         false,
         false,
-        prettifier,
         None
       )
   
@@ -472,7 +461,7 @@ object Fact {
     def apply(
       rawFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -484,7 +473,6 @@ object Fact {
         factMessageArgs,
         false,
         false,
-        prettifier,
         None
       )
 
@@ -502,7 +490,7 @@ object Fact {
     def apply(
       rawFactMessage: String,
       cause: Throwable
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -514,7 +502,6 @@ object Fact {
         Vector.empty,
         false,
         false,
-        prettifier,
         Some(cause)
       )
   }
@@ -537,7 +524,7 @@ object Fact {
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
       isVacuousYes: Boolean = false,
       cause: Option[Throwable] = None
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -549,7 +536,6 @@ object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         isVacuousYes,
-        prettifier,
         cause
       )
 
@@ -569,7 +555,7 @@ object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -581,7 +567,6 @@ object Fact {
         factMessageArgs,
         true,
         false,
-        prettifier,
         None
       )
 
@@ -603,7 +588,7 @@ object Fact {
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -615,7 +600,6 @@ object Fact {
         midSentenceFactMessageArgs,
         true,
         false,
-        prettifier,
         None
       )
   
@@ -632,7 +616,7 @@ object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -644,7 +628,6 @@ object Fact {
         Vector.empty,
         true,
         false,
-        prettifier,
         None
       )
 
@@ -666,7 +649,7 @@ object Fact {
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -678,7 +661,6 @@ object Fact {
         Vector.empty,
         true,
         false,
-        prettifier,
         None
       )
 
@@ -704,7 +686,7 @@ object Fact {
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -716,7 +698,6 @@ object Fact {
         simplifiedFactMessageArgs,
         true,
         false,
-        prettifier,
         None
       )
 
@@ -746,7 +727,7 @@ object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -758,7 +739,6 @@ object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         false,
-        prettifier,
         None
       )
   
@@ -774,7 +754,7 @@ object Fact {
      */
     def apply(
       rawFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -786,7 +766,6 @@ object Fact {
         Vector.empty,
         true,
         false,
-        prettifier,
         None
       )
   
@@ -807,7 +786,7 @@ object Fact {
     def apply(
       rawFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -819,7 +798,6 @@ object Fact {
         factMessageArgs,
         true,
         false,
-        prettifier,
         None
       )
   }
@@ -843,7 +821,6 @@ object Fact {
     val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
     val isLeaf: Boolean = underlying.isLeaf
-    val prettifier: Prettifier = underlying.prettifier
 
     val isYes: Boolean = !(underlying.isYes)
     val isVacuousYes: Boolean = false
@@ -908,7 +885,6 @@ object Fact {
     val isLeaf: Boolean = false
     val isYes: Boolean = left.isYes && right.isYes
     val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
-    val prettifier: Prettifier = left.prettifier
 
 
     override def factDiagram(level: Int): String = {
@@ -968,7 +944,6 @@ object Fact {
     val isLeaf: Boolean = false
     val isYes: Boolean = left.isYes || right.isYes
     val isVacuousYes: Boolean = (left.isVacuousYes && (right.isVacuousYes || right.isNo)) || ((left.isVacuousYes || left.isNo) && right.isVacuousYes)
-    val prettifier: Prettifier = left.prettifier
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
@@ -1040,7 +1015,6 @@ object Fact {
 
     val isLeaf: Boolean = false
     val isVacuousYes: Boolean = false // TODO
-    val prettifier: Prettifier = left.prettifier
 
     val isYes: Boolean = left.isYes && right.isYes
 
@@ -1090,7 +1064,6 @@ object Fact {
     val isLeaf: Boolean = false
     val isYes: Boolean = (left.isYes && right.isYes) || (left.isNo && right.isNo)
     val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
-    val prettifier: Prettifier = left.prettifier
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
