@@ -154,6 +154,9 @@ package object prop {
 
   def gen[A, B, C](construct: (A, B) => C)(deconstruct: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new GeneratorFor2[A, B, C](construct, deconstruct)(genOfA, genOfB)
+
+  def gen[A, B, C, D](construct: (A, B, C) => D)(deconstruct: D => (A, B, C))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[D] =
+    new GeneratorFor3[A, B, C, D](construct, deconstruct)(genOfA, genOfB, genOfC)
   // gen[A, B, C, D]
   // ... gen[A, B, C, D... 22 of them]
 
