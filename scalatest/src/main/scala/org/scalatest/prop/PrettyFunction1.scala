@@ -16,7 +16,5 @@
 package org.scalatest.prop
 
 trait PrettyFunction1[A, B] extends (A => B) {
-  val paramName: String
-  val paramTypeName: String
   val simpleName: String
 }
