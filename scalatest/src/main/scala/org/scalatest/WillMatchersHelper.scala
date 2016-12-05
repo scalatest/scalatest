@@ -16,57 +16,34 @@
 package org.scalatest
 
 import org.scalactic.Prettifier
-import org.scalactic.Prettifier
+import org.scalactic.source
 import org.scalatest.exceptions.TestFailedException
 
 private[scalatest] object WillMatchersHelper {
 
-  def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Fact = {
+  def checkNoException(fun: => Any): Fact = {
     try {
       fun
-      Fact.Yes(Resources.noExceptionWasThrown)(prettifier)
+      Fact.Yes(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        Fact.No(message, u)(prettifier)
+        Fact.No(message, u)
       }
     }
   }
 
-  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Fact = Fact.Yes(message)(prettifier)
+  def indicateSuccess(message: => String): Fact = Fact.Yes(message)
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Fact =
-    Fact.Yes(if (shouldBeTrue) message else negatedMessage)(prettifier)
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Fact =
+    Fact.Yes(if (shouldBeTrue) message else negatedMessage)
 
-  def indicateFailure(failureMessage: => String)(implicit prettifier: Prettifier): Fact = Fact.No(failureMessage)(prettifier)
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Fact = {
+    Fact.No(failureMessage)
+  }
 
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String)(implicit prettifier: Prettifier): Fact =
-    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage)(prettifier)
-
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0)(implicit prettifier: Prettifier): Fact =
-    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage)(prettifier)
-
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int, prettifier: Prettifier): Fact =
-    Fact.No(failureMessage)(prettifier)
-
-  def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
-                      negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
-                      stackDepthAdjustment: Int)(implicit prettifier: Prettifier): Fact =
-    Fact.No(
-      if (shouldBeTrue)
-        if (withFriendlyReminder)
-          failureMessageWithFriendlyReminder
-        else
-          failureMessageWithoutFriendlyReminder
-      else
-      if (withFriendlyReminder)
-        negatedFailureMessageWithFriendlyReminder
-      else
-        negatedFailureMessageWithoutFriendlyReminder
-    )(prettifier)
-
-  def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Fact =
-    Fact.No(e.getMessage)(prettifier)
+  def indicateFailure(e: TestFailedException): Fact =
+    Fact.No(e.getMessage)
 
 }
