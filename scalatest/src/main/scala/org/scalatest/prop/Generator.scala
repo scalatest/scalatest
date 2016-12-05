@@ -1402,36 +1402,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new GeneratorFor2[A, B, (A, B)]((a: A, b: B) => (a, b), (c: (A, B)) => c)(genOfA, genOfB)
 
   implicit def tuple3Generator[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = {
-    new Generator[(A, B, C)] { thisGeneratorOfT =>
-      private val underlying: Generator[(A, B, C)] = {
-        for {
-          a <- genOfA
-          b <- genOfB
-          c <- genOfC
-        } yield (a, b, c)
-      }
-      def next(size: Int, edges: List[(A, B, C)], rnd: Randomizer): ((A, B, C), List[(A, B, C)], Randomizer) = underlying.next(size, edges, rnd)
-      override def initEdges(maxLength: Int, rnd: Randomizer): (List[(A, B, C)], Randomizer) = underlying.initEdges(maxLength, rnd)
-      override def map[U](f: ((A, B, C)) => U): Generator[U] = underlying.map(f)
-      override def flatMap[U](f: ((A, B, C)) => Generator[U]): Generator[U] = underlying.flatMap(f)
-      override def canonicals(rnd: Randomizer): (Iterator[(A, B, C)], Randomizer) = underlying.canonicals(rnd) 
-      override def shrink(value: (A, B, C), rnd: Randomizer): (Iterator[(A, B, C)], Randomizer) = {
-        val (aValue, bValue, cValue) = value
-        val (itOfA, rnd1) = genOfA.shrink(aValue, rnd)
-        val (itOfB, rnd2) = genOfB.shrink(bValue, rnd1)
-        val (itOfC, rnd3) = genOfC.shrink(cValue, rnd2)
-        val streamOfA: Stream[A] = itOfA.toStream
-        val streamOfB: Stream[B] = itOfB.toStream
-        val streamOfC: Stream[C] = itOfC.toStream
-        val streamOfABC: Stream[(A, B, C)] =
-          for {
-            a <- streamOfA
-            b <- streamOfB
-            c <- streamOfC
-          } yield (a, b, c)
-        (streamOfABC.iterator, rnd3)
-      }
-    }
+    new GeneratorFor3[A, B, C, (A, B, C)]((a: A, b: B, c: C) => (a, b, c), (d: (A, B, C)) => d)(genOfA, genOfB, genOfC)
   }
 }
 
