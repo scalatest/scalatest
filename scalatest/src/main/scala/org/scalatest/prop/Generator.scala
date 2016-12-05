@@ -1188,19 +1188,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
         val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
 
-        object ABToC extends PrettyFunction2[A, B, C] {
+        object ABToC extends ((A, B) => C) {
           def apply(a: A, b: B): C = org.scalatest.prop.valueOf[C](a, b, intToInt)
-          val simpleName = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val intToIntName: String = 
-              intToInt match {
-                case prf: PrettyFunction2[_, _, _] => prf.simpleName
-                case _ => intToInt.toString
-              }
-            s"(a, b) => org.scalatest.prop.valueOf[$typeOfC](a, b, $intToIntName)"
-          }
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
