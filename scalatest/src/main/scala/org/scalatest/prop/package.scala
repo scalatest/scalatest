@@ -32,7 +32,11 @@ package object prop {
 
   // Called by the general function2 generator.
   def valueOf[C](a: Any, b: Any, f: Int => Int)(implicit genOfC: Generator[C]): C = {
-   val seed = (f(a.hashCode + b.hashCode)).toLong // how should we combine hashCodes?
+   def combinedHashCode(a: Any, b: Any): Int =
+     37 * (
+       37 + a.hashCode
+     ) + b.hashCode
+   val seed = (f(combinedHashCode(a, b))).toLong
    val rnd = Randomizer(seed)
    val (size, nextRnd) = rnd.chooseInt(1, 20)
    val (result, _, _) = genOfC.next(size, Nil, nextRnd)
