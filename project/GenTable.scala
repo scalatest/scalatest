@@ -2018,11 +2018,11 @@ $columnsOfTwos$
          |  */
          |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |
-         |  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): TableAsserting[Expectation] { type Result = Expectation } = {
+         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
          |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
          |      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
-         |      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+         |      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Expectation = {
          |        val message: String = undecoratedMessage
          |        new Fact.Leaf(
@@ -2036,7 +2036,6 @@ $columnsOfTwos$
          |          Vector.empty,
          |          false,
          |          false,
-         |          prettifier,
          |          optionalCause
          |        )
          |      }
@@ -2052,7 +2051,6 @@ $columnsOfTwos$
          |          Vector.empty,
          |          false,
          |          false,
-         |          prettifier,
          |          optionalCause
          |        )
          |      }
