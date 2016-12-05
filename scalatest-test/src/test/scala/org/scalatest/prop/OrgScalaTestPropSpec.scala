@@ -566,6 +566,19 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a function2s method" that {
+      "should use the implicit provider that uses hashCode to tweak a seed and has a pretty toString" in {
+        val implicitGen = implicitly[Generator[(Long, String) => Int]]
+        val namedGen = org.scalatest.prop.function2s[Long, String, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a classify method" that {
       "takes a partial function and returns an object containing a Map of String classifications to Int totals" in {
         val classification: Classification =

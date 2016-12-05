@@ -25,8 +25,17 @@ package object prop {
   def valueOf[B](a: Any, f: Int => Int)(implicit genOfB: Generator[B]): B = {
    val seed = (f(a.hashCode)).toLong
    val rnd = Randomizer(seed)
-   val (size, nextRnd) = rnd.chooseInt(1, 100)
+   val (size, nextRnd) = rnd.chooseInt(1, 20)
    val (result, _, _) = genOfB.next(size, Nil, nextRnd)
+   result
+  }
+
+  // Called by the general function2 generator.
+  def valueOf[C](a: Any, b: Any, f: Int => Int)(implicit genOfC: Generator[C]): C = {
+   val seed = (f(a.hashCode + b.hashCode)).toLong // how should we combine hashCodes?
+   val rnd = Randomizer(seed)
+   val (size, nextRnd) = rnd.chooseInt(1, 20)
+   val (result, _, _) = genOfC.next(size, Nil, nextRnd)
    result
   }
 
@@ -132,7 +141,9 @@ package object prop {
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
   def function1s[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] =
     Generator.function1AToBGenerator[A, B]
-  // function2s
+  def function2s[A, B, C](implicit genOfC: Generator[C], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C]): Generator[(A, B) => C] =
+    Generator.function2Generator[A, B, C]
+  // function3s
   // ... function22s
 
   val posInts: Generator[PosInt] = Generator.posIntGenerator

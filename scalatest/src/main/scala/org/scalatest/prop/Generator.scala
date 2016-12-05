@@ -1291,6 +1291,46 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
+  implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C]): Generator[(A, B) => C] = {
+    new Generator[(A, B) => C] {
+      def next(size: Int, edges: List[(A, B) => C], rnd: Randomizer): ((A, B) => C, List[(A, B) => C], Randomizer) = {
+
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABToC extends PrettyFunction2[A, B, C] {
+          def apply(a: A, b: B): C = org.scalatest.prop.valueOf[C](a, b, intToInt)
+          val simpleName = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val intToIntName: String = 
+              intToInt match {
+                case prf: PrettyFunction2[_, _, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a, b) => org.scalatest.prop.valueOf[$typeOfC](a, b, $intToIntName)"
+          }
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val intToIntName: String = 
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB) => org.scalatest.prop.valueOf[$typeOfC](a, b, $intToIntName)"
+          }
+          val paramName: String = "a, b"
+          val paramTypeName: String = "A, B"
+        }
+
+        (ABToC, Nil, rnd1)
+      }
+    }
+  }
+
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Option[T]], Randomizer) = {
