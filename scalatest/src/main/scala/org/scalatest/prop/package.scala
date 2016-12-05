@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic.anyvals._
 import scala.annotation.tailrec
+import scala.reflect.runtime.universe.TypeTag
 
 package object prop {
 
@@ -129,7 +130,9 @@ package object prop {
   def tuple3s[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = Generator.tuple3Generator[A, B, C]
   // ... tuple22s
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
-  // function1s
+  def function1s[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] =
+    Generator.function1AToBGenerator[A, B]
+  // function2s
   // ... function22s
 
   val posInts: Generator[PosInt] = Generator.posIntGenerator
