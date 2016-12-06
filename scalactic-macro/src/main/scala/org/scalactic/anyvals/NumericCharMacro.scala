@@ -18,18 +18,18 @@ package org.scalactic.anyvals
 import reflect.macros.Context
 import CompileTimeAssertions._
 
-private[scalactic] object NumCharMacro {
+private[scalactic] object NumericCharMacro {
 
   def isValid(c: Char): Boolean = c >= '0' && c <= '9'
 
-  def apply(c: Context)(value: c.Expr[Char]): c.Expr[NumChar] = {
+  def apply(c: Context)(value: c.Expr[Char]): c.Expr[NumericChar] = {
     val notValidMsg =
-      "NumChar.apply can only be invoked on Char literals that are numbers, " +
+      "NumericChar.apply can only be invoked on Char literals that are numbers, " +
       "like '8'."
     val notLiteralMsg =
-      "NumChar.apply can only be invoked on Char literals that are numbers, like '8'." +
-      " Please use NumChar.from instead."
+      "NumericChar.apply can only be invoked on Char literals that are numbers, like '8'." +
+      " Please use NumericChar.from instead."
     ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    c.universe.reify { NumChar.ensuringValid(value.splice) }
+    c.universe.reify { NumericChar.ensuringValid(value.splice) }
   } 
 }
