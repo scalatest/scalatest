@@ -16,21 +16,20 @@
 package org.scalactic.anyvals
 
 import reflect.macros.Context
-import org.scalactic.Resources
-
 import CompileTimeAssertions._
-private[scalactic] object NumStringMacro {
 
-  def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
+private[scalactic] object NumericCharMacro {
 
-  def apply(c: Context)(value: c.Expr[String]): c.Expr[NumString] = {
+  def isValid(c: Char): Boolean = c >= '0' && c <= '9'
+
+  def apply(c: Context)(value: c.Expr[Char]): c.Expr[NumericChar] = {
     val notValidMsg =
-      "NumString.apply can only be invoked on String literals that contain numeric characters, i.e., decimal digits '0' through '9', " +
-      "like \"123\"."
+      "NumericChar.apply can only be invoked on Char literals that are numbers, " +
+      "like '8'."
     val notLiteralMsg =
-      "NumString.apply can only be invoked on String literals that contain only numeric characters, i.e., decimal digits '0' through '9', like \"123\"" +
-      " Please use NumString.from instead."
-    ensureValidStringLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
-    c.universe.reify { NumString.ensuringValid(value.splice) }
+      "NumericChar.apply can only be invoked on Char literals that are numbers, like '8'." +
+      " Please use NumericChar.from instead."
+    ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
+    c.universe.reify { NumericChar.ensuringValid(value.splice) }
   } 
 }

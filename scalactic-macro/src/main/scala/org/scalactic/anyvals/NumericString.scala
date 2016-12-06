@@ -15,20 +15,20 @@
 */
 package org.scalactic.anyvals
 
-private[scalactic] final class NumString private (val value: String) extends AnyVal {
-  override def toString: String = s"NumString($value)"
+private[scalactic] final class NumericString private (val value: String) extends AnyVal {
+  override def toString: String = s"NumericString($value)"
 }
 
-private[scalactic] object NumString {
-  def from(value: String): Option[NumString] =
-    if (NumStringMacro.isValid(value)) Some(new NumString(value)) else None
+private[scalactic] object NumericString {
+  def from(value: String): Option[NumericString] =
+    if (NumericStringMacro.isValid(value)) Some(new NumericString(value)) else None
 
-  def ensuringValid(value: String): NumString =
-    if (NumStringMacro.isValid(value)) new NumString(value) else {
-      throw new AssertionError(s"$value was not a valid NumString")
+  def ensuringValid(value: String): NumericString =
+    if (NumericStringMacro.isValid(value)) new NumericString(value) else {
+      throw new AssertionError(s"$value was not a valid NumericString")
     }
 
   import scala.language.experimental.macros
-  def apply(value: String): NumString = macro NumStringMacro.apply
+  def apply(value: String): NumericString = macro NumericStringMacro.apply
 }
 

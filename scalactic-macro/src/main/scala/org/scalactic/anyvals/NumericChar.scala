@@ -17,8 +17,8 @@ package org.scalactic.anyvals
 
 import scala.language.implicitConversions
 
-private[scalactic] final class NumChar private (val value: Char) extends AnyVal {
-  override def toString: String = s"NumChar($value)"
+private[scalactic] final class NumericChar private (val value: Char) extends AnyVal {
+  override def toString: String = s"NumericChar($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
   def toChar: Char = value.toChar
@@ -27,10 +27,10 @@ private[scalactic] final class NumChar private (val value: Char) extends AnyVal 
   def toFloat: Float = value.toFloat
   def toDouble: Double = value.toDouble
 
-  def max(that: NumChar): NumChar =
+  def max(that: NumericChar): NumericChar =
     if (math.max(value.toInt, that.value.toInt) == value.toInt) this
     else that
-  def min(that: NumChar): NumChar =
+  def min(that: NumericChar): NumericChar =
     if (math.min(value.toInt, that.value.toInt) == value.toInt) this
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
@@ -47,7 +47,7 @@ private[scalactic] final class NumChar private (val value: Char) extends AnyVal 
  */
   def unary_~ : Int = ~value.asDigit
   /** Returns this value, unmodified. */
-  def unary_+ : NumChar = this
+  def unary_+ : NumericChar = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
 
@@ -414,38 +414,38 @@ private[scalactic] final class NumChar private (val value: Char) extends AnyVal 
   def %(x: Double): Double = value % x
 }
 
-private[scalactic] object NumChar {
-  def from(value: Char): Option[NumChar] =
-    if (NumCharMacro.isValid(value)) Some(new NumChar(value)) else None
+private[scalactic] object NumericChar {
+  def from(value: Char): Option[NumericChar] =
+    if (NumericCharMacro.isValid(value)) Some(new NumericChar(value)) else None
 
-  def ensuringValid(value: Char): NumChar =
-    if (NumCharMacro.isValid(value)) new NumChar(value) else {
-      throw new AssertionError(s"$value was not a valid NumChar")
+  def ensuringValid(value: Char): NumericChar =
+    if (NumericCharMacro.isValid(value)) new NumericChar(value) else {
+      throw new AssertionError(s"$value was not a valid NumericChar")
     }
 
   import scala.language.experimental.macros
-  implicit def apply(value: Char): NumChar = macro NumCharMacro.apply
+  implicit def apply(value: Char): NumericChar = macro NumericCharMacro.apply
 
-  /** The smallest value representable as a NumChar. */
+  /** The smallest value representable as a NumericChar. */
   final val MinValue = '0'
 
-  /** The largest value representable as a NumChar. */
+  /** The largest value representable as a NumericChar. */
   final val MaxValue = '9'
 
   /** Language mandated coercions from Char to "wider" types. */
-  implicit def numChar2Int(x: NumChar): Int = x.toInt
-  implicit def numChar2Long(x: NumChar): Long = x.toLong
-  implicit def numChar2Float(x: NumChar): Float = x.toFloat
-  implicit def numChar2Double(x: NumChar): Double = x.toDouble
+  implicit def numericChar2Int(x: NumericChar): Int = x.toInt
+  implicit def numericChar2Long(x: NumericChar): Long = x.toLong
+  implicit def numericChar2Float(x: NumericChar): Float = x.toFloat
+  implicit def numericChar2Double(x: NumericChar): Double = x.toDouble
 
-  implicit def numChar2PosInt(x: NumChar): PosInt = PosInt.ensuringValid(x.toInt)
-  implicit def numChar2PosLong(x: NumChar): PosLong = PosLong.ensuringValid(x.toLong)
-  implicit def numChar2PosFloat(x: NumChar): PosFloat = PosFloat.ensuringValid(x.toFloat)
-  implicit def numChar2PosDouble(x: NumChar): PosDouble = PosDouble.ensuringValid(x.toDouble)
+  implicit def numericChar2PosInt(x: NumericChar): PosInt = PosInt.ensuringValid(x.toInt)
+  implicit def numericChar2PosLong(x: NumericChar): PosLong = PosLong.ensuringValid(x.toLong)
+  implicit def numericChar2PosFloat(x: NumericChar): PosFloat = PosFloat.ensuringValid(x.toFloat)
+  implicit def numericChar2PosDouble(x: NumericChar): PosDouble = PosDouble.ensuringValid(x.toDouble)
 
-  implicit def numChar2PosZInt(x: NumChar): PosZInt = PosZInt.ensuringValid(x.toInt)
-  implicit def numChar2PosZLong(x: NumChar): PosZLong = PosZLong.ensuringValid(x.toLong)
-  implicit def numChar2PosZFloat(x: NumChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
-  implicit def numChar2PosZDouble(x: NumChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+  implicit def numericChar2PosZInt(x: NumericChar): PosZInt = PosZInt.ensuringValid(x.toInt)
+  implicit def numericChar2PosZLong(x: NumericChar): PosZLong = PosZLong.ensuringValid(x.toLong)
+  implicit def numericChar2PosZFloat(x: NumericChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
+  implicit def numericChar2PosZDouble(x: NumericChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
 }
 
