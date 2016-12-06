@@ -17,6 +17,16 @@ package org.scalactic.anyvals
 
 private[scalactic] final class NumericString private (val value: String) extends AnyVal {
   override def toString: String = s"NumericString($value)"
+
+  def length: Int = value.length
+
+  def charAt(index: Int): Char = value.charAt(index)
+
+  def ensuringValid(f: String => String): NumericString = {
+    val candidateResult: String = f(value)
+    if (NumericStringMacro.isValid(candidateResult)) new NumericString(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid NumericString")
+  }
 }
 
 private[scalactic] object NumericString {
@@ -27,6 +37,11 @@ private[scalactic] object NumericString {
     if (NumericStringMacro.isValid(value)) new NumericString(value) else {
       throw new AssertionError(s"$value was not a valid NumericString")
     }
+
+  def isValid(value: String): Boolean = NumericStringMacro.isValid(value)
+
+  def fromOrElse(value: String, default: => NumericString): NumericString =
+    if (NumericStringMacro.isValid(value)) new NumericString(value) else default
 
   import scala.language.experimental.macros
   def apply(value: String): NumericString = macro NumericStringMacro.apply
