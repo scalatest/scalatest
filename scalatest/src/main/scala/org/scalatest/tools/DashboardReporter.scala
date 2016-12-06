@@ -802,7 +802,7 @@ private[scalatest] class DashboardReporter(directory: String,
         event match {
           case TestSucceeded(_, _, _, _, _, _, _, duration, _, _, _, _, _, _)
             => duration
-          case TestFailed(_, _, _, _, _, _, _, _, _, duration, _, _, _, _, _, _) 
+          case TestFailed(_, _, _, _, _, _, _, _, _, _, duration, _, _, _, _, _, _)
             => duration
           case TestPending(_, _, _, _, _, _, _, duration, _, _, _, _, _) 
             => duration
