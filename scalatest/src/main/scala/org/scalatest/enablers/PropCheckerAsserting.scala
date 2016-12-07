@@ -28,6 +28,8 @@ trait PropCheckerAsserting[T] {
     */
   type Result
 
+  def discard(result: T): Boolean
+
   def succeed(result: T): (Boolean, Option[Throwable])
 
   private[scalatest] def indicateSuccess(message: => String): Result
@@ -129,6 +131,7 @@ abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting 
   implicit def assertingNatureOfExpectation: PropCheckerAsserting[Expectation] { type Result = Expectation } = {
     new PropCheckerAssertingImpl[Expectation] {
       type Result = Expectation
+      def discard(result: Expectation): Boolean = result.isVacuousYes
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
       private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
@@ -155,6 +158,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
     new PropCheckerAssertingImpl[Assertion] {
       type Result = Assertion
+      def discard(result: Assertion): Boolean = false
       def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {

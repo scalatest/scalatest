@@ -2879,6 +2879,15 @@ $okayAssertions$
     }
     assert(result.isYes)
   }
+
+  it("generator-driven property that takes $n$ named args and generators, returns VacuousYes should be considered discarded evaluation") {
+    val result =
+      forAll { ($namesAndTypes$) =>
+        val x = -1
+        expect(x > 0) implies expect(x > -1)
+      }
+    assert(result.isNo)
+  }
 """
 
 // 1712  2205
