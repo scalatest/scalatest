@@ -1108,7 +1108,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 val generatorSuitePostamble = """
   val famousLastWords = for {
-    s <- Generator.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
+    s <- org.scalatest.prop.specificValues("the", "program", "compiles", "therefore", "it", "should", "work")
   } yield s
 
   val sevenEleven: Generator[String] =
@@ -2878,6 +2878,15 @@ $okayAssertions$
 $okayAssertions$
     }
     assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, returns VacuousYes should be considered discarded evaluation") {
+    val result =
+      forAll { ($namesAndTypes$) =>
+        val x = -1
+        expect(x > 0) implies expect(x > -1)
+      }
+    assert(result.isNo)
   }
 """
 
