@@ -1485,8 +1485,8 @@ class FunSuiteSpec extends FunSpec {
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends FunSuite {
-        test("test 1") {}
-        test("test 1") {}
+        test("test 1") { /* ASSERTION_SUCCEED */ }
+        test("test 1") { /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
@@ -1498,8 +1498,8 @@ class FunSuiteSpec extends FunSpec {
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
       class TestSpec extends FunSuite {
-        test("test 1") {}
-        ignore("test 1") {}
+        test("test 1") { /* ASSERTION_SUCCEED */ }
+        ignore("test 1") { /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec

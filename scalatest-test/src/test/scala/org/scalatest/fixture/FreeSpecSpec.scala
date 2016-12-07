@@ -1777,8 +1777,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" - {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {

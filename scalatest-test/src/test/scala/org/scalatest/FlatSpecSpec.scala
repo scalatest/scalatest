@@ -1613,8 +1613,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends FlatSpec {
         behavior of "a feature"
-        it should "test 1" in {}
-        it should "test 1" in {}
+        it should "test 1" in { /* ASSERTION_SUCCEED */ }
+        it should "test 1" in { /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec

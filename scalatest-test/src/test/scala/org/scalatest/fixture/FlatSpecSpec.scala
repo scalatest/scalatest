@@ -1933,8 +1933,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         behavior of "a feature"
-        it should "test 1" in { fixture => }
-        it should "test 1" in { fixture => }
+        it should "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+        it should "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec

@@ -1640,8 +1640,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         describe("a feature") {
-          it("test 1") { fixture => }
-          it("test 1") { fixture => }
+          it("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+          it("test 1") { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {

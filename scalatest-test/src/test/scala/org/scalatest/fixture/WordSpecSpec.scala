@@ -4220,8 +4220,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" when {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4244,8 +4244,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" when {}
         it when {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4267,8 +4267,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" should {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4291,8 +4291,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" should {}
         it should {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4314,8 +4314,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" must {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4338,8 +4338,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" must {}
         it must {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4361,8 +4361,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" that {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4384,8 +4384,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" which {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4407,8 +4407,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" can {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -4431,8 +4431,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a feature" can {}
         it can {
-          "test 1" in { fixture => }
-          "test 1" in { fixture => }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
+          "test 1" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {

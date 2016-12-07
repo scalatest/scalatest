@@ -1528,8 +1528,8 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
       class TestSpec extends FreeSpec {
         "a feature" - {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
