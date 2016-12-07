@@ -29,6 +29,8 @@ trait PropertyTest {
 
   def check: PropertyTest.Result
 
+  def discard(v: RESULT): Boolean
+
   def succeed(v: RESULT): (Boolean, Option[Throwable])
 
   def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => RESULT): PropertyTest.Result = {
@@ -50,16 +52,25 @@ trait PropertyTest {
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
-          else
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          }
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -126,16 +137,25 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
-          else
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          }
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -201,16 +221,25 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
-          else
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          }
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -280,16 +309,25 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
-          else
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          }
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -363,16 +401,25 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
-          else
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+          }
 
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
@@ -450,16 +497,25 @@ I'd then just feed the edges through along with the randomizer.
         )
       result match {
         case Success(r) =>
-          val (success, cause) = succeed(r)
-          if (success) {
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
             else
-              PropertyTest.CheckSuccess(argsPassed)
+              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           }
           else {
-            new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
+              else
+                PropertyTest.CheckSuccess(argsPassed)
+            }
+            else {
+              new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+            }
           }
 
         case Failure(ex: DiscardedEvaluationException) =>
@@ -518,6 +574,7 @@ object PropertyTest {
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA)(fun)
     }
@@ -530,6 +587,7 @@ object PropertyTest {
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB)(fun)
     }
@@ -543,6 +601,7 @@ object PropertyTest {
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC)(fun)
     }
@@ -557,6 +616,7 @@ object PropertyTest {
                                       ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD)(fun)
     }
@@ -572,6 +632,7 @@ object PropertyTest {
                                          ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE)(fun)
     }
@@ -588,6 +649,7 @@ object PropertyTest {
                                                   ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
+      def discard(v: RESULT) = asserting.discard(v)
       def succeed(v: RESULT) = asserting.succeed(v)
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE, genF)(fun)
     }
