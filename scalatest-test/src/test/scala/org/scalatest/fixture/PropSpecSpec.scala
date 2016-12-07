@@ -1455,8 +1455,8 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends PropSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        property("test 1") { fixture => }
-        property("test 1") { fixture => }
+        property("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        property("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
@@ -1470,8 +1470,8 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends PropSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        property("test 1") { fixture => }
-        ignore("test 1") { fixture => }
+        property("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        ignore("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec

@@ -1433,8 +1433,8 @@ class FeatureSpecSpec extends FunSpec {
       it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
         class TestSpec extends FeatureSpec {
           feature("a feature") {
-            scenario("test 1") {}
-            scenario("test 1") {}
+            scenario("test 1") { /* ASSERTION_SUCCEED */ }
+            scenario("test 1") { /* ASSERTION_SUCCEED */ }
           }
         }
         val e = intercept[NotAllowedException] {

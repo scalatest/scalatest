@@ -1458,8 +1458,8 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
       class TestSpec extends FunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        test("test 1") { fixture => }
-        test("test 1") { fixture => }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
@@ -1473,8 +1473,8 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
       class TestSpec extends FunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        test("test 1") { fixture => }
-        ignore("test 1") { fixture => }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        ignore("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
