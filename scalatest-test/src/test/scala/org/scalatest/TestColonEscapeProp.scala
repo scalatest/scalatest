@@ -259,20 +259,20 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
   def featureSpec = new ExampleFeatureSpec
   class ExampleFeatureSpec extends FeatureSpec {
-    scenario("test: A Succeeded Test") {}
-    scenario("test: A Failed Test") { fail }
+    Scenario("test: A Succeeded Test") {}
+    Scenario("test: A Failed Test") { fail }
     ignore("test: An Ignored Test") {}
-    scenario("test: A Pending Test") { pending }
-    scenario("test: A Canceled Test") { cancel }
+    Scenario("test: A Pending Test") { pending }
+    Scenario("test: A Canceled Test") { cancel }
   }
   
   def fixtureFeatureSpec = new ExampleFixtureFeatureSpec
   class ExampleFixtureFeatureSpec extends fixture.FeatureSpec with StringFixture {
-    scenario("test: A Succeeded Test") { fixture => }
-    scenario("test: A Failed Test") { fixture => fail }
+    Scenario("test: A Succeeded Test") { fixture => }
+    Scenario("test: A Failed Test") { fixture => fail }
     ignore("test: An Ignored Test") { fixture => }
-    scenario("test: A Pending Test") { fixture => pending }
-    scenario("test: A Canceled Test") { fixture => cancel }
+    Scenario("test: A Pending Test") { fixture => pending }
+    Scenario("test: A Canceled Test") { fixture => cancel }
   }
   
   def flatSpec = new ExampleFlatSpec

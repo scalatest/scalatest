@@ -174,7 +174,7 @@ class LocationSuiteProp extends SuiteProp
     
     class NestedSuite extends FeatureSpec {
       Feature("feature") {
-        scenario("info") {
+        Scenario("info") {
           info("test info")
         }
       }
@@ -186,7 +186,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends FeatureSpec {
       Feature("feature") { 
-        scenario("fail") {
+        Scenario("fail") {
           fail
         }
       }
@@ -210,7 +210,7 @@ class LocationSuiteProp extends SuiteProp
     
     class NestedSuite extends StringFixtureFeatureSpec {
       Feature("feature") { 
-        scenario("info") { param =>
+        Scenario("info") { param =>
           info("test info")
         }
       }
@@ -222,7 +222,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends StringFixtureFeatureSpec {
       Feature("feature") { 
-        scenario("fail") {
+        Scenario("fail") {
           () => fail
         }
       }

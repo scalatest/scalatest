@@ -288,12 +288,12 @@ class ExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends SuiteTimeo
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting {
   Feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
   Feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFeatureSpec
 }
@@ -301,12 +301,12 @@ protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec e
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   Feature("Fixture Scope 1") {
-    scenario("Fixture Test 1") { fixture => }
-    scenario("Fixture Test 2") { fixture =>}
+    Scenario("Fixture Test 1") { fixture => }
+    Scenario("Fixture Test 2") { fixture =>}
   }
   Feature("Fixture Scope 2") {
-    scenario("Fixture Test 3") { fixture => }
-    scenario("Fixture Test 4") { fixture => }
+    Scenario("Fixture Test 3") { fixture => }
+    Scenario("Fixture Test 4") { fixture => }
   }
   //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec
 }

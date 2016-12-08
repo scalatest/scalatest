@@ -245,12 +245,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends F
   before { info("In Before") }
   after { info("In After") }
   Feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
   Feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   
   def assertBeforeAfterInfo(events: List[Event]): Unit = {
@@ -284,12 +284,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec ex
   before { info("In Before") }
   after { info("In After") }
   Feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+    Scenario("Test 1") { fixture => }
+    Scenario("Test 2") { fixture =>}
   }
   Feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture =>}
+    Scenario("Test 3") { fixture => }
+    Scenario("Test 4") { fixture =>}
   }
   
   def assertBeforeAfterInfo(events: List[Event]): Unit = {

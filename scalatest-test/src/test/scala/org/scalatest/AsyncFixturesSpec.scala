@@ -71,7 +71,7 @@ class AsyncFixturesSpec extends FunSpec {
 
     it("should fail tests with NotAllowedException when mixed in classis FeatureSpec") {
       val spec = new FeatureSpec with AsyncFixtures {
-        scenario("a test") {}
+        Scenario("a test") {}
       }
       val rep = new EventRecordingReporter
       spec.run(None, Args(reporter = rep))
@@ -83,7 +83,7 @@ class AsyncFixturesSpec extends FunSpec {
 
     it("should fail tests with NotAllowedException when mixed in classis FeatureSpecLike") {
       val spec = new FeatureSpecLike with AsyncFixtures {
-        scenario("a test") {}
+        Scenario("a test") {}
       }
       val rep = new EventRecordingReporter
       spec.run(None, Args(reporter = rep))

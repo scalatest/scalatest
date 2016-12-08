@@ -32,25 +32,25 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
         val a = 1
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             pending
           }
         }
 
-        scenario("test 4") {
+        Scenario("test 4") {
           Future {
             cancel
           }
@@ -92,19 +92,19 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
         val a = 1
 
-        scenario("test 1") {
+        Scenario("test 1") {
           assert(a == 1)
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           assert(a == 2)
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           pending
         }
 
-        scenario("test 4") {
+        Scenario("test 4") {
           cancel
         }
 
@@ -143,7 +143,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -152,7 +152,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -161,7 +161,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             assert(count == 2)
           }
@@ -187,21 +187,21 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           assert(count == 2)
         }
 
@@ -229,14 +229,14 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -272,7 +272,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -289,7 +289,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -341,7 +341,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        scenario("test 1") {
+        Scenario("test 1") {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -363,21 +363,21 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             succeed
           }
@@ -410,17 +410,17 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           SleepHelper.sleep(60)
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           SleepHelper.sleep(30)
           succeed
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -475,7 +475,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -496,7 +496,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             info("hi there")
             succeed
           }
@@ -526,7 +526,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             Future {
               info("hi there")
               succeed
@@ -582,7 +582,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -603,7 +603,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             note("hi there")
             succeed
           }
@@ -626,7 +626,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             Future {
               note("hi there")
               succeed
@@ -675,7 +675,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -696,7 +696,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             alert("hi there")
             succeed
           }
@@ -719,7 +719,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             Future {
               alert("hi there")
               succeed
@@ -768,7 +768,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -789,7 +789,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             markup("hi there")
             succeed
           }
@@ -819,7 +819,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          scenario("test 1") {
+          Scenario("test 1") {
             Future {
               markup("hi there")
               succeed
@@ -855,17 +855,17 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
         Feature("feature 1") {
-          scenario("scenario A") {
+          Scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
         Feature("feature 2")  {
-          scenario("scenario B") {
+          Scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
         Feature("group3") {
-          scenario("test C") {
+          Scenario("test C") {
             Future { assert(a == 1) }
           }
         }

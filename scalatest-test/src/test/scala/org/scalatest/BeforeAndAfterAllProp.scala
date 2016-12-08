@@ -215,9 +215,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fi
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   Feature("Feature 1") {
-    scenario("Scenario 1") { SleepHelper.sleep(10) }
-    scenario("Scenario 2") { SleepHelper.sleep(10) }
-    scenario("Scenario 3") { SleepHelper.sleep(10) }
+    Scenario("Scenario 1") { SleepHelper.sleep(10) }
+    Scenario("Scenario 2") { SleepHelper.sleep(10) }
+    Scenario("Scenario 3") { SleepHelper.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {
@@ -233,9 +233,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends Featu
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   Feature("Feature 1") {
-    scenario("Scenario 1") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 2") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 3") { s => SleepHelper.sleep(10) }
+    Scenario("Scenario 1") { s => SleepHelper.sleep(10) }
+    Scenario("Scenario 2") { s => SleepHelper.sleep(10) }
+    Scenario("Scenario 3") { s => SleepHelper.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {

@@ -417,28 +417,28 @@ class SecondTestIgnoredExamples extends SuiteExamples {
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
-    scenario("first test") {}
+    Scenario("first test") {}
     ignore("second test") {}
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
     Feature("A feature") {
-      scenario("first test") {}
+      Scenario("first test") {}
       ignore("second test") {}
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    scenario("first test") { s => }
+    Scenario("first test") { s => }
     ignore("second test") { s => }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
     Feature("A feature") {
-      scenario("first test") { s => }
+      Scenario("first test") { s => }
       ignore("second test") { s => }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")

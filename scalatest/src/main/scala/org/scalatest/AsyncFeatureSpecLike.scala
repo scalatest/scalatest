@@ -102,6 +102,10 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
+  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
+    Scenario(specText, testTags: _*)(testFun)(pos)
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -120,7 +124,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
   }
 

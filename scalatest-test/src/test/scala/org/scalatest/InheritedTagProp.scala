@@ -340,7 +340,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagFeatureSpec extends FeatureSpec with FixtureServices
   class InheritedTagFeatureSpec extends BaseTagFeatureSpec {
-    scenario("test something") {}
+    Scenario("test something") {}
   }
   def featureSpec = new InheritedTagFeatureSpec
 
@@ -356,7 +356,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagFixtureFeatureSpec extends fixture.FeatureSpec with StringFixture with FixtureServices
   class InheritedTagFixtureFeatureSpec extends BaseTagFixtureFeatureSpec {
-    scenario("test something") { f => }
+    Scenario("test something") { f => }
   }
   def fixtureFeatureSpec = new InheritedTagFixtureFeatureSpec
 

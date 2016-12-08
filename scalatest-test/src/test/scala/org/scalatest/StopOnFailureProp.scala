@@ -216,24 +216,24 @@ protected[scalatest] class ExampleStopOnFailureFixtureFunSpec extends fixture.Fu
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFeatureSpec extends FeatureSpec with StopOnFailure with StopOnFailureFixtureServices {
   Feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") { pending }
-    scenario("Scenario 3") { cancel }
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") { pending }
+    Scenario("Scenario 3") { cancel }
     ignore("Scenario 4") {}
-    scenario("Scenario 5") { fail }
-    scenario("Scenario 6") {}
+    Scenario("Scenario 5") { fail }
+    Scenario("Scenario 6") {}
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFeatureSpec extends fixture.FeatureSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   Feature("Feature 1") {
-    scenario("Scenario 1") { s => }
-    scenario("Scenario 2") { s => pending }
-    scenario("Scenario 3") { s => cancel }
+    Scenario("Scenario 1") { s => }
+    Scenario("Scenario 2") { s => pending }
+    Scenario("Scenario 3") { s => cancel }
     ignore("Scenario 4") { s => }
-    scenario("Scenario 5") { s => fail }
-    scenario("Scenario 6") { s => }
+    Scenario("Scenario 5") { s => fail }
+    Scenario("Scenario 6") { s => }
   }
 }
 

@@ -225,9 +225,9 @@ class ExampleStatusFixtureFunSpec extends fixture.FunSpec with StatusFixtureServ
 @DoNotDiscover
 class ExampleStatusFeatureSpec extends FeatureSpec with StatusFixtureServices with ParallelTestExecution {
   Feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") { throw new VirtualMachineError {} }
-    scenario("Scenario 3") {}
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") { throw new VirtualMachineError {} }
+    Scenario("Scenario 3") {}
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }
@@ -235,9 +235,9 @@ class ExampleStatusFeatureSpec extends FeatureSpec with StatusFixtureServices wi
 @DoNotDiscover
 class ExampleStatusFixtureFeatureSpec extends fixture.FeatureSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   Feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s => throw new VirtualMachineError {}}
-    scenario("Scenario 3") {s =>}
+    Scenario("Scenario 1") {s =>}
+    Scenario("Scenario 2") {s => throw new VirtualMachineError {}}
+    Scenario("Scenario 3") {s =>}
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }

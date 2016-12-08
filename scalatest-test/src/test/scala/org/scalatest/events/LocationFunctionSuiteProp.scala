@@ -139,13 +139,13 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def featureSpec = new FeatureSpec with FixtureServices {
     Feature("Test") {
-      scenario("succeed") {
+      Scenario("succeed") {
       
       }
-      scenario("pending") {
+      Scenario("pending") {
         pending
       }
-      scenario("cancel") {
+      Scenario("cancel") {
         cancel
       }
       ignore("ignore") {
@@ -166,13 +166,13 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def fixtureFeatureSpec = new fixture.FeatureSpec with FixtureServices with StringFixture {
     Feature("Test") {
-      scenario("succeed") { param =>
+      Scenario("succeed") { param =>
       
       }
-      scenario("pending") { param =>
+      Scenario("pending") { param =>
         pending
       }
-      scenario("cancel") { param =>
+      Scenario("cancel") { param =>
         cancel
       }
       ignore("ignore") { param =>
