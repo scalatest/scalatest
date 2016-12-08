@@ -196,6 +196,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
   protected def ignore(specText: String, testTags: Tag*): ResultOfIgnoreInvocation =
     new ResultOfIgnoreInvocation(specText, testTags: _*)
 
+  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
@@ -204,7 +207,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    *
    * @param description the description text
    */
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4

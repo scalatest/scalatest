@@ -244,11 +244,11 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extend
 protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends FeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
-  feature("Scope 1") {
+  Feature("Scope 1") {
     scenario("Test 1") {}
     scenario("Test 2") {}
   }
-  feature("Scope 2") {
+  Feature("Scope 2") {
     scenario("Test 3") {}
     scenario("Test 4") {}
   }
@@ -283,11 +283,11 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends F
 protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec extends fixture.FeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
-  feature("Scope 1") {
+  Feature("Scope 1") {
     scenario("Test 1") { fixture => }
     scenario("Test 2") { fixture =>}
   }
-  feature("Scope 2") {
+  Feature("Scope 2") {
     scenario("Test 3") { fixture => }
     scenario("Test 4") { fixture =>}
   }

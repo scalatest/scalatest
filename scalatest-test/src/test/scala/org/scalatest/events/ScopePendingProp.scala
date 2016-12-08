@@ -200,12 +200,12 @@ protected[events] class ExampleScopePendingFixtureFunSpec extends fixture.FunSpe
 
 @DoNotDiscover
 protected[events] class ExampleScopePendingFeatureSpec extends FeatureSpec with ScopePendingFixtureServices {
-  feature("scope 1") {
+  Feature("scope 1") {
     scenario("test 1") {}
     scenario("test 2") {}
     scenario("test 3") {}
   }
-  feature("scope 2") {
+  Feature("scope 2") {
     scenario("test 1") {}
     pending
     scenario("test 2") {}
@@ -220,12 +220,12 @@ protected[events] class ExampleScopePendingFeatureSpec extends FeatureSpec with 
 
 @DoNotDiscover
 protected[events] class ExampleScopePendingFixtureFeatureSpec extends fixture.FeatureSpec with ScopePendingFixtureServices with StringFixture {
-  feature("scope 1") {
+  Feature("scope 1") {
     scenario("test 1") {s =>}
     scenario("test 2") {s =>}
     scenario("test 3") {s =>}
   }
-  feature("scope 2") {
+  Feature("scope 2") {
     scenario("test 1") {s =>}
     pending
     scenario("test 2") {s =>}

@@ -214,7 +214,7 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fi
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") { SleepHelper.sleep(10) }
     scenario("Scenario 2") { SleepHelper.sleep(10) }
     scenario("Scenario 3") { SleepHelper.sleep(10) }
@@ -232,7 +232,7 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends Featu
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") { s => SleepHelper.sleep(10) }
     scenario("Scenario 2") { s => SleepHelper.sleep(10) }
     scenario("Scenario 3") { s => SleepHelper.sleep(10) }

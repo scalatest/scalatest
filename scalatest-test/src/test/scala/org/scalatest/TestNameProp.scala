@@ -439,31 +439,31 @@ protected[scalatest] class ExampleTestNameFeatureSpec extends FeatureSpec with T
      "Feature: Testing 7 Scenario: Scala code should be fun"
     )
   
-  feature("Testing 1") { 
+  Feature("Testing 1") { 
     scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 2 ") { 
+  Feature("Testing 2 ") { 
     scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 3") { 
+  Feature("Testing 3") { 
     scenario(" Scala code should be fun") {}
   }
 
-  feature("Testing 4") { 
+  Feature("Testing 4") { 
     scenario("Scala code should be fun ") {}
   }
 
-  feature(" Testing 5") { 
+  Feature(" Testing 5") { 
     scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 6 ") { 
+  Feature("Testing 6 ") { 
     scenario(" Scala code should be fun") {}
   }
 
-  feature("Testing 7  ") {  
+  Feature("Testing 7  ") {  
     scenario("Scala code should be fun") {}
   }
 }
@@ -481,31 +481,31 @@ protected[scalatest] class ExampleTestNameFixtureFeatureSpec extends fixture.Fea
      "Feature: Testing 7 Scenario: Scala code should be fun"
     )
   
-  feature("Testing 1") { 
+  Feature("Testing 1") { 
     scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 2 ") { 
+  Feature("Testing 2 ") { 
     scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 3") { 
+  Feature("Testing 3") { 
     scenario(" Scala code should be fun") { s => }
   }
 
-  feature("Testing 4") { 
+  Feature("Testing 4") { 
     scenario("Scala code should be fun ") { s => }
   }
 
-  feature(" Testing 5") { 
+  Feature(" Testing 5") { 
     scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 6 ") { 
+  Feature("Testing 6 ") { 
     scenario(" Scala code should be fun") { s => }
   }
 
-  feature("Testing 7  ") { 
+  Feature("Testing 7  ") { 
     scenario("Scala code should be fun") { s => }
   }
 }

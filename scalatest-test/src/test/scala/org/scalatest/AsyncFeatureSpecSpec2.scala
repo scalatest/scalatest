@@ -467,7 +467,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an InfoProvided event for an info in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           info(
             "hi there"
           )
@@ -492,7 +492,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an InfoProvided event for an info in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             info("hi there")
             succeed
@@ -522,7 +522,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               info("hi there")
@@ -574,7 +574,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a NoteProvided event for a note in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           note(
             "hi there"
           )
@@ -599,7 +599,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a NoteProvided event for a note in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             note("hi there")
             succeed
@@ -622,7 +622,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               note("hi there")
@@ -667,7 +667,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an AlertProvided event for an alert in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           alert(
             "hi there"
           )
@@ -692,7 +692,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an AlertProvided event for an alert in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             alert("hi there")
             succeed
@@ -715,7 +715,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               alert("hi there")
@@ -760,7 +760,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           markup(
             "hi there"
           )
@@ -785,7 +785,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             markup("hi there")
             succeed
@@ -815,7 +815,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               markup("hi there")
@@ -851,17 +851,17 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
         // SKIP-SCALATESTJS-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
-        feature("feature 1") {
+        Feature("feature 1") {
           scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
-        feature("feature 2")  {
+        Feature("feature 2")  {
           scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
-        feature("group3") {
+        Feature("group3") {
           scenario("test C") {
             Future { assert(a == 1) }
           }

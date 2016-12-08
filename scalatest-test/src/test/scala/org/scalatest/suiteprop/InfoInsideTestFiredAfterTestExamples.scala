@@ -477,7 +477,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("test name") {
         info(msg)
       }
@@ -493,7 +493,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("test name") { s =>
         info(msg)
       }

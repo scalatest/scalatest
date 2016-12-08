@@ -287,11 +287,11 @@ class ExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends SuiteTimeo
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting {
-  feature("Scope 1") {
+  Feature("Scope 1") {
     scenario("Test 1") {}
     scenario("Test 2") {}
   }
-  feature("Scope 2") {
+  Feature("Scope 2") {
     scenario("Test 3") {}
     scenario("Test 4") {}
   }
@@ -300,11 +300,11 @@ protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec e
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
-  feature("Fixture Scope 1") {
+  Feature("Fixture Scope 1") {
     scenario("Fixture Test 1") { fixture => }
     scenario("Fixture Test 2") { fixture =>}
   }
-  feature("Fixture Scope 2") {
+  Feature("Fixture Scope 2") {
     scenario("Fixture Test 3") { fixture => }
     scenario("Fixture Test 4") { fixture => }
   }

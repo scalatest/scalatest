@@ -173,7 +173,7 @@ class LocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 5))
     
     class NestedSuite extends FeatureSpec {
-      feature("feature") {
+      Feature("feature") {
         scenario("info") {
           info("test info")
         }
@@ -185,7 +185,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends FeatureSpec {
-      feature("feature") { 
+      Feature("feature") { 
         scenario("fail") {
           fail
         }
@@ -209,7 +209,7 @@ class LocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 5))
     
     class NestedSuite extends StringFixtureFeatureSpec {
-      feature("feature") { 
+      Feature("feature") { 
         scenario("info") { param =>
           info("test info")
         }
@@ -221,7 +221,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends StringFixtureFeatureSpec {
-      feature("feature") { 
+      Feature("feature") { 
         scenario("fail") {
           () => fail
         }

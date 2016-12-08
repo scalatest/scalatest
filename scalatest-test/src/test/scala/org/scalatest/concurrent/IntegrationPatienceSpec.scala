@@ -19,7 +19,7 @@ import org.scalatest.FeatureSpec
 import org.scalatest.time.{Millis, Seconds, Span}
 
 class IntegrationPatienceSpec extends FeatureSpec with Eventually with IntegrationPatience {
-  feature("IntegrationPatience") {
+  Feature("IntegrationPatience") {
     scenario("User mixes in after Eventually") {
       // It should compile (had a bug where it didn't)
       val expectedPatienceConfig = PatienceConfig(

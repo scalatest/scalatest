@@ -423,7 +423,7 @@ class SecondTestIgnoredExamples extends SuiteExamples {
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("first test") {}
       ignore("second test") {}
     }
@@ -437,7 +437,7 @@ class SecondTestIgnoredExamples extends SuiteExamples {
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("first test") { s => }
       ignore("second test") { s => }
     }

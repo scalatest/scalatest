@@ -167,7 +167,7 @@ class ExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with ClassTaggin
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtureServices {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") {}
     scenario("Scenario 2") {}
     scenario("Scenario 3") {}
@@ -177,7 +177,7 @@ class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtur
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixtureFeatureSpec extends fixture.FeatureSpec with ClassTaggingFixtureServices with StringFixture {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") {s =>}
     scenario("Scenario 2") {s =>}
     scenario("Scenario 3") {s =>}

@@ -121,7 +121,7 @@ class RandomTestOrderSpec extends FunSpec {
   }
 
   class ExampleFeatureSpec(listBuffer: ListBuffer[Int]) extends FeatureSpec with RandomTestOrder {
-    feature("Scope 1") {
+    Feature("Scope 1") {
       scenario("test 1") {
         listBuffer += 0
       }
@@ -137,7 +137,7 @@ class RandomTestOrderSpec extends FunSpec {
   }
 
   class ExampleFixtureFeatureSpec(listBuffer: ListBuffer[Int]) extends fixture.FeatureSpec with StringFixture with RandomTestOrder {
-    feature("Scope 1") {
+    Feature("Scope 1") {
       scenario("test 1") { fixture =>
         listBuffer += 0
       }

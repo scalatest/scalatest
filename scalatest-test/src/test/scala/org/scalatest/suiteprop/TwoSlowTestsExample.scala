@@ -423,7 +423,7 @@ class TwoSlowTestsExample extends SuiteExamples {
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("first test", mytags.SlowAsMolasses) {}
       ignore("second test", mytags.SlowAsMolasses) {}
     }
@@ -437,7 +437,7 @@ class TwoSlowTestsExample extends SuiteExamples {
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       scenario("first test", mytags.SlowAsMolasses) { s => }
       ignore("second test", mytags.SlowAsMolasses) { s => }
     }

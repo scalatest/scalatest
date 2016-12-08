@@ -977,7 +977,7 @@ class FeatureSpecSpec extends FunSpec {
 
         class MySpec extends FeatureSpec {
           scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
             }
             /* ASSERTION_SUCCEED */
           }
@@ -990,7 +990,7 @@ class FeatureSpecSpec extends FunSpec {
 
         class MySpec extends FeatureSpec {
           scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
               scenario("should never run") {
                 assert(1 === 1)
               }
@@ -1048,7 +1048,7 @@ class FeatureSpecSpec extends FunSpec {
 
         class MySpec extends FeatureSpec {
           scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
               ignore("should never run") {
                 assert(1 === 1)
               }
@@ -1105,8 +1105,8 @@ class FeatureSpecSpec extends FunSpec {
       it("should, if they call a nested feature from within a feature clause, result in a SuiteAborted event when constructing the FeatureSpec") {
 
         class MySpec extends FeatureSpec {
-          feature("should blow up") {
-            feature("should never run") {
+          Feature("should blow up") {
+            Feature("should never run") {
             }
           }
         }
@@ -1120,7 +1120,7 @@ class FeatureSpecSpec extends FunSpec {
     }
     
     class ExamplePrefixSpec extends FeatureSpec {
-      feature("A Feature") {
+      Feature("A Feature") {
         scenario("A Scenario") {
           /* ASSERTION_SUCCEED */
         }
@@ -1198,7 +1198,7 @@ class FeatureSpecSpec extends FunSpec {
           scenario("fail scenario") {
             assert(1 === 2)
           }
-          feature("a feature") {
+          Feature("a feature") {
             scenario("nested fail scenario") {
               assert(1 === 2)
             }
@@ -1216,8 +1216,8 @@ class FeatureSpecSpec extends FunSpec {
       
       it("should generate NotAllowedException with correct stack depth info when has a feature nested inside a feature") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
-            feature("inner feature") {
+          Feature("a feature") {
+            Feature("inner feature") {
               ignore("nested fail scenario") {
                 assert(1 === 1)
               }
@@ -1235,7 +1235,7 @@ class FeatureSpecSpec extends FunSpec {
       it("should generate TestRegistrationClosedException with correct stack depth info when has a scenario nested inside a scenario") {
         class TestSpec extends FeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             scenario("a scenario") {
               scenario("nested scenario") {
                 assert(1 === 2)
@@ -1268,7 +1268,7 @@ class FeatureSpecSpec extends FunSpec {
       it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a scenario") {
         class TestSpec extends FeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             scenario("a scenario") {
               ignore("nested scenario") {
                 assert(1 === 2)
@@ -1301,7 +1301,7 @@ class FeatureSpecSpec extends FunSpec {
       it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
         class TestSpec extends FeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             registerTest("a scenario") {
               registerTest("nested scenario") {
                 assert(1 === 2)
@@ -1334,7 +1334,7 @@ class FeatureSpecSpec extends FunSpec {
       it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
         class TestSpec extends FeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             registerTest("a scenario") {
               registerIgnoredTest("nested scenario") {
                 assert(1 === 2)
@@ -1366,7 +1366,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             val a = 1
             assert(a == 2)
           }
@@ -1389,7 +1389,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             val a = 1
             assume(a == 2)
           }
@@ -1412,7 +1412,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new RuntimeException("on purpose")
           }
         }
@@ -1432,7 +1432,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             scenario("test 1") {}
             scenario("test 1") {}
           }
@@ -1454,7 +1454,7 @@ class FeatureSpecSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       it("should propagate AnnotationFormatError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new AnnotationFormatError("on purpose")
           }
         }
@@ -1466,7 +1466,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate AWTError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new AWTError("on purpose")
           }
         }
@@ -1478,7 +1478,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate CoderMalfunctionError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new CoderMalfunctionError(new RuntimeException("on purpose"))
           }
         }
@@ -1490,7 +1490,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate FactoryConfigurationError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new FactoryConfigurationError("on purpose")
           }
         }
@@ -1502,7 +1502,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate LinkageError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new LinkageError("on purpose")
           }
         }
@@ -1514,7 +1514,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate ThreadDeath when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new ThreadDeath
           }
         }
@@ -1526,7 +1526,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new TransformerFactoryConfigurationError("on purpose")
           }
         }
@@ -1538,7 +1538,7 @@ class FeatureSpecSpec extends FunSpec {
 
       it("should propagate VirtualMachineError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
-          feature("a feature") {
+          Feature("a feature") {
             throw new VirtualMachineError("on purpose") {}
           }
         }
@@ -1556,7 +1556,7 @@ class FeatureSpecSpec extends FunSpec {
         scenario("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }
-        feature("a feature") {
+        Feature("a feature") {
           scenario("nested fail scenario") {
             expect(1 === 2); /* ASSERTION_SUCCEED */
           }

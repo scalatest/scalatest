@@ -1123,7 +1123,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           scenario("should blow up") { fixture =>
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
             }
             /* ASSERTION_SUCCEED */
           }
@@ -1138,7 +1138,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           scenario("should blow up") { fixture =>
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
               scenario("should never run") { fixture =>
                 assert(1 === 1)
               }
@@ -1204,7 +1204,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           scenario("should blow up") { fixture =>
-            feature("in the wrong place, at the wrong time") {
+            Feature("in the wrong place, at the wrong time") {
               ignore("should never run") { fixture =>
                 assert(1 === 1)
               }
@@ -1269,8 +1269,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         class MySpec extends FeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
-          feature("should blow up") {
-            feature("should never run") {
+          Feature("should blow up") {
+            Feature("should never run") {
             }
           }
         }
@@ -1289,7 +1289,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("fail scenario") { fixture =>
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }
-        feature("a feature") {
+        Feature("a feature") {
           scenario("nested fail scenario") { () =>
             expect(1 === 2); /* ASSERTION_SUCCEED */
           }
@@ -1343,7 +1343,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     def withFixture(test: OneArgTest): Outcome = {
       test("hi")
     }
-    feature("A Feature") {
+    Feature("A Feature") {
       scenario("A Scenario") { fixture =>
         /* ASSERTION_SUCCEED */
       }
@@ -1425,7 +1425,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("fail scenario") { fixture =>
           assert(1 === 2)
         }
-        feature("a feature") {
+        Feature("a feature") {
           scenario("nested fail scenario") { fixture =>
             assert(1 === 2)
           }
@@ -1445,8 +1445,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
-          feature("inner feature") {
+        Feature("a feature") {
+          Feature("inner feature") {
             ignore("nested fail scenario") { fixture => 
               assert(1 === 1)
             }
@@ -1465,7 +1465,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
-        feature("a feature") {
+        Feature("a feature") {
           scenario("a scenario") { fixture =>
             scenario("nested scenario") { fixture =>
               assert(1 == 2)
@@ -1499,7 +1499,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
-        feature("a feature") {
+        Feature("a feature") {
           scenario("a scenario") { fixture =>
             ignore("ignore scenario") { fixture =>
               assert(1 == 2)
@@ -1533,7 +1533,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
-        feature("a feature") {
+        Feature("a feature") {
           registerTest("a scenario") { fixture =>
             registerTest("nested scenario") { fixture =>
               assert(1 == 2)
@@ -1567,7 +1567,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
-        feature("a feature") {
+        Feature("a feature") {
           registerTest("a scenario") { fixture =>
             registerIgnoredTest("ignore scenario") { fixture =>
               assert(1 == 2)
@@ -1601,7 +1601,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           val a = 1
           assert(a == 2)
         }
@@ -1626,7 +1626,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           val a = 1
           assume(a == 2)
         }
@@ -1651,7 +1651,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new RuntimeException("on purpose")
         }
       }
@@ -1673,7 +1673,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           scenario("test 1") { fixture => }
           scenario("test 1") { fixture => }
         }
@@ -1697,7 +1697,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new AnnotationFormatError("on purpose")
         }
       }
@@ -1711,7 +1711,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new AWTError("on purpose")
         }
       }
@@ -1725,7 +1725,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new CoderMalfunctionError(new RuntimeException("on purpose"))
         }
       }
@@ -1739,7 +1739,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new FactoryConfigurationError("on purpose")
         }
       }
@@ -1753,7 +1753,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new LinkageError("on purpose")
         }
       }
@@ -1767,7 +1767,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new ThreadDeath
         }
       }
@@ -1781,7 +1781,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new TransformerFactoryConfigurationError("on purpose")
         }
       }
@@ -1795,7 +1795,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
-        feature("a feature") {
+        Feature("a feature") {
           throw new VirtualMachineError("on purpose") {}
         }
       }

@@ -462,7 +462,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           info(
             "hi there"
           )
@@ -488,7 +488,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             info("hi there")
             succeed
@@ -519,7 +519,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               info("hi there")
@@ -571,7 +571,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           note(
             "hi there"
           )
@@ -597,7 +597,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             note("hi there")
             succeed
@@ -621,7 +621,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               note("hi there")
@@ -666,7 +666,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           alert(
             "hi there"
           )
@@ -692,7 +692,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             alert("hi there")
             succeed
@@ -716,7 +716,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               alert("hi there")
@@ -761,7 +761,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           markup(
             "hi there"
           )
@@ -787,7 +787,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             markup("hi there")
             succeed
@@ -818,7 +818,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        feature("test feature") {
+        Feature("test feature") {
           scenario("test 1") {
             Future {
               markup("hi there")
@@ -848,7 +848,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
       class TestSpec extends AsyncFeatureSpec {
-        feature("a feature") {
+        Feature("a feature") {
           scenario("test 1") { succeed }
           scenario("test 1") { succeed }
         }
@@ -874,17 +874,17 @@ class AsyncFeatureSpecSpec extends FunSpec {
         // SKIP-SCALATESTJS-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
-        feature("feature 1") {
+        Feature("feature 1") {
           scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
-        feature("feature 2")  {
+        Feature("feature 2")  {
           scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
-        feature("group3") {
+        Feature("group3") {
           scenario("test C") {
             Future { assert(a == 1) }
           }

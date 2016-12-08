@@ -468,7 +468,7 @@ class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchRepor
 
 @DoNotDiscover
 class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixtureServices {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") {}
     scenario("Scenario 2") {}
     scenario("Scenario 3") {}
@@ -478,7 +478,7 @@ class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixt
 
 @DoNotDiscover
 class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with CatchReporterFixtureServices with StringFixture {
-  feature("Feature 1") {
+  Feature("Feature 1") {
     scenario("Scenario 1") {s =>}
     scenario("Scenario 2") {s =>}
     scenario("Scenario 3") {s =>}
