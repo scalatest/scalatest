@@ -26,7 +26,7 @@ trait Expectations {
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 
   // TODO: Need to make this and assertResult use custom equality I think.
-  def expectResult(expected: Any)(actual: Any)(implicit pos: source.Position): Fact = {
+  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
@@ -42,7 +42,7 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
-      )
+      )(prettifier)
     }
     else {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -59,11 +59,11 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
-      )
+      )(prettifier)
     }
   }
 
-  def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Expectation = {
+  def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
     val clazz = classTag.runtimeClass
     try {
       f
@@ -76,7 +76,7 @@ trait Expectations {
         simplifiedFactMessageArgs = Vector.empty,
         midSentenceFactMessageArgs = Vector(clazz.getName),
         midSentenceSimplifiedFactMessageArgs = Vector.empty
-      )
+      )(prettifier)
     }
     catch {
       case u: Throwable => {
@@ -91,7 +91,7 @@ trait Expectations {
             midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
             cause = Some(u)
-          )
+          )(prettifier)
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
@@ -103,7 +103,7 @@ trait Expectations {
             midSentenceFactMessageArgs = Vector(clazz.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
             cause = Some(u)
-          )
+          )(prettifier)
       }
     }
   }
@@ -122,7 +122,7 @@ trait Expectations {
           bool.failureMessageArgs,
           bool.failureMessageArgs,
           bool.failureMessageArgs
-        )
+        )(prettifier)
       else
         Yes(
           bool.rawNegatedFailureMessage,
@@ -133,7 +133,7 @@ trait Expectations {
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs
-        )
+        )(prettifier)
     }
 
   }
@@ -144,11 +144,11 @@ trait Expectations {
 
   def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
 
-  def expectDoesNotCompile(code: String)(implicit pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
+  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
-  def expectCompiles(code: String)(implicit pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
+  def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
 
-  def expectTypeError(code: String)(implicit pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
+  def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
 object Expectations extends Expectations
