@@ -26,4 +26,7 @@ private[scalatest] object ExpectationsMacro {
   def expect(context: Context)(expression: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Fact] =
     new BooleanMacro[context.type](context, "expectationsHelper").genMacro[Fact](expression, "macroExpect", context.literal(""), prettifier, pos)
 
+  //def expect2(context: Context)(expression: context.Expr[Boolean]): context.Expr[Fact] =
+    //new BooleanMacro[context.type](context, "expectationsHelper").genMacro[Fact](expression, "macroExpect", context.literal(""), Prettifier.default, source.Position.here)
+
 }

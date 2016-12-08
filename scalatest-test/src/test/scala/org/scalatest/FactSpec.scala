@@ -1149,6 +1149,18 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
       }
+
+      "for Boolean implies Fact" in {
+        import org.scalatest.Expectations._
+        val x = 10
+        val fact = (x > 0) implies expect(x > -1)
+        fact.isYes shouldBe true
+        fact.toString shouldBe
+        """Yes(
+          |  Yes(10 was greater than 0) implies
+          |  Yes(10 was greater than -1)
+          |)""".stripMargin
+      }
     }
 
     "should short-circuit correctly" - {

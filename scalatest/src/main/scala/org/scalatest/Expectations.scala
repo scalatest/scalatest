@@ -149,6 +149,13 @@ trait Expectations {
   def expectCompiles(code: String)(implicit pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
 
   def expectTypeError(code: String)(implicit pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
+
+  import scala.language.implicitConversions
+
+  /**
+    * Implicit conversion that makes (x > 0) implies expect(x > -1) syntax works
+    */
+  implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
 }
 
 object Expectations extends Expectations
