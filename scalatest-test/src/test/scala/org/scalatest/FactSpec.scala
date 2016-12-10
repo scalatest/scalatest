@@ -786,13 +786,12 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   }
 
   "The Yes and No companion objects factory methods" - {
-/*
     "that takes two strings should work correctly" in {
       val fact = Yes("one", "two")
       fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("one")
+      fact.simplifiedFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("one")
+      fact.rawSimplifiedFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector.empty)
       fact.simplifiedFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
@@ -801,31 +800,6 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
       val ms = No("aaa", "bbb")
       ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("aaa")
-      ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("aaa")
-      ms.factMessageArgs shouldBe (Vector.empty)
-      ms.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      ms.isLeaf shouldBe (true)
-      ms.isYes shouldBe (false)
-      ms.isVacuousYes shouldBe (false)
-    }
-*/
-/*
-    "that takes four strings should work correctly" in {
-      val fact = Yes("one", "two", "three", "four")
-      fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("two")
-      fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.factMessageArgs shouldBe (Vector.empty)
-      fact.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      fact.isLeaf shouldBe (true)
-      fact.isYes shouldBe (true)
-      fact.isVacuousYes shouldBe (false)
-
-      val ms = No("aaa", "bbb", "ccc", "ddd")
-      ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("bbb")
@@ -835,51 +809,6 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
-    "that takes four strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0))
-      fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("two")
-      fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.factMessageArgs shouldBe (Vector(42))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(42.0))
-      fact.isLeaf shouldBe (true)
-      fact.isYes shouldBe (true)
-      fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
-      ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("bbb")
-      ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("bbb")
-      ms.factMessageArgs shouldBe (Vector("ho", "he"))
-      ms.simplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
-      ms.isLeaf shouldBe (true)
-      ms.isYes shouldBe (false)
-      ms.isVacuousYes shouldBe (false)
-    }
-    "that takes two strings and one IndexedSeq should work correctly" in {
-      val fact = Yes("one", "two", Vector(42))
-      fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("one")
-      fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("one")
-      fact.factMessageArgs shouldBe (Vector(42))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(42))
-      fact.isLeaf shouldBe (true)
-      fact.isYes shouldBe (true)
-      fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", Vector("ho", "he"))
-      ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("aaa")
-      ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("aaa")
-      ms.factMessageArgs shouldBe (Vector("ho", "he"))
-      ms.simplifiedFactMessageArgs shouldBe (Vector("ho", "he"))
-      ms.isLeaf shouldBe (true)
-      ms.isYes shouldBe (false)
-      ms.isVacuousYes shouldBe (false)
-    }
-*/
     "that takes two strings and two IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", Vector(42), Vector(43.0))
       fact.factMessage shouldBe ("one")
@@ -902,30 +831,6 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
-/*
-    "that takes four strings and four IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
-      fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("two")
-      fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.factMessageArgs shouldBe (Vector(1))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(2))
-      fact.isLeaf shouldBe (true)
-      fact.isYes shouldBe (true)
-      fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
-      ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("bbb")
-      ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("bbb")
-      ms.factMessageArgs shouldBe (Vector('A'))
-      ms.simplifiedFactMessageArgs shouldBe (Vector('B'))
-      ms.isLeaf shouldBe (true)
-      ms.isYes shouldBe (false)
-      ms.isVacuousYes shouldBe (false)
-    }
-*/
   }
 
   "The Fact obtained from combining two Facts with implies" - {
