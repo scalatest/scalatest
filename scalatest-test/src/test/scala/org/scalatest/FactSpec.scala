@@ -846,6 +846,28 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message")
         fact.toString shouldBe "Yes(" + NEWLINE + "  line 1\n  line 2\n  line 3" + NEWLINE + ")"
       }
+
+      "should pad multiline error message correctly" in {
+        import Expectations._
+        import Inspectors._
+        val x = 0
+        val y = 1
+        val zs = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        val fact =
+          (expect(x == 1) || expect(y == 1)) && forAll (zs) { z => expect(z <= 0) }
+        fact.toString shouldBe
+          "No(" + NEWLINE +
+          "  Yes(" + NEWLINE +
+          "    No(0 did not equal 1) ||" + NEWLINE +
+          "    Yes(1 equaled 1)" + NEWLINE +
+          "  ) &&" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    forAll failed, because: " + NEWLINE +
+          "      at index 0, 1 was not less than or equal to 0 " + NEWLINE +
+          "    in List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)" + NEWLINE +
+          "  )" + NEWLINE +
+          ")"
+      }
     }
   }
 
