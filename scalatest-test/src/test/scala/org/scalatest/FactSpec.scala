@@ -834,6 +834,26 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
     "toString method" - {
 
+      "should use implicit prettifier in scope during construction" in {
+
+        import org.scalactic.Prettifier
+        import org.scalatest.Expectations._
+
+        case class Yell(secret: String)
+        val y = Yell("howdy")
+        val z = Yell("hodee")
+        implicit val myLittlePretty =
+          new Prettifier {
+            def apply(o: Any) =
+              o match {
+                case Yell(secret) => secret.toUpperCase + "!!!"
+                case _ => Prettifier.default(o)
+              }
+          }
+        val fact = expect(y == z)
+        fact.toString shouldBe "No(HOWDY!!! did not equal HODEE!!!)"
+      }
+
       "should display midSentenceFactMessage enclosed with opening and closing bracket" in {
         val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
         yes.toString shouldBe "Yes(mid-sentence fact message)"

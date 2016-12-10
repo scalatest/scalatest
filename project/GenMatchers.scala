@@ -84,6 +84,9 @@ object GenMatchers {
       .replaceAll("ResultOfContainWord", "FactResultOfContainWord")
       .replaceAll("ResultOfNotWordForAny", "FactResultOfNotWordForAny")
       .replaceAll("MatcherWords", "FactMatcherWords")
+      .replaceAllLiterally("def will(compileWord: CompileWord)(implicit pos: source.Position)", "def will(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position)")
+      .replaceAllLiterally("def willNot(compileWord: CompileWord)(implicit pos: source.Position)", "def willNot(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position)")
+      .replaceAllLiterally("def willNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position)", "def willNot(typeCheckWord: TypeCheckWord)(implicit prettifier: Prettifier, pos: source.Position)")
   }
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): Unit = {

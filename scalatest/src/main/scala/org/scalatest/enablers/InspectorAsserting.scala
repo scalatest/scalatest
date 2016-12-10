@@ -416,7 +416,7 @@ abstract class UnitInspectorAsserting {
  */
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  implicit def assertingNatureOfFact: InspectorAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfFact(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
@@ -426,7 +426,7 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
         else
           Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, result.map(e => if (e.factMessage != null) e.factMessage else "null").getOrElse("null"))
 
-      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
+      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Expectation =
         new Fact.Leaf(
           message,
@@ -439,8 +439,9 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
           Vector.empty,
           false,
           false,
+          prettifier,
           optionalCause
-      )
+        )
     }
   }
 }

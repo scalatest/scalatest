@@ -21,29 +21,29 @@ import org.scalatest.exceptions.TestFailedException
 
 private[scalatest] object WillMatchersHelper {
 
-  def checkNoException(fun: => Any): Fact = {
+  def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Fact = {
     try {
       fun
-      Fact.Yes(Resources.noExceptionWasThrown)
+      Fact.Yes(Resources.noExceptionWasThrown)(prettifier)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        Fact.No(message, u)
+        Fact.No(message, u)(prettifier)
       }
     }
   }
 
-  def indicateSuccess(message: => String): Fact = Fact.Yes(message)
+  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Fact = Fact.Yes(message)(prettifier)
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Fact =
-    Fact.Yes(if (shouldBeTrue) message else negatedMessage)
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Fact =
+    Fact.Yes(if (shouldBeTrue) message else negatedMessage)(prettifier)
 
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Fact = {
-    Fact.No(failureMessage)
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position)(implicit prettifier: Prettifier): Fact = {
+    Fact.No(failureMessage)(prettifier)
   }
 
-  def indicateFailure(e: TestFailedException): Fact =
-    Fact.No(e.getMessage)
+  def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Fact =
+    Fact.No(e.getMessage)(prettifier)
 
 }
