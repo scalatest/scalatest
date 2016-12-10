@@ -124,7 +124,7 @@ sealed abstract class Fact {
     val padding = "  " * level
     if (msg.contains("\n")) {
       val padding = "  " * (level)
-      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE + ")"
+      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE + padding + ")"
     }
     else
       padding + stringPrefix + "(" + msg + ")"
