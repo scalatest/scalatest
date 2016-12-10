@@ -2990,6 +2990,87 @@ $okayAssertions$
     }
   }
 
+  val generatorTemplate =
+    """private[prop] class GeneratorFor$arity$[$alphaUpper$](
+      |  $initToLastName$: $initType$ => $lastType$,
+      |  $lastToInitName$: $lastType$ => $initType$
+      |)(
+      |  $initGensDecls$
+      |) extends Generator[$lastType$] { thisGenerator =>
+      |
+      |  private val underlying: Generator[$lastType$] = {
+      |    for {
+      |      $initGenArrows$
+      |    } yield $initToLastName$($initLower$)
+      |  }
+      |
+      |  def next(size: Int, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(size, edges, rnd)
+      |  override def initEdges(maxLength: Int, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
+      |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
+      |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
+      |  override def canonicals(rnd: Randomizer): (Iterator[$lastType$], Randomizer) = underlying.canonicals(rnd)
+      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (Iterator[$lastType$], Randomizer) = {
+      |    val ($initLower$) = $lastToInitName$(lastValue)
+      |    $initShrinks$
+      |    $initStreams$
+      |    val streamOf$lastType$: Stream[$lastType$] = // TODO: check about the problem with streams and memory leaks, or do this a different way
+      |      for {
+      |        $initStreamArrows$
+      |      } yield $initToLastName$($initLower$)
+      |    (streamOf$lastType$.iterator, rnd$arity$)
+      |  }
+      |}
+    """.stripMargin
+
+  def genGenerators(targetDir: File) {
+    targetDir.mkdirs()
+
+    val alphaAll = "abcdefghijklmnopqrstuvw"
+
+    for (i <- 1 to 22) {
+
+      val alpha = alphaAll.take(i + 1)
+      val alphaLower = alpha.mkString(", ")
+      val initLower = alpha.init.mkString(", ")
+      val alphaUpper = alpha.toUpperCase.mkString(", ")
+      val initToLastName = alpha.init.head + alpha.init.tail.toUpperCase + "To" + alpha.last.toString.toUpperCase
+      val lastToInitName = alpha.last.toString + "To" + alpha.init.toUpperCase
+      val initType = if (i > 1) "(" + alpha.init.mkString(", ").toUpperCase + ")" else alpha.init.mkString(", ").toUpperCase
+      val lastType = alphaUpper.last.toString
+      val initGensDecls = alpha.init.map(a => "genOf" + a.toString.toUpperCase + ": Generator[" + a.toString.toUpperCase + "]").mkString(", \n")
+      val initGenArrows = alpha.init.map(a => a + " <- genOf" + a.toString.toUpperCase).mkString("\n")
+      val initShrinks = alpha.init.zipWithIndex.map { case (a, idx) =>
+        "val (itOf" + a.toString.toUpperCase + ", rnd" + (idx + 1) + ") = genOf" + a.toString.toUpperCase + ".shrink(" + a + ", rnd" + idx + ")"
+      }.mkString("\n")
+      val initStreams = alpha.init.map(a => "val streamOf" + a.toString.toUpperCase + ": Stream[" + a.toString.toUpperCase + "] = itOf" + a.toString.toUpperCase + ".toStream").mkString("\n")
+      val initStreamArrows = alpha.init.map(a => a + " <- streamOf" + a.toString.toUpperCase).mkString("\n")
+
+      val bw = new BufferedWriter(new FileWriter(new File(targetDir, "GeneratorFor" + i + ".scala")))
+      val stCopyRight = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+      stCopyRight.setAttribute("year", thisYear)
+      bw.write(stCopyRight.toString)
+
+      val st = new org.antlr.stringtemplate.StringTemplate(generatorTemplate)
+      st.setAttribute("arity", i)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("initLower", initLower)
+      st.setAttribute("initToLastName", initToLastName)
+      st.setAttribute("lastToInitName", lastToInitName)
+      st.setAttribute("initType", initType)
+      st.setAttribute("lastType", lastType)
+      st.setAttribute("initGensDecls", initGensDecls)
+      st.setAttribute("initGenArrows", initGenArrows)
+      st.setAttribute("initShrinks", initShrinks)
+      st.setAttribute("initStreams", initStreams)
+      st.setAttribute("initStreamArrows", initStreamArrows)
+
+      bw.write(st.toString)
+
+      bw.flush()
+      bw.close()
+    }
+  }
+
   // Invitation style indicates how GeneratorDrivenPropertyChecks is imported
   def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, generatorSuiteTemplate: String, checkMethod: String) {
 
@@ -3088,6 +3169,7 @@ $okayAssertions$
   
   def genMain(dir: File, version: String, scalaVersion: String) {
     genPropertyChecks(dir)
+    genGenerators(dir)
   }
   
   def genTest(dir: File, version: String, scalaVersion: String) {
