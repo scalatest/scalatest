@@ -20,7 +20,7 @@ import Fact._
 import prop.TableDrivenPropertyChecks._
 import org.scalactic.PrettyMethods
 import SharedHelpers.thisLineNumber
-import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessage, MidSentenceNegatedFailureMessage }
+import matchers.{ FailureMessage, NegatedFailureMessage }
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
@@ -40,9 +40,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
   "A Fact" - {
     // As if we said expectResult(3) { 1 + 1 }
-    val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", "expected 3, but got 2", "3 did not equal 2")
+    val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", Vector.empty, Vector.empty)
     // As if we said expectResult(3) { 1 + 2 }
-    val yesFact: Expectation = Yes("3 equaled 3", "3 equaled 3")
+    val yesFact: Expectation = Yes("Expected 3, and got 3", "3 equaled 3", Vector.empty, Vector.empty)
     "should have isYes and isNo methods" in {
       noFact.isYes shouldBe false
       noFact.isNo shouldBe true
@@ -78,67 +78,40 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       yesFact.toBoolean shouldBe true
     }
     "should construct localized strings from the raw strings and args" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
+      val fact = No("{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
       fact.factMessage shouldBe ("1 did not equal 2")
       fact.simplifiedFactMessage shouldBe ("1 equaled 2")
-      fact.midSentenceFactMessage shouldBe ("1 did not equal 2")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("1 equaled 2")
       fact.rawFactMessage shouldBe ("{0} did not equal {1}")
       fact.rawSimplifiedFactMessage shouldBe ("{0} equaled {1}")
-      fact.rawMidSentenceFactMessage shouldBe ("{0} did not equal {1}")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("{0} equaled {1}")
       fact.factMessageArgs shouldBe (Vector(1, 2))
       fact.simplifiedFactMessageArgs shouldBe (Vector(1, 2))
-      fact.midSentenceFactMessageArgs shouldBe (Vector(1, 2))
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(1, 2))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (false)
       fact.isVacuousYes shouldBe (false)
     }
 
-    "should use midSentenceFactMessageArgs to construct midSentenceFactMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
-      fact.midSentenceFactMessage should be ("1 did not equal 2")
-    }
-
-    "should use midSentenceSimplifiedFactMessageArgs to construct midSentenceSimplifiedFactMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
-      fact.midSentenceSimplifiedFactMessage should be ("1 equaled 2")
-    }
     "when inverted with !" - {
-      val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
+      val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
       val notFact2 = !fact2
       "should use the simplified message, changing Yes to No or No to Yes" in {
         !noFact should equal (Unary_!(noFact))
         fact2.factMessage shouldBe ("Expected 3, but got 2")
         fact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
-        fact2.midSentenceFactMessage shouldBe ("expected 3, but got 2")
-        fact2.midSentenceSimplifiedFactMessage shouldBe ("3 did not equal 2")
         fact2.rawFactMessage shouldBe ("Expected {0}, but got {1}")
         fact2.rawSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
-        fact2.rawMidSentenceFactMessage shouldBe ("expected {0}, but got {1}")
-        fact2.rawMidSentenceSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
         fact2.factMessageArgs shouldBe (Vector(3, 2))
         fact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
-        fact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
-        fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.isLeaf shouldBe (true)
         fact2.isYes shouldBe (false)
         fact2.isVacuousYes shouldBe (false)
 
-        notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
+        notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
         notFact2.factMessage shouldBe ("3 did not equal 2")
         notFact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
-        notFact2.midSentenceFactMessage shouldBe ("3 did not equal 2")
-        notFact2.midSentenceSimplifiedFactMessage shouldBe ("3 did not equal 2")
         notFact2.rawFactMessage shouldBe ("{0} did not equal {1}")
         notFact2.rawSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
-        notFact2.rawMidSentenceFactMessage shouldBe ("{0} did not equal {1}")
-        notFact2.rawMidSentenceSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
         notFact2.factMessageArgs shouldBe (Vector(3, 2))
         notFact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
-        notFact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
-        notFact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         notFact2.isLeaf shouldBe (true)
         notFact2.isYes shouldBe (true)
         notFact2.isVacuousYes shouldBe (false)
@@ -171,19 +144,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   "The Fact obtained from and-ing two Facts with &&" - {
     "should be lazy about constructing strings" - {
       "for No && No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo && rightSideNo
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
@@ -192,19 +161,16 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "for No && Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        // This looks like a bug Both should be was not greater than probably?
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo && rightSideYes
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
@@ -213,46 +179,34 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "for Yes && No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes && rightSideNo
         fact shouldBe a [Binary_&&]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes && Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes && rightSideYes
         fact shouldBe a [Binary_&&]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -337,86 +291,66 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   "The Fact obtained from and-ing two Facts with &" - {
     "should be lazy about constructing strings" - {
       "for No & No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo & rightSideNo
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for No & Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo & rightSideYes
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes & No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes & rightSideNo
         fact shouldBe a [Binary_&]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes & Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes & rightSideYes
         fact shouldBe a [Binary_&]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -502,23 +436,17 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "should be lazy about constructing strings" - {
 
       "for No || No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo || rightSideNo
         fact shouldBe a [Binary_||]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -526,42 +454,32 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
 
       "for No || Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo || rightSideYes
         fact shouldBe a [Binary_||]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes || No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes || rightSideNo
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('c'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('c'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('c'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('c'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('c', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('c', 'b'))
         fact.isLeaf should be (true)
@@ -570,19 +488,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "for Yes || Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes || rightSideYes
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('e'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('e'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('e'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('e'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('e', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('e', 'b'))
         fact.isLeaf should be (true)
@@ -669,23 +583,17 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       "should be lazy about constructing strings" - {
 
         "for No | No" in {
-          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
           val fact = leftSideNo | rightSideNo
           fact shouldBe a [Binary_|]
           fact.isNo shouldBe true
           fact.rawFactMessage should be (Resources.rawCommaAnd)
           fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
           fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-          fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-          fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-          fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-          fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (false)
           fact.isVacuousYes shouldBe (false)
@@ -693,63 +601,49 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
 
         "for No | Yes" in {
-          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-          val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+          val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'))
           val fact = leftSideNo | rightSideYes
           fact shouldBe a [Binary_|]
           fact.isYes shouldBe true
           fact.rawFactMessage should be (Resources.rawCommaAnd)
           fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
           fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-          fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-          fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-          fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-          fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
         }
 
         "for Yes | No" in {
-          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
           val fact = leftSideYes | rightSideNo
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)
           fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
           fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-          fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-          fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
         }
 
         "for Yes | Yes" in {
-          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-          val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+          val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
           val fact = leftSideYes | rightSideYes
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)
           fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-          fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
           fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-          fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-          fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
@@ -854,16 +748,16 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.toString shouldBe "No(HOWDY!!! did not equal HODEE!!!)"
       }
 
-      "should display midSentenceFactMessage enclosed with opening and closing bracket" in {
-        val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
-        yes.toString shouldBe "Yes(mid-sentence fact message)"
+      "should display factMessage enclosed with opening and closing parentheses" in {
+        val yes = Yes("fact message")
+        yes.toString shouldBe "Yes(fact message)"
 
-        val no = No("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
-        no.toString shouldBe "No(mid-sentence fact message)"
+        val no = No("fact message")
+        no.toString shouldBe "No(fact message)"
       }
 
-      "should prefix new line to midSentenceFactMessage in toString when the midSentenceFactMessage contains \\n" in {
-        val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message")
+      "should prefix new line to factMessage in toString when the factMessage contains \\n" in {
+        val fact = Yes("line 1\nline 2\nline 3", "simplified fact message")
         fact.toString shouldBe "Yes(" + NEWLINE + "  line 1\n  line 2\n  line 3" + NEWLINE + ")"
       }
 
@@ -892,20 +786,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   }
 
   "The Yes and No companion objects factory methods" - {
+/*
     "that takes two strings should work correctly" in {
       val fact = Yes("one", "two")
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("one")
-      fact.midSentenceFactMessage shouldBe ("two")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
       fact.rawSimplifiedFactMessage shouldBe ("one")
-      fact.rawMidSentenceFactMessage shouldBe ("two")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector.empty)
       fact.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      fact.midSentenceFactMessageArgs shouldBe (Vector.empty)
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
@@ -913,34 +802,24 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val ms = No("aaa", "bbb")
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
-      ms.midSentenceFactMessage shouldBe ("bbb")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("aaa")
-      ms.rawMidSentenceFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("bbb")
       ms.factMessageArgs shouldBe (Vector.empty)
       ms.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      ms.midSentenceFactMessageArgs shouldBe (Vector.empty)
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
+*/
+/*
     "that takes four strings should work correctly" in {
       val fact = Yes("one", "two", "three", "four")
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
-      fact.midSentenceFactMessage shouldBe ("three")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("four")
       fact.rawFactMessage shouldBe ("one")
       fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.rawMidSentenceFactMessage shouldBe ("three")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("four")
       fact.factMessageArgs shouldBe (Vector.empty)
       fact.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      fact.midSentenceFactMessageArgs shouldBe (Vector.empty)
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
@@ -948,16 +827,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val ms = No("aaa", "bbb", "ccc", "ddd")
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
-      ms.midSentenceFactMessage shouldBe ("ccc")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceFactMessage shouldBe ("ccc")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.factMessageArgs shouldBe (Vector.empty)
       ms.simplifiedFactMessageArgs shouldBe (Vector.empty)
-      ms.midSentenceFactMessageArgs shouldBe (Vector.empty)
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
@@ -966,32 +839,20 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0))
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
-      fact.midSentenceFactMessage shouldBe ("three")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("four")
       fact.rawFactMessage shouldBe ("one")
       fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.rawMidSentenceFactMessage shouldBe ("three")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("four")
       fact.factMessageArgs shouldBe (Vector(42))
       fact.simplifiedFactMessageArgs shouldBe (Vector(42.0))
-      fact.midSentenceFactMessageArgs shouldBe (Vector(42))
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42.0))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
-      ms.midSentenceFactMessage shouldBe ("ccc")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceFactMessage shouldBe ("ccc")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.factMessageArgs shouldBe (Vector("ho", "he"))
       ms.simplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
-      ms.midSentenceFactMessageArgs shouldBe (Vector("ho", "he"))
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
@@ -1000,122 +861,85 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val fact = Yes("one", "two", Vector(42))
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("one")
-      fact.midSentenceFactMessage shouldBe ("two")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
       fact.rawSimplifiedFactMessage shouldBe ("one")
-      fact.rawMidSentenceFactMessage shouldBe ("two")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector(42))
       fact.simplifiedFactMessageArgs shouldBe (Vector(42))
-      fact.midSentenceFactMessageArgs shouldBe (Vector(42))
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", Vector("ho", "he"))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
-      ms.midSentenceFactMessage shouldBe ("bbb")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("aaa")
-      ms.rawMidSentenceFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("bbb")
       ms.factMessageArgs shouldBe (Vector("ho", "he"))
       ms.simplifiedFactMessageArgs shouldBe (Vector("ho", "he"))
-      ms.midSentenceFactMessageArgs shouldBe (Vector("ho", "he"))
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("ho", "he"))
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
+*/
     "that takes two strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", Vector(42), Vector(42.0))
+      val fact = Yes("one", "two", Vector(42), Vector(43.0))
       fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("one")
-      fact.midSentenceFactMessage shouldBe ("two")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("two")
+      fact.simplifiedFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("one")
-      fact.rawMidSentenceFactMessage shouldBe ("two")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("two")
+      fact.rawSimplifiedFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector(42))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(42))
-      fact.midSentenceFactMessageArgs shouldBe (Vector(42.0))
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42.0))
+      fact.simplifiedFactMessageArgs shouldBe (Vector(43.0))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("aaa")
-      ms.midSentenceFactMessage shouldBe ("bbb")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("bbb")
+      ms.simplifiedFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("aaa")
-      ms.rawMidSentenceFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("bbb")
+      ms.rawSimplifiedFactMessage shouldBe ("bbb")
       ms.factMessageArgs shouldBe (Vector("ho", "he"))
-      ms.simplifiedFactMessageArgs shouldBe (Vector("ho", "he"))
-      ms.midSentenceFactMessageArgs shouldBe (Vector("foo", "fie"))
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
+      ms.simplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
+/*
     "that takes four strings and four IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
-      fact.midSentenceFactMessage shouldBe ("three")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("four")
       fact.rawFactMessage shouldBe ("one")
       fact.rawSimplifiedFactMessage shouldBe ("two")
-      fact.rawMidSentenceFactMessage shouldBe ("three")
-      fact.rawMidSentenceSimplifiedFactMessage shouldBe ("four")
       fact.factMessageArgs shouldBe (Vector(1))
       fact.simplifiedFactMessageArgs shouldBe (Vector(2))
-      fact.midSentenceFactMessageArgs shouldBe (Vector(3))
-      fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(4))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
-      ms.midSentenceFactMessage shouldBe ("ccc")
-      ms.midSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.rawFactMessage shouldBe ("aaa")
       ms.rawSimplifiedFactMessage shouldBe ("bbb")
-      ms.rawMidSentenceFactMessage shouldBe ("ccc")
-      ms.rawMidSentenceSimplifiedFactMessage shouldBe ("ddd")
       ms.factMessageArgs shouldBe (Vector('A'))
       ms.simplifiedFactMessageArgs shouldBe (Vector('B'))
-      ms.midSentenceFactMessageArgs shouldBe (Vector('C'))
-      ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector('D'))
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
     }
+*/
   }
 
   "The Fact obtained from combining two Facts with implies" - {
     "should be lazy about constructing strings" - {
       "for No implies No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo implies rightSideNo
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
@@ -1125,19 +949,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "for No implies Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo implies rightSideYes
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
         fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
@@ -1147,46 +967,34 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "for Yes implies No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes implies rightSideNo
         fact shouldBe a [Implies]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes implies Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes implies rightSideYes
         fact shouldBe a [Implies]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -1233,22 +1041,16 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "should be lazy about constructing strings" - {
 
       "for No isEqvTo No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -1256,62 +1058,48 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
 
       "for No isEqvTo Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideNo isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes isEqvTo No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes isEqvTo Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)

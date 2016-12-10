@@ -29,16 +29,10 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 2")
       assert(fact.simplifiedFactMessage == "3 did not equal 2")
-      assert(fact.midSentenceFactMessage == "expected 3, but got 2")
-      assert(fact.midSentenceSimplifiedFactMessage == "3 did not equal 2")
       assert(fact.rawFactMessage == "Expected {0}, but got {1}")
       assert(fact.rawSimplifiedFactMessage == "{0} did not equal {1}")
-      assert(fact.rawMidSentenceFactMessage == "expected {0}, but got {1}")
-      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} did not equal {1}")
       assert(fact.factMessageArgs == Vector(3, 2))
       assert(fact.simplifiedFactMessageArgs == Vector(3, 2))
-      assert(fact.midSentenceFactMessageArgs == Vector(3, 2))
-      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 2))
       assert(fact.isLeaf)
       assert(!fact.isVacuousYes)
     }
@@ -47,16 +41,10 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.isYes)
       assert(fact.factMessage  == "Expected 3, and got 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
-      assert(fact.midSentenceFactMessage == "expected 3, and got 3")
-      assert(fact.midSentenceSimplifiedFactMessage == "3 equaled 3")
       assert(fact.rawFactMessage == "Expected {0}, and got {1}")
       assert(fact.rawSimplifiedFactMessage == "{0} equaled {1}")
-      assert(fact.rawMidSentenceFactMessage == "expected {0}, and got {1}")
-      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} equaled {1}")
       assert(fact.factMessageArgs == Vector(3, 3))
       assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
-      assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
-      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
       assert(fact.isLeaf)
       assert(!fact.isVacuousYes)
     }
@@ -65,40 +53,28 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 4")
       assert(fact.simplifiedFactMessage == "3 did not equal 4")
-      assert(fact.midSentenceFactMessage == "expected 3, but got 4")
-      assert(fact.midSentenceSimplifiedFactMessage == "3 did not equal 4")
       assert(fact.rawFactMessage == "Expected {0}, but got {1}")
       assert(fact.rawSimplifiedFactMessage == "{0} did not equal {1}")
-      assert(fact.rawMidSentenceFactMessage == "expected {0}, but got {1}")
-      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} did not equal {1}")
       assert(fact.factMessageArgs == Vector(3, 4))
       assert(fact.simplifiedFactMessageArgs == Vector(3, 4))
-      assert(fact.midSentenceFactMessageArgs == Vector(3, 4))
-      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 4))
       assert(fact.isLeaf)
       assert(!fact.isVacuousYes)
-      assert(fact.toString == "No(expected 3, but got 4)")
+      assert(fact.toString == "No(Expected 3, but got 4)")
     }
     it("should still give a basic error message after negating a leaf with !") {
       val fact = !expectResult(3) { 3 }
       assert(fact.isNo)
       assert(fact.factMessage  == "3 equaled 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
-      assert(fact.midSentenceFactMessage == "3 equaled 3")
-      assert(fact.midSentenceSimplifiedFactMessage == "3 equaled 3")
       assert(fact.rawFactMessage == "{0} equaled {1}")
       assert(fact.rawSimplifiedFactMessage == "{0} equaled {1}")
-      assert(fact.rawMidSentenceFactMessage == "{0} equaled {1}")
-      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} equaled {1}")
       assert(fact.factMessageArgs == Vector(3, 3))
       assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
-      assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
-      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
       assert(fact.isLeaf)
       assert(!fact.isVacuousYes)
       assert(fact.toString ==
         "No(" + NEWLINE +
-        "  !Yes(expected 3, and got 3)" + NEWLINE +
+        "  !Yes(Expected 3, and got 3)" + NEWLINE +
         ")"
       )
     }
@@ -108,8 +84,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
         "No(" + NEWLINE +
-        "  Yes(expected 3, and got 3) &&" + NEWLINE +
-        "  No(expected 3, but got 4)" + NEWLINE +
+        "  Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "  No(Expected 3, but got 4)" + NEWLINE +
         ")"
       )
       assert(!fact1.isVacuousYes)
@@ -119,9 +95,9 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
         "No(" + NEWLINE + 
-        "  Yes(expected 3, and got 3) &&" + NEWLINE + 
+        "  Yes(Expected 3, and got 3) &&" + NEWLINE + 
         "  No(" + NEWLINE + 
-        "    !Yes(expected 4, and got 4)" + NEWLINE + 
+        "    !Yes(Expected 4, and got 4)" + NEWLINE + 
         "  )" + NEWLINE + 
         ")"
       )
@@ -133,8 +109,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
         "No(" + NEWLINE +
-          "  Yes(expected 3, and got 3) &" + NEWLINE +
-          "  No(expected 3, but got 4)" + NEWLINE +
+          "  Yes(Expected 3, and got 3) &" + NEWLINE +
+          "  No(Expected 3, but got 4)" + NEWLINE +
           ")"
       )
       assert(!fact1.isVacuousYes)
@@ -144,9 +120,9 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
         "No(" + NEWLINE +
-          "  Yes(expected 3, and got 3) &" + NEWLINE +
+          "  Yes(Expected 3, and got 3) &" + NEWLINE +
           "  No(" + NEWLINE +
-          "    !Yes(expected 4, and got 4)" + NEWLINE +
+          "    !Yes(Expected 4, and got 4)" + NEWLINE +
           "  )" + NEWLINE +
           ")"
       )
@@ -157,19 +133,19 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
-        "    No(expected 3, but got 4)" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "    No(Expected 3, but got 4)" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
-        "    No(expected 3, but got 4)" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "    No(Expected 3, but got 4)" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(!fact.isVacuousYes)
@@ -179,19 +155,19 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
           "  No(" + NEWLINE +
-          "    Yes(expected 3, and got 3) &" + NEWLINE +
-          "    No(expected 3, but got 4)" + NEWLINE +
+          "    Yes(Expected 3, and got 3) &" + NEWLINE +
+          "    No(Expected 3, but got 4)" + NEWLINE +
           "  ) |" + NEWLINE +
-          "  No(expected 5, but got 6)" + NEWLINE +
+          "  No(Expected 5, but got 6)" + NEWLINE +
           ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
           "  No(" + NEWLINE +
-          "    Yes(expected 3, and got 3) &" + NEWLINE +
-          "    No(expected 3, but got 4)" + NEWLINE +
+          "    Yes(Expected 3, and got 3) &" + NEWLINE +
+          "    No(Expected 3, but got 4)" + NEWLINE +
           "  ) |" + NEWLINE +
-          "  No(expected 5, but got 6)" + NEWLINE +
+          "  No(Expected 5, but got 6)" + NEWLINE +
           ")"
       )
       assert(!fact.isVacuousYes)
@@ -201,23 +177,23 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
         "    No(" + NEWLINE +
-        "      !Yes(expected 4, and got 4)" + NEWLINE +
+        "      !Yes(Expected 4, and got 4)" + NEWLINE +
         "    )" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE + 
+        "  No(Expected 5, but got 6)" + NEWLINE + 
         ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
         "    No(" + NEWLINE +
-        "      !Yes(expected 4, and got 4)" + NEWLINE +
+        "      !Yes(Expected 4, and got 4)" + NEWLINE +
         "    )" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(!fact.isVacuousYes)

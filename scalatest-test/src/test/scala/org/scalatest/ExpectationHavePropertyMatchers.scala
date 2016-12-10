@@ -43,28 +43,6 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def midSentenceFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceFactMessage == expectedValue,
-          "midSentenceFactMessage",
-          expectedValue,
-          exp.midSentenceFactMessage
-        )
-    }
-
-  def midSentenceSimplifiedFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceSimplifiedFactMessage == expectedValue,
-          "midSentenceSimplifiedFactMessage",
-          expectedValue,
-          exp.midSentenceSimplifiedFactMessage
-        )
-    }
-
   def rawFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
@@ -87,28 +65,6 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def rawMidSentenceFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.rawMidSentenceFactMessage == expectedValue,
-          "rawMidSentenceFactMessage",
-          expectedValue,
-          exp.rawMidSentenceFactMessage
-        )
-    }
-
-  def rawMidSentenceSimplifiedFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.rawMidSentenceSimplifiedFactMessage == expectedValue,
-          "rawMidSentenceSimplifidFactMessage",
-          expectedValue,
-          exp.rawMidSentenceSimplifiedFactMessage
-        )
-    }
-
   def factMessageArgs(expectedValue: IndexedSeq[Any]) =
     new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
       def apply(exp: Expectation) =
@@ -128,28 +84,6 @@ trait ExpectationHavePropertyMatchers {
           "simplifiedFactMessageArgs",
           expectedValue,
           exp.simplifiedFactMessageArgs
-        )
-    }
-
-  def midSentenceFactMessageArgs(expectedValue: IndexedSeq[Any]) =
-    new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceFactMessageArgs == expectedValue,
-          "midSentenceFactMessageArgs",
-          expectedValue,
-          exp.midSentenceFactMessageArgs
-        )
-    }
-
-  def midSentenceSimplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
-    new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceSimplifiedFactMessageArgs == expectedValue,
-          "midSentenceSimplifiedFactMessageArgs",
-          expectedValue,
-          exp.midSentenceSimplifiedFactMessageArgs
         )
     }
 

@@ -2028,10 +2028,6 @@ $columnsOfTwos$
          |        new Fact.Leaf(
          |          message,
          |          message,
-         |          message,
-         |          message,
-         |          Vector.empty,
-         |          Vector.empty,
          |          Vector.empty,
          |          Vector.empty,
          |          false,
@@ -2044,10 +2040,6 @@ $columnsOfTwos$
          |        new Fact.Leaf(
          |          message,
          |          message,
-         |          message,
-         |          message,
-         |          Vector.empty,
-         |          Vector.empty,
          |          Vector.empty,
          |          Vector.empty,
          |          false,

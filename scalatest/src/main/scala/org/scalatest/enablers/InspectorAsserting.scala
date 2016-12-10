@@ -431,10 +431,6 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
         new Fact.Leaf(
           message,
           message,
-          message,
-          message,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty,
           false,

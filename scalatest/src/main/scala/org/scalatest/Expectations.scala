@@ -22,8 +22,6 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 trait Expectations {
-  
-  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
@@ -31,15 +29,9 @@ trait Expectations {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
       val rawSimplifiedFactMessage = Resources.rawDidNotEqual
-      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedButGot
-      val rawMidSentenceSimplifiedFactMessage = Resources.rawDidNotEqual
       No(
         rawFactMessage,
         rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        Vector(exp, act),
-        Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
       )(prettifier)
@@ -48,15 +40,9 @@ trait Expectations {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedAndGot
       val rawSimplifiedFactMessage = Resources.rawEqualed
-      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedAndGot
-      val rawMidSentenceSimplifiedFactMessage = Resources.rawEqualed
       Yes(
         rawFactMessage,
         rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        Vector(exp, act),
-        Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
       )(prettifier)
@@ -70,12 +56,8 @@ trait Expectations {
       No(
         rawFactMessage = Resources.rawExceptionExpected,
         rawSimplifiedFactMessage = Resources.rawFactNoExceptionWasThrown,
-        rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
-        rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactNoExceptionWasThrown,
         factMessageArgs = Vector(clazz.getName),
-        simplifiedFactMessageArgs = Vector.empty,
-        midSentenceFactMessageArgs = Vector(clazz.getName),
-        midSentenceSimplifiedFactMessageArgs = Vector.empty
+        simplifiedFactMessageArgs = Vector.empty
       )(prettifier)
     }
     catch {
@@ -84,24 +66,16 @@ trait Expectations {
           No(
             rawFactMessage = Resources.rawWrongException,
             rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
-            rawMidSentenceFactMessage = Resources.rawMidSentenceWrongException,
-            rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName, u.getClass.getName),
             simplifiedFactMessageArgs = Vector(u.getClass.getName),
-            midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
-            midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
             cause = Some(u)
           )(prettifier)
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
             rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
-            rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
-            rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName),
             simplifiedFactMessageArgs = Vector(clazz.getName),
-            midSentenceFactMessageArgs = Vector(clazz.getName),
-            midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
             cause = Some(u)
           )(prettifier)
       }
@@ -116,10 +90,6 @@ trait Expectations {
         No(
           bool.rawFailureMessage,
           bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs,
           bool.failureMessageArgs,
           bool.failureMessageArgs
         )(prettifier)
@@ -127,10 +97,6 @@ trait Expectations {
         Yes(
           bool.rawNegatedFailureMessage,
           bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs
         )(prettifier)
@@ -153,9 +119,11 @@ trait Expectations {
   import scala.language.implicitConversions
 
   /**
-    * Implicit conversion that makes (x > 0) implies expect(x > -1) syntax works
+    * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
     */
   implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
+  
+  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
 
 object Expectations extends Expectations

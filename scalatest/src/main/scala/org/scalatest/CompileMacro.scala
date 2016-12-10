@@ -88,10 +88,6 @@ private[scalatest] object CompileMacro {
         Fact.No(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -104,10 +100,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -119,10 +111,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -176,10 +164,6 @@ private[scalatest] object CompileMacro {
         Fact.No(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -193,10 +177,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -208,10 +188,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -263,10 +239,6 @@ private[scalatest] object CompileMacro {
         Fact.Yes(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -280,10 +252,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -295,10 +263,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
