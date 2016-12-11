@@ -262,6 +262,8 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         "takesPosDouble(d)" shouldNot compile
       }
 
+// TODO: I think there should be a describe closing paren here
+
       it("should offer a unary + method that is consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           (+pdouble).toDouble shouldEqual (+(pdouble.toDouble))

@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -28,7 +28,7 @@ import scala.collection.mutable.WrappedArray
 import Double.NaN
 import org.scalactic.Equality
 
-class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
 
   val posZDoubleGen: Gen[PosZDouble] =
     for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
@@ -402,6 +402,38 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       forAll { (pzdouble: PosZDouble, double: Double) =>
         (pzdouble + double) shouldEqual (pzdouble.toDouble + double)
       }
+    }
+
+    it("should offer a 'posZ_+' method that takes a PosZDouble and returns a PosDouble") {
+
+      forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
+        (posZDouble1 posZ_+ posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
+      }
+
+      val examples =
+        Table(
+          (                "posZDouble1",                "posZDouble2" ),
+          (         PosZDouble.MinValue,         PosZDouble.MinValue ),
+          (         PosZDouble.MinValue, PosZDouble.MinPositiveValue ),
+          (         PosZDouble.MinValue,         PosZDouble.MaxValue ),
+          (         PosZDouble.MinValue, PosZDouble.PositiveInfinity ),
+          (         PosZDouble.MaxValue,         PosZDouble.MinValue ),
+          (         PosZDouble.MaxValue, PosZDouble.MinPositiveValue ),
+          (         PosZDouble.MaxValue,         PosZDouble.MaxValue ),
+          (         PosZDouble.MaxValue, PosZDouble.PositiveInfinity ),
+          ( PosZDouble.PositiveInfinity,         PosZDouble.MinValue ),
+          ( PosZDouble.PositiveInfinity, PosZDouble.MinPositiveValue ),
+          ( PosZDouble.PositiveInfinity,         PosZDouble.MaxValue ),
+          ( PosZDouble.PositiveInfinity, PosZDouble.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a posZ_+ b).value should be >= 0.0
+      }
+
+      // Sanity check that implicit widening conversions work too.
+      // Here a PosDouble gets widened to a PosZDouble.
+      PosDouble(1.0) posZ_+ PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
     it("should offer a '-' method that is consistent with Double") {
