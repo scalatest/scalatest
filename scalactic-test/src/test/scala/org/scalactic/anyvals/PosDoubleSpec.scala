@@ -499,9 +499,9 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
 
+/*
     ignore("should offer a 'pos_/' method that takes a PosDouble and returns a PosDouble") {
 
-/*
       // Need RHS to be a FinitePosZDouble (or maybe a FinitePosDouble). See note in commented out method in PosDouble.
       forAll { (posDouble1: PosDouble, posDouble2: PosDouble) =>
         (posDouble1 posZ_/ posDouble2) should === (PosDouble.ensuringValid(posDouble1.toDouble / posDouble2.toDouble))
@@ -531,8 +531,8 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       // Sanity check that implicit widening conversions work too.
       // Here a PosInt gets widened to a PosDouble.
       // PosDouble(1.0) posZ_/ PosInt(2) should === (PosDouble(2.0))
-*/
     }
+*/
 
     // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
     // extra logic is needed to convert to a comparable type (boolean, in this case)

@@ -489,10 +489,11 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       }
     }
 
-    it("should offer a 'productOf' method on its companion that takes two PosDoubles and returns a PosZDouble") {
+    it("should offer overloaded 'productOf' methods on its companion that take two or more PosDoubles and returns a PosZDouble") {
 
       forAll { (posDouble1: PosDouble, posDouble2: PosDouble) =>
-        PosZDouble.productOf(posDouble1, posDouble2) should === (PosZDouble.ensuringValid(posDouble1.toDouble * posDouble2.toDouble))
+        PosZDouble.productOf(posDouble1, posDouble2) should === (PosZDouble.ensuringValid(posDouble1.value * posDouble2.value))
+        PosZDouble.productOf(posDouble1, posDouble2, posDouble2) should === (PosZDouble.ensuringValid(posDouble1.value * posDouble2.value * posDouble2.value))
       }
 
       val examples =
@@ -511,19 +512,21 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
 
       forAll (examples) { (a, b) =>
         PosZDouble.productOf(a, b).value should be >= 0.0
+        PosZDouble.productOf(a, b, a, b, a).value should be >= 0.0
       }
 
       // Sanity check that implicit widening conversions work too.
       // Here a PosInt gets widened to a PosDouble.
       PosZDouble.productOf(PosDouble(1.0), PosInt(2)) should === (PosZDouble(2.0))
+      PosZDouble.productOf(PosDouble(1.0), PosInt(2), PosLong(5)) should === (PosZDouble(10.0))
     }
 
     // This must wait for FinitePosZDouble. See the comment in the posZ_* method in PosZDouble.
     // Please leave this ignored test here until that day comes, so it can be used as a starting
     // point at that time.
+/*
     ignore("should offer a 'posZ_*' method that takes a PosZDouble and returns a PosZDouble") {
 
-/*
       forAll { (posZDouble1: PosZDouble, posDouble: PosDouble) =>
         (posZDouble1 posZ_* posDouble) should === (PosZDouble.ensuringValid(posZDouble1.toDouble * posDouble.toDouble))
       }
@@ -549,8 +552,8 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       // Sanity check that implicit widening conversions work too.
       // Here a PosInt gets widened to a PosDouble.
       PosZDouble(1.0) posZ_* PosInt(2) should === (PosZDouble(2.0))
-*/
     }
+*/
 
     it("should offer a '/' method that is consistent with Double") {
       forAll { (pzdouble: PosZDouble, byte: Byte) =>

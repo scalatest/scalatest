@@ -714,7 +714,7 @@ object PosDouble {
    * This overloaded form of the method is used when there are just two arguments so that
    * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
    * <code>PosZDouble</code> starting at the third parameter can sum more than two
-   * values, but will entail boxing so may be less efficient.
+   * values, but will entail boxing and may therefore be less efficient.
    * </p>
    */
   def sumOf(x: PosDouble, y: PosZDouble): PosDouble = PosDouble.ensuringValid(x.value + y.value)

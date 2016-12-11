@@ -704,8 +704,54 @@ object PosZDouble {
    * scala&gt; Double.PositiveInfinity * 0.0
    * res1: Double = NaN
    * </pre>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>productOf</code> that takes a varargs of
+   * <code>PosDouble</code> starting at the third parameter can compute the product of more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
    */
   def productOf(x: PosDouble, y: PosDouble): PosZDouble = PosZDouble.ensuringValid(x.value * y.value)
+
+  /**
+   * Returns the product of the passed <code>PosDouble</code> values as a <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * multiplying a positive Double by another positive Double will
+   * always result in a positive Double value (though the result
+   * may be positive infinity) or zero.
+   * </p>
+   *
+   * <p>
+   * Note that the result the result must be <code>PosZDouble</code> not
+   * <code>PosDouble<code> is that you will get 0.0 on underflow:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.MinPositiveValue * Double.MinPositiveValue
+   * res0: Double = 0.0
+   * </pre>
+   *
+   * <p>
+   * The parameters must be <code>PosDouble</code>s instead of a <code>PosZDouble</code>s
+   * so that a 0.0 can't be passed, because if the the other side was
+   * <code>PosDouble.PositiveInfinity</code>, the result would be <code>NaN</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.PositiveInfinity * 0.0
+   * res1: Double = NaN
+   * </pre>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def productOf(first: PosDouble, second: PosDouble, rest: PosDouble*): PosZDouble =
+    PosZDouble.ensuringValid(first.value * second.value * rest.map(_.value).product)
 
   /**
    * Implicit Ordering instance.
