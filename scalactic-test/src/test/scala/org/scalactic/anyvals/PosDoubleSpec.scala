@@ -30,6 +30,11 @@ import scala.util.{Failure, Success, Try}
 
 class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
+  val posZDoubleGen: Gen[PosZDouble] =
+    for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
+
+  implicit val arbPosZDouble: Arbitrary[PosZDouble] = Arbitrary(posZDoubleGen)
+
   val posDoubleGen: Gen[PosDouble] =
     for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
 
@@ -390,8 +395,8 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
       it("should offer a 'pos_+' method that takes a PosZDouble and returns a PosDouble") {
 
-        forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
-          (pdouble1 pos_+ pdouble2) shouldEqual PosDouble.ensuringValid(pdouble1.toDouble + pdouble2.toDouble)
+        forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
+          (posDouble pos_+ posZDouble) shouldEqual PosDouble.ensuringValid(posDouble.toDouble + posZDouble.toDouble)
         }
 
         val examples =
