@@ -409,10 +409,10 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       }
     }
 
-    it("should offer a 'posZ_+' method that takes a PosZDouble and returns a PosDouble") {
+    it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        (posZDouble1 posZ_+ posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
+        (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
       }
 
       val examples =
@@ -433,12 +433,12 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
         )
 
       forAll (examples) { (a, b) =>
-        (a posZ_+ b).value should be >= 0.0
+        (a plus b).value should be >= 0.0
       }
 
       // Sanity check that implicit widening conversions work too.
       // Here a PosDouble gets widened to a PosZDouble.
-      PosDouble(1.0) posZ_+ PosDouble(2.0) should === (PosZDouble(3.0))
+      PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
     it("should offer a '-' method that is consistent with Double") {
@@ -488,40 +488,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
         (pzdouble * double) shouldEqual (pzdouble.toDouble * double)
       }
     }
-
-    // This must wait for FinitePosZDouble. See the comment in the posZ_* method in PosZDouble.
-    // Please leave this ignored test here until that day comes, so it can be used as a starting
-    // point at that time.
-/*
-    ignore("should offer a 'posZ_*' method that takes a PosZDouble and returns a PosZDouble") {
-
-      forAll { (posZDouble1: PosZDouble, posDouble: PosDouble) =>
-        (posZDouble1 posZ_* posDouble) should === (PosZDouble.ensuringValid(posZDouble1.toDouble * posDouble.toDouble))
-      }
-
-      val examples =
-        Table(
-          (               "posZDouble1",                "posDouble" ),
-          (         PosZDouble.MinValue,         PosDouble.MinValue ),
-          (         PosZDouble.MinValue,         PosDouble.MaxValue ),
-          (         PosZDouble.MinValue, PosDouble.PositiveInfinity ),
-          (         PosZDouble.MaxValue,         PosDouble.MinValue ),
-          (         PosZDouble.MaxValue,         PosDouble.MaxValue ),
-          (         PosZDouble.MaxValue, PosDouble.PositiveInfinity ),
-          ( PosZDouble.PositiveInfinity,         PosDouble.MinValue ),
-          ( PosZDouble.PositiveInfinity,         PosDouble.MaxValue ),
-          ( PosZDouble.PositiveInfinity, PosDouble.PositiveInfinity )
-        )
-
-      forAll (examples) { (a, b) =>
-        (a posZ_* b).value should be >= 0.0
-      }
-
-      // Sanity check that implicit widening conversions work too.
-      // Here a PosInt gets widened to a PosDouble.
-      PosZDouble(1.0) posZ_* PosInt(2) should === (PosZDouble(2.0))
-    }
-*/
 
     it("should offer a '/' method that is consistent with Double") {
       forAll { (pzdouble: PosZDouble, byte: Byte) =>

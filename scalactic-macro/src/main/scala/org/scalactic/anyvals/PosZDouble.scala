@@ -267,7 +267,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
   /**
-   * Returns the sum of this value and `x` as a <code>PosZDouble</code>.
+   * Returns the <code>PosZDouble</code> sum of this value and `x`.
    *
    * <p>
    * This method will always succeed (not throw an exception) because
@@ -276,7 +276,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
    * value (though the result may be positive infinity).
    * </p>
    */
-  def posZ_+(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
+  def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
 
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
@@ -646,106 +646,6 @@ object PosZDouble {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
-
-  /**
-   * Returns the product of the passed <code>PosDouble</code> values as a <code>PosZDouble</code>.
-   *
-   * <p>
-   * This method will always succeed (not throw an exception) because
-   * multiplying a positive Double by another positive Double will
-   * always result in a positive Double value (though the result
-   * may be positive infinity) or zero.
-   * </p>
-   *
-   * <p>
-   * Note that the result the result must be <code>PosZDouble</code> not
-   * <code>PosDouble<code> is that you will get 0.0 on underflow:
-   * </p>
-   *
-   * <pre>
-   * scala&gt; Double.MinPositiveValue * Double.MinPositiveValue
-   * res0: Double = 0.0
-   * </pre>
-   *
-   * <p>
-   * The parameters must be <code>PosDouble</code>s instead of a <code>PosZDouble</code>s
-   * so that a 0.0 can't be passed, because if the the other side was
-   * <code>PosDouble.PositiveInfinity</code>, the result would be <code>NaN</code>:
-   * </p>
-   *
-   * <pre>
-   * scala&gt; Double.PositiveInfinity * 0.0
-   * res1: Double = NaN
-   * </pre>
-   *
-   * <p>
-   * This overloaded form of the method is used when there are just two arguments so that
-   * boxing is avoided. The overloaded <code>productOf</code> that takes a varargs of
-   * <code>PosDouble</code> starting at the third parameter can compute the product of more than two
-   * values, but will entail boxing and may therefore be less efficient.
-   * </p>
-   */
-  def productOfPos(x: PosDouble, y: PosDouble): PosZDouble = PosZDouble.ensuringValid(x.value * y.value)
-
-  /*
-   * Given FinitePosZDouble, I think we can add a productOfPosZ(PosZDouble, FinitePosZDouble, FinitePosZDouble*)
-   * Need finite ecause 0 * Infinity is NaN. Please leave this comment here because of the hard-earned
-   * knowledge it captures.
-   * PosZDouble.productOfPosZ(x: PosZDouble, y: FinitePosZDouble) // Oops, these won't overload
-   * PosZDouble.productOfPosZ(first: PosZDouble, second: FinitePosZDouble, rest: FinitePosZDouble*)
-   */
-
-  /*
-   * Please leave this comment in here for now. Once we add FinitePosZDouble,
-   * this hard-earned knowledge can be used.
-   *
-   * Returns the first value divided by the second value as a <code>PosZDouble</code>.
-   *
-   * <p>
-   * This method will always succeed (not throw an exception) because
-   * multiplying a positive Double by another positive Double will
-   * always result in a positive Double value (though the result
-   * may be positive infinity) or zero.
-   * </p>
-   *
-   * <p>
-   * Note that the result the result must be <code>PosZDouble</code> not
-   * <code>PosDouble<code> is that you will get 0.0 on underflow:
-   * </p>
-   *
-   * <pre>
-   * scala&gt; Double.MinPositiveValue / Double.MaxValue
-   * res5: Double = 0.0
-   * </pre>
-   *
-   * <p>
-   * The parameter must be <code>PosDouble</code> instead of a <code>PosZDouble</code>
-   * so that a 0.0 can't be passed, because that would be a divide by zero, which
-   * would result in a <code>NaN</code>:
-   * </p>
-   *
-   * <pre>
-   * scala&gt; 2.0 / 0.0
-   * res1: Double = NaN
-   * </pre>
-   *
-   * OK This will have to wait for FinitePosDouble or FinitePosZDouble. Because of this:
-   * scala&gt; Double.PositiveInfinity / Double.PositiveInfinity
-   * res10: Double = NaN
-   *
-   * // However this works:
-   * scala&gt; Double.PositiveInfinity / Double.MaxValue
-   * res11: Double = Infinity
-   *
-   * // And this will work on FinitePosDouble
-   * scala&gt; Double.MaxValue / Double.PositiveInfinity
-   * res12: Double = 0.0
-   *
-   * I think I want to take a FinitePosDouble so I don't get infinity (which I would get for FinitePosZDouble(0.0).
-   * def quotientOf(x: PosZDouble, FinitePosDouble)
-   *
-   * I think also it might be clearer if these are ((((x dividedBy y) plus z) times a) minus b)
-   */
 
   /**
    * Implicit Ordering instance.
