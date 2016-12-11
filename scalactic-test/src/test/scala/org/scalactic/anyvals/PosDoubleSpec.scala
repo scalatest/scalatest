@@ -51,7 +51,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
     }
   }
 
-
   describe("A PosDouble") {
     describe("should offer a from factory method that") {
       it("returns Some[PosDouble] if the passed Double is greater than 0") {
@@ -667,13 +666,14 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.toDouble).get)
       }
     }
-  }
-  it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
-    PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
-    PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
-    an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
-    an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
-    an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+
+    it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
+      PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
+      PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+    }
   }
 }
 
