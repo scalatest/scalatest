@@ -489,6 +489,35 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       }
     }
 
+    it("should offer a 'productOf' method on its companion that takes two PosDoubles and returns a PosZDouble") {
+
+      forAll { (posDouble1: PosDouble, posDouble2: PosDouble) =>
+        PosZDouble.productOf(posDouble1, posDouble2) should === (PosZDouble.ensuringValid(posDouble1.toDouble * posDouble2.toDouble))
+      }
+
+      val examples =
+        Table(
+          (               "posDouble1",                "posDouble2" ),
+          (         PosDouble.MinValue,         PosDouble.MinValue ),
+          (         PosDouble.MinValue,         PosDouble.MaxValue ),
+          (         PosDouble.MinValue, PosDouble.PositiveInfinity ),
+          (         PosDouble.MaxValue,         PosDouble.MinValue ),
+          (         PosDouble.MaxValue,         PosDouble.MaxValue ),
+          (         PosDouble.MaxValue, PosDouble.PositiveInfinity ),
+          ( PosDouble.PositiveInfinity,         PosDouble.MinValue ),
+          ( PosDouble.PositiveInfinity,         PosDouble.MaxValue ),
+          ( PosDouble.PositiveInfinity, PosDouble.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        PosZDouble.productOf(a, b).value should be >= 0.0
+      }
+
+      // Sanity check that implicit widening conversions work too.
+      // Here a PosInt gets widened to a PosDouble.
+      PosZDouble.productOf(PosDouble(1.0), PosInt(2)) should === (PosZDouble(2.0))
+    }
+
     // This must wait for FinitePosZDouble. See the comment in the posZ_* method in PosZDouble.
     // Please leave this ignored test here until that day comes, so it can be used as a starting
     // point at that time.

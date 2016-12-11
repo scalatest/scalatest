@@ -675,6 +675,39 @@ object PosZDouble {
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
 
   /**
+   * Returns the product of the passed <code>PosDouble</code> values as a <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * multiplying a positive Double by another positive Double will
+   * always result in a positive Double value (though the result
+   * may be positive infinity) or zero.
+   * </p>
+   *
+   * <p>
+   * Note that the result the result must be <code>PosZDouble</code> not
+   * <code>PosDouble<code> is that you will get 0.0 on underflow:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.MinPositiveValue * Double.MinPositiveValue
+   * res0: Double = 0.0
+   * </pre>
+   *
+   * <p>
+   * The parameters must be <code>PosDouble</code>s instead of a <code>PosZDouble</code>s
+   * so that a 0.0 can't be passed, because if the the other side was
+   * <code>PosDouble.PositiveInfinity</code>, the result would be <code>NaN</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.PositiveInfinity * 0.0
+   * res1: Double = NaN
+   * </pre>
+   */
+  def productOf(x: PosDouble, y: PosDouble): PosZDouble = PosZDouble.ensuringValid(x.value * y.value)
+
+  /**
    * Implicit Ordering instance.
    */
   implicit val posZDoubleOrd: Ordering[PosZDouble] =
