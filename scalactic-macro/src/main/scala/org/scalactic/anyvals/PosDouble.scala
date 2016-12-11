@@ -273,6 +273,18 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosDouble</code> sum of this <code>PosDouble</code>'s value and the given <code>PosZDouble</code> value.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Double and zero or a positive Double and another
+   * positive Double will always result in another positive Double
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZDouble): PosDouble = PosDouble.ensuringValid(value + x.value)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
   /** Returns the difference of this value and `x`. */

@@ -394,6 +394,37 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
 
+    it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
+
+      forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
+        (posDouble plus posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value))
+      }
+
+      val examples =
+        Table(
+          (                "posDouble",                "posZDouble" ),
+          (         PosDouble.MinValue,         PosZDouble.MinValue ),
+          (         PosDouble.MinValue, PosZDouble.MinPositiveValue ),
+          (         PosDouble.MinValue,         PosZDouble.MaxValue ),
+          (         PosDouble.MinValue, PosZDouble.PositiveInfinity ),
+          (         PosDouble.MaxValue,         PosZDouble.MinValue ),
+          (         PosDouble.MaxValue, PosZDouble.MinPositiveValue ),
+          (         PosDouble.MaxValue,         PosZDouble.MaxValue ),
+          (         PosDouble.MaxValue, PosZDouble.PositiveInfinity ),
+          ( PosDouble.PositiveInfinity,         PosZDouble.MinValue ),
+          ( PosDouble.PositiveInfinity, PosZDouble.MinPositiveValue ),
+          ( PosDouble.PositiveInfinity,         PosZDouble.MaxValue ),
+          ( PosDouble.PositiveInfinity, PosZDouble.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a plus b).value should be > 0.0
+      }
+
+      // Sanity check that implicit widening conversions work too.
+      (PosDouble(1.0) plus PosInt(2)) should === (PosDouble(3.0))
+    }
+
     it("should offer overloaded 'sumOf' methods on the companion that take one PosDouble and one or more PosZDoubles and returns a PosDouble") {
 
       forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
@@ -427,6 +458,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       PosDouble.sumOf(PosDouble(1.0), PosInt(2)) should === (PosDouble(3.0))
       PosDouble.sumOf(PosDouble(1.0), PosInt(2), PosZInt(5), PosZInt(0)) should === (PosDouble(8.0))
     }
+
     it("should offer a '-' method that is consistent with Double") {
       forAll { (pdouble: PosDouble, byte: Byte) =>
         (pdouble - byte) shouldEqual (pdouble.toDouble - byte)
