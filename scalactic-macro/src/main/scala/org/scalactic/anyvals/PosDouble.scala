@@ -666,7 +666,7 @@ object PosDouble {
   implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
-   * Returns the sum of the passed <code>PosDouble</code> value `x` and <code>PosZDouble</code> value `y` as a <code>PosDouble</code>.
+   * Returns the <code>PosDouble</code> sum of the passed <code>PosDouble</code> value `x` and <code>PosZDouble</code> value `y`.
    *
    * <p>
    * This method will always succeed (not throw an exception) because
@@ -685,8 +685,8 @@ object PosDouble {
   def sumOf(x: PosDouble, y: PosZDouble): PosDouble = PosDouble.ensuringValid(x.value + y.value)
 
   /**
-   * Returns the sum of the passed <code>PosDouble</code> value `first`, the <code>PosZDouble</code>
-   * value `second`, and the values passed as varargs `rest` as a <code>PosDouble</code>.
+   * Returns the <code>PosDouble</code> sum of the passed <code>PosDouble</code> value `first`, the <code>PosZDouble</code>
+   * value `second`, and the <code>PosDouble</code> values passed as varargs `rest`.
    *
    * <p>
    * This method will always succeed (not throw an exception) because

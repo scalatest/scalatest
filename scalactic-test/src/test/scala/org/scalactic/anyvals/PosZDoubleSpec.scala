@@ -441,6 +441,44 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
+    it("should offer overloaded 'sumOf' methods on the companion that takes two or more PosZDoubles and returns a PosZDouble") {
+
+      forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
+        PosZDouble.sumOf(posZDouble1, posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value))
+      }
+      forAll { (posZDouble: PosZDouble, posZDoubles: List[PosZDouble]) =>
+        whenever(posZDoubles.nonEmpty) {
+          PosZDouble.sumOf(posZDouble, posZDoubles.head, posZDoubles.tail: _*) should === {
+            PosZDouble.ensuringValid(posZDouble.value + posZDoubles.head.value + posZDoubles.tail.map(_.value).sum)
+          }
+        }
+      }
+
+/*
+      val posEdgeValues: List[PosDouble] = List(PosDouble.MinValue, PosDouble.MaxValue, PosDouble.PositiveInfinity)
+      val posZEdgeValues = List(PosZDouble.MinValue, PosZDouble.MinPositiveValue, PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
+      Inspectors.forAll (posEdgeValues) { a =>
+        PosDouble.sumOf(a, posZEdgeValues.head, posZEdgeValues.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + posZEdgeValues.head.value + posZEdgeValues.tail.map(_.value).sum)
+        }
+      }
+
+      val posZPairCombos = posZEdgeValues.combinations(2).toList
+      Inspectors.forAll (posEdgeValues.zip(posZPairCombos)) { case (a, zs)  =>
+        PosDouble.sumOf(a, zs.head, zs.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + zs.head.value + zs.tail.map(_.value).sum)
+        }
+      }
+
+      val posZTripleCombos = posZEdgeValues.combinations(3).toList
+      Inspectors.forAll (posEdgeValues.zip(posZTripleCombos)) { case (a, zs)  =>
+        PosDouble.sumOf(a, zs.head, zs.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + zs.head.value + zs.tail.map(_.value).sum)
+        }
+      }
+*/
+    }
+
     it("should offer a '-' method that is consistent with Double") {
       forAll { (pzdouble: PosZDouble, byte: Byte) =>
         (pzdouble - byte) shouldEqual (pzdouble.toDouble - byte)
