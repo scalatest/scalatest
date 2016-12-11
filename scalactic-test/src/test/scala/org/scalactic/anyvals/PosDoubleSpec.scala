@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -27,7 +27,7 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import scala.util.{Failure, Success, Try}
 
-class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks {
 
   val posDoubleGen: Gen[PosDouble] =
     for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
@@ -93,9 +93,11 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         PosDouble.fromOrElse(-99.9, PosDouble(42.0)).value shouldBe 42.0
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual
+        PosDouble.from(Double.MinPositiveValue).get
+      PosDouble.MinPositiveValue shouldEqual
         PosDouble.from(Double.MinPositiveValue).get
     }
     it("should offer a PositiveInfinity factory method") {
@@ -383,6 +385,33 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         }
         forAll { (pdouble: PosDouble, double: Double) =>
           (pdouble + double) shouldEqual (pdouble.toDouble + double)
+        }
+      }
+      it("should offer a 'pos_+' method that takes a PosDouble and returns a PosDouble") {
+
+        forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
+          (pdouble1 pos_+ pdouble2) shouldEqual PosDouble.ensuringValid(pdouble1.toDouble + pdouble2.toDouble)
+        }
+
+        val examples =
+          Table(
+            (                "posDouble",                "posZDouble" ),
+            (         PosDouble.MinValue,         PosZDouble.MinValue ),
+            (         PosDouble.MinValue, PosZDouble.MinPositiveValue ),
+            (         PosDouble.MinValue,         PosZDouble.MaxValue ),
+            (         PosDouble.MinValue, PosZDouble.PositiveInfinity ),
+            (         PosDouble.MaxValue,         PosZDouble.MinValue ),
+            (         PosDouble.MaxValue, PosZDouble.MinPositiveValue ),
+            (         PosDouble.MaxValue,         PosZDouble.MaxValue ),
+            (         PosDouble.MaxValue, PosZDouble.PositiveInfinity ),
+            ( PosDouble.PositiveInfinity,         PosZDouble.MinValue ),
+            ( PosDouble.PositiveInfinity, PosZDouble.MinPositiveValue ),
+            ( PosDouble.PositiveInfinity,         PosZDouble.MaxValue ),
+            ( PosDouble.PositiveInfinity, PosZDouble.PositiveInfinity )
+          )
+
+        forAll (examples) { (a, b) =>
+          (a pos_+ b).value should be >= 0.0
         }
       }
 

@@ -101,9 +101,11 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)
+      PosZDouble.MinPositiveValue shouldEqual
+        PosZDouble.from(Double.MinPositiveValue).get
     }
     it("should offer a PositiveInfinity factory method") {
       PosZDouble.PositiveInfinity shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
