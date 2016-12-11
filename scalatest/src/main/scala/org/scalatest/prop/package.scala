@@ -130,6 +130,19 @@ package object prop {
       }
     }
 
+  def specificValue[T](theValue: T): Generator[T] =
+    new Generator[T] {
+      def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            (theValue, Nil, rnd)
+        }
+      }
+    }
+
   val bytes: Generator[Byte] = Generator.byteGenerator
   val shorts: Generator[Short] = Generator.shortGenerator
   val ints: Generator[Int] = Generator.intGenerator

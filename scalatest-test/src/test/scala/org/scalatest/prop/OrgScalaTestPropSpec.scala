@@ -121,6 +121,16 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         """specificValues(1, 2)""" should compile
       }
     }
+    "offer a specificValue method" that {
+      "returns a generator that produces from a given single specific object for any type T" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val specificValue42 = org.scalatest.prop.specificValue(42)
+        forAll (specificValue42) { x => x shouldBe (42) }
+        forAll (specificValue("nice")) { x =>
+          x should (be ("nice"))
+        }
+      }
+    }
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         
       @tailrec                                       
       def samplesLoop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
