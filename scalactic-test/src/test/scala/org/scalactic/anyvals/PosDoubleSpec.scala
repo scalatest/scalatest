@@ -27,6 +27,7 @@ import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 import scala.util.{Failure, Success, Try}
+import org.scalatest.Inspectors
 
 class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -429,34 +430,36 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
       forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
         PosDouble.sumOf(posDouble, posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value))
-        PosDouble.sumOf(posDouble, posZDouble, posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value + posZDouble.value))
+      }
+      forAll { (posDouble: PosDouble, posZDoubles: List[PosZDouble]) =>
+        whenever(posZDoubles.nonEmpty) {
+          PosDouble.sumOf(posDouble, posZDoubles.head, posZDoubles.tail: _*) should === {
+            PosDouble.ensuringValid(posDouble.value + posZDoubles.head.value + posZDoubles.tail.map(_.value).sum)
+          }
+        }
       }
 
-      val examples =
-        Table(
-          (                "posDouble",                "posZDouble" ),
-          (         PosDouble.MinValue,         PosZDouble.MinValue ),
-          (         PosDouble.MinValue, PosZDouble.MinPositiveValue ),
-          (         PosDouble.MinValue,         PosZDouble.MaxValue ),
-          (         PosDouble.MinValue, PosZDouble.PositiveInfinity ),
-          (         PosDouble.MaxValue,         PosZDouble.MinValue ),
-          (         PosDouble.MaxValue, PosZDouble.MinPositiveValue ),
-          (         PosDouble.MaxValue,         PosZDouble.MaxValue ),
-          (         PosDouble.MaxValue, PosZDouble.PositiveInfinity ),
-          ( PosDouble.PositiveInfinity,         PosZDouble.MinValue ),
-          ( PosDouble.PositiveInfinity, PosZDouble.MinPositiveValue ),
-          ( PosDouble.PositiveInfinity,         PosZDouble.MaxValue ),
-          ( PosDouble.PositiveInfinity, PosZDouble.PositiveInfinity )
-        )
-
-      forAll (examples) { (a, b) =>
-        PosDouble.sumOf(a, b).value should be > 0.0
-        PosDouble.sumOf(a, b, b, b, b).value should be > 0.0
+      val posEdgeValues: List[PosDouble] = List(PosDouble.MinValue, PosDouble.MaxValue, PosDouble.PositiveInfinity)
+      val posZEdgeValues = List(PosZDouble.MinValue, PosZDouble.MinPositiveValue, PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
+      Inspectors.forAll (posEdgeValues) { a =>
+        PosDouble.sumOf(a, posZEdgeValues.head, posZEdgeValues.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + posZEdgeValues.head.value + posZEdgeValues.tail.map(_.value).sum)
+        }
       }
 
-      // Sanity check that implicit widening conversions work too.
-      PosDouble.sumOf(PosDouble(1.0), PosInt(2)) should === (PosDouble(3.0))
-      PosDouble.sumOf(PosDouble(1.0), PosInt(2), PosZInt(5), PosZInt(0)) should === (PosDouble(8.0))
+      val posZPairCombos = posZEdgeValues.combinations(2).toList
+      Inspectors.forAll (posEdgeValues.zip(posZPairCombos)) { case (a, zs)  =>
+        PosDouble.sumOf(a, zs.head, zs.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + zs.head.value + zs.tail.map(_.value).sum)
+        }
+      }
+
+      val posZTripleCombos = posZEdgeValues.combinations(3).toList
+      Inspectors.forAll (posEdgeValues.zip(posZTripleCombos)) { case (a, zs)  =>
+        PosDouble.sumOf(a, zs.head, zs.tail: _*) should === {
+          PosDouble.ensuringValid(a.value + zs.head.value + zs.tail.map(_.value).sum)
+        }
+      }
     }
 
     it("should offer a '-' method that is consistent with Double") {
