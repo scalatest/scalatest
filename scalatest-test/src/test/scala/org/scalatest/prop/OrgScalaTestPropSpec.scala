@@ -131,26 +131,33 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         }
       }
     }
-/*
     "offer a frequency method takes a Map of PosInt weights to generators and produces a generator" that {
       "returns values from each specific generator with a probability determined by the weights" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-        val oddInts = for { i <- intsBetween(2, 100000) } yield 2 * n
-        val evenInts = for { i <- intsBetween(0, 100000) } yield 2 * n + 1
-        val numberGen =
+        val evenInts = for { i <- intsBetween(2, 100000) } yield 2 * i
+        val oddInts = for { i <- intsBetween(0, 100000) } yield 2 * i + 1
+        val oddAndEvenInts =
           frequency(
-            1 -> oddInts,
-            2 -> evenInts,
-            4 -> 0
+            PosInt(1) -> oddInts,
+            PosInt(2) -> evenInts,
+            PosInt(4) -> specificValue(0)
           )
-        val specificValue42 = org.scalatest.prop.specificValue(42)
-        forAll (specificValue42) { x => x shouldBe (42) }
-        forAll (specificValue("nice")) { x =>
-          x should (be ("nice"))
-        }
+
+        val classification: Classification =
+          classify(10000, oddAndEvenInts) {
+            case 0 => "zero"
+            case i if i % 2 == 0 => "even"
+            case _ => "odd"
+          }
+ 
+        val percentages: Map[String, PosZInt] = classification.percentages
+
+        val totalWeight = 1 + 2 + 4
+        percentages("zero").value shouldBe (4.0 / totalWeight * 100).toInt +- 1
+        percentages("even").value shouldBe (2.0 / totalWeight * 100).toInt +- 1
+        percentages("odd").value shouldBe (1.0 / totalWeight * 100).toInt +- 1
       }
     }
-*/
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         
       @tailrec                                       
       def samplesLoop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {

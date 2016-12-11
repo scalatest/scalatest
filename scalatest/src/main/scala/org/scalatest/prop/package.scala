@@ -143,6 +143,35 @@ package object prop {
       }
     }
 
+  // TODO: I wonder if I could get rid of the edges pattern match
+  // by moving this to a different method. Then next is just next
+  // in the distributed stuff. I could then do the pattern match
+  // once and forall in a final method, nextEdge.
+  def frequency[T](distribution: (PosInt, Generator[T])*): Generator[T] =
+    new Generator[T] {
+/*
+[error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:152: could not find implicit value for parameter num: Numeric[org.scalactic.anyvals.PosInt]
+TODO: Make Numeric instances for the numeric anyval types.
+*/
+      private val totalWeight: Int = distribution.toMap.keys.map(pint => pint.value).sum
+      // gens contains, for each distribution pair, weight generators.
+      private val gens: Vector[Generator[T]] =
+        distribution.toVector flatMap { case (w, g) =>
+          Vector.fill(w)(g)
+        }
+      def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
+            val nextGen = gens(nextInt)
+            nextGen.next(size, Nil, nextRandomizer)
+        }
+      }
+    }
+
   val bytes: Generator[Byte] = Generator.byteGenerator
   val shorts: Generator[Short] = Generator.shortGenerator
   val ints: Generator[Int] = Generator.intGenerator
