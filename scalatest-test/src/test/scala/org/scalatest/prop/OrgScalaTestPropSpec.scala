@@ -134,13 +134,14 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
     "offer a frequency method takes a Map of PosInt weights to generators and produces a generator" that {
       "returns values from each specific generator with a probability determined by the weights" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        // import org.scalatest.prop.specificValue
         val evenInts = for { i <- intsBetween(2, 100000) } yield 2 * i
         val oddInts = for { i <- intsBetween(0, 100000) } yield 2 * i + 1
         val oddAndEvenInts =
           frequency(
-            PosInt(1) -> oddInts,
-            PosInt(2) -> evenInts,
-            PosInt(4) -> specificValue(0)
+            1 -> oddInts,
+            2 -> evenInts,
+            4 -> specificValue(0)
           )
 
         val classification: Classification =

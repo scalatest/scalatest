@@ -147,13 +147,43 @@ package object prop {
   // by moving this to a different method. Then next is just next
   // in the distributed stuff. I could then do the pattern match
   // once and forall in a final method, nextEdge.
-  def frequency[T](distribution: (PosInt, Generator[T])*): Generator[T] =
+  def frequency[T](distribution: (Int, Generator[T])*): Generator[T] = {
+    // Take Int not PosInt, because Scala won't apply  multiple implicit
+    // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
+    // So just do a require.
+/*
+    TODO:
+
+     org.scalactic.Requirements.require {
+       distribution forall { case (w, _) => w >= 1 }
+     }
+
+[error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:154: exception during macro expansion: 
+[error] scala.reflect.macros.TypecheckException: not found: value requirementsHelper
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:34)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:28)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
+[error] 	at scala.reflect.macros.contexts.Typers$class.withContext$1(Typers.scala:25)
+[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2.apply(Typers.scala:28)
+
+*/
+    // I think we actually need to say org.scalactic.Requirements.requirementsHelper in the thing not requirementsHelper
+    // Oh, maybe that won't work. Anyway, see what's up.
+    import org.scalactic.Requirements._
+    require {
+      distribution forall { case (w, _) => w >= 1 }
+    }
     new Generator[T] {
 /*
 [error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:152: could not find implicit value for parameter num: Numeric[org.scalactic.anyvals.PosInt]
 TODO: Make Numeric instances for the numeric anyval types.
 */
-      private val totalWeight: Int = distribution.toMap.keys.map(pint => pint.value).sum
+      private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
         distribution.toVector flatMap { case (w, g) =>
@@ -171,6 +201,7 @@ TODO: Make Numeric instances for the numeric anyval types.
         }
       }
     }
+  }
 
   val bytes: Generator[Byte] = Generator.byteGenerator
   val shorts: Generator[Short] = Generator.shortGenerator

@@ -158,9 +158,6 @@ trait LowerPriorityGeneratorImplicits {
         (shrk.shrink(value).take(10000).reverse.toIterator, rnd)
       }
     }
-
-  import scala.language.implicitConversions
-  implicit def specificValueGenerator[T](theValue: T): Generator[T] = org.scalatest.prop.specificValue[T](theValue)
 }
 
 object Generator extends LowerPriorityGeneratorImplicits {

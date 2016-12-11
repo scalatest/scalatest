@@ -1116,14 +1116,5 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
   }
-  describe("The Generator companion object") {
-    it("should offer an implicit conversion from any type T to a Generator[T] that produces just that value") {
-      import GeneratorDrivenPropertyChecks._
-      forAll { i: Int => 
-        val iGen = 0: Generator[Int]
-        forAll (iGen) { x => x shouldEqual i }
-      }
-    }
-  }
 }
 
