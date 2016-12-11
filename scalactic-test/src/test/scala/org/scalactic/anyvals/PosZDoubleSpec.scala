@@ -35,6 +35,11 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
 
   implicit val arbPosZDouble: Arbitrary[PosZDouble] = Arbitrary(posZDoubleGen)
 
+  val posDoubleGen: Gen[PosDouble] =
+    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
+
+  implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
+
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
       override def areEqual(a: Double, b: Any): Boolean =
@@ -482,6 +487,40 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
       forAll { (pzdouble: PosZDouble, double: Double) =>
         (pzdouble * double) shouldEqual (pzdouble.toDouble * double)
       }
+    }
+
+    // This must wait for FinitePosZDouble. See the comment in the posZ_* method in PosZDouble.
+    // Please leave this ignored test here until that day comes, so it can be used as a starting
+    // point at that time.
+    ignore("should offer a 'posZ_*' method that takes a PosZDouble and returns a PosZDouble") {
+
+/*
+      forAll { (posZDouble1: PosZDouble, posDouble: PosDouble) =>
+        (posZDouble1 posZ_* posDouble) should === (PosZDouble.ensuringValid(posZDouble1.toDouble * posDouble.toDouble))
+      }
+
+      val examples =
+        Table(
+          (               "posZDouble1",                "posDouble" ),
+          (         PosZDouble.MinValue,         PosDouble.MinValue ),
+          (         PosZDouble.MinValue,         PosDouble.MaxValue ),
+          (         PosZDouble.MinValue, PosDouble.PositiveInfinity ),
+          (         PosZDouble.MaxValue,         PosDouble.MinValue ),
+          (         PosZDouble.MaxValue,         PosDouble.MaxValue ),
+          (         PosZDouble.MaxValue, PosDouble.PositiveInfinity ),
+          ( PosZDouble.PositiveInfinity,         PosDouble.MinValue ),
+          ( PosZDouble.PositiveInfinity,         PosDouble.MaxValue ),
+          ( PosZDouble.PositiveInfinity, PosDouble.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a posZ_* b).value should be >= 0.0
+      }
+
+      // Sanity check that implicit widening conversions work too.
+      // Here a PosInt gets widened to a PosDouble.
+      PosZDouble(1.0) posZ_* PosInt(2) should === (PosZDouble(2.0))
+*/
     }
 
     it("should offer a '/' method that is consistent with Double") {

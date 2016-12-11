@@ -308,6 +308,33 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   /** Returns the product of this value and `x`. */
   def *(x: Double): Double = value * x
 
+  /*
+   * This will need to wait until FinitePosZDouble, because 0 * Infinity
+   * is NaN. Please leave this comment here because of the hard-earned
+   * knowledge it captures.
+   *
+   * Returns the product of this value and `x` as a <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * multiplying a positive Double by another positive Double will
+   * always result in a positive Double value (though the result
+   * may be positive infinity) or zero.
+   * </p>
+   *
+   * <p>
+   * The parameter must be <code>PosDouble</code> instead of a <code>PosZDouble</code>
+   * so that a 0.0 can't be passed, because if the left hand side were
+   * <code>PosDouble.PositiveInfinity</code>, you would get <code>NaN</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.PositiveInfinity * 0.0
+   * res1: Double = NaN
+   * </pre>
+   */
+  // def posZ_*(x: PosDouble): PosZDouble = PosZDouble.ensuringValid(value * x)
+
   /** Returns the quotient of this value and `x`. */
   def /(x: Byte): Double = value / x
   /** Returns the quotient of this value and `x`. */
