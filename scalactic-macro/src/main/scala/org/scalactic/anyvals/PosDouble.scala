@@ -360,6 +360,54 @@ final class PosDouble private (val value: Double) extends AnyVal {
   def /(x: Float): Double = value / x
   /** Returns the quotient of this value and `x`. */
   def /(x: Double): Double = value / x
+  /*
+   * Please leave this comment in here for now. Once we add FinitePosZDouble,
+   * this hard-earned knowledge can be used.
+   *
+   * Returns the product of this value and `x` as a <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * multiplying a positive Double by another positive Double will
+   * always result in a positive Double value (though the result
+   * may be positive infinity) or zero.
+   * </p>
+   *
+   * <p>
+   * Note that the result the result must be <code>PosZDouble</code> not
+   * <code>PosDouble<code> is that you will get 0.0 on underflow:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.MinPositiveValue / Double.MaxValue
+   * res5: Double = 0.0
+   * </pre>
+   *
+   * <p>
+   * The parameter must be <code>PosDouble</code> instead of a <code>PosZDouble</code>
+   * so that a 0.0 can't be passed, because that would be a divide by zero, which
+   * would result in a <code>NaN</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; 2.0 / 0.0
+   * res1: Double = NaN
+   * </pre>
+   *
+   * OK This will have to wait for FinitePosDouble or FinitePosZDouble. Because of this:
+   * scala&gt; Double.PositiveInfinity / Double.PositiveInfinity
+   * res10: Double = NaN
+   *
+   * // However this works:
+   * scala&gt; Double.PositiveInfinity / Double.MaxValue
+   * res11: Double = Infinity
+   *
+   * // And this will work on FinitePosDouble
+   * scala&gt; Double.MaxValue / Double.PositiveInfinity
+   * res12: Double = 0.0
+   *
+   */
+  // def posZ_/(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value / x)
 
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Byte): Double = value % x
@@ -376,6 +424,7 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
+  // TODO: Need Scaladoc
   // Stuff from RichDouble
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
@@ -389,6 +438,7 @@ final class PosDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
 
+  // TODO: Need Scaladoc
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
