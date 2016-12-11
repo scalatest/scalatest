@@ -131,7 +131,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         }
       }
     }
-    "offer a frequency method takes a Map of PosInt weights to generators and produces a generator" that {
+    "offer a frequency method that takes a varargs of Int weights to generators and produces a generator" that {
       "returns values from each specific generator with a probability determined by the weights" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         // import org.scalatest.prop.specificValue
@@ -157,6 +157,11 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         percentages("zero").value shouldBe (4.0 / totalWeight * 100).toInt +- 1
         percentages("even").value shouldBe (2.0 / totalWeight * 100).toInt +- 1
         percentages("odd").value shouldBe (1.0 / totalWeight * 100).toInt +- 1
+      }
+      "throws IllegalArgumentException if passed less than two arguments" in {
+        "frequency()" shouldNot compile
+        "frequency(1 -> ints)" shouldNot compile
+        "frequency(1 -> intsBetween(1, 10), 5 -> specificValue(0))" should compile
       }
     }
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         

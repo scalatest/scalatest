@@ -147,7 +147,8 @@ package object prop {
   // by moving this to a different method. Then next is just next
   // in the distributed stuff. I could then do the pattern match
   // once and forall in a final method, nextEdge.
-  def frequency[T](distribution: (Int, Generator[T])*): Generator[T] = {
+  def frequency[T](first: (Int, Generator[T]), second: (Int, Generator[T]), rest: (Int, Generator[T])*): Generator[T] = {
+      val distribution: Vector[(Int, Generator[T])] = (first +: second +: rest).toVector
     // Take Int not PosInt, because Scala won't apply  multiple implicit
     // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
     // So just do a require.
