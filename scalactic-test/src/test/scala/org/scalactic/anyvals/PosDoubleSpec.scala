@@ -394,10 +394,11 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
 
-    it("should offer a 'sumOf' method on the companion that takes two or more PosZDoubles and returns a PosDouble") {
+    it("should offer overloaded 'sumOf' methods on the companion that take one PosDouble and one or more PosZDoubles and returns a PosDouble") {
 
       forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
-        PosDouble.sumOf(posDouble, posZDouble) shouldEqual PosDouble.ensuringValid(posDouble.toDouble + posZDouble.toDouble)
+        PosDouble.sumOf(posDouble, posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value))
+        PosDouble.sumOf(posDouble, posZDouble, posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value + posZDouble.value))
       }
 
       val examples =
@@ -419,11 +420,12 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
       forAll (examples) { (a, b) =>
         PosDouble.sumOf(a, b).value should be > 0.0
+        PosDouble.sumOf(a, b, b, b, b).value should be > 0.0
       }
 
       // Sanity check that implicit widening conversions work too.
-      // Here a PosDouble gets widened to a PosZDouble.
       PosDouble.sumOf(PosDouble(1.0), PosInt(2)) should === (PosDouble(3.0))
+      PosDouble.sumOf(PosDouble(1.0), PosInt(2), PosZInt(5), PosZInt(0)) should === (PosDouble(8.0))
     }
     it("should offer a '-' method that is consistent with Double") {
       forAll { (pdouble: PosDouble, byte: Byte) =>

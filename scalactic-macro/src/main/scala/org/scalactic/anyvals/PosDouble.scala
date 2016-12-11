@@ -709,8 +709,34 @@ object PosDouble {
    * positive Double will always result in another positive Double
    * value (though the result may be positive infinity).
    * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZDouble</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing so may be less efficient.
+   * </p>
    */
   def sumOf(x: PosDouble, y: PosZDouble): PosDouble = PosDouble.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the sum of the passed <code>PosDouble</code> value `first`, the <code>PosZDouble</code>
+   * value `second`, and the values passed as varargs `rest` as a <code>PosDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Double and one or more zeros or positive Doubles
+   * will always result in another positive Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosDouble, second: PosZDouble, rest: PosZDouble*): PosDouble =
+    PosDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
 
   /**
    * Implicit Ordering instance.
