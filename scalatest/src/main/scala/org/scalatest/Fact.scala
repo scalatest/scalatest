@@ -25,10 +25,10 @@ import org.scalatest.exceptions.TestCanceledException
 sealed abstract class Fact {
 
   val rawFactMessage: String
-  val rawSimplifiedFactMessage: String
+  val rawComposableFactMessage: String
 
   val factMessageArgs: IndexedSeq[Any]
-  val simplifiedFactMessageArgs: IndexedSeq[Any]
+  val composableFactMessageArgs: IndexedSeq[Any]
 
   val isLeaf: Boolean
   val isVacuousYes: Boolean
@@ -61,9 +61,9 @@ sealed abstract class Fact {
   }
 
   /**
-   * Get a simplified version of this Fact, sub type will be simplified and all messages field will be substituted with its counter-part.
+   * Get a composable version of this Fact, sub type will be composable and all messages field will be substituted with its counter-part.
    *
-   * @return a simplified version of this Fact
+   * @return a composable version of this Fact
    */
   def unary_!(): Fact = Fact.Unary_!(this)
 
@@ -94,9 +94,9 @@ sealed abstract class Fact {
     if (factMessageArgs.isEmpty) rawFactMessage
     else makeString(rawFactMessage, factMessageArgs)
 
-  def simplifiedFactMessage: String =
-    if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage
-    else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
+  def composableFactMessage: String =
+    if (composableFactMessageArgs.isEmpty) rawComposableFactMessage
+    else makeString(rawComposableFactMessage, composableFactMessageArgs)
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply).toArray)
@@ -122,9 +122,9 @@ object Fact {
 
   case class Leaf(
     rawFactMessage: String,
-    rawSimplifiedFactMessage: String,
+    rawComposableFactMessage: String,
     factMessageArgs: IndexedSeq[Any],
-    simplifiedFactMessageArgs: IndexedSeq[Any],
+    composableFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
     isVacuousYes: Boolean,
     prettifier: Prettifier,
@@ -139,10 +139,10 @@ object Fact {
     require(underlying.isNo)
     
     val rawFactMessage: String = underlying.rawFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
+    val rawComposableFactMessage: String = underlying.rawComposableFactMessage
 
     val factMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
 
     val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
@@ -166,16 +166,16 @@ object Fact {
 
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawComposableFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
+      composableFactMessageArgs: IndexedSeq[Any],
       cause: Option[Throwable] = None
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        composableFactMessageArgs,
         false,
         false,
         prettifier,
@@ -184,11 +184,11 @@ object Fact {
 
     def apply( // Just used in tests
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String
+      rawComposableFactMessage: String
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         Vector.empty,
         Vector.empty,
         false,
@@ -200,12 +200,12 @@ object Fact {
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
      * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
-     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceSimplifiedFailureMessage</code> will return the
-     * same string as <code>rawSimplifiedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceComposableFailureMessage</code> will return the
+     * same string as <code>rawComposableFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create No with eager error messages that have same mid-sentence messages.
      *
      * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawSimplifiedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param rawComposableFailureMessage raw message with a meaning opposite to that of the failure message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -224,8 +224,8 @@ object Fact {
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
-     * <code>cause</code> fields. The <code>rawMidSentenceFactMessage</code>, <code>rawSimplifiedFailureMessage</code> and
-     * <code>rawMidSentenceSimplifiedFailureMessage</code>will return the same string as <code>rawFactMessage</code>.
+     * <code>cause</code> fields. The <code>rawMidSentenceFactMessage</code>, <code>rawComposableFailureMessage</code> and
+     * <code>rawMidSentenceComposableFailureMessage</code>will return the same string as <code>rawFactMessage</code>.
      * All argument fields will have <code>Vector.empty</code> values.  This is suitable to create No with eager error messages
      * that have same mid-sentence messages.
      *
@@ -258,17 +258,17 @@ object Fact {
   
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawComposableFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
+      composableFactMessageArgs: IndexedSeq[Any],
       isVacuousYes: Boolean = false,
       cause: Option[Throwable] = None
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        composableFactMessageArgs,
         true,
         isVacuousYes,
         prettifier,
@@ -277,11 +277,11 @@ object Fact {
 
     def apply( // Just used in tests
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String
+      rawComposableFactMessage: String
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         Vector.empty,
         Vector.empty,
         true,
@@ -293,8 +293,8 @@ object Fact {
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>, and
      * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
-     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceSimplifiedFailureMessage</code> will return the
-     * same string as <code>rawSimplifiedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceComposableFailureMessage</code> will return the
+     * same string as <code>rawComposableFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create Yes with eager error messages that have same mid-sentence messages.
      *
      * @param rawFactMessage raw failure message to report if a match fails
@@ -315,20 +315,20 @@ object Fact {
       )
   }
 
-  // The simplified Fact message is used when a Fact is negated, because
+  // The composable Fact message is used when a Fact is negated, because
   // sometimes factMessage can include info about what was expected, as in
   // "Expected 3, but got 4", for expectResult(3) { x } . But if this is inverted
   // to !expectResult(3) { x }, then it is confusing to say Expected 3 (because
-  // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
+  // now anything *but* 3 is expected. So the composable message just says, "3 did not equal 4".
   // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
-  // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
+  // the regular factMessage would be "Expected 3, but got 3" and the composable fact message would be "3 equaled 3"
   // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
 
-    val rawFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
-    val factMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    val rawFactMessage: String = underlying.rawComposableFactMessage
+    val rawComposableFactMessage: String = underlying.rawComposableFactMessage
+    val factMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
     val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
 
@@ -363,19 +363,19 @@ object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
-          SimplifiedFactMessage(left),
-          SimplifiedFactMessage(right)
+          ComposableFactMessage(left),
+          ComposableFactMessage(right)
         ) // Simplify if combining
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
 
     val isLeaf: Boolean = false
@@ -415,16 +415,16 @@ object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(SimplifiedFactMessage(left), SimplifiedFactMessage(right))
+        Vector(ComposableFactMessage(left), ComposableFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
     val isLeaf: Boolean = false
     val isYes: Boolean = left.isYes || right.isYes
@@ -470,19 +470,19 @@ object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
-          SimplifiedFactMessage(left),
-          SimplifiedFactMessage(right)
+          ComposableFactMessage(left),
+          ComposableFactMessage(right)
         ) // Simplify if combining
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
 
     val isLeaf: Boolean = false
@@ -512,16 +512,16 @@ object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(SimplifiedFactMessage(left), SimplifiedFactMessage(right))
+        Vector(ComposableFactMessage(left), ComposableFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
     val isLeaf: Boolean = false
     val isYes: Boolean = (left.isYes && right.isYes) || (left.isNo && right.isNo)
@@ -551,8 +551,8 @@ object Fact {
     override def toString: String = fact.factMessage
   }
 
-  private[scalatest] case class SimplifiedFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.simplifiedFactMessageArgs
-    override def toString: String = fact.simplifiedFactMessage
+  private[scalatest] case class ComposableFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.composableFactMessageArgs
+    override def toString: String = fact.composableFactMessage
   }
 }

@@ -32,14 +32,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def simplifiedFactMessage(expectedValue: String) =
+  def composableFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.simplifiedFactMessage == expectedValue,
-          "simplifiedFactMessage",
+          exp.composableFactMessage == expectedValue,
+          "composableFactMessage",
           expectedValue,
-          exp.simplifiedFactMessage
+          exp.composableFactMessage
         )
     }
 
@@ -54,14 +54,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def rawSimplifiedFactMessage(expectedValue: String) =
+  def rawComposableFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.rawSimplifiedFactMessage == expectedValue,
-          "rawSimplifiedFailureMessage",
+          exp.rawComposableFactMessage == expectedValue,
+          "rawComposableFailureMessage",
           expectedValue,
-          exp.rawSimplifiedFactMessage
+          exp.rawComposableFactMessage
         )
     }
 
@@ -76,14 +76,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def simplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
+  def composableFactMessageArgs(expectedValue: IndexedSeq[Any]) =
     new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.simplifiedFactMessageArgs == expectedValue,
-          "simplifiedFactMessageArgs",
+          exp.composableFactMessageArgs == expectedValue,
+          "composableFactMessageArgs",
           expectedValue,
-          exp.simplifiedFactMessageArgs
+          exp.composableFactMessageArgs
         )
     }
 

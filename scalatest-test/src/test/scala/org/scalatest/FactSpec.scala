@@ -80,11 +80,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "should construct localized strings from the raw strings and args" in {
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
       fact.factMessage shouldBe ("1 did not equal 2")
-      fact.simplifiedFactMessage shouldBe ("1 equaled 2")
+      fact.composableFactMessage shouldBe ("1 equaled 2")
       fact.rawFactMessage shouldBe ("{0} did not equal {1}")
-      fact.rawSimplifiedFactMessage shouldBe ("{0} equaled {1}")
+      fact.rawComposableFactMessage shouldBe ("{0} equaled {1}")
       fact.factMessageArgs shouldBe (Vector(1, 2))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(1, 2))
+      fact.composableFactMessageArgs shouldBe (Vector(1, 2))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (false)
       fact.isVacuousYes shouldBe (false)
@@ -93,25 +93,25 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "when inverted with !" - {
       val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
       val notFact2 = !fact2
-      "should use the simplified message, changing Yes to No or No to Yes" in {
+      "should use the composable message, changing Yes to No or No to Yes" in {
         !noFact should equal (Unary_!(noFact))
         fact2.factMessage shouldBe ("Expected 3, but got 2")
-        fact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
+        fact2.composableFactMessage shouldBe ("3 did not equal 2")
         fact2.rawFactMessage shouldBe ("Expected {0}, but got {1}")
-        fact2.rawSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
+        fact2.rawComposableFactMessage shouldBe ("{0} did not equal {1}")
         fact2.factMessageArgs shouldBe (Vector(3, 2))
-        fact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
+        fact2.composableFactMessageArgs shouldBe (Vector(3, 2))
         fact2.isLeaf shouldBe (true)
         fact2.isYes shouldBe (false)
         fact2.isVacuousYes shouldBe (false)
 
         notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
         notFact2.factMessage shouldBe ("3 did not equal 2")
-        notFact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
+        notFact2.composableFactMessage shouldBe ("3 did not equal 2")
         notFact2.rawFactMessage shouldBe ("{0} did not equal {1}")
-        notFact2.rawSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
+        notFact2.rawComposableFactMessage shouldBe ("{0} did not equal {1}")
         notFact2.factMessageArgs shouldBe (Vector(3, 2))
-        notFact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
+        notFact2.composableFactMessageArgs shouldBe (Vector(3, 2))
         notFact2.isLeaf shouldBe (true)
         notFact2.isYes shouldBe (true)
         notFact2.isVacuousYes shouldBe (false)
@@ -126,7 +126,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         !(noFact || yesFact) should have (isLeaf(false))
         !(yesFact && yesFact) should have (isLeaf(false))
       }
-      "should return the original object when simplified yet again" in {
+      "should return the original object when composable yet again" in {
         val notYesFact = !yesFact
         !notYesFact should be theSameInstanceAs yesFact
       }
@@ -150,11 +150,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.composableFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -168,11 +168,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.composableFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -185,11 +185,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_&&]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawComposableFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -202,11 +202,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_&&]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -296,11 +296,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo & rightSideNo
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -312,11 +312,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo & rightSideYes
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -329,11 +329,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_&]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawComposableFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -346,11 +346,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_&]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -442,11 +442,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_||]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -460,11 +460,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Binary_||]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -477,11 +477,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('c'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('c'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('c'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('c', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('c', 'b'))
+        fact.composableFactMessageArgs should be (Vector('c', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -494,11 +494,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('e'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('e'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('e'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('e', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('e', 'b'))
+        fact.composableFactMessageArgs should be (Vector('e', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -589,11 +589,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact shouldBe a [Binary_|]
           fact.isNo shouldBe true
           fact.rawFactMessage should be (Resources.rawCommaAnd)
-          fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+          fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-          fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+          fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+          fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
+          fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (false)
           fact.isVacuousYes shouldBe (false)
@@ -607,11 +607,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact shouldBe a [Binary_|]
           fact.isYes shouldBe true
           fact.rawFactMessage should be (Resources.rawCommaAnd)
-          fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+          fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-          fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+          fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+          fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
+          fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
@@ -623,11 +623,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           val fact = leftSideYes | rightSideNo
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)
-          fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+          fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-          fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+          fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+          fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
+          fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
@@ -639,11 +639,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           val fact = leftSideYes | rightSideYes
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)
-          fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+          fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
           fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-          fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-          fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
-          fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+          fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+          fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
+          fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
           fact.isYes shouldBe (true)
           fact.isVacuousYes shouldBe (false)
@@ -757,7 +757,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
 
       "should prefix new line to factMessage in toString when the factMessage contains \\n" in {
-        val fact = Yes("line 1\nline 2\nline 3", "simplified fact message")
+        val fact = Yes("line 1\nline 2\nline 3", "composable fact message")
         fact.toString shouldBe "Yes(" + NEWLINE + "  line 1\n  line 2\n  line 3" + NEWLINE + ")"
       }
 
@@ -789,22 +789,22 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "that takes two strings should work correctly" in {
       val fact = Yes("one", "two")
       fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("two")
+      fact.composableFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("two")
+      fact.rawComposableFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector.empty)
-      fact.simplifiedFactMessageArgs shouldBe (Vector.empty)
+      fact.composableFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
 
       val ms = No("aaa", "bbb")
       ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("bbb")
+      ms.composableFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("bbb")
+      ms.rawComposableFactMessage shouldBe ("bbb")
       ms.factMessageArgs shouldBe (Vector.empty)
-      ms.simplifiedFactMessageArgs shouldBe (Vector.empty)
+      ms.composableFactMessageArgs shouldBe (Vector.empty)
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
@@ -812,21 +812,21 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "that takes two strings and two IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", Vector(42), Vector(43.0))
       fact.factMessage shouldBe ("one")
-      fact.simplifiedFactMessage shouldBe ("two")
+      fact.composableFactMessage shouldBe ("two")
       fact.rawFactMessage shouldBe ("one")
-      fact.rawSimplifiedFactMessage shouldBe ("two")
+      fact.rawComposableFactMessage shouldBe ("two")
       fact.factMessageArgs shouldBe (Vector(42))
-      fact.simplifiedFactMessageArgs shouldBe (Vector(43.0))
+      fact.composableFactMessageArgs shouldBe (Vector(43.0))
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms.factMessage shouldBe ("aaa")
-      ms.simplifiedFactMessage shouldBe ("bbb")
+      ms.composableFactMessage shouldBe ("bbb")
       ms.rawFactMessage shouldBe ("aaa")
-      ms.rawSimplifiedFactMessage shouldBe ("bbb")
+      ms.rawComposableFactMessage shouldBe ("bbb")
       ms.factMessageArgs shouldBe (Vector("ho", "he"))
-      ms.simplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
+      ms.composableFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
@@ -842,11 +842,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.composableFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (true)
@@ -860,11 +860,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
         fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
-        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawComposableFactMessage should be (Resources.rawWasGreaterThan)
         fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.composableFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
-        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.composableFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (true)
@@ -878,11 +878,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Implies]
         fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaBut)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawComposableFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -895,11 +895,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact shouldBe a [Implies]
         fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -951,11 +951,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -968,11 +968,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideNo), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -984,11 +984,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideYes isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideNo)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (false)
         fact.isVacuousYes shouldBe (false)
@@ -1000,11 +1000,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideYes isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawComposableFactMessage should be (Resources.rawCommaAnd)
         fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
-        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), SimplifiedFactMessage(rightSideYes)))
+        fact.composableFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
+        fact.composableFactMessageArgs should be (Vector(ComposableFactMessage(leftSideYes), ComposableFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
@@ -1089,15 +1089,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   def examples: TableFor1[Expectation] =
     Table(
       "fact",
-      No("message", "simplified message"),
-      Yes("message", "simplified message"),
-      !(No("message", "simplified message")),
-      !(Yes("message", "simplified message")),
-      No("message", "simplified message") && Yes("message", "simplified message"),
-      Yes("message", "simplified message") && Yes("message", "simplified message"),
-      Yes("message", "simplified message") && No("message", "simplified message"),
-      Yes("message", "simplified message") || No("message", "simplified message"),
-      No("message", "simplified message") || Yes("message", "simplified message"),
-      No("message", "simplified message") || No("message", "simplified message")
+      No("message", "composable message"),
+      Yes("message", "composable message"),
+      !(No("message", "composable message")),
+      !(Yes("message", "composable message")),
+      No("message", "composable message") && Yes("message", "composable message"),
+      Yes("message", "composable message") && Yes("message", "composable message"),
+      Yes("message", "composable message") && No("message", "composable message"),
+      Yes("message", "composable message") || No("message", "composable message"),
+      No("message", "composable message") || Yes("message", "composable message"),
+      No("message", "composable message") || No("message", "composable message")
     )
 }

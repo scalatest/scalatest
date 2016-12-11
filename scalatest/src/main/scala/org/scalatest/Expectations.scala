@@ -28,10 +28,10 @@ trait Expectations {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
-      val rawSimplifiedFactMessage = Resources.rawDidNotEqual
+      val rawComposableFactMessage = Resources.rawDidNotEqual
       No(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         Vector(exp, act),
         Vector(exp, act)
       )(prettifier)
@@ -39,10 +39,10 @@ trait Expectations {
     else {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedAndGot
-      val rawSimplifiedFactMessage = Resources.rawEqualed
+      val rawComposableFactMessage = Resources.rawEqualed
       Yes(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawComposableFactMessage,
         Vector(exp, act),
         Vector(exp, act)
       )(prettifier)
@@ -55,9 +55,9 @@ trait Expectations {
       f
       No(
         rawFactMessage = Resources.rawExceptionExpected,
-        rawSimplifiedFactMessage = Resources.rawFactNoExceptionWasThrown,
+        rawComposableFactMessage = Resources.rawFactNoExceptionWasThrown,
         factMessageArgs = Vector(clazz.getName),
-        simplifiedFactMessageArgs = Vector.empty
+        composableFactMessageArgs = Vector.empty
       )(prettifier)
     }
     catch {
@@ -65,17 +65,17 @@ trait Expectations {
         if (!clazz.isAssignableFrom(u.getClass))
           No(
             rawFactMessage = Resources.rawWrongException,
-            rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
+            rawComposableFactMessage = Resources.rawFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName, u.getClass.getName),
-            simplifiedFactMessageArgs = Vector(u.getClass.getName),
+            composableFactMessageArgs = Vector(u.getClass.getName),
             cause = Some(u)
           )(prettifier)
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
-            rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
+            rawComposableFactMessage = Resources.rawFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName),
-            simplifiedFactMessageArgs = Vector(clazz.getName),
+            composableFactMessageArgs = Vector(clazz.getName),
             cause = Some(u)
           )(prettifier)
       }
