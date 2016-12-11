@@ -669,13 +669,13 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
       }
     }
     "offer a gen method" that {
-      "produces generators given construct and deconstruct functinos for 1 type" in {
+      "produces generators given construct and deconstruct functions for 1 type" in {
         case class Person(age: Int)
         val persons = gen(Person) { p => p.age } (posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(ag) => ag should be >= 0 } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 2 types" in {
+      "produces generators given construct and deconstruct functions for 2 types" in {
         case class Person(name: String, age: Int)
         val persons = gen(Person) { p =>
           (p.name, p.age)
@@ -683,7 +683,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag) => ag should be >= 0 } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 3 types" in {
+      "produces generators given construct and deconstruct functions for 3 types" in {
         case class Person(name: String, age: Int, attr3: Long)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3)
@@ -694,7 +694,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr3 should be >= 0L
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 4 types" in {
+      "produces generators given construct and deconstruct functions for 4 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4)
@@ -706,7 +706,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr4 should be >= 0.0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 5 types" in {
+      "produces generators given construct and deconstruct functions for 5 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5)
@@ -719,7 +719,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr5 should be >= 0.0f
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 6 types" in {
+      "produces generators given construct and deconstruct functions for 6 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6)
@@ -733,7 +733,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr6 should be >= 0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 7 types" in {
+      "produces generators given construct and deconstruct functions for 7 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7)
@@ -748,7 +748,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr7 should be >= 0L
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 8 types" in {
+      "produces generators given construct and deconstruct functions for 8 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8)
@@ -764,7 +764,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr8 should be >= 0.0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 9 types" in {
+      "produces generators given construct and deconstruct functions for 9 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9)
@@ -781,7 +781,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr9 should be >= 0.0f
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 10 types" in {
+      "produces generators given construct and deconstruct functions for 10 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10)
@@ -799,7 +799,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr10 should be >= 0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 11 types" in {
+      "produces generators given construct and deconstruct functions for 11 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11)
@@ -818,7 +818,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr11 should be >= 0L
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 12 types" in {
+      "produces generators given construct and deconstruct functions for 12 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12)
@@ -838,7 +838,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr12 should be >= 0.0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 13 types" in {
+      "produces generators given construct and deconstruct functions for 13 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13)
@@ -859,7 +859,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr13 should be >= 0.0f
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 14 types" in {
+      "produces generators given construct and deconstruct functions for 14 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14)
@@ -881,7 +881,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr14 should be >= 0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 15 types" in {
+      "produces generators given construct and deconstruct functions for 15 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long)
         val persons = gen(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15)
@@ -904,7 +904,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr15 should be >= 0L
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 16 types" in {
+      "produces generators given construct and deconstruct functions for 16 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double)
         val persons = gen(Person) { p =>
@@ -930,7 +930,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr16 should be >= 0.0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 17 types" in {
+      "produces generators given construct and deconstruct functions for 17 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float)
         val persons = gen(Person) { p =>
@@ -957,7 +957,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr17 should be >= 0.0f
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 18 types" in {
+      "produces generators given construct and deconstruct functions for 18 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int)
         val persons = gen(Person) { p =>
@@ -985,7 +985,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr18 should be >= 0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 19 types" in {
+      "produces generators given construct and deconstruct functions for 19 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long)
         val persons = gen(Person) { p =>
@@ -1014,7 +1014,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr19 should be >= 0L
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 20 types" in {
+      "produces generators given construct and deconstruct functions for 20 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double)
         val persons = gen(Person) { p =>
@@ -1044,7 +1044,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr20 should be >= 0.0
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 21 types" in {
+      "produces generators given construct and deconstruct functions for 21 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float)
         val persons = gen(Person) { p =>
@@ -1075,7 +1075,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
           attr21 should be >= 0.0f
         } // A contrived property check to do something with the generator
       }
-      "produces generators given construct and deconstruct functinos for 22 types" in {
+      "produces generators given construct and deconstruct functions for 22 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float, attr22: Int)
         val persons = gen(Person) { p =>
