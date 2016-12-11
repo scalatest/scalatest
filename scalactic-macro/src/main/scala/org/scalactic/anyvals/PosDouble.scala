@@ -277,8 +277,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
    *
    * <p>
    * This method will always succeed (not throw an exception) because
-   * adding two positive doubles will always result in another
-   * positive double (though the result may be positive infinity).
+   * adding a positive Double and zero or a positive Double and another
+   * positive Double will always result in another positive Double
+   * value (though the result may be positive infinity).
    * </p>
    */
   def pos_+(x: PosZDouble): PosDouble = PosDouble.ensuringValid(value + x)
@@ -312,6 +313,38 @@ final class PosDouble private (val value: Double) extends AnyVal {
   def *(x: Float): Double = value * x
   /** Returns the product of this value and `x`. */
   def *(x: Double): Double = value * x
+  /**
+   * Returns the product of this value and `x` as a <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * multiplying a positive Double by another positive Double will
+   * always result in a positive Double value (though the result
+   * may be positive infinity) or zero.
+   * </p>
+   *
+   * <p>
+   * Note that the result the result must be <code>PosZDouble</code> not
+   * <code>PosDouble<code> is that you will get 0.0 on underflow:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.MinPositiveValue * Double.MinPositiveValue
+   * res0: Double = 0.0
+   * </pre>
+   *
+   * <p>
+   * The parameter must be <code>PosDouble</code> instead of a <code>PosZDouble</code>
+   * so that a 0.0 can't be passed, because if the left hand side were
+   * <code>PosDouble.PositiveInfinity</code>, you would get <code>NaN</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; Double.PositiveInfinity * 0.0
+   * res1: Double = NaN
+   * </pre>
+   */
+  def posZ_*(x: PosDouble): PosZDouble = PosZDouble.ensuringValid(value * x)
 
   /** Returns the quotient of this value and `x`. */
   def /(x: Byte): Double = value / x
