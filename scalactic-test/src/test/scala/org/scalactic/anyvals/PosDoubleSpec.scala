@@ -19,6 +19,7 @@ import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
+import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
@@ -27,7 +28,7 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import scala.util.{Failure, Success, Try}
 
-class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks {
+class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
   val posDoubleGen: Gen[PosDouble] =
     for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
@@ -387,7 +388,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks {
           (pdouble + double) shouldEqual (pdouble.toDouble + double)
         }
       }
-      it("should offer a 'pos_+' method that takes a PosDouble and returns a PosDouble") {
+      it("should offer a 'pos_+' method that takes a PosZDouble and returns a PosDouble") {
 
         forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
           (pdouble1 pos_+ pdouble2) shouldEqual PosDouble.ensuringValid(pdouble1.toDouble + pdouble2.toDouble)
@@ -413,6 +414,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks {
         forAll (examples) { (a, b) =>
           (a pos_+ b).value should be >= 0.0
         }
+
+        // Sanity check that implicit widening conversions work too.
+        // Here a PosDouble gets widened to a PosZDouble.
+        PosDouble(1.0) pos_+ PosDouble(2.0) should === (PosDouble(3.0))
       }
 
       it("should offer a '-' method that is consistent with Double") {

@@ -469,6 +469,12 @@ object PosZDouble {
   final val MinValue: PosZDouble = PosZDouble.ensuringValid(0.0) // Can't use the macro here
 
   /**
+   * The smallest value representable as a positive
+   * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+   */
+  final val MinPositiveValue: PosZDouble = PosZDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
    * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
    */
   final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here

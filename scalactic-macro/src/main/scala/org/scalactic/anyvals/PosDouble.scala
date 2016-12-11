@@ -272,6 +272,16 @@ final class PosDouble private (val value: Double) extends AnyVal {
   def +(x: Float): Double = value + x
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
+  /**
+   * Returns the sum of this value and `x` as a <code>PosDouble</code>.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding two positive doubles will always result in another
+   * positive double (though the result may be positive infinity).
+   * </p>
+   */
+  def pos_+(x: PosZDouble): PosDouble = PosDouble.ensuringValid(value + x)
 
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
@@ -472,6 +482,16 @@ object PosDouble {
    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
    */
   final val MinValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The smallest value representable as a positive
+   * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+   *
+   * <p>
+   * Note: This returns the same value as <code>PosDouble.MinValue</code>.
+   * </p>
+   */
+  final val MinPositiveValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
 
   /**
    * The positive infinity value, which is <code>PosDouble.ensuringValid(Double.PositiveInfinity)</code>.
