@@ -365,6 +365,7 @@ final class PosDouble private (val value: Double) extends AnyVal {
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
+  // TODO: Scaladoc
   def round: PosZLong = PosZLong.ensuringValid(math.round(value)) // Also could be zero.
   def ceil: PosDouble = PosDouble.ensuringValid(math.ceil(value)) // I think this one is safe, but try NaN
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value)) // Could be zero.
