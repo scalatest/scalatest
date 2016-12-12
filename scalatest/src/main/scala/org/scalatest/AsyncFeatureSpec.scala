@@ -76,8 +76,8 @@ package org.scalatest
  *   info("So I can watch TV when I want")
  *   info("And save energy when I'm not watching TV")
  * 
- *   feature("TV power button") {
- *     scenario("User presses power button when TV is off") {
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off") {
  * 
  *       Given("a TV set that is switched off")
  *       val tvSetActor = new TVSetActor
@@ -90,7 +90,7 @@ package org.scalatest
  *       futureBoolean map { isOn =&gt; assert(isOn) }
  *     }
  * 
- *     scenario("User presses power button when TV is on") {
+ *     Scenario("User presses power button when TV is on") {
  * 
  *       Given("a TV set that is switched on")
  *       val tvSetActor = new TVSetActor
@@ -524,7 +524,7 @@ package org.scalatest
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("The add methods") {
+ *   Feature("The add methods") {
  *
  *     ignore("addSoon will eventually compute a sum of passed Ints") {
  *       val futureSum: Future[Int] = addSoon(1, 2)
@@ -533,7 +533,7 @@ package org.scalatest
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *
- *     scenario("addNow will immediately compute a sum of passed Ints") {
+ *     Scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -580,16 +580,16 @@ package org.scalatest
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("The add methods") {
+ *   Feature("The add methods") {
  *
- *     scenario("addSoon will eventually compute a sum of passed Ints") {
+ *     Scenario("addSoon will eventually compute a sum of passed Ints") {
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *
- *     scenario("addNow will immediately compute a sum of passed Ints") {
+ *     Scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -696,8 +696,8 @@ package org.scalatest
  *
  *   """ }
  *
- *   feature("An element can be added to an empty mutable Set") {
- *     scenario("When an element is added to an empty mutable Set") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *       Given("an empty mutable Set")
  *       val set = mutable.Set.empty[String]
  *
@@ -749,8 +749,8 @@ package org.scalatest
  *
  * class SetSpec extends AsyncFeatureSpec {
  *
- *   feature("An element can be added to an empty mutable Set") {
- *     scenario("When an element is added to an empty mutable Set") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *
  *       info("info is recorded")
  *       markup("markup is *also* recorded")
@@ -832,11 +832,11 @@ package org.scalatest
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("The add methods") {
+ *   Feature("The add methods") {
  *
- *     scenario("addSoon will eventually compute a sum of passed Ints") (pending)
+ *     Scenario("addSoon will eventually compute a sum of passed Ints") (pending)
  *
- *     scenario("addNow will immediately compute a sum of passed Ints") {
+ *     Scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -925,9 +925,9 @@ package org.scalatest
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("The add methods") {
+ *   Feature("The add methods") {
  *
- *     scenario("addSoon will eventually compute a sum of passed Ints",
+ *     Scenario("addSoon will eventually compute a sum of passed Ints",
  *          Slow) {
  *
  *       val futureSum: Future[Int] = addSoon(1, 2)
@@ -936,7 +936,7 @@ package org.scalatest
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *
- *     scenario("addNow will immediately compute a sum of passed Ints",
+ *     Scenario("addNow will immediately compute a sum of passed Ints",
  *         Slow, DbTest) {
  *
  *       val sum: Int = addNow(1, 2)
@@ -1112,8 +1112,8 @@ package org.scalatest
  *
  *   def fixture: Future[String] = Future { "ScalaTest is designed to " }
  *
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       val future = fixture
  *       val result = future map { s =&gt; s + "encourage clear code!" }
  *       result map { s =&gt;
@@ -1121,7 +1121,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       val future = fixture
  *       val result = future map { s =&gt; s + "be easy to reason about!" }
  *       result map { s =&gt;
@@ -1240,12 +1240,12 @@ package org.scalatest
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
- *   feature("addSoon") {
- *     scenario("succeed case") {
+ *   Feature("addSoon") {
+ *     Scenario("succeed case") {
  *       addSoon(1, 1) map { sum =&gt; assert(sum == 2) }
  *     }
  *
- *     scenario("fail case") {
+ *     Scenario("fail case") {
  *       addSoon(1, 1) map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
@@ -1388,9 +1388,9 @@ package org.scalatest
  *     }
  *   }
  *
- *   feature("Simplicity") {
+ *   Feature("Simplicity") {
  *     // This test needs the actor fixture
- *     scenario("User needs to read test code written by others") {
+ *     Scenario("User needs to read test code written by others") {
  *       withActor { actor =&gt;
  *         actor ! Append("encourage clear code!")
  *         val futureString = actor ? GetValue
@@ -1400,7 +1400,7 @@ package org.scalatest
  *       }
  *     }
  *     // This test needs the database fixture
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       withDatabase { futureDb =&gt;
  *         futureDb map { db =&gt;
  *           db.append("be easy to reason about!")
@@ -1409,7 +1409,7 @@ package org.scalatest
  *       }
  *     }
  *     // This test needs both the actor and the database
- *     scenario("User needs to write tests") {
+ *     Scenario("User needs to write tests") {
  *       withDatabase { futureDb =&gt;
  *         withActor { actor =&gt; // loan-fixture methods compose
  *           actor ! Append("be easy to remember how to write!")
@@ -1512,8 +1512,8 @@ package org.scalatest
  *     }
  *   }
  *
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") { actor =&gt;
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") { actor =&gt;
  *       actor ! Append("encourage clear code!")
  *       val futureString = actor ? GetValue
  *       futureString map { s =&gt;
@@ -1521,7 +1521,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") { actor =&gt;
+ *     Scenario("User needs to understand what the tests are doing") { actor =&gt;
  *       actor ! Append("be easy to reason about!")
  *       val futureString = actor ? GetValue
  *       futureString map { s =&gt;
@@ -1592,8 +1592,8 @@ package org.scalatest
  *     actor ! Clear // clean up the fixture
  *   }
  *
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       actor ! Append("encourage clear code!")
  *       val futureString = actor ? GetValue
  *       futureString map { s =&gt;
@@ -1601,7 +1601,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       actor ! Append("be easy to reason about!")
  *       val futureString = actor ? GetValue
  *       futureString map { s =&gt;
@@ -1726,8 +1726,8 @@ package org.scalatest
  *
  * class ExampleSpec extends AsyncFeatureSpec with Builder with Buffer {
  *
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       builderActor ! Append("encourage clear code!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
@@ -1740,7 +1740,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       builderActor ! Append("be easy to reason about!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
@@ -1857,9 +1857,9 @@ package org.scalatest
  *
  * class ExampleSpec extends AsyncFeatureSpec with Builder with Buffer {
  *
- *   feature("Simplicity") {
+ *   Feature("Simplicity") {
  *
- *     scenario("User needs to read test code written by others") {
+ *     Scenario("User needs to read test code written by others") {
  *       builderActor ! Append("encourage clear code!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
@@ -1872,7 +1872,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       builderActor ! Append("be easy to reason about!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
@@ -2002,7 +2002,7 @@ package org.scalatest
  *   def nonEmptyStackActor(createNonEmptyStackActor: =&gt; StackActor[Int],
  *         lastItemAdded: Int, name: String): Unit = {
  *
- *     scenario("Size is fired at non-empty stack actor: " + name) {
+ *     Scenario("Size is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -2010,7 +2010,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("Peek is fired at non-empty stack actor: " + name) {
+ *     Scenario("Peek is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -2023,7 +2023,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("Pop is fired at non-empty stack actor: " + name) {
+ *     Scenario("Pop is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -2039,7 +2039,7 @@ package org.scalatest
  *
  *   def nonFullStackActor(createNonFullStackActor: =&gt; StackActor[Int], name: String): Unit = {
  *
- *     scenario("Size is fired at non-full stack actor: " + name) {
+ *     Scenario("Size is fired at non-full stack actor: " + name) {
  *       val stackActor = createNonFullStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -2047,7 +2047,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("Push is fired at non-full stack actor: " + name) {
+ *     Scenario("Push is fired at non-full stack actor: " + name) {
  *       val stackActor = createNonFullStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -2110,9 +2110,9 @@ package org.scalatest
  *     stackActor
  *   }
  *
- *   feature("A Stack is pushed and popped") {
+ *   Feature("A Stack is pushed and popped") {
  *
- *     scenario("Size is fired at empty stack actor") {
+ *     Scenario("Size is fired at empty stack actor") {
  *       val stackActor = emptyStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -2120,13 +2120,13 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("Peek is fired at empty stack actor") {
+ *     Scenario("Peek is fired at empty stack actor") {
  *       recoverToSucceededIf[IllegalStateException] {
  *         emptyStackActor ? Peek
  *       }
  *     }
  *
- *     scenario("Pop is fired at empty stack actor") {
+ *     Scenario("Pop is fired at empty stack actor") {
  *       recoverToSucceededIf[IllegalStateException] {
  *         emptyStackActor ? Pop
  *       }
@@ -2138,7 +2138,7 @@ package org.scalatest
  *     scenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
  *     scenariosFor(nonFullStackActor(almostFullStackActor, almostFullStackActorName))
  *
- *     scenario("full is invoked on a full stack") {
+ *     Scenario("full is invoked on a full stack") {
  *       val stackActor = fullStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -2148,7 +2148,7 @@ package org.scalatest
  *
  *     scenariosFor(nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName))
  *
- *     scenario("push is invoked on a full stack") {
+ *     Scenario("push is invoked on a full stack") {
  *       val stackActor = fullStackActor
  *       assertThrows[IllegalStateException] {
  *         stackActor ! Push(10)

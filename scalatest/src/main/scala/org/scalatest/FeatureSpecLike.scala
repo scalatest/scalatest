@@ -108,6 +108,10 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
+  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit =
+    Scenario(specText, testTags: _*)(testFun)(pos)
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -126,7 +130,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  protected def Scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -163,6 +167,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+
+  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
   
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
@@ -170,7 +177,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -320,9 +327,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * import org.scalatest.FeatureSpec
    *
    * class StackSpec extends FeatureSpec {
-   *   feature("A Stack") {
-   *     scenario("(when not empty) must allow me to pop") {}
-   *     scenario("(when not full) must allow me to push") {}
+   *   Feature("A Stack") {
+   *     Scenario("(when not empty) must allow me to pop") {}
+   *     Scenario("(when not full) must allow me to push") {}
    *   }
    * }
    * </pre>

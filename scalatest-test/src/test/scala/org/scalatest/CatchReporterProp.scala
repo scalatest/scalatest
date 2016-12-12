@@ -468,20 +468,20 @@ class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchRepor
 
 @DoNotDiscover
 class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixtureServices {
-  feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") {}
-    scenario("Scenario 3") {}
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") {}
+    Scenario("Scenario 3") {}
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with CatchReporterFixtureServices with StringFixture {
-  feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s =>}
-    scenario("Scenario 3") {s =>}
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {s =>}
+    Scenario("Scenario 2") {s =>}
+    Scenario("Scenario 3") {s =>}
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
