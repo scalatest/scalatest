@@ -302,9 +302,9 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * import org.scalatest.FeatureSpec
    *
    * class StackSpec extends FeatureSpec {
-   *   feature("A Stack") {
-   *     scenario("(when not empty) must allow me to pop") {}
-   *     scenario("(when not full) must allow me to push") {}
+   *   Feature("A Stack") {
+   *     Scenario("(when not empty) must allow me to pop") {}
+   *     Scenario("(when not full) must allow me to push") {}
    *   }
    * }
    * </pre>

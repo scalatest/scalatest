@@ -103,14 +103,14 @@ import org.scalatest._
  *     finally writer.close() // clean up the fixture
  *   }
  * 
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") { f =&gt;
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") { f =&gt;
  *       f.writer.write("encourage clear code!")
  *       f.writer.flush()
  *       assert(f.file.length === 49)
  *     }
  * 
- *     scenario("User needs to understand what the tests are doing") { f =&gt;
+ *     Scenario("User needs to understand what the tests are doing") { f =&gt;
  *       f.writer.write("be easy to reason about!")
  *       f.writer.flush()
  *       assert(f.file.length === 52)
@@ -180,19 +180,19 @@ import org.scalatest._
  *     db.append("ScalaTest is designed to ")
  *   }
  * 
- *   feature("Simplicity") {
+ *   Feature("Simplicity") {
  * 
- *     scenario("User needs to read test code written by others") { db =&gt;
+ *     Scenario("User needs to read test code written by others") { db =&gt;
  *       db.append("encourage clear code!")
  *       assert(db.toString === "ScalaTest is designed to encourage clear code!")
  *     }
  *     
- *     scenario("User needs to understand what the tests are doing") { db =&gt;
+ *     Scenario("User needs to understand what the tests are doing") { db =&gt;
  *       db.append("be easy to reason about!")
  *       assert(db.toString === "ScalaTest is designed to be easy to reason about!")
  *     }
  * 
- *     scenario("User needs to write tests") { () =&gt;
+ *     Scenario("User needs to write tests") { () =&gt;
  *       val buf = new StringBuffer
  *       buf.append("ScalaTest is designed to be ")
  *       buf.append("easy to learn!")
