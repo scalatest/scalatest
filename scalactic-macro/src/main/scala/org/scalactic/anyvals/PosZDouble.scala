@@ -267,6 +267,18 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosZDouble</code> sum of this value and `x`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
   /** Returns the difference of this value and `x`. */
@@ -469,6 +481,12 @@ object PosZDouble {
   final val MinValue: PosZDouble = PosZDouble.ensuringValid(0.0) // Can't use the macro here
 
   /**
+   * The smallest value representable as a positive
+   * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+   */
+  final val MinPositiveValue: PosZDouble = PosZDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
    * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
    */
   final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
@@ -629,6 +647,44 @@ object PosZDouble {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
+
+  /**
+   * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `x` and `y`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZDouble</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
+   */
+  def sumOf(x: PosZDouble, y: PosZDouble): PosZDouble = PosZDouble.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `first` and 
+   * value `second`, and the <code>PosZDouble</code> values passed as varargs `rest`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosZDouble, second: PosZDouble, rest: PosZDouble*): PosZDouble =
+    PosZDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
 
   /**
    * Implicit Ordering instance.

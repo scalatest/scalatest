@@ -19,16 +19,22 @@ import org.scalatest._
 import OptionValues._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalactic.TypeCheckedTripleEquals
+import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+
+  val posZFloatGen: Gen[PosZFloat] =
+    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.ensuringValid(i)
+
+  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
 
   val posFloatGen: Gen[PosFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield PosFloat.from(i).get
+    for {i <- choose(1, Float.MaxValue)} yield PosFloat.ensuringValid(i)
 
   implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
 
@@ -227,338 +233,428 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
         val c: Float = -8.0F
         "takesPosFloat(c)" shouldNot compile
       }
+    }
 
-      it("should offer a unary + method that is consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          (+pfloat).toFloat shouldEqual (+(pfloat.toFloat))
+    it("should offer a unary + method that is consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        (+pfloat).toFloat shouldEqual (+(pfloat.toFloat))
+      }
+    }
+
+    it("should offer a unary - method that is consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        (-pfloat) shouldEqual (-(pfloat.toFloat))
+      }
+    }
+
+    it("should offer '<' comparison that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat < byte) shouldEqual (pfloat.toFloat < byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat < short) shouldEqual (pfloat.toFloat < short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat < char) shouldEqual (pfloat.toFloat < char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat < int) shouldEqual (pfloat.toFloat < int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat < long) shouldEqual (pfloat.toFloat < long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat < float) shouldEqual (pfloat.toFloat < float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat < double) shouldEqual (pfloat.toFloat < double)
+      }
+    }
+
+    it("should offer '<=' comparison that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat <= byte) shouldEqual (pfloat.toFloat <= byte)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat <= char) shouldEqual (pfloat.toFloat <= char)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat <= short) shouldEqual (pfloat.toFloat <= short)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat <= int) shouldEqual (pfloat.toFloat <= int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat <= long) shouldEqual (pfloat.toFloat <= long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat <= float) shouldEqual (pfloat.toFloat <= float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat <= double) shouldEqual (pfloat.toFloat <= double)
+      }
+    }
+
+    it("should offer '>' comparison that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat > byte) shouldEqual (pfloat.toFloat > byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat > short) shouldEqual (pfloat.toFloat > short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat > char) shouldEqual (pfloat.toFloat > char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat > int) shouldEqual (pfloat.toFloat > int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat > long) shouldEqual (pfloat.toFloat > long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat > float) shouldEqual (pfloat.toFloat > float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat > double) shouldEqual (pfloat.toFloat > double)
+      }
+    }
+
+    it("should offer '>=' comparison that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat >= byte) shouldEqual (pfloat.toFloat >= byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat >= short) shouldEqual (pfloat.toFloat >= short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat >= char) shouldEqual (pfloat.toFloat >= char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat >= int) shouldEqual (pfloat.toFloat >= int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat >= long) shouldEqual (pfloat.toFloat >= long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat >= float) shouldEqual (pfloat.toFloat >= float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat >= double) shouldEqual (pfloat.toFloat >= double)
+      }
+    }
+
+    it("should offer a '+' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat + byte) shouldEqual (pfloat.toFloat + byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat + short) shouldEqual (pfloat.toFloat + short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat + char) shouldEqual (pfloat.toFloat + char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat + int) shouldEqual (pfloat.toFloat + int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat + long) shouldEqual (pfloat.toFloat + long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat + float) shouldEqual (pfloat.toFloat + float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat + double) shouldEqual (pfloat.toFloat + double)
+      }
+    }
+
+    it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
+
+      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
+        (posFloat plus posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
+      }
+
+      val examples =
+        Table(
+          (                "posFloat",                "posZFloat" ),
+          (         PosFloat.MinValue,         PosZFloat.MinValue ),
+          (         PosFloat.MinValue, PosZFloat.MinPositiveValue ),
+          (         PosFloat.MinValue,         PosZFloat.MaxValue ),
+          (         PosFloat.MinValue, PosZFloat.PositiveInfinity ),
+          (         PosFloat.MaxValue,         PosZFloat.MinValue ),
+          (         PosFloat.MaxValue, PosZFloat.MinPositiveValue ),
+          (         PosFloat.MaxValue,         PosZFloat.MaxValue ),
+          (         PosFloat.MaxValue, PosZFloat.PositiveInfinity ),
+          ( PosFloat.PositiveInfinity,         PosZFloat.MinValue ),
+          ( PosFloat.PositiveInfinity, PosZFloat.MinPositiveValue ),
+          ( PosFloat.PositiveInfinity,         PosZFloat.MaxValue ),
+          ( PosFloat.PositiveInfinity, PosZFloat.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a plus b).value should be > 0.0f
+      }
+
+/*
+error] /Users/bv/nobkp/delus/st-add-to-3.1.x/scalactic-test/src/test/scala/org/scalactic/anyvals/PosFloatSpec.scala:392: type mismatch;
+[error]  found   : Double(3.0)
+[error]  required: Float
+[error]       (PosFloat(1.0) plus PosInt(2)) should === (PosFloat(3.0))
+[error]                                                           ^
+
+You know, I wonder if our macro could be friendlier and allow a Double literal for
+specifying floats so long as it is in the valid range for floats.
+*/
+      // Sanity check that implicit widening conversions work too.
+      (PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))
+    }
+
+    it("should offer overloaded 'sumOf' methods on the companion that take one PosFloat and one or more PosZFloats and returns a PosFloat") {
+
+      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
+        PosFloat.sumOf(posFloat, posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
+      }
+      forAll { (posFloat: PosFloat, posZFloats: List[PosZFloat]) =>
+        whenever(posZFloats.nonEmpty) {
+          PosFloat.sumOf(posFloat, posZFloats.head, posZFloats.tail: _*) should === {
+            PosFloat.ensuringValid(posFloat.value + posZFloats.head.value + posZFloats.tail.map(_.value).sum)
+          }
         }
       }
 
-      it("should offer a unary - method that is consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          (-pfloat) shouldEqual (-(pfloat.toFloat))
+      val posEdgeValues: List[PosFloat] = List(PosFloat.MinValue, PosFloat.MaxValue, PosFloat.PositiveInfinity)
+      val posZEdgeValues = List(PosZFloat.MinValue, PosZFloat.MinPositiveValue, PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
+      // First put each PosFloat edge in front, then follow it with all permutations (orders) of all four PosZFloat edge values.
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
         }
       }
 
-      it("should offer '<' comparison that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat < byte) shouldEqual (pfloat.toFloat < byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat < short) shouldEqual (pfloat.toFloat < short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat < char) shouldEqual (pfloat.toFloat < char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat < int) shouldEqual (pfloat.toFloat < int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat < long) shouldEqual (pfloat.toFloat < long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat < float) shouldEqual (pfloat.toFloat < float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat < double) shouldEqual (pfloat.toFloat < double)
+      // Now do each PosFloat edge in front, then follow it with all combinations of 2 PosZEdgeFloats
+      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
+      val halfOfThePairs = posZEdgeValues.combinations(2).toList
+      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
         }
       }
 
-      it("should offer '<=' comparison that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat <= byte) shouldEqual (pfloat.toFloat <= byte)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat <= char) shouldEqual (pfloat.toFloat <= char)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat <= short) shouldEqual (pfloat.toFloat <= short)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat <= int) shouldEqual (pfloat.toFloat <= int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat <= long) shouldEqual (pfloat.toFloat <= long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat <= float) shouldEqual (pfloat.toFloat <= float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat <= double) shouldEqual (pfloat.toFloat <= double)
-        }
-      }
-
-      it("should offer '>' comparison that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat > byte) shouldEqual (pfloat.toFloat > byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat > short) shouldEqual (pfloat.toFloat > short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat > char) shouldEqual (pfloat.toFloat > char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat > int) shouldEqual (pfloat.toFloat > int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat > long) shouldEqual (pfloat.toFloat > long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat > float) shouldEqual (pfloat.toFloat > float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat > double) shouldEqual (pfloat.toFloat > double)
-        }
-      }
-
-      it("should offer '>=' comparison that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat >= byte) shouldEqual (pfloat.toFloat >= byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat >= short) shouldEqual (pfloat.toFloat >= short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat >= char) shouldEqual (pfloat.toFloat >= char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat >= int) shouldEqual (pfloat.toFloat >= int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat >= long) shouldEqual (pfloat.toFloat >= long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat >= float) shouldEqual (pfloat.toFloat >= float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat >= double) shouldEqual (pfloat.toFloat >= double)
-        }
-      }
-
-      it("should offer a '+' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat + byte) shouldEqual (pfloat.toFloat + byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat + short) shouldEqual (pfloat.toFloat + short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat + char) shouldEqual (pfloat.toFloat + char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat + int) shouldEqual (pfloat.toFloat + int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat + long) shouldEqual (pfloat.toFloat + long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat + float) shouldEqual (pfloat.toFloat + float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat + double) shouldEqual (pfloat.toFloat + double)
-        }
-      }
-
-      it("should offer a '-' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat - byte) shouldEqual (pfloat.toFloat - byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat - short) shouldEqual (pfloat.toFloat - short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat - char) shouldEqual (pfloat.toFloat - char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat - int) shouldEqual (pfloat.toFloat - int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat - long) shouldEqual (pfloat.toFloat - long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat - float) shouldEqual (pfloat.toFloat - float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat - double) shouldEqual (pfloat.toFloat - double)
-        }
-      }
-
-      it("should offer a '*' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          (pfloat * byte) shouldEqual (pfloat.toFloat * byte)
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          (pfloat * short) shouldEqual (pfloat.toFloat * short)
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          (pfloat * char) shouldEqual (pfloat.toFloat * char)
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          (pfloat * int) shouldEqual (pfloat.toFloat * int)
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          (pfloat * long) shouldEqual (pfloat.toFloat * long)
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          (pfloat * float) shouldEqual (pfloat.toFloat * float)
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          (pfloat * double) shouldEqual (pfloat.toFloat * double)
-        }
-      }
-
-      it("should offer a '/' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          pfloat / byte shouldEqual pfloat.toFloat / byte
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          pfloat / short shouldEqual pfloat.toFloat / short
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          pfloat / char shouldEqual pfloat.toFloat / char
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          pfloat / int shouldEqual pfloat.toFloat / int
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          pfloat / long shouldEqual pfloat.toFloat / long
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          pfloat / float shouldEqual pfloat.toFloat / float
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          pfloat / double shouldEqual pfloat.toFloat / double
-        }
-      }
-
-      // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
-      // extra logic is needed to convert to a comparable type (boolean, in this case)
-      it("should offer a '%' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat, byte: Byte) =>
-          val res = pfloat % byte
-          if (res.isNaN)
-            (pfloat.toFloat % byte).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % byte
-        }
-        forAll { (pfloat: PosFloat, short: Short) =>
-          val res = pfloat % short
-          if (res.isNaN)
-            (pfloat.toFloat % short).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % short
-        }
-        forAll { (pfloat: PosFloat, char: Char) =>
-          val res = pfloat % char
-          if (res.isNaN)
-            (pfloat.toFloat % char).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % char
-        }
-        forAll { (pfloat: PosFloat, int: Int) =>
-          val res = pfloat % int
-          if (res.isNaN)
-            (pfloat.toFloat % int).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % int
-        }
-        forAll { (pfloat: PosFloat, long: Long) =>
-          val res = pfloat % long
-          if (res.isNaN)
-            (pfloat.toFloat % long).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % long
-        }
-        forAll { (pfloat: PosFloat, float: Float) =>
-          val res = pfloat % float
-          if (res.isNaN)
-            (pfloat.toFloat % float).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % float
-        }
-        forAll { (pfloat: PosFloat, double: Double) =>
-          val res = pfloat % double
-          if (res.isNaN)
-            (pfloat.toFloat % double).isNaN shouldBe true
-          else
-            res shouldEqual pfloat.toFloat % double
-        }
-      }
-
-      it("should offer 'min' and 'max' methods that are consistent with Float") {
-        forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
-          pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
-          pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
-        }
-      }
-
-      it("should offer an 'isWhole' method that is consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
-        }
-      }
-
-      it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          // SKIP-SCALATESTJS-START
-          pfloat.round.toFloat shouldEqual pfloat.toFloat.round
-          // SKIP-SCALATESTJS-END
-          pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
-          pfloat.floor.toFloat shouldEqual pfloat.toFloat.floor
-        }
-      }
-
-      it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
-        }
-      }
-
-      // SKIP-SCALATESTJS-START
-      it("should offer 'to' and 'until' method that is consistent with Float") {
-        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
-          a.start == b.start && a.end == b.end && a.step == b.step
-
-        forAll { (pfloat: PosFloat, end: Float, step: Float) =>
-          rangeEqual(pfloat.until(end).by(1f), pfloat.toFloat.until(end).by(1f)) shouldBe true
-          rangeEqual(pfloat.until(end, step), pfloat.toFloat.until(end, step)) shouldBe true
-          rangeEqual(pfloat.to(end).by(1f), pfloat.toFloat.to(end).by(1f)) shouldBe true
-          rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
-        }
-      }
-      // SKIP-SCALATESTJS-END
-
-      it("should offer widening methods for basic types that are consistent with Float") {
-        forAll { (pfloat: PosFloat) =>
-          def widen(value: Float): Float = value
-          widen(pfloat) shouldEqual widen(pfloat.toFloat)
-        }
-        forAll { (pfloat: PosFloat) =>
-          def widen(value: Double): Double = value
-          widen(pfloat) shouldEqual widen(pfloat.toFloat)
-        }
-        forAll { (pfloat: PosFloat) =>
-          def widen(value: PosDouble): PosDouble = value
-          widen(pfloat) shouldEqual widen(PosDouble.from(pfloat.toFloat).get)
-        }
-        forAll { (pfloat: PosFloat) =>
-          def widen(value: PosZFloat): PosZFloat = value
-          widen(pfloat) shouldEqual widen(PosZFloat.from(pfloat.toFloat).get)
-        }
-        forAll { (pfloat: PosFloat) =>
-          def widen(value: PosZDouble): PosZDouble = value
-          widen(pfloat) shouldEqual widen(PosZDouble.from(pfloat.toFloat).get)
+      // Now do each PosFloat edge in front, then follow it with all combinations of 3 PosZEdgeFloats
+      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
+      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
+      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
         }
       }
     }
-    it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
-      PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)
-      PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
-      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
-      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
-      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+
+    it("should offer a '-' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat - byte) shouldEqual (pfloat.toFloat - byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat - short) shouldEqual (pfloat.toFloat - short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat - char) shouldEqual (pfloat.toFloat - char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat - int) shouldEqual (pfloat.toFloat - int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat - long) shouldEqual (pfloat.toFloat - long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat - float) shouldEqual (pfloat.toFloat - float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat - double) shouldEqual (pfloat.toFloat - double)
+      }
     }
+
+    it("should offer a '*' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        (pfloat * byte) shouldEqual (pfloat.toFloat * byte)
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        (pfloat * short) shouldEqual (pfloat.toFloat * short)
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        (pfloat * char) shouldEqual (pfloat.toFloat * char)
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        (pfloat * int) shouldEqual (pfloat.toFloat * int)
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        (pfloat * long) shouldEqual (pfloat.toFloat * long)
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        (pfloat * float) shouldEqual (pfloat.toFloat * float)
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        (pfloat * double) shouldEqual (pfloat.toFloat * double)
+      }
+    }
+
+    it("should offer a '/' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        pfloat / byte shouldEqual pfloat.toFloat / byte
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        pfloat / short shouldEqual pfloat.toFloat / short
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        pfloat / char shouldEqual pfloat.toFloat / char
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        pfloat / int shouldEqual pfloat.toFloat / int
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        pfloat / long shouldEqual pfloat.toFloat / long
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        pfloat / float shouldEqual pfloat.toFloat / float
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        pfloat / double shouldEqual pfloat.toFloat / double
+      }
+    }
+
+    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
+    // extra logic is needed to convert to a comparable type (boolean, in this case)
+    it("should offer a '%' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat, byte: Byte) =>
+        val res = pfloat % byte
+        if (res.isNaN)
+          (pfloat.toFloat % byte).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % byte
+      }
+      forAll { (pfloat: PosFloat, short: Short) =>
+        val res = pfloat % short
+        if (res.isNaN)
+          (pfloat.toFloat % short).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % short
+      }
+      forAll { (pfloat: PosFloat, char: Char) =>
+        val res = pfloat % char
+        if (res.isNaN)
+          (pfloat.toFloat % char).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % char
+      }
+      forAll { (pfloat: PosFloat, int: Int) =>
+        val res = pfloat % int
+        if (res.isNaN)
+          (pfloat.toFloat % int).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % int
+      }
+      forAll { (pfloat: PosFloat, long: Long) =>
+        val res = pfloat % long
+        if (res.isNaN)
+          (pfloat.toFloat % long).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % long
+      }
+      forAll { (pfloat: PosFloat, float: Float) =>
+        val res = pfloat % float
+        if (res.isNaN)
+          (pfloat.toFloat % float).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % float
+      }
+      forAll { (pfloat: PosFloat, double: Double) =>
+        val res = pfloat % double
+        if (res.isNaN)
+          (pfloat.toFloat % double).isNaN shouldBe true
+        else
+          res shouldEqual pfloat.toFloat % double
+      }
+    }
+
+    it("should offer 'min' and 'max' methods that are consistent with Float") {
+      forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
+        pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
+        pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
+      }
+    }
+
+    it("should offer an 'isWhole' method that is consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
+      }
+    }
+
+    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        // SKIP-SCALATESTJS-START
+        pfloat.round.toFloat shouldEqual pfloat.toFloat.round
+        // SKIP-SCALATESTJS-END
+        pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
+        pfloat.floor.toFloat shouldEqual pfloat.toFloat.floor
+      }
+    }
+
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
+      }
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("should offer 'to' and 'until' method that is consistent with Float") {
+      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        a.start == b.start && a.end == b.end && a.step == b.step
+
+      forAll { (pfloat: PosFloat, end: Float, step: Float) =>
+        rangeEqual(pfloat.until(end).by(1f), pfloat.toFloat.until(end).by(1f)) shouldBe true
+        rangeEqual(pfloat.until(end, step), pfloat.toFloat.until(end, step)) shouldBe true
+        rangeEqual(pfloat.to(end).by(1f), pfloat.toFloat.to(end).by(1f)) shouldBe true
+        rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
+      }
+    }
+    // SKIP-SCALATESTJS-END
+
+    it("should offer widening methods for basic types that are consistent with Float") {
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: Float): Float = value
+        widen(pfloat) shouldEqual widen(pfloat.toFloat)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: Double): Double = value
+        widen(pfloat) shouldEqual widen(pfloat.toFloat)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: PosDouble): PosDouble = value
+        widen(pfloat) shouldEqual widen(PosDouble.from(pfloat.toFloat).get)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: PosZFloat): PosZFloat = value
+        widen(pfloat) shouldEqual widen(PosZFloat.from(pfloat.toFloat).get)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: PosZDouble): PosZDouble = value
+        widen(pfloat) shouldEqual widen(PosZDouble.from(pfloat.toFloat).get)
+      }
+    }
+  }
+  it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
+    PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)
+    PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
+    an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
+    an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+    an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NaN) }
   }
 }
   

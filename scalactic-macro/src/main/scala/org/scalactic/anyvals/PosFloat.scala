@@ -271,6 +271,18 @@ final class PosFloat private (val value: Float) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosFloat</code> sum of this <code>PosFloat</code>'s value and the given <code>PosZFloat</code> value.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Float and zero or a positive Float and another
+   * positive Float will always result in another positive Float
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZFloat): PosFloat = PosFloat.ensuringValid(value + x.value)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Float = value - x
   /** Returns the difference of this value and `x`. */
@@ -686,6 +698,44 @@ object PosFloat {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.ensuringValid(pos.value)
+
+  /**
+   * Returns the <code>PosFloat</code> sum of the passed <code>PosFloat</code> value `x` and <code>PosZFloat</code> value `y`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Float and zero or a positive Float and another
+   * positive Float will always result in another positive Float
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZFloat</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
+   */
+  def sumOf(x: PosFloat, y: PosZFloat): PosFloat = PosFloat.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the <code>PosFloat</code> sum of the passed <code>PosFloat</code> value `first`, the <code>PosZFloat</code>
+   * value `second`, and the <code>PosFloat</code> values passed as varargs `rest`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Float and one or more zeros or positive Floats
+   * will always result in another positive Float
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosFloat, second: PosZFloat, rest: PosZFloat*): PosFloat =
+    PosFloat.ensuringValid(first.value + second.value + rest.map(_.value).sum)
 
   /**
    * Implicit Ordering instance.

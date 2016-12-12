@@ -273,6 +273,18 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosDouble</code> sum of this <code>PosDouble</code>'s value and the given <code>PosZDouble</code> value.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Double and zero or a positive Double and another
+   * positive Double will always result in another positive Double
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZDouble): PosDouble = PosDouble.ensuringValid(value + x.value)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
   /** Returns the difference of this value and `x`. */
@@ -333,6 +345,7 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
+  // TODO: Need Scaladoc
   // Stuff from RichDouble
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
@@ -346,11 +359,13 @@ final class PosDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
 
+  // TODO: Need Scaladoc
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
+  // TODO: Scaladoc
   def round: PosZLong = PosZLong.ensuringValid(math.round(value)) // Also could be zero.
   def ceil: PosDouble = PosDouble.ensuringValid(math.ceil(value)) // I think this one is safe, but try NaN
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value)) // Could be zero.
@@ -472,6 +487,16 @@ object PosDouble {
    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
    */
   final val MinValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The smallest value representable as a positive
+   * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+   *
+   * <p>
+   * Note: This returns the same value as <code>PosDouble.MinValue</code>.
+   * </p>
+   */
+  final val MinPositiveValue: PosDouble = PosDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
 
   /**
    * The positive infinity value, which is <code>PosDouble.ensuringValid(Double.PositiveInfinity)</code>.
@@ -639,6 +664,44 @@ object PosDouble {
    *     <code>PosDouble</code> wrapped in a <code>PosZDouble</code>.
    */
   implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.ensuringValid(pos.value)
+
+  /**
+   * Returns the <code>PosDouble</code> sum of the passed <code>PosDouble</code> value `x` and <code>PosZDouble</code> value `y`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Double and zero or a positive Double and another
+   * positive Double will always result in another positive Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZDouble</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
+   */
+  def sumOf(x: PosDouble, y: PosZDouble): PosDouble = PosDouble.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the <code>PosDouble</code> sum of the passed <code>PosDouble</code> value `first`, the <code>PosZDouble</code>
+   * value `second`, and the <code>PosDouble</code> values passed as varargs `rest`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive Double and one or more zeros or positive Doubles
+   * will always result in another positive Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosDouble, second: PosZDouble, rest: PosZDouble*): PosDouble =
+    PosDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
 
   /**
    * Implicit Ordering instance.
