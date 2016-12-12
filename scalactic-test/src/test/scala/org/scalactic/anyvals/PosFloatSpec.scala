@@ -19,16 +19,22 @@ import org.scalatest._
 import OptionValues._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalactic.TypeCheckedTripleEquals
+import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+
+  val posZFloatGen: Gen[PosZFloat] =
+    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.ensuringValid(i)
+
+  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
 
   val posFloatGen: Gen[PosFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield PosFloat.from(i).get
+    for {i <- choose(1, Float.MaxValue)} yield PosFloat.ensuringValid(i)
 
   implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
 
@@ -358,6 +364,96 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       }
       forAll { (pfloat: PosFloat, double: Double) =>
         (pfloat + double) shouldEqual (pfloat.toFloat + double)
+      }
+    }
+
+    it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
+
+      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
+        (posFloat plus posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
+      }
+
+      val examples =
+        Table(
+          (                "posFloat",                "posZFloat" ),
+          (         PosFloat.MinValue,         PosZFloat.MinValue ),
+          (         PosFloat.MinValue, PosZFloat.MinPositiveValue ),
+          (         PosFloat.MinValue,         PosZFloat.MaxValue ),
+          (         PosFloat.MinValue, PosZFloat.PositiveInfinity ),
+          (         PosFloat.MaxValue,         PosZFloat.MinValue ),
+          (         PosFloat.MaxValue, PosZFloat.MinPositiveValue ),
+          (         PosFloat.MaxValue,         PosZFloat.MaxValue ),
+          (         PosFloat.MaxValue, PosZFloat.PositiveInfinity ),
+          ( PosFloat.PositiveInfinity,         PosZFloat.MinValue ),
+          ( PosFloat.PositiveInfinity, PosZFloat.MinPositiveValue ),
+          ( PosFloat.PositiveInfinity,         PosZFloat.MaxValue ),
+          ( PosFloat.PositiveInfinity, PosZFloat.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a plus b).value should be > 0.0f
+      }
+
+/*
+error] /Users/bv/nobkp/delus/st-add-to-3.1.x/scalactic-test/src/test/scala/org/scalactic/anyvals/PosFloatSpec.scala:392: type mismatch;
+[error]  found   : Double(3.0)
+[error]  required: Float
+[error]       (PosFloat(1.0) plus PosInt(2)) should === (PosFloat(3.0))
+[error]                                                           ^
+
+You know, I wonder if our macro could be friendlier and allow a Double literal for
+specifying floats so long as it is in the valid range for floats.
+*/
+      // Sanity check that implicit widening conversions work too.
+      (PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))
+    }
+
+    it("should offer overloaded 'sumOf' methods on the companion that take one PosFloat and one or more PosZFloats and returns a PosFloat") {
+
+      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
+        PosFloat.sumOf(posFloat, posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
+      }
+      forAll { (posFloat: PosFloat, posZFloats: List[PosZFloat]) =>
+        whenever(posZFloats.nonEmpty) {
+          PosFloat.sumOf(posFloat, posZFloats.head, posZFloats.tail: _*) should === {
+            PosFloat.ensuringValid(posFloat.value + posZFloats.head.value + posZFloats.tail.map(_.value).sum)
+          }
+        }
+      }
+
+      val posEdgeValues: List[PosFloat] = List(PosFloat.MinValue, PosFloat.MaxValue, PosFloat.PositiveInfinity)
+      val posZEdgeValues = List(PosZFloat.MinValue, PosZFloat.MinPositiveValue, PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
+      // First put each PosFloat edge in front, then follow it with all permutations (orders) of all four PosZFloat edge values.
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
+        }
+      }
+
+      // Now do each PosFloat edge in front, then follow it with all combinations of 2 PosZEdgeFloats
+      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
+      val halfOfThePairs = posZEdgeValues.combinations(2).toList
+      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
+        }
+      }
+
+      // Now do each PosFloat edge in front, then follow it with all combinations of 3 PosZEdgeFloats
+      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
+      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
+      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
+      Inspectors.forAll (posEdgeValues) { pos =>
+        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
+          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
+            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
+          }
+        }
       }
     }
 

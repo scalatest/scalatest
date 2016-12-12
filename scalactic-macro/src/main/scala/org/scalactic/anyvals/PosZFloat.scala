@@ -468,6 +468,12 @@ object PosZFloat {
   final val MinValue: PosZFloat = PosZFloat.ensuringValid(0.0f) // Can't use the macro here
 
   /**
+   * The smallest value representable as a positive
+   * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
+   */
+  final val MinPositiveValue: PosZFloat = PosZFloat.ensuringValid(Float.MinPositiveValue) // Can't use the macro here
+
+  /**
    * The positive infinity value, which is <code>PosZFloat.ensuringValid(Float.PositiveInfinity)</code>.
    */
   final val PositiveInfinity: PosZFloat = PosZFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here

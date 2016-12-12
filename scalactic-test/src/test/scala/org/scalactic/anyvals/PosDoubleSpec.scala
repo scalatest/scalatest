@@ -32,12 +32,12 @@ import org.scalatest.Inspectors
 class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
   val posZDoubleGen: Gen[PosZDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
+    for {i <- choose(0, Double.MaxValue)} yield PosZDouble.ensuringValid(i)
 
   implicit val arbPosZDouble: Arbitrary[PosZDouble] = Arbitrary(posZDoubleGen)
 
   val posDoubleGen: Gen[PosDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
+    for {i <- choose(1, Double.MaxValue)} yield PosDouble.ensuringValid(i)
 
   implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
 
