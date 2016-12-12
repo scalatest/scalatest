@@ -18,7 +18,8 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.PropertyChecks
+import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -27,7 +28,7 @@ import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
 
-class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
   val posZFloatGen: Gen[PosZFloat] =
     for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
@@ -384,6 +385,97 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
       }
       forAll { (pzfloat: PosZFloat, double: Double) =>
         (pzfloat + double) shouldEqual (pzfloat.toFloat + double)
+      }
+    }
+
+    it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
+
+      forAll { (posZFloat1: PosZFloat, posZFloat2: PosZFloat) =>
+        (posZFloat1 plus posZFloat2) should === (PosZFloat.ensuringValid(posZFloat1.toFloat + posZFloat2.toFloat))
+      }
+
+      val examples =
+        Table(
+          (                "posZFloat1",                "posZFloat2" ),
+          (         PosZFloat.MinValue,         PosZFloat.MinValue ),
+          (         PosZFloat.MinValue, PosZFloat.MinPositiveValue ),
+          (         PosZFloat.MinValue,         PosZFloat.MaxValue ),
+          (         PosZFloat.MinValue, PosZFloat.PositiveInfinity ),
+          (         PosZFloat.MaxValue,         PosZFloat.MinValue ),
+          (         PosZFloat.MaxValue, PosZFloat.MinPositiveValue ),
+          (         PosZFloat.MaxValue,         PosZFloat.MaxValue ),
+          (         PosZFloat.MaxValue, PosZFloat.PositiveInfinity ),
+          ( PosZFloat.PositiveInfinity,         PosZFloat.MinValue ),
+          ( PosZFloat.PositiveInfinity, PosZFloat.MinPositiveValue ),
+          ( PosZFloat.PositiveInfinity,         PosZFloat.MaxValue ),
+          ( PosZFloat.PositiveInfinity, PosZFloat.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a plus b).value should be >= 0.0f
+      }
+
+      // Sanity check that implicit widening conversions work too.
+      // Here a PosInt gets "widened" to a PosZFloat.
+      PosZFloat(1.0f) plus PosInt(2) should === (PosZFloat(3.0f))
+    }
+
+    it("should offer overloaded 'sumOf' methods on the companion that takes two or more PosZFloats and returns a PosZFloat") {
+
+      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
+      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
+      forAll (minSuccessful(1000)) { (posZFloat1: PosZFloat, posZFloat2: PosZFloat) =>
+        PosZFloat.sumOf(posZFloat1, posZFloat2) should === (PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value))
+      }
+
+      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
+      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
+      // but it doesn't matter. 
+      forAll (minSuccessful(1000)) { (posZFloat1: PosZFloat, posZFloat2: PosZFloat) =>
+        PosZFloat.sumOf(posZFloat1, posZFloat2, List.empty[PosZFloat]: _*) should === {
+          PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value)
+        }
+      }
+      // Then add some real lists in there
+      forAll (minSuccessful(1000)) { (posZFloat1: PosZFloat, posZFloat2: PosZFloat, posZFloats: List[PosZFloat]) =>
+        PosZFloat.sumOf(posZFloat1, posZFloat2, posZFloats: _*) should === {
+          PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value + posZFloats.map(_.value).sum)
+        }
+      }
+
+      // I want to try all combinations of edge cases in the boxing sumOf.
+      // And out of an abundance of caution, all permutations of them (all the different orders)
+      val posZEdgeValues = List(PosZFloat.MinValue, PosZFloat.MinPositiveValue, PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
+      Inspectors.forAll (posZEdgeValues.permutations.toList) { case List(a, b, c, d) =>
+        PosZFloat.sumOf(a, b, c, d) should === {
+          PosZFloat.ensuringValid(a.value + b.value + c.value + d.value)
+        }
+      }
+
+      // Now try all combinations of 2 PosZEdgeFloats followed by both nothing and an empty varargs.
+      // The idea is to test both forms with two args, though it is possible the compiler optiizes
+      // the empty list (though I don't think it can tell at compile time, because I don't let it have
+      // element type Nothing).
+      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
+      val halfOfThePairs = posZEdgeValues.combinations(2).toList
+      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
+      Inspectors.forAll (posZPairCombos) { case posZFloat1 :: posZFloat2 :: Nil  =>
+        // Call the two-arg form
+        PosZFloat.sumOf(posZFloat1, posZFloat2) should === {
+          PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value)
+        }
+        // Most likely call the var-args form
+        PosZFloat.sumOf(posZFloat1, posZFloat2, List.empty[PosZFloat]: _*) should === {
+          PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value)
+        }
+      }
+
+      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
+      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
+      Inspectors.forAll (posZTripleCombos) { case posZFloat1 :: posZFloat2 :: posZFloat3 :: Nil  =>
+        PosZFloat.sumOf(posZFloat1, posZFloat2, posZFloat3) should === {
+          PosZFloat.ensuringValid(posZFloat1.value + posZFloat2.value + posZFloat3.value)
+        }
       }
     }
 
