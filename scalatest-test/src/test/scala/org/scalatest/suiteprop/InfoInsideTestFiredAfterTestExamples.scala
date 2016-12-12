@@ -470,15 +470,15 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
-    scenario("test name") {
+    Scenario("test name") {
       info(msg)
     }
     override val theTestName = "Scenario: test name"
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
-      scenario("test name") {
+    Feature("A feature") {
+      Scenario("test name") {
         info(msg)
       }
     }
@@ -486,15 +486,15 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    scenario("test name") { s =>
+    Scenario("test name") { s =>
       info(msg)
     }
     override val theTestName = "Scenario: test name"
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
-      scenario("test name") { s =>
+    Feature("A feature") {
+      Scenario("test name") { s =>
         info(msg)
       }
     }

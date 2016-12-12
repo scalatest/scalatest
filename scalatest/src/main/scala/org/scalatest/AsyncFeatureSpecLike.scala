@@ -102,6 +102,10 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
+  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
+    Scenario(specText, testTags: _*)(testFun)(pos)
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -120,7 +124,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
   }
 
@@ -146,13 +150,16 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
   }
 
+  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, pos)
 

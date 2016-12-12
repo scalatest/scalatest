@@ -283,13 +283,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults {
-  feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+  Feature("Scope 1") {
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
-  feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+  Feature("Scope 2") {
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"
@@ -321,13 +321,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec ex
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+  Feature("Scope 1") {
+    Scenario("Test 1") { fixture => }
+    Scenario("Test 2") { fixture =>}
   }
-  feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture => }
+  Feature("Scope 2") {
+    Scenario("Test 3") { fixture => }
+    Scenario("Test 4") { fixture => }
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"

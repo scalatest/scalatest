@@ -439,32 +439,32 @@ protected[scalatest] class ExampleTestNameFeatureSpec extends FeatureSpec with T
      "Feature: Testing 7 Scenario: Scala code should be fun"
     )
   
-  feature("Testing 1") { 
-    scenario("Scala code should be fun") {}
+  Feature("Testing 1") { 
+    Scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 2 ") { 
-    scenario("Scala code should be fun") {}
+  Feature("Testing 2 ") { 
+    Scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 3") { 
-    scenario(" Scala code should be fun") {}
+  Feature("Testing 3") { 
+    Scenario(" Scala code should be fun") {}
   }
 
-  feature("Testing 4") { 
-    scenario("Scala code should be fun ") {}
+  Feature("Testing 4") { 
+    Scenario("Scala code should be fun ") {}
   }
 
-  feature(" Testing 5") { 
-    scenario("Scala code should be fun") {}
+  Feature(" Testing 5") { 
+    Scenario("Scala code should be fun") {}
   }
 
-  feature("Testing 6 ") { 
-    scenario(" Scala code should be fun") {}
+  Feature("Testing 6 ") { 
+    Scenario(" Scala code should be fun") {}
   }
 
-  feature("Testing 7  ") {  
-    scenario("Scala code should be fun") {}
+  Feature("Testing 7  ") {  
+    Scenario("Scala code should be fun") {}
   }
 }
 
@@ -481,32 +481,32 @@ protected[scalatest] class ExampleTestNameFixtureFeatureSpec extends fixture.Fea
      "Feature: Testing 7 Scenario: Scala code should be fun"
     )
   
-  feature("Testing 1") { 
-    scenario("Scala code should be fun") { s => }
+  Feature("Testing 1") { 
+    Scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 2 ") { 
-    scenario("Scala code should be fun") { s => }
+  Feature("Testing 2 ") { 
+    Scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 3") { 
-    scenario(" Scala code should be fun") { s => }
+  Feature("Testing 3") { 
+    Scenario(" Scala code should be fun") { s => }
   }
 
-  feature("Testing 4") { 
-    scenario("Scala code should be fun ") { s => }
+  Feature("Testing 4") { 
+    Scenario("Scala code should be fun ") { s => }
   }
 
-  feature(" Testing 5") { 
-    scenario("Scala code should be fun") { s => }
+  Feature(" Testing 5") { 
+    Scenario("Scala code should be fun") { s => }
   }
 
-  feature("Testing 6 ") { 
-    scenario(" Scala code should be fun") { s => }
+  Feature("Testing 6 ") { 
+    Scenario(" Scala code should be fun") { s => }
   }
 
-  feature("Testing 7  ") { 
-    scenario("Scala code should be fun") { s => }
+  Feature("Testing 7  ") { 
+    Scenario("Scala code should be fun") { s => }
   }
 }
 
