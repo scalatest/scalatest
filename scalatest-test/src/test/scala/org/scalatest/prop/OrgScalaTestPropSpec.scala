@@ -582,6 +582,272 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a tuple4s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple4s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float)]]
+        val namedGen = org.scalatest.prop.tuple4s[String, Int, Long, Float]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple5s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple5s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double)]]
+        val namedGen = org.scalatest.prop.tuple5s[String, Int, Long, Float, Double]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple6s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple6s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String)]]
+        val namedGen = org.scalatest.prop.tuple6s[String, Int, Long, Float, Double, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple7s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple7s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int)]]
+        val namedGen = org.scalatest.prop.tuple7s[String, Int, Long, Float, Double, String, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple8s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple8s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long)]]
+        val namedGen = org.scalatest.prop.tuple8s[String, Int, Long, Float, Double, String, Int, Long]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple9s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple9s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float)]]
+        val namedGen = org.scalatest.prop.tuple9s[String, Int, Long, Float, Double, String, Int, Long, Float]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple10s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple10s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double)]]
+        val namedGen = org.scalatest.prop.tuple10s[String, Int, Long, Float, Double, String, Int, Long, Float, Double]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple11s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple11s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String)]]
+        val namedGen = org.scalatest.prop.tuple11s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple12s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple12s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int)]]
+        val namedGen = org.scalatest.prop.tuple12s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple13s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple13s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long)]]
+        val namedGen = org.scalatest.prop.tuple13s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple14s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple14s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float)]]
+        val namedGen = org.scalatest.prop.tuple14s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple15s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple15s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double)]]
+        val namedGen = org.scalatest.prop.tuple15s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple16s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple16s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String)]]
+        val namedGen = org.scalatest.prop.tuple16s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple17s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple17s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int)]]
+        val namedGen = org.scalatest.prop.tuple17s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple18s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple18s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long)]]
+        val namedGen = org.scalatest.prop.tuple18s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple19s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple19s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float)]]
+        val namedGen = org.scalatest.prop.tuple19s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple20s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple20s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double)]]
+        val namedGen = org.scalatest.prop.tuple20s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple21s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple21s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String)]]
+        val namedGen = org.scalatest.prop.tuple21s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a tuple22s method" that {
+      "returns the default implicit generator that produces arbitrary Tuple22s" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[(String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int)]]
+        val namedGen = org.scalatest.prop.tuple22s[String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int, Long, Float, Double, String, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a function0s method" that {
       "returns the default implicit generator that produces arbitrary Function0s" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
