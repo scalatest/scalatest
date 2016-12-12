@@ -417,29 +417,29 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
-    scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
-    scenario("second test", mytags.SlowAsMolasses) {}
+    Scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
+    Scenario("second test", mytags.SlowAsMolasses) {}
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
-      scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
-      scenario("second test", mytags.SlowAsMolasses) {}
+    Feature("A feature") {
+      Scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
+      Scenario("second test", mytags.SlowAsMolasses) {}
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) { s => }
-    scenario("second test", mytags.SlowAsMolasses) { s => }
+    Scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) { s => }
+    Scenario("second test", mytags.SlowAsMolasses) { s => }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
-      scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) { s => }
-      scenario("second test", mytags.SlowAsMolasses) { s => }
+    Feature("A feature") {
+      Scenario("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) { s => }
+      Scenario("second test", mytags.SlowAsMolasses) { s => }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")
   }
