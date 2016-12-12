@@ -180,10 +180,6 @@ package object prop {
       distribution forall { case (w, _) => w >= 1 }
     }
     new Generator[T] {
-/*
-[error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:152: could not find implicit value for parameter num: Numeric[org.scalactic.anyvals.PosInt]
-TODO: Make Numeric instances for the numeric anyval types.
-*/
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
