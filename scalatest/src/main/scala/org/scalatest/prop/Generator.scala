@@ -1208,6 +1208,739 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
+  implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D]): Generator[(A, B, C) => D] = {
+    new Generator[(A, B, C) => D] {
+      def next(size: Int, edges: List[(A, B, C) => D], rnd: Randomizer): ((A, B, C) => D, List[(A, B, C) => D], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCToD extends ((A, B, C) => D) {
+          def apply(a: A, b: B, c: C): D = org.scalatest.prop.valueOf[D](a, b, c, intToInt)
+
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC) => org.scalatest.prop.valueOf[$typeOfD](a, b, c, $intToIntName)"
+
+          }
+        }
+
+        (ABCToD, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E]): Generator[(A, B, C, D) => E] = {
+    new Generator[(A, B, C, D) => E] {
+      def next(size: Int, edges: List[(A, B, C, D) => E], rnd: Randomizer): ((A, B, C, D) => E, List[(A, B, C, D) => E], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDToE extends ((A, B, C, D) => E) {
+          def apply(a: A, b: B, c: C, d: D): E = org.scalatest.prop.valueOf[E](a, b, c, d, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD) => org.scalatest.prop.valueOf[$typeOfE](a, b, c, d, $intToIntName)"
+          }
+        }
+
+        (ABCDToE, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F]): Generator[(A, B, C, D, E) => F] = {
+    new Generator[(A, B, C, D, E) => F] {
+      def next(size: Int, edges: List[(A, B, C, D, E) => F], rnd: Randomizer): ((A, B, C, D, E) => F, List[(A, B, C, D, E) => F], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEToF extends ((A, B, C, D, E) => F) {
+          def apply(a: A, b: B, c: C, d: D, e: E): F = org.scalatest.prop.valueOf[F](a, b, c, d, e, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE) => org.scalatest.prop.valueOf[$typeOfF](a, b, c, d, e, $intToIntName)"
+          }
+        }
+
+        (ABCDEToF, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G]): Generator[(A, B, C, D, E, F) => G] = {
+    new Generator[(A, B, C, D, E, F) => G] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F) => G], rnd: Randomizer): ((A, B, C, D, E, F) => G, List[(A, B, C, D, E, F) => G], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFToG extends ((A, B, C, D, E, F) => G) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F): G = org.scalatest.prop.valueOf[G](a, b, c, d, e, f, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF) => org.scalatest.prop.valueOf[$typeOfG](a, b, c, d, e, f, $intToIntName)"
+          }
+        }
+
+        (ABCDEFToG, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H]): Generator[(A, B, C, D, E, F, G) => H] = {
+    new Generator[(A, B, C, D, E, F, G) => H] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G) => H], rnd: Randomizer): ((A, B, C, D, E, F, G) => H, List[(A, B, C, D, E, F, G) => H], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGToH extends ((A, B, C, D, E, F, G) => H) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G): H = org.scalatest.prop.valueOf[H](a, b, c, d, e, f, g, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG) => org.scalatest.prop.valueOf[$typeOfH](a, b, c, d, e, f, g, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGToH, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
+    new Generator[(A, B, C, D, E, F, G, H) => I] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H) => I], rnd: Randomizer): ((A, B, C, D, E, F, G, H) => I, List[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHToI extends ((A, B, C, D, E, F, G, H) => I) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): I = org.scalatest.prop.valueOf[I](a, b, c, d, e, f, g, h, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH) => org.scalatest.prop.valueOf[$typeOfI](a, b, c, d, e, f, g, h, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHToI, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
+    new Generator[(A, B, C, D, E, F, G, H, I) => J] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I) => J], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I) => J, List[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIToJ extends ((A, B, C, D, E, F, G, H, I) => J) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I): J = org.scalatest.prop.valueOf[J](a, b, c, d, e, f, g, h, i, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI) => org.scalatest.prop.valueOf[$typeOfJ](a, b, c, d, e, f, g, h, i, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIToJ, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J) => K], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J) => K, List[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJToK extends ((A, B, C, D, E, F, G, H, I, J) => K) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J): K = org.scalatest.prop.valueOf[K](a, b, c, d, e, f, g, h, i, j, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ) => org.scalatest.prop.valueOf[$typeOfK](a, b, c, d, e, f, g, h, i, j, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJToK, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K) => L], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K) => L, List[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKToL extends ((A, B, C, D, E, F, G, H, I, J, K) => L) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K): L = org.scalatest.prop.valueOf[L](a, b, c, d, e, f, g, h, i, j, k, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK) => org.scalatest.prop.valueOf[$typeOfL](a, b, c, d, e, f, g, h, i, j, k, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKToL, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L) => M, List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLToM extends ((A, B, C, D, E, F, G, H, I, J, K, L) => M) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L): M = org.scalatest.prop.valueOf[M](a, b, c, d, e, f, g, h, i, j, k, l, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL) => org.scalatest.prop.valueOf[$typeOfM](a, b, c, d, e, f, g, h, i, j, k, l, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLToM, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMToN extends ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M): N = org.scalatest.prop.valueOf[N](a, b, c, d, e, f, g, h, i, j, k, l, m, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM) => org.scalatest.prop.valueOf[$typeOfN](a, b, c, d, e, f, g, h, i, j, k, l, m, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMToN, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNToO extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N): O = org.scalatest.prop.valueOf[O](a, b, c, d, e, f, g, h, i, j, k, l, m, n, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN) => org.scalatest.prop.valueOf[$typeOfO](a, b, c, d, e, f, g, h, i, j, k, l, m, n, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNToO, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOToP extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O): P = org.scalatest.prop.valueOf[P](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO) => org.scalatest.prop.valueOf[$typeOfP](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOToP, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPToQ extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P): Q = org.scalatest.prop.valueOf[Q](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP) => org.scalatest.prop.valueOf[$typeOfQ](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPToQ, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQToR extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q): R = org.scalatest.prop.valueOf[R](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ) => org.scalatest.prop.valueOf[$typeOfR](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQToR, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQRToS extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R): S = org.scalatest.prop.valueOf[S](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val typeOfS = typeTagOfS.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR) => org.scalatest.prop.valueOf[$typeOfS](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQRToS, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQRSToT extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S): T = org.scalatest.prop.valueOf[T](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val typeOfS = typeTagOfS.tpe
+            val typeOfT = typeTagOfT.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS) => org.scalatest.prop.valueOf[$typeOfT](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQRSToT, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQRSTToU extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T): U = org.scalatest.prop.valueOf[U](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val typeOfS = typeTagOfS.tpe
+            val typeOfT = typeTagOfT.tpe
+            val typeOfU = typeTagOfU.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT) => org.scalatest.prop.valueOf[$typeOfU](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQRSTToU, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQRSTUToV extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U): V = org.scalatest.prop.valueOf[V](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val typeOfS = typeTagOfS.tpe
+            val typeOfT = typeTagOfT.tpe
+            val typeOfU = typeTagOfU.tpe
+            val typeOfV = typeTagOfV.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU) => org.scalatest.prop.valueOf[$typeOfV](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQRSTUToV, Nil, rnd1)
+      }
+    }
+  }
+
+  implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V], typeTagOfW: TypeTag[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
+    new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] {
+      def next(size: Int, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
+        val intToIntGen: Generator[Int => Int] = function1IntToIntGenerator
+        val (intToInt, _, rnd1) = intToIntGen.next(10, Nil, rnd)
+
+        object ABCDEFGHIJKLMNOPQRSTUVToW extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W) {
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V): W = org.scalatest.prop.valueOf[W](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, intToInt)
+          override def toString = {
+            val typeOfA = typeTagOfA.tpe
+            val typeOfB = typeTagOfB.tpe
+            val typeOfC = typeTagOfC.tpe
+            val typeOfD = typeTagOfD.tpe
+            val typeOfE = typeTagOfE.tpe
+            val typeOfF = typeTagOfF.tpe
+            val typeOfG = typeTagOfG.tpe
+            val typeOfH = typeTagOfH.tpe
+            val typeOfI = typeTagOfI.tpe
+            val typeOfJ = typeTagOfJ.tpe
+            val typeOfK = typeTagOfK.tpe
+            val typeOfL = typeTagOfL.tpe
+            val typeOfM = typeTagOfM.tpe
+            val typeOfN = typeTagOfN.tpe
+            val typeOfO = typeTagOfO.tpe
+            val typeOfP = typeTagOfP.tpe
+            val typeOfQ = typeTagOfQ.tpe
+            val typeOfR = typeTagOfR.tpe
+            val typeOfS = typeTagOfS.tpe
+            val typeOfT = typeTagOfT.tpe
+            val typeOfU = typeTagOfU.tpe
+            val typeOfV = typeTagOfV.tpe
+            val typeOfW = typeTagOfW.tpe
+            val intToIntName: String =
+              intToInt match {
+                case prf: PrettyFunction1[_, _] => prf.simpleName
+                case _ => intToInt.toString
+              }
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU, v: $typeOfV) => org.scalatest.prop.valueOf[$typeOfW](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, $intToIntName)"
+          }
+        }
+
+        (ABCDEFGHIJKLMNOPQRSTUVToW, Nil, rnd1)
+      }
+    }
+  }
+
+
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Option[T]], Randomizer) = {
