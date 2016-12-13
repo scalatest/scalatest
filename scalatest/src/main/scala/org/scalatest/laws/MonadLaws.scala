@@ -32,6 +32,7 @@ import scala.language.higherKinds
  * contains a "flatMap" operation and obeys the laws of associativity, right identity,
  * and left identity.
  */
+// TODO: Consistency-ify the param names C => Ctx, etc.
 class MonadLaws[Context[_], A, B, C] protected (
   implicit monad: Monad[Context],
   genA: Generator[A],
@@ -72,13 +73,10 @@ object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
     genA: Generator[Int],
-    genCtxOfA: Generator[Context[Int]],
-    genAcb: Generator[Int => Context[Short]],
-    genBToCc: Generator[Short => Context[Byte]],
-    genAToB: Generator[Int => Short],
-    genBToC: Generator[Short => Byte],
-    genCtxOfAToB: Generator[Context[Int => Short]],
-    genCtxOfBToC: Generator[Context[Short => Byte]]
-  ): MonadLaws[Context, Int, Short, Byte] = new MonadLaws[Context, Int, Short, Byte]
+    genCtxOfInt: Generator[Context[Int]],
+    genIntToCtxInt: Generator[Int => Context[Int]],
+    genIntToInt: Generator[Int => Int],
+    genCtxOfIntToInt: Generator[Context[Int => Int]]
+  ): MonadLaws[Context, Int, Int, Int] = new MonadLaws[Context, Int, Int, Int]
 }
 

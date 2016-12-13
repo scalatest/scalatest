@@ -53,16 +53,15 @@ class FunctorLaws[Context[_], A, B, C] protected (
 }
 
 object FunctorLaws {
-  // type A = Int
-  // type B = Short
-  // type C = Byte
+  // types A, B, and C = Int, in parametricity we trust
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    genCtxOfA: Generator[Context[Int]],
-    genAToB: Generator[Int => Short],
-    genBToC: Generator[Short => Byte]
-  ): FunctorLaws[Context, Int, Short, Byte] = new FunctorLaws[Context, Int, Short, Byte]
+    genCtxOfInt: Generator[Context[Int]],
+    genIntToInt: Generator[Int => Int]
+  ): FunctorLaws[Context, Int, Int, Int] = new FunctorLaws[Context, Int, Int, Int]
 
+  // TODO: I think move this up to the instance to get the syntax:
+  // it should obey the FunctorLaws[List].usingTypes[Short, Byte, String]
   def using[Context[_], A, B, C](
     implicit functor: Functor[Context],
     genCtxOfA: Generator[Context[A]],
@@ -70,3 +69,4 @@ object FunctorLaws {
     genBToC: Generator[B => C]
   ): FunctorLaws[Context, A, B, C] = new FunctorLaws[Context, A, B, C]
 }
+

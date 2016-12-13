@@ -70,20 +70,18 @@ class ApplicativeLaws[Context[_], A, B, C] protected (
       }
     ) ++ super.laws
 }
+// Can add a usingTypes[A, B, C] to ApplicativeLows instance, so you can say
+// it should obey the ApplicativeLaws[List].usingTypes[Int, Short, Long]
 
 object ApplicativeLaws {
-  // type A = Int
-  // type B = Short
-  // type C = Byte
+  // types A, B, and C = Int; in parametricity we trust
   def apply[Context[_]](
     implicit ap: Applicative[Context],
-    genA: Generator[Int],
-    genCtxOfA: Generator[Context[Int]],
-    genAToB: Generator[Int => Short],
-    genBToC: Generator[Short => Byte],
-    genCtxOfAToB: Generator[Context[Int => Short]],
-    genCtxOfBToC: Generator[Context[Short => Byte]]
-  ): ApplicativeLaws[Context, Int, Short, Byte] = new ApplicativeLaws[Context, Int, Short, Byte]
+    genInt: Generator[Int],
+    genCtxOfInt: Generator[Context[Int]],
+    genIntToInt: Generator[Int => Int],
+    genCtxOfIntToInt: Generator[Context[Int => Int]]
+  ): ApplicativeLaws[Context, Int, Int, Int] = new ApplicativeLaws[Context, Int, Int, Int]
 
   // Can offer a usingTypes[List, Float, Double, String], etc., kind of factory method
   // List should obey the FunctorLaws.usingTypes[List, String, Long, List[Int]]
