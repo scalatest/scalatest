@@ -7,11 +7,11 @@ for (i <- range) {
   val alphaLower = alpha.mkString(", ")
   val alphaWithAnyTypes = alpha.map(a => a + ": Any").mkString(", ")
   val hashCodeImpl =
-    alpha.tail.foldLeft("37 + a.hashCode") { case (current, a) =>
-      "37 * (\n" +
+    alpha.tail.foldLeft("    37 + a.hashCode") { case (current, a) =>
+      "    37 * (\n" +
       current.split('\n').map(l => "  " + l).mkString("\n") + "\n" +
-      ") + " + a + ".hashCode"
-    }
+      "    ) + " + a + ".hashCode"
+    }.substring(4)
 
   println("def valueOf[" + alphaPlusOne.toString.toUpperCase + "](multiplier: Int, " + alphaWithAnyTypes + ")(implicit genOf" + alphaPlusOne.toString.toUpperCase + ": Generator[" + alphaPlusOne.toString.toUpperCase + "]): " + alphaPlusOne.toString.toUpperCase + " = {\n" +
           "  def combinedHashCode(" + alphaWithAnyTypes + "): Int = \n" +
