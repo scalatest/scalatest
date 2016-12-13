@@ -21,10 +21,48 @@ import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
 import org.scalatest.Resources
+import org.scalatest.matchers.BeMatcher
+import org.scalatest.matchers.MatchResult
 
 class CommonGeneratorsSpec extends WordSpec with Matchers {
   import CommonGenerators._
   "The CommonGenerators object" should {
+    "offer a first1000Primes method" that {
+      "produces the first 1000 prime numbers a Ints" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        def isPrime(n: Int): Boolean = {
+          if (n <= 1) false
+          else if (n <= 3) true
+          else if (n % 2 == 0 || n % 3 == 0) { println("GOT HERE"); false }
+          else {
+            var i = 5
+            while (i * i <= n) {
+              if (n % i == 0 || n % (i + 2) == 0) {
+                println(s"RETURNING FALSE: $n, $i")
+                return false
+              }
+              i += 6
+            }
+            true
+          }
+        }
+
+        val aPrimeNumber =
+          new BeMatcher[Int] {
+            def apply(left: Int) =
+              MatchResult(
+                isPrime(left),
+                left.toString + " was not prime",
+                left.toString + " was prime"
+              )
+          }
+
+        forAll (first1000Primes) { i =>
+          i shouldBe aPrimeNumber
+        }
+      }
+    }
     "offer an intsBetween method" that {
       "produces Ints between min and max" in {
 
