@@ -763,95 +763,77 @@ object Generator extends LowerPriorityGeneratorImplicits {
   }
 
   implicit val function1IntToIntGenerator: Generator[Int => Int] = {
-    object IntToIntIdentity extends PrettyFunction1[Int, Int] {
+    object IntToIntIdentity extends (Int => Int) {
       def apply(i: Int): Int = i
       override def toString = "(i: Int) => i"
-      val simpleName: String = "i => i"
     }
-    object IntToIntIncr extends PrettyFunction1[Int, Int] {
+    object IntToIntIncr extends (Int => Int) {
       def apply(i: Int): Int = i + 1
       override def toString = "(i: Int) => i + 1"
-      val simpleName: String = "i => i + 1"
     }
-    object IntToIntIncrBy2 extends PrettyFunction1[Int, Int] {
+    object IntToIntIncrBy2 extends (Int => Int) {
       def apply(i: Int): Int = i + 2
       override def toString = "(i: Int) => i + 2"
-      val simpleName: String = "i => i + 2"
     }
-    object IntToIntIncrBy3 extends PrettyFunction1[Int, Int] {
+    object IntToIntIncrBy3 extends (Int => Int) {
       def apply(i: Int): Int = i + 3
       override def toString = "(i: Int) => i + 3"
-      val simpleName: String = "i => i + 3"
     }
-    object IntToIntIncrByMax extends PrettyFunction1[Int, Int] {
+    object IntToIntIncrByMax extends (Int => Int) {
       def apply(i: Int): Int = i + Int.MaxValue
       override def toString = "(i: Int) => i + Int.MaxValue"
-      val simpleName: String = "i => i + Int.MaxValue"
     }
-    object IntToIntIncrByMin extends PrettyFunction1[Int, Int] {
+    object IntToIntIncrByMin extends (Int => Int) {
       def apply(i: Int): Int = i + Int.MinValue
       override def toString = "(i: Int) => i + Int.MinValue"
-      val simpleName: String = "i => i + Int.MinValue"
     }
-    object IntToIntDecr extends PrettyFunction1[Int, Int] {
+    object IntToIntDecr extends (Int => Int) {
       def apply(i: Int): Int = i - 1
       override def toString = "(i: Int) => i - 1"
-      val simpleName: String = "i => i - 1"
     }
-    object IntToIntDecrBy2 extends PrettyFunction1[Int, Int] {
+    object IntToIntDecrBy2 extends (Int => Int) {
       def apply(i: Int): Int = i - 2
       override def toString = "(i: Int) => i - 2"
-      val simpleName: String = "i => i - 2"
     }
-    object IntToIntDecrBy3 extends PrettyFunction1[Int, Int] {
+    object IntToIntDecrBy3 extends (Int => Int) {
       def apply(i: Int): Int = i - 3
       override def toString = "(i: Int) => i - 3"
-      val simpleName: String = "i => i - 3"
     }
-    object IntToIntDecrByMax extends PrettyFunction1[Int, Int] {
+    object IntToIntDecrByMax extends (Int => Int) {
       def apply(i: Int): Int = i - Int.MaxValue
       override def toString = "(i: Int) => i - Int.MaxValue"
-      val simpleName: String = "i => i - Int.MaxValue"
     }
-    object IntToIntDecrByMin extends PrettyFunction1[Int, Int] {
+    object IntToIntDecrByMin extends (Int => Int) {
       def apply(i: Int): Int = i - Int.MinValue
       override def toString = "(i: Int) => i - Int.MinValue"
-      val simpleName: String = "i => i - Int.MinValue"
     }
-    object IntToIntSquare extends PrettyFunction1[Int, Int] {
+    object IntToIntSquare extends (Int => Int) {
       def apply(i: Int): Int = i * i
       override def toString = "(i: Int) => i * i"
-      val simpleName: String = "i => i"
     }
-    object IntToIntCube extends PrettyFunction1[Int, Int] {
+    object IntToIntCube extends (Int => Int) {
       def apply(i: Int): Int = i * i * i
       override def toString = "(i: Int) => i * i * i"
-      val simpleName: String = "i => i"
     }
-    object IntToIntHalf extends PrettyFunction1[Int, Int] {
+    object IntToIntHalf extends (Int => Int) {
       def apply(i: Int): Int = i / 2
       override def toString = "(i: Int) => i / 2"
-      val simpleName: String = "i => i / 2"
     }
-    object IntToIntThird extends PrettyFunction1[Int, Int] {
+    object IntToIntThird extends (Int => Int) {
       def apply(i: Int): Int = i / 3
       override def toString = "(i: Int) => i / 3"
-      val simpleName: String = "i => i / 3"
     }
-    object IntToIntFourth extends PrettyFunction1[Int, Int] {
+    object IntToIntFourth extends (Int => Int) {
       def apply(i: Int): Int = i / 3
       override def toString = "(i: Int) => i / 4"
-      val simpleName: String = "i => i / 4"
     }
-    object IntToIntNegate extends PrettyFunction1[Int, Int] {
+    object IntToIntNegate extends (Int => Int) {
       def apply(i: Int): Int = -i
       override def toString = "(i: Int) => -i"
-      val simpleName: String = "i => -i"
     }
-    object IntToIntComplement extends PrettyFunction1[Int, Int] {
+    object IntToIntComplement extends (Int => Int) {
       def apply(i: Int): Int = ~i
       override def toString = "(i: Int) => ~i"
-      val simpleName: String = "i => ~i"
     }
     val funs: Vector[Int => Int] =
       Vector(
@@ -890,262 +872,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit val function1IntToShortGenerator: Generator[Int => Short] = {
-    object IntToShortConvert extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = i.toShort
-      override def toString = "(i: Int) => i.toShort"
-      val simpleName: String = "i => i.toShort"
-    }
-    object IntToShortIncr extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i + 1).toShort
-      override def toString = "(i: Int) => (i + 1).toShort"
-      val simpleName: String = "i => (i + 1).toShort"
-    }
-    object IntToShortIncrBy2 extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i + 2).toShort
-      override def toString = "(i: Int) => (i + 2).toShort"
-      val simpleName: String = "i => (i + 2).toShort"
-    }
-    object IntToShortIncrBy3 extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i + 3).toShort
-      override def toString = "(i: Int) => (i + 3).toShort"
-      val simpleName: String = "i => (i + 3).toShort"
-    }
-    object IntToShortIncrByMax extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i + Int.MaxValue).toShort
-      override def toString = "(i: Int) => (i + Int.MaxValue).toShort"
-      val simpleName: String = "i => (i + Int.MaxValue).toShort"
-    }
-    object IntToShortIncrByMin extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i + Int.MinValue).toShort
-      override def toString = "(i: Int) => (i + Int.MinValue).toShort"
-      val simpleName: String = "i => (i + Int.MinValue).toShort"
-    }
-    object IntToShortDecr extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i - 1).toShort
-      override def toString = "(i: Int) => (i - 1).toShort"
-      val simpleName: String = "i => (i - 1).toShort"
-    }
-    object IntToShortDecrBy2 extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i - 2).toShort
-      override def toString = "(i: Int) => (i - 2).toShort"
-      val simpleName: String = "i => (i - 2).toShort"
-    }
-    object IntToShortDecrBy3 extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i - 3).toShort
-      override def toString = "(i: Int) => (i - 3).toShort"
-      val simpleName: String = "i => (i - 3).toShort"
-    }
-    object IntToShortDecrByMax extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i - Int.MaxValue).toShort
-      override def toString = "(i: Int) => (i - Int.MaxValue).toShort"
-      val simpleName: String = "i => (i - Int.MaxValue).toShort"
-    }
-    object IntToShortDecrByMin extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i - Int.MinValue).toShort
-      override def toString = "(i: Int) => (i - Int.MinValue).toShort"
-      val simpleName: String = "i => (i - Int.MinValue).toShort"
-    }
-    object IntToShortSquare extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i * i).toShort
-      override def toString = "(i: Int) => (i * i).toShort"
-      val simpleName: String = "i => (i).toShort"
-    }
-    object IntToShortCube extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i * i * i).toShort
-      override def toString = "(i: Int) => (i * i * i).toShort"
-      val simpleName: String = "i => (i).toShort"
-    }
-    object IntToShortHalf extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i / 2).toShort
-      override def toString = "(i: Int) => (i / 2).toShort"
-      val simpleName: String = "i => (i / 2).toShort"
-    }
-    object IntToShortThird extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i / 3).toShort
-      override def toString = "(i: Int) => (i / 3).toShort"
-      val simpleName: String = "i => (i / 3).toShort"
-    }
-    object IntToShortFourth extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (i / 3).toShort
-      override def toString = "(i: Int) => (i / 4).toShort"
-      val simpleName: String = "i => (i / 4).toShort"
-    }
-    object IntToShortNegate extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (-i).toShort
-      override def toString = "(i: Int) => (-i).toShort"
-      val simpleName: String = "i => (-i).toShort"
-    }
-    object IntToShortComplement extends PrettyFunction1[Int, Short] {
-      def apply(i: Int): Short = (~i).toShort
-      override def toString = "(i: Int) => (~i).toShort"
-      val simpleName: String = "i => (~i).toShort"
-    }
-    val funs: Vector[Int => Short] =
-      Vector(
-        IntToShortConvert,
-        IntToShortIncr,
-        IntToShortIncrBy2,
-        IntToShortIncrBy3,
-        IntToShortIncrByMax,
-        IntToShortIncrByMin,
-        IntToShortDecr,
-        IntToShortDecrBy2,
-        IntToShortDecrBy3,
-        IntToShortDecrByMax,
-        IntToShortDecrByMin,
-        IntToShortSquare,
-        IntToShortCube,
-        IntToShortHalf,
-        IntToShortThird,
-        IntToShortFourth,
-        IntToShortNegate,
-        IntToShortComplement
-      )
-    new Generator[Int => Short] {
-      def next(size: Int, edges: List[Int => Short], rnd: Randomizer): (Int => Short, List[Int => Short], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            val (nextInt, nextRnd) = rnd.nextInt
-            val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
-            (funs(idx), Nil, nextRnd)
-        }
-      }
-      override def toString = "Generator[Int => Short]"
-    }
-  }
-
-  implicit val function1ShortToByteGenerator: Generator[Short => Byte] = {
-    object ShortToByteConvert extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = i.toByte
-      override def toString = "(i: Short) => i.toByte"
-      val simpleName: String = "i => i.toByte"
-    }
-    object ShortToByteIncr extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i + 1).toByte
-      override def toString = "(i: Short) => (i + 1).toByte"
-      val simpleName: String = "i => (i + 1).toByte"
-    }
-    object ShortToByteIncrBy2 extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i + 2).toByte
-      override def toString = "(i: Short) => (i + 2).toByte"
-      val simpleName: String = "i => (i + 2).toByte"
-    }
-    object ShortToByteIncrBy3 extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i + 3).toByte
-      override def toString = "(i: Short) => (i + 3).toByte"
-      val simpleName: String = "i => (i + 3).toByte"
-    }
-    object ShortToByteIncrByMax extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i + Short.MaxValue).toByte
-      override def toString = "(i: Short) => (i + Short.MaxValue).toByte"
-      val simpleName: String = "i => (i + Short.MaxValue).toByte"
-    }
-    object ShortToByteIncrByMin extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i + Short.MinValue).toByte
-      override def toString = "(i: Short) => (i + Short.MinValue).toByte"
-      val simpleName: String = "i => (i + Short.MinValue).toByte"
-    }
-    object ShortToByteDecr extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i - 1).toByte
-      override def toString = "(i: Short) => (i - 1).toByte"
-      val simpleName: String = "i => (i - 1).toByte"
-    }
-    object ShortToByteDecrBy2 extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i - 2).toByte
-      override def toString = "(i: Short) => (i - 2).toByte"
-      val simpleName: String = "i => (i - 2).toByte"
-    }
-    object ShortToByteDecrBy3 extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i - 3).toByte
-      override def toString = "(i: Short) => (i - 3).toByte"
-      val simpleName: String = "i => (i - 3).toByte"
-    }
-    object ShortToByteDecrByMax extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i - Short.MaxValue).toByte
-      override def toString = "(i: Short) => (i - Short.MaxValue).toByte"
-      val simpleName: String = "i => (i - Short.MaxValue).toByte"
-    }
-    object ShortToByteDecrByMin extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i - Short.MinValue).toByte
-      override def toString = "(i: Short) => (i - Short.MinValue).toByte"
-      val simpleName: String = "i => (i - Short.MinValue).toByte"
-    }
-    object ShortToByteSquare extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i * i).toByte
-      override def toString = "(i: Short) => (i * i).toByte"
-      val simpleName: String = "i => (i).toByte"
-    }
-    object ShortToByteCube extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i * i * i).toByte
-      override def toString = "(i: Short) => (i * i * i).toByte"
-      val simpleName: String = "i => (i).toByte"
-    }
-    object ShortToByteHalf extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i / 2).toByte
-      override def toString = "(i: Short) => (i / 2).toByte"
-      val simpleName: String = "i => (i / 2).toByte"
-    }
-    object ShortToByteThird extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i / 3).toByte
-      override def toString = "(i: Short) => (i / 3).toByte"
-      val simpleName: String = "i => (i / 3).toByte"
-    }
-    object ShortToByteFourth extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (i / 3).toByte
-      override def toString = "(i: Short) => (i / 4).toByte"
-      val simpleName: String = "i => (i / 4).toByte"
-    }
-    object ShortToByteNegate extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (-i).toByte
-      override def toString = "(i: Short) => (-i).toByte"
-      val simpleName: String = "i => (-i).toByte"
-    }
-    object ShortToByteComplement extends PrettyFunction1[Short, Byte] {
-      def apply(i: Short): Byte = (~i).toByte
-      override def toString = "(i: Short) => (~i).toByte"
-      val simpleName: String = "i => (~i).toByte"
-    }
-    val funs: Vector[Short => Byte] =
-      Vector(
-        ShortToByteConvert,
-        ShortToByteIncr,
-        ShortToByteIncrBy2,
-        ShortToByteIncrBy3,
-        ShortToByteIncrByMax,
-        ShortToByteIncrByMin,
-        ShortToByteDecr,
-        ShortToByteDecrBy2,
-        ShortToByteDecrBy3,
-        ShortToByteDecrByMax,
-        ShortToByteDecrByMin,
-        ShortToByteSquare,
-        ShortToByteCube,
-        ShortToByteHalf,
-        ShortToByteThird,
-        ShortToByteFourth,
-        ShortToByteNegate,
-        ShortToByteComplement
-      )
-    new Generator[Short => Byte] {
-      def next(size: Int, edges: List[Short => Byte], rnd: Randomizer): (Short => Byte, List[Short => Byte], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            val (nextShort, nextRnd) = rnd.nextShort
-            val idx = (if (nextShort == Short.MinValue) Short.MaxValue else nextShort.abs) % funs.length
-            (funs(idx), Nil, nextRnd)
-        }
-      }
-      override def toString = "Generator[Short => Byte]"
-    }
-  }
-
   implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(size: Int, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
@@ -1154,13 +880,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
 
-        object AToB extends PrettyFunction1[A, B] {
+        object AToB extends (A => B) {
           def apply(a: A): B = org.scalatest.prop.valueOf[B](multiplier, a)
-          val simpleName = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            s"o => org.scalatest.prop.valueOf[$typeOfB]($multiplier, o)"
-          }
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe

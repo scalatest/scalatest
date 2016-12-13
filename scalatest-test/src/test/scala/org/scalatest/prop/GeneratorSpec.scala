@@ -1068,50 +1068,6 @@ class GeneratorSpec extends FunSpec with Matchers {
         forAll { (f: Int => Int) =>
           f.toString should startWith ("(i: Int) => ")
           f.toString should not include "org.scalatest.prop.valueOf"
-          import org.scalatest.Inside._
-          inside(f) { case prf: PrettyFunction1[_, _] => 
-            prf.simpleName should startWith ("i => ")
-            prf.simpleName should not include "org.scalatest.prop.valueOf"
-          }
-        }
-      }
-    }
-    describe("for Int => Shorts") {
-      it("should have toString and simpleName that doesn't include org.scalatest.prop.valueOf") {
-        import GeneratorDrivenPropertyChecks._
-        forAll { (f: Int => Short) =>
-          f.toString should startWith ("(i: Int) => ")
-          f.toString should not include "org.scalatest.prop.valueOf"
-          import org.scalatest.Inside._
-          inside(f) { case prf: PrettyFunction1[_, _] => 
-            prf.simpleName should startWith ("i => ")
-            prf.simpleName should not include "org.scalatest.prop.valueOf"
-          }
-        }
-      }
-    }
-    describe("for Short => Bytes") {
-      it("should have toString and simpleName that doesn't include org.scalatest.prop.valueOf") {
-        import GeneratorDrivenPropertyChecks._
-        forAll { (f: Short => Byte) =>
-          f.toString should startWith ("(i: Short) => ")
-          f.toString should not include "org.scalatest.prop.valueOf"
-          import org.scalatest.Inside._
-          inside(f) { case prf: PrettyFunction1[_, _] => 
-            prf.simpleName should startWith ("i => ")
-            prf.simpleName should not include "org.scalatest.prop.valueOf"
-          }
-        }
-      }
-    }
-    describe("for general functions A => B") {
-      it("should have toString and simpleName that doesn't include 'o, (i: Int) =>', because Int can be inferred there") {
-        import GeneratorDrivenPropertyChecks._
-        forAll { (f: List[Int] => Option[String]) =>
-          import org.scalatest.Inside._
-          inside(f) { case prf: PrettyFunction1[_, _] => 
-            prf.simpleName should not include "o, (i: Int) =>"
-          }
         }
       }
     }
