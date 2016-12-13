@@ -1108,7 +1108,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 val generatorSuitePostamble = """
   val famousLastWords = for {
-    s <- org.scalatest.prop.specificValues("the", "program", "compiles", "therefore", "it", "should", "work")
+    s <- org.scalatest.prop.CommonGenerators.specificValues("the", "program", "compiles", "therefore", "it", "should", "work")
   } yield s
 
   val sevenEleven: Generator[String] =
