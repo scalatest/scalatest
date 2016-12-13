@@ -226,7 +226,7 @@ trait CommonGenerators {
                                                                               genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = Generator.tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
   def function1s[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] =
-    Generator.function1AToBGenerator[A, B]
+    Generator.function1Generator[A, B]
   def function2s[A, B, C](implicit genOfC: Generator[C], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C]): Generator[(A, B) => C] =
     Generator.function2Generator[A, B, C]
   // function3s

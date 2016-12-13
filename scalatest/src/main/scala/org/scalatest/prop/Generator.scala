@@ -1145,7 +1145,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1AToBGenerator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
+  implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(size: Int, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
 
