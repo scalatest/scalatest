@@ -1,6 +1,6 @@
 //
 // Converts calls to deprecated 'feature' to 'Feature' and
-// 'scenario' to 'Scenario'.
+// 'scenario' to 'Scenario' and 'scenariosFor' to 'ScenariosFor'.
 //
 // If a directory is specified as an argument, processes any
 // .scala files it finds under that directory tree.
@@ -68,14 +68,17 @@ object Main {
 
     val replTextF = text.replaceAll("""\bfeature(\s*\(\s*")""", "Feature$1")
 
-    val replText =
+    val replTextS =
       replTextF.replaceAll("""\bscenario(\s*\(\s*")""", "Scenario$1")
 
-    if (text != replText) {
+    val replTextSF =
+      replTextS.replaceAll("""\bscenariosFor\b""", "ScenariosFor")
+
+    if (text != replTextSF) {
       val originalFile: String = file.getPath
       println(s" modified $originalFile")
       file.renameTo(new File(originalFile + ".feature"))
-      writeFile(originalFile, replText)
+      writeFile(originalFile, replTextSF)
     }
   }
 }
