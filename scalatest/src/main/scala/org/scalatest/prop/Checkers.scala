@@ -16,6 +16,7 @@
 package org.scalatest.prop
 
 import org.scalatest.enablers.CheckerAsserting
+import org.scalatest.Assertion
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
 import org.scalacheck.util.Pretty
@@ -223,7 +224,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  */
 trait Checkers extends Configuration {
 
-  protected val asserting: CheckerAsserting[org.scalatest.Assertion] = CheckerAsserting.assertingNatureOfAssertion
+  private val asserting: CheckerAsserting[Assertion] { type Result = Assertion }  = CheckerAsserting.assertingNatureOfAssertion
 
   /**
    * Convert the passed 1-arg function into a property, and check it.
@@ -238,7 +239,7 @@ trait Checkers extends Configuration {
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1), params, prettifier, pos)
   }
@@ -257,7 +258,7 @@ trait Checkers extends Configuration {
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), params, prettifier, pos)
   }
@@ -277,7 +278,7 @@ trait Checkers extends Configuration {
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), params, prettifier, pos)
   }
@@ -298,7 +299,7 @@ trait Checkers extends Configuration {
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), params, prettifier, pos)
   }
@@ -320,7 +321,7 @@ trait Checkers extends Configuration {
       a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), params, prettifier, pos)
   }
@@ -343,7 +344,7 @@ trait Checkers extends Configuration {
       a6: Arbitrary[A6], s6: Shrink[A6], pp6: A6 => Pretty,
       prettifier: Prettifier,
       pos: source.Position
-    ): asserting.Result = {
+    ): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), params, prettifier, pos)
   }
@@ -355,7 +356,7 @@ trait Checkers extends Configuration {
    * @param prms the test parameters
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, prms: Test.Parameters)(implicit prettifier: Prettifier, pos: source.Position): asserting.Result = {
+  def check(p: Prop, prms: Test.Parameters)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
     asserting.check(p, prms, prettifier, pos)
   }
 
@@ -365,7 +366,7 @@ trait Checkers extends Configuration {
    * @param p the property to check
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, prettifier: Prettifier, pos: source.Position): asserting.Result = {
+  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, prettifier: Prettifier, pos: source.Position): Assertion = {
     val params = getScalaCheckParams(configParams, config)
     asserting.check(p, params, prettifier, pos)
   }
