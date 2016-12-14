@@ -34,14 +34,12 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         def isPrime(n: Int): Boolean = {
           if (n <= 1) false
           else if (n <= 3) true
-          else if (n % 2 == 0 || n % 3 == 0) { println("GOT HERE"); false }
+          else if (n % 2 == 0 || n % 3 == 0) false
           else {
             var i = 5
             while (i * i <= n) {
-              if (n % i == 0 || n % (i + 2) == 0) {
-                println(s"RETURNING FALSE: $n, $i")
+              if (n % i == 0 || n % (i + 2) == 0)
                 return false
-              }
               i += 6
             }
             true
@@ -64,6 +62,19 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
     "offer an intsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- intsBetween(Int.MinValue, Int.MaxValue - 1) // Hmm. Using the method to test itself
+            hi <- intsBetween(lo + 1, Int.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an [IllegalArgumentException] should be thrownBy {
+            intsBetween(hi, lo)
+          }
+        }
+      }
       "produces Ints between min and max" in {
 
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
@@ -97,9 +108,36 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Int] = intsBetween(min, max) 
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
-          edges should (have length 1 or have length 2)
+          edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal Int edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = ints.initEdges(100, Randomizer.default)
+        // sortedEdges: List[Int] = List(-2147483648, -1, 0, 1, 2147483647)
+        val sortedEdges = edges.sorted
+        // res5: List[List[Int]] = List(List(-2147483648, -1), List(-2147483648, 0), List(-2147483648, 1),
+        //   List(-2147483648, 2147483647), List(-1, 0), List(-1, 1), List(-1, 2147483647), List(0, 1),
+        //   List(0, 2147483647), List(1, 2147483647))
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: Int, to: Int): List[Int] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[Int] = intsBetween(from, to) 
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
         }
       }
     }

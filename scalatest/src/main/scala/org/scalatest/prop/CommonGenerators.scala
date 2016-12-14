@@ -18,15 +18,18 @@ package org.scalatest.prop
 import org.scalactic.anyvals._
 import scala.annotation.tailrec
 import scala.reflect.runtime.universe.TypeTag
+import org.scalactic.Requirements._
 
 trait CommonGenerators {
 
   // bytesBetween
   // shortsBetween
 
-  def intsBetween(from: Int, to: Int): Generator[Int] =
+  def intsBetween(from: Int, to: Int): Generator[Int] = {
+    require(from <= to)
     new Generator[Int] { thisIntGenerator =>
-      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[Int], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
@@ -42,6 +45,7 @@ trait CommonGenerators {
         }
       }
     }
+  }
 
   // longsBetween
   // charsBetween
