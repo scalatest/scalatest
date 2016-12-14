@@ -2069,8 +2069,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
- * scenariosFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+ * ScenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ * ScenariosFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
@@ -2132,11 +2132,11 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
- *     scenariosFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+ *     ScenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ *     ScenariosFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
  *
- *     scenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
- *     scenariosFor(nonFullStackActor(almostFullStackActor, almostFullStackActorName))
+ *     ScenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+ *     ScenariosFor(nonFullStackActor(almostFullStackActor, almostFullStackActorName))
  *
  *     Scenario("full is invoked on a full stack") {
  *       val stackActor = fullStackActor
@@ -2146,7 +2146,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenariosFor(nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName))
+ *     ScenariosFor(nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName))
  *
  *     Scenario("push is invoked on a full stack") {
  *       val stackActor = fullStackActor
@@ -2206,7 +2206,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ * ScenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
@@ -2224,7 +2224,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(almostFullStackActor, lastValuePushed, almostFullStackActorName))
+ * ScenariosFor(nonEmptyStack(almostFullStackActor, lastValuePushed, almostFullStackActorName))
  * </pre>
  *
  * <p>

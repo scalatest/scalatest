@@ -328,6 +328,9 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
+  @deprecated("use ScenariosFor instead", "ScalaTest 3.1.1")
+  protected def scenariosFor(unit: Unit): Unit = ScenariosFor(unit)
+
   /**
    * Registers shared scenarios.
    *
@@ -336,7 +339,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * </p>
    *
    * <pre class="stHighlight">
-   * scenariosFor(nonEmptyStack(lastValuePushed))
+   * ScenariosFor(nonEmptyStack(lastValuePushed))
    * </pre>
    *
    * <p>
@@ -347,7 +350,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * <a href="#sharedScenarios">Shared scenarios section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def scenariosFor(unit: Unit): Unit = {}
+  protected def ScenariosFor(unit: Unit): Unit = {}
 
   /**
    * Suite style name.
