@@ -27,6 +27,7 @@ import scala.language.implicitConversions
  * </p>
  */
 trait Monad[Context[_]] extends Applicative[Context] {
+
   /**
    * Applies the given function to the value contained in this context, returning the result 
    * of the function, which is a value wrapped in another context.
