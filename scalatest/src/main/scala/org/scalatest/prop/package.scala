@@ -21,6 +21,8 @@ import scala.reflect.runtime.universe.TypeTag
 
 package object prop {
 
+  type Checkers = org.scalatest.check.Checkers
+
   // The valueOf methods are called by the function generators.
   def valueOf[B](multiplier: Int, a: Any)(implicit genOfB: Generator[B]): B = {
    val seed = a.hashCode.toLong * multiplier
