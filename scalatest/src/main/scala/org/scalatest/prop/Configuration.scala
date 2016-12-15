@@ -352,15 +352,15 @@ trait Configuration {
    */
   def workers(value: PosInt): Workers = new Workers(value)
 
-  private[prop] def getParams(
+  private[scalatest] def getParams(
     configParams: Seq[Configuration#PropertyCheckConfigParam],
     c: PropertyCheckConfigurable
   ): Parameters = getScalaCheckParams(configParams, c)
 
-  private[prop] def getScalaCheckParams(
-                               configParams: Seq[Configuration#PropertyCheckConfigParam],
-                               c: PropertyCheckConfigurable
-                               ): Parameters = {
+  private[scalatest] def getScalaCheckParams(
+    configParams: Seq[Configuration#PropertyCheckConfigParam],
+    c: PropertyCheckConfigurable
+  ): Parameters = {
 
     val config: PropertyCheckConfiguration = c.asPropertyCheckConfiguration
     var minSuccessful: Option[Int] = None
