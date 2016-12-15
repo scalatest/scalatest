@@ -21,6 +21,20 @@ import scala.reflect.runtime.universe.TypeTag
 
 package object prop {
 
+  /**
+   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
+   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
+   */
+  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
+  type Checkers = org.scalatest.check.Checkers
+
+  /**
+   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
+   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
+   */
+  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
+  val Checkers: org.scalatest.check.Checkers.type = org.scalatest.check.Checkers 
+
   // The valueOf methods are called by the function generators.
   def valueOf[B](multiplier: Int, a: Any)(implicit genOfB: Generator[B]): B = {
    val seed = a.hashCode.toLong * multiplier
