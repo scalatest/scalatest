@@ -47,7 +47,28 @@ trait CommonGenerators {
     }
   }
 
-  // longsBetween
+  def longsBetween(from: Long, to: Long): Generator[Long] = {
+    require(from <= to)
+    new Generator[Long] { thisLongGenerator =>
+      private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: longEdges).distinct // distinct in case from equals to, and/or overlaps an edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Long], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRandomizer) = rnd.chooseLong(from, to)
+            (nextInt, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   // charsBetween
 
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
