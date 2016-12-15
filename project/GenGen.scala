@@ -724,7 +724,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
 
@@ -769,7 +769,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
 
@@ -815,7 +815,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
 
@@ -862,7 +862,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
 
@@ -910,7 +910,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
 
@@ -959,7 +959,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
           )
         }
         val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
+        val params = getScalaCheckParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
   }
@@ -1005,7 +1005,7 @@ $arbShrinks$,
         )
       }
       val prop = Prop.forAll(propF)
-      val params = getParams(Seq(), config)
+      val params = getScalaCheckParams(Seq(), config)
       asserting.check(prop, params, prettifier, pos)
   }
 
@@ -1048,7 +1048,7 @@ $arbShrinks$,
         )
       }
       val prop = Prop.forAll(propF)
-      val params = getParams(configParams, config)
+      val params = getScalaCheckParams(configParams, config)
       asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
   }
 
@@ -1098,7 +1098,7 @@ $shrinks$,
         )
       }
       val prop = Prop.forAll($genArgs$)(propF)
-      val params = getParams(configParams, config)
+      val params = getScalaCheckParams(configParams, config)
       asserting.check(prop, params, prettifier, pos)
   }
 
@@ -1151,7 +1151,7 @@ $tupleBusters$
         )
       }
       val prop = Prop.forAll($genArgs$)(propF)
-      val params = getParams(configParams, config)
+      val params = getScalaCheckParams(configParams, config)
       asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
   }
 """
