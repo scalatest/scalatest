@@ -21,6 +21,7 @@ import scala.reflect.runtime.universe.TypeTag
 
 package object prop {
 
+  type Checkers = org.scalatest.check.Checkers
 }
 
 
