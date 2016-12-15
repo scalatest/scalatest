@@ -3071,7 +3071,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   private case class AtMostCollected(num: Int) extends Collected
   private case object NoCollected extends Collected
   private case class ExactlyCollected(num: Int) extends Collected
-  
+
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
 
     val asserting = InspectorAsserting.assertingNatureOfAssertion
@@ -3081,26 +3081,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         asserting.forAll(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case AtLeastCollected(num) =>
         asserting.forAtLeast(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case EveryCollected =>
         asserting.forEvery(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case ExactlyCollected(num) =>
         asserting.forExactly(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case NoCollected =>
         asserting.forNo(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case BetweenCollected(from, to) =>
         asserting.forBetween(from, to, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
+
       case AtMostCollected(num) =>
         asserting.forAtMost(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
