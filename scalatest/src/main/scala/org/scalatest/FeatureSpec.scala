@@ -1560,8 +1560,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
- * scenariosFor(nonFullStack(stackWithOneItem))
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * ScenariosFor(nonFullStack(stackWithOneItem))
  * </pre>
  *
  * <p>
@@ -1572,8 +1572,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
- * scenariosFor(nonFullStack)
+ * ScenariosFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
+ * ScenariosFor(nonFullStack)
  * </pre>
  *
  * <p>
@@ -1648,11 +1648,11 @@ package org.scalatest
  *       }
  *     }
  *  
- *     scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
- *     scenariosFor(nonFullStack(stackWithOneItem))
+ *     ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItem))
  *  
- *     scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
- *     scenariosFor(nonFullStack(stackWithOneItemLessThanCapacity))
+ *     ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItemLessThanCapacity))
  *  
  *     Scenario("full is invoked on a full stack") {
  * 
@@ -1664,7 +1664,7 @@ package org.scalatest
  *       assert(stack.full)
  *     }
  *  
- *     scenariosFor(nonEmptyStack(fullStack, lastValuePushed))
+ *     ScenariosFor(nonEmptyStack(fullStack, lastValuePushed))
  *  
  *     Scenario("push is invoked on a full stack") {
  * 
@@ -1788,7 +1788,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
  * </pre>
  *
  * <p>
@@ -1806,7 +1806,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
  * </pre>
  *
  * <p>
