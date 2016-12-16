@@ -132,6 +132,28 @@ trait CommonGenerators {
     }
   }
 
+  def floatsBetween(from: Float, to: Float): Generator[Float] = {
+    require(from <= to)
+    new Generator[Float] { thisFloatGenerator =>
+      private val floatEdges = List(0.0f).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: floatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Float], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextFloat, nextRandomizer) = rnd.chooseFloat(from, to)
+            (nextFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
     new Generator[PosInt] { thisPosIntGenerator =>
       private val intEdges = List(PosInt(1), PosInt.MaxValue).filter(i => i >= from && i <= to)
