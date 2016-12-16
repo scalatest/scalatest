@@ -148,6 +148,28 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     loop(List.empty, 0, thisRandomizer)
   }
 
+  def chooseShort(from: Short, to: Short): (Short, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // generate a positive Short
+      val nextPair = nextShort
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min + 1)).abs
+        (nextBetween.toShort, nextRnd)
+      }
+    }
+  }
+
   def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
 
     if (from == to) {

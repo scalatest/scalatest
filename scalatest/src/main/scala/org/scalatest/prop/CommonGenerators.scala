@@ -23,7 +23,28 @@ import org.scalactic.Requirements._
 trait CommonGenerators {
 
   // bytesBetween
-  // shortsBetween
+
+  def shortsBetween(from: Short, to: Short): Generator[Short] = {
+    require(from <= to)
+    new Generator[Short] { thisShortGenerator =>
+      private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: shortEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Short], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextShort, nextRandomizer) = rnd.chooseShort(from, to)
+            (nextShort, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def intsBetween(from: Int, to: Int): Generator[Int] = {
     require(from <= to)
@@ -62,8 +83,8 @@ trait CommonGenerators {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
-            val (nextInt, nextRandomizer) = rnd.chooseLong(from, to)
-            (nextInt, Nil, nextRandomizer)
+            val (nextLong, nextRandomizer) = rnd.chooseLong(from, to)
+            (nextLong, Nil, nextRandomizer)
         }
       }
     }
