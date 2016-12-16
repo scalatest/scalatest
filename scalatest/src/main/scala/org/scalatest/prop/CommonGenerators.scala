@@ -22,7 +22,27 @@ import org.scalactic.Requirements._
 
 trait CommonGenerators {
 
-  // bytesBetween
+  def bytesBetween(from: Byte, to: Byte): Generator[Byte] = {
+    require(from <= to)
+    new Generator[Byte] { thisByteGenerator =>
+      private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: byteEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Byte], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextByte, nextRandomizer) = rnd.chooseByte(from, to)
+            (nextByte, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def shortsBetween(from: Short, to: Short): Generator[Short] = {
     require(from <= to)
