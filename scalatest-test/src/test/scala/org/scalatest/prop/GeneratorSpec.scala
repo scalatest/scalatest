@@ -90,7 +90,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should offer a filter method so that pattern matching can be used in for expressions with Generator generators") {
       """for ((a, b) <- CommonGenerators.tuple2s[String, Int]) yield (b, a)""" should compile
       case class Person(name: String, age: Int)
-      val persons = CommonGenerators.gen(Person) { p => (p.name, p.age) }
+      val persons = CommonGenerators.instancesOf(Person) { p => (p.name, p.age) }
       """for (Person(a, b) <- persons) yield (b, a)""" should compile
     }
     it("should offer a filter method that throws an exception if too many objects are filtered out") {
