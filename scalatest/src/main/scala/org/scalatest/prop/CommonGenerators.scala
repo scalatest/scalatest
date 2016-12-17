@@ -218,6 +218,28 @@ trait CommonGenerators {
     }
   }
 
+  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] = {
+    require(from <= to)
+    new Generator[PosFloat] { thisPosFloatGenerator =>
+      private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosFloat], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosFloat, nextRandomizer) = rnd.choosePosFloat(from, to)
+            (nextPosFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
     // Probably disallow from >= to, and if =, then say use some alternative? constantValues(x) ?
     new Generator[PosZInt] { thisPosZIntGenerator =>
@@ -242,7 +264,7 @@ trait CommonGenerators {
   def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = {
     require(from <= to)
     new Generator[PosZLong] { thisPosZLongGenerator =>
-      private val posZLongEdges = List(PosZLong(1L), PosZLong.MaxValue).filter(i => i >= from && i <= to)
+      private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue).filter(i => i >= from && i <= to)
       private val fromToEdges = (from :: to :: posZLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZLong], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
