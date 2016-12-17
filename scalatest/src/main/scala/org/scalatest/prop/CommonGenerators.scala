@@ -169,8 +169,8 @@ trait CommonGenerators {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
-            val (nextFloat, nextRandomizer) = rnd.chooseDouble(from, to)
-            (nextFloat, Nil, nextRandomizer)
+            val (nextDouble, nextRandomizer) = rnd.chooseDouble(from, to)
+            (nextDouble, Nil, nextRandomizer)
         }
       }
     }
@@ -235,6 +235,28 @@ trait CommonGenerators {
           case _ =>
             val (nextPosFloat, nextRandomizer) = rnd.choosePosFloat(from, to)
             (nextPosFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] = {
+    require(from <= to)
+    new Generator[PosDouble] { thisPosDoubleGenerator =>
+      private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosDouble], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosDouble, nextRandomizer) = rnd.choosePosDouble(from, to)
+            (nextPosDouble, Nil, nextRandomizer)
         }
       }
     }
