@@ -283,8 +283,28 @@ trait CommonGenerators {
     }
   }
 
-  // posFloatsBetween
-  // posZFloatsBetween
+  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] = {
+    require(from <= to)
+    new Generator[PosZFloat] { thisPosZFloatGenerator =>
+      private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZFloat, nextRandomizer) = rnd.choosePosZFloat(from, to)
+            (nextPosZFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   // posDoublesBetween
   // posZDoublesBetween
 

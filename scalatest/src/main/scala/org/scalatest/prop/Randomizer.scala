@@ -275,6 +275,27 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     }
   }
 
+  def choosePosZFloat(from: PosZFloat, to: PosZFloat): (PosZFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextPosZFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (PosZFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
   def chooseDouble(from: Double, to: Double): (Double, Randomizer) = {
 
     if (from == to) {

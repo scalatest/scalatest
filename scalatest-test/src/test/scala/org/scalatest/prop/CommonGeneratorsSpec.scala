@@ -776,7 +776,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (loHiPairs) { case (lo, hi) =>
           an[IllegalArgumentException] should be thrownBy {
-            floatsBetween(hi, lo)
+            posFloatsBetween(hi, lo)
           }
         }
       }
@@ -990,6 +990,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZLong] = posZLongsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer an posZFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posZFloatsBetween(PosZFloat.MinValue, PosZFloat.ensuringValid(PosZFloat.MaxValue - 1E32f)) // Hmm. Using the method to test itself
+            hi <- posZFloatsBetween(PosZFloat.ensuringValid(lo + 1E32f), PosZFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posZFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosZFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFloat, PosZFloat)] =
+          for {
+            min <- posZFloatsBetween(PosZFloat.MinValue, PosZFloat.ensuringValid(PosZFloat.MaxValue - 1E32f))
+            max <- posZFloatsBetween(min, PosZFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFloat] = posZFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFloat, PosZFloat)] =
+          for {
+            min <- posZFloatsBetween(PosZFloat.MinValue, PosZFloat.ensuringValid(PosZFloat.MaxValue - 1E32f))
+            max <- posZFloatsBetween(min, PosZFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFloat] = posZFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal PosFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posZFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosZFloat, to: PosZFloat): List[PosZFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosZFloat] = posZFloatsBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
