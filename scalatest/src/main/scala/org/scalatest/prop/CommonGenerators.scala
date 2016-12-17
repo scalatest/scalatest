@@ -22,8 +22,49 @@ import org.scalactic.Requirements._
 
 trait CommonGenerators {
 
-  // bytesBetween
-  // shortsBetween
+  def bytesBetween(from: Byte, to: Byte): Generator[Byte] = {
+    require(from <= to)
+    new Generator[Byte] { thisByteGenerator =>
+      private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: byteEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Byte], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextByte, nextRandomizer) = rnd.chooseByte(from, to)
+            (nextByte, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def shortsBetween(from: Short, to: Short): Generator[Short] = {
+    require(from <= to)
+    new Generator[Short] { thisShortGenerator =>
+      private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: shortEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Short], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextShort, nextRandomizer) = rnd.chooseShort(from, to)
+            (nextShort, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def intsBetween(from: Int, to: Int): Generator[Int] = {
     require(from <= to)
@@ -47,12 +88,98 @@ trait CommonGenerators {
     }
   }
 
-  // longsBetween
-  // charsBetween
+  def longsBetween(from: Long, to: Long): Generator[Long] = {
+    require(from <= to)
+    new Generator[Long] { thisLongGenerator =>
+      private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: longEdges).distinct // distinct in case from equals to, and/or overlaps an edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Long], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextLong, nextRandomizer) = rnd.chooseLong(from, to)
+            (nextLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def charsBetween(from: Char, to: Char): Generator[Char] = {
+    require(from <= to)
+    new Generator[Char] { thisCharGenerator =>
+      private val charEdges = List(Char.MinValue, Char.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: charEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Char], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextChar, nextRandomizer) = rnd.chooseChar(from, to)
+            (nextChar, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def floatsBetween(from: Float, to: Float): Generator[Float] = {
+    require(from <= to)
+    new Generator[Float] { thisFloatGenerator =>
+      private val floatEdges = List(0.0f).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: floatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Float], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextFloat, nextRandomizer) = rnd.chooseFloat(from, to)
+            (nextFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def doublesBetween(from: Double, to: Double): Generator[Double] = {
+    require(from <= to)
+    new Generator[Double] { thisDoubleGenerator =>
+      private val doubleEdges = List(0.0).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: doubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[Double], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextDouble, nextRandomizer) = rnd.chooseDouble(from, to)
+            (nextDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
     new Generator[PosInt] { thisPosIntGenerator =>
-      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      private val intEdges = List(PosInt(1), PosInt.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosInt], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
@@ -68,10 +195,78 @@ trait CommonGenerators {
         }
       }
     }
+
+  def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] = {
+    require(from <= to)
+    new Generator[PosLong] { thisPosLongGenerator =>
+      private val posLongEdges = List(PosLong(1L), PosLong.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosLong], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosLong, nextRandomizer) = rnd.choosePosLong(from, to)
+            (nextPosLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] = {
+    require(from <= to)
+    new Generator[PosFloat] { thisPosFloatGenerator =>
+      private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosFloat], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosFloat, nextRandomizer) = rnd.choosePosFloat(from, to)
+            (nextPosFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] = {
+    require(from <= to)
+    new Generator[PosDouble] { thisPosDoubleGenerator =>
+      private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosDouble], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosDouble, nextRandomizer) = rnd.choosePosDouble(from, to)
+            (nextPosDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
     // Probably disallow from >= to, and if =, then say use some alternative? constantValues(x) ?
     new Generator[PosZInt] { thisPosZIntGenerator =>
-      private val fromToEdges = List(from, to).distinct // distinct in case from equals to
+      private val intEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZInt], Randomizer) = {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
@@ -88,13 +283,71 @@ trait CommonGenerators {
       }
     }
 
-  // posZIntsBetween
-  // posLongsBetween
-  // posZLongsBetween
-  // posFloatsBetween
-  // posZFloatsBetween
-  // posDoublesBetween
-  // posZDoublesBetween
+  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = {
+    require(from <= to)
+    new Generator[PosZLong] { thisPosZLongGenerator =>
+      private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZLong], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZLong, nextRandomizer) = rnd.choosePosZLong(from, to)
+            (nextPosZLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] = {
+    require(from <= to)
+    new Generator[PosZFloat] { thisPosZFloatGenerator =>
+      private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZFloat, nextRandomizer) = rnd.choosePosZFloat(from, to)
+            (nextPosZFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] = {
+    require(from <= to)
+    new Generator[PosZDouble] { thisPosZDoubleGenerator =>
+      private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZDouble, nextRandomizer) = rnd.choosePosZDouble(from, to)
+            (nextPosZDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
