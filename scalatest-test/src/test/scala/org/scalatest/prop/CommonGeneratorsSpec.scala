@@ -1153,6 +1153,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer an posZDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posZDoublesBetween(PosZDouble.MinValue, PosZDouble.ensuringValid(PosZDouble.MaxValue - 1E292)) // Hmm. Using the method to test itself
+            hi <- posZDoublesBetween(PosZDouble.ensuringValid(lo + 1E292), PosZDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posZDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZDouble, PosZDouble)] =
+          for {
+            min <- posZDoublesBetween(PosZDouble.MinValue, PosZDouble.ensuringValid(PosZDouble.MaxValue - 1E292))
+            max <- posZDoublesBetween(min, PosZDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZDouble, PosZDouble)] =
+          for {
+            min <- posZDoublesBetween(PosZDouble.MinValue, PosZDouble.ensuringValid(PosZDouble.MaxValue - 1E292))
+            max <- posZDoublesBetween(min, PosZDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal PosZDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posZDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosZDouble, to: PosZDouble): List[PosZDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a specificValues method" that {
       "returns a generator that produces from a given set of specific objects for any type T" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._

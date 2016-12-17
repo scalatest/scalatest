@@ -327,8 +327,27 @@ trait CommonGenerators {
     }
   }
 
-  // posDoublesBetween
-  // posZDoublesBetween
+  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] = {
+    require(from <= to)
+    new Generator[PosZDouble] { thisPosZDoubleGenerator =>
+      private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZDouble, nextRandomizer) = rnd.choosePosZDouble(from, to)
+            (nextPosZDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
