@@ -688,6 +688,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         }
       }
     }
+
+    "offer an posLongsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posLongsBetween(PosLong.MinValue, PosLong.ensuringValid(PosLong.MaxValue - 1)) // Hmm. Using the method to test itself
+            hi <- posLongsBetween(PosLong.ensuringValid(lo + 1), PosLong.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an [IllegalArgumentException] should be thrownBy {
+            posLongsBetween(hi, lo)
+          }
+        }
+      }
+      "produces Longs between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosLong, PosLong)] =
+          for {
+            min <- posLongsBetween(PosLong.MinValue, PosLong.ensuringValid(PosLong.MaxValue - 1))
+            max <- posLongsBetween(min, PosLong.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosLong] = posLongsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosLong, PosLong)] =
+          for {
+            min <- posLongsBetween(PosLong.MinValue, PosLong.ensuringValid(PosLong.MaxValue - 1))
+            max <- posLongsBetween(min, PosLong.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosLong] = posLongsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal Int edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posLongs.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosLong, to: PosLong): List[PosLong] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosLong] = posLongsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a posZIntsBetween method" that {
       val PosZIntMaxValueMinusOne = PosZInt(2147483646)
       "throws IAE if max is less than min" in {

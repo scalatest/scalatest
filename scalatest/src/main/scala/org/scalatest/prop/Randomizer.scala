@@ -339,6 +339,29 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     }
   }
+
+  def choosePosLong(from: PosLong, to: PosLong): (PosLong, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // Generate a positive Long
+      val (ia, nextRnd) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+      val (ib, nextNextRnd) = nextRnd.next(32)
+      val nextValue = (ia.toLong << 32) + ib
+
+      if (nextValue >= min && nextValue <= max)
+        (PosLong.ensuringValid(nextValue), nextNextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosLong.ensuringValid(nextBetween), nextNextRnd)
+      }
+    }
+  }
 }
 
 object Randomizer {
