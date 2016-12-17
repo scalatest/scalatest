@@ -198,7 +198,7 @@ trait CommonGenerators {
 
   def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] = {
     require(from <= to)
-    new Generator[PosLong] { thisLongGenerator =>
+    new Generator[PosLong] { thisPosLongGenerator =>
       private val posLongEdges = List(PosLong(1L), PosLong.MaxValue).filter(i => i >= from && i <= to)
       private val fromToEdges = (from :: to :: posLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosLong], Randomizer) = {
@@ -239,8 +239,28 @@ trait CommonGenerators {
       }
     }
 
-  // posLongsBetween
-  // posZLongsBetween
+  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = {
+    require(from <= to)
+    new Generator[PosZLong] { thisPosZLongGenerator =>
+      private val posZLongEdges = List(PosZLong(1L), PosZLong.MaxValue).filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: posZLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
+      override def initEdges(maxLength: Int, rnd: Randomizer): (List[PosZLong], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: Int, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextPosZLong, nextRandomizer) = rnd.choosePosZLong(from, to)
+            (nextPosZLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   // posFloatsBetween
   // posZFloatsBetween
   // posDoublesBetween
