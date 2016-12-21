@@ -21,6 +21,11 @@ import scala.collection.immutable.NumericRange
  * An <code>AnyVal</code> for non-negative <code>Float</code>s.
  *
  * <p>
+ * Note: A <code>PosFloat</code> may have value <code>Float.PositiveInfinity</code>,
+ * but cannot have value <code>Float.NegativeInfinity</code> or <code>Float.NaN</code>.
+ * </p>
+ *
+ * <p>
  * Because <code>PosZFloat</code> is an <code>AnyVal</code> it will usually be
  * as efficient as an <code>Float</code>, being boxed only when a
  * <code>Float</code> would have been boxed.
@@ -261,6 +266,18 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosZFloat</code> sum of this value and `x`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Float to another positive or zero Float
+   * will always result in another positive or zero Float
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZFloat): PosZFloat = PosZFloat.ensuringValid(value + x)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Float = value - x
   /** Returns the difference of this value and `x`. */
@@ -339,22 +356,22 @@ final class PosZFloat private (val value: Float) extends AnyVal {
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
-  def round: PosZInt = PosZInt.from(math.round(value)).get
-  def ceil: PosZFloat = PosZFloat.from(math.ceil(value).toFloat).get
-  def floor: PosZFloat = PosZFloat.from(math.floor(value).toFloat).get
+  def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+  def ceil: PosZFloat = PosZFloat.ensuringValid(math.ceil(value).toFloat)
+  def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
   */
-  def toRadians: PosZFloat = PosZFloat.from(math.toRadians(value).toFloat).get
+  def toRadians: PosZFloat = PosZFloat.ensuringValid(math.toRadians(value).toFloat)
 
   /** Converts an angle measured in radians to an approximately equivalent
   * angle measured in degrees.
   * @return the measurement of the angle x in degrees.
   */
-  def toDegrees: PosZFloat = PosZFloat.from(math.toDegrees(value).toFloat).get
+  def toDegrees: PosZFloat = PosZFloat.ensuringValid(math.toDegrees(value).toFloat)
 
   // adapted from RichInt:
   /**
@@ -403,6 +420,43 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   */
   def to(end: Float, step: Float): NumericRange.Inclusive[Float] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
+   * value, and if the result is positive or zero, returns the result wrapped in a <code>PosZFloat</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosZFloat</code>'s underlying <code>Float</code> value and if the result
+   * is positive or zero, <em>i.e.</em>, a value greater
+   * than or equal to <code>0.0f</code>, it will return a <code>PosZFloat</code> representing that value.
+   * Otherwise, the <code>Float</code> value returned by the given function is
+   * negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Float</code> is positive or zero. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosZFloat</code>'s
+   * value will not produce a negative number, including <code>Float.NegativeInfinity</code>, or <code>Float.NaN</code>.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Float =&gt; Float</code> function to apply to this <code>PosZFloat</code>'s
+   *     underlying <code>Float</code> value.
+   * @return the result of applying this <code>PosZFloat</code>'s underlying <code>Float</code> value to
+   *     to the passed function, wrapped in a <code>PosZFloat</code> if it is positive or zero (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosZFloat</code>'s underlying <code>Float</code> value to
+   *     to the passed function is not positive or zero.
+   */
+  def ensuringValid(f: Float => Float): PosZFloat = {
+    val candidateResult: Float = f(value)
+    if (PosZFloatMacro.isValid(candidateResult)) new PosZFloat(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosZFloat")
+  }
 }
 
 /**
@@ -417,13 +471,24 @@ object PosZFloat {
    * The largest value representable as a non-negative <code>Float</code>,
    * which is <code>PosZFloat(3.4028235E38)</code>.
    */
-  final val MaxValue: PosZFloat = PosZFloat.from(Float.MaxValue).get
+  final val MaxValue: PosZFloat = PosZFloat.ensuringValid(Float.MaxValue)
 
   /**
    * The smallest value representable as a non-negative <code>Float</code>,
    * which is <code>PosZFloat(0.0F)</code>.
    */
-  final val MinValue: PosZFloat = PosZFloat.from(0.0f).get // Can't use the macro here
+  final val MinValue: PosZFloat = PosZFloat.ensuringValid(0.0f) // Can't use the macro here
+
+  /**
+   * The smallest value representable as a positive
+   * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
+   */
+  final val MinPositiveValue: PosZFloat = PosZFloat.ensuringValid(Float.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The positive infinity value, which is <code>PosZFloat.ensuringValid(Float.PositiveInfinity)</code>.
+   */
+  final val PositiveInfinity: PosZFloat = PosZFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZFloat]</code> given a
@@ -454,7 +519,83 @@ object PosZFloat {
    *     <code>None</code>.
    */
   def from(value: Float): Option[PosZFloat] =
-    if (value >= 0.0F) Some(new PosZFloat(value)) else None
+    if (PosZFloatMacro.isValid(value)) Some(new PosZFloat(value)) else None
+
+  /**
+   * A factory/assertion method that produces an <code>PosZFloat</code> given a
+   * valid <code>Float</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Float</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value
+   * and if it is a non-negative <code>Float</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZFloat</code> representing that value.
+   * Otherwise, the passed * <code>Float</code> value is negative, so this method
+   * will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Float</code> is positive or zero.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if non-negative, return
+   *     wrapped in a <code>PosZFloat</code>.
+   * @return the specified <code>Float</code> value wrapped
+   *     in a <code>PosZFloat</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not zero or positive
+   */
+  def ensuringValid(value: Float): PosZFloat =
+    if (PosZFloatMacro.isValid(value)) new PosZFloat(value) else {
+      throw new AssertionError(s"$value was not a valid PosZFloat")
+    }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Float</code> value is positive or zero.
+   *
+   * @param value the <code>Float</code> to inspect, and if positive or zero, return true.
+   * @return true if the specified <code>Float</code> is positive or zero, else false.
+   */
+  def isValid(value: Float): Boolean = PosZFloatMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosZFloat</code> given a
+   * <code>Float</code> value and a default <code>PosZFloat</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a positive or zero <code>Float</code>, <em>i.e.</em>, a value greater
+   * than or equal to 0.0f, it will return a <code>PosZFloat</code> representing that value.
+   * Otherwise, the passed <code>Float</code> value is negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if positive or zero, return.
+   * @param default the <code>PosZFloat</code> to return if the passed
+   *     <code>Float</code> value is not positive or zero.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>PosZFloat</code>, if it is positive or zero, else the
+   *     <code>default</code> <code>PosZFloat</code> value.
+   */
+  def fromOrElse(value: Float, default: => PosZFloat): PosZFloat =
+    if (PosZFloatMacro.isValid(value)) new PosZFloat(value) else default
 
   import language.experimental.macros
   import scala.language.implicitConversions
@@ -523,7 +664,46 @@ object PosZFloat {
    *     <code>PosZFloat</code>, widened to <code>Double</code>
    *     and wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.from(poz.value).get
+  implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.ensuringValid(poz.value)
+
+  /**
+   * Returns the <code>PosZFloat</code> sum of the passed <code>PosZFloat</code> values `x` and `y`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Float to another positive or zero Float
+   * will always result in another positive or zero Float
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZFloat</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
+   */
+  def sumOf(x: PosZFloat, y: PosZFloat): PosZFloat = PosZFloat.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the <code>PosZFloat</code> sum of the passed <code>PosZFloat</code> values `first` and 
+   * value `second`, and the <code>PosZFloat</code> values passed as varargs `rest`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Float to another positive or zero Float
+   * will always result in another positive or zero Float
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosZFloat, second: PosZFloat, rest: PosZFloat*): PosZFloat =
+    PosZFloat.ensuringValid(first.value + second.value + rest.map(_.value).sum)
+
 
   /**
    * Implicit Ordering instance.

@@ -133,6 +133,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     }
   }
 
+  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  protected def scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation = Scenario(specText, testTags: _*)
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -151,7 +154,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation =
+  protected def Scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation =
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
@@ -196,6 +199,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
   protected def ignore(specText: String, testTags: Tag*): ResultOfIgnoreInvocation =
     new ResultOfIgnoreInvocation(specText, testTags: _*)
 
+  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
@@ -204,7 +210,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    *
    * @param description the description text
    */
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -345,6 +351,9 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     runImpl(thisSuite, testName, args, super.run)
   }
 
+  @deprecated("use ScenariosFor instead", "ScalaTest 3.1.1")
+  protected def scenariosFor(unit: Unit): Unit = ScenariosFor(unit)
+
   /**
    * Registers shared scenarios.
    *
@@ -353,7 +362,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * </p>
    *
    * <pre class="stHighlight">
-   * scenariosFor(nonEmptyStack(lastValuePushed))
+   * ScenariosFor(nonEmptyStack(lastValuePushed))
    * </pre>
    *
    * <p>
@@ -365,7 +374,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * trait <code>FeatureSpec</code>.
    * </p>
    */
-  protected def scenariosFor(unit: Unit): Unit = {}
+  protected def ScenariosFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

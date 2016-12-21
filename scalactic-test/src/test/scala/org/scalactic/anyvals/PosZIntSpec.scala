@@ -71,12 +71,43 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosZInt.from(-99) shouldBe None
       }
     } 
-
+    describe("should offer an ensuringValid factory method that") {
+      it("returns PosZInt if the passed Int is greater than or equal to 0")
+      {
+        PosZInt.ensuringValid(0).value shouldBe 0
+        PosZInt.ensuringValid(50).value shouldBe 50
+        PosZInt.ensuringValid(100).value shouldBe 100
+      }
+      it("throws AssertionError if the passed Int is NOT greater than or equal to 0") {
+        an [AssertionError] should be thrownBy PosZInt.ensuringValid(-1)
+        an [AssertionError] should be thrownBy PosZInt.ensuringValid(-99)
+      }
+    } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Int is greater than or equal to 0") {
+        PosZInt.isValid(50) shouldBe true
+        PosZInt.isValid(100) shouldBe true
+        PosZInt.isValid(0) shouldBe true
+        PosZInt.isValid(-0) shouldBe true
+        PosZInt.isValid(-1) shouldBe false
+        PosZInt.isValid(-99) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZInt if the passed Int is greater than or equal to 0") {
+        PosZInt.fromOrElse(50, PosZInt(42)).value shouldBe 50
+        PosZInt.fromOrElse(100, PosZInt(42)).value shouldBe 100
+        PosZInt.fromOrElse(0, PosZInt(42)).value shouldBe 0
+      }
+      it("returns a given default if the passed Int is NOT greater than or equal to 0") {
+        PosZInt.fromOrElse(-1, PosZInt(42)).value shouldBe 42
+        PosZInt.fromOrElse(-99, PosZInt(42)).value shouldBe 42
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosZInt.MaxValue shouldEqual PosZInt.from(Int.MaxValue).get
       PosZInt.MinValue shouldEqual PosZInt(0)
     }
-
     it("should have a pretty toString") {
       PosZInt.from(42).value.toString shouldBe "PosZInt(42)"
     }
@@ -576,6 +607,10 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         def widen(value: PosZDouble): PosZDouble = value
         widen(pzint) shouldEqual widen(PosZDouble.from(pzint.toInt).get)
       }
+    }
+    it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
+      PosZInt(33).ensuringValid(_ + 1) shouldEqual PosZInt(34)
+      an [AssertionError] should be thrownBy { PosZInt.MaxValue.ensuringValid(_ + 1) }
     }
   }
 }

@@ -20,13 +20,15 @@ import reflect.macros.Context
 
 private[scalactic] object PosZDoubleMacro extends CompileTimeAssertions {
 
+  def isValid(n: Double): Boolean = n >= 0.0
+
   def apply(c: Context)(value: c.Expr[Double]): c.Expr[PosZDouble] = {
     val notValidMsg = Resources.notValidPosZDouble
     val notLiteralMsg = Resources.notLiteralPosZDouble
 
     import c.universe._
 
-    ensureValidDoubleLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0.0 }
-    reify { PosZDouble.from(value.splice).get }
+    ensureValidDoubleLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
+    reify { PosZDouble.ensuringValid(value.splice) }
   }
 }

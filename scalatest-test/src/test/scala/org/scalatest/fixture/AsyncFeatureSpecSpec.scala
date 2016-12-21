@@ -39,25 +39,25 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           Future {
             pending
           }
         }
 
-        scenario("test 4") { fixture =>
+        Scenario("test 4") { fixture =>
           Future {
             cancel
           }
@@ -103,19 +103,19 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           assert(a == 1)
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           assert(a == 2)
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           pending
         }
 
-        scenario("test 4") { fixture =>
+        Scenario("test 4") { fixture =>
           cancel
         }
 
@@ -157,7 +157,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -166,7 +166,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
           }
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -175,7 +175,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
           }
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           Future {
             assert(count == 2)
           }
@@ -207,21 +207,21 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           assert(count == 2)
         }
 
@@ -253,14 +253,14 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -297,7 +297,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -314,7 +314,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
           }
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -367,7 +367,7 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -391,21 +391,21 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           Future {
             succeed
           }
@@ -440,17 +440,17 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        scenario("test 1") { fixture =>
+        Scenario("test 1") { fixture =>
           SleepHelper.sleep(60)
           succeed
         }
 
-        scenario("test 2") { fixture =>
+        Scenario("test 2") { fixture =>
           SleepHelper.sleep(30)
           succeed
         }
 
-        scenario("test 3") { fixture =>
+        Scenario("test 3") { fixture =>
           succeed
         }
 
@@ -506,12 +506,12 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
+        Feature("test feature") {
           info(
             "hi there"
           )
 
-          scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -536,8 +536,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             info("hi there")
             succeed
           }
@@ -571,8 +571,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             Future {
               info("hi there")
               succeed
@@ -634,12 +634,12 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
+        Feature("test feature") {
           note(
             "hi there"
           )
 
-          scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -664,8 +664,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             note("hi there")
             succeed
           }
@@ -692,8 +692,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             Future {
               note("hi there")
               succeed
@@ -748,12 +748,12 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
+        Feature("test feature") {
           alert(
             "hi there"
           )
 
-          scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -778,8 +778,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             alert("hi there")
             succeed
           }
@@ -806,8 +806,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             Future {
               alert("hi there")
               succeed
@@ -862,12 +862,12 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
+        Feature("test feature") {
           markup(
             "hi there"
           )
 
-          scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -892,8 +892,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             markup("hi there")
             succeed
           }
@@ -927,8 +927,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
-        feature("test feature") {
-          scenario("test 1") { fixture =>
+        Feature("test feature") {
+          Scenario("test 1") { fixture =>
             Future {
               markup("hi there")
               succeed
@@ -967,18 +967,18 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
           test("testing")
 
         val a = 1
-        feature("feature 1") {
-          scenario("scenario A") { fixture  =>
+        Feature("feature 1") {
+          Scenario("scenario A") { fixture  =>
             Future { assert(a == 1) }
           }
         }
-        feature("feature 2")  {
-          scenario("scenario B") { fixture  =>
+        Feature("feature 2")  {
+          Scenario("scenario B") { fixture  =>
             Future { assert(a == 1) }
           }
         }
-        feature("group3") {
-          scenario("test C") { fixture  =>
+        Feature("group3") {
+          Scenario("test C") { fixture  =>
             Future { assert(a == 1) }
           }
         }

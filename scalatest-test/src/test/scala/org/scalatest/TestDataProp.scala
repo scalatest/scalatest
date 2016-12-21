@@ -285,8 +285,8 @@ protected[scalatest] class ExampleTestDataFeatureSpec extends FeatureSpec with T
     testData = test
     super.withFixture(test)
   }
-  feature("Feature 1") {
-    scenario("Scenario 1", TestDataTag) {}
+  Feature("Feature 1") {
+    Scenario("Scenario 1", TestDataTag) {}
   }
 }
 
@@ -308,8 +308,8 @@ protected[scalatest] class ExampleTestDataFixtureFeatureSpec extends fixture.Fea
     testData = test
     super.withFixture(test)
   }
-  feature("Feature 1") {
-    scenario("Scenario 1", TestDataTag) { s => }
+  Feature("Feature 1") {
+    Scenario("Scenario 1", TestDataTag) { s => }
   }
 }
 

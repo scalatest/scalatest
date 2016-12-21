@@ -15,17 +15,14 @@
  */
 package org.scalatest
 
-import java.util.concurrent.CountDownLatch
 import java.io.PrintStream
 import org.scalatest.events._
 import org.scalactic.Requirements._
 import Reporter.propagateDispose
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.TimerTask
-import java.util.Timer
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
 import tools.StringReporter.makeDurationString
+import tools.SuiteSortingReporter
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -52,6 +49,11 @@ private[scalatest] class DispatchReporter(
 
   requireNonNull(reporters)
 
+  private val slowpokeReporter: AtomicReference[Option[SuiteSortingReporter]] = new AtomicReference[Option[SuiteSortingReporter]](None)
+
+  def registerSlowpokeReporter(reporter: SuiteSortingReporter): Unit =
+    slowpokeReporter.getAndSet(Some(reporter))
+
   private case object Dispose
 
   private final val latch = new CountDownLatch(1)
@@ -75,15 +77,19 @@ private[scalatest] class DispatchReporter(
               yield Resources.slowpokeDetected(makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
             val fullMessage = msgs.mkString("\n")
             val dispatch = thisDispatchReporter
-            thisDispatchReporter.apply(
+            val alertEvent =
               new AlertProvided(
-               ordinal = highestOrdinalSeenSoFar.get,
-               message = fullMessage,
-               nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
-               throwable = None,
-               formatter = Some(IndentedText(Resources.alertFormattedText(fullMessage), fullMessage, 0))
+                ordinal = highestOrdinalSeenSoFar.get,
+                message = fullMessage,
+                nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
+                throwable = None,
+                formatter = Some(IndentedText(Resources.alertFormattedText(fullMessage), fullMessage, 0))
               )
-            )
+            thisDispatchReporter.apply(alertEvent)
+            slowpokeReporter.get match {
+              case Some(slowpokeRep) => slowpokeRep.slowpokeEvent(alertEvent)
+              case None =>
+            }
           }
         }
       }
@@ -158,7 +164,7 @@ private[scalatest] class DispatchReporter(
   
       while (alive) {
         queue.take() match {
-          case event: Event => 
+          case event: Event =>
             val highestSoFar = highestOrdinalSeenSoFar.get
             if (event.ordinal > highestSoFar)
               highestOrdinalSeenSoFar.compareAndSet(highestSoFar, event.ordinal) // Ignore conflicts. Just let first one win and move on.

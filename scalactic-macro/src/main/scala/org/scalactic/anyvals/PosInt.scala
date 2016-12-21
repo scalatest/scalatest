@@ -666,6 +666,42 @@ final class PosInt private (val value: Int) extends AnyVal {
   * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
   */
   def min(that: PosInt): PosInt = if (math.min(value, that.value) == value) this else that
+
+  /**
+   * Applies the passed <code>Int =&gt; Int</code> function to the underlying <code>Int</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>PosInt</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosInt</code>'s underlying <code>Int</code> value and if the result
+   * is greater than 0, it will return a <code>PosInt</code> representing that value.
+   * Otherwise, the <code>Int</code> value returned by the given function is
+   * 0 or negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Int</code> is positive. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosInt</code>'s
+   * value will not overflow. Instead of overflowing silently like <code>Int</code>, this
+   * method will signal an overflow with a loud <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Int =&gt; Int</code> function to apply to this <code>PosInt</code>'s
+   *     underlying <code>Int</code> value.
+   * @return the result of applying this <code>PosInt</code>'s underlying <code>Int</code> value to
+   *     to the passed function, wrapped in a <code>PosInt</code> if it is positive (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosInt</code>'s underlying <code>Int</code> value to
+   *     to the passed function is not positive.
+   */
+  def ensuringValid(f: Int => Int): PosInt = {
+    val candidateResult: Int = f(value)
+    if (PosIntMacro.isValid(candidateResult)) new PosInt(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosInt")
+  }
 }
 
 /**
@@ -677,13 +713,11 @@ object PosInt {
   /**
    * The largest value representable as a positive <code>Int</code>, which is <code>PosInt(2147483647)</code>.
    */
-  final val MaxValue: PosInt = PosInt.from(Int.MaxValue).get
+  final val MaxValue: PosInt = PosInt.ensuringValid(Int.MaxValue)
   /**
    * The smallest value representable as a positive <code>Int</code>, which is <code>PosInt(1)</code>.
    */
-  final val MinValue: PosInt = PosInt.from(1).get // Can't use the macro here
-
-  // TODO: Use one method for validation, as suggested in I think the UK.
+  final val MinValue: PosInt = PosInt.ensuringValid(1) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosInt]</code> given an
@@ -711,6 +745,79 @@ object PosInt {
    */
   def from(value: Int): Option[PosInt] =
     if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
+
+  /**
+   * A factory/assertion method that produces an <code>PosInt</code> given a
+   * valid <code>Int</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Int</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time. 
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Int</code> is positive.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>PosInt</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>PosInt</code>, if it is positive, else throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not positive
+   */
+  def ensuringValid(value: Int): PosInt =
+    if (PosIntMacro.isValid(value)) new PosInt(value) else {
+      throw new AssertionError(s"$value was not a valid PosInt")
+    }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Int</code> value is positive.
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return true.
+   * @return true if the specified <code>Int</code> is positive, else false.
+   */
+  def isValid(value: Int): Boolean = PosIntMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosInt</code> given a
+   * <code>Int</code> value and a default <code>PosInt</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0.0, it will return a <code>PosInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Int</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return.
+   * @param default the <code>PosInt</code> to return if the passed
+   *     <code>Int</code> value is not positive.
+   * @return the specified <code>Int</code> value wrapped in a
+   *     <code>PosInt</code>, if it is positive, else the
+   *     <code>default</code> <code>PosInt</code> value.
+   */
+  def fromOrElse(value: Int, default: => PosInt): PosInt =
+    if (PosIntMacro.isValid(value)) new PosInt(value) else default
 
   import language.experimental.macros
 
@@ -786,7 +893,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Long</code> and wrapped in a <code>PosLong</code>.
    */
-  implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.from(pos.value).get
+  implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosFloat</code>.
@@ -795,7 +902,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Float</code> and wrapped in a <code>PosFloat</code>.
    */
-  implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.from(pos.value).get
+  implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosDouble</code>.
@@ -804,7 +911,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Double</code> and wrapped in a <code>PosDouble</code>.
    */
-  implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.from(pos.value).get
+  implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZInt</code>.
@@ -813,7 +920,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    wrapped in a <code>PosZInt</code>.
    */
-  implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.from(pos.value).get
+  implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZLong</code>.
@@ -822,7 +929,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Long</code> and wrapped in a <code>PosZLong</code>.
    */
-  implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.from(pos.value).get
+  implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZFloat</code>.
@@ -831,7 +938,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Float</code> and wrapped in a <code>PosZFloat</code>.
    */
-  implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosInt</code> to <code>PosZDouble</code>.
@@ -840,7 +947,7 @@ object PosInt {
    * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
    *     widened to <code>Double</code> and wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
    * Implicit Ordering instance.

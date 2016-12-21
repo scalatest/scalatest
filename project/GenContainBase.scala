@@ -180,7 +180,8 @@ class GenContainBase {
       "List\\(" -> "javaList(",
       "listsNil" -> "listsJavaCol",
       "Nil" -> "new java.util.ArrayList",
-      "LinkedjavaList" -> "LinkedList"
+      "LinkedjavaList" -> "LinkedList",
+      "//ADDITIONAL//" -> "import scala.collection.JavaConverters._"
     )
 
   val mapMapping =
@@ -485,7 +486,7 @@ class GenContainBase {
       "ListShould" -> "JavaMapShould",
       //"Entry\\(" -> "org.scalatest.Entry(",
       "new Equality\\[String\\]" -> "new Equality[java.util.Map.Entry[String, String]]",
-      "//ADDITIONAL//" -> (javaMapLowerCased + "\n" + javaMapTrimmed + "\n" + "import org.scalatest.Entry"),
+      "//ADDITIONAL//" -> (javaMapLowerCased + "\n" + javaMapTrimmed + "\n" + "import org.scalatest.Entry" + "\n" + "import scala.collection.JavaConverters._"),
       "def areEqual\\(a: String, b: Any\\): Boolean = a.toUpperCase == b" -> javaMapUpperCasedAreEqual,
       "def areEqual\\(a: List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "def areEqual(a: java.util.Map[String, String], b: Any): Boolean = a.asScala.map(e => upperCase(e)) == b",
       "def areEqual\\(a: String, b: Any\\)" -> "def areEqual(a: java.util.Map.Entry[String, String], b: Any)",

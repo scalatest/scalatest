@@ -713,6 +713,42 @@ final class PosLong private (val value: Long) extends AnyVal {
   */
   def to(end: Long, step: Long): NumericRange.Inclusive[Long] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Long =&gt; Long</code> function to the underlying <code>Long</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>PosLong</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosLong</code>'s underlying <code>Long</code> value and if the result
+   * is greater than <code>0L</code>, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the <code>Long</code> value returned by the given function is
+   * <code>0L</code> or negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Long</code> is positive. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosLong</code>'s
+   * value will not overflow. Instead of overflowing silently like <code>Long</code>, this
+   * method will signal an overflow with a loud <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Long =&gt; Long</code> function to apply to this <code>PosLong</code>'s
+   *     underlying <code>Long</code> value.
+   * @return the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
+   *     to the passed function, wrapped in a <code>PosLong</code> if it is positive (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
+   *     to the passed function is not positive.
+   */
+  def ensuringValid(f: Long => Long): PosLong = {
+    val candidateResult: Long = f(value)
+    if (PosLongMacro.isValid(candidateResult)) new PosLong(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosLong")
+  }
 }
 
 /**
@@ -727,13 +763,13 @@ object PosLong {
    * The largest value representable as a positive
    * <code>Long</code>, which is <code>PosLong(9223372036854775807)</code>.
    */
-  final val MaxValue: PosLong = PosLong.from(Long.MaxValue).get
+  final val MaxValue: PosLong = PosLong.ensuringValid(Long.MaxValue)
 
   /**
    * The smallest value representable as a positive
    * <code>Long</code>, which is <code>PosLong(1L)</code>.
    */
-  final val MinValue: PosLong = PosLong.from(1L).get // Can't use the macro here
+  final val MinValue: PosLong = PosLong.ensuringValid(1L) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosLong]</code> given a
@@ -762,7 +798,82 @@ object PosLong {
    *     <code>None</code>.
    */
   def from(value: Long): Option[PosLong] =
-    if (value > 0L) Some(new PosLong(value)) else None
+    if (PosLongMacro.isValid(value)) Some(new PosLong(value)) else None
+
+  /**
+   * A factory/assertion method that produces an <code>PosLong</code> given a
+   * valid <code>Long</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Long</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is 0 or negative, so
+   * this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Long</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Long</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Long</code> is positive.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return
+   *     wrapped in a <code>PosLong</code>.
+   * @return the specified <code>Long</code> value wrapped in a
+   *     <code>PosLong</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not positive
+   */
+  def ensuringValid(value: Long): PosLong =
+    if (PosLongMacro.isValid(value)) new PosLong(value) else {
+      throw new AssertionError(s"$value was not a valid PosLong")
+    }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Long</code> value is positive.
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return true.
+   * @return true if the specified <code>Long</code> is positive, else false.
+   */
+  def isValid(value: Long): Boolean = PosLongMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosLong</code> given a
+   * <code>Long</code> value and a default <code>PosLong</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+   * than 0.0, it will return a <code>PosLong</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is 0L or negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Long</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Long</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return.
+   * @param default the <code>PosLong</code> to return if the passed
+   *     <code>Long</code> value is not positive.
+   * @return the specified <code>Long</code> value wrapped in a
+   *     <code>PosLong</code>, if it is positive, else the
+   *     <code>default</code> <code>PosLong</code> value.
+   */
+  def fromOrElse(value: Long, default: => PosLong): PosLong =
+    if (PosLongMacro.isValid(value)) new PosLong(value) else default
 
   import language.experimental.macros
 
@@ -840,7 +951,7 @@ object PosLong {
    *     <code>PosLong</code>, widened to <code>Float</code> and
    *     wrapped in a <code>PosFloat</code>.
    */
-  implicit def widenToPosFloat(pos: PosLong): PosFloat = PosFloat.from(pos.value).get
+  implicit def widenToPosFloat(pos: PosLong): PosFloat = PosFloat.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosLong</code> to
@@ -851,7 +962,7 @@ object PosLong {
    *     <code>PosLong</code>, widened to <code>Double</code> and
    *     wrapped in a <code>PosDouble</code>.
    */
-  implicit def widenToPosDouble(pos: PosLong): PosDouble = PosDouble.from(pos.value).get
+  implicit def widenToPosDouble(pos: PosLong): PosDouble = PosDouble.ensuringValid(pos.value)
 
   /**
    * Implicit widening conversion from <code>PosLong</code> to
@@ -861,7 +972,7 @@ object PosLong {
    * @return the <code>Long</code> value underlying the specified
    *     <code>PosLong</code> wrapped in a <code>PosZLong</code>.
    */
-  implicit def widenToPosZLong(pos: PosLong): PosZLong = PosZLong.from(pos.value).get
+  implicit def widenToPosZLong(pos: PosLong): PosZLong = PosZLong.ensuringValid(pos.value)
 
   /** 
    * Implicit widening conversion from <code>PosLong</code> to
@@ -872,7 +983,7 @@ object PosLong {
    *     <code>PosLong</code>, widened to <code>Float</code> and
    *     wrapped in a <code>PosZFloat</code>.
    */
-  implicit def widenToPosZFloat(pos: PosLong): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosLong): PosZFloat = PosZFloat.ensuringValid(pos.value)
 
   /** 
    * Implicit widening conversion from <code>PosLong</code> to
@@ -883,7 +994,7 @@ object PosLong {
    *     <code>PosLong</code>, widened to <code>Double</code> and
    *     wrapped in a <code>PosZDouble</code>.
    */
-  implicit def widenToPosZDouble(pos: PosLong): PosZDouble = PosZDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosLong): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
    * Implicit Ordering instance.

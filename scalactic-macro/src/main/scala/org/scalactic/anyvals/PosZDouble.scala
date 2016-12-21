@@ -21,6 +21,11 @@ import scala.collection.immutable.NumericRange
  * An <code>AnyVal</code> for non-negative <code>Double</code>s.
  *
  * <p>
+ * Note: A <code>PosZDouble</code> may have value <code>Double.PositiveInfinity</code>,
+ * but cannot have value <code>Double.NegativeInfinity</code> or <code>Double.NaN</code>.
+ * </p>
+ *
+ * <p>
  * Because <code>PosZDouble</code> is an <code>AnyVal</code> it will usually be
  * as efficient as an <code>Double</code>, being boxed only when a
  * <code>Double</code> would have been boxed.
@@ -262,6 +267,18 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
 
+  /**
+   * Returns the <code>PosZDouble</code> sum of this value and `x`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   */
+  def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
+
   /** Returns the difference of this value and `x`. */
   def -(x: Byte): Double = value - x
   /** Returns the difference of this value and `x`. */
@@ -340,9 +357,9 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PosZLong = PosZLong.from(math.round(value)).get
-  def ceil: PosZDouble = PosZDouble.from(math.ceil(value)).get
-  def floor: PosZDouble = PosZDouble.from(math.floor(value)).get
+  def round: PosZLong = PosZLong.ensuringValid(math.round(value))
+  def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
+  def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -404,6 +421,43 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   */
   def to(end: Double, step: Double): NumericRange.Inclusive[Double] =
     value.to(end, step)
+
+  /**
+   * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
+   * value, and if the result is positive or zero, returns the result wrapped in a <code>PosZDouble</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>PosZDouble</code>'s underlying <code>Double</code> value and if the result
+   * is positive or zero, <em>i.e.</em>, a value greater
+   * than or equal to <code>0.0</code>, it will return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the <code>Double</code> value returned by the given function is
+   * negative, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Double</code> is positive or zero. 
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>PosZDouble</code>'s
+   * value will not produce a negative number, including <code>Double.NegativeInfinity</code>, or <code>Double.NaN</code>.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Double =&gt; Double</code> function to apply to this <code>PosZDouble</code>'s
+   *     underlying <code>Double</code> value.
+   * @return the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function, wrapped in a <code>PosZDouble</code> if it is positive or zero (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+   *     to the passed function is not positive or zero.
+   */
+  def ensuringValid(f: Double => Double): PosZDouble = {
+    val candidateResult: Double = f(value)
+    if (PosZDoubleMacro.isValid(candidateResult)) new PosZDouble(candidateResult)
+    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosZDouble")
+  }
 }
 
 /**
@@ -418,13 +472,24 @@ object PosZDouble {
    * The largest value representable as a non-negative <code>Double</code>,
    * which is <code>PosZDouble(1.7976931348623157E308)</code>.
    */
-  final val MaxValue: PosZDouble = PosZDouble.from(Double.MaxValue).get
+  final val MaxValue: PosZDouble = PosZDouble.ensuringValid(Double.MaxValue)
 
   /**
    * The smallest value representable as a non-negative <code>Double</code>,
    * which is <code>PosZDouble(0.0)</code>.
    */
-  final val MinValue: PosZDouble = PosZDouble.from(0.0).get // Can't use the macro here
+  final val MinValue: PosZDouble = PosZDouble.ensuringValid(0.0) // Can't use the macro here
+
+  /**
+   * The smallest value representable as a positive
+   * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+   */
+  final val MinPositiveValue: PosZDouble = PosZDouble.ensuringValid(Double.MinPositiveValue) // Can't use the macro here
+
+  /**
+   * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
+   */
+  final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosZDouble]</code> given a
@@ -456,7 +521,84 @@ object PosZDouble {
    *     <code>None</code>.
    */
   def from(value: Double): Option[PosZDouble] =
-    if (value >= 0.0) Some(new PosZDouble(value)) else None
+    if (PosZDoubleMacro.isValid(value)) Some(new PosZDouble(value)) else None
+
+  /**
+   * A factory/assertion method that produces an <code>PosZDouble</code> given a
+   * valid <code>Double</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Double</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value
+   * and if it is a non-negative <code>Double</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the passed <code>Double</code> value is negative,
+   * so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Double</code> is positive or zero.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if
+   *     non-negative, return wrapped in a
+   *     <code>PosZDouble</code>.
+   * @return the specified <code>Double</code> value wrapped
+   *     in a <code>PosZDouble</code>, if it is positive, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not zero or positive
+   */
+  def ensuringValid(value: Double): PosZDouble =
+    if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else {
+      throw new AssertionError(s"$value was not a valid PosZDouble")
+    }
+
+  /**
+   * A predicate method that returns true if a given 
+   * <code>Double</code> value is positive or zero.
+   *
+   * @param value the <code>Double</code> to inspect, and if positive or zero, return true.
+   * @return true if the specified <code>Double</code> is positive or zero, else false.
+   */
+  def isValid(value: Double): Boolean = PosZDoubleMacro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>PosZDouble</code> given a
+   * <code>Double</code> value and a default <code>PosZDouble</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value and if
+   * it is a positive or zero <code>Double</code>, <em>i.e.</em>, a value greater
+   * than or equal to 0.0, it will return a <code>PosZDouble</code> representing that value.
+   * Otherwise, the passed <code>Double</code> value is negative, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if positive or zero, return.
+   * @param default the <code>PosZDouble</code> to return if the passed
+   *     <code>Double</code> value is not positive or zero.
+   * @return the specified <code>Double</code> value wrapped in a
+   *     <code>PosZDouble</code>, if it is positive or zero, else the
+   *     <code>default</code> <code>PosZDouble</code> value.
+   */
+  def fromOrElse(value: Double, default: => PosZDouble): PosZDouble =
+    if (PosZDoubleMacro.isValid(value)) new PosZDouble(value) else default
 
   import language.experimental.macros
   import scala.language.implicitConversions
@@ -505,6 +647,44 @@ object PosZDouble {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
+
+  /**
+   * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `x` and `y`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the method is used when there are just two arguments so that
+   * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+   * <code>PosZDouble</code> starting at the third parameter can sum more than two
+   * values, but will entail boxing and may therefore be less efficient.
+   * </p>
+   */
+  def sumOf(x: PosZDouble, y: PosZDouble): PosZDouble = PosZDouble.ensuringValid(x.value + y.value)
+
+  /**
+   * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `first` and 
+   * value `second`, and the <code>PosZDouble</code> values passed as varargs `rest`.
+   *
+   * <p>
+   * This method will always succeed (not throw an exception) because
+   * adding a positive or zero Double to another positive or zero Double
+   * will always result in another positive or zero Double
+   * value (though the result may be positive infinity).
+   * </p>
+   *
+   * <p>
+   * This overloaded form of the <code>sumOf</code> method can sum more than two
+   * values, but unlike its two-arg sibling, will entail boxing.
+   * </p>
+   */
+  def sumOf(first: PosZDouble, second: PosZDouble, rest: PosZDouble*): PosZDouble =
+    PosZDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
 
   /**
    * Implicit Ordering instance.

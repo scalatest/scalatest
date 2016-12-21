@@ -95,8 +95,8 @@ package org.scalatest.fixture
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -120,19 +120,19 @@ package org.scalatest.fixture
  *     }
  *   }
  *
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") { actor =>
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") { actor =&gt;
  *       actor ! Append("encourage clear code!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s === "ScalaTest is designed to encourage clear code!")
  *       }
  *     }
  *
- *     scenario("User needs to understand what the tests are doing") { actor =>
+ *     Scenario("User needs to understand what the tests are doing") { actor =&gt;
  *       actor ! Append("be easy to reason about!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s === "ScalaTest is designed to be easy to reason about!")
  *       }
  *     }
@@ -207,15 +207,15 @@ package org.scalatest.fixture
  *     db.append("ScalaTest is ")
  *   }
  *
- *   feature("Simplicity") {
- *     scenario("Testing should be easy to write") { db =&gt;
+ *   Feature("Simplicity") {
+ *     Scenario("Testing should be easy to write") { db =&gt;
  *       Future {
  *         db.append("easy to write!")
  *         assert(db.toString === "ScalaTest is easy to write!")
  *       }
  *     }
  *
- *     scenario("Testing should be fun") { db =&gt;
+ *     Scenario("Testing should be fun") { db =&gt;
  *       Future {
  *         db.append("fun to write!")
  *         assert(db.toString === "ScalaTest is fun to write!")
@@ -223,7 +223,7 @@ package org.scalatest.fixture
  *     }
  *
  *     // This test doesn't need a Db
- *     scenario("Testing code should be clear") { () =&gt;
+ *     Scenario("Testing code should be clear") { () =&gt;
  *       Future {
  *         val buf = new StringBuffer
  *         buf.append("ScalaTest code is ")

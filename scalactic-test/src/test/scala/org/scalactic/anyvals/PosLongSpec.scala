@@ -71,6 +71,38 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosLong.from(-99L) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns Some[PosLong if the passed Long is greater than 0") {
+        PosLong.ensuringValid(50L).value shouldBe 50L
+        PosLong.ensuringValid(100L).value shouldBe 100L
+      }
+      it("throws AssertionError if the passed Long is NOT greater than 0") {
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(0L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-1L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-99L)
+      }
+    } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Long is greater than 0") {
+        PosLong.isValid(50L) shouldBe true
+        PosLong.isValid(100L) shouldBe true
+        PosLong.isValid(0L) shouldBe false
+        PosLong.isValid(-0L) shouldBe false
+        PosLong.isValid(-1L) shouldBe false
+        PosLong.isValid(-99L) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosLong if the passed Long is greater than 0") {
+        PosLong.fromOrElse(50L, PosLong(42L)).value shouldBe 50L
+        PosLong.fromOrElse(100L, PosLong(42L)).value shouldBe 100L
+      }
+      it("returns a given default if the passed Long is NOT greater than 0") {
+        PosLong.fromOrElse(0L, PosLong(42L)).value shouldBe 42L
+        PosLong.fromOrElse(-1L, PosLong(42L)).value shouldBe 42L
+        PosLong.fromOrElse(-99L, PosLong(42L)).value shouldBe 42L
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosLong.MaxValue shouldEqual PosLong.from(Long.MaxValue).get
       PosLong.MinValue shouldEqual PosLong(1L)
@@ -588,6 +620,10 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
           widen(plong) shouldEqual widen(PosZDouble.from(plong.toLong).get)
         }
       }
+    }
+    it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
+      PosLong(33L).ensuringValid(_ + 1L) shouldEqual PosLong(34L)
+      an [AssertionError] should be thrownBy { PosLong.MaxValue.ensuringValid(_ + 1L) }
     }
   }
 }

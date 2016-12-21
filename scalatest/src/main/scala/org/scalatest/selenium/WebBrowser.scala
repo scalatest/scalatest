@@ -4607,7 +4607,7 @@ trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
    * You can mutate this object to modify the profile, or override <code>firefoxProfile</code>.
    * </p>
    */
-  implicit val webDriver = new FirefoxDriver(firefoxProfile)
+  implicit val webDriver: WebDriver = new FirefoxDriver(firefoxProfile)
 
   /**
    * Captures a screenshot and saves it as a file in the specified directory.

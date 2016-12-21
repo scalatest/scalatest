@@ -20,13 +20,15 @@ import reflect.macros.Context
 
 private[scalactic] object PosZIntMacro extends CompileTimeAssertions {
 
+  def isValid(i: Int): Boolean = i >= 0
+
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[PosZInt] = {
     val notValidMsg = Resources.notValidPosZInt
     val notLiteralMsg = Resources.notLiteralPosZInt
 
     import c.universe._
 
-    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0 }
-    reify { PosZInt.from(value.splice).get }
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
+    reify { PosZInt.ensuringValid(value.splice) }
   }
 }

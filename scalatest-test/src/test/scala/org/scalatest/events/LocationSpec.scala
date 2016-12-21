@@ -61,17 +61,20 @@ class LocationSpec extends FunSpec with Checkers {
             inside (testSucceed.location) { case Some(location) =>
               inside (location) { case lineInFile: LineInFile =>
                 inside (lineInFile.filePathname) { case Some(filePathname) =>
-                  assert(filePathname.endsWith(s"org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
+                  if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+                    assert(filePathname.endsWith(s"org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
+                  else
+                    assert(filePathname == "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
                 }
               }
             }
           case testFail:TestFailed =>
             assertResult(SeeStackDepthException.getClass) { testFail.location.get.getClass }
           case testPending:TestPending => 
-            assertResult(thisLineNumber - 30) { testPending.location.get.asInstanceOf[LineInFile].lineNumber }
+            assertResult(thisLineNumber - 33) { testPending.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testPending.location.get.asInstanceOf[LineInFile].fileName }
           case testIgnore:TestIgnored => 
-            assertResult(thisLineNumber - 30) { testIgnore.location.get.asInstanceOf[LineInFile].lineNumber }
+            assertResult(thisLineNumber - 33) { testIgnore.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testIgnore.location.get.asInstanceOf[LineInFile].fileName }
           case _ =>
         }
