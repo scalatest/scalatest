@@ -28,27 +28,27 @@ val x: (Int Else String) Or ErrorMessage
 
 val x: (Int Else String) Or ErrorMessage
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = Port(3).elseStar[String]
+val y = Port[Int].elseStar("III")
 
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = Port(3).elseStar[String]
+val y = Port[Int].elseStar("III")
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = Port(3).elseStar[String]
+val y = Port[Int].elseStar("III")
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = Port(3).elseStar[String]
+val y = Port[Int].elseStar("III")
 
 num match {
-  case West(e) => e + 10
-  case East(w) => w.length
+  case Port(e) => e + 10
+  case Star(w) => w.length
 }
 
 num match {
-  case West(e) => e + 10
-  case East(w) => w.length
+  case Port(e) => e + 10
+  case Star(w) => w.length
 }
 
 YinYang[B, W]
@@ -62,113 +62,113 @@ class ElseSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "An Else" can "be either West or East" in {
-    West(7).isWest shouldBe true
-    West(7).isEast shouldBe false
-    East("oops").isEast shouldBe true
-    East("oops").isWest shouldBe false
+  "An Else" can "be either Port or Star" in {
+    Port(7).isPort shouldBe true
+    Port(7).isStar shouldBe false
+    Star("oops").isStar shouldBe true
+    Star("oops").isPort shouldBe false
 
-    West(7) shouldBe an [Else[_, _]]
-    West(7) shouldBe a [West[_]]
+    Port(7) shouldBe an [Else[_, _]]
+    Port(7) shouldBe a [Port[_]]
 
-    East("oops") shouldBe an [Else[_, _]]
-    East("oops") shouldBe an [East[_]]
+    Star("oops") shouldBe an [Else[_, _]]
+    Star("oops") shouldBe an [Star[_]]
   }
   it can "have its non-inferred type widened by an apply call with a type param" in {
     /*
-      scala> West[Int].elseEast("hi")
-      res0: org.scalautils.East[Int,String] = East(hi)
+      scala> Port[Int].elseStar("hi")
+      res0: org.scalautils.Star[Int,String] = Star(hi)
 
-      scala> West(3).elseEast[String]
-      res1: org.scalautils.West[Int,String] = West(3)
+      scala> Port(3).elseStar[String]
+      res1: org.scalautils.Port[Int,String] = Port(3)
 
-      scala> West(3).elseEast[ErrorMessage]
-      res2: org.scalautils.West[Int,org.scalautils.ErrorMessage] = West(3)
+      scala> Port(3).elseStar[ErrorMessage]
+      res2: org.scalautils.Port[Int,org.scalautils.ErrorMessage] = Port(3)
 
-      scala> West(3).elseEast("oops")
+      scala> Port(3).elseStar("oops")
       <console>:11: error: type mismatch;
        found   : String("oops")
        required: <:<[Nothing,?]
-                    West(3).elseEast("oops")
+                    Port(3).elseStar("oops")
                                   ^
 
-      scala> West[Int].elseEast[String]
-      <console>:11: error: missing arguments for method elseEast in class WestieWestieGumdrop;
+      scala> Port[Int].elseStar[String]
+      <console>:11: error: missing arguments for method elseStar in class PortiePortieGumdrop;
       follow this method with `_' if you want to treat it as a partially applied function
-                    West[Int].elseEast[String]
+                    Port[Int].elseStar[String]
                                    ^
     */
-    // If the expected type is known, then you can just say West or East:
-    West(3) shouldBe West(3)
-    East("oops") shouldBe East("oops")
+    // If the expected type is known, then you can just say Port or Star:
+    Port(3) shouldBe Port(3)
+    Star("oops") shouldBe Star("oops")
 
     // But if the expected type is not known, the inferred type of the other side will be Nothing:
-    // West(3) will be a West[Int, Nothing]
-    // East("oops") will be a East[Nothing, String]
+    // Port(3) will be a Port[Int, Nothing]
+    // Star("oops") will be a Star[Nothing, String]
 
     // If you want to specify a more specific type than Nothing, you can use this syntax:
-    West(3).elseEast[String] shouldBe West(3)
-    West[Int].elseEast("oops") shouldBe East("oops")
+    Port(3).elseStar[String] shouldBe Port(3)
+    Port[Int].elseStar("oops") shouldBe Star("oops")
 
     // You could also do it this way:
-    West[Int](3) shouldBe West(3)
-    East[String]("oops") shouldBe East("oops")
+    Port[Int](3) shouldBe Port(3)
+    Star[String]("oops") shouldBe Star("oops")
 
     // But that requires that you also give a type that would be inferred from the value. This
     // would only be necessary if you wanted a more general type than that which
     // would otherwise be inferred from the given value, such as:
-    West[AnyVal](3) shouldBe West(3)
-    East[AnyRef]("oops") shouldBe East("oops")
+    Port[AnyVal](3) shouldBe Port(3)
+    Star[AnyRef]("oops") shouldBe Star("oops")
 
     // In that case, though, I recommend a type ascription, because I think it is easier to read:
-    (West(3): AnyVal Else String) shouldBe West(3)
-    (East("oops"): Int Else AnyRef) shouldBe East("oops")
+    (Port(3): AnyVal Else String) shouldBe Port(3)
+    (Star("oops"): Int Else AnyRef) shouldBe Star("oops")
   }
   it can "be used in infix notation" in {
     def div(a: Int, b: Int): Int Else ArithmeticException = {
-      try West(a / b)
-      catch { case ae: ArithmeticException => East(ae) }
+      try Port(a / b)
+      catch { case ae: ArithmeticException => Star(ae) }
       if (b == 0)
-        East(new ArithmeticException("/ by zero"))
+        Star(new ArithmeticException("/ by zero"))
       else
-        West(a / b)
+        Port(a / b)
     }
-    div(1, 1) shouldEqual West(1)
-    div(6, 2) shouldEqual West(3)
-    div(6, 2) shouldEqual West(3)
-    div(1, 0).isEast shouldBe true
+    div(1, 1) shouldEqual Port(1)
+    div(6, 2) shouldEqual Port(3)
+    div(6, 2) shouldEqual Port(3)
+    div(1, 0).isStar shouldBe true
     val ae = div(1, 0) match {
-      case East(ae) => ae
-      case result => fail("didn't get an East" + result)
+      case Star(ae) => ae
+      case result => fail("didn't get an Star" + result)
     }
     ae should have message "/ by zero"
   }
-  it can "be used with westMap" in {
-    West(8) westMap (_ + 1) should equal (West(9))
-    West[Int].elseEast("eight") westMap (_ + 1) should equal (East("eight"))
+  it can "be used with portMap" in {
+    Port(8) portMap (_ + 1) should equal (Port(9))
+    Port[Int].elseStar("eight") portMap (_ + 1) should equal (Star("eight"))
   }
-  it can "be used with eastMap" in {
-    West(8).elseEast[ErrorMessage] eastMap (_.toUpperCase) should equal (West(8))
-    West[Int].elseEast("eight") eastMap (_.toUpperCase) should equal (East("EIGHT"))
+  it can "be used with starMap" in {
+    Port(8).elseStar[ErrorMessage] starMap (_.toUpperCase) should equal (Port(8))
+    Port[Int].elseStar("eight") starMap (_.toUpperCase) should equal (Star("EIGHT"))
   }
   it can "be used with transform" in {
-    West(12).elseEast[String].transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (West(13))
-    West[Int].elseEast("hi").transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (East("HI"))
-    West(12).elseEast[String].transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (East(13))
-    West[Int].elseEast("hi").transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (West("HI"))
+    Port(12).elseStar[String].transform((i: Int) => Port(i + 1), (s: String) => Star(s.toUpperCase)) should === (Port(13))
+    Port[Int].elseStar("hi").transform((i: Int) => Port(i + 1), (s: String) => Star(s.toUpperCase)) should === (Star("HI"))
+    Port(12).elseStar[String].transform((i: Int) => Star(i + 1), (s: String) => Port(s.toUpperCase)) should === (Star(13))
+    Port[Int].elseStar("hi").transform((i: Int) => Star(i + 1), (s: String) => Port(s.toUpperCase)) should === (Port("HI"))
   }
   it can "be used with swap" in {
-    West(12).elseEast[String].swap should === (West[String].elseEast(12))
-    West[Int].elseEast("hi").swap should === (West("hi").elseEast[Int])
+    Port(12).elseStar[String].swap should === (Port[String].elseStar(12))
+    Port[Int].elseStar("hi").swap should === (Port("hi").elseStar[Int])
   }
   it can "be folded with fold" in {
-    West(3).elseEast[String].fold(_ + 1, _.length) shouldBe 4
-    West[Int].elseEast("howdy").fold(_ + 1, _.length) shouldBe 5
+    Port(3).elseStar[String].fold(_ + 1, _.length) shouldBe 4
+    Port[Int].elseStar("howdy").fold(_ + 1, _.length) shouldBe 5
   }
   // SKIP-SCALATESTJS-START
   it can "be serialized correctly" in {
-    serializeRoundtrip(West(12)) shouldBe West(12)
-    serializeRoundtrip(East("twelve")) shouldBe East("twelve")
+    serializeRoundtrip(Port(12)) shouldBe Port(12)
+    serializeRoundtrip(Star("twelve")) shouldBe Star("twelve")
   }
   // SKIP-SCALATESTJS-END
   "The Else companion" should "offer a concise type lambda syntax" in {
@@ -176,10 +176,10 @@ class ElseSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     trait Functor[Context[_]] {
       def map[A, B](ca: Context[A])(f: A => B): Context[B]
     }
-    class WestElseFunctor[WHITE] extends Functor[Else.W[WHITE]#B] {
+    class PortElseFunctor[WHITE] extends Functor[Else.W[WHITE]#B] {
       override def map[B, C](ca: B Else WHITE)(f: B => C): C Else WHITE = ???
     }
-    class EastElseFunctor[BLACK] extends Functor[Else.B[BLACK]#W] {
+    class StarElseFunctor[BLACK] extends Functor[Else.B[BLACK]#W] {
       override def map[W, X](ca: BLACK Else W)(f: W => X): BLACK Else X = ???
     }
   }
