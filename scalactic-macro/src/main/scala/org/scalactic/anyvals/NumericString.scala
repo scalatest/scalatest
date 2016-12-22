@@ -15,12 +15,145 @@
 */
 package org.scalactic.anyvals
 
+import java.nio.charset.Charset
+import java.util.Locale
+
 private[scalactic] final class NumericString private (val value: String) extends AnyVal {
   override def toString: String = s"NumericString($value)"
 
   def length: Int = value.length
 
   def charAt(index: Int): Char = value.charAt(index)
+
+  def codePointAt(index: Int): Int = value.codePointAt(index)
+
+  def codePointBefore(index: Int): Int = value.codePointBefore(index)
+
+  def codePointCount(beginIndex: Int, endIndex: Int): Int =
+    value.codePointCount(beginIndex, endIndex)
+
+  def compareTo(anotherString: String): Int =
+    value.compareTo(anotherString)
+
+  def compareToIgnoreCase(anotherString: String): Int =
+    value.compareToIgnoreCase(anotherString)
+
+  def concat(str: String): String =
+    value.concat(str)
+
+  def contains(s: CharSequence): Boolean =
+    value.contains(s)
+
+  def contentEquals(cs: CharSequence): Boolean =
+    value.contentEquals(cs)
+
+  def endsWith(suffix: String): Boolean =
+    value.endsWith(suffix)
+
+  def getBytes: Array[Byte] =
+    value.getBytes
+
+  def getBytes(charset: Charset): Array[Byte] =
+    value.getBytes(charset)
+
+  def getBytes(charsetName: String): Array[Byte] =
+    value.getBytes(charsetName)
+
+  def getChars(srcBegin: Int, srcEnd: Int, dst: Array[Char], dstBegin: Int): Unit =
+    value.getChars(srcBegin, srcEnd, dst, dstBegin)
+
+  def indexOf(ch: Int): Int =
+    value.indexOf(ch)
+
+  def indexOf(ch: Int, fromIndex: Int): Int =
+    value.indexOf(ch, fromIndex)
+
+  def indexOf(str: String): Int =
+    value.indexOf(str)
+
+  def indexOf(str: String, fromIndex: Int): Int =
+    value.indexOf(str, fromIndex)
+
+  def intern: String =
+    value.intern
+
+  def isEmpty: Boolean =
+    value.isEmpty
+
+  def lastIndexOf(ch: Int): Int =
+    value.lastIndexOf(ch)
+
+  def lastIndexOf(ch: Int, fromIndex: Int): Int =
+    value.lastIndexOf(ch, fromIndex)
+
+  def lastIndexOf(str: String): Int =
+    value.lastIndexOf(str)
+
+  def lastIndexOf(str: String, fromIndex: Int): Int =
+    value.lastIndexOf(str, fromIndex)
+
+  def matches(regex: String): Boolean =
+    value.matches(regex)
+
+  def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
+    value.offsetByCodePoints(index, codePointOffset)
+
+  def regionMatches(ignoreCase: Boolean, toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
+    value.regionMatches(ignoreCase, toffset, other, ooffset, len)
+
+  def regionMatches(toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
+    value.regionMatches(toffset, other, ooffset, len)
+
+  def replace(oldChar: Char, newChar: Char): String =
+    value.replace(oldChar, newChar)
+
+  def replace(target: CharSequence, replacement: CharSequence): String =
+    value.replace(target, replacement)
+
+  def replaceAll(regex: String, replacement: String): String =
+    value.replaceAll(regex, replacement)
+
+  def replaceFirst(regex: String, replacement: String): String =
+    value.replaceFirst(regex, replacement)
+
+  def split(regex: String): Array[String] =
+    value.split(regex)
+
+  def split(regex: String, limit: Int): Array[String] =
+    value.split(regex, limit)
+
+  def startsWith(prefix: String): Boolean =
+    value.startsWith(prefix)
+
+  def startsWith(prefix: String, toffset: Int): Boolean =
+    value.startsWith(prefix, toffset)
+
+  def subSequence(beginIndex: Int, endIndex: Int): CharSequence =
+    value.subSequence(beginIndex, endIndex)
+
+  def substring(beginIndex: Int): String =
+    value.substring(beginIndex)
+
+  def substring(beginIndex: Int, endIndex: Int): String =
+    value.substring(beginIndex, endIndex)
+
+  def toCharArray: Array[Char] =
+    value.toCharArray
+
+  def toLowerCase: String =
+    value.toLowerCase
+
+  def toLowerCase(locale: Locale): String =
+    value.toLowerCase(locale: Locale)
+
+  def toUpperCase: String =
+    value.toUpperCase
+
+  def toUpperCase(locale: Locale): String =
+    value.toUpperCase(locale: Locale)
+
+  def trim: String =
+    value.trim
 
   def ensuringValid(f: String => String): NumericString = {
     val candidateResult: String = f(value)
