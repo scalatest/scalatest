@@ -351,13 +351,29 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   */
   def min(that: PosZFloat): PosZFloat = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `PosZFloat` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
+  /**
+   * Rounds this `PosZFloat` value to the nearest whole number value that can be expressed as an `Int`, returning the result as a `PosZInt`.
+   */
   def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+
+  /**
+   * Returns the smallest (closest to 0) `PosZFloat` that is greater than or equal to this `PosZFloat`
+   * and represents a mathematical integer.
+   */
   def ceil: PosZFloat = PosZFloat.ensuringValid(math.ceil(value).toFloat)
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosZFloat` that is less than or equal to
+   * this `PosZFloat` and represents a mathematical integer.
+   */
   def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
 
   /** Converts an angle measured in degrees to an approximately equivalent

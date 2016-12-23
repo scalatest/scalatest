@@ -356,11 +356,20 @@ final class PosFloat private (val value: Float) extends AnyVal {
   */
   def min(that: PosFloat): PosFloat = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `PosFloat` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
+  /**
+   * Rounds this `PosFloat` value to the nearest whole number value that can be expressed as an `Int`, returning the result as a `PosZInt`.
+   */
+  def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+/*
+  // Why did I do this?
   def round: PosZInt = {
     import scala.util.Failure
     import scala.util.Success
@@ -375,17 +384,30 @@ final class PosFloat private (val value: Float) extends AnyVal {
       case Success(v) => v
     }
   }
+*/
+
+  /**
+   * Returns the smallest (closest to 0) `PosFloat` that is greater than or equal to this `PosFloat`
+   * and represents a mathematical integer.
+   */
   def ceil: PosFloat = PosFloat.ensuringValid(math.ceil(value.toDouble).toFloat) // I think this one is safe, but try NaN
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosFloat` that is less than or equal to
+   * this `PosFloat` and represents a mathematical integer.
+   */
   def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value.toDouble).toFloat) // Could be zero.
 
-  /** Converts an angle measured in degrees to an approximately equivalent
+  /**
+  * Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
   */
   def toRadians: Float = math.toRadians(value.toDouble).toFloat
 
-  /** Converts an angle measured in radians to an approximately equivalent
+  /**
+  * Converts an angle measured in radians to an approximately equivalent
   * angle measured in degrees.
   * @return the measurement of the angle x in degrees.
   */

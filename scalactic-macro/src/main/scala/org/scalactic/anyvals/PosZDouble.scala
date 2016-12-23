@@ -352,16 +352,33 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosZDouble): PosZDouble = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `PosZDouble` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
+  /**
+   * Rounds this `PosZDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
+   */
   def round: PosZLong = PosZLong.ensuringValid(math.round(value))
+
+  /**
+   * Returns the smallest (closest to 0) `PosZDouble` that is greater than or equal to this `PosZDouble`
+   * and represents a mathematical integer.
+   */
   def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosZDouble` that is less than or equal to
+   * this `PosZDouble` and represents a mathematical integer.
+   */
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
 
-  /** Converts an angle measured in degrees to an approximately equivalent
+  /**
+  * Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.

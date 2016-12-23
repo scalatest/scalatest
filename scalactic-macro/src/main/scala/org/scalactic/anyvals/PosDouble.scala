@@ -345,8 +345,10 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
-  // TODO: Need Scaladoc
   // Stuff from RichDouble
+  /**
+   * Indicates whether this `PosDouble` has value `PositiveInfinity`.
+   */
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
   /**
@@ -359,15 +361,29 @@ final class PosDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
 
-  // TODO: Need Scaladoc
+  /**
+   * Indicates whether this `PosDouble` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  // TODO: Scaladoc
+  /**
+   * Rounds this `PosDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
+   */
   def round: PosZLong = PosZLong.ensuringValid(math.round(value)) // Also could be zero.
+
+  /**
+   * Returns the smallest (closest to 0) `PosDouble` that is greater than or equal to this `PosDouble`
+   * and represents a mathematical integer.
+   */
   def ceil: PosDouble = PosDouble.ensuringValid(math.ceil(value)) // I think this one is safe, but try NaN
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosDouble` that is less than or equal to 
+   * this `PosDouble` and represents a mathematical integer.
+   */
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value)) // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
