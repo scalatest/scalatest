@@ -28,27 +28,27 @@ val x: (Int Else String) Or ErrorMessage
 
 val x: (Int Else String) Or ErrorMessage
 
-val x = Port(3).elseStar[String]
-val y = Port[Int].elseStar("III")
+val x = First(3).elseSecond[String]
+val y = First[Int].elseSecond("III")
 
 
-val x = Port(3).elseStar[String]
-val y = Port[Int].elseStar("III")
+val x = First(3).elseSecond[String]
+val y = First[Int].elseSecond("III")
 
-val x = Port(3).elseStar[String]
-val y = Port[Int].elseStar("III")
+val x = First(3).elseSecond[String]
+val y = First[Int].elseSecond("III")
 
-val x = Port(3).elseStar[String]
-val y = Port[Int].elseStar("III")
+val x = First(3).elseSecond[String]
+val y = First[Int].elseSecond("III")
 
 num match {
-  case Port(e) => e + 10
-  case Star(w) => w.length
+  case First(e) => e + 10
+  case Second(w) => w.length
 }
 
 num match {
-  case Port(e) => e + 10
-  case Star(w) => w.length
+  case First(e) => e + 10
+  case Second(w) => w.length
 }
 
 YinYang[B, W]
@@ -62,113 +62,113 @@ class ElseSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "An Else" can "be either Port or Star" in {
-    Port(7).isPort shouldBe true
-    Port(7).isStar shouldBe false
-    Star("oops").isStar shouldBe true
-    Star("oops").isPort shouldBe false
+  "An Else" can "be either First or Second" in {
+    First(7).isFirst shouldBe true
+    First(7).isSecond shouldBe false
+    Second("oops").isSecond shouldBe true
+    Second("oops").isFirst shouldBe false
 
-    Port(7) shouldBe an [Else[_, _]]
-    Port(7) shouldBe a [Port[_]]
+    First(7) shouldBe an [Else[_, _]]
+    First(7) shouldBe a [First[_]]
 
-    Star("oops") shouldBe an [Else[_, _]]
-    Star("oops") shouldBe an [Star[_]]
+    Second("oops") shouldBe an [Else[_, _]]
+    Second("oops") shouldBe an [Second[_]]
   }
   it can "have its non-inferred type widened by an apply call with a type param" in {
     /*
-      scala> Port[Int].elseStar("hi")
-      res0: org.scalautils.Star[Int,String] = Star(hi)
+      scala> First[Int].elseSecond("hi")
+      res0: org.scalautils.Second[Int,String] = Second(hi)
 
-      scala> Port(3).elseStar[String]
-      res1: org.scalautils.Port[Int,String] = Port(3)
+      scala> First(3).elseSecond[String]
+      res1: org.scalautils.First[Int,String] = First(3)
 
-      scala> Port(3).elseStar[ErrorMessage]
-      res2: org.scalautils.Port[Int,org.scalautils.ErrorMessage] = Port(3)
+      scala> First(3).elseSecond[ErrorMessage]
+      res2: org.scalautils.First[Int,org.scalautils.ErrorMessage] = First(3)
 
-      scala> Port(3).elseStar("oops")
+      scala> First(3).elseSecond("oops")
       <console>:11: error: type mismatch;
        found   : String("oops")
        required: <:<[Nothing,?]
-                    Port(3).elseStar("oops")
+                    First(3).elseSecond("oops")
                                   ^
 
-      scala> Port[Int].elseStar[String]
-      <console>:11: error: missing arguments for method elseStar in class PortiePortieGumdrop;
+      scala> First[Int].elseSecond[String]
+      <console>:11: error: missing arguments for method elseSecond in class FirstieFirstieGumdrop;
       follow this method with `_' if you want to treat it as a partially applied function
-                    Port[Int].elseStar[String]
+                    First[Int].elseSecond[String]
                                    ^
     */
-    // If the expected type is known, then you can just say Port or Star:
-    Port(3) shouldBe Port(3)
-    Star("oops") shouldBe Star("oops")
+    // If the expected type is known, then you can just say First or Second:
+    First(3) shouldBe First(3)
+    Second("oops") shouldBe Second("oops")
 
     // But if the expected type is not known, the inferred type of the other side will be Nothing:
-    // Port(3) will be a Port[Int, Nothing]
-    // Star("oops") will be a Star[Nothing, String]
+    // First(3) will be a First[Int, Nothing]
+    // Second("oops") will be a Second[Nothing, String]
 
     // If you want to specify a more specific type than Nothing, you can use this syntax:
-    Port(3).elseStar[String] shouldBe Port(3)
-    Port[Int].elseStar("oops") shouldBe Star("oops")
+    First(3).elseSecond[String] shouldBe First(3)
+    First[Int].elseSecond("oops") shouldBe Second("oops")
 
     // You could also do it this way:
-    Port[Int](3) shouldBe Port(3)
-    Star[String]("oops") shouldBe Star("oops")
+    First[Int](3) shouldBe First(3)
+    Second[String]("oops") shouldBe Second("oops")
 
     // But that requires that you also give a type that would be inferred from the value. This
     // would only be necessary if you wanted a more general type than that which
     // would otherwise be inferred from the given value, such as:
-    Port[AnyVal](3) shouldBe Port(3)
-    Star[AnyRef]("oops") shouldBe Star("oops")
+    First[AnyVal](3) shouldBe First(3)
+    Second[AnyRef]("oops") shouldBe Second("oops")
 
     // In that case, though, I recommend a type ascription, because I think it is easier to read:
-    (Port(3): AnyVal Else String) shouldBe Port(3)
-    (Star("oops"): Int Else AnyRef) shouldBe Star("oops")
+    (First(3): AnyVal Else String) shouldBe First(3)
+    (Second("oops"): Int Else AnyRef) shouldBe Second("oops")
   }
   it can "be used in infix notation" in {
     def div(a: Int, b: Int): Int Else ArithmeticException = {
-      try Port(a / b)
-      catch { case ae: ArithmeticException => Star(ae) }
+      try First(a / b)
+      catch { case ae: ArithmeticException => Second(ae) }
       if (b == 0)
-        Star(new ArithmeticException("/ by zero"))
+        Second(new ArithmeticException("/ by zero"))
       else
-        Port(a / b)
+        First(a / b)
     }
-    div(1, 1) shouldEqual Port(1)
-    div(6, 2) shouldEqual Port(3)
-    div(6, 2) shouldEqual Port(3)
-    div(1, 0).isStar shouldBe true
+    div(1, 1) shouldEqual First(1)
+    div(6, 2) shouldEqual First(3)
+    div(6, 2) shouldEqual First(3)
+    div(1, 0).isSecond shouldBe true
     val ae = div(1, 0) match {
-      case Star(ae) => ae
-      case result => fail("didn't get an Star" + result)
+      case Second(ae) => ae
+      case result => fail("didn't get an Second" + result)
     }
     ae should have message "/ by zero"
   }
-  it can "be used with portMap" in {
-    Port(8) portMap (_ + 1) should equal (Port(9))
-    Port[Int].elseStar("eight") portMap (_ + 1) should equal (Star("eight"))
+  it can "be used with firstMap" in {
+    First(8) firstMap (_ + 1) should equal (First(9))
+    First[Int].elseSecond("eight") firstMap (_ + 1) should equal (Second("eight"))
   }
-  it can "be used with starMap" in {
-    Port(8).elseStar[ErrorMessage] starMap (_.toUpperCase) should equal (Port(8))
-    Port[Int].elseStar("eight") starMap (_.toUpperCase) should equal (Star("EIGHT"))
+  it can "be used with secondMap" in {
+    First(8).elseSecond[ErrorMessage] secondMap (_.toUpperCase) should equal (First(8))
+    First[Int].elseSecond("eight") secondMap (_.toUpperCase) should equal (Second("EIGHT"))
   }
   it can "be used with transform" in {
-    Port(12).elseStar[String].transform((i: Int) => Port(i + 1), (s: String) => Star(s.toUpperCase)) should === (Port(13))
-    Port[Int].elseStar("hi").transform((i: Int) => Port(i + 1), (s: String) => Star(s.toUpperCase)) should === (Star("HI"))
-    Port(12).elseStar[String].transform((i: Int) => Star(i + 1), (s: String) => Port(s.toUpperCase)) should === (Star(13))
-    Port[Int].elseStar("hi").transform((i: Int) => Star(i + 1), (s: String) => Port(s.toUpperCase)) should === (Port("HI"))
+    First(12).elseSecond[String].transform((i: Int) => First(i + 1), (s: String) => Second(s.toUpperCase)) should === (First(13))
+    First[Int].elseSecond("hi").transform((i: Int) => First(i + 1), (s: String) => Second(s.toUpperCase)) should === (Second("HI"))
+    First(12).elseSecond[String].transform((i: Int) => Second(i + 1), (s: String) => First(s.toUpperCase)) should === (Second(13))
+    First[Int].elseSecond("hi").transform((i: Int) => Second(i + 1), (s: String) => First(s.toUpperCase)) should === (First("HI"))
   }
   it can "be used with swap" in {
-    Port(12).elseStar[String].swap should === (Port[String].elseStar(12))
-    Port[Int].elseStar("hi").swap should === (Port("hi").elseStar[Int])
+    First(12).elseSecond[String].swap should === (First[String].elseSecond(12))
+    First[Int].elseSecond("hi").swap should === (First("hi").elseSecond[Int])
   }
   it can "be folded with fold" in {
-    Port(3).elseStar[String].fold(_ + 1, _.length) shouldBe 4
-    Port[Int].elseStar("howdy").fold(_ + 1, _.length) shouldBe 5
+    First(3).elseSecond[String].fold(_ + 1, _.length) shouldBe 4
+    First[Int].elseSecond("howdy").fold(_ + 1, _.length) shouldBe 5
   }
   // SKIP-SCALATESTJS-START
   it can "be serialized correctly" in {
-    serializeRoundtrip(Port(12)) shouldBe Port(12)
-    serializeRoundtrip(Star("twelve")) shouldBe Star("twelve")
+    serializeRoundtrip(First(12)) shouldBe First(12)
+    serializeRoundtrip(Second("twelve")) shouldBe Second("twelve")
   }
   // SKIP-SCALATESTJS-END
   "The Else companion" should "offer a concise type lambda syntax" in {
@@ -176,10 +176,10 @@ class ElseSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     trait Functor[Context[_]] {
       def map[A, B](ca: Context[A])(f: A => B): Context[B]
     }
-    class PortElseFunctor[WHITE] extends Functor[Else.W[WHITE]#B] {
+    class FirstElseFunctor[WHITE] extends Functor[Else.W[WHITE]#B] {
       override def map[B, C](ca: B Else WHITE)(f: B => C): C Else WHITE = ???
     }
-    class StarElseFunctor[BLACK] extends Functor[Else.B[BLACK]#W] {
+    class SecondElseFunctor[BLACK] extends Functor[Else.B[BLACK]#W] {
       override def map[W, X](ca: BLACK Else W)(f: W => X): BLACK Else X = ???
     }
   }
