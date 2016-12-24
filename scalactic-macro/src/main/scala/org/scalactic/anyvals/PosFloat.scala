@@ -466,6 +466,13 @@ final class PosFloat private (val value: Float) extends AnyVal {
    * value, and if the result is positive, returns the result wrapped in a <code>PosFloat</code>,
    * else throws <code>AssertionError</code>.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use a different method
+   * on this class that returns a `Float` result instead.
+   *
    * <p>
    * This method will inspect the result of applying the given function to this
    * <code>PosFloat</code>'s underlying <code>Float</code> value and if the result
