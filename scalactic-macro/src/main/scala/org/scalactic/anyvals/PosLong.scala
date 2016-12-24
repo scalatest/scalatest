@@ -817,7 +817,7 @@ object PosLong {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Long</code> literals at
-   * compile time, whereas <code>from</code> inspects
+   * compile time, whereas this method inspects
    * <code>Long</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion

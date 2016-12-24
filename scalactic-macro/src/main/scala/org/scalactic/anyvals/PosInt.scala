@@ -783,8 +783,6 @@ object PosInt {
       throw new AssertionError(s"$value was not a valid PosInt")
     }
 
-// TODO: Go through all Pos* types and change from to ensuringValid in the Scaladoc 3rd paragraph.
-
   /**
    * A factory/validation method that produces a <code>PosInt</code>, wrapped
    * in a <code>Success</code>, given a valid <code>Int</code> value, or if the
