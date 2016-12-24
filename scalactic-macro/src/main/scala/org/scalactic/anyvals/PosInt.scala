@@ -750,7 +750,7 @@ object PosInt {
     if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
 
   /**
-   * A factory/assertion method that produces an <code>PosInt</code> given a
+   * A factory/assertion method that produces a <code>PosInt</code> given a
    * valid <code>Int</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Int</code> value.
    *
@@ -765,7 +765,7 @@ object PosInt {
    * <p>
    * This factory method differs from the <code>apply</code> factory method
    * in that <code>apply</code> is implemented via a macro that inspects
-   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
    * <code>Int</code> values at run time. 
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion
@@ -783,19 +783,134 @@ object PosInt {
       throw new AssertionError(s"$value was not a valid PosInt")
     }
 
+// TODO: Go through all Pos* types and change from to ensuringValid in the Scaladoc 3rd paragraph.
+
+  /**
+   * A factory/validation method that produces a <code>PosInt</code>, wrapped
+   * in a <code>Success</code>, given a valid <code>Int</code> value, or if the
+   * given <code>Int</code> is invalid, an <code>AssertionError</code>, wrapped
+   * in a <code>Failure</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value, wrapped in a <code>Success</code>.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>Success(PosInt)</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Success(PosInt)</code>, if it is positive, else a <code>Failure(AssertionError)</code>.
+   */
   def tryingValid(value: Int): Try[PosInt] =
     if (PosIntMacro.isValid(value))
       Success(new PosInt(value))
     else
       Failure(new AssertionError(s"$value was not a valid PosInt"))
 
+  /**
+   * A validation method that produces a <code>Pass</code>
+   * given a valid <code>Int</code> value, or
+   * an error value of type <code>E</code> produced by passing the
+   * given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>Pass</code>.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will return a result of type <code>E</code> obtained by passing
+   * the invalid <code>Int</code> value to the given function <code>f</code>,
+   * wrapped in a `Fail`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the `Int` to validate that it is positive.
+   * @return a `Pass` if the specified `Int` value is positive,
+   *   else a `Fail` containing an error value produced by passing the
+   *   specified `Int` to the given function `f`.
+   */
   def passOrElse[E](value: Int)(f: Int => E): Validation[E] =
     if (PosIntMacro.isValid(value)) Pass else Fail(f(value))
 
-  def goodOrElse[E](value: Int)(f: Int => E): PosInt Or E =
+  /**
+   * A factory/validation method that produces a <code>PosInt</code>, wrapped
+   * in a <code>Good</code>, given a valid <code>Int</code> value, or if the
+   * given <code>Int</code> is invalid, an error value of type <code>B</code>
+   * produced by passing the given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value, wrapped in a <code>Good</code>.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will return a result of type <code>B</code> obtained by passing
+   * the invalid <code>Int</code> value to the given function <code>f</code>,
+   * wrapped in a `Bad`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>Good(PosInt)</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Good(PosInt)</code>, if it is positive, else a <code>Bad(f(value))</code>.
+   */
+  def goodOrElse[B](value: Int)(f: Int => B): PosInt Or B =
     if (PosIntMacro.isValid(value)) Good(PosInt.ensuringValid(value)) else Bad(f(value))
 
-  def rightOrElse[E](value: Int)(f: Int => E): Either[E, PosInt] =
+  /**
+   * A factory/validation method that produces a <code>PosInt</code>, wrapped
+   * in a <code>Right</code>, given a valid <code>Int</code> value, or if the
+   * given <code>Int</code> is invalid, an error value of type <code>L</code>
+   * produced by passing the given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Left</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value, wrapped in a <code>Right</code>.
+   * Otherwise, the passed <code>Int</code> value is 0 or negative, so this
+   * method will return a result of type <code>L</code> obtained by passing
+   * the invalid <code>Int</code> value to the given function <code>f</code>,
+   * wrapped in a `Left`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>Right(PosInt)</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Right(PosInt)</code>, if it is positive, else a <code>Left(f(value))</code>.
+   */
+  def rightOrElse[L](value: Int)(f: Int => L): Either[L, PosInt] =
     if (PosIntMacro.isValid(value)) Right(PosInt.ensuringValid(value)) else Left(f(value))
 
   /**
