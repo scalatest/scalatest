@@ -17,6 +17,8 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.Range
 import scala.language.implicitConversions
+import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 /**
  * An <code>AnyVal</code> for positive <code>Int</code>s.
@@ -779,6 +781,15 @@ object PosInt {
     if (PosIntMacro.isValid(value)) new PosInt(value) else {
       throw new AssertionError(s"$value was not a valid PosInt")
     }
+
+  def tryingValid(value: Int): Try[PosInt] =
+    if (PosIntMacro.isValid(value))
+      Success(new PosInt(value))
+    else
+      Failure(new AssertionError(s"$value was not a valid PosInt"))
+
+  def passOrElse[E](value: Int)(f: Int => E): Validation[E] =
+    if (PosIntMacro.isValid(value)) Pass else Fail(f(value))
 
   /**
    * A predicate method that returns true if a given 

@@ -23,6 +23,7 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 
 import scala.util.{Failure, Success, Try}
+import org.scalactic.{Validation, Pass, Fail}
 
 class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -73,13 +74,36 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       it("returns PosInt if the passed Int is greater than 0") {
         PosInt.ensuringValid(50).value shouldBe 50
         PosInt.ensuringValid(100).value shouldBe 100
-        pending
       }
 
       it("throws AssertionError if the passed Int is NOT greater than 0") {
         an [AssertionError] should be thrownBy PosInt.ensuringValid(0)
         an [AssertionError] should be thrownBy PosInt.ensuringValid(-1)
         an [AssertionError] should be thrownBy PosInt.ensuringValid(-99)
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosInt wrapped in a Success if the passed Int is greater than 0") {
+        PosInt.tryingValid(50).success.value.value shouldBe 50
+        PosInt.tryingValid(100).success.value.value shouldBe 100
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Int is NOT greater than 0") {
+        PosInt.tryingValid(0).failure.exception shouldBe an [AssertionError]
+        PosInt.tryingValid(-1).failure.exception shouldBe an [AssertionError]
+        PosInt.tryingValid(-99).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Int is greater than 0") {
+        PosInt.passOrElse(50)(i => i) shouldBe Pass
+        PosInt.passOrElse(100)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0") {
+        PosInt.passOrElse(0)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+        PosInt.passOrElse(-1)(i => i) shouldBe Fail(-1)
+        PosInt.passOrElse(-99)(i => i.toLong + 3L) shouldBe Fail(-96L)
       }
     }
     describe("should offer an isValid predicate method that") {
