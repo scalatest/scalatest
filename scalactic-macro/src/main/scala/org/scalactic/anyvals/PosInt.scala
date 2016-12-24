@@ -795,6 +795,9 @@ object PosInt {
   def goodOrElse[E](value: Int)(f: Int => E): PosInt Or E =
     if (PosIntMacro.isValid(value)) Good(PosInt.ensuringValid(value)) else Bad(f(value))
 
+  def rightOrElse[E](value: Int)(f: Int => E): Either[E, PosInt] =
+    if (PosIntMacro.isValid(value)) Right(PosInt.ensuringValid(value)) else Left(f(value))
+
   /**
    * A predicate method that returns true if a given 
    * <code>Int</code> value is positive.
