@@ -24,6 +24,7 @@ import OptionValues._
 
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Validation, Pass, Fail}
+import org.scalactic.{Or, Good, Bad}
 
 class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -100,10 +101,21 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
         PosInt.passOrElse(50)(i => i) shouldBe Pass
         PosInt.passOrElse(100)(i => i) shouldBe Pass
       }
-      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0") {
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0, wrapped in a Fail") {
         PosInt.passOrElse(0)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
         PosInt.passOrElse(-1)(i => i) shouldBe Fail(-1)
         PosInt.passOrElse(-99)(i => i.toLong + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosInt wrapped in a Good if the given Int is greater than 0") {
+        PosInt.goodOrElse(50)(i => i) shouldBe Good(PosInt(50))
+        PosInt.goodOrElse(100)(i => i) shouldBe Good(PosInt(100))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0, wrapped in a Bad") {
+        PosInt.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
+        PosInt.goodOrElse(-1)(i => i) shouldBe Bad(-1)
+        PosInt.goodOrElse(-99)(i => i.toLong + 3L) shouldBe Bad(-96L)
       }
     }
     describe("should offer an isValid predicate method that") {

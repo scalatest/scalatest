@@ -19,6 +19,7 @@ import scala.collection.immutable.Range
 import scala.language.implicitConversions
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
+import org.scalactic.{Or, Good, Bad}
 
 /**
  * An <code>AnyVal</code> for positive <code>Int</code>s.
@@ -790,6 +791,9 @@ object PosInt {
 
   def passOrElse[E](value: Int)(f: Int => E): Validation[E] =
     if (PosIntMacro.isValid(value)) Pass else Fail(f(value))
+
+  def goodOrElse[E](value: Int)(f: Int => E): PosInt Or E =
+    if (PosIntMacro.isValid(value)) Good(PosInt.ensuringValid(value)) else Bad(f(value))
 
   /**
    * A predicate method that returns true if a given 
