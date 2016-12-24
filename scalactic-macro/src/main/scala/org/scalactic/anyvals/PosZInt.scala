@@ -766,6 +766,14 @@ object PosZInt {
    * valid <code>Int</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Int</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`, 
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Int</code> value
    * and if it is a non-negative <code>Int</code>,
