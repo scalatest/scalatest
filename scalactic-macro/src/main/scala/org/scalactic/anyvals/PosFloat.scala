@@ -356,11 +356,20 @@ final class PosFloat private (val value: Float) extends AnyVal {
   */
   def min(that: PosFloat): PosFloat = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `PosFloat` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
+  /**
+   * Rounds this `PosFloat` value to the nearest whole number value that can be expressed as an `Int`, returning the result as a `PosZInt`.
+   */
+  def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+/*
+  // Why did I do this?
   def round: PosZInt = {
     import scala.util.Failure
     import scala.util.Success
@@ -375,17 +384,30 @@ final class PosFloat private (val value: Float) extends AnyVal {
       case Success(v) => v
     }
   }
+*/
+
+  /**
+   * Returns the smallest (closest to 0) `PosFloat` that is greater than or equal to this `PosFloat`
+   * and represents a mathematical integer.
+   */
   def ceil: PosFloat = PosFloat.ensuringValid(math.ceil(value.toDouble).toFloat) // I think this one is safe, but try NaN
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosFloat` that is less than or equal to
+   * this `PosFloat` and represents a mathematical integer.
+   */
   def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value.toDouble).toFloat) // Could be zero.
 
-  /** Converts an angle measured in degrees to an approximately equivalent
+  /**
+  * Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
   */
   def toRadians: Float = math.toRadians(value.toDouble).toFloat
 
-  /** Converts an angle measured in radians to an approximately equivalent
+  /**
+  * Converts an angle measured in radians to an approximately equivalent
   * angle measured in degrees.
   * @return the measurement of the angle x in degrees.
   */
@@ -443,6 +465,13 @@ final class PosFloat private (val value: Float) extends AnyVal {
    * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
    * value, and if the result is positive, returns the result wrapped in a <code>PosFloat</code>,
    * else throws <code>AssertionError</code>.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use a different method
+   * on this class that returns a `Float` result instead.
    *
    * <p>
    * This method will inspect the result of applying the given function to this
@@ -535,6 +564,14 @@ object PosFloat {
    * valid <code>Float</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Float</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`, 
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Float</code> value and if
    * it is a positive <code>Float</code>, <em>i.e.</em>, a value greater
@@ -547,7 +584,7 @@ object PosFloat {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Float</code> literals at
-   * compile time, whereas <code>from</code> inspects
+   * compile time, whereas this method inspects
    * <code>Float</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion

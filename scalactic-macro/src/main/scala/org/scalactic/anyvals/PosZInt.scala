@@ -677,6 +677,13 @@ final class PosZInt private (val value: Int) extends AnyVal {
    * value, and if the result is positive or zero, returns the result wrapped in a <code>PosZInt</code>,
    * else throws <code>AssertionError</code>.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use a different method
+   * on this class that returns an `Int` result instead.
+   *
    * <p>
    * This method will inspect the result of applying the given function to this
    * <code>PosZInt</code>'s underlying <code>Int</code> value and if the result
@@ -766,6 +773,14 @@ object PosZInt {
    * valid <code>Int</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Int</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`, 
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Int</code> value
    * and if it is a non-negative <code>Int</code>,
@@ -779,7 +794,7 @@ object PosZInt {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Int</code> literals at
-   * compile time, whereas <code>from</code> inspects
+   * compile time, whereas this method inspects
    * <code>Int</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion

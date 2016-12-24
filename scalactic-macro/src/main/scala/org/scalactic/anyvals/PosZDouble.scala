@@ -352,16 +352,33 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosZDouble): PosZDouble = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `PosZDouble` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
+  /**
+   * Rounds this `PosZDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
+   */
   def round: PosZLong = PosZLong.ensuringValid(math.round(value))
+
+  /**
+   * Returns the smallest (closest to 0) `PosZDouble` that is greater than or equal to this `PosZDouble`
+   * and represents a mathematical integer.
+   */
   def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosZDouble` that is less than or equal to
+   * this `PosZDouble` and represents a mathematical integer.
+   */
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
 
-  /** Converts an angle measured in degrees to an approximately equivalent
+  /**
+  * Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
@@ -426,6 +443,13 @@ final class PosZDouble private (val value: Double) extends AnyVal {
    * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
    * value, and if the result is positive or zero, returns the result wrapped in a <code>PosZDouble</code>,
    * else throws <code>AssertionError</code>.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use a different method
+   * on this class that returns a `Double` result instead.
    *
    * <p>
    * This method will inspect the result of applying the given function to this
@@ -528,6 +552,14 @@ object PosZDouble {
    * valid <code>Double</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Double</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`, 
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Double</code> value
    * and if it is a non-negative <code>Double</code>,
@@ -541,7 +573,7 @@ object PosZDouble {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Double</code> literals at
-   * compile time, whereas <code>from</code> inspects
+   * compile time, whereas this method inspects
    * <code>Double</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion

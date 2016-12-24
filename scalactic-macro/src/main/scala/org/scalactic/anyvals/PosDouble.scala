@@ -345,8 +345,10 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
-  // TODO: Need Scaladoc
   // Stuff from RichDouble
+  /**
+   * Indicates whether this `PosDouble` has value `PositiveInfinity`.
+   */
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
   /**
@@ -359,15 +361,29 @@ final class PosDouble private (val value: Double) extends AnyVal {
   */
   def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
 
-  // TODO: Need Scaladoc
+  /**
+   * Indicates whether this `PosDouble` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  // TODO: Scaladoc
+  /**
+   * Rounds this `PosDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
+   */
   def round: PosZLong = PosZLong.ensuringValid(math.round(value)) // Also could be zero.
+
+  /**
+   * Returns the smallest (closest to 0) `PosDouble` that is greater than or equal to this `PosDouble`
+   * and represents a mathematical integer.
+   */
   def ceil: PosDouble = PosDouble.ensuringValid(math.ceil(value)) // I think this one is safe, but try NaN
+
+  /**
+   * Returns the greatest (closest to positive infinity) `PosDouble` that is less than or equal to 
+   * this `PosDouble` and represents a mathematical integer.
+   */
   def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value)) // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
@@ -435,6 +451,13 @@ final class PosDouble private (val value: Double) extends AnyVal {
    * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
    * value, and if the result is positive, returns the result wrapped in a <code>PosDouble</code>,
    * else throws <code>AssertionError</code>.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use a different method
+   * on this class that returns a `Double` result instead.
    *
    * <p>
    * This method will inspect the result of applying the given function to this
@@ -537,6 +560,14 @@ object PosDouble {
    * valid <code>Double</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Double</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`, 
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Double</code> value and if
    * it is a positive <code>Double</code>, <em>i.e.</em>, a value greater
@@ -549,7 +580,7 @@ object PosDouble {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Double</code> literals at
-   * compile time, whereas <code>from</code> inspects
+   * compile time, whereas this method inspects
    * <code>Double</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion
