@@ -383,7 +383,7 @@ trait CommonGenerators {
   // in the distributed stuff. I could then do the pattern match
   // once and forall in a final method, nextEdge.
   def frequency[T](first: (Int, Generator[T]), second: (Int, Generator[T]), rest: (Int, Generator[T])*): Generator[T] = {
-      val distribution: Vector[(Int, Generator[T])] = (first +: second +: rest).toVector
+    val distribution: Vector[(Int, Generator[T])] = (first +: second +: rest).toVector
     // Take Int not PosInt, because Scala won't apply  multiple implicit
     // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
     // So just do a require.
@@ -418,6 +418,7 @@ trait CommonGenerators {
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
+        // TODO: Try dropping toVector. distribution is already a Vector
         distribution.toVector flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
@@ -429,6 +430,24 @@ trait CommonGenerators {
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
             val nextGen = gens(nextInt)
+            nextGen.next(size, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def evenly[T](first: Generator[T], second: Generator[T], rest: Generator[T]*): Generator[T] = {
+    val distributees: Vector[Generator[T]] = (first +: second +: rest).toVector
+    new Generator[T] {
+      // gens contains, for each distribution pair, weight generators.
+      def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
+            val nextGen = distributees(nextInt)
             nextGen.next(size, Nil, nextRandomizer)
         }
       }

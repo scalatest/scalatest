@@ -163,6 +163,12 @@ trait LowerPriorityGeneratorImplicits {
 
 object Generator extends LowerPriorityGeneratorImplicits {
 
+  // I don't want to make Generator covariant, because then an implicit search for a Generator[<supertype>] would
+  // be satisfied if it finds just a Generator[<subtype>], but that would not generate anything except subtypes.
+  // It would be sound, but you would't get a good variety of supertype values.
+  import scala.language.implicitConversions
+  implicit def widen[T, U](genOfT: Generator[T])(implicit ev: T <:< U): Generator[U] = genOfT.map(o => (o: U))
+
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
       private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)

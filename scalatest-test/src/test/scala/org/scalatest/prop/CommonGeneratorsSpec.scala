@@ -1290,6 +1290,50 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         "frequency(1 -> intsBetween(1, 10), 5 -> specificValue(0))" should compile
       }
     }
+    "offer an evenly method that takes a varargs of generators and produces a generator" that {
+      "returns values from each specific generator with an equal probability" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        sealed trait Numero extends Product with Serializable {
+          val value: Int
+        }
+        case class Uno(value: Int) extends Numero
+        case class Dos(value: Int) extends Numero
+        case class Tres(value: Int) extends Numero
+	case class Quatro(value: Int) extends Numero
+        case class Cinco(value: Int) extends Numero
+
+        val unos = instancesOf(Uno) { uno => uno.value }
+        val doses = instancesOf(Dos) { dos => dos.value }
+        val treses = instancesOf(Tres) { tres => tres.value }
+        val quatros = instancesOf(Quatro) { quatro => quatro.value }
+        val cincos = instancesOf(Cinco) { cinco => cinco.value }
+
+        // val numeros: Generator[Numero] = evenly(unos, doses, treses, quatros, cincos)
+        val numeros = evenly(unos, doses, treses, quatros, cincos)
+
+        val classification: Classification =
+          classify(10000, numeros) {
+            case _: Uno => "uno"
+            case _: Dos => "dos"
+            case _: Tres => "tres"
+            case _: Quatro => "quatro"
+            case _: Cinco => "cinco"
+          }
+ 
+        val percentages: Map[String, PosZInt] = classification.percentages
+
+        percentages("uno").value shouldBe 20 +- 1
+        percentages("dos").value shouldBe 20 +- 1
+        percentages("tres").value shouldBe 20 +- 1
+        percentages("quatro").value shouldBe 20 +- 1
+        percentages("cinco").value shouldBe 20 +- 1
+      }
+      "throws IllegalArgumentException if passed less than two arguments" in {
+        "evenly()" shouldNot compile
+        "evenly(ints)" shouldNot compile
+        "evenly(intsBetween(1, 10), specificValue(0))" should compile
+      }
+    }
     def samplesForGen[T](genOfT: Generator[T], desiredLength: PosInt, originalRnd: Randomizer): List[T] = {         
       @tailrec                                       
       def samplesLoop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
