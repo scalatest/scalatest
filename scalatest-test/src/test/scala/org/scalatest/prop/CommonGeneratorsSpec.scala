@@ -1478,7 +1478,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
           forAll (lists[Int].havingLength(len)) { xs => xs.length shouldEqual len.value }
         }
       }
-      "returns a type that also offers a havingLengthsBetween method that provides a generator for lists of a specific length" in {
+      "returns a type that also offers a havingLengthsBetween method that provides a generator for lists of a range of lengths" in {
 
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
@@ -1498,6 +1498,16 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         the [IllegalArgumentException] thrownBy {
           lists[Int].havingLengthsBetween(1, 1)
         } should have message "requirement failed: " + Resources.fromEqualToToHavingLengthsBetween(PosZInt(1))
+      }
+      "returns a type that also offers a havingLengthsDeterminedBy method that provides a generator for lists whose length is determined by a function" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val upperLimits: Generator[PosZInt] = posZIntsBetween(0, 99)
+
+        forAll (upperLimits) { upperLimit => 
+          forAll (lists[Int].havingLengthsDeterminedBy(sz => PosZInt.ensuringValid(sz.max(upperLimit)))) { xs => xs.length should (be >= 0 and be <= 99) }
+        }
       }
     }
     "offer a posInts method" that {

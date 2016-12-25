@@ -735,6 +735,15 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
+      def havingLengthsDeterminedBy(f: Int => PosZInt): Generator[List[T]] =
+        new Generator[List[T]] {
+          override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
+          def next(size: Int, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
+            outerGenOfListOfT.next(f(size), edges, rnd)
+          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
+          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
+          override def toString = s"Generator[List[T] /* having length determined by a function */]"
+        }
     }
 
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
