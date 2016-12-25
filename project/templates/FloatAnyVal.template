@@ -1,0 +1,637 @@
+/*
+ * Copyright 2001-2016 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.scalactic.anyvals
+
+import scala.collection.immutable.NumericRange
+import scala.language.implicitConversions
+
+/**
+ * An <code>AnyVal</code> for $typeDesc$ <code>Float</code>s.
+ *
+ * <p>
+ * $typeNote$
+ * </p>
+ *
+ * <p>
+ * Because <code>$typeName$</code> is an <code>AnyVal</code> it
+ * will usually be as efficient as an <code>Float</code>, being
+ * boxed only when an <code>Float</code> would have been boxed.
+ * </p>
+ *
+ * <p>
+ * The <code>$typeName$.apply</code> factory method is implemented
+ * in terms of a macro that checks literals for validity at
+ * compile time. Calling <code>$typeName$.apply</code> with a
+ * literal <code>Float</code> value will either produce a valid
+ * <code>$typeName$</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; $typeName$($typeValidValue$F)
+ * res0: org.scalactic.anyvals.$typeName$ = $typeName$($typeValidValue$)
+ *
+ * scala&gt; $typeName$($typeInvalidValue$F)
+ * &lt;console&gt;:14: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) floating point literal, like $typeName$($typeValidValue$F).
+ *               $typeName$($typeValidValue$F)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * <code>$typeName$.apply</code> cannot be used if the value being
+ * passed is a variable (<em>i.e.</em>, not a literal), because
+ * the macro cannot determine the validity of variables at
+ * compile time (just literals). If you try to pass a variable
+ * to <code>$typeName$.apply</code>, you'll get a compiler error
+ * that suggests you use a different factor method,
+ * <code>$typeName$.from</code>, instead:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val x = $typeValidValue$F
+ * x: Float = $typeValidValue$
+ *
+ * scala&gt; $typeName$(x)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on a floating point literal, like $typeName$($typeValidValue$F). Please use $typeName$.from instead.
+ *               $typeName$(x)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * The <code>$typeName$.from</code> factory method will inspect
+ * the value at runtime and return an
+ * <code>Option[$typeName$]</code>. If the value is valid,
+ * <code>$typeName$.from</code> will return a
+ * <code>Some[$typeName$]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; $typeName$.from(x)
+ * res3: Option[org.scalactic.anyvals.$typeName$] = Some($typeName$($typeValidValue$))
+ *
+ * scala&gt; val y = $typeInvalidValue$F
+ * y: Float = $typeInvalidValue$
+ *
+ * scala&gt; $typeName$.from(y)
+ * res4: Option[org.scalactic.anyvals.$typeName$] = None
+ * </pre>
+ *
+ * <p>
+ * The <code>$typeName$.apply</code> factory method is marked
+ * implicit, so that you can pass literal <code>Float</code>s
+ * into methods that require <code>$typeName$</code>, and get the
+ * same compile-time checking you get when calling
+ * <code>$typeName$.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; def invert(pos: $typeName$): Float = Float.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.$typeName$)Float
+ *
+ * scala&gt; invert($typeValidValue$F)
+ * res5: Float = 3.4028235E38
+ *
+ * scala&gt; invert(Float.MaxValue)
+ * res6: Float = 0.0
+ *
+ * scala&gt; invert($typeInvalidValue$F)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) floating point literal, like $typeName$($typeValidValue$F).
+ *               invert(0.0F)
+ *                      ^
+ *
+ * scala&gt; invert($typeInvalidValue$F)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) floating point literal, like $typeName$($typeValidValue$F).
+ *               invert($typeInvalidValue$F)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>$typeName$</code>
+ * companion object also defines implicit widening conversions
+ * when no loss of precision will occur. This makes it convenient to use a
+ * <code>$typeName$</code> where a <code>Float</code> or wider
+ * type is needed. An example is the subtraction in the body of
+ * the <code>invert</code> method defined above,
+ * <code>Float.MaxValue - pos</code>. Although
+ * <code>Float.MaxValue</code> is a <code>Float</code>, which
+ * has no <code>-</code> method that takes a
+ * <code>$typeName$</code> (the type of <code>pos</code>), you can
+ * still subtract <code>pos</code>, because the
+ * <code>$typeName$</code> will be implicitly widened to
+ * <code>Float</code>.
+ * </p>
+ *
+ * @param value The <code>Float</code> value underlying this <code>$typeName$</code>.
+ */
+final class $typeName$ private (val value: Float) extends AnyVal {
+
+  /**
+   * A string representation of this <code>$typeName$</code>.
+   */
+  override def toString: String = "$typeName$(" + value + ")"
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Byte</code>.
+   */
+  def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Short</code>.
+   */
+  def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Char</code>.
+   */
+  def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>$typeName$</code> to an <code>Int</code>.
+   */
+  def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Long</code>.
+   */
+  def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Float</code>.
+   */
+  def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>$typeName$</code> to a <code>Double</code>.
+   */
+  def toDouble: Double = value.toDouble
+
+  /** Returns this value, unmodified. */
+  def unary_+ : $typeName$ = this
+  /** Returns the negation of this value. */
+  def unary_- : Float = -value
+
+  /**
+   * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.
+   */
+  def +(x: String): String = value + x
+
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Byte): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Short): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Char): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Int): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Long): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Float): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Double): Boolean = value < x
+
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Byte): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Short): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Char): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Int): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Long): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Float): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Double): Boolean = value <= x
+
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Byte): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Short): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Char): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Int): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Long): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Float): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Double): Boolean = value > x
+
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Byte): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Short): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Char): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Int): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Long): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Float): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Double): Boolean = value >= x
+
+  /** Returns the sum of this value and `x`. */
+  def +(x: Byte): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Short): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Char): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Int): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Long): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Float): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Double): Double = value + x
+
+  /** Returns the difference of this value and `x`. */
+  def -(x: Byte): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Short): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Char): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Int): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Long): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Float): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Double): Double = value - x
+
+  /** Returns the product of this value and `x`. */
+  def *(x: Byte): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Short): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Char): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Int): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Long): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Float): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Double): Double = value * x
+
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Byte): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Short): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Char): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Int): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Long): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Float): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Double): Double = value / x
+
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Byte): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Short): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Char): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Int): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Long): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Float): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Double): Double = value % x
+
+  // Stuff from RichFloat
+  def isPosInfinity: Boolean = Float.PositiveInfinity == value
+
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
+  def max(that: $typeName$): $typeName$ = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
+  def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
+
+  def isWhole = {
+    val longValue = value.toLong
+    longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
+  }
+
+  /** Converts an angle measured in degrees to an approximately equivalent
+  * angle measured in radians.
+  *
+  * @return the measurement of the angle x in radians.
+  */
+  def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
+  /** Converts an angle measured in radians to an approximately equivalent
+  * angle measured in degrees.
+  * @return the measurement of the angle x in degrees.
+  */
+  def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
+
+  // adapted from RichInt:
+  /**
+  * Create a <code>Range</code> from this <code>$typeName$</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Float): Range.Partial[Float, NumericRange[Float]] =
+    value.until(end)
+
+  /**
+  * Create a <code>Range</code> (exclusive) from this <code>$typeName$</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
+  * @param end The final bound of the range to make.
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Float]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Float, step: Float): NumericRange.Exclusive[Float] =
+    value.until(end, step)
+
+  /**
+  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Float], NumericRange[Float]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Float): Range.Partial[Float, NumericRange[Float]] =
+    value.to(end)
+
+  /**
+  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Float]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Float, step: Float): NumericRange.Inclusive[Float] =
+    value.to(end, step)
+
+  /**
+   * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
+   * value, and if the result is positive, returns the result wrapped in a <code>$typeName$</code>,
+   * else throws <code>AssertionError</code>.
+   *
+   * <p>
+   * This method will inspect the result of applying the given function to this
+   * <code>$typeName$</code>'s underlying <code>Float</code> value and if the result
+   * is $typeDesc$, it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the <code>Float</code> value returned by the given function is
+   * not $typeDesc$, so this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises an <code>Float</code> is $typeDesc$.
+   * With this method, you are asserting that you are convinced the result of
+   * the computation represented by applying the given function to this <code>$typeName$</code>'s
+   * value will not produce invalid value.
+   * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * @param f the <code>Float =&gt; Float</code> function to apply to this <code>$typeName$</code>'s
+   *     underlying <code>Float</code> value.
+   * @return the result of applying this <code>$typeName$</code>'s underlying <code>Float</code> value to
+   *     to the passed function, wrapped in a <code>$typeName$</code> if it is $typeDesc$ (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>$typeName$</code>'s underlying <code>Float</code> value to
+   *     to the passed function is not $typeDesc$.
+   */
+  def ensuringValid(f: Float => Float): $typeName$ = {
+    val candidateResult: Float = f(value)
+    if ($typeName$Macro.isValid(candidateResult)) new $typeName$(candidateResult)
+    else throw new AssertionError(candidateResult + ", the result of applying the passed function to " + value + ", was not a valid $typeName$")
+  }
+
+  $classExtraMethods$
+}
+
+/**
+ * The companion object for <code>$typeName$</code> that offers
+ * factory methods that produce <code>$typeName$</code>s,
+ * implicit widening conversions from <code>$typeName$</code> to
+ * other numeric types, and maximum and minimum constant values
+ * for <code>$typeName$</code>.
+ */
+object $typeName$ {
+  /**
+   * The largest value representable as a $typeDesc$ <code>Float</code>,
+   * which is <code>$typeName$($typeMaxValueNumber$)</code>.
+   */
+  final val MaxValue: $typeName$ = $typeName$.ensuringValid($typeMaxValue$)
+
+  /**
+   * The smallest value representable as a $typeDesc$
+   * <code>Float</code>, which is <code>$typeName$($typeMinValueNumber$)</code>.
+   */
+  final val MinValue: $typeName$ = $typeName$.ensuringValid($typeMinValue$) // Can't use the macro here
+
+  /**
+   * A factory method that produces an <code>Option[$typeName$]</code> given a
+   * <code>Float</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a $typeDesc$ <code>Float</code>, it will return a <code>$typeName$</code>
+   * representing that value wrapped in a <code>Some</code>. Otherwise, the passed <code>Float</code>
+   * value is not $typeDesc$, so this method will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>Some[$typeName$]</code>.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>Some[$typeName$]</code>, if it is $typeDesc$, else
+   *     <code>None</code>.
+   */
+  def from(value: Float): Option[$typeName$] =
+    if ($typeName$Macro.isValid(value)) Some(new $typeName$(value)) else None
+
+  /**
+   * A factory/assertion method that produces a <code>$typeName$</code> given a
+   * valid <code>Float</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Float</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a $typeDesc$ <code>Float</code>, it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Float</code> value is not $typeDesc$, so
+   * this method will throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Float</code> is positive.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>$typeName$</code>.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>$typeName$</code>, if it is $typeDesc$, else
+   *     throws <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not $typeDesc$
+   */
+  def ensuringValid(value: Float): $typeName$ =
+    if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
+      throw new AssertionError(value + " was not a valid $typeName$")
+    }
+
+  /**
+   * A predicate method that returns true if a given
+   * <code>Float</code> value is $typeDesc$.
+   *
+   * @param value the <code>Float</code> to inspect, and if $typeDesc$, return true.
+   * @return true if the specified <code>Float</code> is $typeDesc$, else false.
+   */
+  def isValid(value: Float): Boolean = $typeName$Macro.isValid(value)
+
+  /**
+   * A factory method that produces a <code>$typeName$</code> given a
+   * <code>Float</code> value and a default <code>$typeName$</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a $typeDesc$ <code>Float</code>, it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Float</code> value is not $typeDesc$, so this
+   * method will return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if $typeDesc$, return.
+   * @param default the <code>$typeName$</code> to return if the passed
+   *     <code>Float</code> value is not $typeDesc$.
+   * @return the specified <code>Float</code> value wrapped in a
+   *     <code>$typeName$</code>, if it is $typeDesc$, else the
+   *     <code>default</code> <code>$typeName$</code> value.
+   */
+  def fromOrElse(value: Float, default: => $typeName$): $typeName$ =
+    if ($typeName$Macro.isValid(value)) new $typeName$(value) else default
+
+  import language.experimental.macros
+  import scala.language.implicitConversions
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>$typeName$</code> if passed a valid <code>Float</code>
+   * literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the
+   * specified <code>Float</code> expression at compile time. If
+   * the expression is a $typeDesc$ <code>Float</code> literal,
+   * it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Float</code> expression is either a literal
+   * that is not $typeDesc$, or is not a literal, so this method
+   * will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code>
+   * factory method in that this method is implemented via a
+   * macro that inspects <code>Float</code> literals at compile
+   * time, whereas <code>from</code> inspects <code>Float</code>
+   * values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> literal expression to
+   *     inspect at compile time, and if $typeDesc$, to return
+   *     wrapped in a <code>$typeName$</code> at run time.
+   * @return the specified, valid <code>Float</code> literal
+   *     value wrapped in a <code>$typeName$</code>. (If the
+   *     specified expression is not a valid <code>Float</code>
+   *     literal, the invocation of this method will not
+   *     compile.)
+   */
+  implicit def apply(value: Float): $typeName$ = macro $typeName$Macro.apply
+
+  /**
+   * Implicit widening conversion from <code>$typeName$</code> to
+  * <code>Float</code>.
+  *
+  * @param pos the <code>$typeName$</code> to widen
+  * @return the <code>Float</code> value underlying the
+  *     specified <code>$typeName$</code>
+  */
+ implicit def widenToFloat(pos: $typeName$): Float = pos.value
+
+ /**
+  * Implicit widening conversion from <code>$typeName$</code> to
+   * <code>Double</code>.
+   *
+   * @param pos the <code>$typeName$</code> to widen
+   * @return the <code>Float</code> value underlying the
+   *     specified <code>$typeName$</code>, widened to
+   *     <code>Double</code>.
+   */
+  implicit def widenToDouble(pos: $typeName$): Double = pos.value
+
+  /**
+   * Implicit Ordering instance.
+   */
+  implicit val ordering: Ordering[$typeName$] =
+    new Ordering[$typeName$] {
+      def compare(x: $typeName$, y: $typeName$): Int = x.toFloat.compare(y)
+    }
+
+  $objectExtraMethods$
+}

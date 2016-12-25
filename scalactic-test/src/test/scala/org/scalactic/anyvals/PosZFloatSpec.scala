@@ -131,6 +131,11 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       "PosZFloat(3.0F): PosZLong" shouldNot typeCheck
       (PosZFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosZFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
+
+      "PosZFloat(3.0F): NonZeroInt" shouldNot typeCheck
+      "PosZFloat(3.0F): NonZeroLong" shouldNot typeCheck
+      "PosZFloat(3.0F): NonZeroFloat" shouldNot typeCheck
+      "PosZFloat(3.0F): NonZeroDouble" shouldNot typeCheck
     }
 
     it("should be sortable") {
@@ -180,6 +185,19 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
         val opPosZDouble = PosZFloat(3.0F) + PosZDouble(3.0)
         opPosZDouble shouldEqual 6.0
+
+        // When adding a *NonZero
+        val opNonZero = PosZFloat(3.0F) + NonZeroInt(3)
+        opNonZero shouldEqual 6.0F
+
+        val opNonZeroLong = PosZFloat(3.0F) + NonZeroLong(3L)
+        opNonZeroLong shouldEqual 6.0F
+
+        val opNonZeroFloat = PosZFloat(3.0F) + NonZeroFloat(3.0F)
+        opNonZeroFloat shouldEqual 6.0F
+
+        val opNonZeroDouble = PosZFloat(3.0F) + NonZeroDouble(3.0)
+        opNonZeroDouble shouldEqual 6.0
       }
     }
 

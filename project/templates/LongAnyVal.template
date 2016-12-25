@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,90 +19,89 @@ import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
 
 /**
- * An <code>AnyVal</code> for positive <code>Long</code>s.
+ * An <code>AnyVal</code> for $typeDesc$ <code>Long</code>s.
  *
- * Note: a <code>PosLong</code> may not equal 0. If you want positive
- * number or 0, use [[PosZLong]].
+ * $typeNote$
  *
  * <p>
- * Because <code>PosLong</code> is an <code>AnyVal</code> it
+ * Because <code>$typeName$</code> is an <code>AnyVal</code> it
  * will usually be as efficient as an <code>Long</code>, being
  * boxed only when an <code>Long</code> would have been boxed.
  * </p>
- * 
+ *
  * <p>
- * The <code>PosLong.apply</code> factory method is implemented
+ * The <code>$typeName$.apply</code> factory method is implemented
  * in terms of a macro that checks literals for validity at
- * compile time. Calling <code>PosLong.apply</code> with a
+ * compile time. Calling <code>$typeName$.apply</code> with a
  * literal <code>Long</code> value will either produce a valid
- * <code>PosLong</code> instance at run time or an error at
+ * <code>$typeName$</code> instance at run time or an error at
  * compile time. Here's an example:
  * </p>
- * 
+ *
  * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
- * scala&gt; PosLong(1L)
- * res0: org.scalactic.anyvals.PosLong = PosLong(1)
+ * scala&gt; $typeValidExample$
+ * res0: org.scalactic.anyvals.$typeName$ = $typeValidExample$
  *
- * scala&gt; PosLong(0L)
- * &lt;console&gt;:14: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
- *               PosLong(0L)
+ * scala&gt; $typeInvalidExample$
+ * &lt;console&gt;:14: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) integer literal, like $typeValidExample$.
+ *               $typeInvalidExample$
  *                      ^
  * </pre>
  *
  * <p>
- * <code>PosLong.apply</code> cannot be used if the value being
+ * <code>$typeName$.apply</code> cannot be used if the value being
  * passed is a variable (<em>i.e.</em>, not a literal), because
  * the macro cannot determine the validity of variables at
  * compile time (just literals). If you try to pass a variable
- * to <code>PosLong.apply</code>, you'll get a compiler error
+ * to <code>$typeName$.apply</code>, you'll get a compiler error
  * that suggests you use a different factor method,
- * <code>PosLong.from</code>, instead:
+ * <code>$typeName$.from</code>, instead:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; val x = 1L
- * x: Long = 1
+ * scala&gt; val x = $typeValidValue$L
+ * x: Long = $typeValidValue$
  *
- * scala&gt; PosLong(x)
- * &lt;console&gt;:15: error: PosLong.apply can only be invoked on an integer literal, like PosLong(42L). Please use PosLong.from instead.
- *               PosLong(x)
+ * scala&gt; $typeName$(x)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on an long literal, like $typeValidExample$. Please use $typeName$.from instead.
+ *               $typeName$(x)
  *                      ^
  * </pre>
  *
  * <p>
- * The <code>PosLong.from</code> factory method will inspect the
+ * The <code>$typeName$.from</code> factory method will inspect the
  * value at runtime and return an
- * <code>Option[PosLong]</code>. If the value is valid,
- * <code>PosLong.from</code> will return a
- * <code>Some[PosLong]</code>, else it will return a
+ * <code>Option[$typeName$]</code>. If the value is valid,
+ * <code>$typeName$.from</code> will return a
+ * <code>Some[$typeName$]</code>, else it will return a
  * <code>None</code>.  Here's an example:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; PosLong.from(x)
- * res3: Option[org.scalactic.anyvals.PosLong] = Some(PosLong(1))
+ * scala&gt; $typeName$.from(x)
+ * res3: Option[org.scalactic.anyvals.$typeName$] = Some($typeName$($typeValidValue$))
  *
- * scala&gt; val y = 0L
- * y: Long = 0
+ * scala&gt; val y = $typeInvalidValue$L
+ * y: Long = $typeInvalidValue$
  *
- * scala&gt; PosLong.from(y)
- * res4: Option[org.scalactic.anyvals.PosLong] = None
+ * scala&gt; $typeName$.from(y)
+ * res4: Option[org.scalactic.anyvals.$typeName$] = None
  * </pre>
- * 
+ *
  * <p>
- * The <code>PosLong.apply</code> factory method is marked
+ * The <code>$typeName$.apply</code> factory method is marked
  * implicit, so that you can pass literal <code>Long</code>s
- * into methods that require <code>PosLong</code>, and get the
+ * into methods that require <code>$typeName$</code>, and get the
  * same compile-time checking you get when calling
- * <code>PosLong.apply</code> explicitly. Here's an example:
+ * <code>$typeName$.apply</code> explicitly. Here's an example:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; def invert(pos: PosLong): Long = Long.MaxValue - pos
- * invert: (pos: org.scalactic.anyvals.PosLong)Long
+ * scala&gt; def invert(pos: $typeName$): Long = Long.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.$typeName$)Long
  *
  * scala&gt; invert(1L)
  * res5: Long = 9223372036854775806
@@ -110,77 +109,72 @@ import scala.language.implicitConversions
  * scala&gt; invert(Long.MaxValue)
  * res6: Long = 0
  *
- * scala&gt; invert(0L)
- * &lt;console&gt;:15: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
- *               invert(0L)
+ * scala&gt; invert($typeInvalidValue$L)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) integer literal, like $typeName$($typeValidValue$L).
+ *               invert($typeInvalidValue$L)
  *                      ^
- *
- * scala&gt; invert(-1L)
- * &lt;console&gt;:15: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
- *               invert(-1L)
- *                       ^
  *
  * </pre>
  *
  * <p>
- * This example also demonstrates that the <code>PosLong</code>
+ * This example also demonstrates that the <code>$typeName$</code>
  * companion object also defines implicit widening conversions
  * when either no loss of precision will occur or a similar
  * conversion is provided in Scala. (For example, the implicit
  * conversion from <code>Long</code> to </code>Double</code> in
  * Scala can lose precision.) This makes it convenient to use a
- * <code>PosLong</code> where a <code>Long</code> or wider type
+ * <code>$typeName$</code> where a <code>Long</code> or wider type
  * is needed. An example is the subtraction in the body of the
  * <code>invert</code> method defined above, <code>Long.MaxValue
  * - pos</code>. Although <code>Long.MaxValue</code> is a
  * <code>Long</code>, which has no <code>-</code> method that
- * takes a <code>PosLong</code> (the type of <code>pos</code>),
+ * takes a <code>$typeName$</code> (the type of <code>pos</code>),
  * you can still subtract <code>pos</code>, because the
- * <code>PosLong</code> will be implicitly widened to
+ * <code>$typeName$</code> will be implicitly widened to
  * <code>Long</code>.
  * </p>
  *
- * @param value The <code>Long</code> value underlying this <code>PosLong</code>.
- */ 
-final class PosLong private (val value: Long) extends AnyVal {
+ * @param value The <code>Long</code> value underlying this <code>$typeName$</code>.
+ */
+final class $typeName$ private (val value: Long) extends AnyVal {
 
   /**
-   * A string representation of this <code>PosLong</code>.
+   * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = s"PosLong($value)"
+  override def toString: String = "$typeName$(" + value + ")"
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Byte</code>.
+   * Converts this <code>$typeName$</code> to a <code>Byte</code>.
    */
   def toByte: Byte = value.toByte
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Short</code>.
+   * Converts this <code>$typeName$</code> to a <code>Short</code>.
    */
   def toShort: Short = value.toShort
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Char</code>.
+   * Converts this <code>$typeName$</code> to a <code>Char</code>.
    */
   def toChar: Char = value.toChar
 
   /**
-   * Converts this <code>PosLong</code> to an <code>Int</code>.
+   * Converts this <code>$typeName$</code> to an <code>Int</code>.
    */
   def toInt: Int = value.toInt
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Long</code>.
+   * Converts this <code>$typeName$</code> to a <code>Long</code>.
    */
   def toLong: Long = value.toLong
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Float</code>.
+   * Converts this <code>$typeName$</code> to a <code>Float</code>.
    */
   def toFloat: Float = value.toFloat
 
   /**
-   * Converts this <code>PosLong</code> to a <code>Double</code>.
+   * Converts this <code>$typeName$</code> to a <code>Double</code>.
    */
   def toDouble: Double = value.toDouble
 
@@ -194,12 +188,12 @@ final class PosLong private (val value: Long) extends AnyVal {
  */
   def unary_~ : Long = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : PosLong = this
+  def unary_+ : $typeName$ = this
   /** Returns the negation of this value. */
   def unary_- : Long = -value
 
   /**
-   * Converts this <code>PosLong</code>'s value to a string then concatenates the given string.
+   * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.
    */
   def +(x: String): String = value + x
 
@@ -565,11 +559,11 @@ final class PosLong private (val value: Long) extends AnyVal {
 
   // Stuff from RichLong:
   /**
-   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * Returns a string representation of this <code>$typeName$</code>'s underlying <code>Long</code>
    * as an unsigned integer in base&nbsp;2.
    *
    * <p>
-   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * The unsigned <code>long</code> value is this <code>$typeName$</code>'s underlying <code>Long</code> plus
    * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
    * equal to the underlying <code>Long</code>.  This value is converted to a string of
    * ASCII digits in binary (base&nbsp;2) with no extra leading
@@ -583,16 +577,16 @@ final class PosLong private (val value: Long) extends AnyVal {
    * </p>
    *
    * @return  the string representation of the unsigned <code>long</code>
-   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in binary (base&nbsp;2).
+   *          value represented by this <code>$typeName$</code>'s underlying <code>Long</code> in binary (base&nbsp;2).
    */
   def toBinaryString: String = java.lang.Long.toBinaryString(value)
 
   /**
-   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * Returns a string representation of this <code>$typeName$</code>'s underlying <code>Long</code>
    * as an unsigned integer in base&nbsp;16.
    *
    * <p>
-   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * The unsigned <code>long</code> value is this <code>$typeName$</code>'s underlying <code>Long</code> plus
    * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
    * equal to the underlying <code>Long</code>.  This value is converted to a string of
    * ASCII digits in hexadecimal (base&nbsp;16) with no extra
@@ -617,17 +611,17 @@ final class PosLong private (val value: Long) extends AnyVal {
    * </p>
    *
    * @return  the string representation of the unsigned <code>long</code>
-   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in hexadecimal
+   *          value represented by this <code>$typeName$</code>'s underlying <code>Long</code> in hexadecimal
    *          (base&nbsp;16).
    */
   def toHexString: String = java.lang.Long.toHexString(value)
 
   /**
-   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * Returns a string representation of this <code>$typeName$</code>'s underlying <code>Long</code>
    * as an unsigned integer in base&nbsp;8.
    *
    * <p>
-   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * The unsigned <code>long</code> value is this <code>$typeName$</code>'s underlying <code>Long</code> plus
    * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
    * equal to the underlying <code>Long</code>.  This value is converted to a string of
    * ASCII digits in octal (base&nbsp;8) with no extra leading
@@ -653,24 +647,23 @@ final class PosLong private (val value: Long) extends AnyVal {
    * </p>
    *
    * @return  the string representation of the unsigned <code>long</code>
-   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in octal (base&nbsp;8).
+   *          value represented by this <code>$typeName$</code>'s underlying <code>Long</code> in octal (base&nbsp;8).
    */
   def toOctalString: String = java.lang.Long.toOctalString(value)
 
-  // No point to call abs on a PosLong.
   /**
   * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
   */
-  def max(that: PosLong): PosLong = if (math.max(value, that.value) == value) this else that
+  def max(that: $typeName$): $typeName$ = if (math.max(value, that.value) == value) this else that
 
   /**
   * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
   */
-  def min(that: PosLong): PosLong = if (math.min(value, that.value) == value) this else that
+  def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
   // adapted from RichInt:
   /**
-  * Create a <code>Range</code> from this <code>PosLong</code> value
+  * Create a <code>Range</code> from this <code>$typeName$</code> value
   * until the specified <code>end</code> (exclusive) with step value 1.
   *
   * @param end The final bound of the range to make.
@@ -680,7 +673,7 @@ final class PosLong private (val value: Long) extends AnyVal {
   def until(end: Long): NumericRange.Exclusive[Long] = value.until(end)
 
   /**
-  * Create a <code>Range</code> from this <code>PosLong</code> value
+  * Create a <code>Range</code> from this <code>$typeName$</code> value
   * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
   *
   * @param end The final bound of the range to make.
@@ -693,7 +686,7 @@ final class PosLong private (val value: Long) extends AnyVal {
     value.until(end, step)
 
   /**
-  * Create an inclusive <code>Range</code> from this <code>PosLong</code> value
+  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
   * to the specified <code>end</code> with step value 1.
   *
   * @param end The final bound of the range to make.
@@ -703,7 +696,7 @@ final class PosLong private (val value: Long) extends AnyVal {
   def to(end: Long): NumericRange.Inclusive[Long] = value.to(end)
 
   /**
-  * Create an inclusive <code>Range</code> from this <code>PosLong</code> value
+  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
   * to the specified <code>end</code> with the specified <code>step</code> value.
   *
   * @param end The final bound of the range to make.
@@ -716,78 +709,70 @@ final class PosLong private (val value: Long) extends AnyVal {
 
   /**
    * Applies the passed <code>Long =&gt; Long</code> function to the underlying <code>Long</code>
-   * value, and if the result is positive, returns the result wrapped in a <code>PosLong</code>,
+   * value, and if the result is positive, returns the result wrapped in a <code>$typeName$</code>,
    * else throws <code>AssertionError</code>.
-   *
-   * Note: you should use this method only when you are convinced that it will
-   * always succeed, i.e., never throw an exception. It is good practice to
-   * add a comment near the invocation of this method indicating ''why'' you think
-   * it will always succeed to document your reasoning. If you are not sure an
-   * `ensuringValid` call will always succeed, you should use a different method
-   * on this class that returns a `Long` result instead.
    *
    * <p>
    * This method will inspect the result of applying the given function to this
-   * <code>PosLong</code>'s underlying <code>Long</code> value and if the result
-   * is greater than <code>0L</code>, it will return a <code>PosLong</code> representing that value.
+   * <code>$typeName$</code>'s underlying <code>Long</code> value and if the result
+   * is $typeDesc$, it will return a <code>$typeName$</code> representing that value.
    * Otherwise, the <code>Long</code> value returned by the given function is
-   * <code>0L</code> or negative, so this method will throw <code>AssertionError</code>.
+   * not $typeDesc$, this method will throw <code>AssertionError</code>.
    * </p>
    *
    * <p>
    * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion
-   * succeeds: a <em>type</em> that promises an <code>Long</code> is positive. 
+   * succeeds: a <em>type</em> that promises an <code>Long</code> is $typeDesc$.
    * With this method, you are asserting that you are convinced the result of
-   * the computation represented by applying the given function to this <code>PosLong</code>'s
+   * the computation represented by applying the given function to this <code>$typeName$</code>'s
    * value will not overflow. Instead of overflowing silently like <code>Long</code>, this
    * method will signal an overflow with a loud <code>AssertionError</code>.
    * </p>
    *
-   * @param f the <code>Long =&gt; Long</code> function to apply to this <code>PosLong</code>'s
+   * @param f the <code>Long =&gt; Long</code> function to apply to this <code>$typeName$</code>'s
    *     underlying <code>Long</code> value.
-   * @return the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
-   *     to the passed function, wrapped in a <code>PosLong</code> if it is positive (else throws <code>AssertionError</code>).
-   * @throws AssertionError if the result of applying this <code>PosLong</code>'s underlying <code>Long</code> value to
+   * @return the result of applying this <code>$typeName$</code>'s underlying <code>Long</code> value to
+   *     to the passed function, wrapped in a <code>$typeName$</code> if it is $typeDesc$ (else throws <code>AssertionError</code>).
+   * @throws AssertionError if the result of applying this <code>$typeName$</code>'s underlying <code>Long</code> value to
    *     to the passed function is not positive.
    */
-  def ensuringValid(f: Long => Long): PosLong = {
+  def ensuringValid(f: Long => Long): $typeName$ = {
     val candidateResult: Long = f(value)
-    if (PosLongMacro.isValid(candidateResult)) new PosLong(candidateResult)
-    else throw new AssertionError(s"$candidateResult, the result of applying the passed function to $value, was not a valid PosLong")
+    if ($typeName$Macro.isValid(candidateResult)) new $typeName$(candidateResult)
+    else throw new AssertionError(candidateResult + ", the result of applying the passed function to " + value + ", was not a valid $typeName$")
   }
 }
 
 /**
- * The companion object for <code>PosLong</code> that offers
- * factory methods that produce <code>PosLong</code>s, implicit
- * widening conversions from <code>PosLong</code> to other
+ * The companion object for <code>$typeName$</code> that offers
+ * factory methods that produce <code>$typeName$</code>s, implicit
+ * widening conversions from <code>$typeName$</code> to other
  * numeric types, and maximum and minimum constant values for
- * <code>PosLong</code>.
+ * <code>$typeName$</code>.
  */
-object PosLong {
+object $typeName$ {
   /**
-   * The largest value representable as a positive
-   * <code>Long</code>, which is <code>PosLong(9223372036854775807)</code>.
+   * The largest value representable as a $typeDesc$
+   * <code>Long</code>, which is <code>$typeName$($typeMaxValueNumber$)</code>.
    */
-  final val MaxValue: PosLong = PosLong.ensuringValid(Long.MaxValue)
+  final val MaxValue: $typeName$ = $typeName$.ensuringValid($typeMaxValue$)
 
   /**
    * The smallest value representable as a positive
-   * <code>Long</code>, which is <code>PosLong(1L)</code>.
+   * <code>Long</code>, which is <code>$typeName$($typeMinValueNumber$)</code>.
    */
-  final val MinValue: PosLong = PosLong.ensuringValid(1L) // Can't use the macro here
+  final val MinValue: $typeName$ = $typeName$.ensuringValid($typeMinValue$) // Can't use the macro here
 
   /**
-   * A factory method that produces an <code>Option[PosLong]</code> given a
+   * A factory method that produces an <code>Option[$typeName$]</code> given a
    * <code>Long</code> value.
    *
    * <p>
    * This method will inspect the passed <code>Long</code> value and if
-   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
-   * than 0, it will return a <code>PosLong</code> representing that value,
+   * it is a $typeDesc$ <code>Long</code>, it will return a <code>$typeName$</code> representing that value,
    * wrapped in a <code>Some</code>. Otherwise, the passed <code>Long</code>
-   * value is 0 or negative, so this method will return <code>None</code>.
+   * value is not $typeDesc$, so this method will return <code>None</code>.
    * </p>
    *
    * <p>
@@ -798,33 +783,24 @@ object PosLong {
    * <code>Long</code> values at run time.
    * </p>
    *
-   * @param value the <code>Long</code> to inspect, and if positive, return
-   *     wrapped in a <code>Some[PosLong]</code>.
+   * @param value the <code>Long</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>Some[$typeName$]</code>.
    * @return the specified <code>Long</code> value wrapped in a
-   *     <code>Some[PosLong]</code>, if it is positive, else
+   *     <code>Some[$typeName$]</code>, if it is $typeDesc$, else
    *     <code>None</code>.
    */
-  def from(value: Long): Option[PosLong] =
-    if (PosLongMacro.isValid(value)) Some(new PosLong(value)) else None
+  def from(value: Long): Option[$typeName$] =
+    if ($typeName$Macro.isValid(value)) Some(new $typeName$(value)) else None
 
   /**
-   * A factory/assertion method that produces an <code>PosLong</code> given a
+   * A factory/assertion method that produces an <code>$typeName$</code> given a
    * valid <code>Long</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Long</code> value.
    *
-   * Note: you should use this method only when you are convinced that it will
-   * always succeed, i.e., never throw an exception. It is good practice to
-   * add a comment near the invocation of this method indicating ''why'' you think
-   * it will always succeed to document your reasoning. If you are not sure an
-   * `ensuringValid` call will always succeed, you should use one of the other
-   * factory or validation methods provided on this object instead: `isValid`, 
-   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
-   *
    * <p>
    * This method will inspect the passed <code>Long</code> value and if
-   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
-   * than 0, it will return a <code>PosLong</code> representing that value.
-   * Otherwise, the passed <code>Long</code> value is 0 or negative, so
+   * it is a $typeDesc$ <code>Long</code>, it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is not $typeDesc$, so
    * this method will throw <code>AssertionError</code>.
    * </p>
    *
@@ -832,43 +808,42 @@ object PosLong {
    * This factory method differs from the <code>apply</code>
    * factory method in that <code>apply</code> is implemented
    * via a macro that inspects <code>Long</code> literals at
-   * compile time, whereas this method inspects
+   * compile time, whereas <code>from</code> inspects
    * <code>Long</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion
    * succeeds: a <em>type</em> that promises a <code>Long</code> is positive.
    * </p>
    *
-   * @param value the <code>Long</code> to inspect, and if positive, return
-   *     wrapped in a <code>PosLong</code>.
+   * @param value the <code>Long</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>$typeName$</code>.
    * @return the specified <code>Long</code> value wrapped in a
-   *     <code>PosLong</code>, if it is positive, else
+   *     <code>$typeName$</code>, if it is $typeDesc$, else
    *     throws <code>AssertionError</code>.
-   * @throws AssertionError if the passed value is not positive
+   * @throws AssertionError if the passed value is not $typeDesc$
    */
-  def ensuringValid(value: Long): PosLong =
-    if (PosLongMacro.isValid(value)) new PosLong(value) else {
-      throw new AssertionError(s"$value was not a valid PosLong")
+  def ensuringValid(value: Long): $typeName$ =
+    if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
+      throw new AssertionError(value + " was not a valid $typeName$")
     }
 
   /**
-   * A predicate method that returns true if a given 
-   * <code>Long</code> value is positive.
+   * A predicate method that returns true if a given
+   * <code>Long</code> value is $typeDesc$.
    *
-   * @param value the <code>Long</code> to inspect, and if positive, return true.
-   * @return true if the specified <code>Long</code> is positive, else false.
+   * @param value the <code>Long</code> to inspect, and if $typeDesc$, return true.
+   * @return true if the specified <code>Long</code> is $typeDesc$, else false.
    */
-  def isValid(value: Long): Boolean = PosLongMacro.isValid(value)
+  def isValid(value: Long): Boolean = $typeName$Macro.isValid(value)
 
   /**
-   * A factory method that produces a <code>PosLong</code> given a
-   * <code>Long</code> value and a default <code>PosLong</code>.
+   * A factory method that produces a <code>$typeName$</code> given a
+   * <code>Long</code> value and a default <code>$typeName$</code>.
    *
    * <p>
    * This method will inspect the passed <code>Long</code> value and if
-   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
-   * than 0.0, it will return a <code>PosLong</code> representing that value.
-   * Otherwise, the passed <code>Long</code> value is 0L or negative, so this
+   * it is a $typeDesc$ <code>Long</code>, it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Long</code> value is not $typeDesc$, so this
    * method will return the passed <code>default</code> value.
    * </p>
    *
@@ -880,31 +855,30 @@ object PosLong {
    * <code>Long</code> values at run time.
    * </p>
    *
-   * @param value the <code>Long</code> to inspect, and if positive, return.
-   * @param default the <code>PosLong</code> to return if the passed
-   *     <code>Long</code> value is not positive.
+   * @param value the <code>Long</code> to inspect, and if $typeDesc$, return.
+   * @param default the <code>$typeName$</code> to return if the passed
+   *     <code>Long</code> value is not $typeDesc$.
    * @return the specified <code>Long</code> value wrapped in a
-   *     <code>PosLong</code>, if it is positive, else the
-   *     <code>default</code> <code>PosLong</code> value.
+   *     <code>$typeName$</code>, if it is $typeDesc$, else the
+   *     <code>default</code> <code>$typeName$</code> value.
    */
-  def fromOrElse(value: Long, default: => PosLong): PosLong =
-    if (PosLongMacro.isValid(value)) new PosLong(value) else default
+  def fromOrElse(value: Long, default: => $typeName$): $typeName$ =
+    if ($typeName$Macro.isValid(value)) new $typeName$(value) else default
 
   import language.experimental.macros
 
   /**
    * A factory method, implemented via a macro, that produces a
-   * <code>PosLong</code> if passed a valid <code>Long</code>
+   * <code>$typeName$</code> if passed a valid <code>Long</code>
    * literal, otherwise a compile time error.
    *
    * <p>
    * The macro that implements this method will inspect the
    * specified <code>Long</code> expression at compile time. If
-   * the expression is a positive <code>Long</code> literal,
-   * <em>i.e.</em>, with a value greater than 0, it will return
-   * a <code>PosLong</code> representing that value.  Otherwise,
-   * the passed <code>Long</code> expression is either a literal
-   * that is 0 or negative, or is not a literal, so this method
+   * the expression is a $typeDesc$ <code>Long</code> literal,
+   * it will return a <code>$typeName$</code> representing that value.
+   * Otherwise, the passed <code>Long</code> expression is either a literal
+   * that is not $typeDesc$, or is not a literal, so this method
    * will give a compiler error.
    * </p>
    *
@@ -917,137 +891,53 @@ object PosLong {
    * </p>
    *
    * @param value the <code>Long</code> literal expression to
-   *     inspect at compile time, and if positive, to return
-   *     wrapped in a <code>PosLong</code> at run time.
+   *     inspect at compile time, and if $typeDesc$, to return
+   *     wrapped in a <code>$typeName$</code> at run time.
    * @return the specified, valid <code>Long</code> literal
-   *     value wrapped in a <code>PosLong</code>. (If the
+   *     value wrapped in a <code>$typeName$</code>. (If the
    *     specified expression is not a valid <code>Long</code>
    *     literal, the invocation of this method will not
    *     compile.)
    */
-  implicit def apply(value: Long): PosLong = macro PosLongMacro.apply
+  implicit def apply(value: Long): $typeName$ = macro $typeName$Macro.apply
 
   /**
-   * Implicit widening conversion from <code>PosLong</code> to
+   * Implicit widening conversion from <code>$typeName$</code> to
    * <code>Long</code>.
    *
-   * @param pos the <code>PosLong</code> to widen
+   * @param pos the <code>$typeName$</code> to widen
    * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>.
+   *     <code>$typeName$</code>.
    */
-  implicit def widenToLong(pos: PosLong): Long = pos.value
+  implicit def widenToLong(pos: $typeName$): Long = pos.value
 
   /**
-   * Implicit widening conversion from <code>PosLong</code> to
+   * Implicit widening conversion from <code>$typeName$</code> to
    * <code>Float</code>.
    *
-   * @param pos the <code>PosLong</code> to widen
+   * @param pos the <code>$typeName$</code> to widen
    * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Float</code>.
+   *     <code>$typeName$</code>, widened to <code>Float</code>.
    */
-  implicit def widenToFloat(pos: PosLong): Float = pos.value
+  implicit def widenToFloat(pos: $typeName$): Float = pos.value
 
   /**
-   * Implicit widening conversion from <code>PosLong</code> to
+   * Implicit widening conversion from <code>$typeName$</code> to
    * <code>Double</code>.
    *
-   * @param pos the <code>PosLong</code> to widen
+   * @param pos the <code>$typeName$</code> to widen
    * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Double</code>.
+   *     <code>$typeName$</code>, widened to <code>Double</code>.
    */
-  implicit def widenToDouble(pos: PosLong): Double = pos.value
+  implicit def widenToDouble(pos: $typeName$): Double = pos.value
 
-  /**
-   * Implicit widening conversion from <code>PosLong</code> to
-   * <code>PosFloat</code>.
-   *
-   * @param pos the <code>PosLong</code> to widen
-   * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Float</code> and
-   *     wrapped in a <code>PosFloat</code>.
-   */
-  implicit def widenToPosFloat(pos: PosLong): PosFloat = PosFloat.ensuringValid(pos.value)
-
-  /**
-   * Implicit widening conversion from <code>PosLong</code> to
-   * <code>PosDouble</code>.
-   *
-   * @param pos the <code>PosLong</code> to widen
-   * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Double</code> and
-   *     wrapped in a <code>PosDouble</code>.
-   */
-  implicit def widenToPosDouble(pos: PosLong): PosDouble = PosDouble.ensuringValid(pos.value)
-
-  /**
-   * Implicit widening conversion from <code>PosLong</code> to
-   * <code>PosZLong</code>.
-   *
-   * @param pos the <code>PosLong</code> to widen
-   * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code> wrapped in a <code>PosZLong</code>.
-   */
-  implicit def widenToPosZLong(pos: PosLong): PosZLong = PosZLong.ensuringValid(pos.value)
-
-  /** 
-   * Implicit widening conversion from <code>PosLong</code> to
-   * <code>PosZFloat</code>.
-   *
-   * @param pos the <code>PosLong</code> to widen
-   * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Float</code> and
-   *     wrapped in a <code>PosZFloat</code>.
-   */
-  implicit def widenToPosZFloat(pos: PosLong): PosZFloat = PosZFloat.ensuringValid(pos.value)
-
-  /** 
-   * Implicit widening conversion from <code>PosLong</code> to
-   * <code>PosZDouble</code>.
-   *
-   * @param pos the <code>PosLong</code> to widen
-   * @return the <code>Long</code> value underlying the specified
-   *     <code>PosLong</code>, widened to <code>Double</code> and
-   *     wrapped in a <code>PosZDouble</code>.
-   */
-  implicit def widenToPosZDouble(pos: PosLong): PosZDouble = PosZDouble.ensuringValid(pos.value)
-
-  /**
-    * Implicit widening conversion from <code>PosLong</code> to
-    * <code>NonZeroLong</code>.
-    *
-    * @param pos the <code>PosLong</code> to widen
-    * @return the <code>Long</code> value underlying the specified
-    *     <code>PosLong</code>, widened to <code>NonZeroLong</code>.
-    */
-  implicit def widenToNonZeroLong(pos: PosLong): NonZeroLong = NonZeroLong.ensuringValid(pos.value)
-
-  /**
-    * Implicit widening conversion from <code>PosLong</code> to
-    * <code>NonZeroFloat</code>.
-    *
-    * @param pos the <code>PosLong</code> to widen
-    * @return the <code>Long</code> value underlying the specified
-    *     <code>PosLong</code>, widened to <code>Float</code> and
-    *     wrapped in a <code>NonZeroFloat</code>.
-    */
-  implicit def widenToNonZeroFloat(pos: PosLong): NonZeroFloat = NonZeroFloat.ensuringValid(pos.value)
-
-  /**
-    * Implicit widening conversion from <code>PosLong</code> to
-    * <code>NonZeroDouble</code>.
-    *
-    * @param pos the <code>PosLong</code> to widen
-    * @return the <code>Long</code> value underlying the specified
-    *     <code>PosLong</code>, widened to <code>Double</code> and
-    *     wrapped in a <code>NonZeroDouble</code>.
-    */
-  implicit def widenToNonZeroDouble(pos: PosLong): NonZeroDouble = NonZeroDouble.ensuringValid(pos.value)
+  $widensToOtherAnyVals$
 
   /**
    * Implicit Ordering instance.
    */
-  implicit val posLongOrd: Ordering[PosLong] =
-    new Ordering[PosLong] {
-      def compare(x: PosLong, y: PosLong): Int = x.toLong.compare(y)
-    } 
+  implicit val ordering: Ordering[$typeName$] =
+    new Ordering[$typeName$] {
+      def compare(x: $typeName$, y: $typeName$): Int = x.toLong.compare(y)
+    }
 }
