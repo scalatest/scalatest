@@ -36,7 +36,7 @@ package object prop {
   val Checkers: org.scalatest.check.Checkers.type = org.scalatest.check.Checkers 
 
   // The valueOf methods are called by the function generators.
-  def valueOf[B](multiplier: Int, a: Any)(implicit genOfB: Generator[B]): B = {
+  def valueOf[B](a: Any, multiplier: Int)(implicit genOfB: Generator[B]): B = {
    val seed = a.hashCode.toLong * multiplier
    val rnd = Randomizer(seed)
    val (size, nextRnd) = rnd.chooseInt(1, 20)
@@ -44,7 +44,7 @@ package object prop {
    result
   }
 
-  def valueOf[C](multiplier: Int, a: Any, b: Any)(implicit genOfC: Generator[C]): C = {
+  def valueOf[C](a: Any, b: Any, multiplier: Int)(implicit genOfC: Generator[C]): C = {
     def combinedHashCode(a: Any, b: Any): Int = 
       37 * (
         37 + a.hashCode
@@ -56,7 +56,7 @@ package object prop {
     result
   }
 
-  def valueOf[D](multiplier: Int, a: Any, b: Any, c: Any)(implicit genOfD: Generator[D]): D = {
+  def valueOf[D](a: Any, b: Any, c: Any, multiplier: Int)(implicit genOfD: Generator[D]): D = {
     def combinedHashCode(a: Any, b: Any, c: Any): Int = 
       37 * (
         37 * (
@@ -70,7 +70,7 @@ package object prop {
     result
   }
 
-  def valueOf[E](multiplier: Int, a: Any, b: Any, c: Any, d: Any)(implicit genOfE: Generator[E]): E = {
+  def valueOf[E](a: Any, b: Any, c: Any, d: Any, multiplier: Int)(implicit genOfE: Generator[E]): E = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any): Int = 
       37 * (
         37 * (
@@ -86,7 +86,7 @@ package object prop {
     result
   }
 
-  def valueOf[F](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any)(implicit genOfF: Generator[F]): F = {
+  def valueOf[F](a: Any, b: Any, c: Any, d: Any, e: Any, multiplier: Int)(implicit genOfF: Generator[F]): F = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any): Int = 
       37 * (
         37 * (
@@ -104,7 +104,7 @@ package object prop {
     result
   }
 
-  def valueOf[G](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any)(implicit genOfG: Generator[G]): G = {
+  def valueOf[G](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, multiplier: Int)(implicit genOfG: Generator[G]): G = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any): Int = 
       37 * (
         37 * (
@@ -124,7 +124,7 @@ package object prop {
     result
   }
 
-  def valueOf[H](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any)(implicit genOfH: Generator[H]): H = {
+  def valueOf[H](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, multiplier: Int)(implicit genOfH: Generator[H]): H = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any): Int = 
       37 * (
         37 * (
@@ -146,7 +146,7 @@ package object prop {
     result
   }
 
-  def valueOf[I](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any)(implicit genOfI: Generator[I]): I = {
+  def valueOf[I](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, multiplier: Int)(implicit genOfI: Generator[I]): I = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any): Int = 
       37 * (
         37 * (
@@ -170,7 +170,7 @@ package object prop {
     result
   }
 
-  def valueOf[J](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any)(implicit genOfJ: Generator[J]): J = {
+  def valueOf[J](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, multiplier: Int)(implicit genOfJ: Generator[J]): J = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any): Int = 
       37 * (
         37 * (
@@ -196,7 +196,7 @@ package object prop {
     result
   }
 
-  def valueOf[K](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any)(implicit genOfK: Generator[K]): K = {
+  def valueOf[K](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, multiplier: Int)(implicit genOfK: Generator[K]): K = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any): Int = 
       37 * (
         37 * (
@@ -224,7 +224,7 @@ package object prop {
     result
   }
 
-  def valueOf[L](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any)(implicit genOfL: Generator[L]): L = {
+  def valueOf[L](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, multiplier: Int)(implicit genOfL: Generator[L]): L = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any): Int = 
       37 * (
         37 * (
@@ -254,7 +254,7 @@ package object prop {
     result
   }
 
-  def valueOf[M](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any)(implicit genOfM: Generator[M]): M = {
+  def valueOf[M](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, multiplier: Int)(implicit genOfM: Generator[M]): M = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any): Int = 
       37 * (
         37 * (
@@ -286,7 +286,7 @@ package object prop {
     result
   }
 
-  def valueOf[N](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any)(implicit genOfN: Generator[N]): N = {
+  def valueOf[N](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, multiplier: Int)(implicit genOfN: Generator[N]): N = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any): Int = 
       37 * (
         37 * (
@@ -320,7 +320,7 @@ package object prop {
     result
   }
 
-  def valueOf[O](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any)(implicit genOfO: Generator[O]): O = {
+  def valueOf[O](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, multiplier: Int)(implicit genOfO: Generator[O]): O = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any): Int = 
       37 * (
         37 * (
@@ -356,7 +356,7 @@ package object prop {
     result
   }
 
-  def valueOf[P](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any)(implicit genOfP: Generator[P]): P = {
+  def valueOf[P](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, multiplier: Int)(implicit genOfP: Generator[P]): P = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any): Int = 
       37 * (
         37 * (
@@ -394,7 +394,7 @@ package object prop {
     result
   }
 
-  def valueOf[Q](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any)(implicit genOfQ: Generator[Q]): Q = {
+  def valueOf[Q](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, multiplier: Int)(implicit genOfQ: Generator[Q]): Q = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any): Int = 
       37 * (
         37 * (
@@ -434,7 +434,7 @@ package object prop {
     result
   }
 
-  def valueOf[R](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any)(implicit genOfR: Generator[R]): R = {
+  def valueOf[R](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, multiplier: Int)(implicit genOfR: Generator[R]): R = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any): Int = 
       37 * (
         37 * (
@@ -476,7 +476,7 @@ package object prop {
     result
   }
 
-  def valueOf[S](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any)(implicit genOfS: Generator[S]): S = {
+  def valueOf[S](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, multiplier: Int)(implicit genOfS: Generator[S]): S = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any): Int = 
       37 * (
         37 * (
@@ -520,7 +520,7 @@ package object prop {
     result
   }
 
-  def valueOf[T](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any)(implicit genOfT: Generator[T]): T = {
+  def valueOf[T](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, multiplier: Int)(implicit genOfT: Generator[T]): T = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any): Int = 
       37 * (
         37 * (
@@ -566,7 +566,7 @@ package object prop {
     result
   }
 
-  def valueOf[U](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any)(implicit genOfU: Generator[U]): U = {
+  def valueOf[U](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, multiplier: Int)(implicit genOfU: Generator[U]): U = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any): Int = 
       37 * (
         37 * (
@@ -614,7 +614,7 @@ package object prop {
     result
   }
 
-  def valueOf[V](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any)(implicit genOfV: Generator[V]): V = {
+  def valueOf[V](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any, multiplier: Int)(implicit genOfV: Generator[V]): V = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any): Int = 
       37 * (
         37 * (
@@ -664,7 +664,7 @@ package object prop {
     result
   }
 
-  def valueOf[W](multiplier: Int, a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any, v: Any)(implicit genOfW: Generator[W]): W = {
+  def valueOf[W](a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any, v: Any, multiplier: Int)(implicit genOfW: Generator[W]): W = {
     def combinedHashCode(a: Any, b: Any, c: Any, d: Any, e: Any, f: Any, g: Any, h: Any, i: Any, j: Any, k: Any, l: Any, m: Any, n: Any, o: Any, p: Any, q: Any, r: Any, s: Any, t: Any, u: Any, v: Any): Int = 
       37 * (
         37 * (

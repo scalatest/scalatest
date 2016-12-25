@@ -881,11 +881,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
 
         object AToB extends (A => B) {
-          def apply(a: A): B = org.scalatest.prop.valueOf[B](multiplier, a)
+          def apply(a: A): B = org.scalatest.prop.valueOf[B](a, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
-            s"(o: $typeOfA) => org.scalatest.prop.valueOf[$typeOfB]($multiplier, o)"
+            s"(o: $typeOfA) => org.scalatest.prop.valueOf[$typeOfB](o, $multiplier)"
           }
         }
 
@@ -902,12 +902,12 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABToC extends ((A, B) => C) {
-          def apply(a: A, b: B): C = org.scalatest.prop.valueOf[C](multiplier, a, b)
+          def apply(a: A, b: B): C = org.scalatest.prop.valueOf[C](a, b, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
             val typeOfC = typeTagOfC.tpe
-            s"(a: $typeOfA, b: $typeOfB) => org.scalatest.prop.valueOf[$typeOfC]($multiplier, a, b)"
+            s"(a: $typeOfA, b: $typeOfB) => org.scalatest.prop.valueOf[$typeOfC](a, b, $multiplier)"
           }
         }
   
@@ -924,13 +924,13 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCToD extends ((A, B, C) => D) {
-          def apply(a: A, b: B, c: C): D = org.scalatest.prop.valueOf[D](multiplier, a, b, c)
+          def apply(a: A, b: B, c: C): D = org.scalatest.prop.valueOf[D](a, b, c, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
             val typeOfC = typeTagOfC.tpe
             val typeOfD = typeTagOfD.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC) => org.scalatest.prop.valueOf[$typeOfD]($multiplier, a, b, c)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC) => org.scalatest.prop.valueOf[$typeOfD](a, b, c, $multiplier)"
           }
         }
   
@@ -947,14 +947,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDToE extends ((A, B, C, D) => E) {
-          def apply(a: A, b: B, c: C, d: D): E = org.scalatest.prop.valueOf[E](multiplier, a, b, c, d)
+          def apply(a: A, b: B, c: C, d: D): E = org.scalatest.prop.valueOf[E](a, b, c, d, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
             val typeOfC = typeTagOfC.tpe
             val typeOfD = typeTagOfD.tpe
             val typeOfE = typeTagOfE.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD) => org.scalatest.prop.valueOf[$typeOfE]($multiplier, a, b, c, d)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD) => org.scalatest.prop.valueOf[$typeOfE](a, b, c, d, $multiplier)"
           }
         }
   
@@ -971,7 +971,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEToF extends ((A, B, C, D, E) => F) {
-          def apply(a: A, b: B, c: C, d: D, e: E): F = org.scalatest.prop.valueOf[F](multiplier, a, b, c, d, e)
+          def apply(a: A, b: B, c: C, d: D, e: E): F = org.scalatest.prop.valueOf[F](a, b, c, d, e, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -979,7 +979,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfD = typeTagOfD.tpe
             val typeOfE = typeTagOfE.tpe
             val typeOfF = typeTagOfF.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE) => org.scalatest.prop.valueOf[$typeOfF]($multiplier, a, b, c, d, e)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE) => org.scalatest.prop.valueOf[$typeOfF](a, b, c, d, e, $multiplier)"
           }
         }
   
@@ -996,7 +996,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFToG extends ((A, B, C, D, E, F) => G) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F): G = org.scalatest.prop.valueOf[G](multiplier, a, b, c, d, e, f)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F): G = org.scalatest.prop.valueOf[G](a, b, c, d, e, f, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1005,7 +1005,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfE = typeTagOfE.tpe
             val typeOfF = typeTagOfF.tpe
             val typeOfG = typeTagOfG.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF) => org.scalatest.prop.valueOf[$typeOfG]($multiplier, a, b, c, d, e, f)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF) => org.scalatest.prop.valueOf[$typeOfG](a, b, c, d, e, f, $multiplier)"
           }
         }
   
@@ -1022,7 +1022,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGToH extends ((A, B, C, D, E, F, G) => H) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G): H = org.scalatest.prop.valueOf[H](multiplier, a, b, c, d, e, f, g)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G): H = org.scalatest.prop.valueOf[H](a, b, c, d, e, f, g, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1032,7 +1032,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfF = typeTagOfF.tpe
             val typeOfG = typeTagOfG.tpe
             val typeOfH = typeTagOfH.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG) => org.scalatest.prop.valueOf[$typeOfH]($multiplier, a, b, c, d, e, f, g)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG) => org.scalatest.prop.valueOf[$typeOfH](a, b, c, d, e, f, g, $multiplier)"
           }
         }
   
@@ -1049,7 +1049,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHToI extends ((A, B, C, D, E, F, G, H) => I) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): I = org.scalatest.prop.valueOf[I](multiplier, a, b, c, d, e, f, g, h)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): I = org.scalatest.prop.valueOf[I](a, b, c, d, e, f, g, h, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1060,7 +1060,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfG = typeTagOfG.tpe
             val typeOfH = typeTagOfH.tpe
             val typeOfI = typeTagOfI.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH) => org.scalatest.prop.valueOf[$typeOfI]($multiplier, a, b, c, d, e, f, g, h)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH) => org.scalatest.prop.valueOf[$typeOfI](a, b, c, d, e, f, g, h, $multiplier)"
           }
         }
   
@@ -1077,7 +1077,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIToJ extends ((A, B, C, D, E, F, G, H, I) => J) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I): J = org.scalatest.prop.valueOf[J](multiplier, a, b, c, d, e, f, g, h, i)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I): J = org.scalatest.prop.valueOf[J](a, b, c, d, e, f, g, h, i, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1089,7 +1089,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfH = typeTagOfH.tpe
             val typeOfI = typeTagOfI.tpe
             val typeOfJ = typeTagOfJ.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI) => org.scalatest.prop.valueOf[$typeOfJ]($multiplier, a, b, c, d, e, f, g, h, i)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI) => org.scalatest.prop.valueOf[$typeOfJ](a, b, c, d, e, f, g, h, i, $multiplier)"
           }
         }
   
@@ -1106,7 +1106,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJToK extends ((A, B, C, D, E, F, G, H, I, J) => K) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J): K = org.scalatest.prop.valueOf[K](multiplier, a, b, c, d, e, f, g, h, i, j)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J): K = org.scalatest.prop.valueOf[K](a, b, c, d, e, f, g, h, i, j, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1119,7 +1119,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfI = typeTagOfI.tpe
             val typeOfJ = typeTagOfJ.tpe
             val typeOfK = typeTagOfK.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ) => org.scalatest.prop.valueOf[$typeOfK]($multiplier, a, b, c, d, e, f, g, h, i, j)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ) => org.scalatest.prop.valueOf[$typeOfK](a, b, c, d, e, f, g, h, i, j, $multiplier)"
           }
         }
   
@@ -1136,7 +1136,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKToL extends ((A, B, C, D, E, F, G, H, I, J, K) => L) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K): L = org.scalatest.prop.valueOf[L](multiplier, a, b, c, d, e, f, g, h, i, j, k)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K): L = org.scalatest.prop.valueOf[L](a, b, c, d, e, f, g, h, i, j, k, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1150,7 +1150,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfJ = typeTagOfJ.tpe
             val typeOfK = typeTagOfK.tpe
             val typeOfL = typeTagOfL.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK) => org.scalatest.prop.valueOf[$typeOfL]($multiplier, a, b, c, d, e, f, g, h, i, j, k)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK) => org.scalatest.prop.valueOf[$typeOfL](a, b, c, d, e, f, g, h, i, j, k, $multiplier)"
           }
         }
   
@@ -1167,7 +1167,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLToM extends ((A, B, C, D, E, F, G, H, I, J, K, L) => M) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L): M = org.scalatest.prop.valueOf[M](multiplier, a, b, c, d, e, f, g, h, i, j, k, l)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L): M = org.scalatest.prop.valueOf[M](a, b, c, d, e, f, g, h, i, j, k, l, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1182,7 +1182,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfK = typeTagOfK.tpe
             val typeOfL = typeTagOfL.tpe
             val typeOfM = typeTagOfM.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL) => org.scalatest.prop.valueOf[$typeOfM]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL) => org.scalatest.prop.valueOf[$typeOfM](a, b, c, d, e, f, g, h, i, j, k, l, $multiplier)"
           }
         }
   
@@ -1199,7 +1199,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMToN extends ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M): N = org.scalatest.prop.valueOf[N](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M): N = org.scalatest.prop.valueOf[N](a, b, c, d, e, f, g, h, i, j, k, l, m, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1215,7 +1215,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfL = typeTagOfL.tpe
             val typeOfM = typeTagOfM.tpe
             val typeOfN = typeTagOfN.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM) => org.scalatest.prop.valueOf[$typeOfN]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM) => org.scalatest.prop.valueOf[$typeOfN](a, b, c, d, e, f, g, h, i, j, k, l, m, $multiplier)"
           }
         }
   
@@ -1232,7 +1232,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNToO extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N): O = org.scalatest.prop.valueOf[O](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N): O = org.scalatest.prop.valueOf[O](a, b, c, d, e, f, g, h, i, j, k, l, m, n, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1249,7 +1249,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfM = typeTagOfM.tpe
             val typeOfN = typeTagOfN.tpe
             val typeOfO = typeTagOfO.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN) => org.scalatest.prop.valueOf[$typeOfO]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN) => org.scalatest.prop.valueOf[$typeOfO](a, b, c, d, e, f, g, h, i, j, k, l, m, n, $multiplier)"
           }
         }
   
@@ -1266,7 +1266,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOToP extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O): P = org.scalatest.prop.valueOf[P](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O): P = org.scalatest.prop.valueOf[P](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1284,7 +1284,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfN = typeTagOfN.tpe
             val typeOfO = typeTagOfO.tpe
             val typeOfP = typeTagOfP.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO) => org.scalatest.prop.valueOf[$typeOfP]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO) => org.scalatest.prop.valueOf[$typeOfP](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, $multiplier)"
           }
         }
   
@@ -1301,7 +1301,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPToQ extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P): Q = org.scalatest.prop.valueOf[Q](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P): Q = org.scalatest.prop.valueOf[Q](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1320,7 +1320,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfO = typeTagOfO.tpe
             val typeOfP = typeTagOfP.tpe
             val typeOfQ = typeTagOfQ.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP) => org.scalatest.prop.valueOf[$typeOfQ]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP) => org.scalatest.prop.valueOf[$typeOfQ](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, $multiplier)"
           }
         }
   
@@ -1337,7 +1337,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQToR extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q): R = org.scalatest.prop.valueOf[R](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q): R = org.scalatest.prop.valueOf[R](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1357,7 +1357,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfP = typeTagOfP.tpe
             val typeOfQ = typeTagOfQ.tpe
             val typeOfR = typeTagOfR.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ) => org.scalatest.prop.valueOf[$typeOfR]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ) => org.scalatest.prop.valueOf[$typeOfR](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, $multiplier)"
           }
         }
   
@@ -1374,7 +1374,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRToS extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R): S = org.scalatest.prop.valueOf[S](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R): S = org.scalatest.prop.valueOf[S](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1395,7 +1395,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfQ = typeTagOfQ.tpe
             val typeOfR = typeTagOfR.tpe
             val typeOfS = typeTagOfS.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR) => org.scalatest.prop.valueOf[$typeOfS]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR) => org.scalatest.prop.valueOf[$typeOfS](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, $multiplier)"
           }
         }
   
@@ -1412,7 +1412,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSToT extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S): T = org.scalatest.prop.valueOf[T](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S): T = org.scalatest.prop.valueOf[T](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1434,7 +1434,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfR = typeTagOfR.tpe
             val typeOfS = typeTagOfS.tpe
             val typeOfT = typeTagOfT.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS) => org.scalatest.prop.valueOf[$typeOfT]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS) => org.scalatest.prop.valueOf[$typeOfT](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, $multiplier)"
           }
         }
   
@@ -1451,7 +1451,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTToU extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T): U = org.scalatest.prop.valueOf[U](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T): U = org.scalatest.prop.valueOf[U](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1474,7 +1474,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfS = typeTagOfS.tpe
             val typeOfT = typeTagOfT.tpe
             val typeOfU = typeTagOfU.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT) => org.scalatest.prop.valueOf[$typeOfU]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT) => org.scalatest.prop.valueOf[$typeOfU](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, $multiplier)"
           }
         }
   
@@ -1491,7 +1491,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTUToV extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U): V = org.scalatest.prop.valueOf[V](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U): V = org.scalatest.prop.valueOf[V](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1515,7 +1515,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfT = typeTagOfT.tpe
             val typeOfU = typeTagOfU.tpe
             val typeOfV = typeTagOfV.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU) => org.scalatest.prop.valueOf[$typeOfV]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU) => org.scalatest.prop.valueOf[$typeOfV](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, $multiplier)"
           }
         }
   
@@ -1532,7 +1532,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTUVToW extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W) {
-          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V): W = org.scalatest.prop.valueOf[W](multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
+          def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V): W = org.scalatest.prop.valueOf[W](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, multiplier)
           override def toString = {
             val typeOfA = typeTagOfA.tpe
             val typeOfB = typeTagOfB.tpe
@@ -1557,7 +1557,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             val typeOfU = typeTagOfU.tpe
             val typeOfV = typeTagOfV.tpe
             val typeOfW = typeTagOfW.tpe
-            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU, v: $typeOfV) => org.scalatest.prop.valueOf[$typeOfW]($multiplier, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)"
+            s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU, v: $typeOfV) => org.scalatest.prop.valueOf[$typeOfW](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, $multiplier)"
           }
         }
   
