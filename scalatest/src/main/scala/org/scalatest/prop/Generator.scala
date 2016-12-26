@@ -27,7 +27,7 @@ trait Generator[T] { thisGeneratorOfT =>
 
   def initEdges(maxLength: Int, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
 
-  def next(size: Int = 5, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
+  def next(size: Int, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU => 
       override def initEdges(maxLength: Int, rnd: Randomizer): (List[U], Randomizer) = {
