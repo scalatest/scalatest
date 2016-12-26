@@ -35,7 +35,6 @@ trait Generator[T] { thisGeneratorOfT =>
         (listOfT.map(f), nextRnd)
       }
       def next(size: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => 
             (head, tail, rnd)
@@ -72,7 +71,6 @@ trait Generator[T] { thisGeneratorOfT =>
         (distinctEdges.take(maxLength), nextNextRnd)
       }
       def next(size: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => 
             (head, tail, rnd)
@@ -101,7 +99,6 @@ trait Generator[T] { thisGeneratorOfT =>
     new Generator[T] { thisFilteredGeneratorOfT =>
       private final val MaxLoopCount: Int = 100000
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         @tailrec
         def loop(count: Int, nextEdges: List[T], nextRnd: Randomizer): (T, List[T], Randomizer) = {
           if (count > MaxLoopCount)
@@ -144,7 +141,6 @@ trait LowerPriorityGeneratorImplicits {
   implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T], shrk: Shrink[T]): Generator[T] =
     new Generator[T] {
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -178,7 +174,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -213,7 +208,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -248,7 +242,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -286,7 +279,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -321,7 +313,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -355,7 +346,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (posFloatEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -400,7 +390,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (posDoubleEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -446,7 +435,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -467,7 +455,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -488,7 +475,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -509,7 +495,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -530,7 +515,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -551,7 +535,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -572,7 +555,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -593,7 +575,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -614,7 +595,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (stringEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -670,7 +650,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (listEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -774,7 +753,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (edges, nextRnd)
       }
       def next(size: PosZInt, edges: List[() => T], rnd: Randomizer): (() => T, List[() => T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -892,7 +870,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
       )
     new Generator[Int => Int] {
       def next(size: PosZInt, edges: List[Int => Int], rnd: Randomizer): (Int => Int, List[Int => Int], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -1610,9 +1587,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (edges, nextRnd)
       }
       def next(size: PosZInt, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
-
-        require(size >= 0, "; the size passed to next must be >= 0")
-      
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -1650,7 +1624,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
       def next(size: PosZInt, edges: List[G Or B], rnd: Randomizer): (G Or B, List[G Or B], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => 
             (head, tail, rnd)

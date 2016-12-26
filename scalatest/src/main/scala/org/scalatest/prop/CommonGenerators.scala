@@ -33,7 +33,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -55,7 +54,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -77,7 +75,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -99,7 +96,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -121,7 +117,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -143,7 +138,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -165,7 +159,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -186,7 +179,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -207,7 +199,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -229,7 +220,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -251,7 +241,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -273,7 +262,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -294,7 +282,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -316,7 +303,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -338,7 +324,6 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
       def next(size: PosZInt, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -353,7 +338,6 @@ trait CommonGenerators {
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -368,7 +352,6 @@ trait CommonGenerators {
   def specificValue[T](theValue: T): Generator[T] =
     new Generator[T] {
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -423,7 +406,6 @@ trait CommonGenerators {
           Vector.fill(w)(g)
         }
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -441,7 +423,6 @@ trait CommonGenerators {
     new Generator[T] {
       // gens contains, for each distribution pair, weight generators.
       def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -684,7 +665,6 @@ trait CommonGenerators {
   def first1000Primes: Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
       def next(size: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
