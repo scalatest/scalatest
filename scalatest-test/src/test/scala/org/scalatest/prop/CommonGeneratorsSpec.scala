@@ -1340,7 +1340,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         if (count == desiredLength.value) acc
         else {
           val (size, nextRnd) = rnd.chooseInt(1, 100)
-          val (value, _, nextNextRnd) = genOfT.next(size, Nil, rnd) 
+          val (value, _, nextNextRnd) = genOfT.next(PosZInt.ensuringValid(size), Nil, rnd) 
           samplesLoop(count + 1, nextNextRnd, value :: acc)
         } 
       }

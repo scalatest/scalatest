@@ -858,10 +858,6 @@ class GeneratorSpec extends FunSpec with Matchers {
   
         val (s5, _, _) = gen.next(size = 100, edges = Nil, rnd = r4)
         s5.length shouldBe 100
-  
-        an [IllegalArgumentException] should be thrownBy {
-          gen.next(size = -1, edges = Nil, rnd = Randomizer(100))
-        }
       }
       it("should shrink Strings using strategery") {
         import GeneratorDrivenPropertyChecks._
@@ -929,10 +925,6 @@ class GeneratorSpec extends FunSpec with Matchers {
   
         val (l5, _, _) = gen.next(size = 100, edges = Nil, rnd = r4)
         l5.length shouldBe 100
-  
-        an [IllegalArgumentException] should be thrownBy {
-          gen.next(size = -1, edges = Nil, rnd = Randomizer(100))
-        }
       }
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]

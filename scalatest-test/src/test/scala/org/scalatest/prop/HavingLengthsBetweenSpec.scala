@@ -40,10 +40,6 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
   
         val (l4, _, r4) = gen.next(size = 88, edges = Nil, rnd = r3)
         l4.length shouldBe 88
-  
-        an [IllegalArgumentException] should be thrownBy {
-          gen.next(size = -1, edges = Nil, rnd = Randomizer(100))
-        }
       }
       it("should not exhibit this bug in List shrinking") {
         import CommonGenerators.lists
@@ -167,10 +163,6 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
   
         val (l5, _, r5) = gen.next(size = 89, edges = Nil, rnd = r3)
         l5.length shouldBe 88
-  
-        an [IllegalArgumentException] should be thrownBy {
-          gen.next(size = -1, edges = Nil, rnd = Randomizer(100))
-        }
       }
       it("should not exhibit this bug in List shrinking") {
         import CommonGenerators.lists
