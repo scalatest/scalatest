@@ -704,6 +704,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             }
             else Iterator.empty
 
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
           val lastBatch =
             new Iterator[List[T]] {
               private var nextT = xs.take(2)
@@ -739,11 +741,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
           // I don't think edges should have one list each of length from and to, because they would
           // need to have random contents, and that doesn't seem like an edge.
           override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
+          // Specify how size is used.
           def next(size: Int, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(from + (size % (to - from + 1)), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
-          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
+          // If from is either 0 or 1, return the canonicals of the outer Generator.
+          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) =
+            if (from <= 1) outerGenOfListOfT.canonicals(rnd) else (Iterator.empty, rnd) 
           // TODO: Shrink can go from from up to xs length
-          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
+          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = outerGenOfListOfT.shrink(xs, rnd)
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
