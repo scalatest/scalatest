@@ -685,34 +685,45 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
       override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = {
 
-        val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
-        val canonicalListOfTsIt: Iterator[List[T]] = canonicalTsIt.map(t => List(t))
-        // Only include distinctListsOfTs if the list to shrink (xs) does not contain
-        // just one element itself. If it does, then xs will appear in the output, which
-        // we don't need, since we already know it fails.
-        val distinctListOfTsIt: Iterator[List[T]] = if (xs.nonEmpty && xs.tail.nonEmpty) xs.distinct.map(t => List(t)).iterator else Iterator.empty
-
-        val lastBatch =
-          new Iterator[List[T]] {
-            private var nextT = xs.take(2)
-            def hasNext: Boolean = nextT.length < xs.length
-            def next: List[T] = {
-              if (!hasNext)
-                throw new NoSuchElementException
-              val result = nextT
-              nextT = xs.take(result.length * 2)
-              result
-            }
-          }
-
         if (xs.isEmpty) (Iterator.empty, rnd)
-        else (
-          Iterator(Nil) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch,
-          rnd1
-        )
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[List[T]] = canonicalTs.map(t => List(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[List[T]] =
+            if (xs.nonEmpty && xs.tail.nonEmpty) {
+              val distinctListOfTs: List[List[T]] =
+                for (x <- xs if !canonicalTs.contains(x)) yield List(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          val lastBatch =
+            new Iterator[List[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.length < xs.length
+              def next: List[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.length * 2)
+                result
+              }
+            }
+
+          (Iterator(Nil) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
       }
       override def toString = "Generator[List[T]]"
       def havingLength(len: PosZInt): Generator[List[T]] =
+        // No edges and no shrinking. Since they said they want a list of a particular length,
+        // that is what they'll get.
         new Generator[List[T]] {
           override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(size: Int, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
@@ -725,12 +736,13 @@ object Generator extends LowerPriorityGeneratorImplicits {
         require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
         require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
         new Generator[List[T]] {
-          // TODO: Think about whether edges should have one list each of length from and to
+          // I don't think edges should have one list each of length from and to, because they would
+          // need to have random contents, and that doesn't seem like an edge.
           override def initEdges(maxLength: Int, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(size: Int, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(from + (size % (to - from + 1)), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
-          // TODO: Seems like shrink can also behave sensibly by going from from up to xs length
+          // TODO: Shrink can go from from up to xs length
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }

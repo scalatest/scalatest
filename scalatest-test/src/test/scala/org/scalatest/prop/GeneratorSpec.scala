@@ -978,6 +978,31 @@ class GeneratorSpec extends FunSpec with Matchers {
           }
         }
       }
+      it("should return an empty Iterator when asked to shrink a List of size 0") {
+        val lstGen = implicitly[Generator[List[Int]]]
+        val xs = List.empty[Int]
+        lstGen.shrink(xs, Randomizer.default)._1.toList shouldBe empty
+      }
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
+        val lstGen = implicitly[Generator[List[Int]]]
+        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
+        val expectedLists = List(List.empty[Int]) ++ canonicalLists
+        val nonCanonical = List(99)
+        lstGen.shrink(nonCanonical, Randomizer.default)._1.toList should contain theSameElementsAs expectedLists
+        val canonical = List(3)
+        // Ensure 3 (an Int canonical value) does not show up twice in the output
+        lstGen.shrink(canonical, Randomizer.default)._1.toList should contain theSameElementsAs expectedLists
+      }
+      it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
+        val lstGen = implicitly[Generator[List[Int]]]
+/*
+        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
+        val expectedLists = List(List.empty[Int]) ++ canonicalLists
+        val nonCanonical = List(99)
+*/
+        val shrinkees = lstGen.shrink(List(3, 99), Randomizer.default)._1.toList
+        shrinkees.distinct should contain theSameElementsAs shrinkees
+      }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
