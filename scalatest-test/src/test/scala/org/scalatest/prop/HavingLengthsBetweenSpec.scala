@@ -152,12 +152,12 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         val to = PosZInt(88)
         val gen = lists[Int].havingLengthsBetween(from, to)
         def expectedSize(size: Int): Int = {
-          val candidate: Int = (size.toFloat * (to - from + 1).toFloat / (maxSize + 1).toFloat).round
+          val candidate: Int = (from + (size.toFloat * (to - from).toFloat / (maxSize + 1).toFloat)).round
           if (candidate > to) to
           else if (candidate < from) from
           else candidate
         }
-  
+
         val (l1, _, r1) = gen.next(size = 0, maxSize = maxSize, edges = Nil, rnd = Randomizer(100))
         l1.length shouldBe expectedSize(0)
   
@@ -261,6 +261,9 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         val listOfIntCanonicals = listOfIntCanonicalsIt.toList
         listOfIntCanonicals shouldBe empty
       }
+      // TODO: I'd like some better tests here for the behavior of size in havingLengthsBetween. If you say,
+      // 150 to 175, and maxSize still is 100, then it should only generate between 150 and 175. Can whip
+      // up a forAll test.
     }
   }
 }

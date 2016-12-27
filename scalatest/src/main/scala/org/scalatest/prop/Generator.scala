@@ -725,7 +725,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
           // Specify how size is used.
           def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
             val nextSize = {
-              val candidate: Int = (size.toFloat * (to - from + 1).toFloat / (maxSize + 1).toFloat).round
+              val candidate: Int = (from + (size.toFloat * (to - from).toFloat / (maxSize + 1).toFloat)).round
               if (candidate > to) to
               else if (candidate < from) from
               else PosZInt.ensuringValid(candidate)
