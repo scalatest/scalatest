@@ -29,16 +29,16 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         import CommonGenerators.lists
         val gen = lists[Int].havingLengthsBetween(0, 88)
   
-        val (l1, _, r1) = gen.next(size = 0, edges = Nil, rnd = Randomizer(100))
+        val (l1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
         l1.length shouldBe 0
   
-        val (l2, _, r2) = gen.next(size = 3, edges = Nil, rnd = r1)
+        val (l2, _, r2) = gen.next(size = 3, maxSize = 100, edges = Nil, rnd = r1)
         l2.length shouldBe 3
   
-        val (l3, _, r3) = gen.next(size = 38, edges = Nil, rnd = r2)
+        val (l3, _, r3) = gen.next(size = 38, maxSize = 100, edges = Nil, rnd = r2)
         l3.length shouldBe 38
   
-        val (l4, _, r4) = gen.next(size = 88, edges = Nil, rnd = r3)
+        val (l4, _, r4) = gen.next(size = 88, maxSize = 100, edges = Nil, rnd = r3)
         l4.length shouldBe 88
       }
       it("should not exhibit this bug in List shrinking") {
@@ -149,19 +149,19 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         import CommonGenerators.lists
         val gen = lists[Int].havingLengthsBetween(5, 88)
   
-        val (l1, _, r1) = gen.next(size = 0, edges = Nil, rnd = Randomizer(100))
+        val (l1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
         l1.length shouldBe 5
   
-        val (l2, _, r2) = gen.next(size = 3, edges = Nil, rnd = r1)
+        val (l2, _, r2) = gen.next(size = 3, maxSize = 100, edges = Nil, rnd = r1)
         l2.length shouldBe 8
   
-        val (l3, _, r3) = gen.next(size = 38, edges = Nil, rnd = r2)
+        val (l3, _, r3) = gen.next(size = 38, maxSize = 100, edges = Nil, rnd = r2)
         l3.length shouldBe 38
   
-        val (l4, _, r4) = gen.next(size = 88, edges = Nil, rnd = r3)
+        val (l4, _, r4) = gen.next(size = 88, maxSize = 100, edges = Nil, rnd = r3)
         l4.length shouldBe 88
   
-        val (l5, _, r5) = gen.next(size = 89, edges = Nil, rnd = r3)
+        val (l5, _, r5) = gen.next(size = 89, maxSize = 100, edges = Nil, rnd = r3)
         l5.length shouldBe 88
       }
       it("should not exhibit this bug in List shrinking") {

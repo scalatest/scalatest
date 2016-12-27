@@ -32,14 +32,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
-      val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-      val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-      val (a3, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar2)
+      val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+      val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+      val (a3, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-      val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-      val (b3, _, _) = bGen.next(size = 100, edges = Nil, rnd = br2)
+      val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+      val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+      val (b3, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -96,11 +96,11 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should offer a filter method that throws an exception if too many objects are filtered out") {
       val doNotDoThisAtHome = CommonGenerators.ints.filter(i => i == 0) // Only keep zero
       a [IllegalStateException] should be thrownBy {
-        doNotDoThisAtHome.next(100, Nil, Randomizer.default())
+        doNotDoThisAtHome.next(100, 100, Nil, Randomizer.default())
       }
       val okToDoThisAtHome = CommonGenerators.ints.filter(i => i != 0) // Only keep non-zeros
       noException should be thrownBy {
-        okToDoThisAtHome.next(100, Nil, Randomizer.default())
+        okToDoThisAtHome.next(100, 100, Nil, Randomizer.default())
       }
     }
     it("should mix up both i and d when used in a for expression") {
@@ -113,14 +113,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
-      val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-      val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-      val (a3, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar2)
+      val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+      val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+      val (a3, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-      val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-      val (b3, _, _) = bGen.next(size = 100, edges = Nil, rnd = br2)
+      val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+      val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+      val (b3, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -217,31 +217,31 @@ class GeneratorSpec extends FunSpec with Matchers {
 
       initEdges should contain theSameElementsAs expectedInitEdges
 
-      val (tup1, e1, r1) = gen.next(size = 100, edges = initEdges, rnd = ier)
-      val (tup2, e2, r2) = gen.next(size = 100, edges = e1, rnd = r1)
-      val (tup3, e3, r3) = gen.next(size = 100, edges = e2, rnd = r2)
-      val (tup4, e4, r4) = gen.next(size = 100, edges = e3, rnd = r3)
-      val (tup5, e5, r5) = gen.next(size = 100, edges = e4, rnd = r4)
-      val (tup6, e6, r6) = gen.next(size = 100, edges = e5, rnd = r5)
-      val (tup7, e7, r7) = gen.next(size = 100, edges = e6, rnd = r6)
-      val (tup8, e8, r8) = gen.next(size = 100, edges = e7, rnd = r7)
-      val (tup9, e9, r9) = gen.next(size = 100, edges = e8, rnd = r8)
-      val (tup10, e10, r10) = gen.next(size = 100, edges = e9, rnd = r9)
-      val (tup11, e11, r11) = gen.next(size = 100, edges = e10, rnd = r10)
-      val (tup12, e12, r12) = gen.next(size = 100, edges = e11, rnd = r11)
-      val (tup13, e13, r13) = gen.next(size = 100, edges = e12, rnd = r12)
-      val (tup14, e14, r14) = gen.next(size = 100, edges = e13, rnd = r13)
-      val (tup15, e15, r15) = gen.next(size = 100, edges = e14, rnd = r14)
-      val (tup16, e16, r16) = gen.next(size = 100, edges = e15, rnd = r15)
-      val (tup17, e17, r17) = gen.next(size = 100, edges = e16, rnd = r16)
-      val (tup18, e18, r18) = gen.next(size = 100, edges = e17, rnd = r17)
-      val (tup19, e19, r19) = gen.next(size = 100, edges = e18, rnd = r18)
-      val (tup20, e20, r20) = gen.next(size = 100, edges = e19, rnd = r19)
-      val (tup21, e21, r21) = gen.next(size = 100, edges = e20, rnd = r20)
-      val (tup22, e22, r22) = gen.next(size = 100, edges = e21, rnd = r21)
-      val (tup23, e23, r23) = gen.next(size = 100, edges = e22, rnd = r22)
-      val (tup24, e24, r24) = gen.next(size = 100, edges = e23, rnd = r23)
-      val (tup25, _, _) = gen.next(size = 100, edges = e24, rnd = r24)
+      val (tup1, e1, r1) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+      val (tup2, e2, r2) = gen.next(size = 100, maxSize = 100, edges = e1, rnd = r1)
+      val (tup3, e3, r3) = gen.next(size = 100, maxSize = 100, edges = e2, rnd = r2)
+      val (tup4, e4, r4) = gen.next(size = 100, maxSize = 100, edges = e3, rnd = r3)
+      val (tup5, e5, r5) = gen.next(size = 100, maxSize = 100, edges = e4, rnd = r4)
+      val (tup6, e6, r6) = gen.next(size = 100, maxSize = 100, edges = e5, rnd = r5)
+      val (tup7, e7, r7) = gen.next(size = 100, maxSize = 100, edges = e6, rnd = r6)
+      val (tup8, e8, r8) = gen.next(size = 100, maxSize = 100, edges = e7, rnd = r7)
+      val (tup9, e9, r9) = gen.next(size = 100, maxSize = 100, edges = e8, rnd = r8)
+      val (tup10, e10, r10) = gen.next(size = 100, maxSize = 100, edges = e9, rnd = r9)
+      val (tup11, e11, r11) = gen.next(size = 100, maxSize = 100, edges = e10, rnd = r10)
+      val (tup12, e12, r12) = gen.next(size = 100, maxSize = 100, edges = e11, rnd = r11)
+      val (tup13, e13, r13) = gen.next(size = 100, maxSize = 100, edges = e12, rnd = r12)
+      val (tup14, e14, r14) = gen.next(size = 100, maxSize = 100, edges = e13, rnd = r13)
+      val (tup15, e15, r15) = gen.next(size = 100, maxSize = 100, edges = e14, rnd = r14)
+      val (tup16, e16, r16) = gen.next(size = 100, maxSize = 100, edges = e15, rnd = r15)
+      val (tup17, e17, r17) = gen.next(size = 100, maxSize = 100, edges = e16, rnd = r16)
+      val (tup18, e18, r18) = gen.next(size = 100, maxSize = 100, edges = e17, rnd = r17)
+      val (tup19, e19, r19) = gen.next(size = 100, maxSize = 100, edges = e18, rnd = r18)
+      val (tup20, e20, r20) = gen.next(size = 100, maxSize = 100, edges = e19, rnd = r19)
+      val (tup21, e21, r21) = gen.next(size = 100, maxSize = 100, edges = e20, rnd = r20)
+      val (tup22, e22, r22) = gen.next(size = 100, maxSize = 100, edges = e21, rnd = r21)
+      val (tup23, e23, r23) = gen.next(size = 100, maxSize = 100, edges = e22, rnd = r22)
+      val (tup24, e24, r24) = gen.next(size = 100, maxSize = 100, edges = e23, rnd = r23)
+      val (tup25, _, _) = gen.next(size = 100, maxSize = 100, edges = e24, rnd = r24)
       val values = List(tup1, tup2, tup3, tup4, tup5, tup6, tup7, tup8, tup9, tup10,
           tup11, tup12, tup13, tup14, tup15, tup16, tup17, tup18, tup19, tup20,
           tup21, tup22, tup23, tup24, tup25)
@@ -267,20 +267,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen = byteGenerator
         val bGen = byteGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -289,11 +289,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = byteGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Byte, ae1: List[Byte], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, ae3, ar3) = gen.next(size = 100, edges = ae2, rnd = ar2)
-        val (a4, ae4, ar4) = gen.next(size = 100, edges = ae3, rnd = ar3)
-        val (a5, _, _) = gen.next(size = 100, edges = ae4, rnd = ar4)
+        val (a1: Byte, ae1: List[Byte], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(size = 100, maxSize = 100, edges = ae3, rnd = ar3)
+        val (a5, _, _) = gen.next(size = 100, maxSize = 100, edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
         edges should contain (0)
         edges should contain (1)
@@ -335,20 +335,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen= shortGenerator
         val bGen = shortGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -357,11 +357,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = shortGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Short, ae1: List[Short], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, ae3, ar3) = gen.next(size = 100, edges = ae2, rnd = ar2)
-        val (a4, ae4, ar4) = gen.next(size = 100, edges = ae3, rnd = ar3)
-        val (a5, _, _) = gen.next(size = 100, edges = ae4, rnd = ar4)
+        val (a1: Short, ae1: List[Short], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(size = 100, maxSize = 100, edges = ae3, rnd = ar3)
+        val (a5, _, _) = gen.next(size = 100, maxSize = 100, edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
         edges should contain (0)
         edges should contain (1)
@@ -403,20 +403,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen= intGenerator
         val bGen = intGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -425,11 +425,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = intGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Int, ae1: List[Int], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, ae3, ar3) = gen.next(size = 100, edges = ae2, rnd = ar2)
-        val (a4, ae4, ar4) = gen.next(size = 100, edges = ae3, rnd = ar3)
-        val (a5, _, _) = gen.next(size = 100, edges = ae4, rnd = ar4)
+        val (a1: Int, ae1: List[Int], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(size = 100, maxSize = 100, edges = ae3, rnd = ar3)
+        val (a5, _, _) = gen.next(size = 100, maxSize = 100, edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
         edges should contain (0)
         edges should contain (1)
@@ -471,20 +471,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen= longGenerator
         val bGen = longGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -493,11 +493,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = longGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Long, ae1: List[Long], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, ae3, ar3) = gen.next(size = 100, edges = ae2, rnd = ar2)
-        val (a4, ae4, ar4) = gen.next(size = 100, edges = ae3, rnd = ar3)
-        val (a5, _, _) = gen.next(size = 100, edges = ae4, rnd = ar4)
+        val (a1: Long, ae1: List[Long], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(size = 100, maxSize = 100, edges = ae3, rnd = ar3)
+        val (a5, _, _) = gen.next(size = 100, maxSize = 100, edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
         edges should contain (0)
         edges should contain (1)
@@ -544,20 +544,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen= charGenerator
         val bGen = charGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -566,8 +566,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = charGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Char, ae1: List[Char], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(size = 100, edges = ae1, rnd = ar1)
+        val (a1: Char, ae1: List[Char], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges should contain (Char.MinValue)
         edges should contain (Char.MaxValue)
@@ -607,12 +607,12 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen = floatGenerator
         val bGen = floatGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, _) = bGen.next(size = 100, edges = Nil, rnd = br2)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
         a1 shouldEqual b1
         a2 shouldEqual b2
         a3 shouldEqual b3
@@ -621,7 +621,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = floatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1, _, _) = gen.next(size = 100, edges = initEdges, rnd = ier)
+        val (a1, _, _) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
         a1 shouldEqual 0.0f
       }
       it("should produce Float canonical values") {
@@ -661,12 +661,12 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen = doubleGenerator
         val bGen = doubleGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, _) = bGen.next(size = 100, edges = Nil, rnd = br2)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
         a1 shouldEqual b1
         a2 shouldEqual b2
         a3 shouldEqual b3
@@ -675,7 +675,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = doubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1, _, _) = gen.next(size = 100, edges = initEdges, rnd = ier)
+        val (a1, _, _) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
         a1 shouldEqual 0.0
       }
       it("should produce Double canonical values") {
@@ -717,20 +717,20 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val aGen= posIntGenerator
         val bGen = posIntGenerator
-        val (a1, _, ar1) = aGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (a2, _, ar2) = aGen.next(size = 100, edges = Nil, rnd = ar1)
-        val (a3, _, ar3) = aGen.next(size = 100, edges = Nil, rnd = ar2)
-        val (a4, _, ar4) = aGen.next(size = 100, edges = Nil, rnd = ar3)
-        val (a5, _, ar5) = aGen.next(size = 100, edges = Nil, rnd = ar4)
-        val (a6, _, ar6) = aGen.next(size = 100, edges = Nil, rnd = ar5)
-        val (a7, _, _) = aGen.next(size = 100, edges = Nil, rnd = ar6)
-        val (b1, _, br1) = bGen.next(size = 100, edges = Nil, rnd = Randomizer(100))
-        val (b2, _, br2) = bGen.next(size = 100, edges = Nil, rnd = br1)
-        val (b3, _, br3) = bGen.next(size = 100, edges = Nil, rnd = br2)
-        val (b4, _, br4) = bGen.next(size = 100, edges = Nil, rnd = br3)
-        val (b5, _, br5) = bGen.next(size = 100, edges = Nil, rnd = br4)
-        val (b6, _, br6) = bGen.next(size = 100, edges = Nil, rnd = br5)
-        val (b7, _, _) = bGen.next(size = 100, edges = Nil, rnd = br6)
+        val (a1, _, ar1) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(size = 100, maxSize = 100, edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(size = 100, maxSize = 100, edges = Nil, rnd = br6)
         List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
         a6 shouldEqual b6
         a7 shouldEqual b7
@@ -739,8 +739,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosInt, ae1: List[PosInt], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(size = 100, edges = ae1, rnd = ar1)
+        val (a1: PosInt, ae1: List[PosInt], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges should contain (PosInt(1))
         edges should contain (PosInt.MaxValue)
@@ -751,9 +751,9 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posZIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZInt, ae1: List[PosZInt], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, _, _) = gen.next(size = 100, edges = ae2, rnd = ar2)
+        val (a1: PosZInt, ae1: List[PosZInt], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3)
         edges should contain (PosZInt(0))
         edges should contain (PosZInt(1))
@@ -765,8 +765,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosLong, ae1: List[PosLong], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(size = 100, edges = ae1, rnd = ar1)
+        val (a1: PosLong, ae1: List[PosLong], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges should contain (PosLong(1L))
         edges should contain (PosLong.MaxValue)
@@ -777,9 +777,9 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posZLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZLong, ae1: List[PosZLong], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, _, _) = gen.next(size = 100, edges = ae2, rnd = ar2)
+        val (a1: PosZLong, ae1: List[PosZLong], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3)
         edges should contain (PosZLong(0L))
         edges should contain (PosZLong(1L))
@@ -791,8 +791,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosFloat, ae1: List[PosFloat], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(size = 100, edges = ae1, rnd = ar1)
+        val (a1: PosFloat, ae1: List[PosFloat], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges should contain (PosFloat(1.0f))
         edges should contain (PosFloat.MaxValue)
@@ -803,9 +803,9 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posZFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZFloat, ae1: List[PosZFloat], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, _, _) = gen.next(size = 100, edges = ae2, rnd = ar2)
+        val (a1: PosZFloat, ae1: List[PosZFloat], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3)
         edges should contain (PosZFloat(0.0f))
         edges should contain (PosZFloat(1.0f))
@@ -817,8 +817,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosDouble, ae1: List[PosDouble], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(size = 100, edges = ae1, rnd = ar1)
+        val (a1: PosDouble, ae1: List[PosDouble], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges should contain (PosDouble(1.0))
         edges should contain (PosDouble.MaxValue)
@@ -829,9 +829,9 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = posZDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZDouble, ae1: List[PosZDouble], ar1: Randomizer) = gen.next(size = 100, edges = initEdges, rnd = ier)
-        val (a2, ae2, ar2) = gen.next(size = 100, edges = ae1, rnd = ar1)
-        val (a3, _, _) = gen.next(size = 100, edges = ae2, rnd = ar2)
+        val (a1: PosZDouble, ae1: List[PosZDouble], ar1: Randomizer) = gen.next(size = 100, maxSize = 100, edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(size = 100, maxSize = 100, edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(size = 100, maxSize = 100, edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3)
         edges should contain (PosZDouble(0.0))
         edges should contain (PosZDouble(1.0))
@@ -844,19 +844,19 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = stringGenerator
   
-        val (s1, _, r1) = gen.next(size = 0, edges = Nil, rnd = Randomizer(100))
+        val (s1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
         s1.length shouldBe 0
   
-        val (s2, _, r2) = gen.next(size = 3, edges = Nil, rnd = r1)
+        val (s2, _, r2) = gen.next(size = 3, maxSize = 100, edges = Nil, rnd = r1)
         s2.length shouldBe 3
   
-        val (s3, _, r3) = gen.next(size = 38, edges = Nil, rnd = r2)
+        val (s3, _, r3) = gen.next(size = 38, maxSize = 100, edges = Nil, rnd = r2)
         s3.length shouldBe 38
   
-        val (s4, _, r4) = gen.next(size = 88, edges = Nil, rnd = r3)
+        val (s4, _, r4) = gen.next(size = 88, maxSize = 100, edges = Nil, rnd = r3)
         s4.length shouldBe 88
   
-        val (s5, _, _) = gen.next(size = 100, edges = Nil, rnd = r4)
+        val (s5, _, _) = gen.next(size = 100, maxSize = 100, edges = Nil, rnd = r4)
         s5.length shouldBe 100
       }
       it("should shrink Strings using strategery") {
@@ -911,19 +911,19 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = listGenerator[Int]
   
-        val (l1, _, r1) = gen.next(size = 0, edges = Nil, rnd = Randomizer(100))
+        val (l1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
         l1.length shouldBe 0
   
-        val (l2, _, r2) = gen.next(size = 3, edges = Nil, rnd = r1)
+        val (l2, _, r2) = gen.next(size = 3, maxSize = 100, edges = Nil, rnd = r1)
         l2.length shouldBe 3
   
-        val (l3, _, r3) = gen.next(size = 38, edges = Nil, rnd = r2)
+        val (l3, _, r3) = gen.next(size = 38, maxSize = 100, edges = Nil, rnd = r2)
         l3.length shouldBe 38
   
-        val (l4, _, r4) = gen.next(size = 88, edges = Nil, rnd = r3)
+        val (l4, _, r4) = gen.next(size = 88, maxSize = 100, edges = Nil, rnd = r3)
         l4.length shouldBe 88
   
-        val (l5, _, _) = gen.next(size = 100, edges = Nil, rnd = r4)
+        val (l5, _, _) = gen.next(size = 100, maxSize = 100, edges = Nil, rnd = r4)
         l5.length shouldBe 100
       }
       it("should not exhibit this bug in List shrinking") {

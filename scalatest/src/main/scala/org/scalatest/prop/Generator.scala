@@ -27,19 +27,19 @@ trait Generator[T] { thisGeneratorOfT =>
 
   def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
 
-  def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
+  def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU => 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
         (listOfT.map(f), nextRnd)
       }
-      def next(size: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
         edges match {
           case head :: tail => 
             (head, tail, rnd)
           case _ =>
-            val (nextT, _, nextRandomizer) = thisGeneratorOfT.next(size, Nil, rnd)
+            val (nextT, _, nextRandomizer) = thisGeneratorOfT.next(size, maxSize, Nil, rnd)
             (f(nextT), Nil, nextRandomizer)
         }
       }
@@ -70,14 +70,14 @@ trait Generator[T] { thisGeneratorOfT =>
         val distinctEdges: List[U] = listOfU.distinct
         (distinctEdges.take(maxLength), nextNextRnd)
       }
-      def next(size: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
         edges match {
           case head :: tail => 
             (head, tail, rnd)
           case _ => 
-            val (nextT, _, nextRandomizer) = thisGeneratorOfT.next(size, Nil, rnd)
+            val (nextT, _, nextRandomizer) = thisGeneratorOfT.next(size, maxSize, Nil, rnd)
             val genOfU: Generator[U] = f(nextT)
-            val (u, _, nextNextRandomizer) = genOfU.next(size, Nil, nextRandomizer)
+            val (u, _, nextNextRandomizer) = genOfU.next(size, maxSize, Nil, nextRandomizer)
             (u, Nil, nextNextRandomizer)
         }
       }
@@ -98,12 +98,12 @@ trait Generator[T] { thisGeneratorOfT =>
   def filter(f: T => Boolean): Generator[T] =
     new Generator[T] { thisFilteredGeneratorOfT =>
       private final val MaxLoopCount: Int = 100000
-      def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         @tailrec
         def loop(count: Int, nextEdges: List[T], nextRnd: Randomizer): (T, List[T], Randomizer) = {
           if (count > MaxLoopCount)
             throw new IllegalStateException(s"A Generator produced by calling filter or withFilter on another Generator (possibly by using an 'if' clause in a for expression) has filtered out $MaxLoopCount objects in a row in its next method, so aborting. Please define the Generator without using filter or withFilter.")
-          val candidateResult = thisGeneratorOfT.next(size, nextEdges, nextRnd)
+          val candidateResult = thisGeneratorOfT.next(size, maxSize, nextEdges, nextRnd)
           val (nextT, nextNextEdges, nextNextRnd) = candidateResult
           if (!f(nextT)) loop(count + 1, nextNextEdges, nextNextRnd)
           else candidateResult
@@ -115,8 +115,9 @@ trait Generator[T] { thisGeneratorOfT =>
   def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
   def sample: T = {
     val rnd = Randomizer.default
-    val (size, nextRnd) = rnd.chooseInt(1, 100) // size will be positive because between 1 and 100, inclusive
-    val (value, _, _) = next(PosZInt.ensuringValid(size), Nil, nextRnd)
+    val maxSize = PosZInt(100)
+    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
+    val (value, _, _) = next(PosZInt.ensuringValid(size), maxSize, Nil, nextRnd)
     value
   }
   def samples(length: PosInt): List[T] = {
@@ -124,8 +125,9 @@ trait Generator[T] { thisGeneratorOfT =>
     def loop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
       if (count == length.value) acc
       else {
-        val (size, nextRnd) = rnd.chooseInt(1, 100) // size will be positive because between 1 and 100, inclusive
-        val (value, _, nextNextRnd) = next(PosZInt.ensuringValid(size), Nil, rnd)
+        val maxSize = PosZInt(100)
+        val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
+        val (value, _, nextNextRnd) = next(PosZInt.ensuringValid(size), maxSize, Nil, rnd)
         loop(count + 1, nextNextRnd, value :: acc)
       }
     }
@@ -140,7 +142,7 @@ trait LowerPriorityGeneratorImplicits {
 
   implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T], shrk: Shrink[T]): Generator[T] =
     new Generator[T] {
-      def next(size: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -173,7 +175,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -207,7 +209,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -241,7 +243,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -278,7 +280,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -312,7 +314,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -345,7 +347,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (posFloatEdges.take(maxLength), rnd)
       }
-      def next(size: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -389,7 +391,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (posDoubleEdges.take(maxLength), rnd)
       }
-      def next(size: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -434,7 +436,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -454,7 +456,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -474,7 +476,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -494,7 +496,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -514,7 +516,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -534,7 +536,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -554,7 +556,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -574,7 +576,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -594,7 +596,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (stringEdges.take(maxLength), rnd)
       }
-      def next(size: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -649,7 +651,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (listEdges.take(maxLength), rnd)
       }
-      def next(size: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -707,8 +709,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         // that is what they'll get.
         new Generator[List[T]] {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
-          def next(size: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(len, edges, rnd)
+          def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
+            outerGenOfListOfT.next(len, maxSize, edges, rnd)
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having length $len */]"
@@ -721,9 +723,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
           // need to have random contents, and that doesn't seem like an edge.
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           // Specify how size is used.
-          def next(size: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
+          def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
             val nextSize = PosZInt.ensuringValid(from + (size % (to - from + 1)))
-            outerGenOfListOfT.next(nextSize, edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
+            outerGenOfListOfT.next(nextSize, maxSize, edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           }
           // If from is either 0 or 1, return the canonicals of the outer Generator.
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) =
@@ -736,8 +738,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       def havingLengthsDeterminedBy(f: Int => PosZInt): Generator[List[T]] =
         new Generator[List[T]] {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
-          def next(size: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(f(size), edges, rnd)
+          def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
+            outerGenOfListOfT.next(f(size), maxSize, edges, rnd)
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd) 
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having length determined by a function */]"
@@ -752,12 +754,12 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val edges = edgesOfT.map(t => PrettyFunction0(t))
         (edges, nextRnd)
       }
-      def next(size: PosZInt, edges: List[() => T], rnd: Randomizer): (() => T, List[() => T], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[() => T], rnd: Randomizer): (() => T, List[() => T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
-            val (nextT, _, nextRnd) = genOfT.next(size, Nil, rnd)
+            val (nextT, _, nextRnd) = genOfT.next(size, maxSize, Nil, rnd)
             (PrettyFunction0(nextT), Nil, nextRnd)
         }
       }
@@ -869,7 +871,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         IntToIntComplement
       )
     new Generator[Int => Int] {
-      def next(size: PosZInt, edges: List[Int => Int], rnd: Randomizer): (Int => Int, List[Int => Int], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Int => Int], rnd: Randomizer): (Int => Int, List[Int => Int], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -885,10 +887,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
     new Generator[A => B] {
-      def next(size: PosZInt, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
 
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
 
         object AToB extends (A => B) {
@@ -907,9 +909,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C]): Generator[(A, B) => C] = {
     new Generator[(A, B) => C] {
-      def next(size: PosZInt, edges: List[(A, B) => C], rnd: Randomizer): ((A, B) => C, List[(A, B) => C], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B) => C], rnd: Randomizer): ((A, B) => C, List[(A, B) => C], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABToC extends ((A, B) => C) {
@@ -929,9 +931,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D]): Generator[(A, B, C) => D] = {
     new Generator[(A, B, C) => D] {
-      def next(size: PosZInt, edges: List[(A, B, C) => D], rnd: Randomizer): ((A, B, C) => D, List[(A, B, C) => D], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C) => D], rnd: Randomizer): ((A, B, C) => D, List[(A, B, C) => D], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCToD extends ((A, B, C) => D) {
@@ -952,9 +954,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E]): Generator[(A, B, C, D) => E] = {
     new Generator[(A, B, C, D) => E] {
-      def next(size: PosZInt, edges: List[(A, B, C, D) => E], rnd: Randomizer): ((A, B, C, D) => E, List[(A, B, C, D) => E], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D) => E], rnd: Randomizer): ((A, B, C, D) => E, List[(A, B, C, D) => E], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDToE extends ((A, B, C, D) => E) {
@@ -976,9 +978,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F]): Generator[(A, B, C, D, E) => F] = {
     new Generator[(A, B, C, D, E) => F] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E) => F], rnd: Randomizer): ((A, B, C, D, E) => F, List[(A, B, C, D, E) => F], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E) => F], rnd: Randomizer): ((A, B, C, D, E) => F, List[(A, B, C, D, E) => F], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEToF extends ((A, B, C, D, E) => F) {
@@ -1001,9 +1003,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G]): Generator[(A, B, C, D, E, F) => G] = {
     new Generator[(A, B, C, D, E, F) => G] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F) => G], rnd: Randomizer): ((A, B, C, D, E, F) => G, List[(A, B, C, D, E, F) => G], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F) => G], rnd: Randomizer): ((A, B, C, D, E, F) => G, List[(A, B, C, D, E, F) => G], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFToG extends ((A, B, C, D, E, F) => G) {
@@ -1027,9 +1029,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H]): Generator[(A, B, C, D, E, F, G) => H] = {
     new Generator[(A, B, C, D, E, F, G) => H] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G) => H], rnd: Randomizer): ((A, B, C, D, E, F, G) => H, List[(A, B, C, D, E, F, G) => H], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G) => H], rnd: Randomizer): ((A, B, C, D, E, F, G) => H, List[(A, B, C, D, E, F, G) => H], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGToH extends ((A, B, C, D, E, F, G) => H) {
@@ -1054,9 +1056,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
     new Generator[(A, B, C, D, E, F, G, H) => I] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H) => I], rnd: Randomizer): ((A, B, C, D, E, F, G, H) => I, List[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H) => I], rnd: Randomizer): ((A, B, C, D, E, F, G, H) => I, List[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHToI extends ((A, B, C, D, E, F, G, H) => I) {
@@ -1082,9 +1084,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
     new Generator[(A, B, C, D, E, F, G, H, I) => J] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I) => J], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I) => J, List[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I) => J], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I) => J, List[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIToJ extends ((A, B, C, D, E, F, G, H, I) => J) {
@@ -1111,9 +1113,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J) => K], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J) => K, List[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J) => K], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J) => K, List[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJToK extends ((A, B, C, D, E, F, G, H, I, J) => K) {
@@ -1141,9 +1143,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K) => L], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K) => L, List[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K) => L], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K) => L, List[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKToL extends ((A, B, C, D, E, F, G, H, I, J, K) => L) {
@@ -1172,9 +1174,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L) => M, List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L) => M, List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLToM extends ((A, B, C, D, E, F, G, H, I, J, K, L) => M) {
@@ -1204,9 +1206,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMToN extends ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N) {
@@ -1237,9 +1239,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNToO extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O) {
@@ -1271,9 +1273,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOToP extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P) {
@@ -1306,9 +1308,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPToQ extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q) {
@@ -1342,9 +1344,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQToR extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R) {
@@ -1379,9 +1381,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRToS extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S) {
@@ -1417,9 +1419,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSToT extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T) {
@@ -1456,9 +1458,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTToU extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U) {
@@ -1496,9 +1498,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTUToV extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V) {
@@ -1537,9 +1539,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
   
   implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V], typeTagOfW: TypeTag[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] {
-      def next(size: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
-        val (prime, _, rnd1) = first1000PrimesGen.next(10, Nil, rnd)
+        val (prime, _, rnd1) = first1000PrimesGen.next(size, maxSize, Nil, rnd)
         val multiplier = if (prime == 2) 1 else prime
   
         object ABCDEFGHIJKLMNOPQRSTUVToW extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W) {
@@ -1586,7 +1588,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
         val edges = None :: edgesOfT.map(t => Some(t))
         (edges, nextRnd)
       }
-      def next(size: PosZInt, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -1595,7 +1597,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
             if (nextInt % 10 == 0)
               (None, Nil, nextRnd)
             else {
-              val (nextT, _, nextNextRnd) = genOfT.next(size, Nil, nextRnd)
+              val (nextT, _, nextNextRnd) = genOfT.next(size, maxSize, Nil, nextRnd)
               (Some(nextT), Nil, nextNextRnd)
             }
         }
@@ -1623,18 +1625,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
-      def next(size: PosZInt, edges: List[G Or B], rnd: Randomizer): (G Or B, List[G Or B], Randomizer) = {
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[G Or B], rnd: Randomizer): (G Or B, List[G Or B], Randomizer) = {
         edges match {
           case head :: tail => 
             (head, tail, rnd)
           case _ => 
             val (nextInt, nextRnd) = rnd.nextInt
             if (nextInt % 4 == 0) {
-              val (nextB, _, nextRnd) = genOfB.next(size, Nil, rnd)
+              val (nextB, _, nextRnd) = genOfB.next(size, maxSize, Nil, rnd)
               (Bad(nextB), Nil, nextRnd)
             }
             else {
-              val (nextG, _, nextRnd) = genOfG.next(size, Nil, rnd)
+              val (nextG, _, nextRnd) = genOfG.next(size, maxSize, Nil, rnd)
               (Good(nextG), Nil, nextRnd)
             }
         }

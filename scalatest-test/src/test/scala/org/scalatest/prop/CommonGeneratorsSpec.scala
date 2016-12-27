@@ -1339,8 +1339,9 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       def samplesLoop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
         if (count == desiredLength.value) acc
         else {
-          val (size, nextRnd) = rnd.chooseInt(1, 100)
-          val (value, _, nextNextRnd) = genOfT.next(PosZInt.ensuringValid(size), Nil, rnd) 
+          val maxSize = PosZInt(100)
+          val (size, nextRnd) = rnd.chooseInt(1, maxSize)
+          val (value, _, nextNextRnd) = genOfT.next(PosZInt.ensuringValid(size), maxSize, Nil, rnd) 
           samplesLoop(count + 1, nextNextRnd, value :: acc)
         } 
       }
