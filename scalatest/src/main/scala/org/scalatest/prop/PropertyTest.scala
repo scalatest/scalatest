@@ -108,7 +108,8 @@ I'd then just feed the edges through along with the randomizer.
 */
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val (initEdges, afterEdgesRnd) = genA.initEdges(config.minSuccessful / 5, afterSizesRnd)
+    // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
+    val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
     loop(0, 0, initEdges, afterEdgesRnd, initialSizes) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
   }
 
@@ -187,7 +188,7 @@ I'd then just feed the edges through along with the randomizer.
 
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val maxEdges = config.minSuccessful / 5
+    val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
     val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
     val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
     loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes)
@@ -271,7 +272,7 @@ I'd then just feed the edges through along with the randomizer.
 
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val maxEdges = config.minSuccessful / 5
+    val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
     val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
     val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
     val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
@@ -359,7 +360,7 @@ I'd then just feed the edges through along with the randomizer.
 
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val maxEdges = config.minSuccessful / 5
+    val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
     val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
     val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
     val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
@@ -451,7 +452,7 @@ I'd then just feed the edges through along with the randomizer.
 
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val maxEdges = config.minSuccessful / 5
+    val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
     val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
     val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
     val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
@@ -548,7 +549,7 @@ I'd then just feed the edges through along with the randomizer.
 
     val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
     val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
-    val maxEdges = config.minSuccessful / 5
+    val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
     val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
     val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
     val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
