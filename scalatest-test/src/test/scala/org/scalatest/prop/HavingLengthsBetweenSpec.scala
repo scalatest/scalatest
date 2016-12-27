@@ -27,7 +27,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
   
         import Generator._
         import CommonGenerators.lists
-        val gen = lists[Int].havingLengthsBetween(0, 88)
+        val gen = lists[Int].havingLengthsBetween(0, 100)
   
         val (l1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
         l1.length shouldBe 0
@@ -143,26 +143,35 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
       }
     }
     describe("where from is greater than 1") {
-      ignore("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
+      it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
   
         import Generator._
         import CommonGenerators.lists
-        val gen = lists[Int].havingLengthsBetween(5, 88)
+        val maxSize = PosZInt(100)
+        val from = PosZInt(5)
+        val to = PosZInt(88)
+        val gen = lists[Int].havingLengthsBetween(from, to)
+        def expectedSize(size: Int): Int = {
+          val candidate: Int = (size.toFloat * (to - from + 1).toFloat / (maxSize + 1).toFloat).round
+          if (candidate > to) to
+          else if (candidate < from) from
+          else candidate
+        }
   
-        val (l1, _, r1) = gen.next(size = 0, maxSize = 100, edges = Nil, rnd = Randomizer(100))
-        l1.length shouldBe 5
+        val (l1, _, r1) = gen.next(size = 0, maxSize = maxSize, edges = Nil, rnd = Randomizer(100))
+        l1.length shouldBe expectedSize(0)
   
-        val (l2, _, r2) = gen.next(size = 3, maxSize = 100, edges = Nil, rnd = r1)
-        l2.length shouldBe 8
+        val (l2, _, r2) = gen.next(size = 3, maxSize = maxSize, edges = Nil, rnd = r1)
+        l2.length shouldBe expectedSize(3)
   
-        val (l3, _, r3) = gen.next(size = 38, maxSize = 100, edges = Nil, rnd = r2)
-        l3.length shouldBe 38
+        val (l3, _, r3) = gen.next(size = 38, maxSize = maxSize, edges = Nil, rnd = r2)
+        l3.length shouldBe expectedSize(38)
   
-        val (l4, _, r4) = gen.next(size = 88, maxSize = 100, edges = Nil, rnd = r3)
-        l4.length shouldBe 88
+        val (l4, _, r4) = gen.next(size = 88, maxSize = maxSize, edges = Nil, rnd = r3)
+        l4.length shouldBe expectedSize(88)
   
-        val (l5, _, r5) = gen.next(size = 89, maxSize = 100, edges = Nil, rnd = r3)
-        l5.length shouldBe 88
+        val (l5, _, r5) = gen.next(size = 89, maxSize = maxSize, edges = Nil, rnd = r3)
+        l5.length shouldBe expectedSize(89)
       }
       it("should not exhibit this bug in List shrinking") {
         import CommonGenerators.lists
@@ -242,7 +251,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.toList
         shrinkees.distinct should not contain listToShrink
       }
-      ignore("should offer a list generator whose canonical method uses the canonical method of the underlying T if min is 0 or 1") {
+      it("should offer a list generator whose canonical method is empty if from is greater than 1") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
@@ -250,7 +259,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         val listOfIntGenerator = lists[Int].havingLengthsBetween(5, 50)
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
         val listOfIntCanonicals = listOfIntCanonicalsIt.toList
-        listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
+        listOfIntCanonicals shouldBe empty
       }
     }
   }

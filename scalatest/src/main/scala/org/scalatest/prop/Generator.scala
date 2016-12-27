@@ -724,8 +724,13 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           // Specify how size is used.
           def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
-            val nextSize = PosZInt.ensuringValid(from + (size % (to - from + 1)))
-            outerGenOfListOfT.next(nextSize, maxSize, edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
+            val nextSize = {
+              val candidate: Int = (size.toFloat * (to - from + 1).toFloat / (maxSize + 1).toFloat).round
+              if (candidate > to) to
+              else if (candidate < from) from
+              else PosZInt.ensuringValid(candidate)
+            }
+            outerGenOfListOfT.next(nextSize, to, edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           }
           // If from is either 0 or 1, return the canonicals of the outer Generator.
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) =

@@ -39,7 +39,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers {
   }
 
 /*
-  // I can't follow the test anymore. Need to just rethink how to test the valueOf methods.
+  // TODO: I can't follow the test anymore. Need to just rethink how to test the valueOf methods.
   "The org.scalatest.prop package object" should {
 
     "offer a valueOf method that takes 1 input arguments" in {
