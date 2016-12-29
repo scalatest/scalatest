@@ -131,6 +131,18 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         NonZeroLong.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
       }
     }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NonZeroLong wrapped in a Right if the given Long is non-zero") {
+        NonZeroLong.rightOrElse(50L)(i => i) shouldBe Right(NonZeroLong(50L))
+        NonZeroLong.rightOrElse(100L)(i => i) shouldBe Right(NonZeroLong(100L))
+
+        NonZeroLong.rightOrElse(-1L)(i => i) shouldBe Right(NonZeroLong(-1L))
+        NonZeroLong.rightOrElse(-99L)(i => i) shouldBe Right(NonZeroLong(-99L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT non-zero, wrapped in a Left") {
+        NonZeroLong.rightOrElse(0L)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is not 0") {
         NonZeroLong.isValid(50L) shouldBe true

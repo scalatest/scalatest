@@ -605,36 +605,68 @@ object $typeName$ {
     if ($typeName$Macro.isValid(value)) Pass else Fail(f(value))
 
   /**
-     * A factory/validation method that produces a <code>$typeName$</code>, wrapped
-     * in a <code>Good</code>, given a valid <code>Double</code> value, or if the
-     * given <code>Double</code> is invalid, an error value of type <code>B</code>
-     * produced by passing the given <em>invalid</em> <code>Double</code> value
-     * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
-     *
-     * <p>
-     * This method will inspect the passed <code>Double</code> value and if
-     * it is a $typeDesc$ <code>Double</code>, it will return a <code>$typeName$</code>
-     * representing that value, wrapped in a <code>Good</code>.
-     * Otherwise, the passed <code>Double</code> value is NOT $typeDesc$, so this
-     * method will return a result of type <code>B</code> obtained by passing
-     * the invalid <code>Double</code> value to the given function <code>f</code>,
-     * wrapped in a `Bad`.
-     * </p>
-     *
-     * <p>
-     * This factory method differs from the <code>apply</code> factory method
-     * in that <code>apply</code> is implemented via a macro that inspects
-     * <code>Double</code> literals at compile time, whereas this method inspects
-     * <code>Double</code> values at run time.
-     * </p>
-     *
-     * @param value the <code>Double</code> to inspect, and if $typeDesc$, return
-     *     wrapped in a <code>Good($typeName$)</code>.
-     * @return the specified <code>Double</code> value wrapped
-     *     in a <code>Good($typeName$)</code>, if it is $typeDesc$, else a <code>Bad(f(value))</code>.
-     */
-    def goodOrElse[B](value: Double)(f: Double => B): $typeName$ Or B =
-      if ($typeName$Macro.isValid(value)) Good($typeName$.ensuringValid(value)) else Bad(f(value))
+   * A factory/validation method that produces a <code>$typeName$</code>, wrapped
+   * in a <code>Good</code>, given a valid <code>Double</code> value, or if the
+   * given <code>Double</code> is invalid, an error value of type <code>B</code>
+   * produced by passing the given <em>invalid</em> <code>Double</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value and if
+   * it is a $typeDesc$ <code>Double</code>, it will return a <code>$typeName$</code>
+   * representing that value, wrapped in a <code>Good</code>.
+   * Otherwise, the passed <code>Double</code> value is NOT $typeDesc$, so this
+   * method will return a result of type <code>B</code> obtained by passing
+   * the invalid <code>Double</code> value to the given function <code>f</code>,
+   * wrapped in a `Bad`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Double</code> literals at compile time, whereas this method inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>Good($typeName$)</code>.
+   * @return the specified <code>Double</code> value wrapped
+   *     in a <code>Good($typeName$)</code>, if it is $typeDesc$, else a <code>Bad(f(value))</code>.
+   */
+  def goodOrElse[B](value: Double)(f: Double => B): $typeName$ Or B =
+    if ($typeName$Macro.isValid(value)) Good($typeName$.ensuringValid(value)) else Bad(f(value))
+
+  /**
+   * A factory/validation method that produces a <code>$typeName$</code>, wrapped
+   * in a <code>Right</code>, given a valid <code>Double</code> value, or if the
+   * given <code>Double</code> is invalid, an error value of type <code>L</code>
+   * produced by passing the given <em>invalid</em> <code>Double</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Left</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value and if
+   * it is a $typeDesc$ <code>Double</code>, it will return a <code>$typeName$</code>
+   * representing that value, wrapped in a <code>Right</code>.
+   * Otherwise, the passed <code>Double</code> value is NOT $typeDesc$, so this
+   * method will return a result of type <code>L</code> obtained by passing
+   * the invalid <code>Double</code> value to the given function <code>f</code>,
+   * wrapped in a `Left`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Double</code> literals at compile time, whereas this method inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>Right($typeName$)</code>.
+   * @return the specified <code>Double</code> value wrapped
+   *     in a <code>Right($typeName$)</code>, if it is $typeDesc$, else a <code>Left(f(value))</code>.
+   */
+  def rightOrElse[L](value: Double)(f: Double => L): Either[L, $typeName$] =
+    if ($typeName$Macro.isValid(value)) Right($typeName$.ensuringValid(value)) else Left(f(value))
 
   /**
    * A predicate method that returns true if a given

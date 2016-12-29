@@ -109,6 +109,18 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         NonZeroFloat.goodOrElse(0.0F)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
       }
     }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NonZeroFloat wrapped in a Right if the given Long is non-zero") {
+        NonZeroFloat.rightOrElse(50.23F)(i => i) shouldBe Right(NonZeroFloat(50.23F))
+        NonZeroFloat.rightOrElse(100.0F)(i => i) shouldBe Right(NonZeroFloat(100.0F))
+
+        NonZeroFloat.rightOrElse(-1.23F)(i => i) shouldBe Right(NonZeroFloat(-1.23F))
+        NonZeroFloat.rightOrElse(-99.0F)(i => i) shouldBe Right(NonZeroFloat(-99.0F))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Left") {
+        NonZeroFloat.rightOrElse(0.0F)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Float is non-zero") {
         NonZeroFloat.isValid(50.23f) shouldBe true

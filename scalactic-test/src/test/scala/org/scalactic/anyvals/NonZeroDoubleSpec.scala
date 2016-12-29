@@ -121,6 +121,18 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
         NonZeroDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
       }
     }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NonZeroDouble wrapped in a Right if the given Double is non-zero") {
+        NonZeroDouble.rightOrElse(50.23)(i => i) shouldBe Right(NonZeroDouble(50.23))
+        NonZeroDouble.rightOrElse(100.0)(i => i) shouldBe Right(NonZeroDouble(100.0))
+
+        NonZeroDouble.rightOrElse(-1.23)(i => i) shouldBe Right(NonZeroDouble(-1.23))
+        NonZeroDouble.rightOrElse(-99.0)(i => i) shouldBe Right(NonZeroDouble(-99.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT non-zero, wrapped in a Left") {
+        NonZeroDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Double is greater than 0") {
         NonZeroDouble.isValid(50.23) shouldBe true

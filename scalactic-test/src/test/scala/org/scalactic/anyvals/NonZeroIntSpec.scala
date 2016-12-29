@@ -140,6 +140,18 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         NonZeroInt.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
       }
     }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NonZeroInt wrapped in a Right if the given Int is non-zero") {
+        NonZeroInt.rightOrElse(50)(i => i) shouldBe Right(NonZeroInt(50))
+        NonZeroInt.rightOrElse(100)(i => i) shouldBe Right(NonZeroInt(100))
+
+        NonZeroInt.rightOrElse(-1)(i => i) shouldBe Right(NonZeroInt(-1))
+        NonZeroInt.rightOrElse(-99)(i => i) shouldBe Right(NonZeroInt(-99))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT non-zero, wrapped in a Left") {
+        NonZeroInt.rightOrElse(0)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Int is not 0") {
         NonZeroInt.isValid(50) shouldBe true
