@@ -102,6 +102,19 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         an [AssertionError] should be thrownBy NonZeroInt.ensuringValid(0)
       }
     }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a NonZeroInt wrapped in a Success if the passed Int is non-zero") {
+        NonZeroInt.tryingValid(50).success.value.value shouldBe 50
+        NonZeroInt.tryingValid(100).success.value.value shouldBe 100
+        NonZeroInt.tryingValid(-50).success.value.value shouldBe -50
+        NonZeroInt.tryingValid(-100).success.value.value shouldBe -100
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Int is NOT non-zero") {
+        NonZeroInt.tryingValid(0).failure.exception shouldBe an [AssertionError]
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Int is not 0") {
         NonZeroInt.isValid(50) shouldBe true

@@ -92,6 +92,19 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         an [AssertionError] should be thrownBy NonZeroLong.ensuringValid(0L)
       }
     }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a NonZeroLong wrapped in a Success if the passed Long is non-zero") {
+        NonZeroLong.tryingValid(50L).success.value.value shouldBe 50L
+        NonZeroLong.tryingValid(100L).success.value.value shouldBe 100L
+        NonZeroLong.tryingValid(-50L).success.value.value shouldBe -50L
+        NonZeroLong.tryingValid(-100L).success.value.value shouldBe -100L
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Long is NOT non-zero") {
+        NonZeroLong.tryingValid(0L).failure.exception shouldBe an [AssertionError]
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is not 0") {
         NonZeroLong.isValid(50L) shouldBe true

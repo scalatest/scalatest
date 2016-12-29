@@ -82,6 +82,19 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
         an [AssertionError] should be thrownBy NonZeroDouble.ensuringValid(Double.NaN)
       }
     }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a NonZeroDouble wrapped in a Success if the passed Double is non-zero") {
+        NonZeroDouble.tryingValid(50.23).success.value.value shouldBe 50.23
+        NonZeroDouble.tryingValid(100.0).success.value.value shouldBe 100
+        NonZeroDouble.tryingValid(-50.23).success.value.value shouldBe -50.23
+        NonZeroDouble.tryingValid(-100.0).success.value.value shouldBe -100.0
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Double is NOT non-zero") {
+        NonZeroDouble.tryingValid(0.0).failure.exception shouldBe an[AssertionError]
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Double is greater than 0") {
         NonZeroDouble.isValid(50.23) shouldBe true

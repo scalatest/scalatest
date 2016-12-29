@@ -70,6 +70,19 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         an [AssertionError] should be thrownBy NonZeroFloat.ensuringValid(0.0F)
       }
     }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a NonZeroFloat wrapped in a Success if the passed Float is non-zero") {
+        NonZeroFloat.tryingValid(50.23F).success.value.value shouldBe 50.23F
+        NonZeroFloat.tryingValid(100.0F).success.value.value shouldBe 100F
+        NonZeroFloat.tryingValid(-50.23F).success.value.value shouldBe -50.23F
+        NonZeroFloat.tryingValid(-100.0F).success.value.value shouldBe -100.0F
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Float is NOT non-zero") {
+        NonZeroFloat.tryingValid(0.0F).failure.exception shouldBe an [AssertionError]
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Float is non-zero") {
         NonZeroFloat.isValid(50.23f) shouldBe true

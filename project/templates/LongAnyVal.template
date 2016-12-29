@@ -17,6 +17,7 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
+import scala.util.{Try, Success, Failure}
 
 /**
  * An <code>AnyVal</code> for $typeDesc$ <code>Long</code>s.
@@ -797,6 +798,14 @@ object $typeName$ {
    * valid <code>Long</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Long</code> value.
    *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you think
+   * it will always succeed to document your reasoning. If you are not sure an
+   * `ensuringValid` call will always succeed, you should use one of the other
+   * factory or validation methods provided on this object instead: `isValid`,
+   * `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
    * <p>
    * This method will inspect the passed <code>Long</code> value and if
    * it is a $typeDesc$ <code>Long</code>, it will return a <code>$typeName$</code> representing that value.
@@ -826,6 +835,38 @@ object $typeName$ {
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
       throw new AssertionError(value + " was not a valid $typeName$")
     }
+
+  /**
+   * A factory/validation method that produces a <code>$typeName$</code>, wrapped
+   * in a <code>Success</code>, given a valid <code>Long</code> value, or if the
+   * given <code>Long</code> is invalid, an <code>AssertionError</code>, wrapped
+   * in a <code>Failure</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a $typeDesc$ <code>Long</code>, it will return a <code>$typeName$</code>
+   * representing that value, wrapped in a <code>Success</code>.
+   * Otherwise, the passed <code>Long</code> value is not $typeDesc$, so this
+   * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Long</code> literals at compile time, whereas this method inspects
+   * <code>Long</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if $typeDesc$, return
+   *     wrapped in a <code>Success($typeName$)</code>.
+   * @return the specified <code>Long</code> value wrapped
+   *     in a <code>Success($typeName$)</code>, if it is $typeDesc$, else a <code>Failure(AssertionError)</code>.
+   */
+   def tryingValid(value: Long): Try[$typeName$] =
+     if ($typeName$Macro.isValid(value))
+       Success(new $typeName$(value))
+     else
+       Failure(new AssertionError(value + " was not a valid $typeName$"))
 
   /**
    * A predicate method that returns true if a given
