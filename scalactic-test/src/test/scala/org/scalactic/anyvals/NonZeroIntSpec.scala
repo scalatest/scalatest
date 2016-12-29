@@ -22,7 +22,7 @@ import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 import org.scalactic.{Pass, Fail}
-
+import org.scalactic.{Good, Bad}
 import scala.util.{Failure, Success, Try}
 
 class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
@@ -126,6 +126,18 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       }
       it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT non-zero, wrapped in a Fail") {
         NonZeroInt.passOrElse(0)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a NonZeroInt wrapped in a Good if the given Int is non-zero") {
+        NonZeroInt.goodOrElse(50)(i => i) shouldBe Good(NonZeroInt(50))
+        NonZeroInt.goodOrElse(100)(i => i) shouldBe Good(NonZeroInt(100))
+
+        NonZeroInt.goodOrElse(-1)(i => i) shouldBe Good(NonZeroInt(-1))
+        NonZeroInt.goodOrElse(-99)(i => i) shouldBe Good(NonZeroInt(-99))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT non-zero, wrapped in a Bad") {
+        NonZeroInt.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {

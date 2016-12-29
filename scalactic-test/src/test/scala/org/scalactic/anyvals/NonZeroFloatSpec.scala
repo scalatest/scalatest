@@ -26,6 +26,7 @@ import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -94,6 +95,18 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Fail") {
         NonZeroFloat.passOrElse(0.0F)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a NonZeroFloat wrapped in a Good if the given Float is non-zero") {
+        NonZeroFloat.goodOrElse(50.23F)(i => i) shouldBe Good(NonZeroFloat(50.23F))
+        NonZeroFloat.goodOrElse(100.0F)(i => i) shouldBe Good(NonZeroFloat(100.0F))
+
+        NonZeroFloat.goodOrElse(-1.23F)(i => i) shouldBe Good(NonZeroFloat(-1.23F))
+        NonZeroFloat.goodOrElse(-99.0F)(i => i) shouldBe Good(NonZeroFloat(-99.0F))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Bad") {
+        NonZeroFloat.goodOrElse(0.0F)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {

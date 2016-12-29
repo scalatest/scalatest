@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
@@ -116,6 +117,18 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       }
       it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT non-zero, wrapped in a Fail") {
         NonZeroLong.passOrElse(0L)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a NonZeroLong wrapped in a Good if the given Long is non-zero") {
+        NonZeroLong.goodOrElse(50)(i => i) shouldBe Good(NonZeroLong(50))
+        NonZeroLong.goodOrElse(100)(i => i) shouldBe Good(NonZeroLong(100))
+
+        NonZeroLong.goodOrElse(-1)(i => i) shouldBe Good(NonZeroLong(-1))
+        NonZeroLong.goodOrElse(-99)(i => i) shouldBe Good(NonZeroLong(-99))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT non-zero, wrapped in a Bad") {
+        NonZeroLong.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {

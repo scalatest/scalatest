@@ -29,6 +29,7 @@ import OptionValues._
 import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -106,6 +107,18 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Doule is NOT non-zero, wrapped in a Fail") {
         NonZeroDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a NonZeroFloat wrapped in a Good if the given Double is non-zero") {
+        NonZeroDouble.goodOrElse(50.23)(i => i) shouldBe Good(NonZeroDouble(50.23))
+        NonZeroDouble.goodOrElse(100.0)(i => i) shouldBe Good(NonZeroDouble(100.0))
+
+        NonZeroDouble.goodOrElse(-1.23)(i => i) shouldBe Good(NonZeroDouble(-1.23))
+        NonZeroDouble.goodOrElse(-99.0)(i => i) shouldBe Good(NonZeroDouble(-99.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT non-zero, wrapped in a Bad") {
+        NonZeroDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {
