@@ -19,6 +19,8 @@ import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
@@ -82,6 +84,52 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       it("throws AssertionError if the passed Long is NOT greater than or equal to 0") {
         an [AssertionError] should be thrownBy PosZLong.ensuringValid(-1L)
         an [AssertionError] should be thrownBy PosZLong.ensuringValid(-99L)
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosZLong wrapped in a Success if the passed Long is greater than or equal 0") {
+        PosZLong.tryingValid(0L).success.value.value shouldBe 0L
+        PosZLong.tryingValid(50L).success.value.value shouldBe 50L
+        PosZLong.tryingValid(100L).success.value.value shouldBe 100L
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Long is lesser than 0") {
+        PosZLong.tryingValid(-1L).failure.exception shouldBe an [AssertionError]
+        PosZLong.tryingValid(-99L).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Long is greater than or equal 0") {
+        PosZLong.passOrElse(0L)(i => i) shouldBe Pass
+        PosZLong.passOrElse(50L)(i => i) shouldBe Pass
+        PosZLong.passOrElse(100L)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is lesser than 0, wrapped in a Fail") {
+        PosZLong.passOrElse(-1L)(i => i) shouldBe Fail(-1L)
+        PosZLong.passOrElse(-99L)(i => i.toLong + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosZInt wrapped in a Good if the given Long is greater than or equal 0") {
+        PosZLong.goodOrElse(0L)(i => i) shouldBe Good(PosZLong(0L))
+        PosZLong.goodOrElse(50L)(i => i) shouldBe Good(PosZLong(50L))
+        PosZLong.goodOrElse(100L)(i => i) shouldBe Good(PosZLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is lesser than 0, wrapped in a Bad") {
+        PosZLong.goodOrElse(-1L)(i => i) shouldBe Bad(-1L)
+        PosZLong.goodOrElse(-99L)(i => i.toLong + 3L) shouldBe Bad(-96L)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosZLong wrapped in a Right if the given Int is greater than or equal 0") {
+        PosZLong.rightOrElse(0L)(i => i) shouldBe Right(PosZLong(0L))
+        PosZLong.rightOrElse(50L)(i => i) shouldBe Right(PosZLong(50L))
+        PosZLong.rightOrElse(100L)(i => i) shouldBe Right(PosZLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is lesser than 0, wrapped in a Left") {
+        PosZLong.rightOrElse(-1L)(i => i) shouldBe Left(-1L)
+        PosZLong.rightOrElse(-99L)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
     describe("should offer an isValid predicate method that") {

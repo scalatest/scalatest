@@ -127,8 +127,8 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosZInt.rightOrElse(100)(i => i) shouldBe Right(PosZInt(100))
       }
       it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Left") {
-        PosInt.rightOrElse(-1)(i => i) shouldBe Left(-1)
-        PosInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
+        PosZInt.rightOrElse(-1)(i => i) shouldBe Left(-1)
+        PosZInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
     describe("should offer an isValid predicate method that") {

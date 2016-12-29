@@ -320,7 +320,9 @@ object GenAnyVals {
       """.stripMargin,
       nonZeroWidens("Double")) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
-      "Int.MaxValue", "2147483647", posZWidens("Int"))
+      "Int.MaxValue", "2147483647", posZWidens("Int")) :::
+    genLongAnyVal(dir, "PosZLong", "non-negative", "", "i >= 0L", "PosZLong(42)", "PosZLong(-1)", "42", "-1", "0L", "0L",
+      "Long.MaxValue", "9223372036854775807", posZWidens("Long"))
   }
 
 }
