@@ -276,45 +276,51 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p)
   }
 
+  def posZWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p)
+  }
+
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
 
     genIntAnyVal(dir, "NonZeroInt", "non-zero", "Note: a <code>NonZeroInt</code> may not equal 0.", "i != 0", "NonZeroInt(42)", "NonZeroInt(0)", "42", "0", "Int.MinValue", "-2147483648",
       "Int.MaxValue", "2147483647", nonZeroWidens("Int")) :::
-      genLongAnyVal(dir, "NonZeroLong", "non-zero", "Note: a <code>NonZeroLong</code> may not equal 0.", "i != 0L", "NonZeroLong(42)", "NonZeroLong(0)", "42", "0", "Long.MinValue", "-9223372036854775808",
-        "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long")) :::
-      genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
-        "Float.MaxValue", "3.4028235E38",
-        "",
-        """/**
-          |  * The positive infinity value, which is <code>NonZeroFloat.ensuringValid(Float.PositiveInfinity)</code>.
-          |  */
-          |final val PositiveInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
-          |
-          |/**
-          |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Float.NegativeInfinity)</code>.
-          |  */
-          |final val NegativeInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity) // Can't use the macro here
-          |
-          |final val MinPositiveValue: NonZeroFloat = NonZeroFloat.ensuringValid(Float.MinPositiveValue)
-        """.stripMargin,
-        nonZeroWidens("Float")) :::
-      genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
-        "Double.MaxValue", "1.7976931348623157E308",
-        "",
-        """/**
-          |  * The positive infinity value, which is <code>NonZeroDouble.ensuringValid(Double.PositiveInfinity)</code>.
-          |  */
-          |final val PositiveInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
-          |
-          |/**
-          |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Double.NegativeInfinity)</code>.
-          |  */
-          |final val NegativeInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.NegativeInfinity) // Can't use the macro here
-          |
-          |final val MinPositiveValue: NonZeroDouble = NonZeroDouble.ensuringValid(Double.MinPositiveValue)
-        """.stripMargin,
-        nonZeroWidens("Double"))
+    genLongAnyVal(dir, "NonZeroLong", "non-zero", "Note: a <code>NonZeroLong</code> may not equal 0.", "i != 0L", "NonZeroLong(42)", "NonZeroLong(0)", "42", "0", "Long.MinValue", "-9223372036854775808",
+      "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long")) :::
+    genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
+      "Float.MaxValue", "3.4028235E38",
+      "",
+      """/**
+        |  * The positive infinity value, which is <code>NonZeroFloat.ensuringValid(Float.PositiveInfinity)</code>.
+        |  */
+        |final val PositiveInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
+        |
+        |/**
+        |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Float.NegativeInfinity)</code>.
+        |  */
+        |final val NegativeInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity) // Can't use the macro here
+        |
+        |final val MinPositiveValue: NonZeroFloat = NonZeroFloat.ensuringValid(Float.MinPositiveValue)
+      """.stripMargin,
+      nonZeroWidens("Float")) :::
+    genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
+      "Double.MaxValue", "1.7976931348623157E308",
+      "",
+      """/**
+        |  * The positive infinity value, which is <code>NonZeroDouble.ensuringValid(Double.PositiveInfinity)</code>.
+        |  */
+        |final val PositiveInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
+        |
+        |/**
+        |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Double.NegativeInfinity)</code>.
+        |  */
+        |final val NegativeInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.NegativeInfinity) // Can't use the macro here
+        |
+        |final val MinPositiveValue: NonZeroDouble = NonZeroDouble.ensuringValid(Double.MinPositiveValue)
+      """.stripMargin,
+      nonZeroWidens("Double")) :::
+    genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
+      "Int.MaxValue", "2147483647", posZWidens("Int"))
   }
 
 }

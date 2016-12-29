@@ -18,6 +18,8 @@ package org.scalactic.anyvals
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen._
 import org.scalactic.Equality
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.mutable.WrappedArray
@@ -82,7 +84,53 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         an [AssertionError] should be thrownBy PosZInt.ensuringValid(-1)
         an [AssertionError] should be thrownBy PosZInt.ensuringValid(-99)
       }
-    } 
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosZInt wrapped in a Success if the passed Int is greater than or equal 0") {
+        PosZInt.tryingValid(0).success.value.value shouldBe 0
+        PosZInt.tryingValid(50).success.value.value shouldBe 50
+        PosZInt.tryingValid(100).success.value.value shouldBe 100
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Int is lesser than 0") {
+        PosZInt.tryingValid(-1).failure.exception shouldBe an [AssertionError]
+        PosZInt.tryingValid(-99).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Int is greater than or equal 0") {
+        PosZInt.passOrElse(0)(i => i) shouldBe Pass
+        PosZInt.passOrElse(50)(i => i) shouldBe Pass
+        PosZInt.passOrElse(100)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Fail") {
+        PosZInt.passOrElse(-1)(i => i) shouldBe Fail(-1)
+        PosZInt.passOrElse(-99)(i => i.toLong + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosZInt wrapped in a Good if the given Int is greater than or equal 0") {
+        PosZInt.goodOrElse(0)(i => i) shouldBe Good(PosZInt(0))
+        PosZInt.goodOrElse(50)(i => i) shouldBe Good(PosZInt(50))
+        PosZInt.goodOrElse(100)(i => i) shouldBe Good(PosZInt(100))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Bad") {
+        PosZInt.goodOrElse(-1)(i => i) shouldBe Bad(-1)
+        PosZInt.goodOrElse(-99)(i => i.toLong + 3L) shouldBe Bad(-96L)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosZInt wrapped in a Right if the given Int is greater than or equal 0") {
+        PosZInt.rightOrElse(0)(i => i) shouldBe Right(PosZInt(0))
+        PosZInt.rightOrElse(50)(i => i) shouldBe Right(PosZInt(50))
+        PosZInt.rightOrElse(100)(i => i) shouldBe Right(PosZInt(100))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Left") {
+        PosInt.rightOrElse(-1)(i => i) shouldBe Left(-1)
+        PosInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Int is greater than or equal to 0") {
         PosZInt.isValid(50) shouldBe true
