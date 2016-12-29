@@ -25,6 +25,7 @@ import org.scalatest.prop.PropertyChecks
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
+import org.scalactic.{Pass, Fail}
 
 class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -81,6 +82,18 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
 
       it("returns an AssertionError wrapped in a Failure if the passed Float is NOT non-zero") {
         NonZeroFloat.tryingValid(0.0F).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Float is non-zero") {
+        NonZeroFloat.passOrElse(50.23F)(i => i) shouldBe Pass
+        NonZeroFloat.passOrElse(100.0F)(i => i) shouldBe Pass
+
+        NonZeroFloat.passOrElse(-1.23F)(i => i) shouldBe Pass
+        NonZeroFloat.passOrElse(-99.0F)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Fail") {
+        NonZeroFloat.passOrElse(0.0F)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {

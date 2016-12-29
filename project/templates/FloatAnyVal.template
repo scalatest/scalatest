@@ -18,6 +18,7 @@ package org.scalactic.anyvals
 import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
 import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 /**
  * An <code>AnyVal</code> for $typeDesc$ <code>Float</code>s.
@@ -569,6 +570,37 @@ object $typeName$ {
       Success(new $typeName$(value))
     else
       Failure(new AssertionError(value + " was not a valid $typeName$"))
+
+  /**
+   * A validation method that produces a <code>Pass</code>
+   * given a valid <code>Float</code> value, or
+   * an error value of type <code>E</code> produced by passing the
+   * given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value and if
+   * it is a $typeDesc$ <code>Float</code>, it will return a <code>Pass</code>.
+   * Otherwise, the passed <code>Float</code> value is $typeDesc$, so this
+   * method will return a result of type <code>E</code> obtained by passing
+   * the invalid <code>Float</code> value to the given function <code>f</code>,
+   * wrapped in a `Fail`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Float</code> literals at compile time, whereas this method inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the `Float` to validate that it is $typeDesc$.
+   * @return a `Pass` if the specified `Float` value is $typeDesc$,
+   *   else a `Fail` containing an error value produced by passing the
+   *   specified `Float` to the given function `f`.
+   */
+  def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
+    if ($typeName$Macro.isValid(value)) Pass else Fail(f(value))
 
   /**
    * A predicate method that returns true if a given

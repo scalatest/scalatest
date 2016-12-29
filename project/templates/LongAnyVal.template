@@ -19,6 +19,8 @@ import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
 import scala.util.{Try, Success, Failure}
 
+import org.scalactic.{Validation, Pass, Fail}
+
 /**
  * An <code>AnyVal</code> for $typeDesc$ <code>Long</code>s.
  *
@@ -867,6 +869,37 @@ object $typeName$ {
        Success(new $typeName$(value))
      else
        Failure(new AssertionError(value + " was not a valid $typeName$"))
+
+  /**
+   * A validation method that produces a <code>Pass</code>
+   * given a valid <code>Long</code> value, or
+   * an error value of type <code>E</code> produced by passing the
+   * given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a $typeDesc$ <code>Long</code>, it will return a <code>Pass</code>.
+   * Otherwise, the passed <code>Long</code> value is $typeDesc$, so this
+   * method will return a result of type <code>E</code> obtained by passing
+   * the invalid <code>Long</code> value to the given function <code>f</code>,
+   * wrapped in a `Fail`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Long</code> literals at compile time, whereas this method inspects
+   * <code>Long</code> values at run time.
+   * </p>
+   *
+   * @param value the `Long` to validate that it is $typeDesc$.
+   * @return a `Pass` if the specified `Long` value is $typeDesc$,
+   *   else a `Fail` containing an error value produced by passing the
+   *   specified `Long` to the given function `f`.
+   */
+  def passOrElse[E](value: Long)(f: Long => E): Validation[E] =
+    if ($typeName$Macro.isValid(value)) Pass else Fail(f(value))
 
   /**
    * A predicate method that returns true if a given

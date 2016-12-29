@@ -21,6 +21,7 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalactic.{Pass, Fail}
 
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
@@ -103,6 +104,18 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
 
       it("returns an AssertionError wrapped in a Failure if the passed Long is NOT non-zero") {
         NonZeroLong.tryingValid(0L).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Long is non-zero") {
+        NonZeroLong.passOrElse(50L)(i => i) shouldBe Pass
+        NonZeroLong.passOrElse(100L)(i => i) shouldBe Pass
+
+        NonZeroLong.passOrElse(-1L)(i => i) shouldBe Pass
+        NonZeroLong.passOrElse(-99L)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT non-zero, wrapped in a Fail") {
+        NonZeroLong.passOrElse(0L)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {
