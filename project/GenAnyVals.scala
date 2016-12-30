@@ -403,7 +403,84 @@ object GenAnyVals {
         |def sumOf(first: PosZFloat, second: PosZFloat, rest: PosZFloat*): PosZFloat =
         |  PosZFloat.ensuringValid(first.value + second.value + rest.map(_.value).sum)
       """.stripMargin,
-      posZWidens("Float"))
+      posZWidens("Float")) :::
+    genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
+      "Double.MaxValue", "1.7976931348623157E308",
+      """/**
+        |  * Rounds this `PosZDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
+        |  */
+        |def round: PosZLong = PosZLong.ensuringValid(math.round(value))
+        |
+        |/**
+        |  * Returns the smallest (closest to 0) `PosZDouble` that is greater than or equal to this `PosZDouble`
+        |  * and represents a mathematical integer.
+        |  */
+        |def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
+        |
+        |/**
+        |  * Returns the greatest (closest to positive infinity) `PosZDouble` that is less than or equal to
+        |  * this `PosZDouble` and represents a mathematical integer.
+        |  */
+        |def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
+        |
+        |/**
+        |  * Returns the <code>PosZDouble</code> sum of this value and `x`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a positive or zero Double to another positive or zero Double
+        |  * will always result in another positive or zero Double
+        |  * value (though the result may be positive infinity).
+        |  * </p>
+        |  */
+        |def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
+      """.stripMargin,
+      """/**
+        |  * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
+        |  */
+        |final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
+        |
+        |final val MinPositiveValue: PosZDouble = PosZDouble.ensuringValid(Double.MinPositiveValue)
+        |
+        |/**
+        |  * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `x` and `y`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a positive or zero Double to another positive or zero Double
+        |  * will always result in another positive or zero Double
+        |  * value (though the result may be positive infinity).
+        |  * </p>
+        |  *
+        |  * <p>
+        |  * This overloaded form of the method is used when there are just two arguments so that
+        |  * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+        |  * <code>PosZDouble</code> starting at the third parameter can sum more than two
+        |  * values, but will entail boxing and may therefore be less efficient.
+        |  * </p>
+        |  */
+        |def sumOf(x: PosZDouble, y: PosZDouble): PosZDouble = PosZDouble.ensuringValid(x.value + y.value)
+        |
+        |/**
+        |  * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `first` and
+        |  * value `second`, and the <code>PosZDouble</code> values passed as varargs `rest`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a positive or zero Double to another positive or zero Double
+        |  * will always result in another positive or zero Double
+        |  * value (though the result may be positive infinity).
+        |  * </p>
+        |  *
+        |  * <p>
+        |  * This overloaded form of the <code>sumOf</code> method can sum more than two
+        |  * values, but unlike its two-arg sibling, will entail boxing.
+        |  * </p>
+        |  */
+        |def sumOf(first: PosZDouble, second: PosZDouble, rest: PosZDouble*): PosZDouble =
+        |  PosZDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
+      """.stripMargin,
+      posZWidens("Double"))
   }
 
 }
