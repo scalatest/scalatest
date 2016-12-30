@@ -763,6 +763,8 @@ object $typeName$ {
    */
   implicit def widenToDouble(pos: $typeName$): Double = pos.value
 
+  $widensToOtherAnyVals$
+
   /**
    * Implicit Ordering instance.
    */
