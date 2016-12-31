@@ -280,6 +280,12 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p)
   }
 
+  def posWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
+      primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Pos" + p)
+  }
+
   def positiveInfinity(typePrefix: String, primitiveName: String): String =
     s"""/**
       |  * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
@@ -423,7 +429,9 @@ object GenAnyVals {
       positiveInfinity("PosZ", "Double") +
       minPositiveValue("PosZ", "Double") +
       sumOf("PosZ", "Double", "non-negative"),
-      posZWidens("Double"))
+      posZWidens("Double")) :::
+    genIntAnyVal(dir, "PosInt", "positive", "", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
+      "Int.MaxValue", "2147483647", posWidens("Int"))
   }
 
 }
