@@ -280,6 +280,105 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p)
   }
 
+  def positiveInfinity(typePrefix: String, primitiveName: String): String =
+    s"""/**
+      |  * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
+      |  */
+      |final val PositiveInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity) // Can't use the macro here
+      |
+    """.stripMargin
+
+  def negativeInfinity(typePrefix: String, primitiveName: String): String =
+    s"""/**
+        |  * The negative infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity)</code>.
+        |  */
+        |final val NegativeInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity) // Can't use the macro here
+        |
+     """.stripMargin
+
+  def minPositiveValue(typePrefix: String, primitiveName: String): String =
+    s"final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)".stripMargin
+
+  def round(typePrefix: String, primitiveName: String): String =
+    s"""/**
+      |  * Rounds this `$typePrefix$primitiveName` value to the nearest whole number value that can be expressed as an `$primitiveName`, returning the result as a `$typePrefix$primitiveName`.
+      |  */
+      |def round: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.round(value))""".stripMargin
+
+  def ceil(typePrefix: String, primitiveName: String): String =
+    s"""/**
+        |  * Returns the smallest (closest to 0) `$typePrefix$primitiveName` that is greater than or equal to this `$typePrefix$primitiveName`
+        |  * and represents a mathematical integer.
+        |  */
+        |def ceil: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.ceil(value).to$primitiveName)
+        |
+     """.stripMargin
+
+  def sumOf(typePrefix: String, primitiveName: String, typeDesc: String): String =
+    s"""/**
+        |  * Returns the <code>$typePrefix$primitiveName</code> sum of the passed <code>$typePrefix$primitiveName</code> values `x` and `y`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a $typeDesc $primitiveName to another $typeDesc $primitiveName
+        |  * will always result in another $typePrefix$primitiveName $primitiveName
+        |  * value (though the result may be infinity).
+        |  * </p>
+        |  *
+        |  * <p>
+        |  * This overloaded form of the method is used when there are just two arguments so that
+        |  * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+        |  * <code>$typePrefix$primitiveName</code> starting at the third parameter can sum more than two
+        |  * values, but will entail boxing and may therefore be less efficient.
+        |  * </p>
+        |  */
+        |def sumOf(x: $typePrefix$primitiveName, y: $typePrefix$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(x.value + y.value)
+        |
+        |/**
+        |  * Returns the <code>$typePrefix$primitiveName</code> sum of the passed <code>$typePrefix$primitiveName</code> values `first` and
+        |  * value `second`, and the <code>$typePrefix$primitiveName</code> values passed as varargs `rest`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a $typeDesc $primitiveName to another $typeDesc $primitiveName
+        |  * will always result in another $typeDesc $primitiveName
+        |  * value (though the result may be infinity).
+        |  * </p>
+        |  *
+        |  * <p>
+        |  * This overloaded form of the <code>sumOf</code> method can sum more than two
+        |  * values, but unlike its two-arg sibling, will entail boxing.
+        |  * </p>
+        |  */
+        |def sumOf(first: $typePrefix$primitiveName, second: $typePrefix$primitiveName, rest: $typePrefix$primitiveName*): $typePrefix$primitiveName =
+        |  $typePrefix$primitiveName.ensuringValid(first.value + second.value + rest.map(_.value).sum)
+        |
+     """.stripMargin
+
+  def floor(typePrefix: String, primitiveName: String): String =
+    s"""/**
+       |  * Returns the greatest (closest to infinity) `$typePrefix$primitiveName` that is less than or equal to
+       |  * this `$typePrefix$primitiveName` and represents a mathematical integer.
+       |  */
+       |def floor: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.floor(value).to$primitiveName)
+       |
+     """.stripMargin
+
+  def plus(typePrefix: String, primitiveName: String, typeDesc: String): String =
+    s"""/**
+        |  * Returns the <code>$typePrefix$primitiveName</code> sum of this value and `x`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a $typeDesc $primitiveName to another $typeDesc $primitiveName
+        |  * will always result in another $typeDesc $primitiveName
+        |  * value (though the result may be infinity).
+        |  * </p>
+        |  */
+        |def plus(x: $typePrefix$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x)
+        |
+     """.stripMargin
+
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
 
@@ -290,34 +389,16 @@ object GenAnyVals {
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       "",
-      """/**
-        |  * The positive infinity value, which is <code>NonZeroFloat.ensuringValid(Float.PositiveInfinity)</code>.
-        |  */
-        |final val PositiveInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
-        |
-        |/**
-        |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Float.NegativeInfinity)</code>.
-        |  */
-        |final val NegativeInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity) // Can't use the macro here
-        |
-        |final val MinPositiveValue: NonZeroFloat = NonZeroFloat.ensuringValid(Float.MinPositiveValue)
-      """.stripMargin,
+      positiveInfinity("NonZero", "Float") +
+      negativeInfinity("NonZero", "Float") +
+      minPositiveValue("NonZero", "Float"),
       nonZeroWidens("Float")) :::
     genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
       "",
-      """/**
-        |  * The positive infinity value, which is <code>NonZeroDouble.ensuringValid(Double.PositiveInfinity)</code>.
-        |  */
-        |final val PositiveInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
-        |
-        |/**
-        |  * The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Double.NegativeInfinity)</code>.
-        |  */
-        |final val NegativeInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.NegativeInfinity) // Can't use the macro here
-        |
-        |final val MinPositiveValue: NonZeroDouble = NonZeroDouble.ensuringValid(Double.MinPositiveValue)
-      """.stripMargin,
+      positiveInfinity("NonZero", "Double") +
+      negativeInfinity("NonZero", "Double") +
+      minPositiveValue("NonZero", "Double"),
       nonZeroWidens("Double")) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
       "Int.MaxValue", "2147483647", posZWidens("Int")) :::
@@ -325,161 +406,23 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", posZWidens("Long")) :::
     genFloatAnyVal(dir, "PosZFloat", "non-negative", "", "i >= 0.0f", "PosZFloat(1.1f)", "PosZFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
-      """/**
-        |  * Rounds this `$typeName` value to the nearest whole number value that can be expressed as an `Int`, returning the result as a `PosZInt`.
-        |  */
-        |def round: PosZInt = PosZInt.ensuringValid(math.round(value))
-        |
-        |/**
-        |  * Returns the smallest (closest to 0) `PosZFloat` that is greater than or equal to this `PosZFloat`
-        |  * and represents a mathematical integer.
-        |  */
-        |def ceil: PosZFloat = PosZFloat.ensuringValid(math.ceil(value).toFloat)
-        |
-        |/**
-        |  * Returns the greatest (closest to positive infinity) `PosZFloat` that is less than or equal to
-        |  * this `PosZFloat` and represents a mathematical integer.
-        |  */
-        |def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
-        |
-        |/**
-        |  * Returns the <code>PosZFloat</code> sum of this value and `x`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Float to another positive or zero Float
-        |  * will always result in another positive or zero Float
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  */
-        |def plus(x: PosZFloat): PosZFloat = PosZFloat.ensuringValid(value + x)
-      """.stripMargin,
-      """/**
-        |  * The positive infinity value, which is <code>PosZFloat.ensuringValid(Float.PositiveInfinity)</code>.
-        |  */
-        |final val PositiveInfinity: PosZFloat = PosZFloat.ensuringValid(Float.PositiveInfinity) // Can't use the macro here
-        |
-        |/**
-        |  * The smallest value representable as a positive
-        |  * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
-        |  */
-        |final val MinPositiveValue: PosZFloat = PosZFloat.ensuringValid(Float.MinPositiveValue)
-        |
-        |/**
-        |  * Returns the <code>PosZFloat</code> sum of the passed <code>PosZFloat</code> values `x` and `y`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Float to another positive or zero Float
-        |  * will always result in another positive or zero Float
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  *
-        |  * <p>
-        |  * This overloaded form of the method is used when there are just two arguments so that
-        |  * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
-        |  * <code>PosZFloat</code> starting at the third parameter can sum more than two
-        |  * values, but will entail boxing and may therefore be less efficient.
-        |  * </p>
-        |  */
-        |def sumOf(x: PosZFloat, y: PosZFloat): PosZFloat = PosZFloat.ensuringValid(x.value + y.value)
-        |
-        |/**
-        |  * Returns the <code>PosZFloat</code> sum of the passed <code>PosZFloat</code> values `first` and
-        |  * value `second`, and the <code>PosZFloat</code> values passed as varargs `rest`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Float to another positive or zero Float
-        |  * will always result in another positive or zero Float
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  *
-        |  * <p>
-        |  * This overloaded form of the <code>sumOf</code> method can sum more than two
-        |  * values, but unlike its two-arg sibling, will entail boxing.
-        |  * </p>
-        |  */
-        |def sumOf(first: PosZFloat, second: PosZFloat, rest: PosZFloat*): PosZFloat =
-        |  PosZFloat.ensuringValid(first.value + second.value + rest.map(_.value).sum)
-      """.stripMargin,
+      round("PosZ", "Float") +
+      ceil("PosZ", "Float") +
+      floor("PosZ", "Float") +
+      plus("PosZ", "Float", "non-negative"),
+      positiveInfinity("PosZ", "Float") +
+      minPositiveValue("PosZ", "Float") +
+      sumOf("PosZ", "Float", "non-negative"),
       posZWidens("Float")) :::
     genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
-      """/**
-        |  * Rounds this `PosZDouble` value to the nearest whole number value that can be expressed as a `Long`, returning the result as a `PosZLong`.
-        |  */
-        |def round: PosZLong = PosZLong.ensuringValid(math.round(value))
-        |
-        |/**
-        |  * Returns the smallest (closest to 0) `PosZDouble` that is greater than or equal to this `PosZDouble`
-        |  * and represents a mathematical integer.
-        |  */
-        |def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
-        |
-        |/**
-        |  * Returns the greatest (closest to positive infinity) `PosZDouble` that is less than or equal to
-        |  * this `PosZDouble` and represents a mathematical integer.
-        |  */
-        |def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
-        |
-        |/**
-        |  * Returns the <code>PosZDouble</code> sum of this value and `x`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Double to another positive or zero Double
-        |  * will always result in another positive or zero Double
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  */
-        |def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
-      """.stripMargin,
-      """/**
-        |  * The positive infinity value, which is <code>PosZDouble.ensuringValid(Double.PositiveInfinity)</code>.
-        |  */
-        |final val PositiveInfinity: PosZDouble = PosZDouble.ensuringValid(Double.PositiveInfinity) // Can't use the macro here
-        |
-        |final val MinPositiveValue: PosZDouble = PosZDouble.ensuringValid(Double.MinPositiveValue)
-        |
-        |/**
-        |  * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `x` and `y`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Double to another positive or zero Double
-        |  * will always result in another positive or zero Double
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  *
-        |  * <p>
-        |  * This overloaded form of the method is used when there are just two arguments so that
-        |  * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
-        |  * <code>PosZDouble</code> starting at the third parameter can sum more than two
-        |  * values, but will entail boxing and may therefore be less efficient.
-        |  * </p>
-        |  */
-        |def sumOf(x: PosZDouble, y: PosZDouble): PosZDouble = PosZDouble.ensuringValid(x.value + y.value)
-        |
-        |/**
-        |  * Returns the <code>PosZDouble</code> sum of the passed <code>PosZDouble</code> values `first` and
-        |  * value `second`, and the <code>PosZDouble</code> values passed as varargs `rest`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a positive or zero Double to another positive or zero Double
-        |  * will always result in another positive or zero Double
-        |  * value (though the result may be positive infinity).
-        |  * </p>
-        |  *
-        |  * <p>
-        |  * This overloaded form of the <code>sumOf</code> method can sum more than two
-        |  * values, but unlike its two-arg sibling, will entail boxing.
-        |  * </p>
-        |  */
-        |def sumOf(first: PosZDouble, second: PosZDouble, rest: PosZDouble*): PosZDouble =
-        |  PosZDouble.ensuringValid(first.value + second.value + rest.map(_.value).sum)
-      """.stripMargin,
+      round("PosZ", "Double") +
+      ceil("PosZ", "Double") +
+      floor("PosZ", "Double") +
+      plus("PosZ", "Double", "non-negative"),
+      positiveInfinity("PosZ", "Double") +
+      minPositiveValue("PosZ", "Double") +
+      sumOf("PosZ", "Double", "non-negative"),
       posZWidens("Double"))
   }
 
