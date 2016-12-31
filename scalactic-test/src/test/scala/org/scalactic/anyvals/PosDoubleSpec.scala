@@ -133,6 +133,11 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       "PosDouble(3.0): PosZLong" shouldNot typeCheck
       "PosDouble(3.0): PosZFloat" shouldNot typeCheck
       (PosDouble(3.0): PosZDouble) shouldEqual PosZDouble(3.0)
+
+      "PosDouble(3.0): NonZeroInt" shouldNot typeCheck
+      "PosDouble(3.0): NonZeroLong" shouldNot typeCheck
+      "PosDouble(3.0): NonZeroFloat" shouldNot typeCheck
+      (PosDouble(3.0): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
     }
 
     it("should be sortable") {
@@ -182,6 +187,19 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
         val opPosZDouble = PosDouble(3.0) + PosZDouble(3.0)
         opPosZDouble shouldEqual 6.0
+
+        // When adding a *NonZero
+        val opNonZeroInt = PosDouble(3.0) + NonZeroInt(3)
+        opNonZeroInt shouldEqual 6.0
+
+        val opNonZeroLong = PosDouble(3.0) + NonZeroLong(3L)
+        opNonZeroLong shouldEqual 6.0
+
+        val opNonZeroFloat = PosDouble(3.0) + NonZeroFloat(3.0F)
+        opNonZeroFloat shouldEqual 6.0
+
+        val opNonZeroDouble = PosDouble(3.0) + NonZeroDouble(3.0)
+        opNonZeroDouble shouldEqual 6.0
       }
     }
 
@@ -650,6 +668,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       forAll { (pdouble: PosDouble) =>
         def widen(value: PosZDouble): PosZDouble = value
         widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.toDouble).get)
+      }
+      forAll { (pdouble: PosDouble) =>
+        def widen(value: NonZeroDouble): NonZeroDouble = value
+        widen(pdouble) shouldEqual widen(NonZeroDouble.from(pdouble.toDouble).get)
       }
     }
 

@@ -737,6 +737,30 @@ object PosFloat {
   implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
+    * Implicit widening conversion from <code>PosFloat</code> to
+    * <code>NonZeroFloat</code>.
+    *
+    * @param pos the <code>PosFloat</code> to widen
+    * @return the <code>Float</code> value underlying the
+    *     specified <code>PosFloat</code>, widened to
+    *     <code>Float</code> and wrapped in a
+    *     <code>NonZeroFloat</code>.
+    */
+  implicit def widenToNonZeroFloat(pos: PosFloat): NonZeroFloat = NonZeroFloat.ensuringValid(pos.value)
+
+  /**
+    * Implicit widening conversion from <code>PosFloat</code> to
+    * <code>NonZeroDouble</code>.
+    *
+    * @param pos the <code>PosFloat</code> to widen
+    * @return the <code>Float</code> value underlying the
+    *     specified <code>PosFloat</code>, widened to
+    *     <code>Double</code> and wrapped in a
+    *     <code>NonZeroDouble</code>.
+    */
+  implicit def widenToNonZeroDouble(pos: PosFloat): NonZeroDouble = NonZeroDouble.ensuringValid(pos.value)
+
+  /**
    * Returns the <code>PosFloat</code> sum of the passed <code>PosFloat</code> value `x` and <code>PosZFloat</code> value `y`.
    *
    * <p>

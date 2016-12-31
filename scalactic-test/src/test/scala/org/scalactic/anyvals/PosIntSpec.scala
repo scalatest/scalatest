@@ -177,6 +177,11 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       (PosInt(3): PosZLong) shouldEqual PosZLong(3L)
       (PosInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
+
+      (PosInt(3): NonZeroInt) shouldEqual NonZeroInt(3)
+      (PosInt(3): NonZeroLong) shouldEqual NonZeroLong(3L)
+      (PosInt(3): NonZeroFloat) shouldEqual NonZeroFloat(3.0F)
+      (PosInt(3): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
     }
 
     it("should be sortable") {
@@ -224,6 +229,19 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
 
         val opPosZDouble = PosInt(3) + PosZDouble(3.0)
         opPosZDouble shouldEqual 6.0
+
+        // When adding a *NonZero
+        val opNonZeroInt = PosInt(3) + NonZeroInt(3)
+        opNonZeroInt shouldEqual 6
+
+        val opNonZeroLong = PosInt(3) + NonZeroLong(3L)
+        opNonZeroLong shouldEqual 6L
+
+        val opNonZeroFloat = PosInt(3) + NonZeroFloat(3.0F)
+        opNonZeroFloat shouldEqual 6.0F
+
+        val opNonZeroDouble = PosInt(3) + NonZeroDouble(3.0)
+        opNonZeroDouble shouldEqual 6.0
       }
     }
 
@@ -666,6 +684,22 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       forAll { (pint: PosInt) =>
         def widen(value: PosZDouble): PosZDouble = value
         widen(pint) shouldEqual widen(PosZDouble.from(pint.toInt).get)
+      }
+      forAll { (pint: PosInt) =>
+        def widen(value: NonZeroInt): NonZeroInt = value
+        widen(pint) shouldEqual widen(NonZeroInt.from(pint.toInt).get)
+      }
+      forAll { (pint: PosInt) =>
+        def widen(value: NonZeroLong): NonZeroLong = value
+        widen(pint) shouldEqual widen(NonZeroLong.from(pint.toInt).get)
+      }
+      forAll { (pint: PosInt) =>
+        def widen(value: NonZeroFloat): NonZeroFloat = value
+        widen(pint) shouldEqual widen(NonZeroFloat.from(pint.toInt).get)
+      }
+      forAll { (pint: PosInt) =>
+        def widen(value: NonZeroDouble): NonZeroDouble = value
+        widen(pint) shouldEqual widen(NonZeroDouble.from(pint.toInt).get)
       }
     }
     it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
