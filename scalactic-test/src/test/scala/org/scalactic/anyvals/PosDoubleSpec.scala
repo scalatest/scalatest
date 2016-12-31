@@ -98,7 +98,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.passOrElse(50.0)(i => i) shouldBe Pass
         PosDouble.passOrElse(100.0)(i => i) shouldBe Pass
       }
-      it("returns an error value produced by passing the given Double to the given function if the passed Long is NOT greater than 0, wrapped in a Fail") {
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Fail") {
         PosDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
         PosDouble.passOrElse(-1.1)(i => i) shouldBe Fail(-1.1)
         PosDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
@@ -123,7 +123,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Left") {
         PosDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
         PosDouble.rightOrElse(-1.1)(i => i) shouldBe Left(-1.1)
-        PosDouble.rightOrElse(-99.9)(i => i + 3L) shouldBe Left(-96.9)
+        PosDouble.rightOrElse(-99.9)(i => i + 3.0) shouldBe Left(-96.9)
       }
     }
     describe("should offer an isValid predicate method that") {
