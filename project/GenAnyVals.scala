@@ -282,7 +282,7 @@ object GenAnyVals {
 
   def posWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
-      primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Pos" + p)
   }
 
@@ -499,7 +499,17 @@ object GenAnyVals {
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float") +
       sumOf("Pos", "Float", "positive", "PosZ", "non-negative"),
-      posWidens("Float"))
+      posWidens("Float")) :::
+    genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
+      "Double.MaxValue", "1.7976931348623157E308",
+      round("Pos", "Double") +
+      ceil("Pos", "Double") +
+      floor("Pos", "Double") +
+      plus("Pos", "Double", "positive", "PosZ", "non-negative"),
+      positiveInfinity("Pos", "Double") +
+      minPositiveValue("Pos", "Double") +
+      sumOf("Pos", "Double", "positive", "PosZ", "non-negative"),
+      posWidens("Double"))
   }
 
 }

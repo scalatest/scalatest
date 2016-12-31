@@ -28,6 +28,8 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
+import org.scalactic.{Good, Bad}
+import org.scalactic.{Pass, Fail}
 
 class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -77,7 +79,53 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NegativeInfinity)
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NaN)
       }
-    } 
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosDouble wrapped in a Success if the passed PosDouble is greater than 0") {
+        PosDouble.tryingValid(50.3).success.value.value shouldBe 50.3
+        PosDouble.tryingValid(100.0).success.value.value shouldBe 100.0
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Double is NOT greater than 0") {
+        PosDouble.tryingValid(0.0).failure.exception shouldBe an [AssertionError]
+        PosDouble.tryingValid(-1.0).failure.exception shouldBe an [AssertionError]
+        PosDouble.tryingValid(-99.9).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Double is greater than 0") {
+        PosDouble.passOrElse(50.0)(i => i) shouldBe Pass
+        PosDouble.passOrElse(100.0)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Long is NOT greater than 0, wrapped in a Fail") {
+        PosDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosDouble.passOrElse(-1.1)(i => i) shouldBe Fail(-1.1)
+        PosDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosDouble wrapped in a Good if the given Double is greater than 0") {
+        PosDouble.goodOrElse(50.3)(i => i) shouldBe Good(PosDouble(50.3))
+        PosDouble.goodOrElse(100.0)(i => i) shouldBe Good(PosDouble(100.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Bad") {
+        PosDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosDouble.goodOrElse(-1.1)(i => i) shouldBe Bad(-1.1)
+        PosDouble.goodOrElse(-99.0)(i => i + 3.0) shouldBe Bad(-96.0)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosDouble wrapped in a Right if the given Double is greater than 0") {
+        PosDouble.rightOrElse(50.3)(i => i) shouldBe Right(PosDouble(50.3))
+        PosDouble.rightOrElse(100.0)(i => i) shouldBe Right(PosDouble(100.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Left") {
+        PosDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosDouble.rightOrElse(-1.1)(i => i) shouldBe Left(-1.1)
+        PosDouble.rightOrElse(-99.9)(i => i + 3L) shouldBe Left(-96.9)
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Double is greater than 0") {
         PosDouble.isValid(50.23) shouldBe true
