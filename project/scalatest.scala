@@ -281,7 +281,8 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       sourceGenerators in Compile += {
         Def.task{
-          ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
@@ -297,7 +298,8 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task{
           GenScalacticJS.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar

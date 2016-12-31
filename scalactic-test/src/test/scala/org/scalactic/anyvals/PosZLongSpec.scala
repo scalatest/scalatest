@@ -129,6 +129,11 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       (PosZLong(3L): PosZLong) shouldEqual PosZLong(3L)
       (PosZLong(3L): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosZLong(3L): PosZDouble) shouldEqual PosZDouble(3.0)
+
+      "(PosZLong(3L): NonZeroInt)" shouldNot typeCheck
+      "(PosZLong(3L): NonZeroLong)" shouldNot typeCheck
+      "(PosZLong(3L): NonZeroFloat)" shouldNot typeCheck
+      "(PosZLong(3L): NonZeroDouble)" shouldNot typeCheck
     }
 
     it("should be sortable") {
@@ -177,6 +182,19 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
 
         val opPosZDouble = PosZLong(3L) + PosZDouble(3.0)
         opPosZDouble shouldEqual 6.0
+
+        // When adding a *NonZero
+        val opNonZeroInt = PosZLong(3L) + NonZeroInt(3)
+        opNonZeroInt shouldEqual 6L
+
+        val opNonZeroLong = PosZLong(3L) + NonZeroLong(3L)
+        opNonZeroLong shouldEqual 6L
+
+        val opNonZeroFloat = PosZLong(3L) + NonZeroFloat(3.0F)
+        opNonZeroFloat shouldEqual 6.0F
+
+        val opNonZeroDouble = PosZLong(3L) + NonZeroDouble(3.0)
+        opNonZeroDouble shouldEqual 6.0
       }
     }
 

@@ -697,6 +697,16 @@ object PosDouble {
   implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.ensuringValid(pos.value)
 
   /**
+    * Implicit widening conversion from <code>PosDouble</code> to
+    * <code>NonZeroDouble</code>.
+    *
+    * @param pos the <code>PosDouble</code> to widen
+    * @return the <code>Double</code> value underlying the specified
+    *     <code>PosDouble</code> wrapped in a <code>NonZeroDouble</code>.
+    */
+  implicit def widenToNonZeroDouble(pos: PosDouble): NonZeroDouble = NonZeroDouble.ensuringValid(pos.value)
+
+  /**
    * Returns the <code>PosDouble</code> sum of the passed <code>PosDouble</code> value `x` and <code>PosZDouble</code> value `y`.
    *
    * <p>

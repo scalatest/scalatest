@@ -117,6 +117,11 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
       "PosFloat(3.0F): PosZLong" shouldNot typeCheck
       (PosFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
+
+      "PosFloat(3.0F): NonZeroInt" shouldNot typeCheck
+      "PosFloat(3.0F): NonZeroLong" shouldNot typeCheck
+      (PosFloat(3.0F): NonZeroFloat) shouldEqual NonZeroFloat(3.0F)
+      (PosFloat(3.0F): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
     }
 
     it("should be sortable") {
@@ -166,6 +171,19 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
 
         val opPosZDouble = PosFloat(3.0F) + PosZDouble(3.0)
         opPosZDouble shouldEqual 6.0
+
+        // When adding a *PosZ
+        val opNonZeroInt = PosFloat(3.0F) + NonZeroInt(3)
+        opNonZeroInt shouldEqual 6.0F
+
+        val opNonZeroLong = PosFloat(3.0F) + NonZeroLong(3L)
+        opNonZeroLong shouldEqual 6.0F
+
+        val opNonZeroFloat = PosFloat(3.0F) + NonZeroFloat(3.0F)
+        opNonZeroFloat shouldEqual 6.0F
+
+        val opNonZeroDouble = PosFloat(3.0F) + NonZeroDouble(3.0)
+        opNonZeroDouble shouldEqual 6.0
       }
     }
 
@@ -646,6 +664,14 @@ specifying floats so long as it is in the valid range for floats.
       forAll { (pfloat: PosFloat) =>
         def widen(value: PosZDouble): PosZDouble = value
         widen(pfloat) shouldEqual widen(PosZDouble.from(pfloat.toFloat).get)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: NonZeroFloat): NonZeroFloat = value
+        widen(pfloat) shouldEqual widen(NonZeroFloat.from(pfloat.toFloat).get)
+      }
+      forAll { (pfloat: PosFloat) =>
+        def widen(value: NonZeroDouble): NonZeroDouble = value
+        widen(pfloat) shouldEqual widen(NonZeroDouble.from(pfloat.toFloat).get)
       }
     }
   }
