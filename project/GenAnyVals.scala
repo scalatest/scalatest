@@ -430,8 +430,10 @@ object GenAnyVals {
       minPositiveValue("PosZ", "Double") +
       sumOf("PosZ", "Double", "non-negative"),
       posZWidens("Double")) :::
-    genIntAnyVal(dir, "PosInt", "positive", "", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
-      "Int.MaxValue", "2147483647", posWidens("Int"))
+    genIntAnyVal(dir, "PosInt", "positive", "Note: a <code>PosInt</code> may not equal 0. If you want positive number or 0, use [[PosZInt]].", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
+      "Int.MaxValue", "2147483647", posWidens("Int")) :::
+    genLongAnyVal(dir, "PosLong", "positive", "Note: a <code>PosLong</code> may not equal 0. If you want positive number or 0, use [[PosZLong]].", "i > 0L", "PosLong(42L)", "PosLong(0L)", "42L", "0L", "1L", "1L",
+      "Long.MaxValue", "9223372036854775807", posWidens("Long"))
   }
 
 }
