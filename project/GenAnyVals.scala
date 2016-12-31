@@ -361,6 +361,47 @@ object GenAnyVals {
         |
      """.stripMargin
 
+  def sumOf(typePrefix: String, primitiveName: String, typeDesc: String, typePrefix2: String, typeDesc2: String): String =
+    s"""/**
+        | * Returns the <code>$typePrefix$primitiveName</code> sum of the passed <code>$typePrefix$primitiveName</code> value `x` and <code>$typePrefix2$primitiveName</code> value `y`.
+        | *
+        | * <p>
+        | * This method will always succeed (not throw an exception) because
+        | * adding a $typeDesc $primitiveName and $typeDesc2 $primitiveName will
+        | * always result in another $typeDesc $primitiveName
+        | * value (though the result may be infinity).
+        | * </p>
+        | *
+        | * <p>
+        | * This overloaded form of the method is used when there are just two arguments so that
+        | * boxing is avoided. The overloaded <code>sumOf</code> that takes a varargs of
+        | * <code>$typePrefix2$primitiveName</code> starting at the third parameter can sum more than two
+        | * values, but will entail boxing and may therefore be less efficient.
+        | * </p>
+        | */
+        |def sumOf(x: $typePrefix$primitiveName, y: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(x.value + y.value)
+        |
+        |/**
+        |  * Returns the <code>$typePrefix$primitiveName</code> sum of the passed <code>$typePrefix$primitiveName</code> value `first`, the <code>$typePrefix2$primitiveName</code>
+        |  * value `second`, and the <code>$typePrefix2$primitiveName</code> values passed as varargs `rest`.
+        |  *
+        |  * <p>
+        |  * This method will always succeed (not throw an exception) because
+        |  * adding a $typeDesc $primitiveName and one or more $typeDesc2 ${primitiveName}s
+        |  * will always result in another $typeDesc $primitiveName
+        |  * value (though the result may be infinity).
+        |  * </p>
+        |  *
+        |  * <p>
+        |  * This overloaded form of the <code>sumOf</code> method can sum more than two
+        |  * values, but unlike its two-arg sibling, will entail boxing.
+        |  * </p>
+        |  */
+        |def sumOf(first: $typePrefix$primitiveName, second: $typePrefix2$primitiveName, rest: $typePrefix2$primitiveName*): $typePrefix$primitiveName =
+        |  $typePrefix$primitiveName.ensuringValid(first.value + second.value + rest.map(_.value).sum)
+        |
+     """.stripMargin
+
   def floor(typePrefix: String, primitiveName: String): String =
     s"""/**
        |  * Returns the greatest (closest to infinity) `$typePrefix$primitiveName` that is less than or equal to
@@ -382,6 +423,21 @@ object GenAnyVals {
         |  * </p>
         |  */
         |def plus(x: $typePrefix$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x)
+        |
+     """.stripMargin
+
+  def plus(typePrefix: String, primitiveName: String, typeDesc: String, typePrefix2: String, typeDesc2: String): String =
+    s"""/**
+        | * Returns the <code>$typePrefix$primitiveName</code> sum of this <code>$typePrefix$primitiveName</code>'s value and the given <code>$typePrefix2$primitiveName</code> value.
+        | *
+        | * <p>
+        | * This method will always succeed (not throw an exception) because
+        | * adding a $typeDesc $primitiveName and $typeDesc2 $primitiveName and another
+        | * $typeDesc $primitiveName will always result in another $typeDesc $primitiveName
+        | * value (though the result may be infinity).
+        | * </p>
+        | */
+        |def plus(x: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x.value)
         |
      """.stripMargin
 
@@ -433,7 +489,17 @@ object GenAnyVals {
     genIntAnyVal(dir, "PosInt", "positive", "Note: a <code>PosInt</code> may not equal 0. If you want positive number or 0, use [[PosZInt]].", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
       "Int.MaxValue", "2147483647", posWidens("Int")) :::
     genLongAnyVal(dir, "PosLong", "positive", "Note: a <code>PosLong</code> may not equal 0. If you want positive number or 0, use [[PosZLong]].", "i > 0L", "PosLong(42L)", "PosLong(0L)", "42L", "0L", "1L", "1L",
-      "Long.MaxValue", "9223372036854775807", posWidens("Long"))
+      "Long.MaxValue", "9223372036854775807", posWidens("Long")) :::
+    genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PostFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
+      "Float.MaxValue", "3.4028235E38",
+      round("Pos", "Float") +
+      ceil("Pos", "Float") +
+      floor("Pos", "Float") +
+      plus("Pos", "Float", "positive", "PosZ", "non-negative"),
+      positiveInfinity("Pos", "Float") +
+      minPositiveValue("Pos", "Float") +
+      sumOf("Pos", "Float", "positive", "PosZ", "non-negative"),
+      posWidens("Float"))
   }
 
 }

@@ -344,6 +344,9 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `$typeName$` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
