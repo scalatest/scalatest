@@ -20,12 +20,13 @@ import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 import OptionValues._
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Failure, Success, Try}
 
-class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with ScalaCheckGenerators {
 
   val nonZeroIntGen: Gen[NonZeroInt] =
     for {i <- choose(Int.MinValue, Int.MaxValue)} yield {

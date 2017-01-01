@@ -21,6 +21,7 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
@@ -29,7 +30,7 @@ import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with ScalaCheckGenerators {
 
   val nonZeroLongGen: Gen[NonZeroLong] =
     for {i <- choose(Long.MinValue, Long.MaxValue)} yield {

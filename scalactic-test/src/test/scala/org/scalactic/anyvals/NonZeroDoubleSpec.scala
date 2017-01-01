@@ -21,6 +21,7 @@ import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -31,7 +32,7 @@ import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with ScalaCheckGenerators {
 
   val nonZeroDoubleGen: Gen[NonZeroDouble] =
     for {i <- choose(Double.MinValue, Double.MaxValue)} yield {

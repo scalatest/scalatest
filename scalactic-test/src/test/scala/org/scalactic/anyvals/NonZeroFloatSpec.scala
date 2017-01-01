@@ -21,6 +21,7 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -28,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with ScalaCheckGenerators {
 
   val nonZeroFloatGen: Gen[NonZeroFloat] =
     for {i <- choose(Float.MinValue, Float.MaxValue)} yield {
