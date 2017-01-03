@@ -19,7 +19,7 @@ import reflect.macros.Context
 import org.scalactic.Resources
 
 import CompileTimeAssertions._
-private[scalactic] object NumericStringMacro {
+private[anyvals] object NumericStringMacro {
 
   def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
 

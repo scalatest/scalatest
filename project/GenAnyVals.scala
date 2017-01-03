@@ -42,7 +42,7 @@ object GenAnyVals {
         |import org.scalactic.Resources
          |import reflect.macros.Context
          |
-        |private[scalactic] object ${typeName}Macro extends CompileTimeAssertions {
+        |private[anyvals] object ${typeName}Macro extends CompileTimeAssertions {
          |
         |  def isValid(i: $primitiveTypeName): Boolean = $typeBooleanExpr
          |

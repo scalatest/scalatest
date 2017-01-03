@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalactic.Resources
 import reflect.macros.Context
 
-private[scalactic] object PosZIntMacro extends CompileTimeAssertions {
+private[anyvals] object PosZIntMacro extends CompileTimeAssertions {
 
   def isValid(i: Int): Boolean = i >= 0
 

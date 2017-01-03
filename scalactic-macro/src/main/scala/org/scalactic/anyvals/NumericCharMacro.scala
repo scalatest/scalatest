@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import reflect.macros.Context
 import CompileTimeAssertions._
 
-private[scalactic] object NumericCharMacro {
+private[anyvals] object NumericCharMacro {
 
   def isValid(c: Char): Boolean = c >= '0' && c <= '9'
 
