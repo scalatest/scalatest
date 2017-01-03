@@ -124,6 +124,86 @@ object GenAnyVals {
     List(targetFile, genMacro(targetDir, "Int", typeName, typeBooleanExpr))
   }
 
+  def valueFormat(value: String, typeName: String): String =
+    if (typeName.endsWith("Long"))
+      s"${value}L"
+    else if (typeName.endsWith("Float"))
+      s"${value}.0f"
+    else if (typeName.endsWith("Double"))
+      s"${value}.0"
+    else
+      s"${value}"
+
+  def primitivesShouldEqualTests(primitiveType: String, lhsFun: String => String, rhsFun: String => String): String =
+    primitiveTypes.dropWhile(_ != primitiveType).map { pType =>
+      lhsFun(pType) + " shouldEqual " + rhsFun(pType)
+    }.mkString("\n")
+
+  def anyValsWidenShouldEqualTests(typeName: String, widensToTypes: Seq[String], validValue: String): String =
+    (widensToTypes map { widenType =>
+      val expectedValue = valueFormat(validValue, widenType)
+      s"($typeName($validValue): $widenType) shouldEqual $widenType($expectedValue)"
+    }).mkString("\n")
+
+  def anyValsOperatorWidenShouldEqualTests(typeName: String, widensToTypes: Seq[String], validValue: String, operator: String, modifyValue: String, resultValue: String): String =
+    (widensToTypes map { widenType =>
+      val expectedValue = valueFormat(resultValue, widenType)
+      s"$typeName($validValue) $operator $widenType($modifyValue) shouldEqual $expectedValue"
+    }).mkString("\n")
+
+  def genIntAnyValTests(targetDir: File, typeName: String, validValue: Int, addValue: Int, minusValue: Int, widensToTypes: Seq[String]): List[File] = {
+    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
+
+    val autoWidenTests =
+      primitivesShouldEqualTests("Int", pType => "(" + typeName + "(" + validValue + "): " + pType + ")", pType => valueFormat(validValue.toString, pType)) + "\n" +
+      anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString)
+
+    val addResult = validValue + addValue
+
+    val additionTests =
+      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") + " + valueFormat(addValue.toString, pType), pType => valueFormat(addResult.toString, pType)) + "\n" +
+      anyValsOperatorWidenShouldEqualTests(typeName, widensToTypes, validValue.toString, "+", addValue.toString, addResult.toString)
+
+    val minusResult = validValue - minusValue
+
+    val minusTests =
+      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") - " + valueFormat(minusValue.toString, pType), pType => valueFormat(minusResult.toString, pType)) + "\n" +
+      anyValsOperatorWidenShouldEqualTests(typeName, widensToTypes, validValue.toString, "-", minusValue.toString, minusResult.toString)
+
+    bw.write(
+      s"""package org.scalactic.anyvals
+        |
+        |import org.scalatest._
+        |
+        |class ${typeName}GeneratedSpec extends FunSpec with Matchers {
+        |
+        |  describe("PosInt") {
+        |
+        |    it("should be automatically widened to compatible AnyVal targets") {
+        |      $autoWidenTests
+        |    }
+        |
+        |    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+        |      $additionTests
+        |    }
+        |
+        |    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+        |      $minusTests
+        |    }
+        |
+        |  }
+        |
+        |}
+      """.stripMargin
+    )
+
+    bw.flush()
+    bw.close()
+    println("Generated: " + targetFile.getAbsolutePath)
+    List(targetFile)
+  }
+
   def genLongAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                     typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
                     widensToTypes: Seq[String]): List[File] = {
@@ -266,13 +346,6 @@ object GenAnyVals {
     List(targetFile, genMacro(targetDir, "Double", typeName, typeBooleanExpr))
   }
 
-  /*private val wideOrderList =
-    List(
-      ("NonZero", (n: String) => n),
-      ("Pos", ""),
-
-    )*/
-
   val primitiveTypes =
     List(
       "Int",
@@ -283,8 +356,13 @@ object GenAnyVals {
 
   val anyValTypes =
     List(
+      "Pos",
+      "PosZ",
       "NonZero"
     )
+
+  val allAnyValTypes =
+    anyValTypes.flatMap(t => primitiveTypes.map(p => t + p))
 
   def nonZeroWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p)
@@ -524,6 +602,14 @@ object GenAnyVals {
       minPositiveValue("Pos", "Double") +
       sumOf("Pos", "Double", "positive", "PosZ", "non-negative"),
       posWidens("Double"))
+  }
+
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    dir.mkdirs()
+
+    genIntAnyValTests(dir, "PosInt", 3, 3, 2, posWidens("Int")) ++
+    genIntAnyValTests(dir, "PosZInt", 3, 3, 2, posZWidens("Int")) ++
+    genIntAnyValTests(dir, "NonZeroInt", 3, 3, 2, nonZeroWidens("Int"))
   }
 
 }
