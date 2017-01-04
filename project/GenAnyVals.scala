@@ -156,6 +156,10 @@ object GenAnyVals {
       s"$typeName($validValue) $operator $widenType($modifyValue) shouldEqual $expectedValue"
     }).mkString("\n")
 
+  def operatorShouldEqualTests(primitiveType: String, typeName: String, lhsValue: String, operator: String, rhsValue: String, resultValue: String): String =
+    primitivesShouldEqualTests(primitiveType, pType => typeName + "(" + lhsValue + ") " + operator + " " + valueFormat(rhsValue.toString, pType), pType => valueFormat(resultValue.toString, pType)) + "\n" +
+    anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, lhsValue.toString, operator, rhsValue.toString, resultValue.toString)
+
   def genIntAnyValTests(targetDir: File, typeName: String, validValue: Int, addValue: Int, minusValue: Int, multiplyValue: Int, divideValue: Int, modulusValue: Int, widensToTypes: Seq[String]): List[File] = {
     val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
     val bw = new BufferedWriter(new FileWriter(targetFile))
@@ -165,35 +169,11 @@ object GenAnyVals {
       anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
       shouldNotCompileTests(allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
-    val addResult = validValue + addValue
-
-    val additionTests =
-      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") + " + valueFormat(addValue.toString, pType), pType => valueFormat(addResult.toString, pType)) + "\n" +
-      anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, validValue.toString, "+", addValue.toString, addResult.toString)
-
-    val minusResult = validValue - minusValue
-
-    val minusTests =
-      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") - " + valueFormat(minusValue.toString, pType), pType => valueFormat(minusResult.toString, pType)) + "\n" +
-      anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, validValue.toString, "-", minusValue.toString, minusResult.toString)
-
-    val multiplyResult = validValue * multiplyValue
-
-    val multiplyTests =
-      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") * " + valueFormat(multiplyValue.toString, pType), pType => valueFormat(multiplyResult.toString, pType)) + "\n" +
-      anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, validValue.toString, "*", multiplyValue.toString, multiplyResult.toString)
-
-    val divideResult = validValue / divideValue
-
-    val divideTests =
-      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") / " + valueFormat(divideValue.toString, pType), pType => valueFormat(divideResult.toString, pType)) + "\n" +
-      anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, validValue.toString, "/", divideValue.toString, divideResult.toString)
-
-    val modulusResult = validValue % modulusValue
-
-    val modulusTests =
-      primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") % " + valueFormat(modulusValue.toString, pType), pType => valueFormat(modulusResult.toString, pType)) + "\n" +
-      anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, validValue.toString, "%", modulusValue.toString, modulusResult.toString)
+    val additionTests = operatorShouldEqualTests("Int", typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
+    val minusTests = operatorShouldEqualTests("Int", typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
+    val multiplyTests = operatorShouldEqualTests("Int", typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
+    val divideTests = operatorShouldEqualTests("Int", typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
+    val modulusTests = operatorShouldEqualTests("Int", typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
 
     val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
     val templateText = try templateSource.mkString finally templateSource.close()
