@@ -48,24 +48,24 @@ import org.scalactic.{Or, Good, Bad}
  * res0: org.scalactic.anyvals.$typeName$ = $typeValidExample$
  *
  * scala&gt; $typeInvalidExample$
- * &lt;console&gt;:14: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) literal, like $typeValidExample$(42).
+ * &lt;console&gt;:14: error: $typeName$.apply can only be invoked on a $typeDesc$ ($typeBooleanExpr$) literal, like $typeValidExample$.
  *               $typeInvalidExample$
  *                     ^
  * </pre>
  *
  * <p>
- * <code>$typeExample$.apply</code> cannot be used if the value being passed is a variable (<em>i.e.</em>, not a literal), because
+ * <code>$typeName$.apply</code> cannot be used if the value being passed is a variable (<em>i.e.</em>, not a literal), because
  * the macro cannot determine the validity of variables at compile time (just literals). If you try to pass a variable
- * to <code>$typeExample$.apply</code>, you'll get a compiler error that suggests you use a different factor method,
- * <code>$typeExample$.from</code>, instead:
+ * to <code>$typeName$.apply</code>, you'll get a compiler error that suggests you use a different factor method,
+ * <code>$typeName$.from</code>, instead:
  * </p>
  *
  * <pre class="stREPL">
  * scala&gt; val x = 1
  * x: Int = 1
  *
- * scala&gt; $typeExample$(x)
- * &lt;console&gt;:15: error: $typeExample$.apply can only be invoked on an $typeDesc$ literal, like $typeValidExample$. Please use $typeName$.from instead.
+ * scala&gt; $typeName$(x)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on an $typeDesc$ integer literal, like $typeValidExample$. Please use $typeName$.from instead.
  *               $typeName$(x)
  *                     ^
  * </pre>
@@ -761,7 +761,7 @@ object $typeName$ {
     if ($typeName$Macro.isValid(value)) Some(new $typeName$(value)) else None
 
   /**
-   * A factory/assertion method that produces an <code>$typeName$</code> given a
+   * A factory/assertion method that produces a <code>$typeName$</code> given a
    * valid <code>Int</code> value, or throws <code>AssertionError</code>,
    * if given an invalid <code>Int</code> value.
    *
@@ -783,7 +783,7 @@ object $typeName$ {
    * <p>
    * This factory method differs from the <code>apply</code> factory method
    * in that <code>apply</code> is implemented via a macro that inspects
-   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
    * <code>Int</code> values at run time.
    * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
    * call in that you get something you didn't already have if the assertion
