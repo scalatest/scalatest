@@ -171,31 +171,17 @@ object GenAnyVals {
       primitivesShouldEqualTests("Int", pType => typeName + "(" + validValue + ") - " + valueFormat(minusValue.toString, pType), pType => valueFormat(minusResult.toString, pType)) + "\n" +
       anyValsOperatorWidenShouldEqualTests(typeName, widensToTypes, validValue.toString, "-", minusValue.toString, minusResult.toString)
 
+    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
+    val templateText = try templateSource.mkString finally templateSource.close()
+    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
+
+    st.setAttribute("typeName", typeName)
+    st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("additionTests", additionTests)
+    st.setAttribute("minusTests", minusTests)
+
     bw.write(
-      s"""package org.scalactic.anyvals
-        |
-        |import org.scalatest._
-        |
-        |class ${typeName}GeneratedSpec extends FunSpec with Matchers {
-        |
-        |  describe("PosInt") {
-        |
-        |    it("should be automatically widened to compatible AnyVal targets") {
-        |      $autoWidenTests
-        |    }
-        |
-        |    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
-        |      $additionTests
-        |    }
-        |
-        |    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
-        |      $minusTests
-        |    }
-        |
-        |  }
-        |
-        |}
-      """.stripMargin
+      st.toString
     )
 
     bw.flush()

@@ -1,0 +1,23 @@
+package org.scalactic.anyvals
+
+import org.scalatest._
+
+class $typeName$GeneratedSpec extends FunSpec with Matchers {
+
+  describe("$typeName$") {
+
+    it("should be automatically widened to compatible AnyVal targets") {
+      $autoWidenTests$
+    }
+
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $additionTests$
+    }
+
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $minusTests$
+    }
+
+  }
+
+}
