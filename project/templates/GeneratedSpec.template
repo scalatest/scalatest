@@ -18,6 +18,18 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers {
       $minusTests$
     }
 
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $multiplyTests$
+    }
+
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $divideTests$
+    }
+
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $modulusTests$
+    }
+
   }
 
 }

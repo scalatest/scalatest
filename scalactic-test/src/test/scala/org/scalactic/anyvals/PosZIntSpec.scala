@@ -161,27 +161,6 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
     it("should return the same type from its unary_+ method") {
       +PosZInt(3) shouldEqual PosZInt(3)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      (PosZInt(3): Int) shouldEqual 3
-      (PosZInt(3): Long) shouldEqual 3L
-      (PosZInt(3): Float) shouldEqual 3.0F
-      (PosZInt(3): Double) shouldEqual 3.0
-
-      "(PosZInt(3): PosInt)" shouldNot typeCheck
-      "(PosZInt(3): PosLong)" shouldNot typeCheck
-      "(PosZInt(3): PosFloat)" shouldNot typeCheck
-      "(PosZInt(3): PosDouble)" shouldNot typeCheck
-
-      (PosZInt(3): PosZInt) shouldEqual PosZInt(3)
-      (PosZInt(3): PosZLong) shouldEqual PosZLong(3L)
-      (PosZInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosZInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
-
-      "(PosZInt(3): NonZeroInt)" shouldNot typeCheck
-      "(PosZInt(3): NonZeroLong)" shouldNot typeCheck
-      "(PosZInt(3): NonZeroFloat)" shouldNot typeCheck
-      "(PosZInt(3): NonZeroDouble)" shouldNot typeCheck
     }
 
     it("should be sortable") {
