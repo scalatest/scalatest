@@ -534,9 +534,11 @@ object GenAnyVals {
     else
       s"${value}"
 
-  def primitivesShouldEqualTests(types: Seq[String], lhsFun: String => String, rhsFun: String => String): String =
+  def primitivesShouldEqualTests(typeName: String, types: Seq[String], lhsFun: String => String, resultValue: String): String =
     types.map { pType =>
-      lhsFun(pType) + " shouldEqual " + rhsFun(pType)
+      val widerValue = pickWiderType(typeName, pType)
+      val expectedValue = valueFormat(resultValue, widerValue)
+      lhsFun(pType) + " shouldEqual " + expectedValue
     }.mkString("\n")
 
   def shouldNotCompileTests(types: Seq[String], lhsFun: String => String): String =
@@ -578,7 +580,7 @@ object GenAnyVals {
     }).mkString("\n")
 
   def operatorShouldEqualTests(typeName: String, lhsValue: String, operator: String, rhsValue: String, resultValue: String): String =
-    primitivesShouldEqualTests(primitiveTypes, pType => typeName + "(" + lhsValue + ") " + operator + " " + valueFormat(rhsValue.toString, pType), pType => valueFormat(resultValue.toString, pType)) + "\n" +
+    primitivesShouldEqualTests(typeName, primitiveTypes, pType => typeName + "(" + lhsValue + ") " + operator + " " + valueFormat(rhsValue.toString, pType), resultValue.toString) + "\n" +
     anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, lhsValue.toString, operator, rhsValue.toString, resultValue.toString)
 
   def genIntAnyValTests(targetDir: File, typeName: String, validValue: Int, addValue: Int, minusValue: Int, multiplyValue: Int, divideValue: Int, modulusValue: Int, widensToTypes: Seq[String]): List[File] = {
@@ -586,7 +588,7 @@ object GenAnyVals {
     val bw = new BufferedWriter(new FileWriter(targetFile))
 
     val autoWidenTests =
-      primitivesShouldEqualTests(primitiveTypes.dropWhile(_ != "Int"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", pType => valueFormat(validValue.toString, pType)) + "\n" +
+      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Int"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
       anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
       shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Int") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
@@ -623,7 +625,7 @@ object GenAnyVals {
     val bw = new BufferedWriter(new FileWriter(targetFile))
 
     val autoWidenTests =
-      primitivesShouldEqualTests(primitiveTypes.dropWhile(_ != "Long"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", pType => valueFormat(validValue.toString, pType)) + "\n" +
+      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Long"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
       anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
       shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Long") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
