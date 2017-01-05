@@ -26,7 +26,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
-class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosIntSpecSupport {
 
   val posIntGen: Gen[PosInt] =
     for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
@@ -56,6 +56,10 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
     }
   }
+
+}
+
+class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
 
   describe("A PosInt") {
 

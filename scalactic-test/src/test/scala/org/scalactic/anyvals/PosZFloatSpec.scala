@@ -30,7 +30,7 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait PosZFloatSpecSupport {
 
   val posZFloatGen: Gen[PosZFloat] =
     for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
@@ -54,6 +54,10 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
           case _ => a == b
         }
     }
+
+}
+
+class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosZFloatSpecSupport {
 
   describe("A PosZFloat") {
     describe("should offer a from factory method that") {

@@ -629,6 +629,7 @@ object GenAnyVals {
     st.setAttribute("modulusTests", modulusTests)
     st.setAttribute("formattedValidValue", validValue.toString)
     st.setAttribute("validValue", validValue.toString)
+    st.setAttribute("primitiveType", "Int")
 
     bw.write(
       st.toString
@@ -668,6 +669,7 @@ object GenAnyVals {
     st.setAttribute("modulusTests", modulusTests)
     st.setAttribute("formattedValidValue", validValue.toString + "L")
     st.setAttribute("validValue", validValue.toString)
+    st.setAttribute("primitiveType", "Long")
 
     bw.write(
       st.toString
@@ -707,6 +709,7 @@ object GenAnyVals {
     st.setAttribute("modulusTests", modulusTests)
     st.setAttribute("formattedValidValue", validValue.toString + "f")
     st.setAttribute("validValue", validValue.toString)
+    st.setAttribute("primitiveType", "Float")
 
     bw.write(
       st.toString
@@ -746,6 +749,7 @@ object GenAnyVals {
     st.setAttribute("modulusTests", modulusTests)
     st.setAttribute("formattedValidValue", validValue.toString)
     st.setAttribute("validValue", validValue.toString)
+    st.setAttribute("primitiveType", "Double")
 
     bw.write(
       st.toString

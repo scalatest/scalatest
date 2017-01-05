@@ -25,7 +25,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Failure, Success, Try}
 
-class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait NonZeroIntSpecSupport {
 
   val nonZeroIntGen: Gen[NonZeroInt] =
     for {i <- choose(Int.MinValue, Int.MaxValue)} yield {
@@ -70,6 +70,10 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       }
     }
   }
+
+}
+
+class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroIntSpecSupport {
 
   describe("A NonZeroInt") {
 

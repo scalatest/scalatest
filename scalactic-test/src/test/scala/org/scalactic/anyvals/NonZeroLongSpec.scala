@@ -29,7 +29,7 @@ import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait NonZeroLongSpecSupport {
 
   val nonZeroLongGen: Gen[NonZeroLong] =
     for {i <- choose(Long.MinValue, Long.MaxValue)} yield {
@@ -64,6 +64,10 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       }
     }
   }
+
+}
+
+class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
 
   describe("A NonZeroLong") {
     describe("should offer a from factory method that") {

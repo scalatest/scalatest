@@ -31,8 +31,7 @@ import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
-
+trait NonZeroDoubleSpecSupport {
   val nonZeroDoubleGen: Gen[NonZeroDouble] =
     for {i <- choose(Double.MinValue, Double.MaxValue)} yield {
       if (i == 0.0)
@@ -53,6 +52,9 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
       }
     }
   }
+}
+
+class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroDoubleSpecSupport {
 
   describe("A NonZeroDouble") {
     describe("should offer a from factory method that") {

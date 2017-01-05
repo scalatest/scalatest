@@ -28,7 +28,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 
-class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait PosFloatSpecSupport {
 
   val posZFloatGen: Gen[PosZFloat] =
     for {i <- choose(0, Float.MaxValue)} yield PosZFloat.ensuringValid(i)
@@ -39,6 +39,10 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     for {i <- choose(1, Float.MaxValue)} yield PosFloat.ensuringValid(i)
 
   implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
+
+}
+
+class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosFloatSpecSupport {
 
   describe("A PosFloat") {
     describe("should offer a from factory method that") {

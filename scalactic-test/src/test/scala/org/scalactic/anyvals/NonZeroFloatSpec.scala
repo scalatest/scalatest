@@ -28,7 +28,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait NonZeroFloatSpecSupport {
 
   val nonZeroFloatGen: Gen[NonZeroFloat] =
     for {i <- choose(Float.MinValue, Float.MaxValue)} yield {
@@ -39,6 +39,10 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
     }
 
   implicit val arbNonZeroFloat: Arbitrary[NonZeroFloat] = Arbitrary(nonZeroFloatGen)
+
+}
+
+class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
 
   describe("A NonZeroFloat") {
     describe("should offer a from factory method that") {

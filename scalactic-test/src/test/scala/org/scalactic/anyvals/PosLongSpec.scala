@@ -29,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosLongSpecSupport {
 
   val posLongGen: Gen[PosLong] =
     for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
@@ -59,6 +59,10 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
     }
   }
+
+}
+
+class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosLongSpecSupport {
 
   describe("A PosLong") {
     describe("should offer a from factory method that") {

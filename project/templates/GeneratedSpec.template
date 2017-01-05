@@ -1,8 +1,9 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues {
+class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
 
   describe("$typeName$") {
 
@@ -36,6 +37,18 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues {
 
     it("should return the same type from its unary_+ method") {
       +$typeName$($formattedValidValue$) shouldEqual $typeName$($formattedValidValue$)
+    }
+
+    it("should offer a unary + method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$) =>
+        (+p).to$primitiveType$ shouldEqual (+(p.to$primitiveType$))
+      }
+    }
+
+    it("should offer a unary - method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$) =>
+        (-p).to$primitiveType$ shouldEqual (-(p.to$primitiveType$))
+      }
     }
 
   }

@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosZLongSpecSupport {
 
   val posZLongGen: Gen[PosZLong] =
     for {i <- choose(0, Long.MaxValue)} yield PosZLong.from(i).get
@@ -62,6 +62,10 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       }
     }
   }
+
+}
+
+class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZLongSpecSupport {
 
   describe("A PosZLong") {
     describe("should offer a from factory method that") {

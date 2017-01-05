@@ -29,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosZIntSpecSupport {
 
   val posZIntGen: Gen[PosZInt] =
     for {i <- choose(0, Int.MaxValue)} yield PosZInt.from(i).get
@@ -59,6 +59,10 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
     }
   }
+
+}
+
+class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
 
   describe("A PosZInt") {
     describe("should offer a from factory method that") {

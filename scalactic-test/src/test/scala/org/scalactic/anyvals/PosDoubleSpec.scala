@@ -31,7 +31,7 @@ import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 
-class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait PosDoubleSpecSupport {
 
   val posZDoubleGen: Gen[PosZDouble] =
     for {i <- choose(0, Double.MaxValue)} yield PosZDouble.ensuringValid(i)
@@ -53,6 +53,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
   }
+
+}
+
+class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosDoubleSpecSupport {
 
   describe("A PosDouble") {
     describe("should offer a from factory method that") {

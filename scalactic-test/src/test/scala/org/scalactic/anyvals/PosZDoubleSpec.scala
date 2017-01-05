@@ -30,7 +30,7 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
+trait PosZDoubleSpecSupport {
 
   val posZDoubleGen: Gen[PosZDouble] =
     for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
@@ -60,6 +60,9 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
         }
     }
 
+}
+
+class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZDoubleSpecSupport {
 
   describe("A PosZDouble") {
     describe("should offer a from factory method that") {
