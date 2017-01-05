@@ -179,84 +179,12 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
     it("should return the same type from its unary_+ method") {
       +NonZeroDouble(3.0) shouldEqual NonZeroDouble(3.0)
     }
-    it("should be automatically widened to compatible AnyVal targets") {
-      "NonZeroDouble(3.0): Int" shouldNot typeCheck
-      "NonZeroDouble(3.0): Long" shouldNot typeCheck
-      "NonZeroDouble(3.0): Float" shouldNot typeCheck
-      (NonZeroDouble(3.0): Double) shouldEqual 3.0
-
-      "NonZeroDouble(3.0): PosInt" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosLong" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosFloat" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosDouble" shouldNot typeCheck
-
-      "NonZeroDouble(3.0): PosZInt" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosZLong" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosZFloat" shouldNot typeCheck
-      "NonZeroDouble(3.0): PosZDouble" shouldNot typeCheck
-    }
 
     it("should be sortable") {
       val xs = List(NonZeroDouble(2.2), NonZeroDouble(4.4), NonZeroDouble(1.1),
         NonZeroDouble(3.3))
       xs.sorted shouldEqual List(NonZeroDouble(1.1), NonZeroDouble(2.2), NonZeroDouble(3.3),
         NonZeroDouble(4.4))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = NonZeroDouble(3.0) + 3
-        opInt shouldEqual 6.0
-
-        val opLong = NonZeroDouble(3.0) + 3L
-        opLong shouldEqual 6.0
-
-        val opFloat = NonZeroDouble(3.0) + 3.0F
-        opFloat shouldEqual 6.0
-
-        val opDouble = NonZeroDouble(3.0) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = NonZeroDouble(3.0) + PosInt(3)
-        opPosInt shouldEqual 6.0
-
-        val opPosLong = NonZeroDouble(3.0) + PosLong(3L)
-        opPosLong shouldEqual 6.0
-
-        val opPosFloat = NonZeroDouble(3.0) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0
-
-        val opPosDouble = NonZeroDouble(3.0) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = NonZeroDouble(3.0) + PosZInt(3)
-        opPosZ shouldEqual 6.0
-
-        val opPosZLong = NonZeroDouble(3.0) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0
-
-        val opPosZFloat = NonZeroDouble(3.0) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0
-
-        val opPosZDouble = NonZeroDouble(3.0) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a NonZero*
-        val opNonZeroInt = NonZeroDouble(3.0) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6
-
-        val opNonZeroLong = NonZeroDouble(3.0) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6L
-
-        val opNonZeroFloat = NonZeroDouble(3.0) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        val opNonZeroDouble = NonZeroDouble(3.0) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {

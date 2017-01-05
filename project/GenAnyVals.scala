@@ -712,6 +712,43 @@ object GenAnyVals {
     List(targetFile)
   }
 
+  def genDoubleAnyValTests(targetDir: File, typeName: String, validValue: Double, addValue: Double, minusValue: Double, multiplyValue: Double, divideValue: Double, modulusValue: Double, widensToTypes: Seq[String]): List[File] = {
+    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
+
+    val autoWidenTests =
+      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Double"), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")", validValue.toString) + "\n" +
+        anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
+        shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Double") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")")
+
+    val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
+    val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
+    val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
+    val divideTests = operatorShouldEqualTests(typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
+    val modulusTests = operatorShouldEqualTests(typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
+
+    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
+    val templateText = try templateSource.mkString finally templateSource.close()
+    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
+
+    st.setAttribute("typeName", typeName)
+    st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("additionTests", additionTests)
+    st.setAttribute("minusTests", minusTests)
+    st.setAttribute("multiplyTests", multiplyTests)
+    st.setAttribute("divideTests", divideTests)
+    st.setAttribute("modulusTests", modulusTests)
+
+    bw.write(
+      st.toString
+    )
+
+    bw.flush()
+    bw.close()
+    println("Generated: " + targetFile.getAbsolutePath)
+    List(targetFile)
+  }
+
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
 
@@ -723,7 +760,10 @@ object GenAnyVals {
     genLongAnyValTests(dir, "NonZeroLong", 3L, 3L, 2L, 2L, 3L, 3L, nonZeroWidens("Long")) ++
     genFloatAnyValTests(dir, "PosFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, posWidens("Float")) ++
     genFloatAnyValTests(dir, "PosZFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, posZWidens("Float")) ++
-    genFloatAnyValTests(dir, "NonZeroFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, nonZeroWidens("Float"))
+    genFloatAnyValTests(dir, "NonZeroFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, nonZeroWidens("Float")) ++
+    genDoubleAnyValTests(dir, "PosDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posWidens("Double")) ++
+    genDoubleAnyValTests(dir, "PosZDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posZWidens("Double")) ++
+    genDoubleAnyValTests(dir, "NonZeroDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, nonZeroWidens("Double"))
   }
 
 }
