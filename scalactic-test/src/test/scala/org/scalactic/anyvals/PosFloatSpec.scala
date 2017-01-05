@@ -149,27 +149,6 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     }
     it("should return the same type from its unary_+ method") {
       +PosFloat(3.0F) shouldEqual PosFloat(3.0F)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      "PosFloat(3.0F): Int" shouldNot typeCheck
-      "PosFloat(3.0F): Long" shouldNot typeCheck
-      (PosFloat(3.0F): Float) shouldEqual 3.0F
-      (PosFloat(3.0F): Double) shouldEqual 3.0
-
-      "PosFloat(3.0F): PosInt" shouldNot typeCheck
-      "PosFloat(3.0F): PosLong" shouldNot typeCheck
-      (PosFloat(3.0F): PosFloat) shouldEqual PosFloat(3.0F)
-      (PosFloat(3.0F): PosDouble) shouldEqual PosDouble(3.0)
-
-      "PosFloat(3.0F): PosZInt" shouldNot typeCheck
-      "PosFloat(3.0F): PosZLong" shouldNot typeCheck
-      (PosFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
-
-      "PosFloat(3.0F): NonZeroInt" shouldNot typeCheck
-      "PosFloat(3.0F): NonZeroLong" shouldNot typeCheck
-      (PosFloat(3.0F): NonZeroFloat) shouldEqual NonZeroFloat(3.0F)
-      (PosFloat(3.0F): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
     }
 
     it("should be sortable") {
@@ -177,62 +156,6 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
                     PosFloat(3.3F))
       xs.sorted shouldEqual List(PosFloat(1.1F), PosFloat(2.2F), PosFloat(3.3F),
                                  PosFloat(4.4F))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosFloat(3.0F) + 3
-        opInt shouldEqual 6.0F
-
-        val opLong = PosFloat(3.0F) + 3L
-        opLong shouldEqual 6.0F
-
-        val opFloat = PosFloat(3.0F) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosFloat(3.0F) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosFloat(3.0F) + PosInt(3)
-        opPosInt shouldEqual 6.0F
-
-        val opPosLong = PosFloat(3.0F) + PosLong(3L)
-        opPosLong shouldEqual 6.0F
-
-        val opPosFloat = PosFloat(3.0F) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = PosFloat(3.0F) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosFloat(3.0F) + PosZInt(3)
-        opPosZ shouldEqual 6.0F
-
-        val opPosZLong = PosFloat(3.0F) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0F
-
-        val opPosZFloat = PosFloat(3.0F) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = PosFloat(3.0F) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opNonZeroInt = PosFloat(3.0F) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6.0F
-
-        val opNonZeroLong = PosFloat(3.0F) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6.0F
-
-        val opNonZeroFloat = PosFloat(3.0F) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        val opNonZeroDouble = PosFloat(3.0F) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {

@@ -156,7 +156,7 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     describe("should offer a fromOrElse factory method that") {
       it("returns a NonZeroLong if the passed Long is greater than 0") {
         NonZeroLong.fromOrElse(50L, NonZeroLong(42L)).value shouldBe 50L
-        NonZeroLong.fromOrElse(100L, NonZeroLong(42L)).value shouldBe 100Lsudo apt-get install apache2
+        NonZeroLong.fromOrElse(100L, NonZeroLong(42L)).value shouldBe 100L
 
       }
       it("returns a NonZeroLong if the passed Long is lesser than 0") {
