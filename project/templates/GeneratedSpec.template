@@ -34,6 +34,10 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues {
       $typeName$.from($formattedValidValue$).value.toString shouldBe "$typeName$($validValue$)"
     }
 
+    it("should return the same type from its unary_+ method") {
+      +$typeName$($formattedValidValue$) shouldEqual $typeName$($formattedValidValue$)
+    }
+
   }
 
 }

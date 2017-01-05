@@ -158,9 +158,6 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
     it("should offer a MinPositiveValue factory method") {
       NonZeroFloat.MinPositiveValue shouldEqual NonZeroFloat.ensuringValid(Float.MinPositiveValue)
     }
-    it("should return the same type from its unary_+ method") {
-      +NonZeroFloat(3.0F) shouldEqual NonZeroFloat(3.0F)
-    }
 
     it("should be sortable") {
       val xs = List(NonZeroFloat(2.2F), NonZeroFloat(4.4F), NonZeroFloat(1.1F),

@@ -157,9 +157,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
     it("should offer a PositiveInfinity factory method") {
       PosDouble.PositiveInfinity shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should return the same type from its unary_+ method") {
-      +PosDouble(3.0) shouldEqual PosDouble(3.0)
-    }
 
     it("should be sortable") {
       val xs = List(PosDouble(2.2), PosDouble(4.4), PosDouble(1.1),

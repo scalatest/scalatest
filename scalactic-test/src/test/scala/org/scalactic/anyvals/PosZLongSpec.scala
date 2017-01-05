@@ -156,9 +156,6 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
       PosZLong.MinValue shouldEqual PosZLong(0L)
     }
-    it("should return the same type from its unary_+ method") {
-      +PosZLong(3L) shouldEqual PosZLong(3L)
-    }
 
     it("should be sortable") {
       val xs = List(PosZLong(2), PosZLong(0), PosZLong(1), PosZLong(3))

@@ -180,10 +180,6 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       NonZeroInt.MinValue shouldEqual NonZeroInt(Int.MinValue)
     }
 
-    it("should return the same type from its unary_+ method") {
-      +NonZeroInt(3) shouldEqual NonZeroInt(3)
-    }
-
     it("should be sortable") {
       val xs = List(NonZeroInt(2), NonZeroInt(4), NonZeroInt(1), NonZeroInt(3))
       xs.sorted shouldEqual List(NonZeroInt(1), NonZeroInt(2), NonZeroInt(3), NonZeroInt(4))

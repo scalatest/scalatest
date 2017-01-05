@@ -163,9 +163,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
     it("should offer a PositiveInfinity factory method") {
       PosZDouble.PositiveInfinity shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should return the same type from its unary_+ method") {
-      +PosZDouble(3.0) shouldEqual PosZDouble(3.0)
-    }
 
     it("should be sortable") {
       val xs = List(PosZDouble(2.2), PosZDouble(0.0), PosZDouble(1.1),

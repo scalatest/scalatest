@@ -155,10 +155,6 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       PosInt.MinValue shouldEqual PosInt(1)
     }
 
-    it("should return the same type from its unary_+ method") {
-      +PosInt(3) shouldEqual PosInt(3)
-    }
-
     it("should be sortable") {
       val xs = List(PosInt(2), PosInt(4), PosInt(1), PosInt(3))
       xs.sorted shouldEqual List(PosInt(1), PosInt(2), PosInt(3), PosInt(4))

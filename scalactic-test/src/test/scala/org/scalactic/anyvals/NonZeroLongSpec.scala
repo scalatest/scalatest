@@ -171,9 +171,6 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       NonZeroLong.MaxValue shouldEqual NonZeroLong.from(Long.MaxValue).get
       NonZeroLong.MinValue shouldEqual NonZeroLong.from(Long.MinValue).get
     }
-    it("should return the same type from its unary_+ method") {
-      +NonZeroLong(3L) shouldEqual NonZeroLong(3L)
-    }
 
     it("should be sortable") {
       val xs = List(NonZeroLong(2), NonZeroLong(4), NonZeroLong(1), NonZeroLong(3))
