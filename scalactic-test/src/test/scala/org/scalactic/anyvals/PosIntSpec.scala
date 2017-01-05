@@ -154,9 +154,6 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
       PosInt.MinValue shouldEqual PosInt(1)
     }
-    it("should have a pretty toString") {
-      PosInt.from(42).value.toString shouldBe "PosInt(42)"
-    }
 
     it("should return the same type from its unary_+ method") {
       +PosInt(3) shouldEqual PosInt(3)

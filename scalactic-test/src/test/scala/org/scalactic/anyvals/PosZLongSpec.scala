@@ -156,9 +156,6 @@ class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
       PosZLong.MinValue shouldEqual PosZLong(0L)
     }
-    it("should have a pretty toString") {
-      PosZLong.from(42L).value.toString shouldBe "PosZLong(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosZLong(3L) shouldEqual PosZLong(3L)
     }

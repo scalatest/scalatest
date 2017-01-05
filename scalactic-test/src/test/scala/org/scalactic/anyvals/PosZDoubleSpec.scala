@@ -163,12 +163,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks {
     it("should offer a PositiveInfinity factory method") {
       PosZDouble.PositiveInfinity shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosZDouble.from(42.0).value.toString shouldBe "PosZDouble(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosZDouble.from(42.0).value.toString shouldBe "PosZDouble(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosZDouble(3.0) shouldEqual PosZDouble(3.0)
     }

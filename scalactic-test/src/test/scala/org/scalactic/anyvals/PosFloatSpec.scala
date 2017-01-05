@@ -141,12 +141,6 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     it("should offer a PositiveInfinity factory method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosFloat(3.0F) shouldEqual PosFloat(3.0F)
     }

@@ -157,12 +157,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
     it("should offer a PositiveInfinity factory method") {
       PosDouble.PositiveInfinity shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosDouble.from(42.0).value.toString shouldBe "PosDouble(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosDouble.from(42.0).value.toString shouldBe "PosDouble(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosDouble(3.0) shouldEqual PosDouble(3.0)
     }

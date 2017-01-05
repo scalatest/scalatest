@@ -155,12 +155,6 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
     it("should offer a PositiveInfinity factory method") {
       PosZFloat.PositiveInfinity shouldEqual PosZFloat.ensuringValid(Float.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosZFloat.from(42.0f).value.toString shouldBe "PosZFloat(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosZFloat.from(42.0f).value.toString shouldBe "PosZFloat(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosZFloat(3.0F) shouldEqual PosZFloat(3.0F)
     }

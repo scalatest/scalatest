@@ -179,9 +179,6 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       NonZeroInt.MaxValue shouldEqual NonZeroInt.from(Int.MaxValue).get
       NonZeroInt.MinValue shouldEqual NonZeroInt(Int.MinValue)
     }
-    it("should have a pretty toString") {
-      NonZeroInt.from(42).value.toString shouldBe "NonZeroInt(42)"
-    }
 
     it("should return the same type from its unary_+ method") {
       +NonZeroInt(3) shouldEqual NonZeroInt(3)

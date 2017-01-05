@@ -170,12 +170,6 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
     it("should offer a NegativeInfinity factory method") {
       NonZeroDouble.NegativeInfinity shouldEqual NonZeroDouble.ensuringValid(Double.NegativeInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      NonZeroDouble.from(42.0).value.toString shouldBe "NonZeroDouble(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY NonZeroDouble.from(42.0).value.toString shouldBe "NonZeroDouble(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +NonZeroDouble(3.0) shouldEqual NonZeroDouble(3.0)
     }

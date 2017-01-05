@@ -171,9 +171,6 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       NonZeroLong.MaxValue shouldEqual NonZeroLong.from(Long.MaxValue).get
       NonZeroLong.MinValue shouldEqual NonZeroLong.from(Long.MinValue).get
     }
-    it("should have a pretty toString") {
-      NonZeroLong.from(42L).value.toString shouldBe "NonZeroLong(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +NonZeroLong(3L) shouldEqual NonZeroLong(3L)
     }

@@ -156,9 +156,6 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       PosZInt.MaxValue shouldEqual PosZInt.from(Int.MaxValue).get
       PosZInt.MinValue shouldEqual PosZInt(0)
     }
-    it("should have a pretty toString") {
-      PosZInt.from(42).value.toString shouldBe "PosZInt(42)"
-    }
     it("should return the same type from its unary_+ method") {
       +PosZInt(3) shouldEqual PosZInt(3)
     }

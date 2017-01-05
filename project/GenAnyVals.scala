@@ -627,6 +627,8 @@ object GenAnyVals {
     st.setAttribute("multiplyTests", multiplyTests)
     st.setAttribute("divideTests", divideTests)
     st.setAttribute("modulusTests", modulusTests)
+    st.setAttribute("formattedValidValue", validValue.toString)
+    st.setAttribute("validValue", validValue.toString)
 
     bw.write(
       st.toString
@@ -664,6 +666,8 @@ object GenAnyVals {
     st.setAttribute("multiplyTests", multiplyTests)
     st.setAttribute("divideTests", divideTests)
     st.setAttribute("modulusTests", modulusTests)
+    st.setAttribute("formattedValidValue", validValue.toString + "L")
+    st.setAttribute("validValue", validValue.toString)
 
     bw.write(
       st.toString
@@ -701,6 +705,8 @@ object GenAnyVals {
     st.setAttribute("multiplyTests", multiplyTests)
     st.setAttribute("divideTests", divideTests)
     st.setAttribute("modulusTests", modulusTests)
+    st.setAttribute("formattedValidValue", validValue.toString + "f")
+    st.setAttribute("validValue", validValue.toString)
 
     bw.write(
       st.toString
@@ -738,6 +744,8 @@ object GenAnyVals {
     st.setAttribute("multiplyTests", multiplyTests)
     st.setAttribute("divideTests", divideTests)
     st.setAttribute("modulusTests", modulusTests)
+    st.setAttribute("formattedValidValue", validValue.toString)
+    st.setAttribute("validValue", validValue.toString)
 
     bw.write(
       st.toString
