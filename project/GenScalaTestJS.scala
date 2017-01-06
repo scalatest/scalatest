@@ -197,6 +197,7 @@ object GenScalaTestJS {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
@@ -238,7 +239,9 @@ object GenScalaTestJS {
       List(
         "BigSuiteSuite.scala",
         "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
+        "DeprecatedCatchReporterProp.scala",   // skipped because heavily depends on java reflection
         "ClassTaggingProp.scala",    // skipped because annotation not supported
+        "DeprecatedClassTaggingProp.scala",    // skipped because annotation not supported
         "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
         "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
         "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
@@ -260,6 +263,7 @@ object GenScalaTestJS {
         "RefSpecSpec.scala",          // skipped because depends on java reflections.
         "SpecSpec.scala",          // skipped because depends on java reflections.
         "StatusProp.scala",        // skipped because uses VirtualMachineError
+        "DeprecatedStatusProp.scala",        // skipped because uses VirtualMachineError
         "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
@@ -278,6 +282,7 @@ object GenScalaTestJS {
         "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
+        "DeprecatedIntegrationPatienceSpec.scala",
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
@@ -303,6 +308,7 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
