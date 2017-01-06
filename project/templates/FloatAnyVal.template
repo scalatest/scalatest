@@ -617,7 +617,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Float</code> value and if
    * it is a $typeDesc$ <code>Float</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Good</code>.
-   * Otherwise, the passed <code>Float</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Float</code> value is not $typeDesc$, so this
    * method will return a result of type <code>B</code> obtained by passing
    * the invalid <code>Float</code> value to the given function <code>f</code>,
    * wrapped in a `Bad`.
@@ -649,7 +649,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Int</code> value and if
    * it is a $typeDesc$ <code>Int</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Right</code>.
-   * Otherwise, the passed <code>Int</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Int</code> value is not $typeDesc$, so this
    * method will return a result of type <code>L</code> obtained by passing
    * the invalid <code>Int</code> value to the given function <code>f</code>,
    * wrapped in a `Left`.

@@ -68,6 +68,16 @@ object GenAnyVals {
     targetFile
   }
 
+  def getPrimitiveType(t: String): String =
+    if (t.endsWith("Double"))
+      "Double"
+    else if (t.endsWith("Float"))
+      "Float"
+    else if (t.endsWith("Long"))
+      "Long"
+    else
+      "Int"
+
   def genIntAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                    typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
                    widensToTypes: Seq[String]): List[File] = {
@@ -90,15 +100,16 @@ object GenAnyVals {
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
         s"""/**
-           |   * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
-           |   *
-           |   * @param pos the <code>$typeName</code> to widen
-           |   * @return the <code>$targetType</code> widen from <code>$typeName</code>.
-           |   */
-           |  implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-           |
-        """.stripMargin
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Int</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
+           |""".stripMargin
       }.mkString
 
     st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
@@ -135,14 +146,15 @@ object GenAnyVals {
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
         s"""/**
-           |   * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
-           |   *
-           |   * @param pos the <code>$typeName</code> to widen
-           |   * @return the <code>$targetType</code> widen from <code>$typeName</code>.
-           |   */
-           |  implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-           |
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Long</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
         """.stripMargin
       }.mkString
 
@@ -182,14 +194,15 @@ object GenAnyVals {
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
         s"""/**
-           |   * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
-           |   *
-           |   * @param pos the <code>$typeName</code> to widen
-           |   * @return the <code>$targetType</code> widen from <code>$typeName</code>.
-           |   */
-           |  implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-           |
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Float</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
         """.stripMargin
       }.mkString
 
@@ -229,14 +242,15 @@ object GenAnyVals {
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
         s"""/**
-           |   * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
-           |   *
-           |   * @param pos the <code>$typeName</code> to widen
-           |   * @return the <code>$targetType</code> widen from <code>$typeName</code>.
-           |   */
-           |  implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-           |
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Double</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
         """.stripMargin
       }.mkString
 

@@ -65,7 +65,7 @@ import org.scalactic.{Or, Good, Bad}
  * x: Int = 1
  *
  * scala&gt; $typeName$(x)
- * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on an $typeDesc$ integer literal, like $typeValidExample$. Please use $typeName$.from instead.
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on a $typeDesc$ integer literal, like $typeValidExample$. Please use $typeName$.from instead.
  *               $typeName$(x)
  *                     ^
  * </pre>
@@ -875,7 +875,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Int</code> value and if
    * it is a $typeDesc$ <code>Int</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Good</code>.
-   * Otherwise, the passed <code>Int</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Int</code> value is not $typeDesc$, so this
    * method will return a result of type <code>B</code> obtained by passing
    * the invalid <code>Int</code> value to the given function <code>f</code>,
    * wrapped in a `Bad`.
@@ -907,7 +907,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Int</code> value and if
    * it is a $typeDesc$ <code>Int</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Right</code>.
-   * Otherwise, the passed <code>Int</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Int</code> value is not $typeDesc$, so this
    * method will return a result of type <code>L</code> obtained by passing
    * the invalid <code>Int</code> value to the given function <code>f</code>,
    * wrapped in a `Left`.
