@@ -344,6 +344,9 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
+  /**
+   * Indicates whether this `$typeName$` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
@@ -614,7 +617,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Float</code> value and if
    * it is a $typeDesc$ <code>Float</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Good</code>.
-   * Otherwise, the passed <code>Float</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Float</code> value is not $typeDesc$, so this
    * method will return a result of type <code>B</code> obtained by passing
    * the invalid <code>Float</code> value to the given function <code>f</code>,
    * wrapped in a `Bad`.
@@ -646,7 +649,7 @@ object $typeName$ {
    * This method will inspect the passed <code>Int</code> value and if
    * it is a $typeDesc$ <code>Int</code>, it will return a <code>$typeName$</code>
    * representing that value, wrapped in a <code>Right</code>.
-   * Otherwise, the passed <code>Int</code> value is NOT $typeDesc$, so this
+   * Otherwise, the passed <code>Int</code> value is not $typeDesc$, so this
    * method will return a result of type <code>L</code> obtained by passing
    * the invalid <code>Int</code> value to the given function <code>f</code>,
    * wrapped in a `Left`.
@@ -762,6 +765,8 @@ object $typeName$ {
    *     <code>Double</code>.
    */
   implicit def widenToDouble(pos: $typeName$): Double = pos.value
+
+  $widensToOtherAnyVals$
 
   /**
    * Implicit Ordering instance.

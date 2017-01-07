@@ -25,6 +25,8 @@ import org.scalatest.prop.PropertyChecks
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
+import org.scalactic.{Good, Bad}
+import org.scalactic.{Pass, Fail}
 
 class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -63,7 +65,53 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NegativeInfinity)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NaN)
       }
-    } 
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosFloat wrapped in a Success if the passed PosFloat is greater than 0") {
+        PosFloat.tryingValid(50.3f).success.value.value shouldBe 50.3f
+        PosFloat.tryingValid(100.0f).success.value.value shouldBe 100.0f
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Float is NOT greater than 0") {
+        PosFloat.tryingValid(0.0f).failure.exception shouldBe an [AssertionError]
+        PosFloat.tryingValid(-1.0f).failure.exception shouldBe an [AssertionError]
+        PosFloat.tryingValid(-99.9f).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Float is greater than 0") {
+        PosFloat.passOrElse(50.0f)(i => i) shouldBe Pass
+        PosFloat.passOrElse(100.0f)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Fail") {
+        PosFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosFloat.passOrElse(-1.1f)(i => i) shouldBe Fail(-1.1f)
+        PosFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosFloat wrapped in a Good if the given Float is greater than 0") {
+        PosFloat.goodOrElse(50.3f)(i => i) shouldBe Good(PosFloat(50.3f))
+        PosFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosFloat(100.0f))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Bad") {
+        PosFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosFloat.goodOrElse(-1.1f)(i => i) shouldBe Bad(-1.1f)
+        PosFloat.goodOrElse(-99.0f)(i => i + 3.0f) shouldBe Bad(-96.0f)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosFloat wrapped in a Right if the given Float is greater than 0") {
+        PosFloat.rightOrElse(50.3f)(i => i) shouldBe Right(PosFloat(50.3f))
+        PosFloat.rightOrElse(100.0f)(i => i) shouldBe Right(PosFloat(100.0f))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Left") {
+        PosFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosFloat.rightOrElse(-1.1f)(i => i) shouldBe Left(-1.1f)
+        PosFloat.rightOrElse(-99.9f)(i => i + 3.0f) shouldBe Left(-96.9f)
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Float is greater than 0") {
         PosFloat.isValid(50.23f) shouldBe true
