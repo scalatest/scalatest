@@ -27,6 +27,8 @@ import OptionValues._
 import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
 
@@ -78,7 +80,53 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(Float.NegativeInfinity)
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(Float.NaN)
       }
-    } 
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosZFloat wrapped in a Success if the passed Float is greater than or equal 0") {
+        PosZFloat.tryingValid(0.0f).success.value.value shouldBe 0.0f
+        PosZFloat.tryingValid(50.0f).success.value.value shouldBe 50.0f
+        PosZFloat.tryingValid(100.0f).success.value.value shouldBe 100.0f
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Float is lesser than 0") {
+        PosZFloat.tryingValid(-1.0f).failure.exception shouldBe an [AssertionError]
+        PosZFloat.tryingValid(-99.0f).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Float is greater than or equal 0") {
+        PosZFloat.passOrElse(0.0f)(i => i) shouldBe Pass
+        PosZFloat.passOrElse(50.0f)(i => i) shouldBe Pass
+        PosZFloat.passOrElse(100.0f)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is lesser than 0, wrapped in a Fail") {
+        PosZFloat.passOrElse(-1.0f)(i => i) shouldBe Fail(-1.0f)
+        PosZFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosZFloat wrapped in a Good if the given Float is greater than or equal 0") {
+        PosZFloat.goodOrElse(0.0f)(i => i) shouldBe Good(PosZFloat(0.0f))
+        PosZFloat.goodOrElse(50.0f)(i => i) shouldBe Good(PosZFloat(50.0f))
+        PosZFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosZFloat(100.0f))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is lesser than 0, wrapped in a Bad") {
+        PosZFloat.goodOrElse(-1.0f)(i => i) shouldBe Bad(-1.0f)
+        PosZFloat.goodOrElse(-99.0f)(i => i + 3.0f) shouldBe Bad(-96.0f)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosZFloat wrapped in a Right if the given Float is greater than or equal 0") {
+        PosZFloat.rightOrElse(0.0f)(i => i) shouldBe Right(PosZFloat(0.0f))
+        PosZFloat.rightOrElse(50.0f)(i => i) shouldBe Right(PosZFloat(50.0f))
+        PosZFloat.rightOrElse(100.0f)(i => i) shouldBe Right(PosZFloat(100.0f))
+      }
+      it("returns an error value produced by passing the given Float to the given function if the passed Float is lesser than 0, wrapped in a Left") {
+        PosZFloat.rightOrElse(-1.0f)(i => i) shouldBe Left(-1.0f)
+        PosZFloat.rightOrElse(-99.0f)(i => i + 3.0f) shouldBe Left(-96.0f)
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Float is greater than or equal to 0") {
         PosZFloat.isValid(50.23f) shouldBe true
