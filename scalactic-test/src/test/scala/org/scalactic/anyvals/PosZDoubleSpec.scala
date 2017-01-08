@@ -29,6 +29,7 @@ import Double.NaN
 import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
+import scala.util.{Try, Success, Failure}
 
 trait PosZDoubleSpecSupport {
 
@@ -59,6 +60,22 @@ trait PosZDoubleSpecSupport {
           case _ => a == b
         }
     }
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
 
 }
 
@@ -260,138 +277,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       }
     }
 
-    it("should offer a unary + method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble) =>
-        (+pzdouble).toDouble shouldEqual (+(pzdouble.toDouble))
-      }
-    }
-
-    it("should offer a unary - method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble) =>
-        (-pzdouble) shouldEqual (-(pzdouble.toDouble))
-      }
-    }
-
-    it("should offer '<' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble < byte) shouldEqual (pzdouble.toDouble < byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble < short) shouldEqual (pzdouble.toDouble < short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble < char) shouldEqual (pzdouble.toDouble < char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble < int) shouldEqual (pzdouble.toDouble < int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble < long) shouldEqual (pzdouble.toDouble < long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble < float) shouldEqual (pzdouble.toDouble < float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble < double) shouldEqual (pzdouble.toDouble < double)
-      }
-    }
-
-    it("should offer '<=' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble <= byte) shouldEqual (pzdouble.toDouble <= byte)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble <= char) shouldEqual (pzdouble.toDouble <= char)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble <= short) shouldEqual (pzdouble.toDouble <= short)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble <= int) shouldEqual (pzdouble.toDouble <= int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble <= long) shouldEqual (pzdouble.toDouble <= long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble <= float) shouldEqual (pzdouble.toDouble <= float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble <= double) shouldEqual (pzdouble.toDouble <= double)
-      }
-    }
-
-    it("should offer '>' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble > byte) shouldEqual (pzdouble.toDouble > byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble > short) shouldEqual (pzdouble.toDouble > short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble > char) shouldEqual (pzdouble.toDouble > char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble > int) shouldEqual (pzdouble.toDouble > int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble > long) shouldEqual (pzdouble.toDouble > long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble > float) shouldEqual (pzdouble.toDouble > float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble > double) shouldEqual (pzdouble.toDouble > double)
-      }
-    }
-
-    it("should offer '>=' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble >= byte) shouldEqual (pzdouble.toDouble >= byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble >= short) shouldEqual (pzdouble.toDouble >= short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble >= char) shouldEqual (pzdouble.toDouble >= char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble >= int) shouldEqual (pzdouble.toDouble >= int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble >= long) shouldEqual (pzdouble.toDouble >= long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble >= float) shouldEqual (pzdouble.toDouble >= float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble >= double) shouldEqual (pzdouble.toDouble >= double)
-      }
-    }
-
-    it("should offer a '+' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble + byte) shouldEqual (pzdouble.toDouble + byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble + short) shouldEqual (pzdouble.toDouble + short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble + char) shouldEqual (pzdouble.toDouble + char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble + int) shouldEqual (pzdouble.toDouble + int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble + long) shouldEqual (pzdouble.toDouble + long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble + float) shouldEqual (pzdouble.toDouble + float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble + double) shouldEqual (pzdouble.toDouble + double)
-      }
-    }
-
     it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
@@ -480,132 +365,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.sumOf(posZDouble1, posZDouble2, posZDouble3) should === {
           PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDouble3.value)
         }
-      }
-    }
-
-    it("should offer a '-' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble - byte) shouldEqual (pzdouble.toDouble - byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble - short) shouldEqual (pzdouble.toDouble - short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble - char) shouldEqual (pzdouble.toDouble - char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble - int) shouldEqual (pzdouble.toDouble - int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble - long) shouldEqual (pzdouble.toDouble - long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble - float) shouldEqual (pzdouble.toDouble - float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble - double) shouldEqual (pzdouble.toDouble - double)
-      }
-    }
-
-    it("should offer a '*' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble * byte) shouldEqual (pzdouble.toDouble * byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble * short) shouldEqual (pzdouble.toDouble * short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble * char) shouldEqual (pzdouble.toDouble * char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble * int) shouldEqual (pzdouble.toDouble * int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble * long) shouldEqual (pzdouble.toDouble * long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble * float) shouldEqual (pzdouble.toDouble * float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble * double) shouldEqual (pzdouble.toDouble * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        pzdouble / byte shouldEqual pzdouble.toDouble / byte
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        pzdouble / short shouldEqual pzdouble.toDouble / short
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        pzdouble / char shouldEqual pzdouble.toDouble / char
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        pzdouble / int shouldEqual pzdouble.toDouble / int
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        pzdouble / long shouldEqual pzdouble.toDouble / long
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        pzdouble / float shouldEqual pzdouble.toDouble / float
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        pzdouble / double shouldEqual pzdouble.toDouble / double
-      }
-    }
-
-    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
-    // extra logic is needed to convert to a comparable type (boolean, in this case)
-    it("should offer a '%' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        val res = pzdouble % byte
-        if (res.isNaN)
-          (pzdouble.toDouble % byte).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % byte
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        val res = pzdouble % short
-        if (res.isNaN)
-          (pzdouble.toDouble % short).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % short
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        val res = pzdouble % char
-        if (res.isNaN)
-          (pzdouble.toDouble % char).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % char
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        val res = pzdouble % int
-        if (res.isNaN)
-          (pzdouble.toDouble % int).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % int
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        val res = pzdouble % long
-        if (res.isNaN)
-          (pzdouble.toDouble % long).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % long
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        val res = pzdouble % float
-        if (res.isNaN)
-          (pzdouble.toDouble % float).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % float
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        val res = pzdouble % double
-        if (res.isNaN)
-          (pzdouble.toDouble % double).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % double
       }
     }
 

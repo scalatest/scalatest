@@ -28,6 +28,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
+import org.scalactic.Equality
+
 trait NonZeroFloatSpecSupport {
 
   val nonZeroFloatGen: Gen[NonZeroFloat] =
@@ -40,6 +42,24 @@ trait NonZeroFloatSpecSupport {
 
   implicit val arbNonZeroFloat: Arbitrary[NonZeroFloat] = Arbitrary(nonZeroFloatGen)
 
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      // I needed this because with GenDrivenPropertyChecks, got:
+      // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
 }
 
 class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
