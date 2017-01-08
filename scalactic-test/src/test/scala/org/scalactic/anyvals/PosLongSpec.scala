@@ -26,7 +26,8 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
-
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -81,7 +82,53 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         an [AssertionError] should be thrownBy PosLong.ensuringValid(-1L)
         an [AssertionError] should be thrownBy PosLong.ensuringValid(-99L)
       }
-    } 
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosLong wrapped in a Success if the passed Long is greater than 0") {
+        PosLong.tryingValid(50L).success.value.value shouldBe 50L
+        PosLong.tryingValid(100L).success.value.value shouldBe 100L
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Long is NOT greater than 0") {
+        PosLong.tryingValid(0L).failure.exception shouldBe an [AssertionError]
+        PosLong.tryingValid(-1L).failure.exception shouldBe an [AssertionError]
+        PosLong.tryingValid(-99L).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Long is greater than 0") {
+        PosLong.passOrElse(50L)(i => i) shouldBe Pass
+        PosLong.passOrElse(100L)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Fail") {
+        PosLong.passOrElse(0L)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+        PosLong.passOrElse(-1L)(i => i) shouldBe Fail(-1L)
+        PosLong.passOrElse(-99L)(i => i + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosLong wrapped in a Good if the given Long is greater than 0") {
+        PosLong.goodOrElse(50L)(i => i) shouldBe Good(PosLong(50L))
+        PosLong.goodOrElse(100L)(i => i) shouldBe Good(PosLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Bad") {
+        PosLong.goodOrElse(0L)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
+        PosLong.goodOrElse(-1L)(i => i) shouldBe Bad(-1L)
+        PosLong.goodOrElse(-99L)(i => i + 3L) shouldBe Bad(-96L)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosLong wrapped in a Right if the given Long is greater than 0") {
+        PosLong.rightOrElse(50L)(i => i) shouldBe Right(PosLong(50L))
+        PosLong.rightOrElse(100L)(i => i) shouldBe Right(PosLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Left") {
+        PosLong.rightOrElse(0L)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
+        PosLong.rightOrElse(-1L)(i => i) shouldBe Left(-1L)
+        PosLong.rightOrElse(-99L)(i => i + 3L) shouldBe Left(-96L)
+      }
+    }
     describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is greater than 0") {
         PosLong.isValid(50L) shouldBe true
