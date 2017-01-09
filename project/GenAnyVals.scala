@@ -557,6 +557,24 @@ object GenAnyVals {
       lhsFun(pType) + " shouldEqual " + expectedValue
     }.mkString("\n")
 
+  def primitivesWidenPropertyTests(typeName: String, primitiveType: String, targetTypes: Seq[String]): String =
+    targetTypes.map { targetType =>
+      s"""forAll { (p: $typeName) =>
+         |  def widen(value: $targetType): $targetType = value
+         |  widen(p) shouldEqual widen(p.to$primitiveType)
+         |}
+       """.stripMargin
+    }.mkString("\n")
+
+  def anyvalsWidenPropertyTests(typeName: String, primitiveType: String, targetTypes: Seq[String]): String =
+    targetTypes.map { targetType =>
+      s"""forAll { (p: $typeName) =>
+         |  def widen(value: $targetType): $targetType = value
+         |  widen(p) shouldEqual widen($targetType.from(p.to$primitiveType).get)
+         |}
+       """.stripMargin
+    }.mkString("\n")
+
   def shouldNotCompileTests(types: Seq[String], lhsFun: String => String): String =
     types.map { t =>
       "\"" + lhsFun(t) + "\" shouldNot compile"
@@ -610,6 +628,10 @@ object GenAnyVals {
       anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
       shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Int") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
+    val autoWidenPropertyTests =
+      primitivesWidenPropertyTests(typeName, "Int", primitiveTypes.dropWhile(_ != "Int")) ++
+      anyvalsWidenPropertyTests(typeName, "Int", widensToTypes)
+
     val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
     val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
     val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
@@ -622,6 +644,7 @@ object GenAnyVals {
 
     st.setAttribute("typeName", typeName)
     st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
     st.setAttribute("additionTests", additionTests)
     st.setAttribute("minusTests", minusTests)
     st.setAttribute("multiplyTests", multiplyTests)
@@ -650,6 +673,10 @@ object GenAnyVals {
       anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
       shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Long") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
+    val autoWidenPropertyTests =
+      primitivesWidenPropertyTests(typeName, "Long", primitiveTypes.dropWhile(_ != "Long")) ++
+      anyvalsWidenPropertyTests(typeName, "Long", widensToTypes)
+
     val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
     val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
     val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
@@ -662,6 +689,7 @@ object GenAnyVals {
 
     st.setAttribute("typeName", typeName)
     st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
     st.setAttribute("additionTests", additionTests)
     st.setAttribute("minusTests", minusTests)
     st.setAttribute("multiplyTests", multiplyTests)
@@ -690,6 +718,10 @@ object GenAnyVals {
         anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
         shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Float") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")")
 
+    val autoWidenPropertyTests =
+      primitivesWidenPropertyTests(typeName, "Float", primitiveTypes.dropWhile(_ != "Float")) ++
+      anyvalsWidenPropertyTests(typeName, "Float", widensToTypes)
+
     val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
     val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
     val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
@@ -702,6 +734,7 @@ object GenAnyVals {
 
     st.setAttribute("typeName", typeName)
     st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
     st.setAttribute("additionTests", additionTests)
     st.setAttribute("minusTests", minusTests)
     st.setAttribute("multiplyTests", multiplyTests)
@@ -730,6 +763,10 @@ object GenAnyVals {
         anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
         shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Double") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")")
 
+    val autoWidenPropertyTests =
+      primitivesWidenPropertyTests(typeName, "Double", primitiveTypes.dropWhile(_ != "Double")) ++
+      anyvalsWidenPropertyTests(typeName, "Double", widensToTypes)
+
     val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
     val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
     val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
@@ -742,6 +779,7 @@ object GenAnyVals {
 
     st.setAttribute("typeName", typeName)
     st.setAttribute("autoWidenTests", autoWidenTests)
+    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
     st.setAttribute("additionTests", additionTests)
     st.setAttribute("minusTests", minusTests)
     st.setAttribute("multiplyTests", multiplyTests)

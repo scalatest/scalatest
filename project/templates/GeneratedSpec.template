@@ -274,6 +274,17 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
       }
     }
 
+    it("should offer 'min' and 'max' methods that are consistent with $primitiveType$") {
+      forAll { (p1: $typeName$, p2: $typeName$) =>
+        p1.max(p2).to$primitiveType$ shouldEqual p1.to$primitiveType$.max(p2.to$primitiveType$)
+        p1.min(p2).to$primitiveType$ shouldEqual p1.to$primitiveType$.min(p2.to$primitiveType$)
+      }
+    }
+
+    it("should offer widening methods for basic types that are consistent with $primitiveType$") {
+      $autoWidenPropertyTests$
+    }
+
   }
 
 }
