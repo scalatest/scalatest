@@ -31,7 +31,7 @@ import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 
-class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait PosDoubleSpecSupport {
 
   val posZDoubleGen: Gen[PosZDouble] =
     for {i <- choose(0, Double.MaxValue)} yield PosZDouble.ensuringValid(i)
@@ -45,6 +45,11 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
       case _: Success[_] => a == b
       case Failure(ex) => b match {
         case _: Success[_] => false
@@ -53,6 +58,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
   }
+
+}
+
+class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosDoubleSpecSupport {
 
   describe("A PosDouble") {
     describe("should offer a from factory method that") {
@@ -157,98 +166,12 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
     it("should offer a PositiveInfinity factory method") {
       PosDouble.PositiveInfinity shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosDouble.from(42.0).value.toString shouldBe "PosDouble(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosDouble.from(42.0).value.toString shouldBe "PosDouble(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +PosDouble(3.0) shouldEqual PosDouble(3.0)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      "PosDouble(3.0): Int" shouldNot typeCheck
-      "PosDouble(3.0): Long" shouldNot typeCheck
-      "PosDouble(3.0): Float" shouldNot typeCheck
-      (PosDouble(3.0): Double) shouldEqual 3.0
-
-      "PosDouble(3.0): PosInt" shouldNot typeCheck
-      "PosDouble(3.0): PosLong" shouldNot typeCheck
-      "PosDouble(3.0): PosFloat" shouldNot typeCheck
-      (PosDouble(3.0): PosDouble) shouldEqual PosDouble(3.0F)
-
-      "PosDouble(3.0): PosZInt" shouldNot typeCheck
-      "PosDouble(3.0): PosZLong" shouldNot typeCheck
-      "PosDouble(3.0): PosZFloat" shouldNot typeCheck
-      (PosDouble(3.0): PosZDouble) shouldEqual PosZDouble(3.0)
-
-      "PosDouble(3.0): NonZeroInt" shouldNot typeCheck
-      "PosDouble(3.0): NonZeroLong" shouldNot typeCheck
-      "PosDouble(3.0): NonZeroFloat" shouldNot typeCheck
-      (PosDouble(3.0): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
-    }
 
     it("should be sortable") {
       val xs = List(PosDouble(2.2), PosDouble(4.4), PosDouble(1.1),
                     PosDouble(3.3))
       xs.sorted shouldEqual List(PosDouble(1.1), PosDouble(2.2), PosDouble(3.3),
                                  PosDouble(4.4))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosDouble(3.0) + 3
-        opInt shouldEqual 6.0
-
-        val opLong = PosDouble(3.0) + 3L
-        opLong shouldEqual 6.0
-
-        val opFloat = PosDouble(3.0) + 3.0F
-        opFloat shouldEqual 6.0
-
-        val opDouble = PosDouble(3.0) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosDouble(3.0) + PosInt(3)
-        opPosInt shouldEqual 6.0
-
-        val opPosLong = PosDouble(3.0) + PosLong(3L)
-        opPosLong shouldEqual 6.0
-
-        val opPosFloat = PosDouble(3.0) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0
-
-        val opPosDouble = PosDouble(3.0) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosDouble(3.0) + PosZInt(3)
-        opPosZ shouldEqual 6.0
-
-        val opPosZLong = PosDouble(3.0) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0
-
-        val opPosZFloat = PosDouble(3.0) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0
-
-        val opPosZDouble = PosDouble(3.0) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a *NonZero
-        val opNonZeroInt = PosDouble(3.0) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6.0
-
-        val opNonZeroLong = PosDouble(3.0) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6.0
-
-        val opNonZeroFloat = PosDouble(3.0) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0
-
-        val opNonZeroDouble = PosDouble(3.0) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -329,138 +252,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
 
-    it("should offer a unary + method that is consistent with Double") {
-      forAll { (pdouble: PosDouble) =>
-        (+pdouble).toDouble shouldEqual (+(pdouble.toDouble))
-      }
-    }
-
-    it("should offer a unary - method that is consistent with Double") {
-      forAll { (pdouble: PosDouble) =>
-        (-pdouble) shouldEqual (-(pdouble.toDouble))
-      }
-    }
-
-    it("should offer '<' comparison that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble < byte) shouldEqual (pdouble.toDouble < byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble < short) shouldEqual (pdouble.toDouble < short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble < char) shouldEqual (pdouble.toDouble < char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble < int) shouldEqual (pdouble.toDouble < int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble < long) shouldEqual (pdouble.toDouble < long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble < float) shouldEqual (pdouble.toDouble < float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble < double) shouldEqual (pdouble.toDouble < double)
-      }
-    }
-
-    it("should offer '<=' comparison that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble <= byte) shouldEqual (pdouble.toDouble <= byte)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble <= char) shouldEqual (pdouble.toDouble <= char)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble <= short) shouldEqual (pdouble.toDouble <= short)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble <= int) shouldEqual (pdouble.toDouble <= int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble <= long) shouldEqual (pdouble.toDouble <= long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble <= float) shouldEqual (pdouble.toDouble <= float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble <= double) shouldEqual (pdouble.toDouble <= double)
-      }
-    }
-
-    it("should offer '>' comparison that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble > byte) shouldEqual (pdouble.toDouble > byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble > short) shouldEqual (pdouble.toDouble > short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble > char) shouldEqual (pdouble.toDouble > char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble > int) shouldEqual (pdouble.toDouble > int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble > long) shouldEqual (pdouble.toDouble > long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble > float) shouldEqual (pdouble.toDouble > float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble > double) shouldEqual (pdouble.toDouble > double)
-      }
-    }
-
-    it("should offer '>=' comparison that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble >= byte) shouldEqual (pdouble.toDouble >= byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble >= short) shouldEqual (pdouble.toDouble >= short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble >= char) shouldEqual (pdouble.toDouble >= char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble >= int) shouldEqual (pdouble.toDouble >= int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble >= long) shouldEqual (pdouble.toDouble >= long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble >= float) shouldEqual (pdouble.toDouble >= float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble >= double) shouldEqual (pdouble.toDouble >= double)
-      }
-    }
-
-    it("should offer a '+' method that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble + byte) shouldEqual (pdouble.toDouble + byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble + short) shouldEqual (pdouble.toDouble + short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble + char) shouldEqual (pdouble.toDouble + char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble + int) shouldEqual (pdouble.toDouble + int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble + long) shouldEqual (pdouble.toDouble + long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble + float) shouldEqual (pdouble.toDouble + float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble + double) shouldEqual (pdouble.toDouble + double)
-      }
-    }
-
     it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
@@ -538,132 +329,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
             PosDouble.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
           }
         }
-      }
-    }
-
-    it("should offer a '-' method that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble - byte) shouldEqual (pdouble.toDouble - byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble - short) shouldEqual (pdouble.toDouble - short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble - char) shouldEqual (pdouble.toDouble - char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble - int) shouldEqual (pdouble.toDouble - int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble - long) shouldEqual (pdouble.toDouble - long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble - float) shouldEqual (pdouble.toDouble - float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble - double) shouldEqual (pdouble.toDouble - double)
-      }
-    }
-
-    it("should offer a '*' method that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        (pdouble * byte) shouldEqual (pdouble.toDouble * byte)
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        (pdouble * short) shouldEqual (pdouble.toDouble * short)
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        (pdouble * char) shouldEqual (pdouble.toDouble * char)
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        (pdouble * int) shouldEqual (pdouble.toDouble * int)
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        (pdouble * long) shouldEqual (pdouble.toDouble * long)
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        (pdouble * float) shouldEqual (pdouble.toDouble * float)
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        (pdouble * double) shouldEqual (pdouble.toDouble * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        pdouble / byte shouldEqual pdouble.toDouble / byte
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        pdouble / short shouldEqual pdouble.toDouble / short
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        pdouble / char shouldEqual pdouble.toDouble / char
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        pdouble / int shouldEqual pdouble.toDouble / int
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        pdouble / long shouldEqual pdouble.toDouble / long
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        pdouble / float shouldEqual pdouble.toDouble / float
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        pdouble / double shouldEqual pdouble.toDouble / double
-      }
-    }
-
-    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
-    // extra logic is needed to convert to a comparable type (boolean, in this case)
-    it("should offer a '%' method that is consistent with Double") {
-      forAll { (pdouble: PosDouble, byte: Byte) =>
-        val res = pdouble % byte
-        if (res.isNaN)
-          (pdouble.toDouble % byte).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % byte
-      }
-      forAll { (pdouble: PosDouble, short: Short) =>
-        val res = pdouble % short
-        if (res.isNaN)
-          (pdouble.toDouble % short).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % short
-      }
-      forAll { (pdouble: PosDouble, char: Char) =>
-        val res = pdouble % char
-        if (res.isNaN)
-          (pdouble.toDouble % char).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % char
-      }
-      forAll { (pdouble: PosDouble, int: Int) =>
-        val res = pdouble % int
-        if (res.isNaN)
-          (pdouble.toDouble % int).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % int
-      }
-      forAll { (pdouble: PosDouble, long: Long) =>
-        val res = pdouble % long
-        if (res.isNaN)
-          (pdouble.toDouble % long).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % long
-      }
-      forAll { (pdouble: PosDouble, float: Float) =>
-        val res = pdouble % float
-        if (res.isNaN)
-          (pdouble.toDouble % float).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % float
-      }
-      forAll { (pdouble: PosDouble, double: Double) =>
-        val res = pdouble % double
-        if (res.isNaN)
-          (pdouble.toDouble % double).isNaN shouldBe true
-        else
-          res shouldEqual pdouble.toDouble % double
       }
     }
 
