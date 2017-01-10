@@ -506,9 +506,9 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", posWidens("Long")) :::
     genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PostFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
-      round("Pos", "Float") +
+      round("PosZ", "Float") +
       ceil("Pos", "Float") +
-      floor("Pos", "Float") +
+      floor("PosZ", "Float") +
       plus("Pos", "Float", "positive", "PosZ", "non-negative"),
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float") +
@@ -516,9 +516,9 @@ object GenAnyVals {
       posWidens("Float")) :::
     genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("Pos", "Double") +
+      round("PosZ", "Double") +
       ceil("Pos", "Double") +
-      floor("Pos", "Double") +
+      floor("PosZ", "Double") +
       plus("Pos", "Double", "positive", "PosZ", "non-negative"),
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double") +
