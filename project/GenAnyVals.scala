@@ -292,9 +292,19 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p)
   }
 
+  def negZWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegZ" + p)
+  }
+
   def posWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Pos" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p)
+  }
+
+  def negWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Neg" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NegZ" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p)
   }
 
@@ -502,7 +512,7 @@ object GenAnyVals {
       "Int.MaxValue", "2147483647", posWidens("Int")) :::
     genLongAnyVal(dir, "PosLong", "positive", "Note: a <code>PosLong</code> may not equal 0. If you want positive number or 0, use [[PosZLong]].", "i > 0L", "PosLong(42L)", "PosLong(0L)", "42L", "0L", "1L", "1L",
       "Long.MaxValue", "9223372036854775807", posWidens("Long")) :::
-    genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PostFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
+    genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PosFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float") +
       ceil("Pos", "Float") +
@@ -521,7 +531,49 @@ object GenAnyVals {
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double") +
       sumOf("Pos", "Double", "positive", "PosZ", "non-negative"),
-      posWidens("Double"))
+      posWidens("Double")) :::
+    genIntAnyVal(dir, "NegInt", "negative", "Note: a <code>NegInt</code> may not equal 0. If you want negative number or 0, use [[NegZInt]].", "i < 0", "NegInt(-42)", "NegInt(0)", "-42", "0", "Int.MinValue", "-2147483648", "-1", "-1",
+      negWidens("Int")) :::
+    genLongAnyVal(dir, "NegLong", "negative", "Note: a <code>NegLong</code> may not equal 0. If you want negative number or 0, use [[NegZLong]].", "i < 0L", "NegLong(-42L)", "NegLong(0L)", "-42L", "0L", "Long.MinValue", "-9223372036854775808", "-1L", "-1L",
+      negWidens("Long")) :::
+    genFloatAnyVal(dir, "NegFloat", "megative", "Note: a <code>NegFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFloat]].", "i < 0.0f", "NegFloat(-42.1f)", "NegFloat(0.0f)", "-42.1f", "0.0f", "Float.MinValue", "-3.4028235E38",
+      "-Float.MinPositiveValue", "-1.4E-45",
+      round("NegZ", "Float") +
+      ceil("NegZ", "Float") +
+      floor("Neg", "Float") +
+      plus("Neg", "Float", "negative", "NegZ", "non-positive"),
+      negativeInfinity("Neg", "Float") +
+      sumOf("Neg", "Float", "negative", "NegZ", "non-positive"),
+      negWidens("Float")) :::
+    genDoubleAnyVal(dir, "NegDouble", "negative", "", "i < 0.0", "NegDouble(-1.1)", "NegDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308",
+      "-Double.MinPositiveValue", "-4.9E-324",
+      round("NegZ", "Double") +
+      ceil("NegZ", "Double") +
+      floor("Neg", "Double") +
+      plus("Neg", "Double", "negative", "NegZ", "non-positive"),
+      negativeInfinity("Neg", "Double") +
+      sumOf("Neg", "Double", "negative", "NegZ", "non-positive"),
+      negWidens("Double")) :::
+    genIntAnyVal(dir, "NegZInt", "non-positive", "", "i <= 0", "NegZInt(-42)", "NegZInt(1)", "-42", "1", "Int.MinValue", "-2147483648",
+      "0", "0", negZWidens("Int")) :::
+    genLongAnyVal(dir, "NegZLong", "non-positive", "", "i <= 0L", "NegZLong(-42L)", "NegZLong(-1L)", "-42", "1", "Long.MinValue", "-9223372036854775808",
+      "0L", "0L", negZWidens("Long")) :::
+    genFloatAnyVal(dir, "NegZFloat", "non-positive", "", "i <= 0.0f", "NegZFloat(-1.1f)", "NegZFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
+      round("NegZ", "Float") +
+      ceil("NegZ", "Float") +
+      floor("NegZ", "Float") +
+      plus("NegZ", "Float", "non-positive"),
+      negativeInfinity("NegZ", "Float") +
+      sumOf("NegZ", "Float", "non-positive"),
+      negZWidens("Float")) :::
+    genDoubleAnyVal(dir, "NegZDouble", "non-positive", "", "i <= 0.0", "NegZDouble(-1.1)", "NegZDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
+      round("NegZ", "Double") +
+      ceil("NegZ", "Double") +
+      floor("NegZ", "Double") +
+      plus("NegZ", "Double", "non-positive"),
+      negativeInfinity("NegZ", "Double") +
+      sumOf("NegZ", "Double", "non-positive"),
+      negZWidens("Double"))
   }
 
   def valueFormat(value: String, typeName: String): String =
@@ -694,7 +746,7 @@ object GenAnyVals {
     st.setAttribute("minusTests", minusTests)
     st.setAttribute("multiplyTests", multiplyTests)
     st.setAttribute("divideTests", divideTests)
-    st.setAttribute("modulusTests", modulusTests)
+    st.setAttribute("NegmodulusTests", modulusTests)
     st.setAttribute("formattedValidValue", validValue.toString + "L")
     st.setAttribute("validValue", validValue.toString)
     st.setAttribute("primitiveType", "Long")
@@ -813,7 +865,8 @@ object GenAnyVals {
     genFloatAnyValTests(dir, "NonZeroFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, nonZeroWidens("Float")) ++
     genDoubleAnyValTests(dir, "PosDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posWidens("Double")) ++
     genDoubleAnyValTests(dir, "PosZDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posZWidens("Double")) ++
-    genDoubleAnyValTests(dir, "NonZeroDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, nonZeroWidens("Double"))
+    genDoubleAnyValTests(dir, "NonZeroDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, nonZeroWidens("Double"))/* ++
+    genIntAnyValTests(dir, "NegInt", -3, -3, -2, 2, 3, 3, negWidens("Int"))*/
   }
 
 }
