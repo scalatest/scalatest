@@ -149,7 +149,7 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   /**
    * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = "$typeName$(" + value + ")"
+  override def toString: String = "$typeName$(" + value + "f)"
 
   /**
    * Converts this <code>$typeName$</code> to a <code>Byte</code>.
