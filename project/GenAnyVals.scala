@@ -658,199 +658,6 @@ object GenAnyVals {
       t1
   }
 
-  def anyValsOperatorShouldEqualTests(typeName: String, rhsTypes: Seq[String], validValue: String, operator: String, modifyValue: String, resultValue: String): String =
-    (rhsTypes map { rhsType =>
-      val widerValue = pickWiderType(typeName, rhsType)
-      val lhsValue = valueFormat(validValue, typeName)
-      val expectedValue = valueFormat(resultValue, widerValue)
-      val modifyValueLiteral = valueFormat(modifyValue, rhsType)
-      s"$typeName($lhsValue) $operator $rhsType($modifyValueLiteral) shouldEqual $expectedValue"
-    }).mkString("\n")
-
-  def operatorShouldEqualTests(typeName: String, lhsValue: String, operator: String, rhsValue: String, resultValue: String): String =
-    primitivesShouldEqualTests(typeName, primitiveTypes, pType => typeName + "(" + valueFormat(lhsValue, typeName) + ") " + operator + " " + valueFormat(rhsValue.toString, pType), resultValue.toString) + "\n" +
-    anyValsOperatorShouldEqualTests(typeName, allAnyValTypes, lhsValue.toString, operator, rhsValue.toString, resultValue.toString)
-
-  def genIntAnyValTests(targetDir: File, typeName: String, validValue: Int, addValue: Int, minusValue: Int, multiplyValue: Int, divideValue: Int, modulusValue: Int, widensToTypes: Seq[String]): List[File] = {
-    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
-
-    val autoWidenTests =
-      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Int"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
-      anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-      shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Int") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
-
-    val autoWidenPropertyTests =
-      primitivesWidenPropertyTests(typeName, "Int", primitiveTypes.dropWhile(_ != "Int")) ++
-      anyvalsWidenPropertyTests(typeName, "Int", widensToTypes)
-
-    val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
-    val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
-    val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
-    val divideTests = operatorShouldEqualTests(typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
-    val modulusTests = operatorShouldEqualTests(typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
-
-    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
-    val templateText = try templateSource.mkString finally templateSource.close()
-    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
-
-    st.setAttribute("typeName", typeName)
-    st.setAttribute("autoWidenTests", autoWidenTests)
-    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
-    st.setAttribute("additionTests", additionTests)
-    st.setAttribute("minusTests", minusTests)
-    st.setAttribute("multiplyTests", multiplyTests)
-    st.setAttribute("divideTests", divideTests)
-    st.setAttribute("modulusTests", modulusTests)
-    st.setAttribute("formattedValidValue", validValue.toString)
-    st.setAttribute("validValue", validValue.toString)
-    st.setAttribute("primitiveType", "Int")
-
-    bw.write(
-      st.toString
-    )
-
-    bw.flush()
-    bw.close()
-    println("Generated: " + targetFile.getAbsolutePath)
-    List(targetFile)
-  }
-
-  def genLongAnyValTests(targetDir: File, typeName: String, validValue: Long, addValue: Long, minusValue: Long, multiplyValue: Long, divideValue: Long, modulusValue: Long, widensToTypes: Seq[String]): List[File] = {
-    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
-
-    val autoWidenTests =
-      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Long"), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
-      anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-      shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Long") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
-
-    val autoWidenPropertyTests =
-      primitivesWidenPropertyTests(typeName, "Long", primitiveTypes.dropWhile(_ != "Long")) ++
-      anyvalsWidenPropertyTests(typeName, "Long", widensToTypes)
-
-    val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
-    val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
-    val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
-    val divideTests = operatorShouldEqualTests(typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
-    val modulusTests = operatorShouldEqualTests(typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
-
-    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
-    val templateText = try templateSource.mkString finally templateSource.close()
-    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
-
-    st.setAttribute("typeName", typeName)
-    st.setAttribute("autoWidenTests", autoWidenTests)
-    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
-    st.setAttribute("additionTests", additionTests)
-    st.setAttribute("minusTests", minusTests)
-    st.setAttribute("multiplyTests", multiplyTests)
-    st.setAttribute("divideTests", divideTests)
-    st.setAttribute("NegmodulusTests", modulusTests)
-    st.setAttribute("formattedValidValue", validValue.toString + "L")
-    st.setAttribute("validValue", validValue.toString)
-    st.setAttribute("primitiveType", "Long")
-
-    bw.write(
-      st.toString
-    )
-
-    bw.flush()
-    bw.close()
-    println("Generated: " + targetFile.getAbsolutePath)
-    List(targetFile)
-  }
-
-  def genFloatAnyValTests(targetDir: File, typeName: String, validValue: Float, addValue: Float, minusValue: Float, multiplyValue: Float, divideValue: Float, modulusValue: Float, widensToTypes: Seq[String]): List[File] = {
-    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
-
-    val autoWidenTests =
-      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Float"), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")", validValue.toString) + "\n" +
-        anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-        shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Float") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")")
-
-    val autoWidenPropertyTests =
-      primitivesWidenPropertyTests(typeName, "Float", primitiveTypes.dropWhile(_ != "Float")) ++
-      anyvalsWidenPropertyTests(typeName, "Float", widensToTypes)
-
-    val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
-    val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
-    val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
-    val divideTests = operatorShouldEqualTests(typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
-    val modulusTests = operatorShouldEqualTests(typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
-
-    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
-    val templateText = try templateSource.mkString finally templateSource.close()
-    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
-
-    st.setAttribute("typeName", typeName)
-    st.setAttribute("autoWidenTests", autoWidenTests)
-    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
-    st.setAttribute("additionTests", additionTests)
-    st.setAttribute("minusTests", minusTests)
-    st.setAttribute("multiplyTests", multiplyTests)
-    st.setAttribute("divideTests", divideTests)
-    st.setAttribute("modulusTests", modulusTests)
-    st.setAttribute("formattedValidValue", validValue.toString + "f")
-    st.setAttribute("validValue", validValue.toString)
-    st.setAttribute("primitiveType", "Float")
-
-    bw.write(
-      st.toString
-    )
-
-    bw.flush()
-    bw.close()
-    println("Generated: " + targetFile.getAbsolutePath)
-    List(targetFile)
-  }
-
-  def genDoubleAnyValTests(targetDir: File, typeName: String, validValue: Double, addValue: Double, minusValue: Double, multiplyValue: Double, divideValue: Double, modulusValue: Double, widensToTypes: Seq[String]): List[File] = {
-    val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
-
-    val autoWidenTests =
-      primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != "Double"), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")", validValue.toString) + "\n" +
-        anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-        shouldNotCompileTests(primitiveTypes.takeWhile(_ != "Double") ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "f): " + pType + ")")
-
-    val autoWidenPropertyTests =
-      primitivesWidenPropertyTests(typeName, "Double", primitiveTypes.dropWhile(_ != "Double")) ++
-      anyvalsWidenPropertyTests(typeName, "Double", widensToTypes)
-
-    val additionTests = operatorShouldEqualTests(typeName, validValue.toString, "+", addValue.toString, (validValue + addValue).toString)
-    val minusTests = operatorShouldEqualTests(typeName, validValue.toString, "-", minusValue.toString, (validValue - minusValue).toString)
-    val multiplyTests = operatorShouldEqualTests(typeName, validValue.toString, "*", multiplyValue.toString, (validValue * multiplyValue).toString)
-    val divideTests = operatorShouldEqualTests(typeName, validValue.toString, "/", divideValue.toString, (validValue / divideValue).toString)
-    val modulusTests = operatorShouldEqualTests(typeName, validValue.toString, "%", modulusValue.toString, (validValue % modulusValue).toString)
-
-    val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
-    val templateText = try templateSource.mkString finally templateSource.close()
-    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
-
-    st.setAttribute("typeName", typeName)
-    st.setAttribute("autoWidenTests", autoWidenTests)
-    st.setAttribute("autoWidenPropertyTests", autoWidenPropertyTests)
-    st.setAttribute("additionTests", additionTests)
-    st.setAttribute("minusTests", minusTests)
-    st.setAttribute("multiplyTests", multiplyTests)
-    st.setAttribute("divideTests", divideTests)
-    st.setAttribute("modulusTests", modulusTests)
-    st.setAttribute("formattedValidValue", validValue.toString)
-    st.setAttribute("validValue", validValue.toString)
-    st.setAttribute("primitiveType", "Double")
-
-    bw.write(
-      st.toString
-    )
-
-    bw.flush()
-    bw.close()
-    println("Generated: " + targetFile.getAbsolutePath)
-    List(targetFile)
-  }
-
   val typeOperatorValues =
     List(
       ("PosZ", (3, 2, 2, 3, 3)),
@@ -874,15 +681,6 @@ object GenAnyVals {
       case None => throw new IllegalArgumentException("Cannot find modifyValue for " + typeName + ", operator: " + operator)
     }
 
-  def anyValsOperatorShouldEqualTests2(typeName: String, rhsTypes: Seq[String], validValue: String, operator: String, modifyValue: String, resultValue: String): String =
-    (rhsTypes map { rhsType =>
-      val widerValue = pickWiderType(typeName, rhsType)
-      val lhsValue = valueFormat(validValue, typeName)
-      val expectedValue = valueFormat(resultValue, widerValue)
-      val modifyValueLiteral = valueFormat(modifyValue, rhsType)
-      s"$typeName($lhsValue) $operator $rhsType($modifyValueLiteral) shouldEqual $expectedValue"
-    }).mkString("\n")
-
   def getResultValue(lhsValue: Int, operator: String, rhsValue: Int): Int =
     operator match {
       case "+" => lhsValue + rhsValue
@@ -892,7 +690,7 @@ object GenAnyVals {
       case "%" => lhsValue % rhsValue
     }
 
-  def operatorShouldEqualTests2(typeName: String, primitiveType: String, lhsValue: Int, operator: String/*, rhsValue: String, resultValue: String*/): String = {
+  def operatorShouldEqualTests(typeName: String, primitiveType: String, lhsValue: Int, operator: String): String = {
     val primitiveModifyValue = getModifyValue(typeName, operator)
     primitiveTypes.map { pType =>
       val widerType = pickWiderType(typeName, pType)
@@ -918,11 +716,11 @@ object GenAnyVals {
       primitivesWidenPropertyTests(typeName, primitiveType, primitiveTypes.dropWhile(_ != primitiveType)) ++
       anyvalsWidenPropertyTests(typeName, primitiveType, widensToTypes)
 
-    val additionTests = operatorShouldEqualTests2(typeName, primitiveType, validValue, "+")
-    val minusTests = operatorShouldEqualTests2(typeName, primitiveType, validValue, "-")
-    val multiplyTests = operatorShouldEqualTests2(typeName, primitiveType, validValue, "*")
-    val divideTests = operatorShouldEqualTests2(typeName, primitiveType, validValue, "/")
-    val modulusTests = operatorShouldEqualTests2(typeName, primitiveType, validValue, "%")
+    val additionTests = operatorShouldEqualTests(typeName, primitiveType, validValue, "+")
+    val minusTests = operatorShouldEqualTests(typeName, primitiveType, validValue, "-")
+    val multiplyTests = operatorShouldEqualTests(typeName, primitiveType, validValue, "*")
+    val divideTests = operatorShouldEqualTests(typeName, primitiveType, validValue, "/")
+    val modulusTests = operatorShouldEqualTests(typeName, primitiveType, validValue, "%")
 
     val templateSource = scala.io.Source.fromFile("project/templates/GeneratedSpec.template")
     val templateText = try templateSource.mkString finally templateSource.close()
@@ -952,19 +750,18 @@ object GenAnyVals {
 
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-
-    genIntAnyValTests(dir, "PosInt", 3, 3, 2, 2, 3, 3, posWidens("Int")) ++
-    genIntAnyValTests(dir, "PosZInt", 3, 3, 2, 2, 3, 3, posZWidens("Int")) ++
-    genIntAnyValTests(dir, "NonZeroInt", 3, 3, 2, 2, 3, 3, nonZeroWidens("Int")) ++
-    genLongAnyValTests(dir, "PosLong", 3L, 3L, 2L, 2L, 3L, 3L, posWidens("Long")) ++
-    genLongAnyValTests(dir, "PosZLong", 3L, 3L, 2L, 2L, 3L, 3L, posZWidens("Long")) ++
-    genLongAnyValTests(dir, "NonZeroLong", 3L, 3L, 2L, 2L, 3L, 3L, nonZeroWidens("Long")) ++
-    genFloatAnyValTests(dir, "PosFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, posWidens("Float")) ++
-    genFloatAnyValTests(dir, "PosZFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, posZWidens("Float")) ++
-    genFloatAnyValTests(dir, "NonZeroFloat", 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, nonZeroWidens("Float")) ++
-    genDoubleAnyValTests(dir, "PosDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posWidens("Double")) ++
-    genDoubleAnyValTests(dir, "PosZDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, posZWidens("Double")) ++
-    genDoubleAnyValTests(dir, "NonZeroDouble", 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, nonZeroWidens("Double")) ++
+    genAnyValTests(dir, "PosInt", "Int", 3, posWidens("Int")) ++
+    genAnyValTests(dir, "PosLong", "Long", 3, posWidens("Long")) ++
+    genAnyValTests(dir, "PosFloat", "Float", 3, posWidens("Float")) ++
+    genAnyValTests(dir, "PosDouble", "Double", 3, posWidens("Double")) ++
+    genAnyValTests(dir, "PosZInt", "Int", 3, posZWidens("Int")) ++
+    genAnyValTests(dir, "PosZLong", "Long", 3, posZWidens("Long")) ++
+    genAnyValTests(dir, "PosZFloat", "Float", 3, posZWidens("Float")) ++
+    genAnyValTests(dir, "PosZDouble", "Double", 3, posZWidens("Double")) ++
+    genAnyValTests(dir, "NonZeroInt", "Int", 3, nonZeroWidens("Int")) ++
+    genAnyValTests(dir, "NonZeroLong", "Long", 3, nonZeroWidens("Long")) ++
+    genAnyValTests(dir, "NonZeroFloat", "Float", 3, nonZeroWidens("Float")) ++
+    genAnyValTests(dir, "NonZeroDouble", "Double", 3, nonZeroWidens("Double")) ++
     genAnyValTests(dir, "NegInt", "Int", -3, negWidens("Int")) ++
     genAnyValTests(dir, "NegLong", "Long", -3, negWidens("Long")) ++
     genAnyValTests(dir, "NegFloat", "Float", -3, negWidens("Float")) ++
