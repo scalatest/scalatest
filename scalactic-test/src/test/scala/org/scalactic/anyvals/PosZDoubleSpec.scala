@@ -183,6 +183,16 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
     it("should offer a PositiveInfinity factory method") {
       PosZDouble.PositiveInfinity shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
     }
+    it("should not offer a PositiveInfinity factory method") {
+      "PosZDouble.NegativeInfinity" shouldNot compile
+    }
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      PosZDouble.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
+      PosZDouble(1.0f).isPosInfinity shouldBe false
+    }
+    it("should not offer a isNegInfinity method") {
+      "PosZDouble(1.0f).isNegInfinity" shouldNot compile
+    }
 
     it("should be sortable") {
       val xs = List(PosZDouble(2.2), PosZDouble(0.0), PosZDouble(1.1),
