@@ -33,7 +33,7 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
     }
 
     it("should have a pretty toString") {
-      $typeName$.from($formattedValidValue$).value.toString shouldBe "$typeName$($validValue$)"
+      $typeName$.from($formattedValidValue$).value.toString shouldBe "$typeName$($formattedValidValue$)"
     }
 
     it("should return the same type from its unary_+ method") {

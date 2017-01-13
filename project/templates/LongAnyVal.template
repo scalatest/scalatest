@@ -145,7 +145,7 @@ final class $typeName$ private (val value: Long) extends AnyVal {
   /**
    * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = "$typeName$(" + value + ")"
+  override def toString: String = "$typeName$(" + value + "L)"
 
   /**
    * Converts this <code>$typeName$</code> to a <code>Byte</code>.

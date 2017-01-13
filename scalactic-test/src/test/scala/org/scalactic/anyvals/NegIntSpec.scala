@@ -26,12 +26,12 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
-trait PosIntSpecSupport {
+trait NegIntSpecSupport {
 
-  val posIntGen: Gen[PosInt] =
-    for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
+  val negIntGen: Gen[NegInt] =
+    for {i <- choose(Int.MinValue, -1)} yield NegInt.from(i).get
 
-  implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
+  implicit val arbNegInt: Arbitrary[NegInt] = Arbitrary(negIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -42,7 +42,7 @@ trait PosIntSpecSupport {
         }
       // I needed this because with GenDrivenPropertyChecks, got:
       // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
-      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      // [info]   Success(NaN) did not equal Success(NaN) (NegIntExperiment.scala:498)
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
@@ -59,269 +59,269 @@ trait PosIntSpecSupport {
 
 }
 
-class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
+class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegIntSpecSupport {
 
-  describe("A PosInt") {
+  describe("A NegInt") {
 
     describe("should offer a from factory method that") {
-      it("returns Some[PosInt] if the passed Int is greater than 0") {
-        PosInt.from(50).value.value shouldBe 50
-        PosInt.from(100).value.value shouldBe 100
+      it("returns Some[NegInt] if the passed Int is lesser than 0") {
+        NegInt.from(-50).value.value shouldBe -50
+        NegInt.from(-100).value.value shouldBe -100
       }
 
-      it("returns None if the passed Int is NOT greater than 0") {
-        PosInt.from(0) shouldBe None
-        PosInt.from(-1) shouldBe None
-        PosInt.from(-99) shouldBe None
+      it("returns None if the passed Int is NOT lesser than 0") {
+        NegInt.from(0) shouldBe None
+        NegInt.from(1) shouldBe None
+        NegInt.from(99) shouldBe None
       }
     }
     describe("should offer an ensuringValid factory method that") {
-      it("returns PosInt if the passed Int is greater than 0") {
-        PosInt.ensuringValid(50).value shouldBe 50
-        PosInt.ensuringValid(100).value shouldBe 100
+      it("returns NegInt if the passed Int is lesser than 0") {
+        NegInt.ensuringValid(-50).value shouldBe -50
+        NegInt.ensuringValid(-100).value shouldBe -100
       }
 
-      it("throws AssertionError if the passed Int is NOT greater than 0") {
-        an [AssertionError] should be thrownBy PosInt.ensuringValid(0)
-        an [AssertionError] should be thrownBy PosInt.ensuringValid(-1)
-        an [AssertionError] should be thrownBy PosInt.ensuringValid(-99)
+      it("throws AssertionError if the passed Int is NOT lesser than 0") {
+        an [AssertionError] should be thrownBy NegInt.ensuringValid(0)
+        an [AssertionError] should be thrownBy NegInt.ensuringValid(1)
+        an [AssertionError] should be thrownBy NegInt.ensuringValid(99)
       }
     }
     describe("should offer a tryingValid factory method that") {
       import TryValues._
-      it("returns a PosInt wrapped in a Success if the passed Int is greater than 0") {
-        PosInt.tryingValid(50).success.value.value shouldBe 50
-        PosInt.tryingValid(100).success.value.value shouldBe 100
+      it("returns a NegInt wrapped in a Success if the passed Int is lesser than 0") {
+        NegInt.tryingValid(-50).success.value.value shouldBe -50
+        NegInt.tryingValid(-100).success.value.value shouldBe -100
       }
 
-      it("returns an AssertionError wrapped in a Failure if the passed Int is NOT greater than 0") {
-        PosInt.tryingValid(0).failure.exception shouldBe an [AssertionError]
-        PosInt.tryingValid(-1).failure.exception shouldBe an [AssertionError]
-        PosInt.tryingValid(-99).failure.exception shouldBe an [AssertionError]
+      it("returns an AssertionError wrapped in a Failure if the passed Int is NOT lesser than 0") {
+        NegInt.tryingValid(0).failure.exception shouldBe an [AssertionError]
+        NegInt.tryingValid(1).failure.exception shouldBe an [AssertionError]
+        NegInt.tryingValid(99).failure.exception shouldBe an [AssertionError]
       }
     }
     describe("should offer a passOrElse factory method that") {
-      it("returns a Pass if the given Int is greater than 0") {
-        PosInt.passOrElse(50)(i => i) shouldBe Pass
-        PosInt.passOrElse(100)(i => i) shouldBe Pass
+      it("returns a Pass if the given Int is lesser than 0") {
+        NegInt.passOrElse(-50)(i => i) shouldBe Pass
+        NegInt.passOrElse(-100)(i => i) shouldBe Pass
       }
-      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0, wrapped in a Fail") {
-        PosInt.passOrElse(0)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
-        PosInt.passOrElse(-1)(i => i) shouldBe Fail(-1)
-        PosInt.passOrElse(-99)(i => i.toLong + 3L) shouldBe Fail(-96L)
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT lesser than 0, wrapped in a Fail") {
+        NegInt.passOrElse(0)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+        NegInt.passOrElse(1)(i => i) shouldBe Fail(1)
+        NegInt.passOrElse(99)(i => i.toLong + 3L) shouldBe Fail(102L)
       }
     }
     describe("should offer a goodOrElse factory method that") {
-      it("returns a PosInt wrapped in a Good if the given Int is greater than 0") {
-        PosInt.goodOrElse(50)(i => i) shouldBe Good(PosInt(50))
-        PosInt.goodOrElse(100)(i => i) shouldBe Good(PosInt(100))
+      it("returns a NegInt wrapped in a Good if the given Int is lesser than 0") {
+        NegInt.goodOrElse(-50)(i => i) shouldBe Good(NegInt(-50))
+        NegInt.goodOrElse(-100)(i => i) shouldBe Good(NegInt(-100))
       }
-      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0, wrapped in a Bad") {
-        PosInt.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
-        PosInt.goodOrElse(-1)(i => i) shouldBe Bad(-1)
-        PosInt.goodOrElse(-99)(i => i.toLong + 3L) shouldBe Bad(-96L)
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT lesser than 0, wrapped in a Bad") {
+        NegInt.goodOrElse(0)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
+        NegInt.goodOrElse(1)(i => i) shouldBe Bad(1)
+        NegInt.goodOrElse(99)(i => i.toLong + 3L) shouldBe Bad(102L)
       }
     }
     describe("should offer a rightOrElse factory method that") {
-      it("returns a PosInt wrapped in a Right if the given Int is greater than 0") {
-        PosInt.rightOrElse(50)(i => i) shouldBe Right(PosInt(50))
-        PosInt.rightOrElse(100)(i => i) shouldBe Right(PosInt(100))
+      it("returns a NegInt wrapped in a Right if the given Int is lesser than 0") {
+        NegInt.rightOrElse(-50)(i => i) shouldBe Right(NegInt(-50))
+        NegInt.rightOrElse(-100)(i => i) shouldBe Right(NegInt(-100))
       }
-      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT greater than 0, wrapped in a Left") {
-        PosInt.rightOrElse(0)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
-        PosInt.rightOrElse(-1)(i => i) shouldBe Left(-1)
-        PosInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is NOT lesser than 0, wrapped in a Left") {
+        NegInt.rightOrElse(0)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
+        NegInt.rightOrElse(1)(i => i) shouldBe Left(1)
+        NegInt.rightOrElse(99)(i => i.toLong + 3L) shouldBe Left(102L)
       }
     }
     describe("should offer an isValid predicate method that") {
-      it("returns true if the passed Int is greater than 0") {
-        PosInt.isValid(50) shouldBe true
-        PosInt.isValid(100) shouldBe true
-        PosInt.isValid(0) shouldBe false
-        PosInt.isValid(-0) shouldBe false
-        PosInt.isValid(-1) shouldBe false
-        PosInt.isValid(-99) shouldBe false
+      it("returns true if the passed Int is lesser than 0") {
+        NegInt.isValid(-50) shouldBe true
+        NegInt.isValid(-100) shouldBe true
+        NegInt.isValid(0) shouldBe false
+        NegInt.isValid(-0) shouldBe false
+        NegInt.isValid(1) shouldBe false
+        NegInt.isValid(99) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
-      it("returns a PosInt if the passed Int is greater than 0") {
-        PosInt.fromOrElse(50, PosInt(42)).value shouldBe 50
-        PosInt.fromOrElse(100, PosInt(42)).value shouldBe 100
+      it("returns a NegInt if the passed Int is lesser than 0") {
+        NegInt.fromOrElse(-50, NegInt(-42)).value shouldBe -50
+        NegInt.fromOrElse(-100, NegInt(-42)).value shouldBe -100
       }
-      it("returns a given default if the passed Int is NOT greater than 0") {
-        PosInt.fromOrElse(0, PosInt(42)).value shouldBe 42
-        PosInt.fromOrElse(-1, PosInt(42)).value shouldBe 42
-        PosInt.fromOrElse(-99, PosInt(42)).value shouldBe 42
+      it("returns a given default if the passed Int is NOT lesser than 0") {
+        NegInt.fromOrElse(0, NegInt(-42)).value shouldBe -42
+        NegInt.fromOrElse(1, NegInt(-42)).value shouldBe -42
+        NegInt.fromOrElse(99, NegInt(-42)).value shouldBe -42
       }
-    } 
+    }
     it("should offer MaxValue and MinValue factory methods") {
-      PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
-      PosInt.MinValue shouldEqual PosInt(1)
+      NegInt.MaxValue shouldEqual NegInt.from(-1).get
+      NegInt.MinValue shouldEqual NegInt(Int.MinValue)
     }
 
     it("should be sortable") {
-      val xs = List(PosInt(2), PosInt(4), PosInt(1), PosInt(3))
-      xs.sorted shouldEqual List(PosInt(1), PosInt(2), PosInt(3), PosInt(4))
+      val xs = List(NegInt(-2), NegInt(-4), NegInt(-1), NegInt(-3))
+      xs.sorted shouldEqual List(NegInt(-4), NegInt(-3), NegInt(-2), NegInt(-1))
     }
 
     describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
-        "PosInt(8)" should compile
-        PosInt(8).value shouldEqual 8
+        "NegInt(-8)" should compile
+        NegInt(-8).value shouldEqual -8
       }
 
       it("should not compile when 0 is passed in") {
-        "PosInt(0)" shouldNot compile
+        "NegInt(0)" shouldNot compile
       }
 
       it("should not compile when -8 is passed in") {
-        "PosInt(-8)" shouldNot compile
+        "NegInt(8)" shouldNot compile
       }
 
       it("should not compile when x is passed in") {
         val x: Int = -8
-        "PosInt(x)" shouldNot compile
+        "NegInt(x)" shouldNot compile
       }
     }
 
     describe("when specified as a plain-old Int") {
 
-      def takesPosInt(pos: PosInt): Int = pos.value
+      def takesNegInt(pos: NegInt): Int = pos.value
 
-      it("should compile when 8 is passed in") {
-        "takesPosInt(8)" should compile
-        takesPosInt(8) shouldEqual 8
+      it("should compile when -8 is passed in") {
+        "takesNegInt(-8)" should compile
+        takesNegInt(-8) shouldEqual -8
       }
 
       it("should not compile when 0 is passed in") {
-        "takesPosInt(0)" shouldNot compile
+        "takesNegInt(0)" shouldNot compile
       }
 
-      it("should not compile when -8 is passed in") {
-        "takesPosInt(-8)" shouldNot compile
+      it("should not compile when 8 is passed in") {
+        "takesNegInt(8)" shouldNot compile
       }
 
       it("should not compile when x is passed in") {
         val x: Int = -8
-        "takesPosInt(x)" shouldNot compile
+        "takesNegInt(x)" shouldNot compile
       }
     }
 
     it("should offer a unary ~ method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
+      forAll { (pint: NegInt) =>
         (~pint) shouldEqual (~(pint.toInt))
       }
     }
 
     it("should offer << methods that are consistent with Int") {
-      forAll { (pint: PosInt, shift: Int) =>
+      forAll { (pint: NegInt, shift: Int) =>
         pint << shift shouldEqual pint.toInt << shift
       }
-      forAll { (pint: PosInt, shift: Long) =>
+      forAll { (pint: NegInt, shift: Long) =>
         pint << shift shouldEqual pint.toInt << shift
       }
     }
 
     it("should offer >>> methods that are consistent with Int") {
-      forAll { (pint: PosInt, shift: Int) =>
+      forAll { (pint: NegInt, shift: Int) =>
         pint >>> shift shouldEqual pint.toInt >>> shift
       }
-      forAll { (pint: PosInt, shift: Long) =>
+      forAll { (pint: NegInt, shift: Long) =>
         pint >>> shift shouldEqual pint.toInt >>> shift
       }
     }
 
     it("should offer >> methods that are consistent with Int") {
-      forAll { (pint: PosInt, shift: Int) =>
+      forAll { (pint: NegInt, shift: Int) =>
         pint >> shift shouldEqual pint.toInt >> shift
       }
-      forAll { (pint: PosInt, shift: Long) =>
+      forAll { (pint: NegInt, shift: Long) =>
         pint >> shift shouldEqual pint.toInt >> shift
       }
     }
 
     it("should offer a '|' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
+      forAll { (pint: NegInt, byte: Byte) =>
         (pint | byte) shouldEqual (pint.toInt | byte)
       }
-      forAll { (pint: PosInt, short: Short) =>
+      forAll { (pint: NegInt, short: Short) =>
         (pint | short) shouldEqual (pint.toInt | short)
       }
-      forAll { (pint: PosInt, char: Char) =>
+      forAll { (pint: NegInt, char: Char) =>
         (pint | char) shouldEqual (pint.toInt | char)
       }
-      forAll { (pint: PosInt, int: Int) =>
+      forAll { (pint: NegInt, int: Int) =>
         (pint | int) shouldEqual (pint.toInt | int)
       }
-      forAll { (pint: PosInt, long: Long) =>
+      forAll { (pint: NegInt, long: Long) =>
         (pint | long) shouldEqual (pint.toInt | long)
       }
     }
 
     it("should offer an '&' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
+      forAll { (pint: NegInt, byte: Byte) =>
         (pint & byte) shouldEqual (pint.toInt & byte)
       }
-      forAll { (pint: PosInt, short: Short) =>
+      forAll { (pint: NegInt, short: Short) =>
         (pint & short) shouldEqual (pint.toInt & short)
       }
-      forAll { (pint: PosInt, char: Char) =>
+      forAll { (pint: NegInt, char: Char) =>
         (pint & char) shouldEqual (pint.toInt & char)
       }
-      forAll { (pint: PosInt, int: Int) =>
+      forAll { (pint: NegInt, int: Int) =>
         (pint & int) shouldEqual (pint.toInt & int)
       }
-      forAll { (pint: PosInt, long: Long) =>
+      forAll { (pint: NegInt, long: Long) =>
         (pint & long) shouldEqual (pint.toInt & long)
       }
     }
 
     it("should offer an '^' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
+      forAll { (pint: NegInt, byte: Byte) =>
         (pint ^ byte) shouldEqual (pint.toInt ^ byte)
       }
-      forAll { (pint: PosInt, char: Char) =>
+      forAll { (pint: NegInt, char: Char) =>
         (pint ^ char) shouldEqual (pint.toInt ^ char)
       }
-      forAll { (pint: PosInt, short: Short) =>
+      forAll { (pint: NegInt, short: Short) =>
         (pint ^ short) shouldEqual (pint.toInt ^ short)
       }
-      forAll { (pint: PosInt, int: Int) =>
+      forAll { (pint: NegInt, int: Int) =>
         (pint ^ int) shouldEqual (pint.toInt ^ int)
       }
-      forAll { (pint: PosInt, long: Long) =>
+      forAll { (pint: NegInt, long: Long) =>
         (pint ^ long) shouldEqual (pint.toInt ^ long)
       }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Int") {
-      forAll { (pint1: PosInt, pint2: PosInt) =>
+      forAll { (pint1: NegInt, pint2: NegInt) =>
         pint1.max(pint2).toInt shouldEqual pint1.toInt.max(pint2.toInt)
         pint1.min(pint2).toInt shouldEqual pint1.toInt.min(pint2.toInt)
       }
     }
 
     it("should offer a 'toBinaryString' method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
+      forAll { (pint: NegInt) =>
         pint.toBinaryString shouldEqual pint.toInt.toBinaryString
       }
     }
 
     it("should offer a 'toHexString' method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
+      forAll { (pint: NegInt) =>
         pint.toHexString shouldEqual pint.toInt.toHexString
       }
     }
 
     it("should offer a 'toOctalString' method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
+      forAll { (pint: NegInt) =>
         pint.toOctalString shouldEqual pint.toInt.toOctalString
       }
     }
 
     it("should offer 'to' and 'until' methods that are consistent with Int") {
-      forAll { (pint: PosInt, end: Int, step: Int) =>
+      forAll { (pint: NegInt, end: Int, step: Int) =>
         Try(pint.to(end)) shouldEqual Try(pint.toInt.to(end))
         Try(pint.to(end, step)) shouldEqual Try(pint.toInt.to(end, step))
         Try(pint.until(end)) shouldEqual Try(pint.toInt.until(end))
@@ -330,9 +330,8 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
     }
 
     it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
-      PosInt(33).ensuringValid(_ + 1) shouldEqual PosInt(34)
-      an [AssertionError] should be thrownBy { PosInt.MaxValue.ensuringValid(_ + 1) }
+      NegInt(-33).ensuringValid(_ + 1) shouldEqual NegInt(-32)
+      an [AssertionError] should be thrownBy { NegInt(-1).ensuringValid(_ + 1) }
     }
   }
 }
-
