@@ -114,8 +114,28 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextPosDouble: (PosDouble, Randomizer) = {
     val (d, r) = nextDouble
     val candidate = d.abs // 0.0 or greater
-    val pos = if (candidate <= 1.0) candidate else candidate + 1.0
+    val pos = if (candidate <= 1.0) candidate else candidate + 1.0 // TODO: Is this correct? If so, document why, because it looks wrong to me.
     (PosDouble.ensuringValid(pos), r)
+  }
+  def nextNonZeroDouble: (NonZeroDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val nonZero = if (d == 0.0 || d == -0.0) Double.MinPositiveValue else d
+    (NonZeroDouble.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroFloat: (NonZeroFloat, Randomizer) = {
+    val (f, r) = nextFloat
+    val nonZero = if (f == 0.0F || f == -0.0F) Float.MinPositiveValue else f
+    (NonZeroFloat.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroInt: (NonZeroInt, Randomizer) = {
+    val (i, r) = nextInt
+    val nonZero = if (i == 0) 1 else i
+    (NonZeroInt.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroLong: (NonZeroLong, Randomizer) = {
+    val (i, r) = nextLong
+    val nonZero = if (i == 0) 1 else i
+    (NonZeroLong.ensuringValid(nonZero), r)
   }
   def nextPosZDouble: (PosZDouble, Randomizer) = {
     val (d, r) = nextDouble

@@ -29,7 +29,9 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with ScalaCheckGenerators {
+import org.scalactic.Equality
+
+trait NonZeroFloatSpecSupport {
 
   val nonZeroFloatGen: Gen[NonZeroFloat] =
     for {i <- choose(Float.MinValue, Float.MaxValue)} yield {
@@ -40,6 +42,33 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
     }
 
   implicit val arbNonZeroFloat: Arbitrary[NonZeroFloat] = Arbitrary(nonZeroFloatGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      // I needed this because with GenDrivenPropertyChecks, got:
+      // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(double: Double) if double.isNaN =>  
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+}
+
+class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
 
   describe("A NonZeroFloat") {
     describe("should offer a from factory method that") {
@@ -159,96 +188,12 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
     it("should offer a MinPositiveValue factory method") {
       NonZeroFloat.MinPositiveValue shouldEqual NonZeroFloat.ensuringValid(Float.MinPositiveValue)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      NonZeroFloat.from(42.0F).value.toString shouldBe "NonZeroFloat(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY NonZeroFloat.from(42.0F).value.toString shouldBe "NonZeroFloat(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +NonZeroFloat(3.0F) shouldEqual NonZeroFloat(3.0F)
-    }
-    it("should be automatically widened to compatible AnyVal targets") {
-      "NonZeroFloat(3.0F): Int" shouldNot typeCheck
-      "NonZeroFloat(3.0F): Long" shouldNot typeCheck
-      (NonZeroFloat(3.0F): Float) shouldEqual 3.0F
-      (NonZeroFloat(3.0F): Double) shouldEqual 3.0
-
-      "NonZeroFloat(3.0F): PosInt" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosLong" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosFloat" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosDouble" shouldNot typeCheck
-
-      "NonZeroFloat(3.0F): PosZInt" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosZLong" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosZFloat" shouldNot typeCheck
-      "NonZeroFloat(3.0F): PosZDouble" shouldNot typeCheck
-
-      "NonZeroFloat(3.0F): NonZeroZInt" shouldNot typeCheck
-      "NonZeroFloat(3.0F): NonZeroZLong" shouldNot typeCheck
-    }
 
     it("should be sortable") {
       val xs = List(NonZeroFloat(2.2F), NonZeroFloat(4.4F), NonZeroFloat(1.1F),
         NonZeroFloat(3.3F))
       xs.sorted shouldEqual List(NonZeroFloat(1.1F), NonZeroFloat(2.2F), NonZeroFloat(3.3F),
         NonZeroFloat(4.4F))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = NonZeroFloat(3.0F) + 3
-        opInt shouldEqual 6.0F
-
-        val opLong = NonZeroFloat(3.0F) + 3L
-        opLong shouldEqual 6.0F
-
-        val opFloat = NonZeroFloat(3.0F) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = NonZeroFloat(3.0F) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = NonZeroFloat(3.0F) + PosInt(3)
-        opPosInt shouldEqual 6.0F
-
-        val opPosLong = NonZeroFloat(3.0F) + PosLong(3L)
-        opPosLong shouldEqual 6.0F
-
-        val opPosFloat = NonZeroFloat(3.0F) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = NonZeroFloat(3.0F) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = NonZeroFloat(3.0F) + PosZInt(3)
-        opPosZ shouldEqual 6.0F
-
-        val opPosZLong = NonZeroFloat(3.0F) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0F
-
-        val opPosZFloat = NonZeroFloat(3.0F) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = NonZeroFloat(3.0F) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a NonZero*
-        val opNonZeroInt = NonZeroFloat(3.0F) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6
-
-        val opNonZeroLong = NonZeroFloat(3.0F) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6L
-
-        val opNonZeroFloat = NonZeroFloat(3.0F) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        /*val opNonZeroDouble = NonZeroFloat(3.0F) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0*/
-      }
     }
 
     describe("when created with apply method") {

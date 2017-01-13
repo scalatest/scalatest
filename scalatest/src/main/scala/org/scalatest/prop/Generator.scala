@@ -588,6 +588,86 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[PosZDouble]"
     }
 
+  implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
+    new Generator[NonZeroDouble] {
+      private val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroDouble], rnd: Randomizer): (NonZeroDouble, List[NonZeroDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroDouble, nextRnd) = rnd.nextNonZeroDouble
+            (nonZeroDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroDouble]"
+    }
+
+  implicit val nonZeroFloatGenerator: Generator[NonZeroFloat] =
+    new Generator[NonZeroFloat] {
+      private val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroFloat], rnd: Randomizer): (NonZeroFloat, List[NonZeroFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroFloat, nextRnd) = rnd.nextNonZeroFloat
+            (nonZeroFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroFloat]"
+    }
+
+  implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
+    new Generator[NonZeroInt] {
+      private val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroInt], rnd: Randomizer): (NonZeroInt, List[NonZeroInt], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroInt, nextRnd) = rnd.nextNonZeroInt
+            (nonZeroInt, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroInt]"
+    }
+
+  implicit val nonZeroLongGenerator: Generator[NonZeroLong] =
+    new Generator[NonZeroLong] {
+      private val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
+        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroLong], rnd: Randomizer): (NonZeroLong, List[NonZeroLong], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroLong, nextRnd) = rnd.nextNonZeroLong
+            (nonZeroLong, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroLong]"
+    }
+
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   implicit val stringGenerator: Generator[String] =
     new Generator[String] {

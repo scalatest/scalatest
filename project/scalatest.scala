@@ -397,7 +397,10 @@ object ScalatestBuild extends Build {
       libraryDependencies += scalacheckDependency("test"),
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      sourceGenerators in Test += Def.task {
+        GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))

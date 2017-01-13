@@ -30,7 +30,7 @@ import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with ScalaCheckGenerators {
+trait NonZeroLongSpecSupport {
 
   val nonZeroLongGen: Gen[NonZeroLong] =
     for {i <- choose(Long.MinValue, Long.MaxValue)} yield {
@@ -65,6 +65,10 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       }
     }
   }
+
+}
+
+class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
 
   describe("A NonZeroLong") {
     describe("should offer a from factory method that") {
@@ -158,6 +162,7 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       it("returns a NonZeroLong if the passed Long is greater than 0") {
         NonZeroLong.fromOrElse(50L, NonZeroLong(42L)).value shouldBe 50L
         NonZeroLong.fromOrElse(100L, NonZeroLong(42L)).value shouldBe 100L
+
       }
       it("returns a NonZeroLong if the passed Long is lesser than 0") {
         NonZeroLong.fromOrElse(-1L, NonZeroLong(42L)).value shouldBe -1L
@@ -171,88 +176,10 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       NonZeroLong.MaxValue shouldEqual NonZeroLong.from(Long.MaxValue).get
       NonZeroLong.MinValue shouldEqual NonZeroLong.from(Long.MinValue).get
     }
-    it("should have a pretty toString") {
-      NonZeroLong.from(42L).value.toString shouldBe "NonZeroLong(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +NonZeroLong(3L) shouldEqual NonZeroLong(3L)
-    }
-    it("should be automatically widened to compatible AnyVal targets") {
-      "NonZeroLong(3L): Int" shouldNot typeCheck
-      (NonZeroLong(3L): Long) shouldEqual 3L
-      (NonZeroLong(3L): Float) shouldEqual 3.0F
-      (NonZeroLong(3L): Double) shouldEqual 3.0
-
-      "NonZeroLong(3L): PosInt" shouldNot typeCheck
-      "NonZeroLong(3L): PosLong" shouldNot typeCheck
-      "NonZeroLong(3L): PosFloat" shouldNot typeCheck
-      "NonZeroLong(3L): PosDouble" shouldNot typeCheck
-
-      "NonZeroLong(3L): PosZInt" shouldNot typeCheck
-      "NonZeroLong(3L): PosZLong" shouldNot typeCheck
-      "NonZeroLong(3L): PosZFloat" shouldNot typeCheck
-      "NonZeroLong(3L): PosZLong" shouldNot typeCheck
-    }
 
     it("should be sortable") {
       val xs = List(NonZeroLong(2), NonZeroLong(4), NonZeroLong(1), NonZeroLong(3))
       xs.sorted shouldEqual List(NonZeroLong(1), NonZeroLong(2), NonZeroLong(3), NonZeroLong(4))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = NonZeroLong(3L) + 3
-        opInt shouldEqual 6L
-
-        val opLong = NonZeroLong(3L) + 3L
-        opLong shouldEqual 6L
-
-        val opFloat = NonZeroLong(3L) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = NonZeroLong(3L) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = NonZeroLong(3L) + PosInt(3)
-        opPosInt shouldEqual 6L
-
-        val opPosLong = NonZeroLong(3L) + PosLong(3L)
-        opPosLong shouldEqual 6L
-
-        val opPosFloat = NonZeroLong(3L) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = NonZeroLong(3L) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = NonZeroLong(3L) + PosZInt(3)
-        opPosZ shouldEqual 6L
-
-        val opPosZLong = NonZeroLong(3L) + PosZLong(3L)
-        opPosZLong shouldEqual 6L
-
-        val opPosZFloat = NonZeroLong(3L) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = NonZeroLong(3L) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a NonZero*
-        val opNonZeroInt = NonZeroLong(3L) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6
-
-        val opNonZeroLong = NonZeroLong(3L) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6L
-
-        /*val opNonZeroFloat = NonZeroLong(3L) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        val opNonZeroDouble = NonZeroLong(3L) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0*/
-      }
     }
 
     describe("when created with apply method") {
@@ -317,18 +244,6 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
 
-      it("should offer a unary + method that is consistent with Long") {
-        forAll { (plong: NonZeroLong) =>
-          (+plong).toLong shouldEqual (+(plong.toLong))
-        }
-      }
-
-      it("should offer a unary - method that is consistent with Long") {
-        forAll { (plong: NonZeroLong) =>
-          (-plong) shouldEqual (-(plong.toLong))
-        }
-      }
-
       it("should offer << methods that are consistent with Long") {
         forAll { (plong: NonZeroLong, shift: Int) =>
           plong << shift shouldEqual plong.toLong << shift
@@ -353,102 +268,6 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
         forAll { (plong: NonZeroLong, shift: Long) =>
           plong >> shift shouldEqual plong.toLong >> shift
-        }
-      }
-
-      it("should offer '<' comparison that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong < byte) shouldEqual (plong.toLong < byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong < short) shouldEqual (plong.toLong < short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong < char) shouldEqual (plong.toLong < char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong < int) shouldEqual (plong.toLong < int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong < long) shouldEqual (plong.toLong < long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong < float) shouldEqual (plong.toLong < float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong < double) shouldEqual (plong.toLong < double)
-        }
-      }
-
-      it("should offer '<=' comparison that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong <= byte) shouldEqual (plong.toLong <= byte)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong <= char) shouldEqual (plong.toLong <= char)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong <= short) shouldEqual (plong.toLong <= short)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong <= int) shouldEqual (plong.toLong <= int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong <= long) shouldEqual (plong.toLong <= long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong <= float) shouldEqual (plong.toLong <= float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong <= double) shouldEqual (plong.toLong <= double)
-        }
-      }
-
-      it("should offer '>' comparison that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong > byte) shouldEqual (plong.toLong > byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong > short) shouldEqual (plong.toLong > short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong > char) shouldEqual (plong.toLong > char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong > int) shouldEqual (plong.toLong > int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong > long) shouldEqual (plong.toLong > long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong > float) shouldEqual (plong.toLong > float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong > double) shouldEqual (plong.toLong > double)
-        }
-      }
-
-      it("should offer '>=' comparison that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong >= byte) shouldEqual (plong.toLong >= byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong >= short) shouldEqual (plong.toLong >= short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong >= char) shouldEqual (plong.toLong >= char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong >= int) shouldEqual (plong.toLong >= int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong >= long) shouldEqual (plong.toLong >= long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong >= float) shouldEqual (plong.toLong >= float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong >= double) shouldEqual (plong.toLong >= double)
         }
       }
 
@@ -503,126 +322,6 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
         forAll { (plong: NonZeroLong, long: Long) =>
           (plong ^ long) shouldEqual (plong.toLong ^ long)
-        }
-      }
-
-      it("should offer a '+' method that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong + byte) shouldEqual (plong.toLong + byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong + short) shouldEqual (plong.toLong + short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong + char) shouldEqual (plong.toLong + char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong + int) shouldEqual (plong.toLong + int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong + long) shouldEqual (plong.toLong + long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong + float) shouldEqual (plong.toLong + float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong + double) shouldEqual (plong.toLong + double)
-        }
-      }
-
-      it("should offer a '-' method that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong - byte) shouldEqual (plong.toLong - byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong - short) shouldEqual (plong.toLong - short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong - char) shouldEqual (plong.toLong - char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong - int) shouldEqual (plong.toLong - int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong - long) shouldEqual (plong.toLong - long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong - float) shouldEqual (plong.toLong - float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong - double) shouldEqual (plong.toLong - double)
-        }
-      }
-
-      it("should offer a '*' method that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          (plong * byte) shouldEqual (plong.toLong * byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          (plong * short) shouldEqual (plong.toLong * short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          (plong * char) shouldEqual (plong.toLong * char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          (plong * int) shouldEqual (plong.toLong * int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          (plong * long) shouldEqual (plong.toLong * long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          (plong * float) shouldEqual (plong.toLong * float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          (plong * double) shouldEqual (plong.toLong * double)
-        }
-      }
-
-      it("should offer a '/' method that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          Try(plong / byte) shouldEqual Try(plong.toLong / byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          Try(plong / short) shouldEqual Try(plong.toLong / short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          Try(plong / char) shouldEqual Try(plong.toLong / char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          Try(plong / int) shouldEqual Try(plong.toLong / int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          Try(plong / long) shouldEqual Try(plong.toLong / long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          Try(plong / float) shouldEqual Try(plong.toLong / float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          Try(plong / double) shouldEqual Try(plong.toLong / double)
-        }
-      }
-
-      it("should offer a '%' method that is consistent with Long") {
-        forAll { (plong: NonZeroLong, byte: Byte) =>
-          Try(plong % byte) shouldEqual Try(plong.toLong % byte)
-        }
-        forAll { (plong: NonZeroLong, short: Short) =>
-          Try(plong % short) shouldEqual Try(plong.toLong % short)
-        }
-        forAll { (plong: NonZeroLong, char: Char) =>
-          Try(plong % char) shouldEqual Try(plong.toLong % char)
-        }
-        forAll { (plong: NonZeroLong, int: Int) =>
-          Try(plong % int) shouldEqual Try(plong.toLong % int)
-        }
-        forAll { (plong: NonZeroLong, long: Long) =>
-          Try(plong % long) shouldEqual Try(plong.toLong % long)
-        }
-        forAll { (plong: NonZeroLong, float: Float) =>
-          Try(plong % float) shouldEqual Try(plong.toLong % float)
-        }
-        forAll { (plong: NonZeroLong, double: Double) =>
-          Try(plong % double) shouldEqual Try(plong.toLong % double)
         }
       }
 

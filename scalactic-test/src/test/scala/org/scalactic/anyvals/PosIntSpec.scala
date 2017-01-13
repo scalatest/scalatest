@@ -26,7 +26,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
-class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosIntSpecSupport {
 
   val posIntGen: Gen[PosInt] =
     for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
@@ -56,6 +56,10 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
     }
   }
+
+}
+
+class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
 
   describe("A PosInt") {
 
@@ -154,95 +158,10 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
       PosInt.MinValue shouldEqual PosInt(1)
     }
-    it("should have a pretty toString") {
-      PosInt.from(42).value.toString shouldBe "PosInt(42)"
-    }
-
-    it("should return the same type from its unary_+ method") {
-      +PosInt(3) shouldEqual PosInt(3)
-    }
-
-    it("should be automatically widened to compatible AnyVal targets") {
-      (PosInt(3): Int) shouldEqual 3
-      (PosInt(3): Long) shouldEqual 3L
-      (PosInt(3): Float) shouldEqual 3.0F
-      (PosInt(3): Double) shouldEqual 3.0
-
-      (PosInt(3): PosInt) shouldEqual PosInt(3)
-      (PosInt(3): PosLong) shouldEqual PosLong(3L)
-      (PosInt(3): PosFloat) shouldEqual PosFloat(3.0F)
-      (PosInt(3): PosDouble) shouldEqual PosDouble(3.0)
-
-      (PosInt(3): PosZInt) shouldEqual PosZInt(3)
-      (PosInt(3): PosZLong) shouldEqual PosZLong(3L)
-      (PosInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
-
-      (PosInt(3): NonZeroInt) shouldEqual NonZeroInt(3)
-      (PosInt(3): NonZeroLong) shouldEqual NonZeroLong(3L)
-      (PosInt(3): NonZeroFloat) shouldEqual NonZeroFloat(3.0F)
-      (PosInt(3): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
-    }
 
     it("should be sortable") {
       val xs = List(PosInt(2), PosInt(4), PosInt(1), PosInt(3))
       xs.sorted shouldEqual List(PosInt(1), PosInt(2), PosInt(3), PosInt(4))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosInt(3) + 3
-        opInt shouldEqual 6
-
-        val opLong = PosInt(3) + 3L
-        opLong shouldEqual 6L
-
-        val opFloat = PosInt(3) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosInt(3) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosInt(3) + PosInt(3)
-        opPosInt shouldEqual 6
-
-        val opPosLong = PosInt(3) + PosLong(3L)
-        opPosLong shouldEqual 6L
-
-        val opPosFloat = PosInt(3) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = PosInt(3) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosInt(3) + PosZInt(3)
-        opPosZ shouldEqual 6
-
-        val opPosZLong = PosInt(3) + PosZLong(3L)
-        opPosZLong shouldEqual 6L
-
-        val opPosZFloat = PosInt(3) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = PosInt(3) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a *NonZero
-        val opNonZeroInt = PosInt(3) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6
-
-        val opNonZeroLong = PosInt(3) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6L
-
-        val opNonZeroFloat = PosInt(3) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        val opNonZeroDouble = PosInt(3) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -295,18 +214,6 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
     }
 
-    it("should offer a unary + method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
-        (+pint).toInt shouldEqual (+(pint.toInt))
-      }
-    }
-
-    it("should offer a unary - method that is consistent with Int") {
-      forAll { (pint: PosInt) =>
-        (-pint) shouldEqual (-(pint.toInt))
-      }
-    }
-
     it("should offer << methods that are consistent with Int") {
       forAll { (pint: PosInt, shift: Int) =>
         pint << shift shouldEqual pint.toInt << shift
@@ -331,102 +238,6 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
       forAll { (pint: PosInt, shift: Long) =>
         pint >> shift shouldEqual pint.toInt >> shift
-      }
-    }
-
-    it("should offer '<' comparison that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint < byte) shouldEqual (pint.toInt < byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint < short) shouldEqual (pint.toInt < short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        (pint < char) shouldEqual (pint.toInt < char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint < int) shouldEqual (pint.toInt < int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint < long) shouldEqual (pint.toInt < long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint < float) shouldEqual (pint.toInt < float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint < double) shouldEqual (pint.toInt < double)
-      }
-    }
-
-    it("should offer '<=' comparison that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint <= byte) shouldEqual (pint.toInt <= byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint <= short) shouldEqual (pint.toInt <= short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        (pint <= char) shouldEqual (pint.toInt <= char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint <= int) shouldEqual (pint.toInt <= int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint <= long) shouldEqual (pint.toInt <= long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint <= float) shouldEqual (pint.toInt <= float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint <= double) shouldEqual (pint.toInt <= double)
-      }
-    }
-
-    it("should offer '>' comparison that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint > byte) shouldEqual (pint.toInt > byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint > short) shouldEqual (pint.toInt > short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        (pint > char) shouldEqual (pint.toInt > char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint > int) shouldEqual (pint.toInt > int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint > long) shouldEqual (pint.toInt > long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint > float) shouldEqual (pint.toInt > float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint > double) shouldEqual (pint.toInt > double)
-      }
-    }
-
-    it("should offer '>=' comparison that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint >= byte) shouldEqual (pint.toInt >= byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint >= short) shouldEqual (pint.toInt >= short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        (pint >= char) shouldEqual (pint.toInt >= char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint >= int) shouldEqual (pint.toInt >= int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint >= long) shouldEqual (pint.toInt >= long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint >= float) shouldEqual (pint.toInt >= float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint >= double) shouldEqual (pint.toInt >= double)
       }
     }
 
@@ -481,132 +292,6 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
       forAll { (pint: PosInt, long: Long) =>
         (pint ^ long) shouldEqual (pint.toInt ^ long)
-      }
-    }
-
-    it("should offer a '+' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint + byte) shouldEqual (pint.toInt + byte)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        (pint + char) shouldEqual (pint.toInt + char)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint + short) shouldEqual (pint.toInt + short)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint + int) shouldEqual (pint.toInt + int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint + long) shouldEqual (pint.toInt + long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint + float) shouldEqual (pint.toInt + float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint + double) shouldEqual (pint.toInt + double)
-      }
-    }
-
-    it("should offer a '-' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint - byte) shouldEqual (pint.toInt - byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint - short) shouldEqual (pint.toInt - short)
-      }
-      forAll { (pint: PosInt, byte: Char) =>
-        (pint - byte) shouldEqual (pint.toInt - byte)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint - int) shouldEqual (pint.toInt - int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint - long) shouldEqual (pint.toInt - long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint - float) shouldEqual (pint.toInt - float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint - double) shouldEqual (pint.toInt - double)
-      }
-    }
-
-    it("should offer a '*' method that is consistent with Int") {
-      forAll { (pint: PosInt, byte: Byte) =>
-        (pint * byte) shouldEqual (pint.toInt * byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        (pint * short) shouldEqual (pint.toInt * short)
-      }
-      forAll { (pint: PosInt, byte: Char) =>
-        (pint * byte) shouldEqual (pint.toInt * byte)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        (pint * int) shouldEqual (pint.toInt * int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        (pint * long) shouldEqual (pint.toInt * long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        (pint * float) shouldEqual (pint.toInt * float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        (pint * double) shouldEqual (pint.toInt * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Int") {
-      // Note that Try (and associated Equality[Try]) are used since some values
-      // will legitimately throw an exception
-
-      forAll { (pint: PosInt, byte: Byte) =>
-        Try(pint / byte) shouldEqual Try(pint.toInt / byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        Try(pint / short) shouldEqual Try(pint.toInt / short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        Try(pint / char) shouldEqual Try(pint.toInt / char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        Try(pint / int) shouldEqual Try(pint.toInt / int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        Try(pint / long) shouldEqual Try(pint.toInt / long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        Try(pint / float) shouldEqual Try(pint.toInt / float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        Try(pint / double) shouldEqual Try(pint.toInt / double)
-      }
-    }
-
-    it("should offer a '%' method that is consistent with Int") {
-      // Note that Try (and associated Equality[Try]) are used since some values
-      // will legitimately throw an exception
-
-      forAll { (pint: PosInt, byte: Byte) =>
-        Try(pint % byte) shouldEqual Try(pint.toInt % byte)
-      }
-      forAll { (pint: PosInt, short: Short) =>
-        Try(pint % short) shouldEqual Try(pint.toInt % short)
-      }
-      forAll { (pint: PosInt, char: Char) =>
-        Try(pint % char) shouldEqual Try(pint.toInt % char)
-      }
-      forAll { (pint: PosInt, int: Int) =>
-        Try(pint % int) shouldEqual Try(pint.toInt % int)
-      }
-      forAll { (pint: PosInt, long: Long) =>
-        Try(pint % long) shouldEqual Try(pint.toInt % long)
-      }
-      forAll { (pint: PosInt, float: Float) =>
-        Try(pint % float) shouldEqual Try(pint.toInt % float)
-      }
-      forAll { (pint: PosInt, double: Double) =>
-        Try(pint % double) shouldEqual Try(pint.toInt % double)
       }
     }
 
