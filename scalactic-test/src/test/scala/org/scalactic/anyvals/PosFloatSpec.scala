@@ -27,8 +27,9 @@ import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
+import org.scalactic.Equality
 
-class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals {
+trait PosFloatSpecSupport {
 
   val posZFloatGen: Gen[PosZFloat] =
     for {i <- choose(0, Float.MaxValue)} yield PosZFloat.ensuringValid(i)
@@ -39,6 +40,28 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     for {i <- choose(1, Float.MaxValue)} yield PosFloat.ensuringValid(i)
 
   implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      // I needed this because with GenDrivenPropertyChecks, got:
+      // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+}
+
+class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosFloatSpecSupport {
 
   describe("A PosFloat") {
     describe("should offer a from factory method that") {
@@ -141,98 +164,12 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     it("should offer a PositiveInfinity factory method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +PosFloat(3.0F) shouldEqual PosFloat(3.0F)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      "PosFloat(3.0F): Int" shouldNot typeCheck
-      "PosFloat(3.0F): Long" shouldNot typeCheck
-      (PosFloat(3.0F): Float) shouldEqual 3.0F
-      (PosFloat(3.0F): Double) shouldEqual 3.0
-
-      "PosFloat(3.0F): PosInt" shouldNot typeCheck
-      "PosFloat(3.0F): PosLong" shouldNot typeCheck
-      (PosFloat(3.0F): PosFloat) shouldEqual PosFloat(3.0F)
-      (PosFloat(3.0F): PosDouble) shouldEqual PosDouble(3.0)
-
-      "PosFloat(3.0F): PosZInt" shouldNot typeCheck
-      "PosFloat(3.0F): PosZLong" shouldNot typeCheck
-      (PosFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
-
-      "PosFloat(3.0F): NonZeroInt" shouldNot typeCheck
-      "PosFloat(3.0F): NonZeroLong" shouldNot typeCheck
-      (PosFloat(3.0F): NonZeroFloat) shouldEqual NonZeroFloat(3.0F)
-      (PosFloat(3.0F): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
-    }
 
     it("should be sortable") {
       val xs = List(PosFloat(2.2F), PosFloat(4.4F), PosFloat(1.1F),
                     PosFloat(3.3F))
       xs.sorted shouldEqual List(PosFloat(1.1F), PosFloat(2.2F), PosFloat(3.3F),
                                  PosFloat(4.4F))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosFloat(3.0F) + 3
-        opInt shouldEqual 6.0F
-
-        val opLong = PosFloat(3.0F) + 3L
-        opLong shouldEqual 6.0F
-
-        val opFloat = PosFloat(3.0F) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosFloat(3.0F) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosFloat(3.0F) + PosInt(3)
-        opPosInt shouldEqual 6.0F
-
-        val opPosLong = PosFloat(3.0F) + PosLong(3L)
-        opPosLong shouldEqual 6.0F
-
-        val opPosFloat = PosFloat(3.0F) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = PosFloat(3.0F) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosFloat(3.0F) + PosZInt(3)
-        opPosZ shouldEqual 6.0F
-
-        val opPosZLong = PosFloat(3.0F) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0F
-
-        val opPosZFloat = PosFloat(3.0F) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = PosFloat(3.0F) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opNonZeroInt = PosFloat(3.0F) + NonZeroInt(3)
-        opNonZeroInt shouldEqual 6.0F
-
-        val opNonZeroLong = PosFloat(3.0F) + NonZeroLong(3L)
-        opNonZeroLong shouldEqual 6.0F
-
-        val opNonZeroFloat = PosFloat(3.0F) + NonZeroFloat(3.0F)
-        opNonZeroFloat shouldEqual 6.0F
-
-        val opNonZeroDouble = PosFloat(3.0F) + NonZeroDouble(3.0)
-        opNonZeroDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -298,138 +235,6 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         "takesPosFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPosFloat(c)" shouldNot compile
-      }
-    }
-
-    it("should offer a unary + method that is consistent with Float") {
-      forAll { (pfloat: PosFloat) =>
-        (+pfloat).toFloat shouldEqual (+(pfloat.toFloat))
-      }
-    }
-
-    it("should offer a unary - method that is consistent with Float") {
-      forAll { (pfloat: PosFloat) =>
-        (-pfloat) shouldEqual (-(pfloat.toFloat))
-      }
-    }
-
-    it("should offer '<' comparison that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat < byte) shouldEqual (pfloat.toFloat < byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat < short) shouldEqual (pfloat.toFloat < short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat < char) shouldEqual (pfloat.toFloat < char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat < int) shouldEqual (pfloat.toFloat < int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat < long) shouldEqual (pfloat.toFloat < long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat < float) shouldEqual (pfloat.toFloat < float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat < double) shouldEqual (pfloat.toFloat < double)
-      }
-    }
-
-    it("should offer '<=' comparison that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat <= byte) shouldEqual (pfloat.toFloat <= byte)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat <= char) shouldEqual (pfloat.toFloat <= char)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat <= short) shouldEqual (pfloat.toFloat <= short)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat <= int) shouldEqual (pfloat.toFloat <= int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat <= long) shouldEqual (pfloat.toFloat <= long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat <= float) shouldEqual (pfloat.toFloat <= float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat <= double) shouldEqual (pfloat.toFloat <= double)
-      }
-    }
-
-    it("should offer '>' comparison that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat > byte) shouldEqual (pfloat.toFloat > byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat > short) shouldEqual (pfloat.toFloat > short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat > char) shouldEqual (pfloat.toFloat > char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat > int) shouldEqual (pfloat.toFloat > int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat > long) shouldEqual (pfloat.toFloat > long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat > float) shouldEqual (pfloat.toFloat > float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat > double) shouldEqual (pfloat.toFloat > double)
-      }
-    }
-
-    it("should offer '>=' comparison that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat >= byte) shouldEqual (pfloat.toFloat >= byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat >= short) shouldEqual (pfloat.toFloat >= short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat >= char) shouldEqual (pfloat.toFloat >= char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat >= int) shouldEqual (pfloat.toFloat >= int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat >= long) shouldEqual (pfloat.toFloat >= long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat >= float) shouldEqual (pfloat.toFloat >= float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat >= double) shouldEqual (pfloat.toFloat >= double)
-      }
-    }
-
-    it("should offer a '+' method that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat + byte) shouldEqual (pfloat.toFloat + byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat + short) shouldEqual (pfloat.toFloat + short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat + char) shouldEqual (pfloat.toFloat + char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat + int) shouldEqual (pfloat.toFloat + int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat + long) shouldEqual (pfloat.toFloat + long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat + float) shouldEqual (pfloat.toFloat + float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat + double) shouldEqual (pfloat.toFloat + double)
       }
     }
 
@@ -520,132 +325,6 @@ specifying floats so long as it is in the valid range for floats.
             PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
           }
         }
-      }
-    }
-
-    it("should offer a '-' method that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat - byte) shouldEqual (pfloat.toFloat - byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat - short) shouldEqual (pfloat.toFloat - short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat - char) shouldEqual (pfloat.toFloat - char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat - int) shouldEqual (pfloat.toFloat - int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat - long) shouldEqual (pfloat.toFloat - long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat - float) shouldEqual (pfloat.toFloat - float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat - double) shouldEqual (pfloat.toFloat - double)
-      }
-    }
-
-    it("should offer a '*' method that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        (pfloat * byte) shouldEqual (pfloat.toFloat * byte)
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        (pfloat * short) shouldEqual (pfloat.toFloat * short)
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        (pfloat * char) shouldEqual (pfloat.toFloat * char)
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        (pfloat * int) shouldEqual (pfloat.toFloat * int)
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        (pfloat * long) shouldEqual (pfloat.toFloat * long)
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        (pfloat * float) shouldEqual (pfloat.toFloat * float)
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        (pfloat * double) shouldEqual (pfloat.toFloat * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        pfloat / byte shouldEqual pfloat.toFloat / byte
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        pfloat / short shouldEqual pfloat.toFloat / short
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        pfloat / char shouldEqual pfloat.toFloat / char
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        pfloat / int shouldEqual pfloat.toFloat / int
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        pfloat / long shouldEqual pfloat.toFloat / long
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        pfloat / float shouldEqual pfloat.toFloat / float
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        pfloat / double shouldEqual pfloat.toFloat / double
-      }
-    }
-
-    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
-    // extra logic is needed to convert to a comparable type (boolean, in this case)
-    it("should offer a '%' method that is consistent with Float") {
-      forAll { (pfloat: PosFloat, byte: Byte) =>
-        val res = pfloat % byte
-        if (res.isNaN)
-          (pfloat.toFloat % byte).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % byte
-      }
-      forAll { (pfloat: PosFloat, short: Short) =>
-        val res = pfloat % short
-        if (res.isNaN)
-          (pfloat.toFloat % short).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % short
-      }
-      forAll { (pfloat: PosFloat, char: Char) =>
-        val res = pfloat % char
-        if (res.isNaN)
-          (pfloat.toFloat % char).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % char
-      }
-      forAll { (pfloat: PosFloat, int: Int) =>
-        val res = pfloat % int
-        if (res.isNaN)
-          (pfloat.toFloat % int).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % int
-      }
-      forAll { (pfloat: PosFloat, long: Long) =>
-        val res = pfloat % long
-        if (res.isNaN)
-          (pfloat.toFloat % long).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % long
-      }
-      forAll { (pfloat: PosFloat, float: Float) =>
-        val res = pfloat % float
-        if (res.isNaN)
-          (pfloat.toFloat % float).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % float
-      }
-      forAll { (pfloat: PosFloat, double: Double) =>
-        val res = pfloat % double
-        if (res.isNaN)
-          (pfloat.toFloat % double).isNaN shouldBe true
-        else
-          res shouldEqual pfloat.toFloat % double
       }
     }
 
