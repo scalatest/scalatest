@@ -137,6 +137,68 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val nonZero = if (i == 0) 1 else i
     (NonZeroLong.ensuringValid(nonZero), r)
   }
+  def nextNegDouble: (NegDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val neg =
+      d match {
+        case 0.0 => -Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegDouble.ensuringValid(neg), r)
+  }
+  def nextNegFloat: (NegFloat, Randomizer) = {
+    val (f, r) = nextFloat
+    val neg =
+      f match {
+        case 0.0F => -Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case v if v > 0.0F => -v
+        case _ => f
+      }
+    (NegFloat.ensuringValid(neg), r)
+  }
+  def nextNegInt: (NegInt, Randomizer) = {
+    val (n, r) = nextInt
+    val neg =
+      n match {
+        case 0 => -1
+        case v if v > 0 => -v
+        case _ => n
+      }
+    (NegInt.ensuringValid(neg), r)
+  }
+  def nextNegLong: (NegLong, Randomizer) = {
+    val (n, r) = nextLong
+    val neg =
+      n match {
+        case 0L => -1L
+        case v if v > 0L => -v
+        case _ => n
+      }
+    (NegLong.ensuringValid(neg), r)
+  }
+  def nextNegZDouble: (NegZDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negZ = if (d > 0.0) -d else d
+    (NegZDouble.ensuringValid(negZ), r)
+  }
+  def nextNegZFloat: (NegZFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negZ = if (n > 0.0F) -n else n
+    (NegZFloat.ensuringValid(negZ), r)
+  }
+  def nextNegZInt: (NegZInt, Randomizer) = {
+    val (n, r) = nextInt
+    val negZ = if (n > 0) -n else n
+    (NegZInt.ensuringValid(negZ), r)
+  }
+  def nextNegZLong: (NegZLong, Randomizer) = {
+    val (n, r) = nextLong
+    val negZ = if (n > 0L) -n else n
+    (NegZLong.ensuringValid(negZ), r)
+  }
   def nextPosZDouble: (PosZDouble, Randomizer) = {
     val (d, r) = nextDouble
     val pos = d.abs // 0.0 or greater

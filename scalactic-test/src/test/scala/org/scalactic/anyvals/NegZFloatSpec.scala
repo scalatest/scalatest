@@ -66,6 +66,11 @@ trait NegZFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
+      case Success(double: Double) if double.isNaN => 
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
       case _: Success[_] => a == b
       case Failure(ex) => b match {
         case _: Success[_] => false

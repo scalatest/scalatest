@@ -171,7 +171,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Byte] {
       private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -205,7 +204,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Short] {
       private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -239,7 +237,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Char] {
       private val charEdges = List(Char.MinValue, Char.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -276,7 +273,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Int] {
       private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -310,7 +306,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Long] {
       private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -344,7 +339,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Float] {
       private val posFloatEdges = List(0.0f)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (posFloatEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
@@ -388,7 +382,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Double] {
       private val posDoubleEdges = List(0.0)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (posDoubleEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
@@ -432,7 +425,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosInt] {
       private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -452,7 +444,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosZInt] {
       private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -472,7 +463,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosLong] {
       private val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -492,7 +482,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosZLong] {
       private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -512,7 +501,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosFloat] {
       private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -532,7 +520,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosZFloat] {
       private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -552,7 +539,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosDouble] {
       private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -572,7 +558,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[PosZDouble] {
       private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -592,7 +577,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[NonZeroDouble] {
       private val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -612,7 +596,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[NonZeroFloat] {
       private val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -632,7 +615,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[NonZeroInt] {
       private val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -652,7 +634,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[NonZeroLong] {
       private val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
@@ -668,12 +649,163 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[NonZeroLong]"
     }
 
+  implicit val negDoubleGenerator: Generator[NegDouble] =
+    new Generator[NegDouble] {
+      private val negDoubleEdges = List(NegDouble.MinValue, NegDouble(-1.0), NegDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegDouble], rnd: Randomizer): (NegDouble, List[NegDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negDouble, nextRnd) = rnd.nextNegDouble
+            (negDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegDouble]"
+    }
+
+  implicit val negFloatGenerator: Generator[NegFloat] =
+    new Generator[NegFloat] {
+      private val negFloatEdges = List(NegFloat.MinValue, NegFloat(-1.0F), NegFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegFloat], rnd: Randomizer): (NegFloat, List[NegFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negFloat, nextRnd) = rnd.nextNegFloat
+            (negFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegFloat]"
+    }
+
+  implicit val negIntGenerator: Generator[NegInt] =
+    new Generator[NegInt] {
+      private val negIntEdges = List(NegInt.MinValue, NegInt.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegInt], rnd: Randomizer): (NegInt, List[NegInt], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negInt, nextRnd) = rnd.nextNegInt
+            (negInt, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegInt]"
+    }
+
+  implicit val negLongGenerator: Generator[NegLong] =
+    new Generator[NegLong] {
+      private val negLongEdges = List(NegLong.MinValue, NegLong.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegLong], rnd: Randomizer): (NegLong, List[NegLong], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negLong, nextRnd) = rnd.nextNegLong
+            (negLong, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegLong]"
+    }
+
+  implicit val negZDoubleGenerator: Generator[NegZDouble] =
+    new Generator[NegZDouble] {
+      private val negZDoubleEdges = List(NegZDouble.MinValue, NegZDouble(-1.0), NegZDouble.ensuringValid(-Double.MinPositiveValue), NegZDouble(-0.0), NegZDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZDouble], rnd: Randomizer): (NegZDouble, List[NegZDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZDouble, nextRnd) = rnd.nextNegZDouble
+            (negZDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZDouble]"
+    }
+
+  implicit val negZFloatGenerator: Generator[NegZFloat] =
+    new Generator[NegZFloat] {
+      private val negZFloatEdges = List(NegZFloat.MinValue, NegZFloat(-1.0F), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat(-0.0F), NegZFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZFloat], rnd: Randomizer): (NegZFloat, List[NegZFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZFloat, nextRnd) = rnd.nextNegZFloat
+            (negZFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZFloat]"
+    }
+
+  implicit val negZIntGenerator: Generator[NegZInt] =
+    new Generator[NegZInt] {
+      private val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZInt], rnd: Randomizer): (NegZInt, List[NegZInt], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZInt, nextRnd) = rnd.nextNegZInt
+            (negZInt, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZInt]"
+    }
+
+  implicit val negZLongGenerator: Generator[NegZLong] =
+    new Generator[NegZLong] {
+      private val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZLong], rnd: Randomizer): (NegZLong, List[NegZLong], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZLong, nextRnd) = rnd.nextNegZLong
+            (negZLong, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZLong]"
+    }
+
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   implicit val stringGenerator: Generator[String] =
     new Generator[String] {
       private val stringEdges = List("")
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[String], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (stringEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
@@ -728,7 +860,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT => 
       private val listEdges = List(Nil)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to next must be >= 0")
         (listEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
@@ -834,7 +965,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
     new Generator[() => T] { thisGeneratorOfFunction0 =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[() => T], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to initEdges must be >= 0")
         val (edgesOfT, nextRnd) = genOfT.initEdges(maxLength, rnd)
         val edges = edgesOfT.map(t => PrettyFunction0(t))
         (edges, nextRnd)
@@ -1667,7 +1797,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to initEdges must be >= 0")
         // Subtract one from length, and we'll wrap those in Somes. Subtract one so that None can be the first edge.
         val (edgesOfT, nextRnd) = genOfT.initEdges(if (maxLength > 0) PosZInt.ensuringValid((maxLength - 1)) else 0, rnd)
         val edges = None :: edgesOfT.map(t => Some(t))
@@ -1692,7 +1821,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
-        require(maxLength >= 0, "; the maxLength passed to initEdges must be >= 0")
         val (edgesOfG, nextRnd) = genOfG.initEdges(maxLength, rnd)
         val (edgesOfB, nextNextRnd) = genOfB.initEdges(maxLength, nextRnd)
         // Fill up to maxLength, favoring Good over Bad if maxLength is odd. Else just dividing it
