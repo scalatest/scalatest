@@ -19,7 +19,6 @@ import org.scalatest._
 import OptionValues._
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest.check.ScalaCheckGenerators
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
