@@ -278,6 +278,7 @@ object GenAnyVals {
     List(
       "Pos",
       "PosZ",
+      "NonZeroFinite",
       "NonZero",
       "PosFinite",
       "PosZFinite",
@@ -294,11 +295,18 @@ object GenAnyVals {
       typeName != "NegFiniteInt" &&
       typeName != "NegFiniteLong" &&
       typeName != "NegZFiniteInt" &&
-      typeName != "NegZFiniteLong"
+      typeName != "NegZFiniteLong" &&
+      typeName != "NonZeroFiniteInt" &&
+      typeName != "NonZeroFiniteLong"
     )
 
   def nonZeroWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p)
+  }
+
+  def nonZeroFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZeroFinite" + p)
   }
 
   def posZWidens(primitiveType: String): List[String] = {
@@ -530,6 +538,16 @@ object GenAnyVals {
       negativeInfinity("NonZero", "Double") +
       minPositiveValue("NonZero", "Double"),
       nonZeroWidens("Double")) :::
+    genFloatAnyVal(dir, "NonZeroFiniteFloat", "finite non-zero", "Note: a <code>NonZeroFiniteFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN && i != Float.PositiveInfinity && i != Float.NegativeInfinity", "NonZeroFiniteFloat(1.1f)", "NonZeroFiniteFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
+      "Float.MaxValue", "3.4028235E38",
+      "",
+      minPositiveValue("NonZeroFinite", "Float"),
+      nonZeroFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "NonZeroFiniteDouble", "finite non-zero", "Note: a <code>NonZeroFiniteDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN && i != Double.PositiveInfinity && i != Double.NegativeInfinity", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
+      "Double.MaxValue", "1.7976931348623157E308",
+      "",
+      minPositiveValue("NonZeroFinite", "Double"),
+      nonZeroFiniteWidens("Double")) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
       "Int.MaxValue", "2147483647", posZWidens("Int")) :::
     genLongAnyVal(dir, "PosZLong", "non-negative", "", "i >= 0L", "PosZLong(42)", "PosZLong(-1)", "42", "-1", "0L", "0L",
@@ -870,6 +888,8 @@ object GenAnyVals {
     genAnyValTests(dir, "NonZeroLong", "Long", 3, nonZeroWidens("Long")) ++
     genAnyValTests(dir, "NonZeroFloat", "Float", 3, nonZeroWidens("Float")) ++
     genAnyValTests(dir, "NonZeroDouble", "Double", 3, nonZeroWidens("Double")) ++
+    genAnyValTests(dir, "NonZeroFiniteFloat", "Float", 3, nonZeroFiniteWidens("Float")) ++
+    genAnyValTests(dir, "NonZeroFiniteDouble", "Double", 3, nonZeroFiniteWidens("Double")) ++
     genAnyValTests(dir, "NegInt", "Int", -3, negWidens("Int")) ++
     genAnyValTests(dir, "NegLong", "Long", -3, negWidens("Long")) ++
     genAnyValTests(dir, "NegFloat", "Float", -3, negWidens("Float")) ++
