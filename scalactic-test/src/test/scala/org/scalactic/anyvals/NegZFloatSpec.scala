@@ -181,6 +181,19 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegZFloat.MaxValue shouldEqual NegZFloat(0.0f)
       NegZFloat.MinValue shouldEqual NegZFloat.from(Float.MinValue).get
     }
+    it("should offer a NegativeInfinity factory method") {
+      NegZFloat.NegativeInfinity shouldEqual NegZFloat.ensuringValid(Float.NegativeInfinity)
+    }
+    it("should not offer a PositiveInfinity factory method") {
+      "NegZFloat.PositiveInfinity" shouldNot compile
+    }
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NegZFloat.ensuringValid(Float.NegativeInfinity).isNegInfinity shouldBe true
+      NegZFloat(-1.0f).isNegInfinity shouldBe false
+    }
+    it("should not offer a isPosInfinity method") {
+      "NegZFloat(-1.0f).isPosInfinity" shouldNot compile
+    }
 
     it("should be sortable") {
       val xs = List(NegZFloat(-2.2F), NegZFloat(-0.0F), NegZFloat(-1.1F),

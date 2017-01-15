@@ -181,6 +181,16 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
     it("should offer a NegativeInfinity factory method") {
       NegZDouble.NegativeInfinity shouldEqual NegZDouble.ensuringValid(Double.NegativeInfinity)
     }
+    it("should not offer a PositiveInfinity factory method") {
+      "NegZDouble.PositiveInfinity" shouldNot compile
+    }
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NegZDouble.ensuringValid(Double.NegativeInfinity).isNegInfinity shouldBe true
+      NegZDouble(-1.0).isNegInfinity shouldBe false
+    }
+    it("should not offer a isPosInfinity method") {
+      "NegZDouble(-1.0f).isPosInfinity" shouldNot compile
+    }
 
     it("should be sortable") {
       val xs = List(NegZDouble(-2.2), NegZDouble(-0.0), NegZDouble(-1.1),

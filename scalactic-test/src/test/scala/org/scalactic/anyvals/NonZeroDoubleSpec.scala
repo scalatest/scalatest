@@ -178,6 +178,14 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
     it("should offer a NegativeInfinity factory method") {
       NonZeroDouble.NegativeInfinity shouldEqual NonZeroDouble.ensuringValid(Double.NegativeInfinity)
     }
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NonZeroDouble.ensuringValid(Double.NegativeInfinity).isNegInfinity shouldBe true
+      NonZeroDouble(-1.0).isNegInfinity shouldBe false
+    }
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      NonZeroDouble.ensuringValid(Double.PositiveInfinity).isPosInfinity shouldBe true
+      NonZeroDouble(-1.0).isPosInfinity shouldBe false
+    }
 
     it("should be sortable") {
       val xs = List(NonZeroDouble(2.2), NonZeroDouble(4.4), NonZeroDouble(1.1),

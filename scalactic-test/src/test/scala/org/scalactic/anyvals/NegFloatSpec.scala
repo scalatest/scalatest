@@ -168,7 +168,16 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     it("should offer a NegativeInfinity factory method") {
       NegFloat.NegativeInfinity shouldEqual NegFloat.ensuringValid(Float.NegativeInfinity)
     }
-
+    it("should offer a PositiveInfinity factory method") {
+      "NegFloat.PositiveInfinity" shouldNot compile
+    }
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NegFloat.ensuringValid(Float.NegativeInfinity).isNegInfinity shouldBe true
+      NegFloat(-1.0f).isNegInfinity shouldBe false
+    }
+    it("should not offer a isPosInfinity method") {
+      "NegFloat(-1.0f).isPosInfinity" shouldNot compile
+    }
     it("should be sortable") {
       val xs = List(NegFloat(-2.2F), NegFloat(-4.4F), NegFloat(-1.1F),
         NegFloat(-3.3F))

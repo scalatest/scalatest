@@ -330,9 +330,6 @@ final class $typeName$ private (val value: Double) extends AnyVal {
 
   // TODO: Need Scaladoc
   // Stuff from RichDouble
-  def isPosInfinity: Boolean = Double.PositiveInfinity == value
-
-  def isNegInfinity: Boolean = Double.NegativeInfinity == value
 
   /**
   * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.

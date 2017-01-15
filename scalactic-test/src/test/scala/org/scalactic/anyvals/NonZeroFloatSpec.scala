@@ -185,6 +185,14 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
     it("should offer a NegativeInfinity factory method") {
       NonZeroFloat.NegativeInfinity shouldEqual NonZeroFloat.ensuringValid(Float.NegativeInfinity)
     }
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NonZeroFloat.ensuringValid(Float.NegativeInfinity).isNegInfinity shouldBe true
+      NonZeroFloat(-1.0f).isNegInfinity shouldBe false
+    }
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      NonZeroFloat.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
+      NonZeroFloat(-1.0f).isPosInfinity shouldBe false
+    }
     it("should offer a MinPositiveValue factory method") {
       NonZeroFloat.MinPositiveValue shouldEqual NonZeroFloat.ensuringValid(Float.MinPositiveValue)
     }

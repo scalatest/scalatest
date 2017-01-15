@@ -169,6 +169,16 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     it("should offer a PositiveInfinity factory method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
+    it("should offer a NegativeInfinity factory method") {
+      "PosFloat.NegativeInfinity" shouldNot compile
+    }
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      PosFloat.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
+      PosFloat(1.0f).isPosInfinity shouldBe false
+    }
+    it("should not offer a isNegInfinity method") {
+      "PosFloat(1.0f).isNegInfinity" shouldNot compile
+    }
 
     it("should be sortable") {
       val xs = List(PosFloat(2.2F), PosFloat(4.4F), PosFloat(1.1F),
