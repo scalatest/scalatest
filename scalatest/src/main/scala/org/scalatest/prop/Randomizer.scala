@@ -106,10 +106,34 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val pos = if (candidate <= 1.0f) candidate else candidate + 1.0f
     (PosFloat.ensuringValid(pos), r)
   }
+  def nextPosFiniteFloat: (PosFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val posFinite =
+      n match {
+        case 0.0F => Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case v if v < 0.0F => -v
+        case _ => n
+      }
+    (PosFiniteFloat.ensuringValid(posFinite), r)
+  }
   def nextPosZFloat: (PosZFloat, Randomizer) = {
     val (f, r) = nextFloat
     val pos = f.abs // 0.0f or greater
     (PosZFloat.ensuringValid(pos), r)
+  }
+  def nextPosZFiniteFloat: (PosZFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val posZFinite =
+      n match {
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case v if v < 0.0F => -v
+        case _ => n
+      }
+    (PosZFiniteFloat.ensuringValid(posZFinite), r)
   }
   def nextPosDouble: (PosDouble, Randomizer) = {
     val (d, r) = nextDouble
@@ -117,15 +141,54 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val pos = if (candidate <= 1.0) candidate else candidate + 1.0 // TODO: Is this correct? If so, document why, because it looks wrong to me.
     (PosDouble.ensuringValid(pos), r)
   }
+  def nextPosFiniteDouble: (PosFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val posFinite =
+      d match {
+        case 0.0 => Double.MinPositiveValue
+        case -0.0 => Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case v if v < 0.0 => -v
+        case _ => d
+      }
+    (PosFiniteDouble.ensuringValid(posFinite), r)
+  }
   def nextNonZeroDouble: (NonZeroDouble, Randomizer) = {
     val (d, r) = nextDouble
     val nonZero = if (d == 0.0 || d == -0.0) Double.MinPositiveValue else d
     (NonZeroDouble.ensuringValid(nonZero), r)
   }
+  def nextNonZeroFiniteDouble: (NonZeroFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val nonZeroFinite =
+      d match {
+        case 0.0 => Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NonZeroFiniteDouble.ensuringValid(nonZeroFinite), r)
+  }
   def nextNonZeroFloat: (NonZeroFloat, Randomizer) = {
     val (f, r) = nextFloat
     val nonZero = if (f == 0.0F || f == -0.0F) Float.MinPositiveValue else f
     (NonZeroFloat.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroFiniteFloat: (NonZeroFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val nonZeroFinite =
+      n match {
+        case 0.0F => Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0F => -v
+        case _ => n
+      }
+    (NonZeroFiniteFloat.ensuringValid(nonZeroFinite), r)
   }
   def nextNonZeroInt: (NonZeroInt, Randomizer) = {
     val (i, r) = nextInt
@@ -148,6 +211,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     (NegDouble.ensuringValid(neg), r)
   }
+  def nextNegFiniteDouble: (NegFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negFinite =
+      d match {
+        case 0.0 => -Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MinValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegFiniteDouble.ensuringValid(negFinite), r)
+  }
   def nextNegFloat: (NegFloat, Randomizer) = {
     val (f, r) = nextFloat
     val neg =
@@ -158,6 +234,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         case _ => f
       }
     (NegFloat.ensuringValid(neg), r)
+  }
+  def nextNegFiniteFloat: (NegFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negFinite =
+      n match {
+        case 0.0 => -Float.MinPositiveValue
+        case -0.0 => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MinValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0 => -v
+        case _ => n
+      }
+    (NegFiniteFloat.ensuringValid(negFinite), r)
   }
   def nextNegInt: (NegInt, Randomizer) = {
     val (n, r) = nextInt
@@ -184,10 +273,32 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val negZ = if (d > 0.0) -d else d
     (NegZDouble.ensuringValid(negZ), r)
   }
+  def nextNegZFiniteDouble: (NegZFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negFinite =
+      d match {
+        case Double.PositiveInfinity => Double.MinValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegZFiniteDouble.ensuringValid(negFinite), r)
+  }
   def nextNegZFloat: (NegZFloat, Randomizer) = {
     val (n, r) = nextFloat
     val negZ = if (n > 0.0F) -n else n
     (NegZFloat.ensuringValid(negZ), r)
+  }
+  def nextNegZFiniteFloat: (NegZFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negZFinite =
+      n match {
+        case Float.PositiveInfinity => Float.MinValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0 => -v
+        case _ => n
+      }
+    (NegZFiniteFloat.ensuringValid(negZFinite), r)
   }
   def nextNegZInt: (NegZInt, Randomizer) = {
     val (n, r) = nextInt
@@ -203,6 +314,17 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val (d, r) = nextDouble
     val pos = d.abs // 0.0 or greater
     (PosZDouble.ensuringValid(pos), r)
+  }
+  def nextPosZFiniteDouble: (PosZFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val posZFinite =
+      d match {
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case v if v < 0.0 => -v
+        case _ => d
+      }
+    (PosZFiniteDouble.ensuringValid(posZFinite), r)
   }
   // Maybe add in some > 16 bit UTF-16 encodings
   def nextString(length: Int): (String, Randomizer) = {

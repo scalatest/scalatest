@@ -516,6 +516,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[PosFloat]"
     }
 
+  implicit val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
+    new Generator[PosFiniteFloat] {
+      private val posFiniteFloatEdges = List(PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosFiniteFloat], rnd: Randomizer): (PosFiniteFloat, List[PosFiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (posZFloat, nextRnd) = rnd.nextPosFiniteFloat
+            (posZFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[PosFiniteFloat]"
+    }
+
   implicit val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
       private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
@@ -533,6 +552,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[PosZFloat]"
+    }
+
+  implicit val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
+    new Generator[PosZFiniteFloat] {
+      private val posZFiniteFloatEdges = List(PosZFiniteFloat(0.0f), PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZFiniteFloat], rnd: Randomizer): (PosZFiniteFloat, List[PosZFiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (posZFiniteFloat, nextRnd) = rnd.nextPosZFiniteFloat
+            (posZFiniteFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[PosZFiniteFloat]"
     }
 
   implicit val posDoubleGenerator: Generator[PosDouble] =
@@ -554,6 +592,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[PosDouble]"
     }
 
+  implicit val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
+    new Generator[PosFiniteDouble] {
+      private val posFiniteDoubleEdges = List(PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosFiniteDouble], rnd: Randomizer): (PosFiniteDouble, List[PosFiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (posFiniteDouble, nextRnd) = rnd.nextPosFiniteDouble
+            (posFiniteDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[PosFiniteDouble]"
+    }
+
   implicit val posZDoubleGenerator: Generator[PosZDouble] =
     new Generator[PosZDouble] {
       private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
@@ -571,6 +628,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[PosZDouble]"
+    }
+
+  implicit val posZFiniteDoubleGenerator: Generator[PosZFiniteDouble] =
+    new Generator[PosZFiniteDouble] {
+      private val posZFiniteDoubleEdges = List(PosZFiniteDouble(0.0), PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZFiniteDouble], rnd: Randomizer): (PosZFiniteDouble, List[PosZFiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (posZFiniteDouble, nextRnd) = rnd.nextPosZFiniteDouble
+            (posZFiniteDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[PosZFiniteDouble]"
     }
 
   implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
@@ -592,6 +668,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[NonZeroDouble]"
     }
 
+  implicit val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
+    new Generator[NonZeroFiniteDouble] {
+      private val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroFiniteDouble], rnd: Randomizer): (NonZeroFiniteDouble, List[NonZeroFiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroFiniteDouble, nextRnd) = rnd.nextNonZeroFiniteDouble
+            (nonZeroFiniteDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroFiniteDouble]"
+    }
+
   implicit val nonZeroFloatGenerator: Generator[NonZeroFloat] =
     new Generator[NonZeroFloat] {
       private val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
@@ -609,6 +704,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[NonZeroFloat]"
+    }
+
+  implicit val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
+    new Generator[NonZeroFiniteFloat] {
+      private val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroFiniteFloat], rnd: Randomizer): (NonZeroFiniteFloat, List[NonZeroFiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nonZeroFiniteFloat, nextRnd) = rnd.nextNonZeroFiniteFloat
+            (nonZeroFiniteFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NonZeroFiniteFloat]"
     }
 
   implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
@@ -668,6 +782,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[NegDouble]"
     }
 
+  implicit val negFiniteDoubleGenerator: Generator[NegFiniteDouble] =
+    new Generator[NegFiniteDouble] {
+      private val negFiniteDoubleEdges = List(NegFiniteDouble.MinValue, NegFiniteDouble(-1.0), NegFiniteDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegFiniteDouble], rnd: Randomizer): (NegFiniteDouble, List[NegFiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negFiniteDouble, nextRnd) = rnd.nextNegFiniteDouble
+            (negFiniteDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegFiniteDouble]"
+    }
+
   implicit val negFloatGenerator: Generator[NegFloat] =
     new Generator[NegFloat] {
       private val negFloatEdges = List(NegFloat.MinValue, NegFloat(-1.0F), NegFloat.MaxValue)
@@ -685,6 +818,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[NegFloat]"
+    }
+
+  implicit val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
+    new Generator[NegFiniteFloat] {
+      private val negFiniteFloatEdges = List(NegFiniteFloat.MinValue, NegFiniteFloat(-1.0F), NegFiniteFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegFiniteFloat], rnd: Randomizer): (NegFiniteFloat, List[NegFiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negFiniteFloat, nextRnd) = rnd.nextNegFiniteFloat
+            (negFiniteFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegFiniteFloat]"
     }
 
   implicit val negIntGenerator: Generator[NegInt] =
@@ -744,6 +896,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[NegZDouble]"
     }
 
+  implicit val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
+    new Generator[NegZFiniteDouble] {
+      private val negZFiniteDoubleEdges = List(NegZFiniteDouble.MinValue, NegZFiniteDouble(-1.0), NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue), NegZFiniteDouble(-0.0), NegZFiniteDouble.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteDoubleEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZFiniteDouble], rnd: Randomizer): (NegZFiniteDouble, List[NegZFiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZFiniteDouble, nextRnd) = rnd.nextNegZFiniteDouble
+            (negZFiniteDouble, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZFiniteDouble]"
+    }
+
   implicit val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
       private val negZFloatEdges = List(NegZFloat.MinValue, NegZFloat(-1.0F), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat(-0.0F), NegZFloat.MaxValue)
@@ -761,6 +932,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[NegZFloat]"
+    }
+
+  implicit val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
+    new Generator[NegZFiniteFloat] {
+      private val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat(-0.0F), NegZFiniteFloat.MaxValue)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteFloatEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZFiniteFloat], rnd: Randomizer): (NegZFiniteFloat, List[NegZFiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (negZFiniteFloat, nextRnd) = rnd.nextNegZFiniteFloat
+            (negZFiniteFloat, Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NegZFiniteFloat]"
     }
 
   implicit val negZIntGenerator: Generator[NegZInt] =
