@@ -278,14 +278,35 @@ object GenAnyVals {
     List(
       "Pos",
       "PosZ",
-      "NonZero"
+      "NonZeroFinite",
+      "NonZero",
+      "PosFinite",
+      "PosZFinite",
+      "NegFinite",
+      "NegZFinite"
     )
 
   val allAnyValTypes =
-    anyValTypes.flatMap(t => primitiveTypes.map(p => t + p))
+    anyValTypes.flatMap(t => primitiveTypes.map(p => t + p)).filter( typeName =>
+      typeName != "PosFiniteInt" &&
+      typeName != "PosFiniteLong" &&
+      typeName != "PosZFiniteInt" &&
+      typeName != "PosZFiniteLong" &&
+      typeName != "NegFiniteInt" &&
+      typeName != "NegFiniteLong" &&
+      typeName != "NegZFiniteInt" &&
+      typeName != "NegZFiniteLong" &&
+      typeName != "NonZeroFiniteInt" &&
+      typeName != "NonZeroFiniteLong"
+    )
 
   def nonZeroWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p)
+  }
+
+  def nonZeroFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZeroFinite" + p)
   }
 
   def posZWidens(primitiveType: String): List[String] = {
@@ -308,12 +329,37 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p)
   }
 
+  def posFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Pos" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosFinite" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZFinite" + p)
+  }
+
+  def posZFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZFinite" + p)
+  }
+
+  def negFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Neg" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NegZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegFinite" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NegZFinite" + p)
+  }
+
+  def negZFiniteWidens(primitiveType: String): List[String] = {
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegZFinite" + p)
+  }
+
   def positiveInfinity(typePrefix: String, primitiveName: String): String =
     s"""/**
       |  * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
       |  */
       |final val PositiveInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity) // Can't use the macro here
-      |
     """.stripMargin
 
   def negativeInfinity(typePrefix: String, primitiveName: String): String =
@@ -321,11 +367,17 @@ object GenAnyVals {
         |  * The negative infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity)</code>.
         |  */
         |final val NegativeInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity) // Can't use the macro here
-        |
      """.stripMargin
 
+  def isPosInfinity(primitiveType: String): String =
+    s"def isPosInfinity: Boolean = $primitiveType.PositiveInfinity == value\n"
+
+  def isNegInfinity(primitiveType: String): String =
+    s"def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n"
+
+
   def minPositiveValue(typePrefix: String, primitiveName: String): String =
-    s"final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)".stripMargin
+    s"final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)\n".stripMargin
 
   def round(typePrefix: String, primitiveName: String): String =
     s"""/**
@@ -472,18 +524,30 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long")) :::
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
-      "",
+      isPosInfinity("Float") +
+      isNegInfinity("Float"),
       positiveInfinity("NonZero", "Float") +
       negativeInfinity("NonZero", "Float") +
       minPositiveValue("NonZero", "Float"),
       nonZeroWidens("Float")) :::
     genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
-      "",
+      isPosInfinity("Double") +
+      isNegInfinity("Double"),
       positiveInfinity("NonZero", "Double") +
       negativeInfinity("NonZero", "Double") +
       minPositiveValue("NonZero", "Double"),
       nonZeroWidens("Double")) :::
+    genFloatAnyVal(dir, "NonZeroFiniteFloat", "finite non-zero", "Note: a <code>NonZeroFiniteFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN && i != Float.PositiveInfinity && i != Float.NegativeInfinity", "NonZeroFiniteFloat(1.1f)", "NonZeroFiniteFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
+      "Float.MaxValue", "3.4028235E38",
+      "",
+      minPositiveValue("NonZeroFinite", "Float"),
+      nonZeroFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "NonZeroFiniteDouble", "finite non-zero", "Note: a <code>NonZeroFiniteDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN && i != Double.PositiveInfinity && i != Double.NegativeInfinity", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
+      "Double.MaxValue", "1.7976931348623157E308",
+      "",
+      minPositiveValue("NonZeroFinite", "Double"),
+      nonZeroFiniteWidens("Double")) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
       "Int.MaxValue", "2147483647", posZWidens("Int")) :::
     genLongAnyVal(dir, "PosZLong", "non-negative", "", "i >= 0L", "PosZLong(42)", "PosZLong(-1)", "42", "-1", "0L", "0L",
@@ -493,7 +557,8 @@ object GenAnyVals {
       round("PosZ", "Float") +
       ceil("PosZ", "Float") +
       floor("PosZ", "Float") +
-      plus("PosZ", "Float", "non-negative"),
+      plus("PosZ", "Float", "non-negative") +
+      isPosInfinity("Float"),
       positiveInfinity("PosZ", "Float") +
       minPositiveValue("PosZ", "Float") +
       sumOf("PosZ", "Float", "non-negative"),
@@ -503,7 +568,8 @@ object GenAnyVals {
       round("PosZ", "Double") +
       ceil("PosZ", "Double") +
       floor("PosZ", "Double") +
-      plus("PosZ", "Double", "non-negative"),
+      plus("PosZ", "Double", "non-negative") +
+      isPosInfinity("Double"),
       positiveInfinity("PosZ", "Double") +
       minPositiveValue("PosZ", "Double") +
       sumOf("PosZ", "Double", "non-negative"),
@@ -516,8 +582,9 @@ object GenAnyVals {
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float") +
       ceil("Pos", "Float") +
-      floor("PosZ", "Float") +
-      plus("Pos", "Float", "positive", "PosZ", "non-negative"),
+      floor("Pos", "Float") +
+      plus("Pos", "Float", "positive", "PosZ", "non-negative") +
+      isPosInfinity("Float"),
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float") +
       sumOf("Pos", "Float", "positive", "PosZ", "non-negative"),
@@ -526,8 +593,9 @@ object GenAnyVals {
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZ", "Double") +
       ceil("Pos", "Double") +
-      floor("PosZ", "Double") +
-      plus("Pos", "Double", "positive", "PosZ", "non-negative"),
+      floor("Pos", "Double") +
+      plus("Pos", "Double", "positive", "PosZ", "non-negative") +
+      isPosInfinity("Double"),
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double") +
       sumOf("Pos", "Double", "positive", "PosZ", "non-negative"),
@@ -541,7 +609,8 @@ object GenAnyVals {
       round("NegZ", "Float") +
       ceil("NegZ", "Float") +
       floor("Neg", "Float") +
-      plus("Neg", "Float", "negative", "NegZ", "non-positive"),
+      plus("Neg", "Float", "negative", "NegZ", "non-positive") +
+      isNegInfinity("Float"),
       negativeInfinity("Neg", "Float") +
       sumOf("Neg", "Float", "negative", "NegZ", "non-positive"),
       negWidens("Float")) :::
@@ -550,7 +619,8 @@ object GenAnyVals {
       round("NegZ", "Double") +
       ceil("NegZ", "Double") +
       floor("Neg", "Double") +
-      plus("Neg", "Double", "negative", "NegZ", "non-positive"),
+      plus("Neg", "Double", "negative", "NegZ", "non-positive") +
+      isNegInfinity("Double"),
       negativeInfinity("Neg", "Double") +
       sumOf("Neg", "Double", "negative", "NegZ", "non-positive"),
       negWidens("Double")) :::
@@ -562,7 +632,8 @@ object GenAnyVals {
       round("NegZ", "Float") +
       ceil("NegZ", "Float") +
       floor("NegZ", "Float") +
-      plus("NegZ", "Float", "non-positive"),
+      plus("NegZ", "Float", "non-positive") +
+      isNegInfinity("Float"),
       negativeInfinity("NegZ", "Float") +
       sumOf("NegZ", "Float", "non-positive"),
       negZWidens("Float")) :::
@@ -570,10 +641,65 @@ object GenAnyVals {
       round("NegZ", "Double") +
       ceil("NegZ", "Double") +
       floor("NegZ", "Double") +
-      plus("NegZ", "Double", "non-positive"),
+      plus("NegZ", "Double", "non-positive") +
+      isNegInfinity("Double"),
       negativeInfinity("NegZ", "Double") +
       sumOf("NegZ", "Double", "non-positive"),
-      negZWidens("Double"))
+      negZWidens("Double")) :::
+    genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
+      "Float.MaxValue", "3.4028235E38",
+      round("PosFinite", "Float") +
+      ceil("PosFinite", "Float") +
+      floor("PosFinite", "Float"),
+      minPositiveValue("Pos", "Float"),
+      posFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "PosFiniteDouble", "finite positive", "", "i > 0.0  && i != Double.PositiveInfinity", "PosFiniteDouble(1.1)", "PosFiniteDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
+      "Double.MaxValue", "1.7976931348623157E308",
+      round("PosFinite", "Double") +
+      ceil("PosFinite", "Double") +
+      floor("PosFinite", "Double"),
+      minPositiveValue("PosFinite", "Double"),
+      posFiniteWidens("Double")) :::
+    genFloatAnyVal(dir, "PosZFiniteFloat", "finite non-negative", "", "i >= 0.0f && i != Float.PositiveInfinity", "PosZFiniteFloat(1.1f)", "PosZFiniteFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
+      "Float.MaxValue", "3.4028235E38",
+      round("PosZFinite", "Float") +
+      ceil("PosZFinite", "Float") +
+      floor("PosZFinite", "Float"),
+      minPositiveValue("PosZFinite", "Float"),
+      posZFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "PosZFiniteDouble", "finite non-negative", "", "i >= 0.0 && i != Double.PositiveInfinity", "PosZFiniteDouble(1.1)", "PosZFiniteDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
+      "Double.MaxValue", "1.7976931348623157E308",
+      round("PosZFinite", "Double") +
+      ceil("PosZFinite", "Double") +
+      floor("PosZFinite", "Double"),
+      minPositiveValue("PosZFinite", "Double"),
+      posZFiniteWidens("Double")) :::
+    genFloatAnyVal(dir, "NegFiniteFloat", "finite negative", "Note: a <code>NegFiniteFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFiniteFloat]].", "i < 0.0f && i != Float.NegativeInfinity", "NegFiniteFloat(-42.1f)", "NegFiniteFloat(0.0f)", "-42.1f", "0.0f",
+      "Float.MinValue", "-3.4028235E38", "-Float.MinPositiveValue", "-1.4E-45",
+      round("NegFinite", "Float") +
+      ceil("NegFinite", "Float") +
+      floor("NegFinite", "Float"),
+      "",
+      negFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "NegFiniteDouble", "finite negative", "", "i < 0.0  && i != Double.NegativeInfinity", "NegFiniteDouble(-1.1)", "NegFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "-Double.MinPositiveValue", "-4.9E-324",
+      round("NegFinite", "Double") +
+      ceil("NegFinite", "Double") +
+      floor("NegFinite", "Double"),
+      "",
+      negFiniteWidens("Double")) :::
+    genFloatAnyVal(dir, "NegZFiniteFloat", "finite non-positive", "", "i <= 0.0f && i != Float.NegativeInfinity", "NegZFiniteFloat(-1.1f)", "NegZFiniteFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
+      round("NegZFinite", "Float") +
+      ceil("NegZFinite", "Float") +
+      floor("NegZFinite", "Float"),
+      "",
+      negZFiniteWidens("Float")) :::
+    genDoubleAnyVal(dir, "NegZFiniteDouble", "finite non-positive", "", "i <= 0.0 && i != Double.NegativeInfinity", "PosZFiniteDouble(-1.1)", "NegZFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
+      round("NegZFinite", "Double") +
+      ceil("NegZFinite", "Double") +
+      floor("NegZFinite", "Double"),
+      "",
+      negZFiniteWidens("Double"))
+
   }
 
   def valueFormat(value: String, typeName: String): String =
@@ -707,7 +833,7 @@ object GenAnyVals {
     val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
     val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    val autoWidenTests =
+    val autoWidenTests =6
       primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != primitiveType), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
         anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
         shouldNotCompileTests(primitiveTypes.takeWhile(_ != primitiveType) ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
@@ -762,6 +888,8 @@ object GenAnyVals {
     genAnyValTests(dir, "NonZeroLong", "Long", 3, nonZeroWidens("Long")) ++
     genAnyValTests(dir, "NonZeroFloat", "Float", 3, nonZeroWidens("Float")) ++
     genAnyValTests(dir, "NonZeroDouble", "Double", 3, nonZeroWidens("Double")) ++
+    genAnyValTests(dir, "NonZeroFiniteFloat", "Float", 3, nonZeroFiniteWidens("Float")) ++
+    genAnyValTests(dir, "NonZeroFiniteDouble", "Double", 3, nonZeroFiniteWidens("Double")) ++
     genAnyValTests(dir, "NegInt", "Int", -3, negWidens("Int")) ++
     genAnyValTests(dir, "NegLong", "Long", -3, negWidens("Long")) ++
     genAnyValTests(dir, "NegFloat", "Float", -3, negWidens("Float")) ++
@@ -769,7 +897,15 @@ object GenAnyVals {
     genAnyValTests(dir, "NegZInt", "Int", -3, negZWidens("Int")) ++
     genAnyValTests(dir, "NegZLong", "Long", -3, negZWidens("Long")) ++
     genAnyValTests(dir, "NegZFloat", "Float", -3, negZWidens("Float")) ++
-    genAnyValTests(dir, "NegZDouble", "Double", -3, negZWidens("Double"))
+    genAnyValTests(dir, "NegZDouble", "Double", -3, negZWidens("Double")) ++
+    genAnyValTests(dir, "PosFiniteFloat", "Float", 3, posFiniteWidens("Float")) ++
+    genAnyValTests(dir, "PosFiniteDouble", "Double", 3, posFiniteWidens("Double")) ++
+    genAnyValTests(dir, "PosZFiniteFloat", "Float", 3, posZFiniteWidens("Float")) ++
+    genAnyValTests(dir, "PosZFiniteDouble", "Double", 3, posZFiniteWidens("Double")) ++
+    genAnyValTests(dir, "NegFiniteFloat", "Float", -3, negFiniteWidens("Float")) ++
+    genAnyValTests(dir, "NegFiniteDouble", "Double", -3, negFiniteWidens("Double")) ++
+    genAnyValTests(dir, "NegZFiniteFloat", "Float", -3, negZFiniteWidens("Float")) ++
+    genAnyValTests(dir, "NegZFiniteDouble", "Double", -3, negZFiniteWidens("Double"))
   }
 
 }
