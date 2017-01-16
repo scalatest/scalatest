@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.scalactic.anyvals
+package org.scalactic
 
 /**
   * A wrapper class to allow any value to be used with <code>for</code>
@@ -52,6 +52,13 @@ final class Present[A] private (val value: A) extends AnyVal {
     * @param f the function that takes <code>A</code>
     */
   def foreach(f: A => Unit): Unit = f(value)
+
+  /**
+   * A string that includes the underlying value of this <code>Present</code>.
+   *
+   * @return a string representation of this object
+   */
+  override def toString: String = s"Present($value)"
 }
 
 object Present {

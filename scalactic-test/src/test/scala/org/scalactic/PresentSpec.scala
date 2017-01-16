@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.scalactic.anyvals
+package org.scalactic
 
 import org.scalatest._
 
@@ -55,6 +55,9 @@ class PresentSpec extends FunSpec {
       }
     }
 
+    it("should have a pretty toString") {
+      Present("hello").toString shouldBe "Present(hello)"
+      Present(33).toString shouldBe "Present(33)"
+    }
   }
-
 }
