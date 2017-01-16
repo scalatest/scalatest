@@ -582,7 +582,7 @@ object GenAnyVals {
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float") +
       ceil("Pos", "Float") +
-      floor("Pos", "Float") +
+      floor("PosZ", "Float") +
       plus("Pos", "Float", "positive", "PosZ", "non-negative") +
       isPosInfinity("Float"),
       positiveInfinity("Pos", "Float") +
@@ -593,7 +593,7 @@ object GenAnyVals {
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZ", "Double") +
       ceil("Pos", "Double") +
-      floor("Pos", "Double") +
+      floor("PosZ", "Double") +
       plus("Pos", "Double", "positive", "PosZ", "non-negative") +
       isPosInfinity("Double"),
       positiveInfinity("Pos", "Double") +
@@ -648,16 +648,16 @@ object GenAnyVals {
       negZWidens("Double")) :::
     genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
-      round("PosFinite", "Float") +
+      round("PosZFinite", "Float") +
       ceil("PosFinite", "Float") +
-      floor("PosFinite", "Float"),
+      floor("PosZFinite", "Float"),
       minPositiveValue("Pos", "Float"),
       posFiniteWidens("Float")) :::
     genDoubleAnyVal(dir, "PosFiniteDouble", "finite positive", "", "i > 0.0  && i != Double.PositiveInfinity", "PosFiniteDouble(1.1)", "PosFiniteDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("PosFinite", "Double") +
+      round("PosZFinite", "Double") +
       ceil("PosFinite", "Double") +
-      floor("PosFinite", "Double"),
+      floor("PosZFinite", "Double"),
       minPositiveValue("PosFinite", "Double"),
       posFiniteWidens("Double")) :::
     genFloatAnyVal(dir, "PosZFiniteFloat", "finite non-negative", "", "i >= 0.0f && i != Float.PositiveInfinity", "PosZFiniteFloat(1.1f)", "PosZFiniteFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
@@ -676,14 +676,14 @@ object GenAnyVals {
       posZFiniteWidens("Double")) :::
     genFloatAnyVal(dir, "NegFiniteFloat", "finite negative", "Note: a <code>NegFiniteFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFiniteFloat]].", "i < 0.0f && i != Float.NegativeInfinity", "NegFiniteFloat(-42.1f)", "NegFiniteFloat(0.0f)", "-42.1f", "0.0f",
       "Float.MinValue", "-3.4028235E38", "-Float.MinPositiveValue", "-1.4E-45",
-      round("NegFinite", "Float") +
-      ceil("NegFinite", "Float") +
+      round("NegZFinite", "Float") +
+      ceil("NegZFinite", "Float") +
       floor("NegFinite", "Float"),
       "",
       negFiniteWidens("Float")) :::
     genDoubleAnyVal(dir, "NegFiniteDouble", "finite negative", "", "i < 0.0  && i != Double.NegativeInfinity", "NegFiniteDouble(-1.1)", "NegFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "-Double.MinPositiveValue", "-4.9E-324",
-      round("NegFinite", "Double") +
-      ceil("NegFinite", "Double") +
+      round("NegZFinite", "Double") +
+      ceil("NegZFinite", "Double") +
       floor("NegFinite", "Double"),
       "",
       negFiniteWidens("Double")) :::
