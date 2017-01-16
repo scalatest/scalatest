@@ -167,9 +167,47 @@ object Generator extends LowerPriorityGeneratorImplicits {
   import scala.language.implicitConversions
   implicit def widen[T, U](genOfT: Generator[T])(implicit ev: T <:< U): Generator[U] = genOfT.map(o => (o: U))
 
+  private[prop] val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
+  private[prop] val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
+  private[prop] val charEdges = List(Char.MinValue, Char.MaxValue)
+  private[prop] val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
+  private[prop] val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
+  private[prop] val floatEdges = List(0.0f)
+  private[prop] val doubleEdges = List(0.0)
+  private[prop] val posIntEdges = List(PosInt(1), PosInt.MaxValue)
+  private[prop] val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
+  private[prop] val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
+  private[prop] val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
+  private[prop] val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
+  private[prop] val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
+  private[prop] val posFiniteFloatEdges = List(PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
+  private[prop] val posZFiniteFloatEdges = List(PosZFiniteFloat(0.0f), PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
+  private[prop] val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
+  private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
+  private[prop] val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
+  private[prop] val posZFiniteDoubleEdges = List(PosZFiniteDouble(0.0), PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
+  private[prop] val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
+  private[prop] val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
+  private[prop] val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
+  private[prop] val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
+  private[prop] val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
+  private[prop] val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
+  private[prop] val negDoubleEdges = List(NegDouble.MinValue, NegDouble(-1.0), NegDouble.MaxValue)
+  private[prop] val negFiniteDoubleEdges = List(NegFiniteDouble.MinValue, NegFiniteDouble(-1.0), NegFiniteDouble.MaxValue)
+  private[prop] val negFloatEdges = List(NegFloat.MinValue, NegFloat(-1.0F), NegFloat.MaxValue)
+  private[prop] val negFiniteFloatEdges = List(NegFiniteFloat.MinValue, NegFiniteFloat(-1.0F), NegFiniteFloat.MaxValue)
+  private[prop] val negIntEdges = List(NegInt.MinValue, NegInt.MaxValue)
+  private[prop] val negLongEdges = List(NegLong.MinValue, NegLong.MaxValue)
+  private[prop] val negZDoubleEdges = List(NegZDouble.MinValue, NegZDouble(-1.0), NegZDouble.ensuringValid(-Double.MinPositiveValue), NegZDouble(-0.0), NegZDouble.MaxValue)
+  private[prop] val negZFiniteDoubleEdges = List(NegZFiniteDouble.MinValue, NegZFiniteDouble(-1.0), NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue), NegZFiniteDouble(-0.0), NegZFiniteDouble.MaxValue)
+  private[prop] val negZFloatEdges = List(NegZFloat.MinValue, NegZFloat(-1.0F), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat(-0.0F), NegZFloat.MaxValue)
+  private[prop] val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat(-0.0F), NegZFiniteFloat.MaxValue)
+  private[prop] val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
+  private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
+
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
-      private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -202,7 +240,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val shortGenerator: Generator[Short] =
     new Generator[Short] {
-      private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -235,7 +272,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val charGenerator: Generator[Char] =
     new Generator[Char] {
-      private val charEdges = List(Char.MinValue, Char.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -271,7 +307,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val intGenerator: Generator[Int] =
     new Generator[Int] {
-      private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -304,7 +339,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val longGenerator: Generator[Long] =
     new Generator[Long] {
-      private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -337,9 +371,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val floatGenerator: Generator[Float] =
     new Generator[Float] {
-      private val posFloatEdges = List(0.0f)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
-        (posFloatEdges.take(maxLength), rnd)
+        (floatEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
         edges match {
@@ -380,9 +413,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val doubleGenerator: Generator[Double] =
     new Generator[Double] {
-      private val posDoubleEdges = List(0.0)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
-        (posDoubleEdges.take(maxLength), rnd)
+        (doubleEdges.take(maxLength), rnd)
       }
       def next(size: PosZInt, maxSize: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
         edges match {
@@ -423,7 +455,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
-      private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -442,7 +473,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
-      private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -461,7 +491,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posLongGenerator: Generator[PosLong] =
     new Generator[PosLong] {
-      private val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -480,7 +509,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZLongGenerator: Generator[PosZLong] =
     new Generator[PosZLong] {
-      private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -499,7 +527,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posFloatGenerator: Generator[PosFloat] =
     new Generator[PosFloat] {
-      private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -518,7 +545,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
     new Generator[PosFiniteFloat] {
-      private val posFiniteFloatEdges = List(PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -537,7 +563,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
-      private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -556,7 +581,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
     new Generator[PosZFiniteFloat] {
-      private val posZFiniteFloatEdges = List(PosZFiniteFloat(0.0f), PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -575,7 +599,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posDoubleGenerator: Generator[PosDouble] =
     new Generator[PosDouble] {
-      private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -594,7 +617,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
     new Generator[PosFiniteDouble] {
-      private val posFiniteDoubleEdges = List(PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -613,7 +635,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZDoubleGenerator: Generator[PosZDouble] =
     new Generator[PosZDouble] {
-      private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -632,7 +653,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val posZFiniteDoubleGenerator: Generator[PosZFiniteDouble] =
     new Generator[PosZFiniteDouble] {
-      private val posZFiniteDoubleEdges = List(PosZFiniteDouble(0.0), PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -651,7 +671,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
     new Generator[NonZeroDouble] {
-      private val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -670,7 +689,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
     new Generator[NonZeroFiniteDouble] {
-      private val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -689,7 +707,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroFloatGenerator: Generator[NonZeroFloat] =
     new Generator[NonZeroFloat] {
-      private val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -708,7 +725,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
     new Generator[NonZeroFiniteFloat] {
-      private val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -727,7 +743,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
     new Generator[NonZeroInt] {
-      private val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -746,7 +761,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val nonZeroLongGenerator: Generator[NonZeroLong] =
     new Generator[NonZeroLong] {
-      private val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -765,7 +779,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negDoubleGenerator: Generator[NegDouble] =
     new Generator[NegDouble] {
-      private val negDoubleEdges = List(NegDouble.MinValue, NegDouble(-1.0), NegDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -784,7 +797,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negFiniteDoubleGenerator: Generator[NegFiniteDouble] =
     new Generator[NegFiniteDouble] {
-      private val negFiniteDoubleEdges = List(NegFiniteDouble.MinValue, NegFiniteDouble(-1.0), NegFiniteDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -803,7 +815,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negFloatGenerator: Generator[NegFloat] =
     new Generator[NegFloat] {
-      private val negFloatEdges = List(NegFloat.MinValue, NegFloat(-1.0F), NegFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -822,7 +833,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
     new Generator[NegFiniteFloat] {
-      private val negFiniteFloatEdges = List(NegFiniteFloat.MinValue, NegFiniteFloat(-1.0F), NegFiniteFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -841,7 +851,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negIntGenerator: Generator[NegInt] =
     new Generator[NegInt] {
-      private val negIntEdges = List(NegInt.MinValue, NegInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -860,7 +869,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
-      private val negLongEdges = List(NegLong.MinValue, NegLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -879,7 +887,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZDoubleGenerator: Generator[NegZDouble] =
     new Generator[NegZDouble] {
-      private val negZDoubleEdges = List(NegZDouble.MinValue, NegZDouble(-1.0), NegZDouble.ensuringValid(-Double.MinPositiveValue), NegZDouble(-0.0), NegZDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -898,7 +905,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
     new Generator[NegZFiniteDouble] {
-      private val negZFiniteDoubleEdges = List(NegZFiniteDouble.MinValue, NegZFiniteDouble(-1.0), NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue), NegZFiniteDouble(-0.0), NegZFiniteDouble.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -917,7 +923,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
-      private val negZFloatEdges = List(NegZFloat.MinValue, NegZFloat(-1.0F), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat(-0.0F), NegZFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -936,7 +941,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
     new Generator[NegZFiniteFloat] {
-      private val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat(-0.0F), NegZFiniteFloat.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -955,7 +959,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZIntGenerator: Generator[NegZInt] =
     new Generator[NegZInt] {
-      private val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -974,7 +977,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
 
   implicit val negZLongGenerator: Generator[NegZLong] =
     new Generator[NegZLong] {
-      private val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
