@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS-START
@@ -32,11 +30,6 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 trait NegZFloatSpecSupport {
-
-  val negZFloatGen: Gen[NegZFloat] =
-    for {i <- choose(Float.MinValue, 0.0f)} yield NegZFloat.from(i).get
-
-  implicit val arbNegZFloat: Arbitrary[NegZFloat] = Arbitrary(negZFloatGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {

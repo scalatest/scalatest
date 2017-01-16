@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.check.ScalaCheckGenerators
@@ -32,16 +30,6 @@ import org.scalactic.{Good, Bad}
 import org.scalactic.Equality
 
 trait NonZeroFloatSpecSupport {
-
-  val nonZeroFloatGen: Gen[NonZeroFloat] =
-    for {i <- choose(Float.MinValue, Float.MaxValue)} yield {
-      if (i == 0.0f)
-        NonZeroFloat.ensuringValid(1.0f)
-      else
-        NonZeroFloat.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroFloat: Arbitrary[NonZeroFloat] = Arbitrary(nonZeroFloatGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

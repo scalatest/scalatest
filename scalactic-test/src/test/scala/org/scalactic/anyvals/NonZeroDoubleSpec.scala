@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
@@ -33,15 +31,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
 trait NonZeroDoubleSpecSupport {
-  val nonZeroDoubleGen: Gen[NonZeroDouble] =
-    for {i <- choose(Double.MinValue, Double.MaxValue)} yield {
-      if (i == 0.0)
-        NonZeroDouble.ensuringValid(1.0)
-      else
-        NonZeroDouble.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroDouble: Arbitrary[NonZeroDouble] = Arbitrary(nonZeroDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
