@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
@@ -28,11 +26,6 @@ import OptionValues._
 import scala.util.{Failure, Success, Try}
 
 trait NegZIntSpecSupport {
-
-  val negZIntGen: Gen[NegZInt] =
-    for {i <- choose(Int.MinValue, -1)} yield NegZInt.from(i).get
-
-  implicit val arbNegZInt: Arbitrary[NegZInt] = Arbitrary(negZIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

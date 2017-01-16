@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
@@ -27,11 +25,6 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 trait PosIntSpecSupport {
-
-  val posIntGen: Gen[PosInt] =
-    for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
-
-  implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
