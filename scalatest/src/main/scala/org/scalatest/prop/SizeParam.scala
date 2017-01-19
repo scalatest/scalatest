@@ -19,8 +19,10 @@ import org.scalactic.anyvals.{PosInt,PosZInt}
 import org.scalactic.Requirements._
 
 // 0 + 10 is 10
+// sizeRange = maxSize - minSize
 case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
-  require(size >= minSize, "the passed size ($size) must be greater than or equal to the passed minSize ($minSize)")
-  require(size <= minSize + sizeRange, "the passed size ($size) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
+  require(size >= minSize, s"the passed size ($size.value) must be greater than or equal to the passed minSize ($minSize.value)")
+  require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
+  val maxSize: PosZInt = PosZInt.ensuringValid(minSize + sizeRange)
 }
 

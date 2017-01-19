@@ -21,25 +21,42 @@ import org.scalactic.anyvals._
 /*
 It looks like sizeRange = maxSize - minSize
 */
-class SizeParamSpec extends WordSpec with Matchers {
+class SizeParamSpec extends LogicWordSpec with WillMatchers with PropertyChecks {
   "A SizeParam" should {
     "have a minimum, range, and size" in {
       val sp = SizeParam(33, 20, 35)
-      sp.minSize shouldBe PosZInt(33)
-      sp.sizeRange shouldBe PosZInt(20)
-      sp.size shouldBe PosZInt(35)
+      sp.minSize willBe PosZInt(33)
+      sp.sizeRange willBe PosZInt(20)
+      sp.size willBe PosZInt(35)
     }
     "offer a factory method in its companion that throws IAE if the size is invalid" in {
-      noException should be thrownBy SizeParam(0, 10, 0)
-      noException should be thrownBy SizeParam(0, 10, 10)
-      noException should be thrownBy SizeParam(1, 10, 1)
-      noException should be thrownBy SizeParam(1, 10, 11)
-      an [IllegalArgumentException] should be thrownBy SizeParam(0, 10, 11) // minSize 0, maxSize 10 
-      an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 0) // minSize 1, maxSize 11, 
-      an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 12)
+      noException will be thrownBy SizeParam(0, 10, 0)
+      noException will be thrownBy SizeParam(0, 10, 10)
+      noException will be thrownBy SizeParam(1, 10, 1)
+      noException will be thrownBy SizeParam(1, 10, 11)
+      an [IllegalArgumentException] will be thrownBy SizeParam(0, 10, 11) // minSize 0, maxSize 10 
+      an [IllegalArgumentException] will be thrownBy SizeParam(1, 10, 0) // minSize 1, maxSize 11, 
+      an [IllegalArgumentException] will be thrownBy SizeParam(1, 10, 12)
+    }
+    "offer a maxSize methods" in {
+     
+       val params =
+        for {
+          minSz <- posZInts
+          maxSz <- posZIntsBetween(minSz, PosZInt.MaxValue)
+          sz <- posZIntsBetween(minSz, maxSz)
+        } yield (minSz, maxSz, sz)
+  
+      forAll (params) { case (minSize, sizeRange, size) => 
+        (minSize + sizeRange >= 0) implies {
+          val sp = SizeParam(minSize, sizeRange, size)
+          sp.sizeRange willBe PosZInt.ensuringValid(sp.maxSize - sp.minSize)
+        }
+      }
     }
   }
 }
+
 
 
 
