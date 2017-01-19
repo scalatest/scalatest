@@ -124,6 +124,26 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val pos = f.abs // 0.0f or greater
     (PosZFloat.ensuringValid(pos), r)
   }
+  def nextFiniteFloat: (FiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val finite =
+      n match {
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case _ => n
+      }
+    (FiniteFloat.ensuringValid(finite), r)
+  }
+  def nextFiniteDouble: (FiniteDouble, Randomizer) = {
+    val (n, r) = nextDouble // TODO: Study nextFloat and nextDouble to see if it produces NaNs or Infinities.
+    val finite =            // See if it produces non-normal (less than max precision) values
+      n match {
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case _ => n
+      }
+    (FiniteDouble.ensuringValid(finite), r)
+  }
   def nextPosZFiniteFloat: (PosZFiniteFloat, Randomizer) = {
     val (n, r) = nextFloat
     val posZFinite =
