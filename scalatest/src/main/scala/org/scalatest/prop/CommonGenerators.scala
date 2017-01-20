@@ -520,6 +520,14 @@ trait CommonGenerators {
   val posZFloats: Generator[PosZFloat] = Generator.posZFloatGenerator
   val posDoubles: Generator[PosDouble] = Generator.posDoubleGenerator
   val posZDoubles: Generator[PosZDouble] = Generator.posZDoubleGenerator
+  val negInts: Generator[NegInt] = Generator.negIntGenerator
+  val negZInts: Generator[NegZInt] = Generator.negZIntGenerator
+  val negLongs: Generator[NegLong] = Generator.negLongGenerator
+  val negZLongs: Generator[NegZLong] = Generator.negZLongGenerator
+  val negFloats: Generator[NegFloat] = Generator.negFloatGenerator
+  val negZFloats: Generator[NegZFloat] = Generator.negZFloatGenerator
+  val negDoubles: Generator[NegDouble] = Generator.negDoubleGenerator
+  val negZDoubles: Generator[NegZDouble] = Generator.negZDoubleGenerator
 
   val posIntValues: Generator[Int] = Generator.posIntGenerator.map(_.value)
   val posZIntValues: Generator[Int] = Generator.posZIntGenerator.map(_.value)
@@ -529,6 +537,14 @@ trait CommonGenerators {
   val posZFloatValues: Generator[Float] = Generator.posZFloatGenerator.map(_.value)
   val posDoubleValues: Generator[Double] = Generator.posDoubleGenerator.map(_.value)
   val posZDoubleValues: Generator[Double] = Generator.posZDoubleGenerator.map(_.value)
+  val negIntValues: Generator[Int] = Generator.negIntGenerator.map(_.value)
+  val negZIntValues: Generator[Int] = Generator.negZIntGenerator.map(_.value)
+  val negLongValues: Generator[Long] = Generator.negLongGenerator.map(_.value)
+  val negZLongValues: Generator[Long] = Generator.negZLongGenerator.map(_.value)
+  val negFloatValues: Generator[Float] = Generator.negFloatGenerator.map(_.value)
+  val negZFloatValues: Generator[Float] = Generator.negZFloatGenerator.map(_.value)
+  val negDoubleValues: Generator[Double] = Generator.negDoubleGenerator.map(_.value)
+  val negZDoubleValues: Generator[Double] = Generator.negZDoubleGenerator.map(_.value)
 
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
