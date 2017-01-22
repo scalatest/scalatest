@@ -720,6 +720,10 @@ trait CommonGenerators {
   val negZFloats: Generator[NegZFloat] = Generator.negZFloatGenerator
   val negDoubles: Generator[NegDouble] = Generator.negDoubleGenerator
   val negZDoubles: Generator[NegZDouble] = Generator.negZDoubleGenerator
+  val nonZeroInts: Generator[NonZeroInt] = Generator.nonZeroIntGenerator
+  val nonZeroLongs: Generator[NonZeroLong] = Generator.nonZeroLongGenerator
+  val nonZeroFloats: Generator[NonZeroFloat] = Generator.nonZeroFloatGenerator
+  val nonZeroDoubles: Generator[NonZeroDouble] = Generator.nonZeroDoubleGenerator
 
   val posIntValues: Generator[Int] = Generator.posIntGenerator.map(_.value)
   val posZIntValues: Generator[Int] = Generator.posZIntGenerator.map(_.value)

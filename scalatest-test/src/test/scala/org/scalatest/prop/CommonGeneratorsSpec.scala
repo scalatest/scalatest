@@ -62,7 +62,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an bytesBetween method" that {
+    "offer a bytesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -139,7 +139,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an shortsBetween method" that {
+    "offer a shortsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -297,7 +297,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an longsBetween method" that {
+    "offer a longsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -374,7 +374,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an charsBetween method" that {
+    "offer a charsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -451,7 +451,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an floatsBetween method" that {
+    "offer a floatsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -528,7 +528,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an doublesBetween method" that {
+    "offer a doublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -689,7 +689,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posLongsBetween method" that {
+    "offer a posLongsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -766,7 +766,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posFloatsBetween method" that {
+    "offer a posFloatsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -843,7 +843,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posDoublesBetween method" that {
+    "offer a posDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -999,7 +999,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posZLongsBetween method" that {
+    "offer a posZLongsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1076,7 +1076,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posZFloatsBetween method" that {
+    "offer a posZFloatsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1153,7 +1153,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an posZDoublesBetween method" that {
+    "offer a posZDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1311,7 +1311,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negLongsBetween method" that {
+    "offer a negLongsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1388,7 +1388,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negFloatsBetween method" that {
+    "offer a negFloatsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1465,7 +1465,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negDoublesBetween method" that {
+    "offer a negDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1621,7 +1621,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negZLongsBetween method" that {
+    "offer a negZLongsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1698,7 +1698,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negZFloatsBetween method" that {
+    "offer a negZFloatsBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -1775,7 +1775,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
-    "offer an negZDoublesBetween method" that {
+    "offer a negZDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
           for {
@@ -2582,6 +2582,63 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a nonZeroInts method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroInts" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroInt]]
+        val namedGen = nonZeroInts
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroLongs method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroLongs" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroLong]]
+        val namedGen = nonZeroLongs
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroFloats method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFloat]]
+        val namedGen = nonZeroFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroDoubles method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroDouble]]
+        val namedGen = nonZeroDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+
     "offer a tuple2s method" that {
       "returns the default implicit generator that produces arbitrary Tuple2s" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
