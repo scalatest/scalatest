@@ -92,6 +92,7 @@ object Monad {
     def flatten[A](cca: Option[Option[A]]): Option[A] = cca.flatten
   }
 
+  // TODO: Need to make a method that is <: so that Some works. 
   implicit val optionMonad: Monad[Option] = new OptionMonad
 
   import org.scalactic.{Or, Good}
@@ -104,6 +105,7 @@ object Monad {
     def flatten[A](cca: Or.B[BAD]#G[Or.B[BAD]#G[A]]): Or.B[BAD]#G[A] = cca.flatMap(a => a)
   }
 
+  // TODO: May need to do the same thing here, so that Good and Bad work.
   implicit def orMonad[BAD]: Monad[Or.B[BAD]#G] = new OrMonad[BAD]
 }
 
