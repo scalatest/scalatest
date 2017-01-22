@@ -319,6 +319,198 @@ trait CommonGenerators {
     }
   }
 
+  def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] = {
+    require(from <= to)
+    new Generator[NegInt] {
+      thisNegIntGenerator =>
+      private val intEdges = Generator.negIntEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: intEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegInt], rnd: Randomizer): (NegInt, List[NegInt], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegInt, nextRandomizer) = rnd.chooseNegInt(from, to)
+            (nextNegInt, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] = {
+    require(from <= to)
+    new Generator[NegLong] {
+      thisNegLongGenerator =>
+      private val longEdges = Generator.negLongEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: longEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegLong], rnd: Randomizer): (NegLong, List[NegLong], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegLong, nextRandomizer) = rnd.chooseNegLong(from, to)
+            (nextNegLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] = {
+    require(from <= to)
+    new Generator[NegFloat] {
+      thisNegFloatGenerator =>
+      private val floatEdges = Generator.negFloatEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: floatEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegFloat], rnd: Randomizer): (NegFloat, List[NegFloat], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegFloat, nextRandomizer) = rnd.chooseNegFloat(from, to)
+            (nextNegFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] = {
+    require(from <= to)
+    new Generator[NegDouble] {
+      thisNegDoubleGenerator =>
+      private val doubleEdges = Generator.negDoubleEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: doubleEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegDouble], rnd: Randomizer): (NegDouble, List[NegDouble], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegDouble, nextRandomizer) = rnd.chooseNegDouble(from, to)
+            (nextNegDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] = {
+    require(from <= to)
+    new Generator[NegZInt] {
+      thisNegZIntGenerator =>
+      private val intEdges = Generator.negZIntEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: intEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZInt], rnd: Randomizer): (NegZInt, List[NegZInt], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegZInt, nextRandomizer) = rnd.chooseNegZInt(from, to)
+            (nextNegZInt, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] = {
+    require(from <= to)
+    new Generator[NegZLong] {
+      thisNegZLongGenerator =>
+      private val longEdges = Generator.negZLongEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: longEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZLong], rnd: Randomizer): (NegZLong, List[NegZLong], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegZLong, nextRandomizer) = rnd.chooseNegZLong(from, to)
+            (nextNegZLong, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] = {
+    require(from <= to)
+    new Generator[NegZFloat] {
+      thisNegZFloatGenerator =>
+      private val floatEdges = Generator.negZFloatEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: floatEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZFloat], rnd: Randomizer): (NegZFloat, List[NegZFloat], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegZFloat, nextRandomizer) = rnd.chooseNegZFloat(from, to)
+            (nextNegZFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] = {
+    require(from <= to)
+    new Generator[NegZDouble] {
+      thisNegZDoubleGenerator =>
+      private val doubleEdges = Generator.negZDoubleEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: doubleEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZDouble], rnd: Randomizer): (NegZDouble, List[NegZDouble], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextNegZDouble, nextRandomizer) = rnd.chooseNegZDouble(from, to)
+            (nextNegZDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
@@ -520,6 +712,18 @@ trait CommonGenerators {
   val posZFloats: Generator[PosZFloat] = Generator.posZFloatGenerator
   val posDoubles: Generator[PosDouble] = Generator.posDoubleGenerator
   val posZDoubles: Generator[PosZDouble] = Generator.posZDoubleGenerator
+  val negInts: Generator[NegInt] = Generator.negIntGenerator
+  val negZInts: Generator[NegZInt] = Generator.negZIntGenerator
+  val negLongs: Generator[NegLong] = Generator.negLongGenerator
+  val negZLongs: Generator[NegZLong] = Generator.negZLongGenerator
+  val negFloats: Generator[NegFloat] = Generator.negFloatGenerator
+  val negZFloats: Generator[NegZFloat] = Generator.negZFloatGenerator
+  val negDoubles: Generator[NegDouble] = Generator.negDoubleGenerator
+  val negZDoubles: Generator[NegZDouble] = Generator.negZDoubleGenerator
+  val nonZeroInts: Generator[NonZeroInt] = Generator.nonZeroIntGenerator
+  val nonZeroLongs: Generator[NonZeroLong] = Generator.nonZeroLongGenerator
+  val nonZeroFloats: Generator[NonZeroFloat] = Generator.nonZeroFloatGenerator
+  val nonZeroDoubles: Generator[NonZeroDouble] = Generator.nonZeroDoubleGenerator
 
   val posIntValues: Generator[Int] = Generator.posIntGenerator.map(_.value)
   val posZIntValues: Generator[Int] = Generator.posZIntGenerator.map(_.value)
@@ -529,6 +733,18 @@ trait CommonGenerators {
   val posZFloatValues: Generator[Float] = Generator.posZFloatGenerator.map(_.value)
   val posDoubleValues: Generator[Double] = Generator.posDoubleGenerator.map(_.value)
   val posZDoubleValues: Generator[Double] = Generator.posZDoubleGenerator.map(_.value)
+  val negIntValues: Generator[Int] = Generator.negIntGenerator.map(_.value)
+  val negZIntValues: Generator[Int] = Generator.negZIntGenerator.map(_.value)
+  val negLongValues: Generator[Long] = Generator.negLongGenerator.map(_.value)
+  val negZLongValues: Generator[Long] = Generator.negZLongGenerator.map(_.value)
+  val negFloatValues: Generator[Float] = Generator.negFloatGenerator.map(_.value)
+  val negZFloatValues: Generator[Float] = Generator.negZFloatGenerator.map(_.value)
+  val negDoubleValues: Generator[Double] = Generator.negDoubleGenerator.map(_.value)
+  val negZDoubleValues: Generator[Double] = Generator.negZDoubleGenerator.map(_.value)
+  val nonZeroIntValues: Generator[Int] = Generator.nonZeroIntGenerator.map(_.value)
+  val nonZeroLongValues: Generator[Long] = Generator.nonZeroLongGenerator.map(_.value)
+  val nonZeroFloatValues: Generator[Float] = Generator.nonZeroFloatGenerator.map(_.value)
+  val nonZeroDoubleValues: Generator[Double] = Generator.nonZeroDoubleGenerator.map(_.value)
 
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
