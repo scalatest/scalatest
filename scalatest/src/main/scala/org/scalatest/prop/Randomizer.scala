@@ -674,6 +674,170 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     }
   }
+
+  def chooseNegInt(from: NegInt, to: NegInt): (NegInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNegInt
+
+      if (nextValue >= min && nextValue <= max)
+        (NegInt.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)).abs + min
+        (NegInt.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegLong(from: NegLong, to: NegLong): (NegLong, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNegLong
+
+      if (nextValue >= min && nextValue <= max)
+        (NegLong.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)).abs + min
+        (NegLong.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegFloat(from: NegFloat, to: NegFloat): (NegFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNegFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (NegFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegDouble(from: NegDouble, to: NegDouble): (NegDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNegDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (NegDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegZInt(from: NegZInt, to: NegZInt): (NegZInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNegZInt
+
+      if (nextValue >= min && nextValue <= max)
+        (NegZInt.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)).abs + min
+        (NegZInt.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegZLong(from: NegZLong, to: NegZLong): (NegZLong, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNegZLong
+
+      if (nextValue >= min && nextValue <= max)
+        (NegZLong.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)).abs + min
+        (NegZLong.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegZFloat(from: NegZFloat, to: NegZFloat): (NegZFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNegZFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (NegZFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNegZDouble(from: NegZDouble, to: NegZDouble): (NegZDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNegZDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (NegZDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
 }
 
 object Randomizer {
