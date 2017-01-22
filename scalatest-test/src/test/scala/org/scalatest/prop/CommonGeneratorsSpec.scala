@@ -2638,6 +2638,62 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a nonZeroIntValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroInts" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroInt]]
+        val namedGen = nonZeroIntValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroLongValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroLongs" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroLong]]
+        val namedGen = nonZeroLongValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFloat]]
+        val namedGen = nonZeroFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroDouble]]
+        val namedGen = nonZeroDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
 
     "offer a tuple2s method" that {
       "returns the default implicit generator that produces arbitrary Tuple2s" in {

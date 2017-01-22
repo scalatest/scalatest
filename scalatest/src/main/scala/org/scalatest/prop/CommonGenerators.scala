@@ -741,6 +741,10 @@ trait CommonGenerators {
   val negZFloatValues: Generator[Float] = Generator.negZFloatGenerator.map(_.value)
   val negDoubleValues: Generator[Double] = Generator.negDoubleGenerator.map(_.value)
   val negZDoubleValues: Generator[Double] = Generator.negZDoubleGenerator.map(_.value)
+  val nonZeroIntValues: Generator[Int] = Generator.nonZeroIntGenerator.map(_.value)
+  val nonZeroLongValues: Generator[Long] = Generator.nonZeroLongGenerator.map(_.value)
+  val nonZeroFloatValues: Generator[Float] = Generator.nonZeroFloatGenerator.map(_.value)
+  val nonZeroDoubleValues: Generator[Double] = Generator.nonZeroDoubleGenerator.map(_.value)
 
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
