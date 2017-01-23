@@ -1853,6 +1853,318 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a nonZeroIntsBetween method" that {
+      val NonZeroIntMaxValueMinusOne = PosInt(2147483646)
+
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroIntsBetween(NonZeroInt.MinValue, NonZeroInt.ensuringValid(NonZeroInt.MaxValue - 1))
+            hi <- nonZeroIntsBetween(if (lo.value == -1) NonZeroInt(1) else NonZeroInt.ensuringValid(lo + 1), NonZeroInt.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an [IllegalArgumentException] should be thrownBy {
+            nonZeroIntsBetween(hi, lo)
+          }
+        }
+      }
+
+      "produces NonZeroInts between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroInt, NonZeroInt)] =
+          for {
+            min <- nonZeroIntsBetween(NonZeroInt.MinValue, NonZeroIntMaxValueMinusOne)
+            max <- nonZeroIntsBetween(min, NonZeroInt.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroInt] = nonZeroIntsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroInt, NonZeroInt)] =
+          for {
+            min <- nonZeroIntsBetween(NonZeroInt.MinValue, NonZeroIntMaxValueMinusOne)
+            max <- nonZeroIntsBetween(min, NonZeroInt.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroInt] = nonZeroIntsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should (have length 1 or have length 2 or have length 3 or have length 4)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NonZeroInt edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroInts.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroInt, to: NonZeroInt): List[NonZeroInt] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroInt] = nonZeroIntsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a nonZeroLongsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroLongsBetween(NonZeroLong.MinValue, NonZeroLong.ensuringValid(NonZeroLong.MaxValue - 1L)) // Hmm. Using the method to test itself
+            hi <- nonZeroLongsBetween(if (lo.value == -1L) NonZeroLong(1L) else NonZeroLong.ensuringValid(lo + 1L), NonZeroLong.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an [IllegalArgumentException] should be thrownBy {
+            nonZeroLongsBetween(hi, lo)
+          }
+        }
+      }
+      "produces NonZeroLongs between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroLong, NonZeroLong)] =
+          for {
+            min <- nonZeroLongsBetween(NonZeroLong.MinValue, NonZeroLong.ensuringValid(NonZeroLong.MaxValue - 1))
+            max <- nonZeroLongsBetween(min, NonZeroLong.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroLong] = nonZeroLongsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroLong, NonZeroLong)] =
+          for {
+            min <- nonZeroLongsBetween(NonZeroLong.MinValue, NonZeroLong.ensuringValid(NonZeroLong.MaxValue - 1L))
+            max <- nonZeroLongsBetween(min, NonZeroLong.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroLong] = nonZeroLongsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NonZeroLong edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroLongs.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroLong, to: NonZeroLong): List[NonZeroLong] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroLong] = nonZeroLongsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a nonZeroFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroFloatsBetween(NonZeroFloat.MinValue, NonZeroFloat.ensuringValid(NonZeroFloat.MaxValue - 1E32f))
+            hi <- nonZeroFloatsBetween(if (lo + 1E32f == 0.0f) NonZeroFloat(1.0f) else NonZeroFloat.ensuringValid(lo + 1E32f), NonZeroFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            nonZeroFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFloat, NonZeroFloat)] =
+          for {
+            min <- nonZeroFloatsBetween(NonZeroFloat.MinValue, NonZeroFloat.ensuringValid(NonZeroFloat.MaxValue - 1E32f))
+            max <- nonZeroFloatsBetween(min, NonZeroFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFloat] = nonZeroFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFloat, NonZeroFloat)] =
+          for {
+            min <- nonZeroFloatsBetween(NonZeroFloat.MinValue, NonZeroFloat.ensuringValid(NonZeroFloat.MaxValue - 1E32f))
+            max <- nonZeroFloatsBetween(min, NonZeroFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFloat] = nonZeroFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NonZeroFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroFloat, to: NonZeroFloat): List[NonZeroFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroFloat] = nonZeroFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a nonZeroDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroDoublesBetween(NonZeroDouble.MinValue, NonZeroDouble.ensuringValid(NonZeroDouble.MaxValue - 1E292))
+            hi <- nonZeroDoublesBetween(if (lo + 1E292 == 0.0) NonZeroDouble(1.0) else NonZeroDouble.ensuringValid(lo + 1E292), NonZeroDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            nonZeroDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces NonZeroDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroDouble, NonZeroDouble)] =
+          for {
+            min <- nonZeroDoublesBetween(NonZeroDouble.MinValue, NonZeroDouble.ensuringValid(NonZeroDouble.MaxValue - 1E292))
+            max <- nonZeroDoublesBetween(min, NonZeroDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroDouble, NonZeroDouble)] =
+          for {
+            min <- nonZeroDoublesBetween(NonZeroDouble.MinValue, NonZeroDouble.ensuringValid(NonZeroDouble.MaxValue - 1E292))
+            max <- nonZeroDoublesBetween(min, NonZeroDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal NonZeroDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroDouble, to: NonZeroDouble): List[NonZeroDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a specificValues method" that {
       "returns a generator that produces from a given set of specific objects for any type T" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
