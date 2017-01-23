@@ -952,6 +952,48 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     }
   }
+
+  def chooseFiniteFloat(from: FiniteFloat, to: FiniteFloat): (FiniteFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextFiniteFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (FiniteFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseFiniteDouble(from: FiniteDouble, to: FiniteDouble): (FiniteDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextFiniteDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (FiniteDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
 }
 
 object Randomizer {

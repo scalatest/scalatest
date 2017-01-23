@@ -607,6 +607,54 @@ trait CommonGenerators {
     }
   }
 
+  def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] = {
+    require(from <= to)
+    new Generator[FiniteFloat] {
+      thisFiniteFloatGenerator =>
+      private val floatEdges = Generator.finiteFloatEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: floatEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteFloat], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[FiniteFloat], rnd: Randomizer): (FiniteFloat, List[FiniteFloat], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextFiniteFloat, nextRandomizer) = rnd.chooseFiniteFloat(from, to)
+            (nextFiniteFloat, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
+  def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] = {
+    require(from <= to)
+    new Generator[FiniteDouble] {
+      thisFiniteDoubleGenerator =>
+      private val doubleEdges = Generator.finiteDoubleEdges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: doubleEdges).distinct
+
+      // distinct in case from equals to
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteDouble], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+
+      def next(size: PosZInt, maxSize: PosZInt, edges: List[FiniteDouble], rnd: Randomizer): (FiniteDouble, List[FiniteDouble], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextFiniteDouble, nextRandomizer) = rnd.chooseFiniteDouble(from, to)
+            (nextFiniteDouble, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
