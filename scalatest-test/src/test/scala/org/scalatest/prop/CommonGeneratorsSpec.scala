@@ -3006,6 +3006,62 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a finiteFloats method" that {
+      "returns the default implicit generator that produces arbitrary FiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[FiniteFloat]]
+        val namedGen = finiteFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a finiteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary FiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[FiniteDouble]]
+        val namedGen = finiteDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a finiteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary FiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[FiniteFloat]]
+        val namedGen = finiteFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a finiteZeroDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary FiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[FiniteDouble]]
+        val namedGen = finiteDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
 
     "offer a tuple2s method" that {
       "returns the default implicit generator that produces arbitrary Tuple2s" in {
