@@ -15,9 +15,7 @@
  */
 package org.scalatest.check
 
-import org.scalatest.prop.Generator
-import org.scalatest.prop.Randomizer
-import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.{Generator, Randomizer, SizeParam}
 
 trait ScalaCheckGenerators {
 
@@ -26,12 +24,12 @@ trait ScalaCheckGenerators {
 
   implicit def scalaCheckArbitaryGenerator[T](implicit arb: Arbitrary[T], shrk: Shrink[T]): Generator[T] =
     new Generator[T] {
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
-            arb.arbitrary.apply(Gen.Parameters.default.withSize(size), Seed(rnd.seed)) match {
+            arb.arbitrary.apply(Gen.Parameters.default.withSize(szp.size), Seed(rnd.seed)) match {
               case Some(nextT) => (nextT, Nil, rnd.nextRandomizer)
               case None => throw new IllegalStateException("Unable to generate value using ScalaCheck Arbitary.")
             }
