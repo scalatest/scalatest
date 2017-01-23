@@ -1041,6 +1041,6 @@ object $typeName$ {
    */
   implicit val ordering: Ordering[$typeName$] =
     new Ordering[$typeName$] {
-      def compare(x: $typeName$, y: $typeName$): Int = x - y
+      def compare(x: $typeName$, y: $typeName$): Int = x.toInt.compare(y)
     }
 }
