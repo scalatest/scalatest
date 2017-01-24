@@ -41,8 +41,8 @@ package object prop {
     val seed = a.hashCode.toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfB.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -54,8 +54,8 @@ package object prop {
     val seed = combinedHashCode(a, b).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfC.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfC.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -69,8 +69,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfD.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfD.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -86,8 +86,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfE.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfE.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -105,8 +105,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfF.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfF.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -126,8 +126,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfG.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfG.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -149,8 +149,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfH.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfH.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -174,8 +174,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfI.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfI.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -201,8 +201,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfJ.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfJ.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -230,8 +230,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfK.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfK.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -261,8 +261,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfL.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfL.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -294,8 +294,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfM.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfM.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -329,8 +329,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfN.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfN.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -366,8 +366,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfO.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfO.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -405,8 +405,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfP.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfP.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -446,8 +446,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfQ.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfQ.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -489,8 +489,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfR.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfR.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -534,8 +534,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfS.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfS.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -581,8 +581,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfT.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -630,8 +630,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfU.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfU.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -681,8 +681,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfV.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfV.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 
@@ -734,8 +734,8 @@ package object prop {
     val seed = combinedHashCode(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v).toLong * multiplier
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfW.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
+    val (result, _, _) = genOfW.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     result
   }
 }

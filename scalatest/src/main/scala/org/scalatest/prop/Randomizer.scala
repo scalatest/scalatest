@@ -360,6 +360,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     loop(List.empty, 0, thisRandomizer)
   }
   // TODO: Not sure if we should have a nextList here because it ties Randomizer to Generator.
+  // And length should be a PosZInt, which will then simplify the line of code 7 down from here, the genOfT.next one.
   def nextList[T](length: Int)(implicit genOfT: Generator[T]): (List[T], Randomizer) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec

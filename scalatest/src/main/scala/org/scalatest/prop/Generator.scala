@@ -116,8 +116,8 @@ trait Generator[T] { thisGeneratorOfT =>
   def sample: T = {
     val rnd = Randomizer.default
     val maxSize = PosZInt(100)
-    val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
-    val (value, _, _) = next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, nextRnd)
+    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
+    val (value, _, _) = next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     value
   }
   def samples(length: PosInt): List[T] = {
@@ -126,8 +126,8 @@ trait Generator[T] { thisGeneratorOfT =>
       if (count == length.value) acc
       else {
         val maxSize = PosZInt(100)
-        val (size, nextRnd) = rnd.chooseInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
-        val (value, _, nextNextRnd) = next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
+        val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
+        val (value, _, nextNextRnd) = next(SizeParam(PosZInt(0), maxSize, size), Nil, rnd)
         loop(count + 1, nextNextRnd, value :: acc)
       }
     }
