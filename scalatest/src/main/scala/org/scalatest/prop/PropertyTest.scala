@@ -40,15 +40,15 @@ trait PropertyTest {
     val minSize = config.minSize
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, nextRnd) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), edges, nextRnd) // TODO: Move PosZInt farther out
+      val (a, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd) // TODO: Move PosZInt farther out
 
       val result: Try[RESULT] = Try { fun(a) }
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
@@ -122,16 +122,16 @@ I'd then just feed the edges through along with the randomizer.
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, rnd1) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), aEdges, rnd1) // TODO: See if PosZInt can be moved farther out
-      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), bEdges, rnd2)
+      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1) // TODO: See if PosZInt can be moved farther out
+      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
       val result: Try[RESULT] = Try { fun(a, b) }
       val argsPassed =
         List(
@@ -204,17 +204,17 @@ I'd then just feed the edges through along with the randomizer.
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, rnd1) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), aEdges, rnd1)
-      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), bEdges, rnd2)
-      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), cEdges, rnd3)
+      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
       val result: Try[RESULT] = Try { fun(a, b, c) }
       val argsPassed =
         List(
@@ -290,18 +290,18 @@ I'd then just feed the edges through along with the randomizer.
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, rnd1) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), aEdges, rnd1)
-      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), bEdges, rnd2)
-      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), cEdges, rnd3)
-      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), dEdges, rnd4)
+      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
       val result: Try[RESULT] = Try { fun(a, b, c, d) }
       val argsPassed =
         List(
@@ -380,19 +380,19 @@ I'd then just feed the edges through along with the randomizer.
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, rnd1) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), aEdges, rnd1)
-      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), bEdges, rnd2)
-      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), cEdges, rnd3)
-      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), dEdges, rnd4)
-      val (e, nextEEdges, rnd6) = genE.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), eEdges, rnd5)
+      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
+      val (e, nextEEdges, rnd6) = genE.next(SizeParam(PosZInt(0), maxSize, size), eEdges, rnd5)
       val result: Try[RESULT] = Try { fun(a, b, c, d, e) }
       val argsPassed =
         List(
@@ -474,20 +474,20 @@ I'd then just feed the edges through along with the randomizer.
     val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[Int]): PropertyTest.Result = {
+    def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
       val (size, nextInitialSizes, rnd1) =
         initialSizes match {
           case head :: tail => (head, tail, rnd)
           case Nil =>
-            val (sz, nextRnd) = rnd.chooseInt(minSize, maxSize)
+            val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
             (sz, Nil, nextRnd)
         }
-      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), aEdges, rnd1)
-      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), bEdges, rnd2)
-      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), cEdges, rnd3)
-      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), dEdges, rnd4)
-      val (e, nextEEdges, rnd6) = genE.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), eEdges, rnd5)
-      val (f, nextFEdges, rnd7) = genF.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), fEdges, rnd6)
+      val (a, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+      val (b, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+      val (c, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
+      val (d, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
+      val (e, nextEEdges, rnd6) = genE.next(SizeParam(PosZInt(0), maxSize, size), eEdges, rnd5)
+      val (f, nextFEdges, rnd7) = genF.next(SizeParam(PosZInt(0), maxSize, size), fEdges, rnd6)
       val result: Try[RESULT] = Try { fun(a, b, c, d, e, f) }
       val argsPassed =
         List(
@@ -657,13 +657,13 @@ object PropertyTest {
       def check: Result = checkForAll(names, config, genA, genB, genC, genD, genE, genF)(fun)
     }
 
-    def calcSizes(minSize: Int, maxSize: Int, initRndm: Randomizer): (List[Int], Randomizer) = {
+    def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
       @tailrec
-      def sizesLoop(sizes: List[Int], count: Int, rndm: Randomizer): (List[Int], Randomizer) = {
+      def sizesLoop(sizes: List[PosZInt], count: Int, rndm: Randomizer): (List[PosZInt], Randomizer) = {
         sizes match {
           case Nil => sizesLoop(List(minSize), 1, rndm)
           case szs if count < 10 =>
-            val (nextSize, nextRndm) = rndm.chooseInt(minSize, maxSize)
+            val (nextSize, nextRndm) = rndm.choosePosZInt(minSize, maxSize)
             sizesLoop(nextSize :: sizes, count + 1, nextRndm)
           case _ => (sizes.sorted, rndm)
       }
