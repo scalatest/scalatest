@@ -838,6 +838,141 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (PosZDouble.MaxValue)
       }
     }
+    describe("for NegInts") {
+      it("should produce the same NegInt values in the same order given the same Randomizer") {
+        import Generator._
+        val aGen= negIntGenerator
+        val bGen = negIntGenerator
+        val (a1, _, ar1) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
+        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
+        a6 shouldEqual b6
+        a7 shouldEqual b7
+      }
+      it("should produce NegInt edge values first in random order") {
+        import Generator._
+        val gen = negIntGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegInt, ae1: List[NegInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val edges = List(a1, a2)
+        edges should contain (NegInt(-1))
+        edges should contain (NegInt.MaxValue)
+      }
+    }
+    describe("for NegZInts") {
+      it("should produce NegZInt edge values first in random order") {
+        import Generator._
+        val gen = negZIntGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegZInt, ae1: List[NegZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val edges = List(a1, a2, a3)
+        edges should contain (NegZInt(0))
+        edges should contain (NegZInt(-1))
+        edges should contain (NegZInt.MaxValue)
+      }
+    }
+    describe("for NegLongs") {
+      it("should produce NegLong edge values first in random order") {
+        import Generator._
+        val gen = negLongGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegLong, ae1: List[NegLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val edges = List(a1, a2)
+        edges should contain (NegLong(-1L))
+        edges should contain (NegLong.MaxValue)
+      }
+    }
+    describe("for NegZLongs") {
+      it("should produce NegZLong edge values first in random order") {
+        import Generator._
+        val gen = negZLongGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegZLong, ae1: List[NegZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val edges = List(a1, a2, a3)
+        edges should contain (NegZLong(0L))
+        edges should contain (NegZLong(-1L))
+        edges should contain (NegZLong.MaxValue)
+      }
+    }
+    describe("for NegFloat") {
+      it("should produce NegFloat edge values first in random order") {
+        import Generator._
+        val gen = negFloatGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegFloat, ae1: List[NegFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val edges = List(a1, a2, a3)
+        edges should contain (NegFloat(-1.0f))
+        edges should contain (NegFloat.MaxValue)
+        edges should contain (NegFloat.MinValue)
+      }
+    }
+    describe("for NegZFloat") {
+      it("should produce NegZFloat edge values first in random order") {
+        import Generator._
+        val gen = negZFloatGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegZFloat, ae1: List[NegZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NegZFloat.MinValue)
+        edges should contain (NegZFloat(-1.0f))
+        edges should contain (NegZFloat.MaxValue)
+        edges should contain (NegZFloat.ensuringValid(-Float.MinPositiveValue))
+      }
+    }
+    describe("for NegDouble") {
+      it("should produce NegDouble edge values first in random order") {
+        import Generator._
+        val gen = negDoubleGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegDouble, ae1: List[NegDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val edges = List(a1, a2, a3)
+        edges should contain (NegDouble(-1.0))
+        edges should contain (NegDouble.MinValue)
+        edges should contain (NegDouble.MaxValue)
+      }
+    }
+    describe("for NegZDouble") {
+      it("should produce NegZDouble edge values first in random order") {
+        import Generator._
+        val gen = negZDoubleGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NegZDouble, ae1: List[NegZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NegZDouble.MinValue)
+        edges should contain (NegZDouble(-1.0))
+        edges should contain (NegZDouble.MaxValue)
+        edges should contain (NegZDouble.ensuringValid(-Double.MinPositiveValue))
+      }
+    }
+
     describe("for Strings") {
       it("should offer a String generator that returns a string whose length equals the passed size") {
   
