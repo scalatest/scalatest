@@ -335,39 +335,14 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       }
     }
 
-    it("should offer widening methods for basic types that are consistent with Int") {
-      forAll { (nzint: NonZeroInt) =>
-        def widen(value: Int): Int = value
-        widen(nzint) shouldEqual widen(nzint.toInt)
-      }
-      forAll { (nzint: NonZeroInt) =>
-        def widen(value: Long): Long = value
-        widen(nzint) shouldEqual widen(nzint.toInt)
-      }
-      forAll { (nzint: NonZeroInt) =>
-        def widen(value: Float): Float = value
-        widen(nzint) shouldEqual widen(nzint.toInt)
-      }
-      forAll { (nzint: NonZeroInt) =>
-        def widen(value: Double): Double = value
-        widen(nzint) shouldEqual widen(nzint.toInt)
-      }
-      forAll { (nzint: NonZeroLong) =>
-        def widen(value: NonZeroLong): NonZeroLong = value
-        widen(nzint) shouldEqual widen(NonZeroLong.from(nzint.toLong).get)
-      }
-      /*forAll { (plong: NonZeroLong) =>
-        def widen(value: NonZeroFloat): NonZeroFloat = value
-        widen(plong) shouldEqual widen(NonZeroFloat.from(plong.toLong).get)
-      }
-      forAll { (plong: NonZeroLong) =>
-        def widen(value: NonZeroDouble): NonZeroDouble = value
-        widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)
-      }*/
-    }
     it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
       NonZeroInt(33).ensuringValid(_ + 1) shouldEqual NonZeroInt(34)
       an [AssertionError] should be thrownBy { NonZeroInt(-1).ensuringValid(_ + 1) }
     }
+
+    it("should provide a Ordering that works for both negative and positive values") {
+      NonZeroInt(-1924396667) should be <= NonZeroInt(1081481977)
+    }
+
   }
 }
