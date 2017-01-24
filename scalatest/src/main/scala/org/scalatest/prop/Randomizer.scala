@@ -858,6 +858,142 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     }
   }
+
+  def chooseNonZeroInt(from: NonZeroInt, to: NonZeroInt): (NonZeroInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNonZeroInt
+
+      if (nextValue >= min && nextValue <= max)
+        (NonZeroInt.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)).abs + min
+        if (nextBetween == 0)
+          (NonZeroInt(1), nextRnd)
+        else
+          (NonZeroInt.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNonZeroLong(from: NonZeroLong, to: NonZeroLong): (NonZeroLong, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val (nextValue, nextRnd) = nextNonZeroLong
+
+      if (nextValue >= min && nextValue <= max)
+        (NonZeroLong.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween: Long = (nextValue % (max - min + 1)).abs + min
+        if (nextBetween == 0L)
+          (NonZeroLong(1L), nextRnd)
+        else
+          (NonZeroLong.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNonZeroFloat(from: NonZeroFloat, to: NonZeroFloat): (NonZeroFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNonZeroFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        if (nextBetween == 0.0f)
+          (NonZeroFloat(1.0f), nextRnd)
+        else
+          (NonZeroFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseNonZeroDouble(from: NonZeroDouble, to: NonZeroDouble): (NonZeroDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextNonZeroDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        if (nextBetween == 0.0)
+          (NonZeroDouble(1.0), nextRnd)
+        else
+          (NonZeroDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseFiniteFloat(from: FiniteFloat, to: FiniteFloat): (FiniteFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextFiniteFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (FiniteFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseFiniteDouble(from: FiniteDouble, to: FiniteDouble): (FiniteDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextFiniteDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (FiniteDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
 }
 
 object Randomizer {
