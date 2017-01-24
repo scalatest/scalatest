@@ -1116,8 +1116,8 @@ val generatorSuitePostamble = """
 
   val sevenEleven: Generator[String] =
     new Generator[String] {
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
-        if (size >= 7 && size <= 11)
+      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+        if (szp.size >= 7 && szp.size <= 11)
           ("OKAY", edges, rnd)
         else
           throw new Exception("expected 7 <= size <= 11 but got " + size)
@@ -1127,8 +1127,8 @@ val generatorSuitePostamble = """
 
   val fiveFive: Generator[String] =
     new Generator[String] {
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
-        if (size == 5)
+      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+        if (szp.size == 5)
           ("OKAY", edges, rnd)
         else
           throw new Exception("expected size 5 but got " + size)
@@ -3007,7 +3007,7 @@ $okayAssertions$
       |    } yield $initToLastName$($initLower$)
       |  }
       |
-      |  def next(size: PosZInt, maxSize: PosZInt, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(size, maxSize, edges, rnd)
+      |  def next(szp: SizeParam, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(szp, edges, rnd)
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)

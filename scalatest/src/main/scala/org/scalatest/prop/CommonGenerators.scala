@@ -31,7 +31,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -51,7 +51,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -71,7 +71,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -91,7 +91,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -111,7 +111,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -131,7 +131,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -151,7 +151,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -170,7 +170,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -189,7 +189,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -209,7 +209,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -229,7 +229,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -249,7 +249,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -268,7 +268,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -288,7 +288,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -308,7 +308,7 @@ trait CommonGenerators {
         val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -332,7 +332,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegInt], rnd: Randomizer): (NegInt, List[NegInt], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegInt], rnd: Randomizer): (NegInt, List[NegInt], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -356,7 +356,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegLong], rnd: Randomizer): (NegLong, List[NegLong], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegLong], rnd: Randomizer): (NegLong, List[NegLong], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -380,7 +380,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegFloat], rnd: Randomizer): (NegFloat, List[NegFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegFloat], rnd: Randomizer): (NegFloat, List[NegFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -404,7 +404,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegDouble], rnd: Randomizer): (NegDouble, List[NegDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegDouble], rnd: Randomizer): (NegDouble, List[NegDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -428,7 +428,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZInt], rnd: Randomizer): (NegZInt, List[NegZInt], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegZInt], rnd: Randomizer): (NegZInt, List[NegZInt], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -452,7 +452,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZLong], rnd: Randomizer): (NegZLong, List[NegZLong], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegZLong], rnd: Randomizer): (NegZLong, List[NegZLong], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -476,7 +476,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZFloat], rnd: Randomizer): (NegZFloat, List[NegZFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegZFloat], rnd: Randomizer): (NegZFloat, List[NegZFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -500,7 +500,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NegZDouble], rnd: Randomizer): (NegZDouble, List[NegZDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NegZDouble], rnd: Randomizer): (NegZDouble, List[NegZDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -524,7 +524,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroInt], rnd: Randomizer): (NonZeroInt, List[NonZeroInt], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NonZeroInt], rnd: Randomizer): (NonZeroInt, List[NonZeroInt], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -548,7 +548,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroLong], rnd: Randomizer): (NonZeroLong, List[NonZeroLong], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NonZeroLong], rnd: Randomizer): (NonZeroLong, List[NonZeroLong], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -572,7 +572,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroFloat], rnd: Randomizer): (NonZeroFloat, List[NonZeroFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NonZeroFloat], rnd: Randomizer): (NonZeroFloat, List[NonZeroFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -596,7 +596,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[NonZeroDouble], rnd: Randomizer): (NonZeroDouble, List[NonZeroDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[NonZeroDouble], rnd: Randomizer): (NonZeroDouble, List[NonZeroDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -620,7 +620,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[FiniteFloat], rnd: Randomizer): (FiniteFloat, List[FiniteFloat], Randomizer) = {
+      def next(szp: SizeParam, edges: List[FiniteFloat], rnd: Randomizer): (FiniteFloat, List[FiniteFloat], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -644,7 +644,7 @@ trait CommonGenerators {
         (allEdges.take(maxLength), nextRnd)
       }
 
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[FiniteDouble], rnd: Randomizer): (FiniteDouble, List[FiniteDouble], Randomizer) = {
+      def next(szp: SizeParam, edges: List[FiniteDouble], rnd: Randomizer): (FiniteDouble, List[FiniteDouble], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>
@@ -658,7 +658,7 @@ trait CommonGenerators {
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -672,7 +672,7 @@ trait CommonGenerators {
 
   def specificValue[T](theValue: T): Generator[T] =
     new Generator[T] {
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
@@ -726,14 +726,14 @@ trait CommonGenerators {
         distribution.toVector flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
             val nextGen = gens(nextInt)
-            nextGen.next(size, maxSize, Nil, nextRandomizer)
+            nextGen.next(szp, Nil, nextRandomizer)
         }
       }
     }
@@ -743,14 +743,14 @@ trait CommonGenerators {
     val distributees: Vector[Generator[T]] = (first +: second +: rest).toVector
     new Generator[T] {
       // gens contains, for each distribution pair, weight generators.
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
         edges match {
           case head :: tail =>
             (head, tail, rnd)
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
             val nextGen = distributees(nextInt)
-            nextGen.next(size, maxSize, Nil, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
+            nextGen.next(szp, Nil, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
         }
       }
     }
@@ -995,7 +995,7 @@ trait CommonGenerators {
     def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
-        val (nextA, nextEdges, nextRnd) = genOfA.next(100, 100, edges, rnd) // TODO: I think this need to mimic forAll.
+        val (nextA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
         if (pf.isDefinedAt(nextA)) {
           val category = pf(nextA)
           val prevTotal = acc.getOrElse(category, PosZInt(0))
@@ -1013,7 +1013,7 @@ trait CommonGenerators {
 
   def first1000Primes: Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
-      def next(size: PosZInt, maxSize: PosZInt, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
         edges match {
           case head :: tail => (head, tail, rnd)
           case _ =>

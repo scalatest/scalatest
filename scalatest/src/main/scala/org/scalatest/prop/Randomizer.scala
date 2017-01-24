@@ -366,7 +366,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     def loop(acc: List[T], count: Int, nextRnd: Randomizer): (List[T], Randomizer) = {
       if (count == length) (acc, nextRnd)
       else {
-        val (o, _, r) = genOfT.next(PosZInt.ensuringValid(length), PosZInt.ensuringValid(length), Nil, nextRnd) // Because starts at 0 and goes to a max value of type Int
+        val (o, _, r) = genOfT.next(SizeParam(PosZInt(0), PosZInt.ensuringValid(length), PosZInt.ensuringValid(length)), Nil, nextRnd) // Because starts at 0 and goes to a max value of type Int
         loop(o :: acc, count + 1, r)
       }
     }

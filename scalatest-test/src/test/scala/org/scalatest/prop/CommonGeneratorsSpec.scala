@@ -2430,7 +2430,7 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         else {
           val maxSize = PosZInt(100)
           val (size, nextRnd) = rnd.chooseInt(1, maxSize)
-          val (value, _, nextNextRnd) = genOfT.next(PosZInt.ensuringValid(size), maxSize, Nil, rnd) 
+          val (value, _, nextNextRnd) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
           samplesLoop(count + 1, nextNextRnd, value :: acc)
         } 
       }
