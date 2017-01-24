@@ -972,6 +972,92 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (NegZDouble.ensuringValid(-Double.MinPositiveValue))
       }
     }
+    describe("for NonZeroInts") {
+      it("should produce the same NonZeroInt values in the same order given the same Randomizer") {
+        import Generator._
+        val aGen= nonZeroIntGenerator
+        val bGen = nonZeroIntGenerator
+        val (a1, _, ar1) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
+        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
+        a6 shouldEqual b6
+        a7 shouldEqual b7
+      }
+      it("should produce NonZeroInt edge values first in random order") {
+        import Generator._
+        val gen = nonZeroIntGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NonZeroInt, ae1: List[NonZeroInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NonZeroInt(-1))
+        edges should contain (NonZeroInt.MaxValue)
+        edges should contain (NonZeroInt(1))
+        edges should contain (NonZeroInt.MinValue)
+      }
+    }
+    describe("for NonZeroLongs") {
+      it("should produce NonZeroLong edge values first in random order") {
+        import Generator._
+        val gen = nonZeroLongGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NonZeroLong, ae1: List[NonZeroLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NonZeroLong(-1L))
+        edges should contain (NonZeroLong.MaxValue)
+        edges should contain (NonZeroLong(1L))
+        edges should contain (NonZeroLong.MinValue)
+      }
+    }
+    describe("for NonZeroFloat") {
+      it("should produce NonZeroFloat edge values first in random order") {
+        import Generator._
+        val gen = nonZeroFloatGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NonZeroFloat, ae1: List[NonZeroFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NonZeroFloat(-1.0f))
+        edges should contain (NonZeroFloat(1.0f))
+        edges should contain (NonZeroFloat.MaxValue)
+        edges should contain (NonZeroFloat.MinValue)
+      }
+    }
+    describe("for NonZeroDouble") {
+      it("should produce NonZeroDouble edge values first in random order") {
+        import Generator._
+        val gen = nonZeroDoubleGenerator
+        val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
+        val (a1: NonZeroDouble, ae1: List[NonZeroDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (NonZeroDouble(-1.0))
+        edges should contain (NonZeroDouble(1.0))
+        edges should contain (NonZeroDouble.MinValue)
+        edges should contain (NonZeroDouble.MaxValue)
+      }
+    }
 
     describe("for Strings") {
       it("should offer a String generator that returns a string whose length equals the passed size") {
