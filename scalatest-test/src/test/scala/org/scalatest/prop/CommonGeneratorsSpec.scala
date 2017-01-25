@@ -2596,8 +2596,12 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         val upperLimits: Generator[PosZInt] = posZIntsBetween(0, 99)
 
         forAll (upperLimits) { upperLimit => 
-          val lengthlimitedLists = lists[Int].havingLengthsDeterminedBy(_ => upperLimit)
-          forAll (lengthlimitedLists) { xs => xs.length shouldBe upperLimit.value }
+          def limitedSize(szp: SizeParam): SizeParam = {
+            val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
+            szp.copy(size = sz)
+          }
+          val lengthlimitedLists = lists[Int].havingLengthsDeterminedBy(limitedSize)
+          forAll (lengthlimitedLists) { xs => xs.length should be <= upperLimit.value }
         }
       }
     }

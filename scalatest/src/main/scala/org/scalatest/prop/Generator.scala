@@ -1181,11 +1181,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
-      def havingLengthsDeterminedBy(f: Int => PosZInt): Generator[List[T]] =
+      def havingLengthsDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] =
         new Generator[List[T]] {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, f(szp.size)), edges, rnd)
+            outerGenOfListOfT.next(f(szp), edges, rnd)
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def toString = s"Generator[List[T] /* having length determined by a function */]"
