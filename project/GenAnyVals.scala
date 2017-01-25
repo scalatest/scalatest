@@ -97,6 +97,7 @@ object GenAnyVals {
     st.setAttribute("typeMinValueNumber", typeMinValueNumber)
     st.setAttribute("typeMaxValue", typeMaxValue)
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negationType", negationType(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -143,6 +144,7 @@ object GenAnyVals {
     st.setAttribute("typeMinValueNumber", typeMinValueNumber)
     st.setAttribute("typeMaxValue", typeMaxValue)
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negationType", negationType(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -191,6 +193,7 @@ object GenAnyVals {
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
     st.setAttribute("classExtraMethods", classExtraMethods)
     st.setAttribute("objectExtraMethods", objectExtraMethods)
+    st.setAttribute("negationType", negationType(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -239,6 +242,7 @@ object GenAnyVals {
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
     st.setAttribute("classExtraMethods", classExtraMethods)
     st.setAttribute("objectExtraMethods", objectExtraMethods)
+    st.setAttribute("negationType", negationType(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -286,6 +290,14 @@ object GenAnyVals {
       "NegZFinite",
       "Finite"
     )
+
+  def negationType(typeName: String): String =
+    if (typeName.startsWith("Pos"))
+      "Neg" + typeName.drop(3)
+    else if (typeName.startsWith("Neg"))
+      "Pos" + typeName.drop(3)
+    else
+      typeName
 
   val allAnyValTypes =
     anyValTypes.flatMap(t => primitiveTypes.map(p => t + p)).filter( typeName =>

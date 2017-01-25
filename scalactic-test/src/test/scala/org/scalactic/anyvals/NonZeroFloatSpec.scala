@@ -278,9 +278,9 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
       }
     }
 
-    it("should offer a unary - method that is consistent with Float") {
+    it("should offer a unary - method that returns another NonZeroFloat") {
       forAll { (pfloat: NonZeroFloat) =>
-        (-pfloat) shouldEqual (-(pfloat.toFloat))
+        (-pfloat) shouldEqual (NonZeroFloat.ensuringValid(-(pfloat.toFloat)))
       }
     }
 

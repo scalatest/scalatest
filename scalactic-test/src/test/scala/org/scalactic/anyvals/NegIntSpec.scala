@@ -214,6 +214,18 @@ class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
       }
     }
 
+    it("should offer a unary + method that is consistent with Int") {
+      forAll { (p: NegInt) =>
+        (+p).toInt shouldEqual (+(p.toInt))
+      }
+    }
+
+    it("should offer a unary - method that returns PosInt") {
+      forAll { (p: NegInt) =>
+        (-p) shouldEqual (PosInt.ensuringValid(-(p.toInt)))
+      }
+    }
+
     it("should offer << methods that are consistent with Int") {
       forAll { (pint: NegInt, shift: Int) =>
         pint << shift shouldEqual pint.toInt << shift

@@ -282,6 +282,18 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         val d: Double = -8.0
         "takesNegZFiniteDouble(d)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Double") {
+        forAll { (p: NegZFiniteDouble) =>
+          (+p).toDouble shouldEqual (+(p.toDouble))
+        }
+      }
+
+      it("should offer a unary - method that returns PosZFiniteDouble") {
+        forAll { (p: NegZFiniteDouble) =>
+          (-p) shouldEqual (PosZFiniteDouble.ensuringValid(-(p.toDouble)))
+        }
+      }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Double") {
