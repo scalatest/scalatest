@@ -222,7 +222,7 @@ class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
 
     it("should offer a unary - method that returns PosInt") {
       forAll { (p: NegInt) =>
-        (-p) shouldEqual (PosInt.ensuringValid(-(p.toInt)))
+        (-p) shouldEqual (-(p.toInt))
       }
     }
 

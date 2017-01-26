@@ -180,7 +180,7 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   /** Returns this value, unmodified. */
   def unary_+ : $typeName$ = this
   /** Returns the negation of this value. */
-  def unary_- : $negationType$ = $negationType$.ensuringValid(-value)
+  $negation$
   /**
    * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.
    */

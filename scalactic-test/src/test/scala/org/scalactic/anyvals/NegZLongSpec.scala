@@ -238,7 +238,7 @@ class NegZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
 
     it("should offer a unary - method that returns PosZLong") {
       forAll { (p: NegZLong) =>
-        (-p) shouldEqual (PosZLong.ensuringValid(-(p.toLong)))
+        (-p) shouldEqual (-(p.toLong))
       }
     }
 
