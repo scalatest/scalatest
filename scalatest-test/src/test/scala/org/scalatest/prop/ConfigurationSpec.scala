@@ -21,14 +21,13 @@ import org.scalatest._
 class ConfigurationSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   describe("Configuration.Parameter") {
-    import Generator._
     implicit def configGen: Generator[Configuration.Parameter] =
       for {
-        minSuccessful <- posIntGenerator
-        maxDiscardedFactor <- posZDoubleGenerator
-        minSize <- posZIntGenerator
+        minSuccessful <- posInts
+        maxDiscardedFactor <- posZDoubles
+        minSize <- posZInts
         sizeRange <- posZIntsBetween(0, PosZInt.ensuringValid(PosZInt.MaxValue - minSize))
-        workers <- posIntGenerator
+        workers <- posInts
       } yield {
 
         Configuration.Parameter(minSuccessful, maxDiscardedFactor, minSize, sizeRange, workers)
@@ -45,7 +44,5 @@ class ConfigurationSpec extends FunSpec with Matchers with GeneratorDrivenProper
         Configuration.Parameter(PosInt(5), PosZDouble(0.5), PosZInt.MaxValue, PosZInt(1), PosInt(1))
       }
     }
-
   }
-
 }
