@@ -295,6 +295,18 @@ class FiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with Typ
         val c: Float = -8.0F
         "takesFiniteFloat(c)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Float") {
+        forAll { (v: FiniteFloat) =>
+          (+v).toFloat shouldEqual (+(v.toFloat))
+        }
+      }
+
+      it("should offer a unary - method that returns another FiniteFloat") {
+        forAll { (v: FiniteFloat) =>
+          (-v) shouldEqual (FiniteFloat.ensuringValid(-(v.toFloat)))
+        }
+      }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Float") {

@@ -281,6 +281,18 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
       }
     }
 
+    it("should offer a unary + method that is consistent with Double") {
+      forAll { (p: NonZeroFiniteDouble) =>
+        (+p).toDouble shouldEqual (+(p.toDouble))
+      }
+    }
+
+    it("should offer a unary - method that returns NonZeroFiniteDouble") {
+      forAll { (p: NonZeroFiniteDouble) =>
+        (-p) shouldEqual (NonZeroFiniteDouble.ensuringValid(-(p.toDouble)))
+      }
+    }
+
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pdouble1: NonZeroFiniteDouble, pdouble2: NonZeroFiniteDouble) =>
         pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)

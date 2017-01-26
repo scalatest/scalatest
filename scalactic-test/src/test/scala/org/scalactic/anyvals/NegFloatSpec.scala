@@ -244,6 +244,18 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         val c: Float = -8.0F
         "takesNegFloat(c)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Float") {
+        forAll { (p: NegFloat) =>
+          (+p).toFloat shouldEqual (+(p.toFloat))
+        }
+      }
+
+      it("should offer a unary - method that returns PosFloat") {
+        forAll { (p: NegFloat) =>
+          (-p) shouldEqual (PosFloat.ensuringValid(-(p.toFloat)))
+        }
+      }
     }
 
     it("should offer a 'plus' method that takes a NegZFloat and returns a NegFloat") {

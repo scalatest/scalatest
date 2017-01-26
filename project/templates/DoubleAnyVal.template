@@ -186,7 +186,7 @@ final class $typeName$ private (val value: Double) extends AnyVal {
   /** Returns this value, unmodified. */
   def unary_+ : $typeName$ = this
   /** Returns the negation of this value. */
-  def unary_- : Double = -value
+  def unary_- : $negationType$ = $negationType$.ensuringValid(-value)
 
   /**
    * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.

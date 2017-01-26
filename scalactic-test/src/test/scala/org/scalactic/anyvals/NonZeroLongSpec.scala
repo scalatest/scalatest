@@ -243,6 +243,18 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
 
+      it("should offer a unary + method that is consistent with Long") {
+        forAll { (p: NonZeroLong) =>
+          (+p).toLong shouldEqual (+(p.toLong))
+        }
+      }
+
+      it("should offer a unary - method that returns NonZeroLong") {
+        forAll { (p: NonZeroLong) =>
+          (-p) shouldEqual (NonZeroLong.ensuringValid(-(p.toLong)))
+        }
+      }
+
       it("should offer << methods that are consistent with Long") {
         forAll { (plong: NonZeroLong, shift: Int) =>
           plong << shift shouldEqual plong.toLong << shift
