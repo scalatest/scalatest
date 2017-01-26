@@ -232,7 +232,7 @@ class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
 
       it("should offer a unary - method that returns PosLong") {
         forAll { (p: NegLong) =>
-          (-p) shouldEqual (PosLong.ensuringValid(-(p.toLong)))
+          (-p) shouldEqual (-(p.toLong))
         }
       }
 
