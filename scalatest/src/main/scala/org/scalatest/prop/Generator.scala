@@ -1145,24 +1145,24 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[List[T]]"
-      def havingLength(len: PosZInt): Generator[List[T]] =
+      def havingSize(size: PosZInt): Generator[List[T]] = // TODO: add with HavingLength again
         // No edges and no shrinking. Since they said they want a list of a particular length,
         // that is what they'll get.
         new Generator[List[T]] {
-          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
+          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, len), edges, rnd)
+            outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def toString = s"Generator[List[T] /* having length $len */]"
+          override def toString = s"Generator[List[T] /* having length $size */]"
         }
-      def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[List[T]] = {
-        require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
-        require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
+      def havingSizesBetween(from: PosZInt, to: PosZInt): Generator[List[T]] = { // TODO: add with HavingLength again
+        require(from != to, Resources.fromEqualToToHavingSizesBetween(from))
+        require(from < to, Resources.fromGreaterThanToHavingSizesBetween(from, to))
         new Generator[List[T]] {
           // I don't think edges should have one list each of length from and to, because they would
           // need to have random contents, and that doesn't seem like an edge.
-          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
+          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
           // Specify how size is used.
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) = {
             val nextSize = {
@@ -1171,6 +1171,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
               else if (candidate < from) from
               else PosZInt.ensuringValid(candidate)
             }
+            // TODO: should minSize not be from from now on.
             outerGenOfListOfT.next(SizeParam(PosZInt(0), to, nextSize), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           }
           // If from is either 0 or 1, return the canonicals of the outer Generator.
@@ -1181,14 +1182,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
-      def havingLengthsDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] =
+      def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] = // TODO: add with HavingLength again
         new Generator[List[T]] {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(f(szp), edges, rnd)
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
           override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def toString = s"Generator[List[T] /* having length determined by a function */]"
+          override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
         }
     }
 

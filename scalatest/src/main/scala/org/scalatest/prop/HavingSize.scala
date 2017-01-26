@@ -16,15 +16,10 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals.PosZInt
-import org.scalatest.Resources
 
-trait HavingLength[T] extends HavingSize[T] {
-  final def havingLength(len: PosZInt): Generator[T] = havingSize(len)
-  final def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[T] = {
-    require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
-    require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
-    havingSizesBetween(from, to)
-  }
-  final def havingLengthsDeterminedBy(f: SizeParam => SizeParam): Generator[T] = havingSizesDeterminedBy(f)
+trait HavingSize[T] {
+  def havingSize(len: PosZInt): Generator[T]
+  def havingSizesBetween(from: PosZInt, to: PosZInt): Generator[T]
+  def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[T]
 }
 

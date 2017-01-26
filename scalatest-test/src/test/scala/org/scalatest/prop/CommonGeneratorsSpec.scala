@@ -2604,6 +2604,48 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
           forAll (lengthlimitedLists) { xs => xs.length should be <= upperLimit.value }
         }
       }
+      "returns a type that also offers a havingSize method that provides a generator for lists of a specific size" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (posIntsBetween(1, 100)) { sz => 
+          forAll (lists[Int].havingSize(sz)) { xs => xs.size shouldEqual sz.value }
+        }
+      }
+      "returns a type that also offers a havingSizesBetween method that provides a generator for lists of a range of sizes" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minsAndMaxes: Generator[(PosZInt, PosZInt)] =
+          for {
+            min <- posZIntsBetween(0, 99)
+            max <- posZIntsBetween(min.ensuringValid(_ + 1), 100)
+          } yield (min, max)
+
+        forAll (minsAndMaxes) { case (min, max) => 
+          forAll (lists[Int].havingSizesBetween(min, max)) { xs => xs.size should (be >= min.value and be <= max.value) }
+        }
+
+        the [IllegalArgumentException] thrownBy {
+          lists[Int].havingSizesBetween(2, 1)
+        } should have message "requirement failed: " + Resources.fromGreaterThanToHavingSizesBetween(PosZInt(2), PosZInt(1))
+        the [IllegalArgumentException] thrownBy {
+          lists[Int].havingSizesBetween(1, 1)
+        } should have message "requirement failed: " + Resources.fromEqualToToHavingSizesBetween(PosZInt(1))
+      }
+      "returns a type that also offers a havingSizesDeterminedBy method that provides a generator for lists whose size is determined by a function" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val upperLimits: Generator[PosZInt] = posZIntsBetween(0, 99)
+
+        forAll (upperLimits) { upperLimit => 
+          def limitedSize(szp: SizeParam): SizeParam = {
+            val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
+            szp.copy(size = sz)
+          }
+          val sizelimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
+          forAll (sizelimitedLists) { xs => xs.size should be <= upperLimit.value }
+        }
+      }
     }
     "offer a posInts method" that {
       "returns the default implicit generator that produces arbitrary PosInts" in {
