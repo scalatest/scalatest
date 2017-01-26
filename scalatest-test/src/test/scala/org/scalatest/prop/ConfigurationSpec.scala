@@ -18,28 +18,32 @@ package org.scalatest.prop
 import org.scalactic.anyvals._
 import org.scalatest._
 
-class ConfigurationSpec extends FunSpec {
+class ConfigurationSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   describe("Configuration.Parameter") {
+    import Generator._
+    implicit def configGen: Generator[Configuration.Parameter] =
+      for {
+        minSuccessful <- posIntGenerator
+        maxDiscardedFactor <- posZDoubleGenerator
+        minSize <- posZIntGenerator
+        sizeRange <- posZIntsBetween(0, PosZInt.ensuringValid(PosZInt.MaxValue - minSize))
+        workers <- posIntGenerator
+      } yield {
 
-    /*val configurationGenerator =
-      new Generator[Configuration.Parameter] {
-
-          def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Configuration.Parameter], Randomizer) = (Nil, rnd)
-
-          def next(szp: SizeParam, edges: List[Configuration.Parameter], rnd: Randomizer): (Configuration.Parameter, List[Configuration.Parameter], Randomizer) = {
-            for (
-              minSuccessful <-    : PosInt = PosInt(10),
-            maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
-            minSize: PosZInt = PosZInt(0),
-            sizeRange: PosZInt = PosZInt(100),
-            workers: PosInt = PosInt(1)
-            )
-          }
-      }*/
+        Configuration.Parameter(minSuccessful, maxDiscardedFactor, minSize, sizeRange, workers)
+      }
 
     it("should offer a maxSize method that is minSize + SizeRange") {
+      forAll { (param: Configuration.Parameter) =>
+        param.maxSize.value shouldEqual (param.minSize + param.sizeRange)
+      }
+    }
 
+    it("should throw IllegalArgumentException when the result of minSize + sizeRange goes out of range") {
+      assertThrows[IllegalArgumentException] {
+        Configuration.Parameter(PosInt(5), PosZDouble(0.5), PosZInt.MaxValue, PosZInt(1), PosInt(1))
+      }
     }
 
   }
