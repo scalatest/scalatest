@@ -301,6 +301,18 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       }
     }
 
+    it("should offer a unary + method that is consistent with Int") {
+      forAll { (p: NonZeroInt) =>
+        (+p).toInt shouldEqual (+(p.toInt))
+      }
+    }
+
+    it("should offer a unary - method that returns NonZeroInt") {
+      forAll { (p: NonZeroInt) =>
+        (-p) shouldEqual (NonZeroInt.ensuringValid(-(p.toInt)))
+      }
+    }
+
     it("should offer 'min' and 'max' methods that are consistent with Int") {
       forAll { (nzint1: NonZeroInt, nzint2: NonZeroInt) =>
         nzint1.max(nzint2).toInt shouldEqual nzint1.toInt.max(nzint2.toInt)

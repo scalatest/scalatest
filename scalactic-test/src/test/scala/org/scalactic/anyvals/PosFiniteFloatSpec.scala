@@ -240,6 +240,18 @@ class PosFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
       }
     }
 
+    it("should offer a unary + method that is consistent with Float") {
+      forAll { (p: PosFiniteFloat) =>
+        (+p).toFloat shouldEqual (+(p.toFloat))
+      }
+    }
+
+    it("should offer a unary - method that returns NegFiniteFloat") {
+      forAll { (p: PosFiniteFloat) =>
+        (-p) shouldEqual (NegFiniteFloat.ensuringValid(-(p.toFloat)))
+      }
+    }
+
     it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosFiniteFloat, pfloat2: PosFiniteFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)

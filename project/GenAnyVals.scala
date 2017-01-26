@@ -97,6 +97,7 @@ object GenAnyVals {
     st.setAttribute("typeMinValueNumber", typeMinValueNumber)
     st.setAttribute("typeMaxValue", typeMaxValue)
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negation", negation(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -143,6 +144,7 @@ object GenAnyVals {
     st.setAttribute("typeMinValueNumber", typeMinValueNumber)
     st.setAttribute("typeMaxValue", typeMaxValue)
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negation", negation(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -191,6 +193,7 @@ object GenAnyVals {
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
     st.setAttribute("classExtraMethods", classExtraMethods)
     st.setAttribute("objectExtraMethods", objectExtraMethods)
+    st.setAttribute("negation", negation(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -239,6 +242,7 @@ object GenAnyVals {
     st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
     st.setAttribute("classExtraMethods", classExtraMethods)
     st.setAttribute("objectExtraMethods", objectExtraMethods)
+    st.setAttribute("negation", negation(typeName))
 
     val widensToOtherAnyVals =
       widensToTypes.map { targetType =>
@@ -286,6 +290,26 @@ object GenAnyVals {
       "NegZFinite",
       "Finite"
     )
+
+  def negation(typeName: String): String = {
+    val negationType =
+      if (typeName.startsWith("Pos"))
+        "Neg" + typeName.drop(3)
+      else if (typeName.startsWith("Neg")) {
+        typeName match {
+          case "NegInt" | "NegZInt" => "Int"
+          case "NegLong" | "NegZLong" => "Long"
+          case _ => "Pos" + typeName.drop(3)
+        }
+      }
+      else
+        typeName
+
+    if (primitiveTypes.contains(negationType))
+      s"def unary_- : $negationType = -value"
+    else
+      s"def unary_- : $negationType = $negationType.ensuringValid(-value)"
+  }
 
   val allAnyValTypes =
     anyValTypes.flatMap(t => primitiveTypes.map(p => t + p)).filter( typeName =>
