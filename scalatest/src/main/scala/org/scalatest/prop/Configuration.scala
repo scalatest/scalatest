@@ -572,7 +572,16 @@ object Configuration extends Configuration {
                        maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                        minSize: PosZInt = PosZInt(0),
                        sizeRange: PosZInt = PosZInt(100),
-                       workers: PosInt = PosInt(1))
+                       workers: PosInt = PosInt(1)) {
+
+    import org.scalactic.Requirements._
+
+    require(minSize + sizeRange >= 0)
+
+    lazy val maxSize: PosZInt = {
+      PosZInt.ensuringValid(minSize + sizeRange)
+    }
+  }
 
   private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
     ((maxDiscarded + 1): Double) / (minSuccessful: Double)
