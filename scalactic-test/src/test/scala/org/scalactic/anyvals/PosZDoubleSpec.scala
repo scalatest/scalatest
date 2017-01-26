@@ -275,6 +275,18 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       }
     }
 
+    it("should offer a unary + method that is consistent with Double") {
+      forAll { (p: PosZDouble) =>
+        (+p).toDouble shouldEqual (+(p.toDouble))
+      }
+    }
+
+    it("should offer a unary - method that returns NegZDouble") {
+      forAll { (p: PosZDouble) =>
+        (-p) shouldEqual (NegZDouble.ensuringValid(-(p.toDouble)))
+      }
+    }
+
     it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>

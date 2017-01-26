@@ -223,6 +223,18 @@ class NegZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       }
     }
 
+    it("should offer a unary + method that is consistent with Long") {
+      forAll { (p: NegZLong) =>
+        (+p).toLong shouldEqual (+(p.toLong))
+      }
+    }
+
+    it("should offer a unary - method that returns PosZLong") {
+      forAll { (p: NegZLong) =>
+        (-p) shouldEqual (-(p.toLong))
+      }
+    }
+
     it("should offer << methods that are consistent with Long") {
       forAll { (pzlong: NegZLong, shift: Int) =>
         pzlong << shift shouldEqual pzlong.toLong << shift

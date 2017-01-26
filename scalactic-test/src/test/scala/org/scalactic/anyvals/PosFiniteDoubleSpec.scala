@@ -249,6 +249,18 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
       }
     }
 
+    it("should offer a unary + method that is consistent with Double") {
+      forAll { (p: PosFiniteDouble) =>
+        (+p).toDouble shouldEqual (+(p.toDouble))
+      }
+    }
+
+    it("should offer a unary - method that returns NegFiniteDouble") {
+      forAll { (p: PosFiniteDouble) =>
+        (-p) shouldEqual (NegFiniteDouble.ensuringValid(-(p.toDouble)))
+      }
+    }
+
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pdouble1: PosFiniteDouble, pdouble2: PosFiniteDouble) =>
         pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)

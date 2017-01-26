@@ -276,6 +276,18 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         val d: Double = -8.0
         "FiniteDouble(d)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Double") {
+        forAll { (pDouble: FiniteDouble) =>
+          (+pDouble).toDouble shouldEqual (+(pDouble.toDouble))
+        }
+      }
+
+      it("should offer a unary - method that returns another FiniteDouble") {
+        forAll { (pDouble: FiniteDouble) =>
+          (-pDouble) shouldEqual (FiniteDouble.ensuringValid(-(pDouble.toDouble)))
+        }
+      }
     }
     describe("when specified as a plain-old Double") {
 

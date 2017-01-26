@@ -241,6 +241,18 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
       }
     }
 
+    it("should offer a unary + method that is consistent with Float") {
+      forAll { (p: PosFloat) =>
+        (+p).toFloat shouldEqual (+(p.toFloat))
+      }
+    }
+
+    it("should offer a unary - method that returns NegFloat") {
+      forAll { (p: PosFloat) =>
+        (-p) shouldEqual (NegFloat.ensuringValid(-(p.toFloat)))
+      }
+    }
+
     it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
 
       forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>

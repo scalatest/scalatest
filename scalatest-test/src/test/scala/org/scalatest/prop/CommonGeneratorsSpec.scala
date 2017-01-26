@@ -843,6 +843,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a posFiniteFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posFiniteFloatsBetween(PosFiniteFloat.MinValue, PosFiniteFloat.ensuringValid(PosFiniteFloat.MaxValue - 1E32f)) // Hmm. Using the method to test itself
+            hi <- posFiniteFloatsBetween(PosFiniteFloat.ensuringValid(lo + 1E32f), PosFiniteFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posFiniteFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosFiniteFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosFiniteFloat, PosFiniteFloat)] =
+          for {
+            min <- posFiniteFloatsBetween(PosFiniteFloat.MinValue, PosFiniteFloat.ensuringValid(PosFiniteFloat.MaxValue - 1E32f))
+            max <- posFiniteFloatsBetween(min, PosFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosFiniteFloat] = posFiniteFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosFiniteFloat, PosFiniteFloat)] =
+          for {
+            min <- posFiniteFloatsBetween(PosFiniteFloat.MinValue, PosFiniteFloat.ensuringValid(PosFiniteFloat.MaxValue - 1E32f))
+            max <- posFiniteFloatsBetween(min, PosFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosFiniteFloat] = posFiniteFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal PosFiniteFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posFiniteFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosFiniteFloat, to: PosFiniteFloat): List[PosFiniteFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosFiniteFloat] = posFiniteFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a posDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
@@ -913,6 +990,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosDouble] = posDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a posFiniteDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posFiniteDoublesBetween(PosFiniteDouble.MinValue, PosFiniteDouble.ensuringValid(PosFiniteDouble.MaxValue - 1E292)) // Hmm. Using the method to test itself
+            hi <- posFiniteDoublesBetween(PosFiniteDouble.ensuringValid(lo + 1E292), PosFiniteDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posFiniteDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosFiniteDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosFiniteDouble, PosFiniteDouble)] =
+          for {
+            min <- posFiniteDoublesBetween(PosFiniteDouble.MinValue, PosFiniteDouble.ensuringValid(PosFiniteDouble.MaxValue - 1E292))
+            max <- posFiniteDoublesBetween(min, PosFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosFiniteDouble] = posFiniteDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosFiniteDouble, PosFiniteDouble)] =
+          for {
+            min <- posFiniteDoublesBetween(PosFiniteDouble.MinValue, PosFiniteDouble.ensuringValid(PosDouble.MaxValue - 1E292))
+            max <- posFiniteDoublesBetween(min, PosFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosFiniteDouble] = posFiniteDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal PosFiniteDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posFiniteDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosFiniteDouble, to: PosFiniteDouble): List[PosFiniteDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosFiniteDouble] = posFiniteDoublesBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
@@ -1153,6 +1308,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a posZFiniteFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posZFiniteFloatsBetween(PosZFiniteFloat.MinValue, PosZFiniteFloat.ensuringValid(PosZFiniteFloat.MaxValue - 1E32f)) // Hmm. Using the method to test itself
+            hi <- posZFiniteFloatsBetween(PosZFiniteFloat.ensuringValid(lo + 1E32f), PosZFiniteFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posZFiniteFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosZFiniteFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFiniteFloat, PosZFiniteFloat)] =
+          for {
+            min <- posZFiniteFloatsBetween(PosZFiniteFloat.MinValue, PosZFiniteFloat.ensuringValid(PosZFiniteFloat.MaxValue - 1E32f))
+            max <- posZFiniteFloatsBetween(min, PosZFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFiniteFloat] = posZFiniteFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFiniteFloat, PosZFiniteFloat)] =
+          for {
+            min <- posZFiniteFloatsBetween(PosZFiniteFloat.MinValue, PosZFiniteFloat.ensuringValid(PosZFiniteFloat.MaxValue - 1E32f))
+            max <- posZFiniteFloatsBetween(min, PosZFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFiniteFloat] = posZFiniteFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal PosFiniteFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posZFiniteFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosZFiniteFloat, to: PosZFiniteFloat): List[PosZFiniteFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosZFiniteFloat] = posZFiniteFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a posZDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
@@ -1223,6 +1455,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a posZFiniteDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- posZFiniteDoublesBetween(PosZFiniteDouble.MinValue, PosZFiniteDouble.ensuringValid(PosZFiniteDouble.MaxValue - 1E292)) // Hmm. Using the method to test itself
+            hi <- posZFiniteDoublesBetween(PosZFiniteDouble.ensuringValid(lo + 1E292), PosZFiniteDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            posZFiniteDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces PosFiniteDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFiniteDouble, PosZFiniteDouble)] =
+          for {
+            min <- posZFiniteDoublesBetween(PosZFiniteDouble.MinValue, PosZFiniteDouble.ensuringValid(PosZDouble.MaxValue - 1E292))
+            max <- posZFiniteDoublesBetween(min, PosZFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFiniteDouble] = posZFiniteDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(PosZFiniteDouble, PosZFiniteDouble)] =
+          for {
+            min <- posZFiniteDoublesBetween(PosZFiniteDouble.MinValue, PosZFiniteDouble.ensuringValid(PosZFiniteDouble.MaxValue - 1E292))
+            max <- posZFiniteDoublesBetween(min, PosZFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[PosZFiniteDouble] = posZFiniteDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal PosZFiniteDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = posZFiniteDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: PosZFiniteDouble, to: PosZFiniteDouble): List[PosZFiniteDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[PosZFiniteDouble] = posZFiniteDoublesBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
@@ -1465,6 +1775,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a negFiniteFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- negFiniteFloatsBetween(NegFiniteFloat.MinValue, NegFiniteFloat.ensuringValid(NegFiniteFloat.MaxValue - 1E32f - 1E32f))
+            hi <- negFiniteFloatsBetween(NegFiniteFloat.ensuringValid(lo + 1E32f), NegFiniteFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            negFiniteFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces NegFiniteFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegFiniteFloat, NegFiniteFloat)] =
+          for {
+            min <- negFiniteFloatsBetween(NegFiniteFloat.MinValue, NegFiniteFloat.ensuringValid(NegFiniteFloat.MaxValue - 1E32f))
+            max <- negFiniteFloatsBetween(min, NegFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegFiniteFloat] = negFiniteFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegFiniteFloat, NegFiniteFloat)] =
+          for {
+            min <- negFiniteFloatsBetween(NegFiniteFloat.MinValue, NegFiniteFloat.ensuringValid(NegFiniteFloat.MaxValue - 1E32f))
+            max <- negFiniteFloatsBetween(min, NegFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegFiniteFloat] = negFiniteFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NegFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = negFiniteFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NegFiniteFloat, to: NegFiniteFloat): List[NegFiniteFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NegFiniteFloat] = negFiniteFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a negDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
@@ -1518,15 +1905,15 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         }
       }
 
-      "returns a generator whose initEdges method includes normal PosDouble edges only if they are between min and max, inclusive" in {
+      "returns a generator whose initEdges method includes normal NegDouble edges only if they are between min and max, inclusive" in {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = negDoubles.initEdges(100, Randomizer.default)
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
-        def included(from: PosDouble, to: PosDouble): List[PosDouble] = {
+        def included(from: NegDouble, to: NegDouble): List[NegDouble] = {
           val fromIdx = sortedEdges.indexOf(from)
           val toIdx = sortedEdges.indexOf(to)
           sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
@@ -1534,7 +1921,85 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
 
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
-          val minMaxGen: Generator[PosDouble] = posDoublesBetween(from, to)
+          val minMaxGen: Generator[NegDouble] = negDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a negFiniteDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- negFiniteDoublesBetween(NegFiniteDouble.MinValue, NegFiniteDouble.ensuringValid(NegFiniteDouble.MaxValue - 1E292 - 1E292)) // Hmm. Using the method to test itself
+            hi <- negFiniteDoublesBetween(NegFiniteDouble.ensuringValid(lo + 1E292), NegFiniteDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            negFiniteDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces NegFiniteDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegFiniteDouble, NegFiniteDouble)] =
+          for {
+            min <- negFiniteDoublesBetween(NegFiniteDouble.MinValue, NegFiniteDouble.ensuringValid(NegFiniteDouble.MaxValue - 1E292 - 1E292))
+            max <- negFiniteDoublesBetween(min, NegFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegFiniteDouble] = negFiniteDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegFiniteDouble, NegFiniteDouble)] =
+          for {
+            min <- negFiniteDoublesBetween(NegFiniteDouble.MinValue, NegFiniteDouble.ensuringValid(NegFiniteDouble.MaxValue - 1E292 - 1E292))
+            max <- negFiniteDoublesBetween(min, NegFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegFiniteDouble] = negFiniteDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal NegFiniteDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = negFiniteDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NegFiniteDouble, to: NegFiniteDouble): List[NegFiniteDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NegFiniteDouble] = negFiniteDoublesBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
@@ -1775,6 +2240,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a negZFiniteFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- negZFiniteFloatsBetween(NegZFiniteFloat.MinValue, NegZFiniteFloat.ensuringValid(NegZFiniteFloat.MaxValue - 1E32f - 1E32f)) // Hmm. Using the method to test itself
+            hi <- negZFiniteFloatsBetween(NegZFiniteFloat.ensuringValid(lo + 1E32f), NegZFiniteFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            negZFiniteFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces NegZFiniteFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegZFiniteFloat, NegZFiniteFloat)] =
+          for {
+            min <- negZFiniteFloatsBetween(NegZFiniteFloat.MinValue, NegZFiniteFloat.ensuringValid(NegZFiniteFloat.MaxValue - 1E32f - 1E32f))
+            max <- negZFiniteFloatsBetween(min, NegZFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegZFiniteFloat] = negZFiniteFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegZFiniteFloat, NegZFiniteFloat)] =
+          for {
+            min <- negZFiniteFloatsBetween(NegZFiniteFloat.MinValue, NegZFiniteFloat.ensuringValid(NegZFiniteFloat.MaxValue - 1E32f))
+            max <- negZFiniteFloatsBetween(min, NegZFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegZFiniteFloat] = negZFiniteFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NegZFiniteFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = negZFiniteFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NegZFiniteFloat, to: NegZFiniteFloat): List[NegZFiniteFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NegZFiniteFloat] = negZFiniteFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a negZDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
@@ -1845,6 +2387,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZDouble] = negZDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a negZFiniteDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- negZFiniteDoublesBetween(NegZFiniteDouble.MinValue, NegZFiniteDouble.ensuringValid(NegZFiniteDouble.MaxValue - 1E292)) // Hmm. Using the method to test itself
+            hi <- negZFiniteDoublesBetween(NegZFiniteDouble.ensuringValid(lo + 1E292), NegZFiniteDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            negZFiniteDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces NegZFiniteDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegZFiniteDouble, NegZFiniteDouble)] =
+          for {
+            min <- negZFiniteDoublesBetween(NegZFiniteDouble.MinValue, NegZFiniteDouble.ensuringValid(NegZFiniteDouble.MaxValue - 1E292))
+            max <- negZFiniteDoublesBetween(min, NegZFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegZFiniteDouble] = negZFiniteDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NegZFiniteDouble, NegZFiniteDouble)] =
+          for {
+            min <- negZFiniteDoublesBetween(NegZFiniteDouble.MinValue, NegZFiniteDouble.ensuringValid(NegZFiniteDouble.MaxValue - 1E292))
+            max <- negZFiniteDoublesBetween(min, NegZFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NegZFiniteDouble] = negZFiniteDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal NegZFiniteDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = negZFiniteDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NegZFiniteDouble, to: NegZFiniteDouble): List[NegZFiniteDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NegZFiniteDouble] = negZFiniteDoublesBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
@@ -2087,6 +2707,83 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
       }
     }
 
+    "offer a nonZeroFiniteFloatsBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroFiniteFloatsBetween(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat.ensuringValid(NonZeroFiniteFloat.MaxValue - 1E32f))
+            hi <- nonZeroFiniteFloatsBetween(if (lo + 1E32f == 0.0f) NonZeroFiniteFloat(1.0f) else NonZeroFiniteFloat.ensuringValid(lo + 1E32f), NonZeroFiniteFloat.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            nonZeroFiniteFloatsBetween(hi, lo)
+          }
+        }
+      }
+      "produces NonZeroFiniteFloats between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFiniteFloat, NonZeroFiniteFloat)] =
+          for {
+            min <- nonZeroFiniteFloatsBetween(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat.ensuringValid(NonZeroFiniteFloat.MaxValue - 1E32f))
+            max <- nonZeroFiniteFloatsBetween(min, NonZeroFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatsBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFiniteFloat, NonZeroFiniteFloat)] =
+          for {
+            min <- nonZeroFiniteFloatsBetween(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat.ensuringValid(NonZeroFiniteFloat.MaxValue - 1E32f))
+            max <- nonZeroFiniteFloatsBetween(min, NonZeroFiniteFloat.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatsBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+      "returns a generator whose initEdges method includes normal NonZeroFiniteFloat edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroFiniteFloats.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): List[NonZeroFiniteFloat] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatsBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
     "offer a nonZeroDoublesBetween method" that {
       "throws IAE if max is less than min" in {
         val loHiPairs =
@@ -2157,6 +2854,84 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(from, to)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges should contain allElementsOf requiredEdges
+          val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
+          edges should contain noElementsOf outOfBoundsEdges
+        }
+      }
+    }
+
+    "offer a nonZeroFiniteDoublesBetween method" that {
+      "throws IAE if max is less than min" in {
+        val loHiPairs =
+          for {
+            lo <- nonZeroFiniteDoublesBetween(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble.ensuringValid(NonZeroFiniteDouble.MaxValue - 1E292))
+            hi <- nonZeroFiniteDoublesBetween(if (lo + 1E292 == 0.0) NonZeroFiniteDouble(1.0) else NonZeroFiniteDouble.ensuringValid(lo + 1E292), NonZeroFiniteDouble.MaxValue)
+          } yield (lo, hi)
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        forAll (loHiPairs) { case (lo, hi) =>
+          an[IllegalArgumentException] should be thrownBy {
+            nonZeroFiniteDoublesBetween(hi, lo)
+          }
+        }
+      }
+      "produces NonZeroFiniteDoubles between min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFiniteDouble, NonZeroFiniteDouble)] =
+          for {
+            min <- nonZeroFiniteDoublesBetween(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble.ensuringValid(NonZeroFiniteDouble.MaxValue - 1E292))
+            max <- nonZeroFiniteDoublesBetween(min, NonZeroFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFiniteDouble] = nonZeroFiniteDoublesBetween(min, max)
+          val samples = minMaxGen.samples(10)
+          import org.scalatest.Inspectors._
+          forAll (samples) { i =>
+            i should be >= min
+            i should be <= max
+          }
+        }
+      }
+      "returns a generator whose initEdges method includes min and max" in {
+
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+        val minMaxPairs: Generator[(NonZeroFiniteDouble, NonZeroFiniteDouble)] =
+          for {
+            min <- nonZeroFiniteDoublesBetween(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble.ensuringValid(NonZeroFiniteDouble.MaxValue - 1E292))
+            max <- nonZeroFiniteDoublesBetween(min, NonZeroFiniteDouble.MaxValue)
+          } yield (min, max)
+
+        forAll (minMaxPairs) { case (min, max) =>
+          val minMaxGen: Generator[NonZeroFiniteDouble] = nonZeroFiniteDoublesBetween(min, max)
+          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          edges.length should (be >= 1 or be <= 7)
+          edges should contain (min)
+          edges should contain (max)
+        }
+      }
+
+      "returns a generator whose initEdges method includes normal NonZeroFiniteDouble edges only if they are between min and max, inclusive" in {
+
+        import org.scalatest.Inspectors._
+
+        val (edges, rnd1) = nonZeroFiniteDoubles.initEdges(100, Randomizer.default)
+        val sortedEdges = edges.sorted
+        val combos = sortedEdges.combinations(2).toList
+
+        def included(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): List[NonZeroFiniteDouble] = {
+          val fromIdx = sortedEdges.indexOf(from)
+          val toIdx = sortedEdges.indexOf(to)
+          sortedEdges.drop(fromIdx).take(toIdx - fromIdx + 1)
+        }
+
+        forAll (combos) { case List(from, to) =>
+          val requiredEdges = included(from, to)
+          val minMaxGen: Generator[NonZeroFiniteDouble] = nonZeroFiniteDoublesBetween(from, to)
           val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
@@ -2717,11 +3492,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a posFiniteFloats method" that {
+      "returns the default implicit generator that produces arbitrary PosFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosFiniteFloat]]
+        val namedGen = posFiniteFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a posZFloats method" that {
       "returns the default implicit generator that produces arbitrary PosZFloats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[PosZFloat]]
         val namedGen = posZFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a posZFiniteFloats method" that {
+      "returns the default implicit generator that produces arbitrary PosZFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosZFiniteFloat]]
+        val namedGen = posZFiniteFloats
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -2745,11 +3548,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a posFiniteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary PosFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosFiniteDouble]]
+        val namedGen = posFiniteDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a posZDoubles method" that {
       "returns the default implicit generator that produces arbitrary PosZDoubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[PosZDouble]]
         val namedGen = posZDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a posZFiniteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary PosZFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosZFiniteDouble]]
+        val namedGen = posZFiniteDoubles
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -2829,11 +3660,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a posFiniteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary PosFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosFiniteFloat]]
+        val namedGen = posFiniteFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
     "offer a posZFloatValues method" that {
       "returns the default implicit generator that produces arbitrary zero and positive Floats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[PosZFloat]]
         val namedGen = posZFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a posZFiniteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary zero and PosZFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosZFiniteFloat]]
+        val namedGen = posZFiniteFloatValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -2857,11 +3716,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a posFiniteDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary PosFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosFiniteDouble]]
+        val namedGen = posFiniteDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
     "offer a posZDoubleValues method" that {
       "returns the default implicit generator that produces arbitrary zero and positive Doubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[PosZDouble]]
         val namedGen = posZDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a posZFiniteDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary zero and PosZFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[PosZFiniteDouble]]
+        val namedGen = posZFiniteDoubleValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -2941,11 +3828,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a negFiniteFloats method" that {
+      "returns the default implicit generator that produces arbitrary NegFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegFiniteFloat]]
+        val namedGen = negFiniteFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a negZFloats method" that {
       "returns the default implicit generator that produces arbitrary NegZFloats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NegZFloat]]
         val namedGen = negZFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a negZFiniteFloats method" that {
+      "returns the default implicit generator that produces arbitrary NegZFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegZFiniteFloat]]
+        val namedGen = negZFiniteFloats
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -2969,11 +3884,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a negFiniteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary NegFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegFiniteDouble]]
+        val namedGen = negFiniteDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a negZDoubles method" that {
       "returns the default implicit generator that produces arbitrary NegZDoubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NegZDouble]]
         val namedGen = negZDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a negZFiniteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary NegZFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegZFiniteDouble]]
+        val namedGen = negZFiniteDoubles
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -3053,11 +3996,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a negFiniteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary NegFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegFiniteFloat]]
+        val namedGen = negFiniteFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
     "offer a negZFloatValues method" that {
       "returns the default implicit generator that produces arbitrary zero and NegZFloats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NegZFloat]]
         val namedGen = negZFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a negZFiniteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary zero and NegZFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegZFiniteFloat]]
+        val namedGen = negZFiniteFloatValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -3081,11 +4052,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a negFiniteDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary NegFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegFiniteDouble]]
+        val namedGen = negFiniteDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
     "offer a negZDoubleValues method" that {
       "returns the default implicit generator that produces arbitrary zero and NegZDoubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NegZDouble]]
         val namedGen = negZDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a negZFiniteDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary zero and NegZFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NegZFiniteDouble]]
+        val namedGen = negZFiniteDoubleValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -3137,11 +4136,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a nonZeroFiniteFloats method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFiniteFloat]]
+        val namedGen = nonZeroFiniteFloats
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a nonZeroDoubles method" that {
       "returns the default implicit generator that produces arbitrary NonZeroDoubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NonZeroDouble]]
         val namedGen = nonZeroDoubles
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroFiniteDoubles method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFiniteDouble]]
+        val namedGen = nonZeroFiniteDoubles
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
@@ -3193,11 +4220,39 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
       }
     }
+    "offer a nonZeroFiniteFloatValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFiniteFloats" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFiniteFloat]]
+        val namedGen = nonZeroFiniteFloatValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
     "offer a nonZeroDoubleValues method" that {
       "returns the default implicit generator that produces arbitrary NonZeroDoubles" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[NonZeroDouble]]
         val namedGen = nonZeroDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonZeroFiniteDoubleValues method" that {
+      "returns the default implicit generator that produces arbitrary NonZeroFiniteDoubles" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonZeroFiniteDouble]]
+        val namedGen = nonZeroFiniteDoubleValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)

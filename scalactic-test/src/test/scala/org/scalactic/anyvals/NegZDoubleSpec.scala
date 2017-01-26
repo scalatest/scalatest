@@ -271,6 +271,18 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
         val d: Double = -8.0
         "takesNegZDouble(d)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Double") {
+        forAll { (p: NegZDouble) =>
+          (+p).toDouble shouldEqual (+(p.toDouble))
+        }
+      }
+
+      it("should offer a unary - method that returns PosZDouble") {
+        forAll { (p: NegZDouble) =>
+          (-p) shouldEqual (PosZDouble.ensuringValid(-(p.toDouble)))
+        }
+      }
     }
 
     it("should offer a 'plus' method that takes a NegZDouble and returns a PosDouble") {

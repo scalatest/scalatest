@@ -209,6 +209,18 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
     }
 
+    it("should offer a unary + method that is consistent with Int") {
+      forAll { (p: PosZInt) =>
+        (+p).toInt shouldEqual (+(p.toInt))
+      }
+    }
+
+    it("should offer a unary - method that returns NegZInt") {
+      forAll { (p: PosZInt) =>
+        (-p) shouldEqual (NegZInt.ensuringValid(-(p.toInt)))
+      }
+    }
+
     it("should offer << methods that are consistent with Int") {
       forAll { (pzint: PosZInt, shift: Int) =>
         pzint << shift shouldEqual pzint.toInt << shift

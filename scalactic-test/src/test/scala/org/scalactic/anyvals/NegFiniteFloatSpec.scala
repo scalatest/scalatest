@@ -236,6 +236,18 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         val c: Float = -8.0F
         "takesNegFiniteFloat(c)" shouldNot compile
       }
+
+      it("should offer a unary + method that is consistent with Float") {
+        forAll { (p: NegFiniteFloat) =>
+          (+p).toFloat shouldEqual (+(p.toFloat))
+        }
+      }
+
+      it("should offer a unary - method that returns PosFiniteFloat") {
+        forAll { (p: NegFiniteFloat) =>
+          (-p) shouldEqual (PosFiniteFloat.ensuringValid(-(p.toFloat)))
+        }
+      }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Float") {

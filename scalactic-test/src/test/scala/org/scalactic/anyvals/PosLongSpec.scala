@@ -217,6 +217,18 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         }
       }
 
+      it("should offer a unary + method that is consistent with Long") {
+        forAll { (p: PosLong) =>
+          (+p).toLong shouldEqual (+(p.toLong))
+        }
+      }
+
+      it("should offer a unary - method that returns NegLong") {
+        forAll { (p: PosLong) =>
+          (-p) shouldEqual (NegLong.ensuringValid(-(p.toLong)))
+        }
+      }
+
       it("should offer << methods that are consistent with Long") {
         forAll { (plong: PosLong, shift: Int) =>
           plong << shift shouldEqual plong.toLong << shift
