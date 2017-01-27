@@ -32,8 +32,10 @@ import java.text.DecimalFormat
 import java.util.Iterator
 import java.util.Set
 import java.util.UUID
+
 import org.pegdown.PegDownProcessor
 import org.scalatest.exceptions.StackDepth
+
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
@@ -46,6 +48,7 @@ import StringReporter.makeDurationString
 import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.reporters.AbstractParallelReporter
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
@@ -55,7 +58,7 @@ private[scalatest] class HtmlReporter(
   presentAllDurations: Boolean,
   cssUrl: Option[URL],
   resultHolder: Option[SuiteResultHolder]
-) extends ResourcefulReporter {
+) extends AbstractParallelReporter {
 
   private val specIndent = 15
   private val targetDir = new File(directoryPath)
@@ -925,7 +928,7 @@ private[scalatest] class HtmlReporter(
   private var eventList = new ListBuffer[Event]()
   private var runEndEvent: Option[Event] = None
         
-  def apply(event: Event): Unit = {
+  def applySequentially(event: Event): Unit = {
         
     event match {
       case _: DiscoveryStarting  =>
@@ -1041,7 +1044,8 @@ private[scalatest] class HtmlReporter(
     }
   }
       
-  def dispose(): Unit = {
+  override def dispose(): Unit = {
+    super.dispose()
     runEndEvent match {
       case Some(event) => 
         event match {
