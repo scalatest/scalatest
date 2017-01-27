@@ -17,6 +17,18 @@ package org.scalactic.anyvals
 
 import java.nio.charset.Charset
 import java.util.Locale
+import scala.collection.immutable.StringOps
+import scala.collection.immutable.WrappedString
+import scala.collection.mutable.Buffer
+import scala.collection.GenSeq
+import scala.collection.SeqView
+import scala.collection.GenIterable
+import scala.collection.GenTraversableOnce
+import scala.collection.generic.CanBuildFrom
+import scala.collection.generic.FilterMonadic
+import scala.collection.parallel.ParSeq
+import scala.util.matching.Regex
+import scala.language.higherKinds
 
 private[scalactic] final class NumericString private (val value: String) extends AnyVal {
   override def toString: String = s"NumericString($value)"
@@ -41,6 +53,15 @@ private[scalactic] final class NumericString private (val value: String) extends
   def concat(str: String): String =
     value.concat(str)
 
+  /**
+   * Tests whether this `NumericString` contains a given value as an element.
+   *
+   *  @param elem  the element to test.
+
+   *  @return     `true` if this `NumericString` has an element that
+   *              is equal (as determined by `==`) to `elem`,
+   *              `false` otherwise.
+   */
   def contains(s: CharSequence): Boolean =
     value.contains(s)
 
@@ -154,6 +175,1840 @@ private[scalactic] final class NumericString private (val value: String) extends
 
   def trim: String =
     value.trim
+
+  /**
+   * Returns a new <code>NumericString</code> concatenating this
+   * <code>NumericString</code> with the passed <code>NumericString</code>.
+   *
+   * @param that the <code>NumericString</code> to append
+   * @return a new <code>NumericString</code> that concatenates
+   *   this <code>NumericString</code> with <code>that</code>.
+   */
+  def concatNumericString(that: NumericString): NumericString =
+    new NumericString(value ++ that.value)
+
+  /**
+   * Return a <code>NumericString</code> consisting of the current
+   * <code>NumericString</code> concatenated <code>n</code> times.
+   */
+  def *(n: Int): NumericString =
+    new NumericString(value * n)
+
+  /**
+   * Returns a new <code>String</code> concatenating this
+   * <code>NumericString</code> with the passed <code>String</code>.
+   *
+   * @param that the <code>String</code> to append
+   * @return a new `String` which contains all elements of this
+   *         `NumericString` followed by all elements of that
+   */
+  def ++(that: String): String =
+    value ++ that
+
+  /**
+   * Returns a new <code>String</code> consisting of this
+   * <code>NumericString</code> prepended by the passed
+   * <code>String</code>.
+   *
+   * @param that the <code>String</code> to append
+   * @return a new <code>String</code> which contains all elements of that
+   *   followed by all elements of this <code>NumericString</code>
+   */
+  def ++:(that: String): String =
+    that ++: value
+
+  /**
+   * Returns a new <code>String</code> consisting of this
+   * <code>NumericString</code> prepended by the passed
+   * <code>Char</code>.
+   *
+   * @param elem the prepended `Char`
+   * @return a new <code>String</code> consisting of `elem`
+   *         followed by all characters from this <code>NumericString</code>
+   */
+  def +:(elem: Char): String =
+    elem +: value
+
+  /**
+   * Applies a binary operator to a start value and all elements
+   * of this `NumericString`, going left to right.
+   *
+   * Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the
+   * same as `xs foldLeft z`.
+   *
+   * @param z the start value
+   * @param op the binary operator
+   * @return the result of inserting `op` between consecutive
+   *         `Chars` of this `NumericString`, going left to right with the
+   *         start value `z` on the left:
+   *           {{{
+   *             op(...op(op(z, x_1), x_2), ..., x_n)
+   *           }}}
+   *           where `x,,1,,, ..., x,,n,,` are the characters of this
+   *           `NumericString`.
+   */
+  def /:(z: Int)(op: (Int, Char) => Int): Int =
+    (z /: value)(op)
+
+  /**
+   * Returns a new `String` consisting of this `NumericString` with the
+   * passed `Char` appended.
+   *
+   * @param elem the appended `Char`
+   * @return a new `String` consisting of all elements of this `NumericString`
+   *         followed by `elem`
+   */
+  def :+(elem: Char): String =
+    value :+ elem
+
+  /**
+   * Applies a binary operator to all elements of this
+   * `NumericString` and a start value, going right to
+   * left.
+   * 
+   * Note: :\ is alternate syntax for foldRight; xs :\ z is the
+   * same as xs foldRight z.
+   *
+   * @param z the start value
+   * @param op the binary operator
+   * @return the result of inserting `op` between consecutive
+   *         characters of this `NumericString`, going right to left with the
+   *         start value `z` on the right:
+   *         {{{
+   *           op(x_1, op(x_2, ... op(x_n, z)...))
+   *         }}}
+   *         where `x,,1,,, ..., x,,n,,` are the characters of this
+   *         `NumericString`.
+   */
+  def :\(z: Int)(op: (Char, Int) => Int): Int =
+    (value :\ z)(op)
+
+  /**
+   * Returns true if `this` is less than `that`
+   */
+  def <(that: String): Boolean =
+    (value < that)
+
+  /**
+   * Returns true if `this` is less than or equal to `that`
+   */
+  def <=(that: String): Boolean =
+    (value <= that)
+
+  /**
+   * Returns true if `this` is greater than `that`
+   */
+  def >(that: String): Boolean =
+    (value > that)
+
+  /**
+   * Returns true if `this` is greater than or equal to `that`
+   */
+  def >=(that: String): Boolean =
+    (value >= that)
+
+  /**
+   * Appends string value of this `NumericString` to a string builder.
+   *
+   * @param b the string builder to which this `NumericString` gets appended
+   * @return the string builder b to which this `NumericString` was appended
+   */
+  def addString(b: StringBuilder): StringBuilder =
+    value.addString(b)
+
+  /**
+   * Appends character elements of this `NumericString` to a string builder
+   * using a separator string.
+   *
+   * @param b the string builder to which elements are appended
+   * @param sep the separator string
+   * @return the string builder b to which elements were appended
+   */
+  def addString(b: StringBuilder, sep: String): StringBuilder =
+    value.addString(b, sep)
+
+  /**
+   * Appends character elements of this `NumericString` to a
+   * string builder using start, separator, and end strings. The
+   * written text begins with the string `start` and ends with the
+   * string `end`. Inside, the characters of this `NumericString`
+   * are separated by the string `sep`.
+   *
+   * @param b the string builder to which elements are appended
+   * @param start the starting string
+   * @param sep the separator string
+   * @param end the ending string
+   * @return the string builder b to which elements were appended
+   */
+  def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder =
+    value.addString(b, start, sep, end)
+
+  /**
+   * Aggregates the results of applying an operator to subsequent elements
+   * of this `NumericString`.
+   *
+   * This is a more general form of `fold` and `reduce`. It is
+   * similar to `foldLeft` in that it doesn't require the result
+   * to be a supertype of the element type.
+   *
+   * `aggregate` splits the elements of this `NumericString` into
+   * partitions and processes each partition by sequentially
+   * applying `seqop`, starting with `z` (like `foldLeft`). Those
+   * intermediate results are then combined by using `combop`
+   * (like `fold`). The implementation of this operation may
+   * operate on an arbitrary number of collection partitions
+   * (even 1), so `combop` may be invoked an arbitrary number of
+   * times (even 0).
+   *
+   * As an example, consider summing up the integer values the
+   * character elements.  The initial value for the sum is
+   * 0. First, `seqop` transforms each input character to an Int
+   * and adds it to the sum (of the partition). Then, `combop`
+   * just needs to sum up the intermediate results of the
+   * partitions:
+   *  {{{
+   *    NumericString("123").aggregate(0)({ (sum, ch) => sum + ch.toInt }, { (p1, p2) => p1 + p2 })
+   *  }}}
+   *
+   * @param B the type of accumulated results
+   * @param z the initial value for the accumulated result of the partition -
+   *          this will typically be the neutral element for the
+   *          `seqop` operator (e.g.  `Nil` for list
+   *          concatenation or `0` for summation) and may be
+   *          evaluated more than once
+   * @param seqop an operator used to accumulate results within a partition
+   * @param combop an associative operator used to combine results within a
+   *               partition
+   */
+  def aggregate[B](z: ⇒ B)(seqop: (B, Char) ⇒ B, combop: (B, B) ⇒ B): B =
+    value.aggregate[B](z)(seqop, combop)
+
+  /**
+   * Return character at index `index`.
+   *
+   * @return the character of this string at index `index`, where
+   *         `0` indicates the first element.
+   */
+  def apply(index: Int): Char =
+    value(index)
+
+  /**
+   * Method called from equality methods, so that user-defined
+   * subclasses can refuse to be equal to other collections of
+   * the same kind.
+   *
+   * @param that the object with which this `NumericString` should be compared
+   * @return `true` if this `NumericString` can possibly equal
+   *         `that`, `false` otherwise. The test takes into
+   *         consideration only the run-time types of objects but
+   *         ignores their elements.
+   */
+  def canEqual(that: Any): Boolean =
+    that.isInstanceOf[NumericString]
+
+  /**
+   * Returns this string with first character converted to upper case (i.e.
+   * unchanged for a `NumericString`).
+   *
+   * @return the string value of this `NumericString`.
+   */
+  def capitalize: String =
+    value.capitalize
+
+  def chars: java.util.stream.IntStream =
+    value.chars
+
+  def codePoints: java.util.stream.IntStream =
+    value.codePoints
+
+  /**
+   * Builds a new collection by applying a partial function to
+   *  all characters of this `NumericString` on which the function
+   *  is defined.
+   *
+   *  @param pf     the partial function which filters and maps the elements.
+   *  @tparam B     the element type of the returned collection.
+   *  @return a new String resulting from applying the partial
+   *          function `pf` to each element on which it is
+   *          defined and collecting the results.  The
+   *          order of the elements is preserved.
+   */
+  def collect[B](pf: PartialFunction[Char, B]): String =
+    value.collect(pf).mkString
+
+  /**
+   * Finds the first character of the `NumericString` for
+   * which the given partial function is defined, and applies
+   * the partial function to it.
+   *
+   * @param pf   the partial function
+   * @return     an option value containing pf applied to the first
+   *             value for which it is defined, or `None` if none exists.
+   */
+  def collectFirst[B](pf: PartialFunction[Char, B]): Option[B] =
+    value.collectFirst(pf)
+
+  /**
+   * Iterates over combinations.  A _combination_ of length `n`
+   * is a subsequence of the original sequence, with the
+   * elements taken in order.  Thus, `"xy"` and `"yy"` are both
+   * length-2 combinations of `"xyy"`, but `"yx"` is not.  If
+   * there is more than one way to generate the same
+   * subsequence, only one will be returned.
+   *
+   * For example, `"xyyy"` has three different ways to generate
+   * `"xy"` depending on whether the first, second, or third
+   * `"y"` is selected.  However, since all are identical, only
+   * one will be chosen.  Which of the three will be taken is an
+   * implementation detail that is not defined.
+   *
+   *  @return An Iterator which traverses the possible n-element
+   *  combinations of this `NumericString`.
+   *  @example  `NumericString("12223").combinations(2) = Iterator(12, 13, 22, 23)`
+   */
+  def combinations(n: Int): Iterator[String] =
+    value.combinations(n)
+
+  /**
+   * Result of comparing `this` with operand `that`.
+   *
+   * Implement this method to determine how instances of A will be sorted.
+   *
+   * Returns `x` where:
+   *
+   *   - `x < 0` when `this < that`
+   *
+   *   - `x == 0` when `this == that`
+   *
+   *   - `x > 0` when  `this > that`
+   *
+   */
+  def compare(that: String): Int =
+    value.compare(that)
+
+  /**
+   * Tests whether this `NumericString` contains a given sequence as a slice.
+   *
+   * @param  that    the sequence to test
+   * @return `true` if this `NumericString` contains a slice
+   *          with the same elements as `that`, otherwise
+   *          `false`.
+   */
+  def containsSlice[B](that: GenSeq[B]): Boolean =
+    value.containsSlice(that)
+
+  /** Copies the elements of this `NumericString` to an array.
+   *  Fills the given array `xs` with at most `len` elements of
+   *  this `NumericString`, starting at position `start`.
+   *  Copying will stop once either the end of the current `NumericString` is reached,
+   *  or the end of the target array is reached, or `len` elements have been copied.
+   *
+   *  @param  xs     the array to fill.
+   *  @param  start  the starting index.
+   *  @param  len    the maximal number of elements to copy.
+   */
+  def copyToArray(xs: Array[Char], start: Int, len: Int): Unit =
+    value.copyToArray(xs, start, len)
+
+  /** Copies the elements of this `NumericString` to an array.
+   *  Fills the given array `xs` with values of this `NumericString`
+   *  Copying will stop once either the end of the current
+   *  `NumericString` is reached, or the end of the target array
+   *  is reached.
+   *
+   *  @param  xs     the array to fill.
+   */
+  def copyToArray(xs: Array[Char]): Unit =
+    value.copyToArray(xs)
+
+  /** Copies the elements of this `NumericString` to an array.
+   *  Fills the given array `xs` with values of this
+   *  `NumericString`, beginning at index `start`.  Copying will
+   *  stop once either the end of the current `NumericString` is
+   *  reached, or the end of the target array is reached.
+   *
+   *  @param  xs     the array to fill.
+   *  @param  start  the starting index.
+   */
+  def copyToArray(xs: Array[Char], start: Int): Unit =
+    value.copyToArray(xs, start)
+
+  /** Copies all elements of this `NumericString` to a buffer.
+   *  @param  dest   The buffer to which elements are copied.
+   */
+  def copyToBuffer[B >: Char](dest: Buffer[B]): Unit =
+    value.copyToBuffer(dest)
+
+  /** Tests whether every element of this `NumericString` relates to the
+   *  corresponding element of another sequence by satisfying a test predicate.
+   *
+   *  @param   that  the other sequence
+   *  @param p the test predicate, which relates elements from
+   *           both sequences
+   *  @tparam  B     the type of the elements of `that`
+   *  @return `true` if both sequences have the same length and
+   *          `p(x, y)` is `true` for all corresponding
+   *          elements `x` of this `NumericString` and
+   *          `y` of `that`, otherwise `false`.
+   */
+  def corresponds[B](that: GenSeq[B])(p: (Char, B) => Boolean): Boolean =
+    value.corresponds(that)(p)
+
+  /** Counts the number of elements in the `NumericString` which satisfy a predicate.
+   *
+   *  @param p     the predicate  used to test elements.
+   *  @return      the number of elements satisfying the predicate `p`.
+   */
+  def count(p: (Char) => Boolean): Int =
+    value.count(p)
+
+  /** Computes the multiset difference between this
+   * `NumericString` and another sequence.
+   *
+   *  @param that   the sequence of elements to remove
+   *  @return       a new string which contains all
+   *                elements of this `NumericString` except some
+   *                occurrences of elements that also appear
+   *                in `that`.  If an element value `x` appears
+   *                ''n'' times in `that`, then the first ''n''
+   *                occurrences of `x` will not form part of the
+   *                result, but any following occurrences will.
+   */
+  def diff(that: collection.Seq[Char]): String =
+    value.diff(that)
+
+  /** Builds a new `NumericString` from this `NumericString`
+   * without any duplicate elements.
+   *
+   *  @return A new string which contains the first
+   *          occurrence of every character of this `NumericString`.
+   */
+  def distinct: String =
+    value.distinct
+
+  /** Selects all elements except first ''n'' ones.
+   *
+   *  @param  n    the number of elements to drop from this `NumericString`.
+   *  @return a string consisting of all elements of this
+   *          `NumericString` except the first `n` ones, or else
+   *          the empty string if this `NumericString` has less
+   *          than `n` elements.
+   */
+  def drop(n: Int): String =
+    value.drop(n)
+
+  /** Selects all elements except last ''n'' ones.
+   *
+   *  @param  n    The number of elements to take
+   *  @return a string consisting of all elements of this
+   *          `NumericString` except the last `n` ones, or else
+   *          the empty string, if this `NumericString` has less
+   *          than `n` elements.
+   */
+  def dropRight(n: Int): String =
+    value.dropRight(n)
+
+  /** Drops longest prefix of elements that satisfy a predicate.
+   *
+   *  @param   p  The predicate used to test elements.
+   *  @return  the longest suffix of this `NumericString` whose first element
+   *           does not satisfy the predicate `p`.
+   */
+  def dropWhile(p: (Char) => Boolean): String =
+    value.dropWhile(p)
+
+  /** Tests whether this `NumericString` ends with the given sequence.
+   *
+   *  @param  that    the sequence to test
+   *  @return `true` if this `NumericString` has `that` as a
+   *          suffix, `false` otherwise.
+   */
+  def endsWith[B](that: GenSeq[B]): Boolean =
+    value.endsWith(that)
+
+  def equalsIgnoreCase(arg0: String): Boolean =
+    value.equalsIgnoreCase(arg0)
+
+  /** Tests whether a predicate holds for at least one element of this `NumericString`.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return `true` if the given predicate `p` is satisfied by
+   *          at least one character of this `NumericString`, otherwise
+   *          `false`
+   */
+  def exists(p: (Char) => Boolean): Boolean =
+    value.exists(p)
+
+  /** Selects all elements of this `NumericString` which satisfy a predicate.
+   *
+   *  @param p  the predicate used to test elements.
+   *  @return a string consisting of all characters of this
+   *          `NumericString` that satisfy the given
+   *          predicate `p`. Their order may not be
+   *          preserved.
+   */
+  def filter(p: (Char) => Boolean): String =
+    value.filter(p)
+
+  /** Selects all elements of this `NumericString` which do not
+   * satisfy a predicate.
+   *
+   *  @param pred  the predicate used to test elements.
+   *  @return a string consisting of all characters of this
+   *          `NumericString` that do not satisfy the given
+   *          predicate `p`. Their order may not be
+   *          preserved.
+   */
+  def filterNot(p: (Char) => Boolean): String =
+    value.filterNot(p)
+
+  /** Finds the first element of the `NumericString` satisfying
+   * a predicate, if any.
+   *
+   *  @param p       the predicate used to test elements.
+   *  @return        an option value containing the first character of
+   *                 the `NumericString` that satisfies `p`, or
+   *                 `None` if none exists.
+   */
+  def find(p: (Char) => Boolean): Option[Char] =
+    value.find(p)
+
+  /** Builds a new collection by applying a function to all elements of this `NumericString`
+   *  and using the elements of the resulting collections.
+   *
+   *  @tparam B     the element type of the returned collection.
+   *  @param f      the function to apply to each element.
+   *  @return       a new string resulting from applying the given
+   *                  collection-valued function `f` to each
+   *                  element of this `NumericString` and
+   *                  concatenating the results.
+   */
+  def flatMap[B, That](f: (Char) ⇒ GenTraversableOnce[B])(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.flatMap(f)
+
+  /** Folds the elements of this `NumericString` using the specified associative
+   *  binary operator.
+   *
+   *  @tparam     A1 a type parameter for the binary operator, a
+   *              supertype of `A`.
+   *  @param z    a neutral element for the fold operation; may be
+   *              added to the result an arbitrary number of
+   *              times, and must not change the result
+   *              (e.g., `Nil` for list concatenation, 0 for
+   *              addition, or 1 for multiplication).
+   *  @param op   a binary operator that must be associative.
+   *  @return     the result of applying the fold operator `op`
+   *              between all the elements and `z`, or `z` if this
+   *              `NumericString` is empty.
+   */
+  def fold[A1 >: Char](z: A1)(op: (A1, A1) => A1): A1 =
+    value.fold(z)(op)
+
+  /** Applies a binary operator to a start value and all
+   *  elements of this `NumericString`, going left to right.
+   *
+   *  @param   z    the start value.
+   *  @param   op   the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+   *  @return  the result of inserting `op` between consecutive
+   *           elements of this `NumericString`, going left to
+   *           right with the start value `z` on the left:
+   *           {{{
+   *             op(...op(z, x_1), x_2, ..., x_n)
+   *           }}}
+   *           where `x,,1,,, ..., x,,n,,` are the elements of this
+   *           `NumericString`. Returns `z` if this `NumericString` is empty.
+   */
+  def foldLeft[B](z: B)(op: (B, Char) => B): B =
+    value.foldLeft(z)(op)
+
+  /** Applies a binary operator to all elements of this
+   *  `NumericString` and a start value, going right to left.
+   *
+   *  @param   z    the start value.
+   *  @param   op   the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+
+   *  @return the result of inserting `op` between consecutive
+   *           elements of this `NumericString`, going right to
+   *           left with the start value `z` on the right:
+   *           {{{
+   *             op(x_1, op(x_2, ... op(x_n, z)...))
+   *           }}}
+   *           where `x,,1,,, ..., x,,n,,` are the elements of
+   *           this `NumericString`.  Returns `z` if this
+   *           `NumericString` is empty.
+   */
+  def foldRight[B](z: B)(op: (Char, B) => B): B =
+    value.foldRight(z)(op)
+
+  /** Tests whether a predicate holds for all elements of this `NumericString`.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return        `true` if this `NumericString` is empty or the
+   *                 given predicate `p` holds for all elements
+   *                 of this `NumericString`, otherwise `false`.
+   */
+  def forall(p: (Char) => Boolean): Boolean =
+    value.forall(p)
+
+  /** Applies a function `f` to all elements of this `NumericString`.
+    *
+    *  @param f the function that is applied for its side-effect
+    *           to every element.  The result of function `f`
+    *           is discarded.
+    */
+  def foreach(f: (Char) => Unit): Unit =
+    value.foreach(f)
+
+  /** Partitions this `NumericString` into a map of strings
+   * according to some discriminator function.
+   *
+   *  @param f     the discriminator function.
+   *  @tparam K    the type of keys returned by the discriminator function.
+
+   *  @return      A map from keys to strings such that the following
+   *               invariant holds:
+   *               {{{
+   *                 (xs groupBy f)(k) = xs filter (x => f(x) == k)
+   *               }}}
+   *               That is, every key `k` is bound to a string of those
+   *               elements `x` for which `f(x)` equals `k`.
+   *
+   */
+  def groupBy[K](f: (Char) => K): Map[K, String] =
+    value.groupBy(f)
+
+  /** Partitions elements in fixed size strings.
+   *  @see [[scala.collection.Iterator]], method `grouped`
+   *
+   *  @param size the number of elements per group
+   *  @return An iterator producing strings of size `size`,
+   *          except the last will be less than size `size` if
+   *          the elements don't divide evenly.
+   */
+  def grouped(size: Int): Iterator[String] =
+    value.grouped(size)
+
+  /** Tests whether this `NumericString` is known to have a finite size.
+   *  Always `true` for `NumericString`.
+   *
+   *  @return  `true` if this collection is known to have finite size,
+   *           `false` otherwise.
+   */
+  def hasDefiniteSize: Boolean =
+    value.hasDefiniteSize
+
+  /** Selects the first element of this `NumericString`.
+   *
+   *  @return  the first element of this `NumericString`.
+   *  @throws NoSuchElementException if the `NumericString` is empty.
+   */
+  def head: Char =
+    value.head
+
+  /** Optionally selects the first element.
+   *
+   *  @return  the first element of this `NumericString` if it is nonempty,
+   *           `None` if it is empty.
+   */
+  def headOption: Option[Char] =
+    value.headOption
+
+  /** Finds first index after or at a start index where this
+   * `NumericString` contains a given sequence as a slice.
+   *
+   *  @param  that    the sequence to test
+   *  @param  from    the start index
+   *  @return         the first index `>= from` such that the elements
+   *                   of this `NumericString` starting at this index
+   *                   match the elements of sequence `that`, or `-1` of
+   *                   no such subsequence exists.
+   */
+  def indexOfSlice[B >: Char](that: GenSeq[B], from: Int): Int =
+    value.indexOfSlice(that, from)
+
+  /** Finds first index where this `NumericString` contains a
+   * given sequence as a slice.
+   *
+   *  @param  that    the sequence to test
+   *  @return         the first index such that the elements of this
+   *                  `NumericString` starting at this index match the
+   *                  elements of sequence `that`, or `-1` of no such
+   *                  subsequence exists.
+   */
+  def indexOfSlice[B >: Char](that: GenSeq[B]): Int =
+    value.indexOfSlice(that)
+
+  /** Finds index of the first element satisfying some predicate
+   * after or at some start index.
+   *
+   *  @param   p      the predicate used to test elements.
+   *  @param   from   the start index
+   *  @return         the index `>= from` of the first element of this
+   *                  `NumericString` that satisfies the predicate `p`,
+   *                  or `-1`, if none exists.
+   */
+  def indexWhere(p: (Char) => Boolean, from: Int): Int =
+    value.indexWhere(p, from)
+
+  /** Finds index of first element satisfying some predicate.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return        the index of the first element of this
+   *                 `NumericString` that satisfies the predicate `p`,
+   *                 or `-1`, if none exists.
+   */
+  def indexWhere(p: (Char) => Boolean): Int =
+    value.indexWhere(p)
+
+  /** Produces the range of all indices of this sequence.
+   *
+   *  @return  a `Range` value from `0` to one less than the
+   *           length of this `NumericString`.
+   */
+  def indices: Range =
+    value.indices
+
+  /** Selects all elements except the last.
+   *
+   *  @return  a string consisting of all elements of this `NumericString`
+   *           except the last one.
+   *  @throws UnsupportedOperationException if the `NumericString` is empty.
+   */
+  def init: String =
+    value.init
+
+  /** Iterates over the inits of this `NumericString`. The first
+   *  value will be the string for this `NumericString` and the
+   *  final one will be an empty string, with the intervening
+   *  values the results of successive applications of `init`.
+   *
+   *  @return  an iterator over all the inits of this `NumericString`
+   *  @example  ` NumericString("123").inits = Iterator(123, 12, 1, "")`
+   */
+  def inits: Iterator[String] =
+    value.inits
+
+  /** Computes the multiset intersection between this
+   * `NumericString` and another sequence.
+   *
+   *  @param that   the sequence of elements to intersect with.
+   *  @return       a new string which contains all elements of this
+   *                `NumericString` which also appear in `that`.  If an
+   *                element value `x` appears ''n'' times in
+   *                `that`, then the first ''n'' occurrences of
+   *                `x` will be retained in the result, but any
+   *                following occurrences will be omitted.
+   *
+   */
+  def intersect(that: collection.Seq[Char]): String =
+    value.intersect(that)
+
+
+  /** Tests whether this `NumericString` contains given index.
+   *
+   * @param    idx     the index to test
+   * @return   `true` if this `NumericString` contains an element
+   *           at position `idx`, `false` otherwise.
+   */
+  def isDefinedAt(idx: Int): Boolean =
+    value.isDefinedAt(idx)
+
+  /** Tests whether this `NumericString` can be repeatedly traversed.  Always
+   *  true for `NumericString`.
+   *
+   *  @return   `true` if it is repeatedly traversable, `false` otherwise.
+   */
+  final def isTraversableAgain: Boolean =
+    value.isTraversableAgain
+
+  /** Creates a new iterator over all elements contained in this
+   * iterable object.
+   *
+   *  @return the new iterator
+   */
+  def iterator: Iterator[Char] =
+    value.iterator
+
+  /** Selects the last element.
+    *
+    * @return The last element of this `NumericString`.
+    * @throws NoSuchElementException If the `NumericString` is empty.
+    */
+  def last: Char =
+    value.last
+
+  /** Finds last index before or at a given end index where this
+   * `NumericString` contains a given sequence as a slice.
+   *
+   *  @param  that    the sequence to test
+   *  @param  end     the end index
+   *  @return    the last index `<= end` such that the elements of
+   *             this `NumericString` starting at this index match
+   *             the elements of sequence `that`, or `-1` of no
+   *             such subsequence exists.
+   */
+  def lastIndexOfSlice[B >: Char](that: GenSeq[B], end: Int): Int =
+    value.lastIndexOfSlice(that, end)
+
+  /** Finds last index where this `NumericString` contains a
+   * given sequence as a slice.
+   *
+   *  @param  that    the sequence to test
+   *  @return    the last index such that the elements of this
+   *              `NumericString` starting a this index match the
+   *              elements of sequence `that`, or `-1` of no such
+   *              subsequence exists.
+   */
+  def lastIndexOfSlice[B >: Char](that: GenSeq[B]): Int =
+    value.lastIndexOfSlice(that)
+
+  /** Finds index of last element satisfying some predicate
+   * before or at given end index.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return    the index `<= end` of the last element of this
+   *             `NumericString` that satisfies the predicate `p`,
+   *             or `-1`, if none exists.
+   */
+  def lastIndexWhere(p: (Char) => Boolean, end: Int): Int =
+    value.lastIndexWhere(p, end)
+
+  /** Finds index of last element satisfying some predicate.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return    the index of the last element of this
+   *             `NumericString` that satisfies the predicate `p`,
+   *             or `-1`, if none exists.
+   */
+  def lastIndexWhere(p: (Char) => Boolean): Int =
+    value.lastIndexWhere(p)
+
+  /** Optionally selects the last element.
+   *
+   *  @return  the last element of this `NumericString` if it is nonempty,
+   *           `None` if it is empty.
+   */
+  def lastOption: Option[Char] =
+    value.lastOption
+
+  /** Compares the length of this `NumericString` to a test value.
+   *
+   *   @param   len   the test value that gets compared with the length.
+   *   @return  A value `x` where
+   *   {{{
+   *        x <  0       if this.length <  len
+   *        x == 0       if this.length == len
+   *        x >  0       if this.length >  len
+   *   }}}
+   *  The method as implemented here does not call `length`
+   *  directly; its running time is `O(length min len)` instead
+   *  of `O(length)`. The method should be overwritten if
+   *  computing `length` is cheap.
+   */
+  def lengthCompare(len: Int): Int =
+    value.lengthCompare(len)
+
+  /** Return all lines in this `NumericString` in an iterator.  Always
+   * returns a single string for `NumericString`.
+   */
+  def lines: Iterator[String] =
+    value.lines
+
+  /** Return all lines in this `NumericString` in an iterator,
+   *  including trailing line end characters.  Always returns a
+   *  single string with no endline, for `NumericString`.
+   */
+  def linesWithSeparators: Iterator[String] =
+    value.linesWithSeparators
+
+  /** Builds a new string by applying a function to all elements
+   * of this `NumericString`.
+   *
+   *  @param f      the function to apply to each element.
+   *  @return       a new string resulting from applying the given
+   *                function `f` to each character of this
+   *                `NumericString` and collecting the results.
+   */
+  def map(f: (Char) => Char): String =
+    value.map(f)
+
+  /** Finds the largest element.
+   *
+   *  @return   the largest character of this `NumericString`.
+   */
+  def max: Char =
+    value.max
+
+  /** Finds the first element which yields the largest value
+   * measured by function f.
+   *
+   *  @param    cmp   An ordering to be used for comparing elements.
+   *  @tparam   B     The result type of the function f.
+   *  @param    f     The measuring function.
+   *  @return         the first element of this `NumericString` with the
+   *                  largest value measured by function f with respect to the
+   *                  ordering `cmp`.
+   */
+  def maxBy[B](f: (Char) ⇒ B)(implicit cmp: Ordering[B]): Char =
+    value.maxBy(f)
+
+  /** Finds the smallest element.
+   *
+   *  @return   the smallest element of this `NumericString`.
+   */
+  def min: Char =
+    value.min
+
+  /** Finds the first element which yields the smallest value
+   * measured by function f.
+   *
+   *  @param    cmp   An ordering to be used for comparing elements.
+   *  @tparam   B     The result type of the function f.
+   *  @param    f     The measuring function.
+   *  @return         the first element of this `NumericString` with the
+   *                  smallest value measured by function f with respect to the
+   *                  ordering `cmp`.
+   */
+  def minBy[B](f: (Char) ⇒ B)(implicit cmp: Ordering[B]): Char =
+    value.minBy(f)
+
+  /** Displays all elements of this `NumericString` in a string.
+   *
+   *  @return a string representation of this
+   *          `NumericString`. In the resulting string the
+   *          string representations (w.r.t. the method
+   *          `toString`) of all elements of this
+   *          `NumericString` follow each other without any
+   *          separator string.
+   */
+  def mkString: String =
+    value.mkString
+
+  /** Displays all elements of this `NumericString` in a string
+   * using a separator string.
+   *
+   *  @param sep   the separator string.
+   *  @return      a string representation of this
+   *               `NumericString`. In the resulting string the
+   *               string representations (w.r.t. the method
+   *               `toString`) of all elements of this
+   *               `NumericString` are separated by the string
+   *               `sep`.
+   *
+   *  @example  `NumericString("123").mkString("|") = "1|2|3"`
+   */
+  def mkString(sep: String): String =
+    value.mkString(sep)
+
+  /** Displays all elements of this `NumericString` in a string
+   *  using start, end, and separator strings.
+   *
+   *  @param start the starting string.
+   *  @param sep   the separator string.
+   *  @param end   the ending string.
+   *  @return      a string representation of this
+   *               `NumericString`. The resulting string begins
+   *               with the string `start` and ends with the
+   *               string `end`. Inside, the string
+   *               representations (w.r.t. the method
+   *               `toString`) of all elements of this
+   *               `NumericString` are separated by the string
+   *               `sep`.
+   *
+   *  @example  `NumericString("123").mkString("(", "; ", ")") = "(1; 2; 3)"`
+   */
+  def mkString(start: String, sep: String, end: String): String =
+    value.mkString(start, sep, end)
+
+  /** Tests whether the `NumericString` is not empty.
+   *
+   *  @return `true` if the `NumericString` contains at least
+   *  one element, `false` otherwise.
+   */
+  def nonEmpty: Boolean =
+    value.nonEmpty
+
+  /** A string copy of this `NumericString` with an element value
+   * appended until a given target length is reached.
+   *
+   *  @param   len   the target length
+   *  @param   elem  the padding value
+   *  @return        a new string consisting of all elements of this
+   *                 `NumericString` followed by the minimal number
+   *                 of occurrences of `elem` so that the resulting
+   *                 string has a length of at least `len`.
+   */
+  def padTo(len: Int, elem: Char): String =
+    value.padTo(len, elem)
+
+  /** Returns a parallel implementation of this collection.
+   *
+   *  @return  a parallel implementation of this collection
+   */
+  def par: ParSeq[Char] =
+    value.par
+
+  /** Partitions this `NumericString` in two strings according to a predicate.
+   *
+   *  @param pred the predicate on which to partition.
+   *  @return     a pair of strings -- the first string consists of
+   *              all elements that satisfy the predicate `p`
+   *              and the second string consists of all elements
+   *              that don't. The relative order of the elements
+   *              in the resulting strings may not be preserved.
+   */
+  def partition(p: (Char) => Boolean): (String, String) =
+    value.partition(p)
+
+  /** Produces a new string where a slice of elements in this
+   * `NumericString` is replaced by another sequence.
+   *
+   *  @param  from     the index of the first replaced element
+   *  @param  patch    the replacement sequence
+   *  @param  replaced the number of elements to drop in the
+   *                   original `NumericString`
+   *  @return          a new string consisting of all elements of this
+   *                   `NumericString` except that `replaced`
+   *                   elements starting from `from` are
+   *                   replaced by `patch`.
+   */
+  def patch(from: Int, that: GenSeq[Char], replaced: Int): String =
+    value.patch(from, that, replaced)
+
+  /** Iterates over distinct permutations.
+   *
+   *  @return  An Iterator which traverses the distinct
+   *           permutations of this `NumericString`.
+   *  @example  `NumericString("122").permutations = Iterator(122, 212, 221)`
+   */
+  def permutations: Iterator[String] =
+    value.permutations
+
+  /** Returns the length of the longest prefix whose elements
+   * all satisfy some predicate.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @return  the length of the longest prefix of this `NumericString`
+   *           such that every element of the segment satisfies the predicate
+   *           `p`.
+   */
+  def prefixLength(p: (Char) => Boolean): Int =
+    value.prefixLength(p)
+
+  /** Multiplies up the elements of this collection.
+   *
+   *   @param num an implicit parameter defining a set of
+   *                 numeric operations which includes the `*`
+   *                 operator to be used in forming the product.
+   *   @tparam  B    the result type of the `*` operator.
+   *   @return       the product of all elements of this `NumericString`
+   *                 with respect to the `*` operator in `num`.
+   */
+  def product[B >: Char](implicit num: Numeric[B]): B =
+    value.product
+
+  /** You can follow a `NumericString` with `.r(g1, ... , gn)`, turning
+   *  it into a `Regex`, with group names g1 through gn.
+   *
+   *  This is not particularly useful for a `NumericString`, given the
+   *  limitations on its content.
+   *
+   *  @param groupNames The names of the groups in the pattern,
+   *  in the order they appear.
+   */
+  def r(groupNames: String*): Regex =
+    value.r(groupNames:_*)
+
+  /** You can follow a `NumericString` with `.r`, turning it
+   * into a `Regex`.
+   *
+   *  This is not particularly useful for a `NumericString`, given the
+   *  limitations on its content.
+   */
+  def r: Regex =
+    value.r
+
+  /** Reduces the elements of this `NumericString` using the
+   * specified associative binary operator.
+   *
+   *  @tparam A1      A type parameter for the binary operator, a
+   *                  supertype of `A`.
+   *  @param op       A binary operator that must be associative.
+   *  @return         The result of applying reduce operator `op`
+   *                  between all the elements if the `NumericString` is
+   *                  nonempty.
+   *  @throws UnsupportedOperationException
+   *                  if this `NumericString` is empty.
+   */
+  def reduce[A1 >: Char](op: (A1, A1) ⇒ A1): A1 =
+    value.reduce(op)
+
+  /** Applies a binary operator to all elements of this `NumericString`,
+   *  going left to right.
+   *
+   *  @param  op    the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+   *  @return       the result of inserting `op` between consecutive
+   *                elements of this `NumericString`,
+   *           going left to right:
+   *           {{{
+   *             op( op( ... op(x_1, x_2) ..., x_{n-1}), x_n)
+   *           }}}
+   *           where `x,,1,,, ..., x,,n,,` are the elements of
+   *           this `NumericString`.
+   *  @throws UnsupportedOperationException if this `NumericString` is empty.
+   */
+  def reduceLeft[B >: Char](op: (B, Char) ⇒ B): B =
+    value.reduceLeft(op)
+
+  /** Optionally applies a binary operator to all elements of
+   * this `NumericString`, going left to right.
+   *
+   *  @param  op    the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+   *  @return       an option value containing the result of
+   *                `reduceLeft(op)` if this `NumericString` is
+   *                nonempty, `None` otherwise.
+   */
+  def reduceLeftOption[B >: Char](op: (B, Char) ⇒ B): Option[B] =
+    value.reduceLeftOption(op)
+
+  /** Reduces the elements of this `NumericString`, if any, using the specified
+   *  associative binary operator.
+   *
+   *  @tparam A1     A type parameter for the binary operator, a
+   *                 supertype of `A`.
+   *  @param op      A binary operator that must be associative.
+   *  @return        An option value containing result of applying
+   *                 reduce operator `op` between all the
+   *                 elements if the collection is nonempty, and
+   *                 `None` otherwise.
+   */
+  def reduceOption[A1 >: Char](op: (A1, A1) ⇒ A1): Option[A1] =
+    value.reduceOption(op)
+
+  /** Applies a binary operator to all elements of this
+   * `NumericString`, going right to left.
+   *
+   *  @param  op    the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+   *  @return       the result of inserting `op` between consecutive
+   *                elements of this `NumericString`,
+   *           going right to left:
+   *           {{{
+   *             op(x_1, op(x_2, ..., op(x_{n-1}, x_n)...))
+   *           }}}
+   *           where `x,,1,,, ..., x,,n,,` are the elements of
+   *           this `NumericString`.
+   *  @throws UnsupportedOperationException if this `NumericString` is empty.
+   */
+  def reduceRight[B >: Char](op: (Char, B) ⇒ B): B =
+    value.reduceRight(op)
+
+  /** Optionally applies a binary operator to all elements of
+   *  this `NumericString`, going right to left.
+   *
+   *  @param  op    the binary operator.
+   *  @tparam  B    the result type of the binary operator.
+   *  @return       an option value containing the result of
+   *                `reduceRight(op)` if this `NumericString` is
+   *                nonempty, `None` otherwise.
+   */
+  def reduceRightOption[B >: Char](op: (Char, B) ⇒ B): Option[B] =
+    value.reduceRightOption(op)
+
+  /** Replace all literal occurrences of `literal` with the
+   *  string `replacement`.  This is equivalent to
+   *  [[java.lang.String#replaceAll]] except that both arguments
+   *  are appropriately quoted to avoid being interpreted as
+   *  metacharacters.
+   *
+   *  @param literal        the string which should be replaced
+   *                        everywhere it occurs
+   *  @param    replacement the replacement string
+   *  @return               the resulting string
+   */
+  def replaceAllLiterally(literal: String, replacement: String): String =
+    value.replaceAllLiterally(literal, replacement)
+
+  def repr: String =
+    value.repr
+
+  /** Returns new string with elements in reversed order.
+   *
+   *  @return A new string with all elements of this `NumericString` in
+   *          reversed order.
+   */
+  def reverse: String =
+    value.reverse
+
+  /** An iterator yielding elements in reversed order.
+   *
+   * Note: `xs.reverseIterator` is the same as `xs.reverse.iterator` but
+   * might be more efficient.
+   *
+   *  @return  an iterator yielding the elements of this `NumericString`
+   *           in reversed order
+   */
+  def reverseIterator: Iterator[Char] =
+    value.reverseIterator
+
+  /**
+   *  Builds a new collection by applying a function to all
+   *  elements of this `NumericString` and collecting the
+   *  results in reversed order.
+   *
+   *  @param f      the function to apply to each element.
+   *  @tparam B     the element type of the returned collection.
+   *  @return       a new collection resulting from applying the given
+   *                function `f` to each element of this
+   *                `NumericString` and collecting the results
+   *                in reversed order.
+   */
+  def reverseMap[B, That](f: (Char) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.reverseMap(f)
+
+  /** Checks if the other iterable collection contains the same
+   * elements in the same order as this `NumericString`.
+   *
+   *  @param that  the collection to compare with.
+   *  @return      `true`, if both collections contain the same
+   *               elements in the same order, `false` otherwise.
+   */
+  def sameElements[B >: Char](that: GenIterable[B]): Boolean =
+    value.sameElements(that)
+
+  /** Computes a prefix scan of the elements of the collection.
+   *
+   *  Note: The neutral element `z` may be applied more than once.
+   *
+   *  @tparam B         element type of the resulting collection
+   *  @tparam That      type of the resulting collection
+   *  @param z          neutral element for the operator `op`
+   *  @param op         the associative operator for the scan
+   *  @param cbf        combiner factory which provides a combiner
+   *
+   *  @return a new string containing the prefix scan of the
+   *          elements in this `NumericString`
+   */
+  def scan[B >: Char, That](z: B)(op: (B, B) ⇒ B)(implicit cbf: CanBuildFrom[String, B, That]): That =
+    value.scan(z)(op)
+
+  /** Produces a collection containing cumulative results of applying the
+   *  operator going left to right.
+   *
+   *  @tparam B      the type of the elements in the resulting collection
+   *  @tparam That   the actual type of the resulting collection
+   *  @param z       the initial value
+   *  @param op      the binary operator applied to the intermediate
+   *                 result and the element
+   *  @param bf      an implicit value of class CanBuildFrom which
+   *                 determines the result class That from the current
+   *                 representation type Repr and the new element type B.
+   *  @return        collection with intermediate results
+   */
+  def scanLeft[B, That](z: B)(op: (B, Char) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.scanLeft(z)(op)
+
+  /** Produces a collection containing cumulative results of
+   *  applying the operator going right to left.  The head of
+   *  the collection is the last cumulative result.
+   *
+   *  @tparam B      the type of the elements in the resulting collection
+   *  @tparam That   the actual type of the resulting collection
+   *  @param z       the initial value
+   *  @param         op the binary operator applied to the intermediate
+   *                 result and the element
+   *  @param         bf an implicit value of class CanBuildFrom which
+   *                 determines the result class That from the current
+   *                 representation type Repr and the new element type B.
+   *  @return        collection with intermediate results
+   */
+  def scanRight[B, That](z: B)(op: (Char, B) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.scanRight(z)(op)
+                    
+
+  /** Computes length of longest segment whose elements all
+   * satisfy some predicate.
+   *
+   *  @param   p     the predicate used to test elements.
+   *  @param   from  the index where the search starts.
+   *  @return  the length of the longest segment of this `NumericString`
+   *           starting from index `from` such that every
+   *           element of the segment satisfies the predicate
+   *           `p`.
+   */
+  def segmentLength(p: (Char) ⇒ Boolean, from: Int): Int =
+    value.segmentLength(p, from)
+
+  /** A version of this collection with all of the operations
+   *  implemented sequentially (i.e., in a single-threaded
+   *  manner).
+   *
+   *  This method returns a reference to this collection. In
+   *  parallel collections, it is redefined to return a
+   *  sequential implementation of this collection. In both
+   *  cases, it has O(1) complexity.
+   *
+   *  @return a sequential view of the collection.
+   */
+  def seq: WrappedString =
+    value.seq
+
+  /** The size of this `NumericString`.
+   *
+   *  @return    the number of elements in this `NumericString`.
+   */
+  def size: Int =
+    value.size
+
+  /** Selects an interval of elements.  The returned collection is made up
+   *  of all elements `x` which satisfy the invariant:
+   *  {{{
+   *    from <= indexOf(x) < until
+   *  }}}
+   *
+   *  @param   from   the lowest index to include from this `NumericString`.
+   *  @param   until  the lowest index to EXCLUDE from this `NumericString`.
+   *  @return  a string containing the elements greater than or equal to
+   *           index `from` extending up to (but not including) index `until`
+   *           of this `NumericString`.
+   */
+  def slice(from: Int, until: Int): String =
+    value.slice(from, until)
+
+  /** Groups elements in fixed size blocks by passing a "sliding window"
+   *  over them (as opposed to partitioning them, as is done in grouped.)
+   *  @see [[scala.collection.Iterator]], method `sliding`
+   *
+   *  @param size the number of elements per group
+   *  @param step the distance between the first elements of successive
+   *         groups
+   *  @return An iterator producing strings of size `size`, except the
+   *          last and the only element will be truncated if there are
+   *          fewer elements than size.
+   */
+  def sliding(size: Int, step: Int): Iterator[String] =
+    value.sliding(size, step)
+
+  /** Groups elements in fixed size blocks by passing a "sliding window"
+   *  over them (as opposed to partitioning them, as is done in grouped.)
+   *  "Sliding window" step is 1 by default.
+   *  @see [[scala.collection.Iterator]], method `sliding`
+   *
+   *  @param size the number of elements per group
+   *  @return An iterator producing strings of size `size`, except the
+   *          last and the only element will be truncated if there are
+   *          fewer elements than size.
+   */
+  def sliding(size: Int): Iterator[String] =
+    value.sliding(size)
+
+  /** Sorts this `NumericString` according to the Ordering which
+   *  results from transforming an implicitly given Ordering
+   *  with a transformation function.
+   *  @see [[scala.math.Ordering]]
+   *
+   *  @tparam  B the target type of the transformation `f`, and the type where
+   *           the ordering `ord` is defined.
+   *  @param   f the transformation function mapping elements
+   *           to some other domain `B`.
+   *  @param   ord the ordering assumed on domain `B`.
+   *  @return  a string consisting of the elements of this `NumericString`
+   *           sorted according to the ordering where `x < y` if
+   *           `ord.lt(f(x), f(y))`.
+   *
+   *  @example {{{
+   *    NumericString("212").sortBy(_.toInt)
+   *    res13: String = 122
+   *  }}}
+   */
+  def sortBy[B](f: (Char) ⇒ B)(implicit ord: math.Ordering[B]): String =
+    value.sortBy(f)
+
+  /** Sorts this `NumericString` according to a comparison function.
+   *
+   *  The sort is stable. That is, elements that are equal (as determined by
+   *  `lt`) appear in the same order in the sorted sequence as in the original.
+   *
+   *  @param  lt  the comparison function which tests whether
+   *              its first argument precedes its second argument in
+   *              the desired ordering.
+   *  @return     a string consisting of the elements of this `NumericString`
+   *              sorted according to the comparison function `lt`.
+   *  @example {{{
+   *    NumericString("212").sortWith(_.compareTo(_) < 0)
+   *    res14: String = 122
+   *  }}}
+   */
+  def sortWith(lt: (Char, Char) ⇒ Boolean): String =
+    value.sortWith(lt)
+
+  /** Sorts this `NumericString` according to an Ordering.
+   *
+   *  The sort is stable. That is, elements that are equal (as determined by
+   *  `lt`) appear in the same order in the sorted sequence as in the original.
+   *
+   *  @see [[scala.math.Ordering]]
+   *
+   *  @param  ord the ordering to be used to compare elements.
+   *  @return     a string consisting of the elements of this `NumericString`
+   *              sorted according to the ordering `ord`.
+   */
+  def sorted[B >: Char](implicit ord: math.Ordering[B]): String =
+    value.sorted
+
+  /** Splits this `NumericString` into a prefix/suffix pair
+   * according to a predicate.
+   *
+   *  Note: `c span p`  is equivalent to (but possibly more efficient than)
+   *  `(c takeWhile p, c dropWhile p)`, provided the evaluation of the
+   *  predicate `p` does not cause any side-effects.
+   *
+   *  @param p the test predicate
+   *  @return  a pair of strings consisting of the longest prefix
+   *           of this `NumericString` whose elements all
+   *           satisfy `p`, and the rest of this
+   *           `NumericString`.
+   */
+  def span(p: (Char) ⇒ Boolean): (String, String) =
+    value.span(p)
+
+  def split(separators: Array[Char]): Array[String] =
+    value.split(separators)
+
+  /** Split this `NumericString` around the separator character
+   *
+   * If this `NumericString` is the empty string, returns an array of strings
+   * that contains a single empty string.
+   *
+   * If this `NumericString` is not the empty string, returns an array containing
+   * the substrings terminated by the start of the string, the end of the
+   * string or the separator character, excluding empty trailing substrings
+   *
+   * The behaviour follows, and is implemented in terms of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html#split%28java.lang.String%29">String.split(re: String)</a>
+   *
+   *
+   * @example {{{
+   * scala> NumericString("1234").split('3')
+   * res15: Array[String] = Array(12, 4)
+   * //
+   * //splitting the empty string always returns the array with a single
+   * //empty string
+   * scala> NumericString("").split('3')
+   * res16: Array[String] = Array("")
+   * //
+   * //only trailing empty substrings are removed
+   * scala> NumericString("1234").split('4')
+   * res17: Array[String] = Array(123)
+   * //
+   * scala> NumericString("1234").split('1')
+   * res18: Array[String] = Array("", 234)
+   * //
+   * scala> NumericString("12341").split('1')
+   * res19: Array[String] = Array("", 234)
+   * //
+   * scala> NumericString("11211").split('1')
+   * res20: Array[String] = Array("", "", 2)
+   * //
+   * //all parts are empty and trailing
+   * scala> NumericString("1").split('1')
+   * res21: Array[String] = Array()
+   * //
+   * scala> NumericString("11").split('1')
+   * res22: Array[String] = Array()
+   *  }}}
+   *
+   * @param separator the character used as a delimiter
+   */
+  def split(separator: Char): Array[String] =
+    value.split(separator)
+
+  /** Splits this `NumericString` into two at a given position.
+   *  Note: `c splitAt n` is equivalent to (but possibly more efficient than)
+   *         `(c take n, c drop n)`.
+   *
+   *  @param n the position at which to split.
+   *  @return  a pair of strings consisting of the first `n`
+   *           elements of this `NumericString`, and the other elements.
+   */
+  def splitAt(n: Int): (String, String) =
+    value.splitAt(n)
+
+  /** Defines the prefix of this object's `toString` representation.
+   *
+   *  @return a string representation which starts the result of
+   *           `toString` applied to this `NumericString`. By
+   *           default the string prefix is the simple name of
+   *           the collection class `NumericString`.
+   */
+  def stringPrefix: String =
+    value.stringPrefix
+
+  /**
+   *  Strip trailing line end character from this string if it has one.
+   *
+   *  A line end character is one of
+   *  - `LF` - line feed   (`0x0A` hex)
+   *  - `FF` - form feed   (`0x0C` hex)
+   *
+   *  If a line feed character `LF` is preceded by a carriage return `CR`
+   *  (`0x0D` hex), the `CR` character is also stripped (Windows convention).
+   */
+  def stripLineEnd: String  =
+    value.stripLineEnd
+
+  /**
+   * Strip a leading prefix consisting of blanks or control characters
+   * followed by `|` from the line.
+   */
+  def stripMargin: String =
+    value.stripMargin
+
+  /** 
+   *  Strip a leading prefix consisting of blanks or control characters
+   *  followed by `marginChar` from the line.
+   */
+  def stripMargin(marginChar: Char): String =
+    value.stripMargin(marginChar)
+
+  /** Returns this `NumericString` as a string with the given
+   * `prefix` stripped.  If this `NumericString` does not start
+   * with `prefix`, it is returned unchanged.
+   */
+  def stripPrefix(prefix: String): String =
+    value.stripPrefix(prefix)
+
+  /** Returns this `NumericString` as a string with the given
+   *  `suffix` stripped. If this `NumericString` does not end
+   *  with `suffix`, it is returned unchanged.
+   */
+  def stripSuffix(suffix: String): String =
+    value.stripSuffix(suffix)
+
+  /** Sums up the elements of this collection.
+   *
+   * @return the sum of all character values in this `NumericString`
+   */
+  def sum[B >: Char](implicit num: Numeric[B]): B =
+    value.sum
+
+  /** Selects all elements except the first.
+   *
+   *  @return  a string consisting of all elements of this `NumericString`
+   *           except the first one.
+   *  @throws UnsupportedOperationException if the `NumericString` is empty.
+   */
+  def tail: String =
+    value.tail
+
+  /** Iterates over the tails of this `NumericString`. The first value will be this
+   *  `NumericString` as a string and the final one will be an empty string, with the intervening
+   *  values the results of successive applications of `tail`.
+   *
+   *  @return   an iterator over all the tails of this `NumericString`
+   *  @example {{{
+   * scala> NumericString("123").tails.toList
+   * res31: List[String] = List(123, 23, 3, "")
+   * }}}
+   */
+  def tails: Iterator[String] =
+    value.tails
+
+  /** Selects first ''n'' elements.
+   *
+   *  @param  n    the number of elements to take from this `NumericString`.
+   *  @return      a string consisting only of the first `n` elements
+   *               of this `NumericString`, or else the whole
+   *               `NumericString`, if it has less than `n` elements.
+   */
+  def take(n: Int): String =
+    value.take(n)
+
+  /** Selects last ''n'' elements.
+   *
+   *  @param n the number of elements to take
+   *  @return   a string consisting only of the last `n` elements
+   *            of this `NumericString`, or else the whole
+   *            `NumericString`, if it has less than `n` elements.
+   */
+  def takeRight(n: Int): String =
+    value.takeRight(n)
+
+  /** Takes longest prefix of elements that satisfy a predicate.
+   *
+   *  @param   p  The predicate used to test elements.
+   *  @return     the longest prefix of this `NumericString` whose
+   *              elements all satisfy the predicate `p`.
+   */
+  def takeWhile(p: (Char) ⇒ Boolean): String =
+    value.takeWhile(p)
+
+  /** Converts this `NumericString` into another collection by
+   * copying all elements.
+   *
+   *  @tparam Col  The collection type to build.
+   *  @return a new collection containing all elements of this `NumericString`.
+   */
+  def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, Char, Col[Char]]): Col[Char] =
+    value.to[Col]
+
+  /** Converts this `NumericString` to an array.
+   *
+   *  @return    an array containing all elements of this `NumericString`.
+   */
+  def toArray: Array[Char] =
+    value.toArray
+
+  /** Uses the contents of this `NumericString` to create a new mutable buffer.
+   *
+   *  @return a buffer containing all elements of this `NumericString`.
+   */
+  def toBuffer[A1 >: Char]: Buffer[A1] =
+    value.toBuffer[A1]
+
+  /**
+   * Parse as a `Byte`
+   * @throws java.lang.NumberFormatException If the string does
+   *    not contain a parsable `Byte`.
+   */
+  def toByte: Byte =
+    value.toByte
+
+  /**
+    * Parse as a `Double`.
+    * @throws java.lang.NumberFormatException If the string does
+    *   not contain a parsable `Double`.
+   */
+  def toDouble: Double =
+    value.toDouble
+
+  /**
+    * Parse as a `Float`.
+    * @throws java.lang.NumberFormatException If the string does
+    *    not contain a parsable `Float`.
+   */
+  def toFloat: Float =
+    value.toFloat
+
+  /** Converts this `NumericString` to an indexed sequence.
+   * 
+   *  @return an indexed sequence containing all elements of
+   *    this `NumericString`.
+   */
+  def toIndexedSeq: IndexedSeq[Char] =
+    value.toIndexedSeq
+
+  /**
+   * Parse as an `Int`
+   * @throws java.lang.NumberFormatException If the string does
+   *   not contain a parsable `Int`.
+   */
+  def toInt: Int =
+    value.toInt
+
+  /** Converts this `NumericString` to an iterable collection.  
+   *
+   *  @return an `Iterable` containing all elements of this `NumericString`.
+   */
+  def toIterable: collection.Iterable[Char] =
+    value.toIterable
+
+  /** Returns an Iterator over the elements in this `NumericString`.
+   *
+   *  @return an Iterator containing all elements of this `NumericString`.
+   */
+  def toIterator: Iterator[Char] =
+    value.toIterator
+
+  /** Converts this `NumericString` to a list.
+   * 
+   *  @return a list containing all elements of this `NumericString`.
+   */
+  def toList: scala.List[Char] =
+    value.toList
+
+  /**
+   * Parse as a `Long`.
+   * @throws java.lang.NumberFormatException If the string does
+   *   not contain a parsable `Long`.
+   */
+  def toLong: Long =
+    value.toLong
+
+  /** Converts this `NumericString` to a sequence.
+   *
+   *  @return a sequence containing all elements of this `NumericString`.
+   */
+  def toSeq: collection.Seq[Char] =
+    value.toSeq
+
+  /** Converts this `NumericString` to a set.
+   * 
+   *  @return      a set containing all elements of this `NumericString`.
+   */
+  def toSet[B >: Char]: Set[B] =
+    value.toSet
+
+  /**
+   * Parse as a `Short`.
+   * @throws java.lang.NumberFormatException If the string does
+   *   not contain a parsable `Short`.
+   */
+  def toShort: Short =
+    value.toShort
+
+  /** Converts this `NumericString` to a stream.
+   *  @return a stream containing all elements of this `NumericString`.
+   */
+  def toStream: Stream[Char] =
+    value.toStream
+
+  /** Converts this `NumericString` to an unspecified Traversable.
+   *
+   *  @return a Traversable containing all elements of this `NumericString`.
+   */
+  def toTraversable: collection.Traversable[Char] =
+    value.toTraversable
+
+  /** Converts this `NumericString` to a Vector.
+   *
+   *  @return a vector containing all elements of this `NumericString`.
+   */
+  def toVector: scala.Vector[Char] =
+    value.toVector
+
+  /** Produces a new sequence which contains all elements of
+   *  this `NumericString` and also all elements of a given
+   *  sequence. `xs union ys` is equivalent to `xs ++ ys`.
+   *
+   *    Another way to express this is that `xs union ys`
+   *    computes the order-preserving multi-set union of `xs`
+   *    and `ys`.  `union` is hence a counter-part of `diff` and
+   *    `intersect` which also work on multi-sets.
+   *
+   *    @return a new string which contains all elements of this
+   *                  `NumericString` followed by all elements
+   *                  of `that`.
+   */
+  def union[B >: Char, That](that: GenSeq[B])(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.union(that)
+
+  /** A copy of this `NumericString` with one single replaced element.
+   *
+   *  @param  index  the position of the replacement
+   *  @param  elem   the replacing element
+   *  @return a string copy of this `NumericString` with the
+   *    element at position `index` replaced by `elem`.
+   *  @throws IndexOutOfBoundsException if `index` does not
+   *    satisfy `0 <= index < length`.
+   */
+  def updated[B >: Char, That](index: Int, elem: B)(implicit bf: CanBuildFrom[String, B, That]): That =
+    value.updated(index, elem)
+
+  /** Creates a non-strict view of a slice of this `NumericString`.
+   *
+   *  Note: the difference between `view` and `slice` is that
+   *        `view` produces a view of the current
+   *        `NumericString`, whereas `slice` produces a new
+   *        string.
+   *
+   *  Note: `view(from, to)` is equivalent to `view.slice(from, to)`
+   *
+   *  @param from   the index of the first element of the view
+   *  @param until  the index of the element following the view
+   *  @return a non-strict view of a slice of this
+   *    `NumericString`, starting at index `from` and extending up
+   *    to (but not including) index `until`.
+   */
+  def view(from: Int, until: Int): SeqView[Char, String] =
+    value.view(from, until)
+
+  /** Creates a non-strict view of this `NumericString`.
+   *
+   *  @return a non-strict view of this `NumericString`.
+   */
+  def view: SeqView[Char, String] =
+    value.view
+
+  /** Creates a non-strict filter of this `NumericString`.
+   *
+   *  Note: the difference between `c filter p` and `c withFilter p` is that
+   *        the former creates a new collection, whereas the latter only
+   *        restricts the domain of subsequent `map`, `flatMap`, `foreach`,
+   *        and `withFilter` operations.
+   *
+   *  @param p   the predicate used to test elements.
+   *  @return    an object of class `WithFilter`, which supports
+   *             `map`, `flatMap`, `foreach`, and `withFilter`
+   *             operations.  All these operations apply to
+   *             those elements of this `NumericString` which
+   *             satisfy the predicate `p`.
+   */
+  def withFilter(p: (Char) ⇒ Boolean): FilterMonadic[Char, String] =
+    value.withFilter(p)
+
+  /** Returns a collection of pairs formed from this `NumericString`
+   *  and another iterable collection by combining corresponding
+   *  elements in pairs.  If one of the two collections is
+   *  longer than the other, its remaining elements are ignored.
+   *
+   *  @param   that  The iterable providing the second half of each result pair
+   *  @tparam  B     the type of the second half of the returned pairs
+   *  @return        a collection containing pairs consisting of
+   *                 corresponding elements of this
+   *                 `NumericString` and `that`. The length of
+   *                 the returned collection is the minimum of
+   *                 the lengths of this `NumericString` and
+   *                 `that`.
+   */
+  def zip[A1 >: Char, B, That](that: GenIterable[B])(implicit bf: CanBuildFrom[String, (A1, B), That]): That =
+    value.zip(that)
+
+  /** Returns a collection of pairs formed from this
+   *  `NumericString` and another iterable collection by
+   *  combining corresponding elements in pairs.  If one of the
+   *  two collections is shorter than the other, placeholder
+   *  elements are used to extend the shorter collection to the
+   *  length of the longer.
+   *
+   *  @tparam  B      the type of the second half of the returned pairs
+   *  @param that     the iterable providing the second half of each result pair
+   *  @param thisElem the element to be used to fill up the
+   *                  result if this `NumericString` is shorter than `that`.
+   *  @param thatElem the element to be used to fill up the
+   *                  result if `that` is shorter than this `NumericString`.
+   *  @return   a new collection consisting of corresponding
+   *            elements of this `NumericString` and
+   *            `that`. The length of the returned
+   *            collection is the maximum of the lengths
+   *            of this `NumericString` and `that`.  If
+   *            this `NumericString` is shorter than
+   *            `that`, `thisElem` values are used to pad
+   *            the result.  If `that` is shorter than
+   *            this `NumericString`, `thatElem` values
+   *            are used to pad the result.
+   */
+  def zipAll[B, A1 >: Char, That](that: GenIterable[B], thisElem: A1, thatElem: B)(implicit bf: CanBuildFrom[String, (A1, B), That]): That =
+    value.zipAll(that, thisElem, thatElem)
+
+  /** Zips this `NumericString` with its indices.
+   *
+   *    @return A new collection containing pairs
+   *                   consisting of all elements of this
+   *                   `NumericString` paired with their
+   *                   index. Indices start at `0`.
+   *    @example {{{
+   * scala> NumericString("123").zipWithIndex
+   * res41: scala.collection.immutable.IndexedSeq[(Char, Int)] = Vector((1,0), (2,1), (3,2))
+   * }}}
+   */
+  def zipWithIndex[A1 >: Char, That](implicit bf: CanBuildFrom[String, (A1, Int), That]): That =
+    value.zipWithIndex
+
+
 
   def ensuringValid(f: String => String): NumericString = {
     val candidateResult: String = f(value)
