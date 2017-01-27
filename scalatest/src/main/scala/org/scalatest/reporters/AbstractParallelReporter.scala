@@ -24,6 +24,8 @@ abstract class AbstractParallelReporter(filename: Option[String]) extends Resour
   val rawEventStreamFile: Option[OutputStream] = filename.map(f => Files.newOutputStream(Paths.get(f + ".txt")))
   val charset = Charset.forName("UTF8")
 
+  def this() = this(None)
+
   override def apply(event: Event): Unit = {
     events += event
     rawEventStreamFile.map(f => {
