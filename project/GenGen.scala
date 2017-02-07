@@ -750,44 +750,7 @@ val propertyCheckForAllTemplate = """
     pos: source.Position,
     asserting: PropCheckerAsserting[ASSERTION]
   ): asserting.Result =
-    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
-      case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => "too many discarded evaluations",
-          "too many discarded evaluations",
-          argsPassed,
-          names,
-          None,
-          pos
-        )
-
-      case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-          (
-          sde match {
-            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-            case _ => ""
-          }
-          ) +
-          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-          "  " + FailureMessages.occurredOnValues + "\n" +
-          prettyArgs(argsPassed, prettifier) + "\n" +
-          "  )" +
-          "", // getLabelDisplay(names),
-          FailureMessages.propertyFailed(prettifier, succeeded),
-          argsPassed,
-          names,
-          ex,
-          pos
-        )
-
-      case PropertyTest.CheckSuccess(args) =>
-        asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-    }
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -797,44 +760,7 @@ $gens$,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result =
-      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
-        case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => "too many discarded evaluations",
-            "too many discarded evaluations",
-            argsPassed,
-            names,
-            None,
-            pos
-          )
-
-        case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-            (
-            sde match {
-              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-              case _ => ""
-            }
-            ) +
-            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-            "  " + FailureMessages.occurredOnValues + "\n" +
-            prettyArgs(argsPassed, prettifier) + "\n" +
-            "  )" +
-            "", // getLabelDisplay(names),
-            FailureMessages.propertyFailed(prettifier, succeeded),
-            argsPassed,
-            names,
-            ex,
-            pos
-          )
-
-        case PropertyTest.CheckSuccess(args) =>
-          asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-      }
+      asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($alphaLower$))
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -844,43 +770,7 @@ $gens$,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result =
-      (PropertyTest.forAll$n$(List($alphaLower$), getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
-        case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => "too many discarded evaluations",
-            "too many discarded evaluations",
-            argsPassed,
-            names,
-            None,
-            pos
-          )
-
-        case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-            (
-            sde match {
-              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-              case _ => ""
-            }
-            ) +
-            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-            "  " + FailureMessages.occurredOnValues + "\n" +
-            prettyArgs(argsPassed, prettifier) + "\n" +
-            "  )" +
-            "", // getLabelDisplay(names),
-            FailureMessages.propertyFailed(prettifier, succeeded),
-            argsPassed,
-            names,
-            ex,
-            pos
-          )
-
-        case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-      }
+      asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($alphaLower$))
 
   def forAll[$alphaUpper$, ASSERTION]($gens$)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -889,43 +779,7 @@ $gens$,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result =
-    (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
-      case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => "too many discarded evaluations",
-          "too many discarded evaluations",
-          argsPassed,
-          names,
-          None,
-          pos
-        )
-
-      case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-          (
-          sde match {
-            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-            case _ => ""
-          }
-          ) +
-          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-          "  " + FailureMessages.occurredOnValues + "\n" +
-          prettyArgs(argsPassed, prettifier) + "\n" +
-          "  )" +
-          "", // getLabelDisplay(names),
-          FailureMessages.propertyFailed(prettifier, succeeded),
-          argsPassed,
-          names,
-          ex,
-          pos
-        )
-
-      case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-    }
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($gens$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -934,43 +788,7 @@ $gens$,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result =
-    (PropertyTest.forAll$n$(List.empty, getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
-      case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => "too many discarded evaluations",
-          "too many discarded evaluations",
-          argsPassed,
-          names,
-          None,
-          pos
-        )
-        //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
-
-      case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-          (
-          sde match {
-            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-            case _ => ""
-          }
-          ) +
-          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-          "  " + FailureMessages.occurredOnValues + "\n" +
-          prettyArgs(argsPassed, prettifier) + "\n" +
-          "  )" +
-          "", // getLabelDisplay(names),
-          FailureMessages.propertyFailed(prettifier, succeeded),
-          argsPassed,
-          names,
-          ex,
-          pos
-        )
-      case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-    }
+    asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($gensAndNames$)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -980,42 +798,7 @@ $gens$,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result = {
     $tupleBusters$
-    (PropertyTest.forAll$n$(List($argNameNames$), getParameter(List.empty, config))(fun)($genRefs$, asserting)).check match {
-      case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => "too many discarded evaluations",
-          "too many discarded evaluations",
-          argsPassed,
-          names,
-          None,
-          pos
-        )
-
-      case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-        asserting.indicateFailure(
-          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-          (
-          sde match {
-            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-            case _ => ""
-          }
-          ) +
-          "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-          "  " + FailureMessages.occurredOnValues + "\n" +
-          prettyArgs(argsPassed, prettifier) + "\n" +
-          "  )" +
-          "", // getLabelDisplay(names),
-          FailureMessages.propertyFailed(prettifier, succeeded),
-          argsPassed,
-          names,
-          ex,
-          pos
-        )
-      case PropertyTest.CheckSuccess(args) =>  asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-    }
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($argNameNames$))
   }
 
   def forAll[$alphaUpper$, ASSERTION]($gensAndNames$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
@@ -1026,43 +809,7 @@ $gens$,
       asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result = {
       $tupleBusters$
-      (PropertyTest.forAll$n$(List($argNameNames$), getParameter(configParams, config))(fun)($genRefs$, asserting)).check match {
-        case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => "too many discarded evaluations",
-            "too many discarded evaluations",
-            argsPassed,
-            names,
-            None,
-            pos
-          )
-          //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
-
-        case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
-          asserting.indicateFailure(
-            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
-            (
-            sde match {
-              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-              case _ => ""
-            }
-            ) +
-            "  " + ex.map(e => if (e.getMessage == null) "" else (FailureMessages.message + e.getMessage + "\n")).getOrElse("") +
-            "  " + FailureMessages.occurredOnValues + "\n" +
-            prettyArgs(argsPassed, prettifier) + "\n" +
-            "  )" +
-            "", // getLabelDisplay(names),
-            FailureMessages.propertyFailed(prettifier, succeeded),
-            argsPassed,
-            names,
-            ex,
-            pos
-          )
-        case PropertyTest.CheckSuccess(args) => asserting.indicateSuccess(FailureMessages.propertyCheckSucceeded)
-      }
+      asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($argNameNames$))
     }
 
 """
