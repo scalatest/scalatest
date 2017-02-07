@@ -573,9 +573,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll1(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check1(fun, genA, param, prettifier, pos, List.empty)
     }
 
   /**
@@ -605,9 +603,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll2(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check2(fun, genA, genB, param, prettifier, pos, List.empty)
     }
 
   /**
@@ -638,9 +634,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll3(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check3(fun, genA, genB, genC, param, prettifier, pos, List.empty)
     }
 
   /**
@@ -672,9 +666,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll4(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check4(fun, genA, genB, genC, genD, param, prettifier, pos, List.empty)
     }
 
   /**
@@ -707,9 +699,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll5(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check5(fun, genA, genB, genC, genD, genE, param, prettifier, pos, List.empty)
     }
 
   /**
@@ -743,9 +733,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         pos: source.Position
       ): asserting.Result = {
       val param = getParameter(configParams, config)
-      val propFun = PropertyTest.forAll6(List.empty, param)(fun)
-
-      asserting.check(propFun, param, prettifier, pos)
+      asserting.check6(fun, genA, genB, genC, genD, genE, genF, param, prettifier, pos, List.empty)
     }
   }
 
