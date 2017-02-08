@@ -23,6 +23,11 @@ import FailureMessages.decorateToStringValue
 import org.scalactic.anyvals.PosZInt
 import org.scalatest.prop.Randomizer
 import scala.annotation.tailrec
+import org.scalatest.prop.Configuration.Parameter
+import org.scalatest.prop.{SizeParam}
+import scala.util.{Try, Success, Failure}
+import org.scalatest.exceptions.DiscardedEvaluationException
+import scala.concurrent.Future
 
 trait PropCheckerAsserting[T] {
 
@@ -31,13 +36,15 @@ trait PropCheckerAsserting[T] {
     */
   type Result
 
-  def discard(result: T): Boolean
+  type S
 
-  def succeed(result: T): (Boolean, Option[Throwable])
+  def discard(result: S): Boolean
 
-  private[scalatest] def indicateSuccess(message: => String): Result
+  def succeed(result: S): (Boolean, Option[Throwable])
 
-  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
+  //private[scalatest] def indicateSuccess(message: => String): Result
+
+  //private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
 
   /**
     * Perform the property check using the given function, generator and <code>Configuration.Parameters</code>.
@@ -125,10 +132,7 @@ abstract class UnitPropCheckerAsserting {
 
   abstract class PropCheckerAssertingImpl[T] extends PropCheckerAsserting[T] {
 
-    import org.scalatest.prop.Configuration.Parameter
-    import org.scalatest.prop.{SizeParam}
-    import scala.util.{Try, Success, Failure}
-    import org.scalatest.exceptions.DiscardedEvaluationException
+    type S = T
 
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
@@ -693,6 +697,230 @@ abstract class UnitPropCheckerAsserting {
 
 }
 
+trait FuturePropCheckerAsserting {
+
+  import PropCheckerAsserting._
+
+  abstract class FuturePropCheckerAssertingImpl[T] extends PropCheckerAsserting[Future[T]] {
+
+    implicit val executionContext: scala.concurrent.ExecutionContext
+
+    type Result = Future[Assertion]
+    type S = T
+
+    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
+
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+
+      val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+      val minSize = config.minSize
+      val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
+
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+        val (size, nextInitialSizes, nextRnd) =
+          initialSizes match {
+            case head :: tail => (head, tail, rnd)
+            case Nil =>
+              val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
+              (sz, Nil, nextRnd)
+          }
+        val (a, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd) // TODO: Move PosZInt farther out
+
+        val future = fun(a)
+        val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
+        future.map { r =>
+          if (discard(r)) {
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+            else
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+
+          }
+          else {
+            val (success, cause) = succeed(r)
+            if (success) {
+              val nextSucceededCount = succeededCount + 1
+              if (nextSucceededCount < config.minSuccessful)
+                AccumulatedResult(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+              else
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+
+            }
+            else
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+
+          }
+        } recover {
+          case ex: DiscardedEvaluationException =>
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+            else
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+
+          case ex =>
+            AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+        } flatMap { result =>
+          if (result.result.isDefined)
+            Future.successful(result)
+          else
+            loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes)
+        }
+      }
+
+      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
+      // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
+      val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
+
+      loop(0, 0, initEdges, afterEdgesRnd, initialSizes).map { accResult =>
+        accResult.result.get
+      }
+    }
+
+    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Assertion = {
+      val (args, labels) = argsAndLabels(result)
+      result match {
+        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed) =>
+          val failureMsg =
+            if (succeeded == 1)
+              FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
+            else
+              FailureMessages.propCheckExhausted(prettifier, succeeded, discarded)
+
+          indicateFutureFailure(
+            sde => failureMsg,
+            failureMsg,
+            args,
+            labels,
+            None,
+            pos
+          )
+
+        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed) =>
+          indicateFutureFailure(
+            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+              (
+                sde match {
+                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                  case _ => ""
+                }
+                ) +
+              "  " + FailureMessages.occurredOnValues + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + "\n" +
+              "  )" +
+              getLabelDisplay(labels.toSet),
+            FailureMessages.propertyFailed(prettifier, succeeded),
+            argsPassed,
+            labels,
+            None,
+            pos
+          )
+
+        case _ => indicateFutureSuccess(FailureMessages.propertyCheckSucceeded)
+      }
+    }
+
+    def check1[A](fun: (A) => Future[T],
+                  genA: org.scalatest.prop.Generator[A],
+                  prms: Configuration.Parameter,
+                  prettifier: Prettifier,
+                  pos: source.Position,
+                  names: List[String],
+                  argNames: Option[List[String]] = None): Result = {
+      val future = checkForAll(names, prms, genA)(fun)
+      future.map { result =>
+        checkResult(result, prettifier, pos, argNames)
+      }
+    }
+
+    def check2[A, B](fun: (A, B) => Future[T],
+                     genA: org.scalatest.prop.Generator[A],
+                     genB: org.scalatest.prop.Generator[B],
+                     prms: Configuration.Parameter,
+                     prettifier: Prettifier,
+                     pos: source.Position,
+                     names: List[String],
+                     argNames: Option[List[String]] = None): Result = {
+      //val result = checkForAll(names, prms, genA, genB)(fun)
+      //checkResult(result, prettifier, pos, argNames)
+      ???
+    }
+
+    def check3[A, B, C](fun: (A, B, C) => Future[T],
+                        genA: org.scalatest.prop.Generator[A],
+                        genB: org.scalatest.prop.Generator[B],
+                        genC: org.scalatest.prop.Generator[C],
+                        prms: Configuration.Parameter,
+                        prettifier: Prettifier,
+                        pos: source.Position,
+                        names: List[String],
+                        argNames: Option[List[String]] = None): Result = {
+      //val result = checkForAll(names, prms, genA, genB, genC)(fun)
+      //checkResult(result, prettifier, pos, argNames)
+      ???
+    }
+
+    def check4[A, B, C, D](fun: (A, B, C, D) => Future[T],
+                           genA: org.scalatest.prop.Generator[A],
+                           genB: org.scalatest.prop.Generator[B],
+                           genC: org.scalatest.prop.Generator[C],
+                           genD: org.scalatest.prop.Generator[D],
+                           prms: Configuration.Parameter,
+                           prettifier: Prettifier,
+                           pos: source.Position,
+                           names: List[String],
+                           argNames: Option[List[String]] = None): Result = {
+      //val result = checkForAll(names, prms, genA, genB, genC, genD)(fun)
+      //checkResult(result, prettifier, pos, argNames)
+      ???
+    }
+
+    def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Future[T],
+                              genA: org.scalatest.prop.Generator[A],
+                              genB: org.scalatest.prop.Generator[B],
+                              genC: org.scalatest.prop.Generator[C],
+                              genD: org.scalatest.prop.Generator[D],
+                              genE: org.scalatest.prop.Generator[E],
+                              prms: Configuration.Parameter,
+                              prettifier: Prettifier,
+                              pos: source.Position,
+                              names: List[String],
+                              argNames: Option[List[String]] = None): Result = {
+      //val result = checkForAll(names, prms, genA, genB, genC, genD, genE)(fun)
+      //checkResult(result, prettifier, pos, argNames)
+      ???
+    }
+
+    def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Future[T],
+                                 genA: org.scalatest.prop.Generator[A],
+                                 genB: org.scalatest.prop.Generator[B],
+                                 genC: org.scalatest.prop.Generator[C],
+                                 genD: org.scalatest.prop.Generator[D],
+                                 genE: org.scalatest.prop.Generator[E],
+                                 genF: org.scalatest.prop.Generator[F],
+                                 prms: Configuration.Parameter,
+                                 prettifier: Prettifier,
+                                 pos: source.Position,
+                                 names: List[String],
+                                 argNames: Option[List[String]] = None): Result = {
+      //val result = checkForAll(names, prms, genA, genB, genC, genD, genE, genF)(fun)
+      //checkResult(result, prettifier, pos, argNames)
+      ???
+    }
+
+    private[scalatest] def indicateFutureSuccess(message: => String): Assertion
+
+    private[scalatest] def indicateFutureFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion
+
+  }
+
+}
+
 abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting {
 
   implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
@@ -720,7 +948,7 @@ abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting 
   }
 }
 
-object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
+object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FuturePropCheckerAsserting {
 
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
     new PropCheckerAssertingImpl[Assertion] {
@@ -729,6 +957,27 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          pos,
+          None,
+          undecoratedMessage,
+          scalaCheckArgs,
+          None,
+          scalaCheckLabels.toList
+        )
+      }
+    }
+  }
+
+  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+    new FuturePropCheckerAssertingImpl[Assertion] {
+      implicit val executionContext = exeCtx
+      def discard(result: Assertion): Boolean = false
+      def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
+      private[scalatest] def indicateFutureSuccess(message: => String): Assertion = Succeeded
+      private[scalatest] def indicateFutureFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
