@@ -20,6 +20,9 @@ import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrive
 import org.scalatest.prop.{Configuration, PropertyArgument, PropertyTest}
 import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Randomizer
+import scala.annotation.tailrec
 
 trait PropCheckerAsserting[T] {
 
@@ -123,9 +126,7 @@ abstract class UnitPropCheckerAsserting {
   abstract class PropCheckerAssertingImpl[T] extends PropCheckerAsserting[T] {
 
     import org.scalatest.prop.Configuration.Parameter
-    import org.scalactic.anyvals.PosZInt
-    import scala.annotation.tailrec
-    import org.scalatest.prop.{Randomizer, SizeParam}
+    import org.scalatest.prop.{SizeParam}
     import scala.util.{Try, Success, Failure}
     import org.scalatest.exceptions.DiscardedEvaluationException
 
@@ -180,7 +181,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
       val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
       loop(0, 0, initEdges, afterEdgesRnd, initialSizes) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
@@ -245,7 +246,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
@@ -314,7 +315,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
@@ -387,7 +388,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
@@ -464,7 +465,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
@@ -546,7 +547,7 @@ abstract class UnitPropCheckerAsserting {
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
-      val (initialSizes, afterSizesRnd) = PropertyTest.calcSizes(minSize, maxSize, initRnd)
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
@@ -783,4 +784,17 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     else
       ""
 
+  def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
+    @tailrec
+    def sizesLoop(sizes: List[PosZInt], count: Int, rndm: Randomizer): (List[PosZInt], Randomizer) = {
+      sizes match {
+        case Nil => sizesLoop(List(minSize), 1, rndm)
+        case szs if count < 10 =>
+          val (nextSize, nextRndm) = rndm.choosePosZInt(minSize, maxSize)
+          sizesLoop(nextSize :: sizes, count + 1, nextRndm)
+        case _ => (sizes.sorted, rndm)
+      }
+    }
+    sizesLoop(Nil, 0, initRndm)
+  }
 }

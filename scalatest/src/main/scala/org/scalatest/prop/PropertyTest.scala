@@ -46,18 +46,4 @@ object PropertyTest {
   case class CheckExhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument]) extends Result
 
   case class CheckFailure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument]) extends Result
-
-  def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
-      @tailrec
-      def sizesLoop(sizes: List[PosZInt], count: Int, rndm: Randomizer): (List[PosZInt], Randomizer) = {
-        sizes match {
-          case Nil => sizesLoop(List(minSize), 1, rndm)
-          case szs if count < 10 =>
-            val (nextSize, nextRndm) = rndm.choosePosZInt(minSize, maxSize)
-            sizesLoop(nextSize :: sizes, count + 1, nextRndm)
-          case _ => (sizes.sorted, rndm)
-      }
-    }
-    sizesLoop(Nil, 0, initRndm)
-  }
 }
