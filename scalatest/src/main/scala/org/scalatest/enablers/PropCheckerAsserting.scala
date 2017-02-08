@@ -37,17 +37,17 @@ trait PropCheckerAsserting[T] {
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
 
   /**
-    * Perform the property check using the given <code>Prop</code> and <code>Test.Parameters</code>.
+    * Perform the property check using the given function, generator and <code>Configuration.Parameters</code>.
     *
-    * @param p the <code>Prop</code> to be used to check
-    * @param prms the <code>Test.Parameters</code> to be used to check
+    * @param fun the function to be used to check
+    * @param genA the generator of type <code>A</code>
+    * @param prms the <code>Configuration.Parameters</code> to be used to check
     * @param prettifier the <code>Prettifier</code> to be used to prettify error message
     * @param pos the <code>Position</code> of the caller site
+    * @param names the list of names
     * @param argNames the list of argument names
     * @return the <code>Result</code> of the property check.
     */
-  def check(p: PropertyTest, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
-
   def check1[A](fun: (A) => T,
                genA: org.scalatest.prop.Generator[A],
                prms: Configuration.Parameter,
@@ -601,23 +601,6 @@ abstract class UnitPropCheckerAsserting {
 
         case _ => indicateSuccess(FailureMessages.propertyCheckSucceeded)
       }
-    }
-
-    /**
-      * Check the given <code>Prop</code> and <code>Test.Parameters</code> by calling [[http://www.scalacheck.org ScalaCheck]]'s <code>Test.check</code>.
-      * If the check succeeds, call <code>indicateSuccess</code>, else call <code>indicateFailure</code>.
-      *
-      *
-      * @param p the <code>Prop</code> to be used to check
-      * @param prms the <code>Test.Parameters</code> to be used to check
-      * @param prettifier the <code>Prettifier</code> to be used to prettify error message
-      * @param pos the <code>Position</code> of the caller site
-      * @param argNames the list of argument names
-      * @return the <code>Result</code> of the property check.
-      */
-    def check(p: PropertyTest, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
-      val result = p.check
-      checkResult(result, prettifier, pos, argNames)
     }
 
     def check1[A](fun: (A) => T,
