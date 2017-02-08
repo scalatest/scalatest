@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalactic.{Prettifier, source}
 import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrivenPropertyCheckFailedException}
-import org.scalatest.prop.{Configuration, PropertyArgument, PropertyTest}
+import org.scalatest.prop.{Configuration, PropertyArgument, PropertyCheckResult}
 import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
 import org.scalactic.anyvals.PosZInt
@@ -130,12 +130,12 @@ abstract class UnitPropCheckerAsserting {
     import scala.util.{Try, Success, Failure}
     import org.scalatest.exceptions.DiscardedEvaluationException
 
-    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => T): PropertyTest.Result = {
+    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -154,7 +154,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -163,10 +163,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
@@ -174,9 +174,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -190,13 +190,13 @@ abstract class UnitPropCheckerAsserting {
     private def checkForAll[A, B](names: List[String], config: Parameter,
                           genA: org.scalatest.prop.Generator[A],
                           genB: org.scalatest.prop.Generator[B])
-                         (fun: (A, B) => T): PropertyTest.Result = {
+                         (fun: (A, B) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -219,7 +219,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -228,10 +228,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
@@ -239,9 +239,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -257,13 +257,13 @@ abstract class UnitPropCheckerAsserting {
                              genA: org.scalatest.prop.Generator[A],
                              genB: org.scalatest.prop.Generator[B],
                              genC: org.scalatest.prop.Generator[C])
-                            (fun: (A, B, C) => T): PropertyTest.Result = {
+                            (fun: (A, B, C) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -288,7 +288,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -297,10 +297,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
@@ -308,9 +308,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -328,13 +328,13 @@ abstract class UnitPropCheckerAsserting {
                                 genB: org.scalatest.prop.Generator[B],
                                 genC: org.scalatest.prop.Generator[C],
                                 genD: org.scalatest.prop.Generator[D])
-                               (fun: (A, B, C, D) => T): PropertyTest.Result = {
+                               (fun: (A, B, C, D) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -361,7 +361,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -370,10 +370,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
@@ -381,9 +381,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -403,13 +403,13 @@ abstract class UnitPropCheckerAsserting {
                                    genC: org.scalatest.prop.Generator[C],
                                    genD: org.scalatest.prop.Generator[D],
                                    genE: org.scalatest.prop.Generator[E])
-                                  (fun: (A, B, C, D, E) => T): PropertyTest.Result = {
+                                  (fun: (A, B, C, D, E) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -438,7 +438,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -447,10 +447,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
@@ -458,9 +458,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -482,13 +482,13 @@ abstract class UnitPropCheckerAsserting {
                                       genD: org.scalatest.prop.Generator[D],
                                       genE: org.scalatest.prop.Generator[E],
                                       genF: org.scalatest.prop.Generator[F])
-                                     (fun: (A, B, C, D, E, F) => T): PropertyTest.Result = {
+                                     (fun: (A, B, C, D, E, F) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyTest.Result = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -519,7 +519,7 @@ abstract class UnitPropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
               else
-                new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
             }
             else {
               val (success, cause) = succeed(r)
@@ -528,10 +528,10 @@ abstract class UnitPropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
                 else
-                  PropertyTest.CheckSuccess(argsPassed)
+                  PropertyCheckResult.Success(argsPassed)
               }
               else {
-                new PropertyTest.CheckFailure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
               }
             }
 
@@ -540,9 +540,9 @@ abstract class UnitPropCheckerAsserting {
             if (nextDiscardedCount < maxDiscarded)
               loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
             else
-              new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
           case Failure(ex) =>
-            new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
         }
       }
 
@@ -558,10 +558,10 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes)
     }
 
-    private def checkResult(result: PropertyTest.Result, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
+    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
       val (args, labels) = argsAndLabels(result)
       result match {
-        case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed) =>
           val failureMsg =
             if (succeeded == 1)
               FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
@@ -577,7 +577,7 @@ abstract class UnitPropCheckerAsserting {
             pos
           )
 
-        case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
+        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed) =>
           indicateFailure(
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -743,12 +743,12 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     }
   }
 
-  private[enablers] def argsAndLabels(result: PropertyTest.Result): (List[PropertyArgument], List[String]) = {
+  private[enablers] def argsAndLabels(result: PropertyCheckResult): (List[PropertyArgument], List[String]) = {
 
     val (args: List[PropertyArgument], labels: List[String]) =
       result match {
-        case PropertyTest.CheckSuccess(args) => (args.toList, List())
-        case PropertyTest.CheckFailure(_, _, names, args) => (args.toList, List())
+        case PropertyCheckResult.Success(args) => (args.toList, List())
+        case PropertyCheckResult.Failure(_, _, names, args) => (args.toList, List())
         case _ => (List(), List())
       }
 
