@@ -852,10 +852,10 @@ val generatorSuitePostamble = """
   val sevenEleven: Generator[String] =
     new Generator[String] {
       def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
-        if (szp.size >= 7 && szp.size <= 11)
+        if (szp.size.value >= 7 && szp.size.value <= 11)
           ("OKAY", edges, rnd)
         else
-          throw new Exception("expected 7 <= size <= 11 but got " + size)
+          throw new Exception("expected 7 <= size <= 11 but got " + szp.size)
       }
     }
 
@@ -863,10 +863,10 @@ val generatorSuitePostamble = """
   val fiveFive: Generator[String] =
     new Generator[String] {
       def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
-        if (szp.size == 5)
+        if (szp.size.value == 5)
           ("OKAY", edges, rnd)
         else
-          throw new Exception("expected size 5 but got " + size)
+          throw new Exception("expected size 5 but got " + szp.size)
       }
     }
 """
