@@ -19,7 +19,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
 import org.scalactic.{Bad, Good, Or}
 import scala.annotation.tailrec
-import scala.reflect.runtime.universe.TypeTag
+import org.scalactic.source.TypeInfo
 import org.scalatest.Resources
 import CommonGenerators.first1000Primes
 
@@ -1331,7 +1331,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B]): Generator[A => B] = {
+  implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(szp: SizeParam, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
 
@@ -1342,8 +1342,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object AToB extends (A => B) {
           def apply(a: A): B = org.scalatest.prop.valueOf[B](a, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
             s"(o: $typeOfA) => org.scalatest.prop.valueOf[$typeOfB](o, $multiplier)"
           }
         }
@@ -1353,7 +1353,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C]): Generator[(A, B) => C] = {
+  implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
     new Generator[(A, B) => C] {
       def next(szp: SizeParam, edges: List[(A, B) => C], rnd: Randomizer): ((A, B) => C, List[(A, B) => C], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1363,9 +1363,9 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABToC extends ((A, B) => C) {
           def apply(a: A, b: B): C = org.scalatest.prop.valueOf[C](a, b, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
             s"(a: $typeOfA, b: $typeOfB) => org.scalatest.prop.valueOf[$typeOfC](a, b, $multiplier)"
           }
         }
@@ -1375,7 +1375,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D]): Generator[(A, B, C) => D] = {
+  implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
     new Generator[(A, B, C) => D] {
       def next(szp: SizeParam, edges: List[(A, B, C) => D], rnd: Randomizer): ((A, B, C) => D, List[(A, B, C) => D], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1385,10 +1385,10 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCToD extends ((A, B, C) => D) {
           def apply(a: A, b: B, c: C): D = org.scalatest.prop.valueOf[D](a, b, c, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC) => org.scalatest.prop.valueOf[$typeOfD](a, b, c, $multiplier)"
           }
         }
@@ -1398,7 +1398,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E]): Generator[(A, B, C, D) => E] = {
+  implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
     new Generator[(A, B, C, D) => E] {
       def next(szp: SizeParam, edges: List[(A, B, C, D) => E], rnd: Randomizer): ((A, B, C, D) => E, List[(A, B, C, D) => E], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1408,11 +1408,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDToE extends ((A, B, C, D) => E) {
           def apply(a: A, b: B, c: C, d: D): E = org.scalatest.prop.valueOf[E](a, b, c, d, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD) => org.scalatest.prop.valueOf[$typeOfE](a, b, c, d, $multiplier)"
           }
         }
@@ -1422,7 +1422,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F]): Generator[(A, B, C, D, E) => F] = {
+  implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
     new Generator[(A, B, C, D, E) => F] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E) => F], rnd: Randomizer): ((A, B, C, D, E) => F, List[(A, B, C, D, E) => F], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1432,12 +1432,12 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEToF extends ((A, B, C, D, E) => F) {
           def apply(a: A, b: B, c: C, d: D, e: E): F = org.scalatest.prop.valueOf[F](a, b, c, d, e, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE) => org.scalatest.prop.valueOf[$typeOfF](a, b, c, d, e, $multiplier)"
           }
         }
@@ -1447,7 +1447,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G]): Generator[(A, B, C, D, E, F) => G] = {
+  implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
     new Generator[(A, B, C, D, E, F) => G] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F) => G], rnd: Randomizer): ((A, B, C, D, E, F) => G, List[(A, B, C, D, E, F) => G], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1457,13 +1457,13 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFToG extends ((A, B, C, D, E, F) => G) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F): G = org.scalatest.prop.valueOf[G](a, b, c, d, e, f, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF) => org.scalatest.prop.valueOf[$typeOfG](a, b, c, d, e, f, $multiplier)"
           }
         }
@@ -1473,7 +1473,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H]): Generator[(A, B, C, D, E, F, G) => H] = {
+  implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
     new Generator[(A, B, C, D, E, F, G) => H] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G) => H], rnd: Randomizer): ((A, B, C, D, E, F, G) => H, List[(A, B, C, D, E, F, G) => H], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1483,14 +1483,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGToH extends ((A, B, C, D, E, F, G) => H) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G): H = org.scalatest.prop.valueOf[H](a, b, c, d, e, f, g, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG) => org.scalatest.prop.valueOf[$typeOfH](a, b, c, d, e, f, g, $multiplier)"
           }
         }
@@ -1500,7 +1500,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
+  implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
     new Generator[(A, B, C, D, E, F, G, H) => I] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H) => I], rnd: Randomizer): ((A, B, C, D, E, F, G, H) => I, List[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1510,15 +1510,15 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHToI extends ((A, B, C, D, E, F, G, H) => I) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): I = org.scalatest.prop.valueOf[I](a, b, c, d, e, f, g, h, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH) => org.scalatest.prop.valueOf[$typeOfI](a, b, c, d, e, f, g, h, $multiplier)"
           }
         }
@@ -1528,7 +1528,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
+  implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
     new Generator[(A, B, C, D, E, F, G, H, I) => J] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I) => J], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I) => J, List[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1538,16 +1538,16 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIToJ extends ((A, B, C, D, E, F, G, H, I) => J) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I): J = org.scalatest.prop.valueOf[J](a, b, c, d, e, f, g, h, i, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI) => org.scalatest.prop.valueOf[$typeOfJ](a, b, c, d, e, f, g, h, i, $multiplier)"
           }
         }
@@ -1557,7 +1557,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
+  implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J) => K], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J) => K, List[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1567,17 +1567,17 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJToK extends ((A, B, C, D, E, F, G, H, I, J) => K) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J): K = org.scalatest.prop.valueOf[K](a, b, c, d, e, f, g, h, i, j, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ) => org.scalatest.prop.valueOf[$typeOfK](a, b, c, d, e, f, g, h, i, j, $multiplier)"
           }
         }
@@ -1587,7 +1587,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
+  implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K) => L], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K) => L, List[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1597,18 +1597,18 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKToL extends ((A, B, C, D, E, F, G, H, I, J, K) => L) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K): L = org.scalatest.prop.valueOf[L](a, b, c, d, e, f, g, h, i, j, k, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK) => org.scalatest.prop.valueOf[$typeOfL](a, b, c, d, e, f, g, h, i, j, k, $multiplier)"
           }
         }
@@ -1618,7 +1618,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
+  implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L) => M, List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1628,19 +1628,19 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLToM extends ((A, B, C, D, E, F, G, H, I, J, K, L) => M) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L): M = org.scalatest.prop.valueOf[M](a, b, c, d, e, f, g, h, i, j, k, l, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL) => org.scalatest.prop.valueOf[$typeOfM](a, b, c, d, e, f, g, h, i, j, k, l, $multiplier)"
           }
         }
@@ -1650,7 +1650,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
+  implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1660,20 +1660,20 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMToN extends ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M): N = org.scalatest.prop.valueOf[N](a, b, c, d, e, f, g, h, i, j, k, l, m, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM) => org.scalatest.prop.valueOf[$typeOfN](a, b, c, d, e, f, g, h, i, j, k, l, m, $multiplier)"
           }
         }
@@ -1683,7 +1683,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
+  implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1693,21 +1693,21 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNToO extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N): O = org.scalatest.prop.valueOf[O](a, b, c, d, e, f, g, h, i, j, k, l, m, n, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN) => org.scalatest.prop.valueOf[$typeOfO](a, b, c, d, e, f, g, h, i, j, k, l, m, n, $multiplier)"
           }
         }
@@ -1717,7 +1717,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
+  implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1727,22 +1727,22 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOToP extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O): P = org.scalatest.prop.valueOf[P](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO) => org.scalatest.prop.valueOf[$typeOfP](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, $multiplier)"
           }
         }
@@ -1752,7 +1752,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
+  implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1762,23 +1762,23 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPToQ extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P): Q = org.scalatest.prop.valueOf[Q](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP) => org.scalatest.prop.valueOf[$typeOfQ](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, $multiplier)"
           }
         }
@@ -1788,7 +1788,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
+  implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1798,24 +1798,24 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQToR extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q): R = org.scalatest.prop.valueOf[R](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ) => org.scalatest.prop.valueOf[$typeOfR](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, $multiplier)"
           }
         }
@@ -1825,7 +1825,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
+  implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1835,25 +1835,25 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQRToS extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R): S = org.scalatest.prop.valueOf[S](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
-            val typeOfS = typeTagOfS.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
+            val typeOfS = typeInfoS.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR) => org.scalatest.prop.valueOf[$typeOfS](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, $multiplier)"
           }
         }
@@ -1863,7 +1863,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
+  implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1873,26 +1873,26 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQRSToT extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S): T = org.scalatest.prop.valueOf[T](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
-            val typeOfS = typeTagOfS.tpe
-            val typeOfT = typeTagOfT.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
+            val typeOfS = typeInfoS.name
+            val typeOfT = typeInfoT.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS) => org.scalatest.prop.valueOf[$typeOfT](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, $multiplier)"
           }
         }
@@ -1902,7 +1902,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
+  implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1912,27 +1912,27 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQRSTToU extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T): U = org.scalatest.prop.valueOf[U](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
-            val typeOfS = typeTagOfS.tpe
-            val typeOfT = typeTagOfT.tpe
-            val typeOfU = typeTagOfU.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
+            val typeOfS = typeInfoS.name
+            val typeOfT = typeInfoT.name
+            val typeOfU = typeInfoU.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT) => org.scalatest.prop.valueOf[$typeOfU](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, $multiplier)"
           }
         }
@@ -1942,7 +1942,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
+  implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1952,28 +1952,28 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQRSTUToV extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U): V = org.scalatest.prop.valueOf[V](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
-            val typeOfS = typeTagOfS.tpe
-            val typeOfT = typeTagOfT.tpe
-            val typeOfU = typeTagOfU.tpe
-            val typeOfV = typeTagOfV.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
+            val typeOfS = typeInfoS.name
+            val typeOfT = typeInfoT.name
+            val typeOfU = typeInfoU.name
+            val typeOfV = typeInfoV.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU) => org.scalatest.prop.valueOf[$typeOfV](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, $multiplier)"
           }
         }
@@ -1983,7 +1983,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeTagOfA: TypeTag[A], typeTagOfB: TypeTag[B], typeTagOfC: TypeTag[C], typeTagOfD: TypeTag[D], typeTagOfE: TypeTag[E], typeTagOfF: TypeTag[F], typeTagOfG: TypeTag[G], typeTagOfH: TypeTag[H], typeTagOfI: TypeTag[I], typeTagOfJ: TypeTag[J], typeTagOfK: TypeTag[K], typeTagOfL: TypeTag[L], typeTagOfM: TypeTag[M], typeTagOfN: TypeTag[N], typeTagOfO: TypeTag[O], typeTagOfP: TypeTag[P], typeTagOfQ: TypeTag[Q], typeTagOfR: TypeTag[R], typeTagOfS: TypeTag[S], typeTagOfT: TypeTag[T], typeTagOfU: TypeTag[U], typeTagOfV: TypeTag[V], typeTagOfW: TypeTag[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
+  implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -1993,29 +1993,29 @@ object Generator extends LowerPriorityGeneratorImplicits {
         object ABCDEFGHIJKLMNOPQRSTUVToW extends ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W) {
           def apply(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V): W = org.scalatest.prop.valueOf[W](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, multiplier)
           override def toString = {
-            val typeOfA = typeTagOfA.tpe
-            val typeOfB = typeTagOfB.tpe
-            val typeOfC = typeTagOfC.tpe
-            val typeOfD = typeTagOfD.tpe
-            val typeOfE = typeTagOfE.tpe
-            val typeOfF = typeTagOfF.tpe
-            val typeOfG = typeTagOfG.tpe
-            val typeOfH = typeTagOfH.tpe
-            val typeOfI = typeTagOfI.tpe
-            val typeOfJ = typeTagOfJ.tpe
-            val typeOfK = typeTagOfK.tpe
-            val typeOfL = typeTagOfL.tpe
-            val typeOfM = typeTagOfM.tpe
-            val typeOfN = typeTagOfN.tpe
-            val typeOfO = typeTagOfO.tpe
-            val typeOfP = typeTagOfP.tpe
-            val typeOfQ = typeTagOfQ.tpe
-            val typeOfR = typeTagOfR.tpe
-            val typeOfS = typeTagOfS.tpe
-            val typeOfT = typeTagOfT.tpe
-            val typeOfU = typeTagOfU.tpe
-            val typeOfV = typeTagOfV.tpe
-            val typeOfW = typeTagOfW.tpe
+            val typeOfA = typeInfoA.name
+            val typeOfB = typeInfoB.name
+            val typeOfC = typeInfoC.name
+            val typeOfD = typeInfoD.name
+            val typeOfE = typeInfoE.name
+            val typeOfF = typeInfoF.name
+            val typeOfG = typeInfoG.name
+            val typeOfH = typeInfoH.name
+            val typeOfI = typeInfoI.name
+            val typeOfJ = typeInfoJ.name
+            val typeOfK = typeInfoK.name
+            val typeOfL = typeInfoL.name
+            val typeOfM = typeInfoM.name
+            val typeOfN = typeInfoN.name
+            val typeOfO = typeInfoO.name
+            val typeOfP = typeInfoP.name
+            val typeOfQ = typeInfoQ.name
+            val typeOfR = typeInfoR.name
+            val typeOfS = typeInfoS.name
+            val typeOfT = typeInfoT.name
+            val typeOfU = typeInfoU.name
+            val typeOfV = typeInfoV.name
+            val typeOfW = typeInfoW.name
             s"(a: $typeOfA, b: $typeOfB, c: $typeOfC, d: $typeOfD, e: $typeOfE, f: $typeOfF, g: $typeOfG, h: $typeOfH, i: $typeOfI, j: $typeOfJ, k: $typeOfK, l: $typeOfL, m: $typeOfM, n: $typeOfN, o: $typeOfO, p: $typeOfP, q: $typeOfQ, r: $typeOfR, s: $typeOfS, t: $typeOfT, u: $typeOfU, v: $typeOfV) => org.scalatest.prop.valueOf[$typeOfW](a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, $multiplier)"
           }
         }
