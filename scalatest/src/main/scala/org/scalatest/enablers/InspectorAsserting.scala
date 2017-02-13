@@ -356,7 +356,7 @@ trait FutureInspectorAsserting {
             pos
           )
         else indicateSuccessFuture("forAll succeeded")
-      }/*(executionContext)*/
+      }
     }
 
     def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
@@ -410,24 +410,6 @@ trait FutureInspectorAsserting {
           )
         else indicateSuccessFuture("forAtLeast succeeded")
       }
-
-      /*val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
-      if (passedCount < min)
-        indicateFailureFuture(
-          if (shorthand)
-            if (passedCount > 0)
-              Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-            else
-              Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-          else
-          if (passedCount > 0)
-            Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-          else
-            Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
-          None,
-          pos
-        )
-      else indicateSuccessFuture("forAtLeast succeeded")*/
     }
 
     def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
