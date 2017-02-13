@@ -32,9 +32,9 @@ import org.scalatest.exceptions.TestFailedException
 
 class AsyncInspectorsSpec extends AsyncFunSpec with Inspectors with TableDrivenPropertyChecks {
 
-  describe("forAll") {
+  describe("Inspectors") {
 
-    it("should pass when all elements passed") {
+    it("forAll with future block should pass when all elements passed") {
       forAll(List(1, 2, 3)) { e =>
         Future {
           e should be < 4
@@ -42,11 +42,29 @@ class AsyncInspectorsSpec extends AsyncFunSpec with Inspectors with TableDrivenP
       }
     }
 
-    it("should failed when at least one of the elements passed") {
+    it("forAll with future block should fail when at least one of the elements failed") {
       recoverToSucceededIf[TestFailedException] {
         forAll(List(1, 2, 3)) { e =>
           Future {
-            e should be < 3
+            e should not be 2
+          }
+        }
+      }
+    }
+
+    it("forAtLeast with future block should pass when at least x number of elements passed") {
+      forAtLeast(2, List(1, 2, 3)) { e =>
+        Future {
+          e should be < 3
+        }
+      }
+    }
+
+    it("forAtLeast with future block should fail when the number of the elements passed is lesser than the min required") {
+      recoverToSucceededIf[TestFailedException] {
+        forAtLeast(2, List(1, 2, 3)) { e =>
+          Future {
+            e should be > 2
           }
         }
       }

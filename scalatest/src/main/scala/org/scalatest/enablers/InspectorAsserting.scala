@@ -338,7 +338,7 @@ trait FutureInspectorAsserting {
 
     type Result = Future[T]
 
-    def executionContext: ExecutionContext
+    implicit def executionContext: ExecutionContext
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
     def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
@@ -356,44 +356,64 @@ trait FutureInspectorAsserting {
             pos
           )
         else indicateSuccessFuture("forAll succeeded")
-      }(executionContext)
+      }/*(executionContext)*/
     }
 
     def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
-      /*@tailrec
-      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
+      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): Future[(Int, IndexedSeq[String])] = {
         if (itr.hasNext) {
           val head = itr.next
-          val (newPassedCount, newMessageAcc) =
-            try {
-              fun(head)
-              (passedCount + 1, messageAcc)
-            }
-            catch {
-              case e if !shouldPropagate(e) =>
-                val xsIsMap = isMap(original)
-                val messageKey = head match {
-                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
-                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
-                  case _ => index.toString
-                }
-                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
-            }
-          if (newPassedCount < min)
-            forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
-          else
-            (newPassedCount, newMessageAcc)
+          val future = fun(head)
+          future.map { r =>
+            (passedCount + 1, messageAcc)
+          } recover {
+            case e if !shouldPropagate(e) =>
+              val xsIsMap = isMap(original)
+              val messageKey = head match {
+                case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                case _ => index.toString
+              }
+              (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+          } flatMap { result =>
+            val (newPassedCount, newMessageAcc) = result
+            if (newPassedCount < min)
+              forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+            else
+              Future.successful((newPassedCount, newMessageAcc))
+          }
         }
         else
-          (passedCount, messageAcc)
+          Future.successful((passedCount, messageAcc))
       }
 
       if (min <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'min'"))
 
-      val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
+      val resultFuture = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
+      resultFuture.map { result =>
+        val (passedCount, messageAcc) = result
+        if (passedCount < min)
+          indicateFailureFuture(
+            if (shorthand)
+              if (passedCount > 0)
+                Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else
+                Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+            if (passedCount > 0)
+              Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+              Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forAtLeast succeeded")
+      }
+
+      /*val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
       if (passedCount < min)
-        indicateFailure(
+        indicateFailureFuture(
           if (shorthand)
             if (passedCount > 0)
               Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
@@ -407,8 +427,7 @@ trait FutureInspectorAsserting {
           None,
           pos
         )
-      else indicateSuccess("forAtLeast succeeded")*/
-      ???
+      else indicateSuccessFuture("forAtLeast succeeded")*/
     }
 
     def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
