@@ -69,6 +69,96 @@ class AsyncInspectorsSpec extends AsyncFunSpec with Inspectors with TableDrivenP
         }
       }
     }
+
+    it("forAtMost with future block should pass when at most x number of elements passed") {
+      forAtMost(2, List(1, 2, 3)) { e =>
+        Future {
+          e should be < 3
+        }
+      }
+    }
+
+    it("forAtMost with future block should fail when the number of the elements passed is lesser than the max required") {
+      recoverToSucceededIf[TestFailedException] {
+        forAtMost(2, List(1, 2, 3)) { e =>
+          Future {
+            e should be > 0
+          }
+        }
+      }
+    }
+
+    it("forExactly with future block should pass when exactly x number of elements passed") {
+      forExactly(2, List(1, 2, 3)) { e =>
+        Future {
+          e should be < 3
+        }
+      }
+    }
+
+    it("forExactly with future block should fail when the number of the elements passed is not exactly the number required") {
+      recoverToSucceededIf[TestFailedException] {
+        forExactly(2, List(1, 2, 3)) { e =>
+          Future {
+            e should be > 0
+          }
+        }
+      }
+    }
+
+    it("forNo with future block should pass when none of elements passed") {
+      forNo(List(1, 2, 3)) { e =>
+        Future {
+          e should be > 3
+        }
+      }
+    }
+
+    it("forNo with future block should fail when any one of the elements passed") {
+      recoverToSucceededIf[TestFailedException] {
+        forNo(List(1, 2, 3)) { e =>
+          Future {
+            e should be < 3
+          }
+        }
+      }
+    }
+
+    it("forBetween with future block should pass when number of elements passed is within the between range") {
+      forBetween(1, 2, List(1, 2, 3)) { e =>
+        Future {
+          e should be < 3
+        }
+      }
+    }
+
+    it("forBetween with future block should fail when number of elements passed is not within the between range") {
+      recoverToSucceededIf[TestFailedException] {
+        forBetween(1, 2, List(1, 2, 3)) { e =>
+          Future {
+            e should be > 0
+          }
+        }
+      }
+    }
+
+    it("forEvery with future block should pass when all elements passed") {
+      forEvery(List(1, 2, 3)) { e =>
+        Future {
+          e should be < 4
+        }
+      }
+    }
+
+    it("forEvery with future block should fail when at least one of the elements failed") {
+      recoverToSucceededIf[TestFailedException] {
+        forEvery(List(1, 2, 3)) { e =>
+          Future {
+            e should not be 2
+          }
+        }
+      }
+    }
   }
 
 }

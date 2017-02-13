@@ -413,78 +413,80 @@ trait FutureInspectorAsserting {
     }
 
     def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
-      /*if (max <= 0)
+      if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
       val xsIsMap = isMap(original)
-      val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max)
-      if (result.passedCount > max)
-        indicateFailure(
-          if (shorthand)
-            Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-          else
-            Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
-          None,
-          pos
-        )
-      else indicateSuccess("forAtMost succeeded")*/
-      ???
+      val future =
+        runForFuture(xs, xsIsMap, fun)
+      future.map { result =>
+        if (result.passedCount > max)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            else
+              Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forAtMost succeeded")
+      }
     }
 
     def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
-      /*if (succeededCount <= 0)
+      if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
       val xsIsMap = isMap(original)
-      val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
-      if (result.passedCount != succeededCount)
-        indicateFailure(
-          if (shorthand)
-            if (result.passedCount == 0)
-              Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+      val future =
+        runForFuture(xs, xsIsMap, fun)
+      future.map { result =>
+        if (result.passedCount != succeededCount)
+          indicateFailureFuture(
+            if (shorthand)
+              if (result.passedCount == 0)
+                Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else {
+                if (result.passedCount < succeededCount)
+                  Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                else
+                  Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+              }
+            else if (result.passedCount == 0)
+              Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
             else {
               if (result.passedCount < succeededCount)
-                Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
               else
-                Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-            }
-          else
-          if (result.passedCount == 0)
-            Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-          else {
-            if (result.passedCount < succeededCount)
-              Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-            else
-              Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-          },
-          None,
-          pos
-        )
-      else indicateSuccess("forExactly succeeded")*/
-      ???
+                Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            },
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forExactly succeeded")
+      }
     }
 
     def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
-      /*val xsIsMap = isMap(original)
-      val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
-      if (result.passedCount != 0)
-        indicateFailure(
-          if (shorthand)
-            Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-          else
-            Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
-          None,
-          pos
-        )
-      else indicateSuccess("forNo succeeded")*/
-      ???
+      val xsIsMap = isMap(original)
+      val future =
+        runForFuture(xs, xsIsMap, fun)
+      future.map { result =>
+        if (result.passedCount != 0)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            else
+              Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forNo succeeded")
+      }
     }
 
     def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
-      /*if (from < 0)
+      if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'upTo'"))
@@ -492,33 +494,34 @@ trait FutureInspectorAsserting {
         throw new IllegalArgumentException(Resources.forAssertionsMoreThan("'upTo'", "'from'"))
 
       val xsIsMap = isMap(original)
-      val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo)
-      if (result.passedCount < from || result.passedCount > upTo)
-        indicateFailure(
-          if (shorthand)
-            if (result.passedCount == 0)
-              Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+      val future =
+        runForFuture(xs, xsIsMap, fun)
+
+      future.map { result =>
+        if (result.passedCount < from || result.passedCount > upTo)
+          indicateFailureFuture(
+            if (shorthand)
+              if (result.passedCount == 0)
+                Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else {
+                if (result.passedCount < from)
+                  Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                else
+                  Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+              }
+            else if (result.passedCount == 0)
+              Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
             else {
               if (result.passedCount < from)
-                Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
               else
-                Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-            }
-          else
-          if (result.passedCount == 0)
-            Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-          else {
-            if (result.passedCount < from)
-              Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-            else
-              Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
-          },
-          None,
-          pos
-        )
-      else indicateSuccess("forBetween succeeded")*/
-      ???
+                Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            },
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forBetween succeeded")
+      }
     }
 
     def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
@@ -558,7 +561,21 @@ trait FutureInspectorAsserting {
           pos
         )
       else indicateSuccess("forEvery succeeded")*/
-      ???
+      val xsIsMap = isMap(original)
+      val future =
+        runForFuture(xs, xsIsMap, fun)(executionContext)
+      future.map { result =>
+        if (result.failedElements.length > 0)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.everyShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+              Resources.forEveryFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            Some(result.failedElements(0)._3),
+            pos
+          )
+        else indicateSuccessFuture("forAll succeeded")
+      }
     }
 
     // TODO: Why is this a by-name? Well, I made it a by-name because it was one in MatchersHelper.
