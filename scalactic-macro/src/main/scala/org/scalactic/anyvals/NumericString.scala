@@ -415,11 +415,13 @@ private[scalactic] final class NumericString private (val value: String) extends
   def capitalize: String =
     value.capitalize
 
+/*
   def chars: java.util.stream.IntStream =
     value.chars
 
   def codePoints: java.util.stream.IntStream =
     value.codePoints
+*/
 
   /**
    * Builds a new collection by applying a partial function to

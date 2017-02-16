@@ -728,6 +728,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.capitalize
       }
     }
+/*
     it("should offer a chars method that is consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.chars.toArray shouldEqual
@@ -740,6 +741,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.codePoints.toArray
       }
     }
+*/
     it("should offer a collect method that is consistent with StringOps") {
       val isEven: PartialFunction[Char, Char] = {
         case c if (c - '0') % 2 == 0 => c
