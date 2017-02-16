@@ -39,7 +39,9 @@ private[scalactic] final class NumericString private (val value: String) extends
 
   def codePointAt(index: Int): Int = value.codePointAt(index)
 
+  // SKIP-SCALATESTJS-START
   def codePointBefore(index: Int): Int = value.codePointBefore(index)
+  // SKIP-SCALATESTJS-END
 
   def codePointCount(beginIndex: Int, endIndex: Int): Int =
     value.codePointCount(beginIndex, endIndex)
@@ -65,8 +67,10 @@ private[scalactic] final class NumericString private (val value: String) extends
   def contains(s: CharSequence): Boolean =
     value.contains(s)
 
+  // SKIP-SCALATESTJS-START
   def contentEquals(cs: CharSequence): Boolean =
     value.contentEquals(cs)
+  // SKIP-SCALATESTJS-END
 
   def endsWith(suffix: String): Boolean =
     value.endsWith(suffix)
@@ -116,8 +120,10 @@ private[scalactic] final class NumericString private (val value: String) extends
   def matches(regex: String): Boolean =
     value.matches(regex)
 
+  // SKIP-SCALATESTJS-START
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
+  // SKIP-SCALATESTJS-END
 
   def regionMatches(ignoreCase: Boolean, toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
     value.regionMatches(ignoreCase, toffset, other, ooffset, len)
@@ -161,6 +167,7 @@ private[scalactic] final class NumericString private (val value: String) extends
   def toCharArray: Array[Char] =
     value.toCharArray
 
+  // SKIP-SCALATESTJS-START
   def toLowerCase: String =
     value.toLowerCase
 
@@ -172,6 +179,7 @@ private[scalactic] final class NumericString private (val value: String) extends
 
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
+  // SKIP-SCALATESTJS-END
 
   def trim: String =
     value.trim
@@ -1145,12 +1153,14 @@ private[scalactic] final class NumericString private (val value: String) extends
   def padTo(len: Int, elem: Char): String =
     value.padTo(len, elem)
 
+  // SKIP-SCALATESTJS-START
   /** Returns a parallel implementation of this collection.
    *
    *  @return  a parallel implementation of this collection
    */
   def par: ParSeq[Char] =
     value.par
+  // SKIP-SCALATESTJS-END
 
   /** Partitions this `NumericString` in two strings according to a predicate.
    *
