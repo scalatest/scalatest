@@ -123,6 +123,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer a codePointBefore method that is consistent with String") {
       forAll { (numStr: NumericString, pint: PosInt) =>
         whenever (numStr.length > 0) {
@@ -133,6 +134,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer a codePointCount method that is consistent with String") {
       forAll { (numStr: NumericString, p1: PosInt, p2: PosInt) =>
         whenever (numStr.length > 0) {
@@ -194,6 +196,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer a contentEquals method that is consistent with String") {
       forAll { (numStr: NumericString, str: String) =>
         val cs: CharSequence = str
@@ -206,6 +209,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.contentEquals(matchingCs)
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer an endsWith method that is consistent with String") {
       forAll { (numStr: NumericString, str: String, p1: PosInt) =>
         numStr.endsWith(str) shouldEqual
@@ -417,6 +421,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.matches(r2)
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer a offsetByCodePoints method that is consistent with String") {
       forAll { (numStr: NumericString, p1: PosInt, p2: PosInt) =>
         whenever (numStr.length > 0) {
@@ -428,6 +433,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer regionMatches methods that are consistent with String") {
       forAll { (numStr: NumericString, i1: Int, str: String, i2: Int, len: Int ) =>
         numStr.regionMatches(true, i1, str, i2, len) shouldEqual
@@ -554,6 +560,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toCharArray
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer toLowerCase methods that are consistent with String") {
       forAll { (numStr: NumericString) =>
         numStr.toLowerCase shouldEqual
@@ -572,6 +579,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toUpperCase(Locale.getDefault)
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer a trim method that is consistent with String") {
       forAll { (numStr: NumericString) =>
         numStr.trim shouldEqual
@@ -801,6 +809,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer a contentEquals method that accepts a StringBuffer") {
       forAll { (numStr: NumericString, str: String) =>
         var sb = new StringBuffer(str)
@@ -812,6 +821,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.contentEquals(sb)
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer a copyToArray method that takes start and len args") {
       forAll { (numStr: NumericString, start: PosInt, len: PosInt) =>
         val xs1 = Array.fill[Char](256)(0)
@@ -1351,12 +1361,14 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.padTo(reasonableLen, elem)
       }
     }
+    // SKIP-SCALATESTJS-START
     it("should offer a par method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.par shouldEqual
           numStr.value.par
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should offer a partition method consistent with StringOps") {
       def isEven(ch: Char): Boolean = (ch - '0') % 2 == 0
 
