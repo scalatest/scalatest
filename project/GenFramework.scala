@@ -84,6 +84,28 @@ class InterceptWithCauseTemplate(declaration: String, assertion: String, fileNam
 
 }
 
+class RecoverToExceptionIfWithCauseTemplate(declaration: String, assertion: String, fileName: String, errMessage: String, lineAdj:Int, causeFileName: String, causeErrMessage: String, causeLineAdj: Int) extends Template {
+
+  override def toString: String =
+    declaration + "\n" +
+      "recoverToExceptionIf[exceptions.TestFailedException] {\n" +
+      "  " + assertion.split("\n").map("  " + _).mkString("\n") + "\n" +
+      "} map { e =>\n" +
+      "  assert(e.failedCodeFileName == Some(\"" + fileName + "\"))\n" +
+      "  assert(e.failedCodeLineNumber == Some(thisLineNumber - " + lineAdj + "))\n" +
+      "  assert(e.message == Some(" + errMessage + "))\n" +
+      "  e.getCause match {\n" +
+      "    case tfe: exceptions.TestFailedException =>\n" +
+      "      assert(tfe.failedCodeFileName == Some(\"" + causeFileName + "\"))\n" +
+      "      assert(tfe.failedCodeLineNumber == Some(thisLineNumber - " + causeLineAdj + "))\n" +
+      "      assert(tfe.message == Some(" + causeErrMessage + "))\n" +
+      "      assert(tfe.getCause == null)\n" +
+      "    case other => fail(\"Expected cause to be TestFailedException, but got: \" + other)\n" +
+      "  }\n" +
+      "}\n"
+
+}
+
 class InterceptWithNullCauseTemplate(declaration: String, assertion: String, fileName: String, errMessage: String, lineAdj:Int) extends Template {
 
   override def toString: String =

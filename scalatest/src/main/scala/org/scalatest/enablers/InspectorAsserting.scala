@@ -608,11 +608,17 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
       def indicateSuccessFuture(message: => String): Assertion = Succeeded
       def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         val msg: String = message
-        throw new TestFailedException(
-          (_: StackDepthException) => Some(msg),
-          optionalCause,
-          pos
-        )
+        optionalCause match {
+          case Some(ex: java.util.concurrent.ExecutionException) if shouldPropagate(ex.getCause) =>
+            throw ex.getCause
+
+          case _ =>
+            throw new TestFailedException(
+              (_: StackDepthException) => Some(msg),
+              optionalCause,
+              pos
+            )
+        }
       }
     }
 
@@ -735,6 +741,8 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
             case _ => index.toString
           }
           result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+        case e =>
+          throw e
       } flatMap { newResult =>
         if (stopFun(newResult))
           Future.successful(newResult)

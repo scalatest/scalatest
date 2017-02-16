@@ -188,13 +188,18 @@ trait RecoverMethods {
   def recoverToSucceededIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext, pos: source.Position): Future[Assertion] = {
     val clazz = classTag.runtimeClass
     future.failed.transform(
-      ex =>
+      rawEx => {
+        val ex =
+          rawEx match {
+            case execEx: java.util.concurrent.ExecutionException => execEx.getCause
+            case other => other
+          }
         if (!clazz.isAssignableFrom(ex.getClass)) {
           val message = Resources.wrongException(clazz.getName, ex.getClass.getName)
           throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), pos)
         }
         else Succeeded
-      ,
+      },
       ex => {
         val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedExceptionForRecover(Some(message), None, pos)
