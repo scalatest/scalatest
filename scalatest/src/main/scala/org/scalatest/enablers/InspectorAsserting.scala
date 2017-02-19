@@ -366,6 +366,7 @@ trait FutureInspectorAsserting {
           future.map { r =>
             (passedCount + 1, messageAcc)
           } recover {
+            case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) => throw execEx.getCause
             case e if !shouldPropagate(e) =>
               val xsIsMap = isMap(original)
               val messageKey = head match {
@@ -374,6 +375,7 @@ trait FutureInspectorAsserting {
                 case _ => index.toString
               }
               (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+            case other => throw other
           } flatMap { result =>
             val (newPassedCount, newMessageAcc) = result
             if (newPassedCount < min)
@@ -438,7 +440,7 @@ trait FutureInspectorAsserting {
       val xsIsMap = isMap(original)
       val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
       future.map { result =>
-        if (result.passedCount != succeededCount)
+        if (result.passedCount != succeededCount) {
           indicateFailureFuture(
             if (shorthand)
               if (result.passedCount == 0)
@@ -460,6 +462,7 @@ trait FutureInspectorAsserting {
             None,
             pos
           )
+        }
         else indicateSuccessFuture("forExactly succeeded")
       }
     }
@@ -612,12 +615,16 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
           case Some(ex: java.util.concurrent.ExecutionException) if shouldPropagate(ex.getCause) =>
             throw ex.getCause
 
-          case _ =>
-            throw new TestFailedException(
-              (_: StackDepthException) => Some(msg),
-              optionalCause,
-              pos
-            )
+          case other =>
+            other match {
+              case Some(ex) if shouldPropagate(ex) => throw ex
+              case _ =>
+                throw new TestFailedException(
+                  (_: StackDepthException) => Some(msg),
+                  optionalCause,
+                  pos
+                )
+            }
         }
       }
     }
@@ -734,6 +741,8 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
       future map { r =>
         result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
       } recover {
+        case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) =>
+          throw execEx.getCause
         case e if !shouldPropagate(e) =>
           val messageKey = head match {
             case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
@@ -741,8 +750,8 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
             case _ => index.toString
           }
           result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
-        case e =>
-          throw e
+        case other =>
+          throw other
       } flatMap { newResult =>
         if (stopFun(newResult))
           Future.successful(newResult)
@@ -750,8 +759,9 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
           runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
       }
     }
-    else
+    else {
       Future.successful(result)
+    }
   }
 
   private[scalatest] final def keyOrIndexLabel(xs: Any, passedElements: IndexedSeq[(Int, _)]): String = {

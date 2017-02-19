@@ -518,15 +518,7 @@ object GenInspectors {
               "  forAll(col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
               "}"
           )
-        )/*,
-        new ItTemplate("should propagate java.lang.VirtualMachineError thrown from assertion for " + colName,
-          new SimpleTemplate(
-            "val col = " + col + "\n" +
-            "recoverToSucceededIf[VirtualMachineError] {\n" +
-            "  forAll(col) { e => Future { throw new VirtualMachineError() {} }; succeed }\n" +
-            "}"
-          )
-        )*/
+        )
       )
 
     override protected def childrenContent =
@@ -738,6 +730,185 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class AsyncForAtLeastTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should throw IllegalArgumentException when 0 is passed in as min for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtLeast(0, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'min' argument must be more than 0\")\n"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when -1 is passed in as min for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtLeast(-1, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'min' argument must be more than 0\")\n"
+          )
+        ),
+        new ItTemplate("should pass when minimum count of elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtLeast(1, col) { e => Future { assert(" + lhs + " == 2) } }"
+          )
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val firstIndex = getIndex(col, first)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val secondIndex = getIndex(col, second)\n",
+            "forAtLeast(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 2) } \n" +
+            "}",
+            "AsyncForAtLeastInspectorsSpec.scala",
+            "\"forAtLeast(2) failed, because only 1 element satisfied the assertion block: \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'no element' in error message when no element satisfied the assertion block for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "forAtLeast(2, col) { e => \n" +
+              "  Future { assert(" + lhs + " == 5) } \n" +
+              "}",
+            "AsyncForAtLeastInspectorsSpec.scala",
+            "\"forAtLeast(2) failed, because no element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n",
+            "forAtLeast(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 2) }\n" +
+            "}",
+            "AsyncForAtLeastInspectorsSpec.scala",
+            "\"forAtLeast(2) failed, because only 1 element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val failed = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " == 3)\n",
+            "forAtLeast(3, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 3) } \n" +
+            "}",
+            "AsyncForAtLeastInspectorsSpec.scala",
+            "\"forAtLeast(3) failed, because only 2 elements satisfied the assertion block: \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should pass when more than minimum count of elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtLeast(1, col) { e => Future { assert(" + lhs + " < 3) } }"
+          )
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when none of the elements passed for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "forAtLeast(1, col) { e => \n" +
+            "  Future { assert(" + lhs + " > 5) } \n" +
+            "}",
+            "AsyncForAtLeastInspectorsSpec.scala",
+            "\"forAtLeast(1) failed, because no element satisfied the assertion block: \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not greater than 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 5 (AsyncForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should pass when all of the elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtLeast(1, col) { e => Future { assert(" + lhs + " < 5) } }"
+          )
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forAtLeast(1, col) { e => Future { pending ; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forAtLeast(1, col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[AnnotationFormatError] {\n" +
+            "  forAtLeast(1, col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forAtLeast(1, col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forAtLeast(1, col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[TransformerFactoryConfigurationError] {\n" +
+            "  forAtLeast(1, col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   class ForAtMostTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
     override val children =
       List(
@@ -852,6 +1023,107 @@ object GenInspectors {
             "val col = " + col + "\n" +
             "intercept[VirtualMachineError] {\n" +
             "  forAtMost(1, col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
+  class AsyncForAtMostTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should throw IllegalArgumentException when 0 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtMost(0, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'max' argument must be more than 0\")\n"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when -1 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtMost(-1, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'max' argument must be more than 0\")"
+          )
+        ),
+        new ItTemplate("should pass when number of elements passed is less than maximum allowed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtMost(2, col) { e => Future { assert(" + lhs + " == 2) } }"
+          )
+        ),
+        new ItTemplate("should pass when number of elements passed equal to maximum allowed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtMost(2, col) { e => Future { assert(" + lhs + " < 3) } }"
+          )
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n",
+            "forAtMost(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 4) } \n" +
+            "}",
+            "AsyncForAtMostInspectorsSpec.scala",
+            "\"forAtMost(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should pass when none of the elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+              "forAtMost(2, col) { e => Future { assert(" + lhs + " > 5) } }"
+          )
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forAtMost(1, col) { e => Future { pending; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forAtMost(1, col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+              "recoverToSucceededIf[AnnotationFormatError] {\n" +
+              "  forAtMost(1, col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+              "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forAtMost(1, col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forAtMost(1, col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
             "}"
           )
         )
@@ -1079,6 +1351,198 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class AsyncForExactlyTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should throw IllegalArgumentException when 0 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forExactly(0, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'succeededCount' argument must be more than 0\")"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when -1 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forExactly(-1, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'succeededCount' argument must be more than 0\")"
+          )
+        ),
+        new ItTemplate("should pass when number of element passes is equal to specified succeeded count for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forExactly(2, col) { e => Future { assert(" + lhs + " < 3) } }"
+          )
+        ),
+        new ItTemplate("should use 'no element' in error message when no element satisfied the assertion block for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "forExactly(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 5) } \n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(2) failed, because no element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
+            "forExactly(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 2) }\n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(2) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n",
+            "forExactly(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 5) }\n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val failed = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 3)",
+            "forExactly(3, col) { e => \n" +
+              "  Future { assert(" + lhs + " < 3) } \n" +
+              "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(3) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n",
+            "forExactly(1, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 3) } \n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(1) failed, because 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
+            "forExactly(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 2) } \n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(2) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (AsyncForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 5)\n",
+            "forExactly(2, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 5) }\n" +
+            "}",
+            "AsyncForExactlyInspectorsSpec.scala",
+            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forExactly(1, col) { e => Future { pending; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forExactly(1, col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[AnnotationFormatError] {\n" +
+            "  forExactly(1, col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forExactly(1, col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forExactly(1, col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[TransformerFactoryConfigurationError] {\n" +
+            "  forExactly(1, col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   class ForNoTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
     override val children =
       List(
@@ -1181,6 +1645,95 @@ object GenInspectors {
             "val col = " + col + "\n" +
             "intercept[VirtualMachineError] {\n" +
             "  forNo(col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
+  class AsyncForNoTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should pass when none of the element pass for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forNo(col) { e => Future { assert(" + lhs + " > 5) } }"
+          )
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when 1 element passed for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val first = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
+            "forNo(col) { e => Future { assert(" + lhs + " == 2) } }\n",
+            "AsyncForNoInspectorsSpec.scala",
+            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            4)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when 2 element passed for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val first = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " < 5)",
+            "forNo(col) { e => Future { assert(" + lhs + " < 5) } }\n",
+            "AsyncForNoInspectorsSpec.scala",
+            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            4)
+        ),
+        new ItTemplate("should pass when empty list of element is passed in for " + colName,
+          new SimpleTemplate(
+            "val col = " + emptyCol + "\n" +
+            "forNo(col) { e => Future { assert(" + lhs + " > 5) } }"
+          )
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forNo(col) { e => Future { pending; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forNo(col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[AnnotationFormatError] {\n" +
+            "  forNo(col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forNo(col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forNo(col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[TransformerFactoryConfigurationError] {\n" +
+            "  forNo(col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
             "}"
           )
         )
@@ -1439,6 +1992,229 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class AsyncForBetweenTemplate(colName: String, col: String, bigCol: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should throw IllegalArgumentException when -1 is passed in as from for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(-1, 2, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'from' argument must be more than or equal 0\")"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when 0 is passed in as upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(0, 0, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 0\")"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when -1 is passed in as upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(0, -1, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 0\")"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when from and upTo is the same for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(1, 1, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 'from' argument\")"
+          )
+        ),
+        new ItTemplate("should throw IllegalArgumentException when from is greater than upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(3, 2, col) { e => Future { assert(" + lhs + " == 2) } }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 'from' argument\")"
+          )
+        ),
+        new ItTemplate("should pass when number of element passed is within the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => Future { assert(" + lhs + " > 2) } }"
+          )
+        ),
+        new ItTemplate("should pass when number of element passed is same as lower bound of the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => Future { assert(" + lhs + " > 3) } }"
+          )
+        ),
+        new ItTemplate("should pass when number of element passed is same as upper bound of the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => Future { assert(" + lhs + " > 1) } }"
+          )
+        ),
+        new ItTemplate("should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "forBetween(1, 2, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 5) } \n" +
+            "}",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(1, 2) failed, because no element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
+            "forBetween(2, 3, col) { e => \n" +
+            "  Future { assert(" + lhs + " == 2) }\n" +
+            "}",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 3) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val failed = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 3)",
+            "forBetween(3, 4, col) { e => \n" +
+            "  Future { assert(" + lhs + " < 3) } \n" +
+            "}",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(3, 4) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo' for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val forth = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n",
+            "forBetween(2, 3, col) { e => \n" +
+            "  Future { assert(" + lhs + " > 1) } \n" +
+            "}",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 3) failed, because 4 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \" and \" + " + getIndexOrKey(colName, "forth") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range for " + colName,
+          new RecoverToExceptionIfWithNullCauseTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val forth = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " > 4)",
+            "forBetween(2, 4, col) { e => \n" +
+            "  Future { assert(" + lhs + " > 4) } \n" +
+            "}",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 4) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not greater than 4 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 4 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 4 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 9) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "forth") + " + \", \" + " + getLhs(colName, "forth") + " + \" was not greater than 4 (AsyncForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 10) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(prettifier, col)",
+            6)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n" +
+            "val forth = itr.next\n" +
+            "val fifth = itr.next\n",
+            "forBetween(2, 4, col) { e => Future { assert(" + lhs + " > 0) } }",
+            "AsyncForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 4) failed, because 5 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \", \" + " + getIndexOrKey(colName, "forth") + " + \" and \" + " + getIndexOrKey(colName, "fifth") + " + \" in \" + decorateToStringValue(prettifier, col)",
+            4)
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forBetween(2, 4, col) { e => Future { pending; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forBetween(2, 4, col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[AnnotationFormatError] {\n" +
+            "  forBetween(2, 4, col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forBetween(2, 4, col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forBetween(2, 4, col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "recoverToSucceededIf[TransformerFactoryConfigurationError] {\n" +
+            "  forBetween(2, 4, col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   class ForEveryTemplate(colName: String, col: String, lhs: String) extends Template {
     override val children =
       List(
@@ -1552,6 +2328,95 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class AsyncForEveryTemplate(colName: String, col: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new ItTemplate("should pass when all elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forEvery(col) { e => Future { assert(" + lhs + " < 4) } }"
+          )
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when at least one element failed for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col,
+            "forEvery(col) { e => Future { assert(" + lhs + " != 2) } }",
+            "AsyncForEveryInspectorsSpec.scala",
+            "\"forEvery failed, because: \\n\" + \n" +
+            "\"  at \" + " + getIndexForType(colName, 2) + " + \", 2 equaled 2 (AsyncForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(prettifier, col)",
+            4)
+        ),
+        new ItTemplate("should throw TestFailedException with correct stack depth and message when more than one element failed for " + colName,
+          new RecoverToExceptionIfTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n",
+            "forEvery(col) { e => Future { assert(" + lhs + " < 2) } }",
+            "AsyncForEveryInspectorsSpec.scala",
+            "\"forEvery failed, because: \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not less than 2 (AsyncForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not less than 2 (AsyncForEveryInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(prettifier, col)",
+            4)
+        ),
+        new ItTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestPendingException] {\n" +
+            "  forEvery(col) { e => Future { pending; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[exceptions.TestCanceledException] {\n" +
+            "  forEvery(col) { e => Future { cancel; succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[AnnotationFormatError] {\n" +
+            "  forEvery(col) { e => Future { throw new AnnotationFormatError(\"test\"); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[CoderMalfunctionError] {\n" +
+            "  forEvery(col) { e => Future { throw new CoderMalfunctionError(new RuntimeException(\"test\")); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[FactoryConfigurationError] {\n" +
+            "  forEvery(col) { e => Future { throw new FactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        ),
+        new ItTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "recoverToSucceededIf[TransformerFactoryConfigurationError] {\n" +
+            "  forEvery(col) { e => Future { throw new TransformerFactoryConfigurationError(); succeed } }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   def genForAllSpecFile(targetDir: File) {
     val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
     genFile(
@@ -1640,6 +2505,36 @@ object GenInspectors {
     )
   }
 
+  def genAsyncForAtLeastSpecFile(targetDir: File) {
+    val forAtLeastSpecFile = new File(targetDir, "AsyncForAtLeastInspectorsSpec.scala")
+    genFile(
+      forAtLeastSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.foratleast"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForAtLeastInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForAtLeastTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
   def genForAtMostSpecFile(targetDir: File) {
     val forAtMostSpecFile = new File(targetDir, "ForAtMostInspectorsSpec.scala")
     genFile(
@@ -1663,6 +2558,36 @@ object GenInspectors {
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForAtMostTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
+  def genAsyncForAtMostSpecFile(targetDir: File) {
+    val forAtMostSpecFile = new File(targetDir, "AsyncForAtMostInspectorsSpec.scala")
+    genFile(
+      forAtMostSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.foratmost"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForAtMostInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForAtMostTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1698,6 +2623,36 @@ object GenInspectors {
     )
   }
 
+  def genAsyncForExactlySpecFile(targetDir: File) {
+    val forExactlySpecFile = new File(targetDir, "AsyncForExactlyInspectorsSpec.scala")
+    genFile(
+      forExactlySpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forexactly"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForExactlyInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForExactlyTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
   def genForNoSpecFile(targetDir: File) {
     val forNoSpecFile = new File(targetDir, "ForNoInspectorsSpec.scala")
     genFile(
@@ -1721,6 +2676,36 @@ object GenInspectors {
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForNoTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
+  def genAsyncForNoSpecFile(targetDir: File) {
+    val forNoSpecFile = new File(targetDir, "AsyncForNoInspectorsSpec.scala")
+    genFile(
+      forNoSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forno"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForNoInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForNoTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1756,6 +2741,36 @@ object GenInspectors {
     )
   }
 
+  def genAsyncForBetweenSpecFile(targetDir: File) {
+    val forBetweenSpecFile = new File(targetDir, "AsyncForBetweenInspectorsSpec.scala")
+    genFile(
+      forBetweenSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forbetween"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForBetweenInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForBetweenTemplate(name, col, bigCol, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
   def genForEverySpecFile(targetDir: File) {
     val forEverySpecFile = new File(targetDir, "ForEveryInspectorsSpec.scala")
     genFile(
@@ -1779,6 +2794,36 @@ object GenInspectors {
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForEveryTemplate(name, col, lhs)
+          }
+        }
+      )
+    )
+  }
+
+  def genAsyncForEverySpecFile(targetDir: File) {
+    val forEverySpecFile = new File(targetDir, "AsyncForEveryInspectorsSpec.scala")
+    genFile(
+      forEverySpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forevery"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError",
+          "org.scalatest.AsyncFunSpec",
+          "scala.concurrent.Future"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "AsyncForEveryInspectorsSpec"
+          override val extendName = Some("AsyncFunSpec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new AsyncForEveryTemplate(name, col, lhs)
           }
         }
       )
@@ -1902,11 +2947,17 @@ object GenInspectors {
     genForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genAsyncForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
+    genAsyncForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
     genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
+    genAsyncForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
     genForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
+    genAsyncForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
     genForNoSpecFile(targetDir(targetBaseDir, "forno"))
+    genAsyncForNoSpecFile(targetDir(targetBaseDir, "forno"))
     genForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
+    genAsyncForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
     genForEverySpecFile(targetDir(targetBaseDir, "forevery"))
+    genAsyncForEverySpecFile(targetDir(targetBaseDir, "forevery"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   
