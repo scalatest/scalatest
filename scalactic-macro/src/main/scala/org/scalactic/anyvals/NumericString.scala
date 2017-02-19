@@ -30,7 +30,7 @@ import scala.collection.parallel.ParSeq
 import scala.util.matching.Regex
 import scala.language.higherKinds
 
-private[scalactic] final class NumericString private (val value: String) extends AnyVal {
+final class NumericString private (val value: String) extends AnyVal {
   override def toString: String = s"NumericString($value)"
 
   def length: Int = value.length
@@ -2029,7 +2029,7 @@ private[scalactic] final class NumericString private (val value: String) extends
   }
 }
 
-private[scalactic] object NumericString {
+object NumericString {
   def from(value: String): Option[NumericString] =
     if (NumericStringMacro.isValid(value)) Some(new NumericString(value)) else None
 
