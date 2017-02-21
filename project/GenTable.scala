@@ -1140,6 +1140,152 @@ $columnsOfIndexes$
   }
 """
 
+val asyncTableSuitePreamble = """
+
+import org.scalatest.Matchers._
+import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
+import org.scalatest.AsyncFunSpec
+import scala.concurrent.Future
+
+class AsyncTableSuite extends AsyncFunSpec with TableDrivenPropertyChecks {
+"""
+
+val asyncTableSuiteTemplate = """
+  it("table forAll $n$ that succeeds") {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    forAll (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+  }
+
+  it("table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown right in the body of forAll") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forAll (numbers) { ($names$) =>
+
+      whenever (a > 0) {
+        Future { assert(a > 0) }
+      }
+    }
+  }
+
+  /*it("table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown in the Future body in the body of forAll") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forAll (numbers) { ($names$) =>
+      Future {
+        whenever (a > 0) {
+          assert(a > 0)
+        }
+      }
+    }
+  }
+
+  it("table forAll $n$, which fails") {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    recoverToSucceededIf[TableDrivenPropertyCheckFailedException] {
+      forAll (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+    }
+  }
+
+  it("table forEvery $n$ that succeeds") {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    forEvery (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+  }
+
+  it("table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forEvery (numbers) { ($names$) =>
+      whenever (a > 0) {
+        Future { assert(a > 0) }
+      }
+    }
+  }
+
+  it("table forEvery $n$, which fails") {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    recoverToSucceededIf[exceptions.TestFailedException] {
+      forEvery (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+    }
+  }
+
+  it("table exists $n$ that succeeds") {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+  }
+
+  it("table exists $n$, which succeeds even though DiscardedEvaluationException is thrown") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (numbers) { ($names$) =>
+      whenever (a > 0) {
+        Future { assert(a > 0) }
+      }
+    }
+  }
+
+  it("table exists $n$, which fails") {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    recoverToSucceededIf[exceptions.TestFailedException] {
+      exists (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
+    }
+  }*/
+"""
+
 // For some reason that I don't understand, I need to leave off the stars before the <pre> when 
 // they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
 
@@ -1405,11 +1551,57 @@ $columnsOfIndexes$
                                  |  def loop(idx: Int, rows: List[($alphaUpper$)]): Future[Assertion] =
                                  |    rows match {
                                  |      case ($alphaLower$) :: tail =>
-                                 |        val future = fun($alphaLower$)
-                                 |        future map { r =>
-                                 |          org.scalatest.Succeeded
-                                 |        } recover {
-                                 |          case _: DiscardedEvaluationException => org.scalatest.Succeeded // discard this evaluation and move on to the next
+                                 |        try {
+                                 |          val future = fun($alphaLower$)
+                                 |          future map { r =>
+                                 |            org.scalatest.Succeeded
+                                 |          } recover {
+                                 |            case execEx: java.util.concurrent.ExecutionException =>
+                                 |              println("###here!!!!")
+                                 |              execEx.getCause match {
+                                 |                case _: DiscardedEvaluationException =>
+                                 |                  println("***111")
+                                 |                  org.scalatest.Succeeded // discard this evaluation and move on to the next
+                                 |                case ex: Throwable =>
+                                 |                  println("###1111ex: " + ex)
+                                 |                  val ($alphaName$) = heading
+                                 |
+                                 |                  // SKIP-SCALATESTJS-START
+                                 |                  val stackDepth = 2
+                                 |                  // SKIP-SCALATESTJS-END
+                                 |                  //SCALATESTJS-ONLY val stackDepth = 1
+                                 |
+                                 |                  indicateFailure(
+                                 |                    (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+                                 |                      ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |                      "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                                 |                      (
+                                 |                        ex match {
+                                 |                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                            "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                          case _ => ""
+                                 |                        }
+                                 |                      ) +
+                                 |                      "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |                      $namesAndValues$
+                                 |                      "  )",
+                                 |                    FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |                    List($alphaLower$),
+                                 |                    List($alphaName$),
+                                 |                    Some(ex),
+                                 |                    None, // Payload
+                                 |                    prettifier,
+                                 |                    pos,
+                                 |                    idx
+                                 |                  )
+                                 |              }
+                                 |
+                                 |          } flatMap { u =>
+                                 |            loop(idx + 1, tail)
+                                 |          }
+                                 |        }
+                                 |        catch {
+                                 |          case _: DiscardedEvaluationException => loop(idx + 1, tail)
                                  |          case ex: Throwable =>
                                  |            val ($alphaName$) = heading
                                  |
@@ -1441,8 +1633,7 @@ $columnsOfIndexes$
                                  |              pos,
                                  |              idx
                                  |            )
-                                 |        } flatMap { u =>
-                                 |          loop(idx + 1, tail)
+                                 |            Future.successful(org.scalatest.Succeeded)
                                  |        }
                                  |
                                  |      case Nil => Future.successful(org.scalatest.Succeeded)
@@ -2006,30 +2197,6 @@ $columnsOfIndexes$
          |        )
          |    }
          |  }
-         |
-         |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
-         |    new FutureTableAssertingImpl[Assertion] {
-         |      implicit val executionContext = exeCtx
-         |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
-         |        throw new TableDrivenPropertyCheckFailedException(
-         |          messageFun,
-         |          optionalCause,
-         |          pos,
-         |          payload,
-         |          undecoratedMessage,
-         |          args,
-         |          namesOfArgs,
-         |          idx
-         |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
-         |        throw new org.scalatest.exceptions.TestFailedException(
-         |          (_: StackDepthException) => Some(message),
-         |          optionalCause,
-         |          pos
-         |        )
-         |    }
-         |  }
          |}
          |
          | /**
@@ -2060,6 +2227,30 @@ $columnsOfIndexes$
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
          |      def indicateSuccess(message: => String): Assertion = Succeeded
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
+         |        throw new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
+         |        throw new org.scalatest.exceptions.TestFailedException(
+         |          (_: StackDepthException) => Some(message),
+         |          optionalCause,
+         |          pos
+         |        )
+         |    }
+         |  }
+         |
+         |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+         |    new FutureTableAssertingImpl[Assertion] {
+         |      implicit val executionContext = exeCtx
+         |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
@@ -2161,6 +2352,53 @@ $columnsOfIndexes$
     }
   }
 
+  def genAsyncTableSuite(targetDir: File) {
+
+    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "AsyncTableSuite.scala")))
+
+    try {
+      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+      st.setAttribute("year", thisYear);
+      bw.write(st.toString)
+      bw.write(asyncTableSuitePreamble)
+      val alpha = "abcdefghijklmnopqrstuv"
+      // for (i <- 1 to 22) {
+      for (i <- 1 to 20) { // TODO: To avoid 2.9.0 compiler bug at arities 21 and 22
+
+        val st = new org.antlr.stringtemplate.StringTemplate(asyncTableSuiteTemplate)
+        val rowOfMinusOnes = List.fill(i)(" -1").mkString(", ")
+        val rowOfOnes = List.fill(i)("  1").mkString(", ")
+        val rowOfTwos = List.fill(i)("  2").mkString(", ")
+        val listOfIs = List.fill(i)("i").mkString(", ")
+        val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
+        val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
+        val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
+        val rawRows =
+          for (idx <- 0 to 9) yield
+            List.fill(i)("  " + idx).mkString("        (", ", ", ")")
+        val columnsOfIndexes = rawRows.mkString(",\n")
+        val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+        val names = alpha.take(i).mkString(", ")
+        val sumOfArgs = alpha.take(i).mkString(" + ")
+        st.setAttribute("n", i)
+        st.setAttribute("columnsOfOnes", columnsOfOnes)
+        st.setAttribute("columnOfMinusOnes", columnOfMinusOnes)
+        st.setAttribute("columnsOfTwos", columnsOfTwos)
+        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+        st.setAttribute("argNames", argNames)
+        st.setAttribute("names", names)
+        st.setAttribute("sumOfArgs", sumOfArgs)
+        st.setAttribute("listOfIs", listOfIs)
+        bw.write(st.toString)
+      }
+
+      bw.write("}\n")
+    }
+    finally {
+      bw.close()
+    }
+  }
+
   def main(args: Array[String]) {
     val targetDir = args(0)
     val version = args(1)
@@ -2194,6 +2432,7 @@ $columnsOfIndexes$
   def genTest(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
     genTableSuite(dir)
+    genAsyncTableSuite(dir)
   }
 }
 

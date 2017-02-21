@@ -17,6 +17,7 @@ package org.scalatest.enablers
 
 import org.scalatest.Assertion
 import org.scalatest.exceptions.DiscardedEvaluationException
+import scala.concurrent.Future
 
 /**
  * Supertrait for <code>WheneverAsserting</code> typeclasses, which are used to implement and determine the result
@@ -96,6 +97,17 @@ object WheneverAsserting extends UnitWheneverAsserting /*ExpectationWheneverAsse
           throw new DiscardedEvaluationException
         else
          fun
+    }
+  }
+
+  implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+    new WheneverAsserting[Future[Assertion]] {
+      type Result = Future[Assertion]
+      def whenever(condition: Boolean)(fun: => Future[Assertion]): Future[Assertion] =
+        if (!condition)
+          throw new DiscardedEvaluationException
+        else
+          fun
     }
   }
 }
