@@ -1313,6 +1313,13 @@ $columnsOfIndexes$
         |def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
       """.stripMargin
 
+    val asyncDoForAllMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forAll</code> syntax.
+        | */
+        |def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => Future[ASSERTION])(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
+
     def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
@@ -1348,55 +1355,107 @@ $columnsOfIndexes$
         st.toString
     }
 
-    def doForAllMethodImpl(i: Int): String = {
-      val forAllImplTemplate: String =
-        doForAllMethodTemplate + """ = {
-          |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
-          |    try {
-          |      fun($alphaLower$)
-          |    }
-          |    catch {
-          |      case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
-          |      case ex: Throwable =>
-          |        val ($alphaName$) = heading
-          |
-          |        // SKIP-SCALATESTJS-START
-          |        val stackDepth = 2
-          |        // SKIP-SCALATESTJS-END
-          |        //SCALATESTJS-ONLY val stackDepth = 1
-          |
-          |        indicateFailure(
-          |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
-          |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-          |            (
-          |              ex match {
-          |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-          |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-          |                case _ => ""
-          |              }
-          |            ) +
-          |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-          |            $namesAndValues$
-          |            "  )",
-          |          FailureMessages.undecoratedPropertyCheckFailureMessage,
-          |          List($alphaLower$),
-          |          List($alphaName$),
-          |          Some(ex),
-          |          None, // Payload
-          |          prettifier,
-          |          pos,
-          |          idx
-          |        )
-          |      }
-          |  }
-          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
-          |}
-        """.stripMargin
+    val forAllImplTemplate: String =
+      doForAllMethodTemplate + """ = {
+                                 |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
+                                 |    try {
+                                 |      fun($alphaLower$)
+                                 |    }
+                                 |    catch {
+                                 |      case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
+                                 |      case ex: Throwable =>
+                                 |        val ($alphaName$) = heading
+                                 |
+                                 |        // SKIP-SCALATESTJS-START
+                                 |        val stackDepth = 2
+                                 |        // SKIP-SCALATESTJS-END
+                                 |        //SCALATESTJS-ONLY val stackDepth = 1
+                                 |
+                                 |        indicateFailure(
+                                 |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+                                 |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                                 |            (
+                                 |              ex match {
+                                 |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                case _ => ""
+                                 |              }
+                                 |            ) +
+                                 |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |            $namesAndValues$
+                                 |            "  )",
+                                 |          FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |          List($alphaLower$),
+                                 |          List($alphaName$),
+                                 |          Some(ex),
+                                 |          None, // Payload
+                                 |          prettifier,
+                                 |          pos,
+                                 |          idx
+                                 |        )
+                                 |      }
+                                 |  }
+                                 |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+                                 |}
+                               """.stripMargin
+
+    val asyncForAllImplTemplate: String =
+      asyncDoForAllMethodTemplate + """ = {
+                                 |  def loop(idx: Int, rows: List[($alphaUpper$)]): Future[Assertion] =
+                                 |    rows match {
+                                 |      case ($alphaLower$) :: tail =>
+                                 |        val future = fun($alphaLower$)
+                                 |        future map { r =>
+                                 |          org.scalatest.Succeeded
+                                 |        } recover {
+                                 |          case _: DiscardedEvaluationException => org.scalatest.Succeeded // discard this evaluation and move on to the next
+                                 |          case ex: Throwable =>
+                                 |            val ($alphaName$) = heading
+                                 |
+                                 |            // SKIP-SCALATESTJS-START
+                                 |            val stackDepth = 2
+                                 |            // SKIP-SCALATESTJS-END
+                                 |            //SCALATESTJS-ONLY val stackDepth = 1
+                                 |
+                                 |            indicateFailure(
+                                 |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+                                 |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                                 |                (
+                                 |                  ex match {
+                                 |                    case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                    case _ => ""
+                                 |                  }
+                                 |                ) +
+                                 |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |                $namesAndValues$
+                                 |                "  )",
+                                 |              FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |              List($alphaLower$),
+                                 |              List($alphaName$),
+                                 |              Some(ex),
+                                 |              None, // Payload
+                                 |              prettifier,
+                                 |              pos,
+                                 |              idx
+                                 |            )
+                                 |        } flatMap { u =>
+                                 |          loop(idx + 1, tail)
+                                 |        }
+                                 |
+                                 |      case Nil => Future.successful(org.scalatest.Succeeded)
+                                 |    }
+                                 |  loop(0, rows.toList)
+                                 |}
+                               """.stripMargin
+
+    def doForAllMethodImpl(i: Int, implTemplate: String): String = {
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(forAllImplTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(implTemplate)
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1435,6 +1494,13 @@ $columnsOfIndexes$
         |def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
         |""".stripMargin
 
+    val asyncDoForEveryMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forEvery</code> syntax.
+        | */
+        |def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => Future[ASSERTION])(implicit prettifier: Prettifier, pos: source.Position): Result
+        |""".stripMargin
+
     def doForEveryMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
@@ -1470,7 +1536,7 @@ $columnsOfIndexes$
         st.toString
     }
 
-    def doForEveryMethodImpl(i: Int): String = {
+    def doForEveryMethodImpl(i: Int, methodTemplate: String): String = {
       val heading =
         if (i == 1)
           "heading"
@@ -1483,7 +1549,7 @@ $columnsOfIndexes$
         else
           "rows"
       val forEveryImplTemplate: String =
-        doForEveryMethodTemplate + """ = {
+        methodTemplate + """ = {
                                    |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2, prettifier, pos)((row: $rowType$) => fun($row$))
                                    |}
                                  """.stripMargin
@@ -1534,6 +1600,13 @@ $columnsOfIndexes$
         |def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
       """.stripMargin
 
+    val asyncDoExistsMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>exists</code> syntax.
+        | */
+        |def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => Future[ASSERTION])(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
+
     def doExistsMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
@@ -1569,7 +1642,7 @@ $columnsOfIndexes$
         st.toString
     }
 
-    def doExistsMethodImpl(i: Int): String = {
+    def doExistsMethodImpl(i: Int, methodTemplate: String): String = {
       val heading =
         if (i == 1)
           "heading"
@@ -1582,10 +1655,10 @@ $columnsOfIndexes$
         else
           "rows"
       val forEveryImplTemplate: String =
-        doExistsMethodTemplate + """ = {
-                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
-                                     |}
-                                   """.stripMargin
+        methodTemplate + """ = {
+                               |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                               |}
+                               """.stripMargin
 
       val alpha = "abcdefghijklmnopqrstuv"
 
@@ -1654,6 +1727,7 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.DiscardedEvaluationException
          |import org.scalatest.exceptions.StackDepth
          |import org.scalactic._
+         |import scala.concurrent.Future
          |
          |/**
          | * Supertrait for <code>TableAsserting</code> typeclasses, which are used to implement and determine the result
@@ -1790,6 +1864,120 @@ $columnsOfIndexes$
          |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Result
          |  }
          |
+         |  abstract class FutureTableAssertingImpl[ASSERTION] extends TableAsserting[Future[ASSERTION]] {
+         |
+         |    implicit val executionContext: scala.concurrent.ExecutionContext
+         |
+         |    type Result = Future[Assertion]
+         |
+         |    $asyncForAllMethodImpls$
+         |
+         |    private[scalatest] case class ForResult[E](passedCount: Int = 0,
+         |                          discardedCount: Int = 0,
+         |                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
+         |                          passedElements: IndexedSeq[(Int, E)] = IndexedSeq.empty,
+         |                          failedElements: IndexedSeq[(Int, E, Throwable)] = IndexedSeq.empty)
+         |
+         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => Future[ASSERTION]): Future[ForResult[E]] = {
+         |      import org.scalatest.InspectorsHelper.{shouldPropagate, indentErrorMessages}
+         |
+         |      def innerRunAndCollectResult(itr: Iterator[E], result: ForResult[E], index: Int)(fun: E => Future[ASSERTION]): Future[ForResult[E]] = {
+         |        if (itr.hasNext) {
+         |          val head = itr.next
+         |          val future = fun(head)
+         |          future map { r =>
+         |            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |          } recover {
+         |            case _: org.scalatest.exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
+         |            case ex if !shouldPropagate(ex) =>
+         |              result.copy(failedElements =
+         |                result.failedElements :+ ((index,
+         |                  head,
+         |                  new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                    ((sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+         |                      (sde.failedCodeFileNameAndLineNumberString match {
+         |                        case Some(s) => " (" + s + ")";
+         |                        case None => ""
+         |                      }) + "\n" +
+         |                      "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+         |                      (
+         |                        ex match {
+         |                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+         |                            "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+         |                          case _ => ""
+         |                        }
+         |                        ) +
+         |                      "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                      indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                        name + " = " + value
+         |                      }.toIndexedSeq).mkString("\n") +
+         |                      "  )"),
+         |                    Some(ex),
+         |                    pos,
+         |                    None,
+         |                    FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                    head.productIterator.toList,
+         |                    namesOfArgs,
+         |                    index
+         |                  ))
+         |                )
+         |              )
+         |          } flatMap { newResult =>
+         |            innerRunAndCollectResult(itr, newResult, index + 1)(fun)
+         |          }
+         |        }
+         |        else
+         |          Future.successful(result)
+         |      }
+         |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
+         |    }
+         |
+         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => Future[ASSERTION])(implicit asserting: TableAsserting[Future[ASSERTION]]): Result = {
+         |      import org.scalatest.InspectorsHelper.indentErrorMessages
+         |      val future = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      future map { result =>
+         |        val messageList = result.failedElements.map(_._3)
+         |        if (messageList.size > 0)
+         |          indicateFailure(
+         |            messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
+         |            messageList.headOption,
+         |            prettifier,
+         |            pos
+         |          )
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        org.scalatest.Succeeded
+         |      }
+         |    }
+         |
+         |    $asyncForEveryMethodImpls$
+         |
+         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => Future[ASSERTION])(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |      import org.scalatest.InspectorsHelper.indentErrorMessages
+         |      val future = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      future map { result =>
+         |        if (result.passedCount == 0) {
+         |          val messageList = result.failedElements.map(_._3)
+         |          indicateFailure(
+         |            messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
+         |            messageList.headOption,
+         |            prettifier,
+         |            pos
+         |          )
+         |        }
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        org.scalatest.Succeeded
+         |      }
+         |    }
+         |
+         |    $asyncExistsMethodImpls$
+         |
+         |    private[scalatest] def indicateSuccess(message: => String): Assertion
+         |
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion
+         |
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion
+         |  }
+         |
          |  /**
          |   * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Unit.  Do nothing when the check succeeds,
          |   * but throw [[org.scalatest.exceptions.TableDrivenPropertyCheckFailedException TableDrivenPropertyCheckFailedException]]
@@ -1818,13 +2006,37 @@ $columnsOfIndexes$
          |        )
          |    }
          |  }
+         |
+         |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+         |    new FutureTableAssertingImpl[Assertion] {
+         |      implicit val executionContext = exeCtx
+         |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
+         |        throw new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
+         |        throw new org.scalatest.exceptions.TestFailedException(
+         |          (_: StackDepthException) => Some(message),
+         |          optionalCause,
+         |          pos
+         |        )
+         |    }
+         |  }
          |}
          |
          | /**
          |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
          |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
          |  */
-         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting {
+         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting with  {
          |
          |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
          |    new TableAsserting[Expectation] {
@@ -1876,18 +2088,24 @@ $columnsOfIndexes$
 
     try {
       val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
-      val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
+      val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i, forAllImplTemplate)).mkString("\n\n")
+      val asyncForAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i, asyncForAllImplTemplate)).mkString("\n\n")
       val forEveryMethods = (for (i <- 1 to 22) yield doForEveryMethod(i)).mkString("\n\n")
-      val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i)).mkString("\n\n")
+      val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i, doForEveryMethodTemplate)).mkString("\n\n")
+      val asyncForEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i, asyncDoForEveryMethodTemplate)).mkString("\n\n")
       val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
-      val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i)).mkString("\n\n")
+      val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i, doExistsMethodTemplate)).mkString("\n\n")
+      val asyncExistsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i, asyncDoExistsMethodTemplate)).mkString("\n\n")
       val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
       st.setAttribute("forAllMethods", forAllMethods)
       st.setAttribute("forAllMethodImpls", forAllMethodImpls)
+      st.setAttribute("asyncForAllMethodImpls", asyncForAllMethodImpls)
       st.setAttribute("forEveryMethods", forEveryMethods)
       st.setAttribute("forEveryMethodImpls", forEveryMethodImpls)
+      st.setAttribute("asyncForEveryMethodImpls", asyncForEveryMethodImpls)
       st.setAttribute("existsMethods", existsMethods)
       st.setAttribute("existsMethodImpls", existsMethodImpls)
+      st.setAttribute("asyncExistsMethodImpls", asyncExistsMethodImpls)
       bw.write(st.toString)
     }
     finally {
