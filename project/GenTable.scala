@@ -1178,7 +1178,7 @@ $columnsOfOnes$
     }
   }
 
-  /*it("table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown in the Future body in the body of forAll") {
+  it("table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown in the Future body in the body of forAll") {
     val numbers =
       Table(
         ($argNames$),
@@ -1219,7 +1219,7 @@ $columnsOfOnes$
     forEvery (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
   }
 
-  it("table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown") {
+  it("table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown right in the body of forEvery") {
     val numbers =
       Table(
         ($argNames$),
@@ -1230,6 +1230,23 @@ $columnsOfOnes$
     forEvery (numbers) { ($names$) =>
       whenever (a > 0) {
         Future { assert(a > 0) }
+      }
+    }
+  }
+
+  it("table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown in the Future body in the body of forEvery") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forEvery (numbers) { ($names$) =>
+      Future {
+        whenever (a > 0) {
+          assert(a > 0)
+        }
       }
     }
   }
@@ -1258,7 +1275,7 @@ $columnsOfOnes$
     exists (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
   }
 
-  it("table exists $n$, which succeeds even though DiscardedEvaluationException is thrown") {
+  it("table exists $n$, which succeeds even though DiscardedEvaluationException is thrown right in the body of exists") {
     val numbers =
       Table(
         ($argNames$),
@@ -1273,6 +1290,23 @@ $columnsOfOnes$
     }
   }
 
+  it("table exists $n$, which succeeds even though DiscardedEvaluationException is thrown in the Future body in the body of exists") {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (numbers) { ($names$) =>
+      Future {
+        whenever (a > 0) {
+          assert(a > 0)
+        }
+      }
+    }
+  }
+
   it("table exists $n$, which fails") {
     val examples =
       Table(
@@ -1283,7 +1317,7 @@ $columnsOfTwos$
     recoverToSucceededIf[exceptions.TestFailedException] {
       exists (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
     }
-  }*/
+  }
 """
 
 // For some reason that I don't understand, I need to leave off the stars before the <pre> when 
@@ -1556,46 +1590,39 @@ $columnsOfTwos$
                                  |          future map { r =>
                                  |            org.scalatest.Succeeded
                                  |          } recover {
-                                 |            case execEx: java.util.concurrent.ExecutionException =>
-                                 |              println("###here!!!!")
-                                 |              execEx.getCause match {
-                                 |                case _: DiscardedEvaluationException =>
-                                 |                  println("***111")
-                                 |                  org.scalatest.Succeeded // discard this evaluation and move on to the next
-                                 |                case ex: Throwable =>
-                                 |                  println("###1111ex: " + ex)
-                                 |                  val ($alphaName$) = heading
+                                 |            case _: DiscardedEvaluationException =>
+                                 |              org.scalatest.Succeeded // discard this evaluation and move on to the next
+                                 |            case ex: Throwable =>
+                                 |              val ($alphaName$) = heading
                                  |
-                                 |                  // SKIP-SCALATESTJS-START
-                                 |                  val stackDepth = 2
-                                 |                  // SKIP-SCALATESTJS-END
-                                 |                  //SCALATESTJS-ONLY val stackDepth = 1
+                                 |              // SKIP-SCALATESTJS-START
+                                 |              val stackDepth = 2
+                                 |              // SKIP-SCALATESTJS-END
+                                 |              //SCALATESTJS-ONLY val stackDepth = 1
                                  |
-                                 |                  indicateFailure(
-                                 |                    (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
-                                 |                      ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                                 |                      "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-                                 |                      (
-                                 |                        ex match {
-                                 |                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                                 |                            "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                                 |                          case _ => ""
-                                 |                        }
-                                 |                      ) +
-                                 |                      "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-                                 |                      $namesAndValues$
-                                 |                      "  )",
-                                 |                    FailureMessages.undecoratedPropertyCheckFailureMessage,
-                                 |                    List($alphaLower$),
-                                 |                    List($alphaName$),
-                                 |                    Some(ex),
-                                 |                    None, // Payload
-                                 |                    prettifier,
-                                 |                    pos,
-                                 |                    idx
-                                 |                  )
-                                 |              }
-                                 |
+                                 |              indicateFailure(
+                                 |                (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+                                 |                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |                  "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                                 |                  (
+                                 |                    ex match {
+                                 |                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                        "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                      case _ => ""
+                                 |                    }
+                                 |                  ) +
+                                 |                  "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |                  $namesAndValues$
+                                 |                  "  )",
+                                 |                FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |                List($alphaLower$),
+                                 |                List($alphaName$),
+                                 |                Some(ex),
+                                 |                None, // Payload
+                                 |                prettifier,
+                                 |                pos,
+                                 |                idx
+                                 |              )
                                  |          } flatMap { u =>
                                  |            loop(idx + 1, tail)
                                  |          }
@@ -2075,6 +2102,7 @@ $columnsOfTwos$
          |      def innerRunAndCollectResult(itr: Iterator[E], result: ForResult[E], index: Int)(fun: E => Future[ASSERTION]): Future[ForResult[E]] = {
          |        if (itr.hasNext) {
          |          val head = itr.next
+         |          try {
          |          val future = fun(head)
          |          future map { r =>
          |            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
@@ -2115,6 +2143,47 @@ $columnsOfTwos$
          |              )
          |          } flatMap { newResult =>
          |            innerRunAndCollectResult(itr, newResult, index + 1)(fun)
+         |          }
+         |          }
+         |          catch {
+         |            case _: org.scalatest.exceptions.DiscardedEvaluationException => innerRunAndCollectResult(itr, result.copy(discardedCount = result.discardedCount + 1), index + 1)(fun) // discard this evaluation and move on to the next
+         |            case ex if !shouldPropagate(ex) =>
+         |              innerRunAndCollectResult(
+         |                itr,
+         |                result.copy(failedElements =
+         |                  result.failedElements :+ ((index,
+         |                    head,
+         |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                      ((sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+         |                        (sde.failedCodeFileNameAndLineNumberString match {
+         |                          case Some(s) => " (" + s + ")";
+         |                          case None => ""
+         |                        }) + "\n" +
+         |                        "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+         |                        (
+         |                          ex match {
+         |                            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+         |                              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+         |                            case _ => ""
+         |                          }
+         |                          ) +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                          name + " = " + value
+         |                        }.toIndexedSeq).mkString("\n") +
+         |                      "  )"),
+         |                      Some(ex),
+         |                      pos,
+         |                      None,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      head.productIterator.toList,
+         |                      namesOfArgs,
+         |                      index
+         |                    ))
+         |                  )
+         |                ),
+         |                index + 1
+         |              )(fun)
          |          }
          |        }
          |        else

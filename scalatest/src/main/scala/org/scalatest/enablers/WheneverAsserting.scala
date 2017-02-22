@@ -54,10 +54,10 @@ abstract class UnitWheneverAsserting {
     * but throw [[org.scalatest.exceptions.DiscardedEvaluationException DiscardedEvaluationException]]
     * when check fails.
     */
-  implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
+  implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = T } = {
     new WheneverAsserting[T] {
-      type Result = Unit
-      def whenever(condition: Boolean)(fun: => T): Unit =
+      type Result = T
+      def whenever(condition: Boolean)(fun: => T): T =
         if (!condition)
           throw new DiscardedEvaluationException
         else
@@ -88,26 +88,4 @@ abstract class UnitWheneverAsserting {
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
 object WheneverAsserting extends UnitWheneverAsserting /*ExpectationWheneverAsserting*/ {
-
-  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
-    new WheneverAsserting[Assertion] {
-      type Result = Assertion
-      def whenever(condition: Boolean)(fun: => Assertion): Assertion =
-        if (!condition)
-          throw new DiscardedEvaluationException
-        else
-         fun
-    }
-  }
-
-  implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
-    new WheneverAsserting[Future[Assertion]] {
-      type Result = Future[Assertion]
-      def whenever(condition: Boolean)(fun: => Future[Assertion]): Future[Assertion] =
-        if (!condition)
-          throw new DiscardedEvaluationException
-        else
-          fun
-    }
-  }
 }

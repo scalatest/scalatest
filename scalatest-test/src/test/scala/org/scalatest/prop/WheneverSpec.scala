@@ -102,9 +102,9 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
     }
     describe("when the result type of the block is anything other than Expectation or Assertion") {
       describe("when the Boolean condition is true") {
-        it("should return the Unit value or throw an exception") {
-          val res1 = whenever (true) { Predef.assert(1 == 1) }
-          assert(res1 == ())
+        it("should return the return type of the block or throw an exception") {
+          val res1 = whenever (true) { 1 == 2 }
+          assert(res1 == false)
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2); () }
           }
@@ -115,11 +115,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { throw new java.lang.Exception; 33 }
           }
           val res2 = whenever (true) { 1 }
-          assert(res2 == ())
+          assert(res2 == 1)
           val res3 = whenever (true) { () }
           assert(res3 == ())
           val res4 = whenever (true) { 1 == 1 }
-          assert(res2 == ())
+          assert(res4 == true)
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
