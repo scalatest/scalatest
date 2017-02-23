@@ -16,13 +16,13 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import exceptions.{TestFailedDueToTimeoutException,  TestPendingException}
+import exceptions._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
-import time.{Nanosecond, Span, Nanoseconds}
+import time.{Nanosecond, Nanoseconds, Span}
 import PatienceConfiguration._
+import org.scalactic.Requirements._
 import org.scalactic.source
-import org.scalatest.exceptions.StackDepthException
 
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing
@@ -72,6 +72,29 @@ import org.scalatest.exceptions.StackDepthException
  * The cause of the thrown <code>TestFailedDueToTimeoutException</code> will be the exception most recently thrown by the block of code passed to eventually. (In
  * the previous example, the cause would be the <code>TestFailedException</code> with the detail message <code>2 was not equal to 100</code>.)
  * </p>
+ *
+ * <a name="earlyEscape"></a><h2>Early escape</h2>
+ *
+ * <p>
+ * Sometimes you can reliably detect that whatever you are waiting for will never come to pass; if, for example, you
+ * have started an asynchronous process and are waiting for its value to fulfill your expectations, there is no point
+ * in waiting any further if the process fails.
+ * </p>
+ *
+ * <p>
+ * In this case, you can use <code>escape</code> to abort the execution early:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val p = startConcurrentProcess()
+ * eventually {
+ *   p.pollStatus() match {
+ *     case Failure(e) => escape("Failed!", e)
+ *     case Success(value) =>
+ *       value should equal ("something")
+ *   }
+ * }
+ * </pre>
  *
  * <a name="patienceConfig"></a><h2>Configuration of <code>eventually</code></h2>
  *
@@ -395,6 +418,7 @@ trait Eventually extends PatienceConfiguration {
         Right(fun)
       }
       catch {
+        case escape: EscapeFromEventually => throw escape
         case tpe: TestPendingException => throw tpe
         case e: Throwable if !anExceptionThatShouldCauseAnAbort(e) => Left(e)
       }
@@ -438,6 +462,59 @@ trait Eventually extends PatienceConfiguration {
     }
     tryTryAgain(1)
   }
+
+  private class EscapeFromEventually(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: source.Position
+  ) extends TestFailedException(messageFun, cause, pos)
+
+  /**
+    * Throws a <code>TestFailedException</code>, with the passed
+    * <code>String</code> <code>message</code> as the exception's detail
+    * message, to indicate early escape from an eventually construct.
+    *
+    * <p>
+    * This is useful when a situation arises that will not resolve itself over time; e.g.,
+    * if you are waiting for asynchronous process to succeed which instead
+    * completes with an error.
+    * </p>
+    *
+    * @param message A message describing the failure.
+    * @throws NullArgumentException if <code>message</code> is <code>null</code>
+    */
+  def escape(message: String)(implicit pos: source.Position): Nothing = {
+
+    requireNonNull(message)
+
+    throw newEscapeFromEventually(Some(message), None, pos)
+  }
+
+  /**
+    * Throws a <code>TestFailedException</code>, with the passed
+    * <code>String</code> <code>message</code> as the exception's detail
+    * message and <code>Throwable</code> cause, to indicate early escape
+    * from an eventually construct.
+    *
+    * <p>
+    * This is useful when a situation arises that will not resolve itself over time; e.g.,
+    * if you are waiting for asynchronous process to succeed which instead
+    * completes with an error.
+    * </p>
+    *
+    * @param message A message describing the failure.
+    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
+    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
+    */
+  def escape(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
+
+    requireNonNull(message, cause)
+
+    throw newEscapeFromEventually(Some(message), Some(cause), pos)
+  }
+
+  private def newEscapeFromEventually(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position) =
+    new EscapeFromEventually(StackDepthException.toExceptionFunction(optionalMessage), optionalCause, pos)
 }
 
 /**
