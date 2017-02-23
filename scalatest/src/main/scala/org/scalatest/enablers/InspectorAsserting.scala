@@ -362,11 +362,30 @@ trait FutureInspectorAsserting {
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): Future[(Int, IndexedSeq[String])] = {
         if (itr.hasNext) {
           val head = itr.next
-          val future = fun(head)
-          future.map { r =>
-            (passedCount + 1, messageAcc)
-          } recover {
-            case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) => throw execEx.getCause
+          try {
+            val future = fun(head)
+            future.map { r =>
+              (passedCount + 1, messageAcc)
+            } recover {
+              case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) => throw execEx.getCause
+              case e if !shouldPropagate(e) =>
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+              case other => throw other
+            } flatMap { result =>
+              val (newPassedCount, newMessageAcc) = result
+              if (newPassedCount < min)
+                forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+              else
+                Future.successful((newPassedCount, newMessageAcc))
+            }
+          }
+          catch {
             case e if !shouldPropagate(e) =>
               val xsIsMap = isMap(original)
               val messageKey = head match {
@@ -374,14 +393,13 @@ trait FutureInspectorAsserting {
                 case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
                 case _ => index.toString
               }
-              (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
-            case other => throw other
-          } flatMap { result =>
-            val (newPassedCount, newMessageAcc) = result
-            if (newPassedCount < min)
-              forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
-            else
-              Future.successful((newPassedCount, newMessageAcc))
+              val (newPassedCount, newMessageAcc) = (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+              if (newPassedCount < min)
+                forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+              else
+                Future.successful((newPassedCount, newMessageAcc))
+
+            case other => Future { throw other}
           }
         }
         else
@@ -707,10 +725,18 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
   private[scalatest] final def runAsyncParallel[T, ASSERTION](col: scala.collection.GenTraversable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
     val futCol: IndexedSeq[Future[(T, Int, Try[ASSERTION])]] =
       col.toIndexedSeq.zipWithIndex map { case (next, idx) =>
-        fun(next) map { r =>
-          (next, idx, Success(r))
-        } recover {
-          case e: Throwable => (next, idx, Failure(e))
+        try {
+          fun(next) map { r =>
+            (next, idx, Success(r))
+          } recover {
+            case e: Throwable => (next, idx, Failure(e))
+          }
+        }
+        catch {
+          case e if !shouldPropagate(e) =>
+            Future.successful((next, idx, Failure(e)))
+          case other =>
+            Future { throw other }
         }
       }
     Future.sequence(futCol).map { col =>
@@ -737,26 +763,43 @@ object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAss
   private[scalatest] final def runAsyncSerial[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => Future[ASSERTION], stopFun: ForResult[_] => Boolean)(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
     if (itr.hasNext) {
       val head = itr.next
-      val future = fun(head)
-      future map { r =>
-        result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
-      } recover {
-        case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) =>
-          throw execEx.getCause
+      try {
+        val future = fun(head)
+        future map { r =>
+          result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+        } recover {
+          case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) =>
+            throw execEx.getCause
+          case e if !shouldPropagate(e) =>
+            val messageKey = head match {
+              case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+              case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+              case _ => index.toString
+            }
+            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+          case other =>
+            throw other
+        } flatMap { newResult =>
+          if (stopFun(newResult))
+            Future.successful(newResult)
+          else
+            runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+        }
+      }
+      catch {
         case e if !shouldPropagate(e) =>
           val messageKey = head match {
             case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
             case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
             case _ => index.toString
           }
-          result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
-        case other =>
-          throw other
-      } flatMap { newResult =>
-        if (stopFun(newResult))
-          Future.successful(newResult)
-        else
-          runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+          val newResult = result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+          if (stopFun(newResult))
+            Future.successful(newResult)
+          else
+            runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+
+        case other => Future { throw other }
       }
     }
     else {
