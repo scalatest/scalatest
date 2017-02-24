@@ -2157,6 +2157,10 @@ final class NumericString private (val value: String) extends AnyVal {
   }
 }
 
+/**
+ * The companion object for <code>NumericString</code> that offers factory
+ * methods that produce <code>NumericString</code>s.
+ */
 object NumericString {
 
   /**
