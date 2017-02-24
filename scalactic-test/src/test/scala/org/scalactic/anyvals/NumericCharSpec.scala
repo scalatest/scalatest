@@ -20,6 +20,11 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.StrictCheckedEquality
 
+import scala.util.{Failure, Success, Try}
+import TryValues._
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
+
 class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
   describe("A NumericChar") {
     describe("should offer a from factory method that") {
@@ -176,6 +181,119 @@ class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality
         "takesNumericChar(x)" shouldNot compile
       }
     }
+    describe("should offer a goodOrElse factory method that") {
+      it ("returns a NumericChar wrapped in a Good if the given Char "+
+          "is between '0' and '9'")
+      {
+        NumericChar.goodOrElse('0')(c => c) shouldBe
+          Good(NumericChar('0'))
+        NumericChar.goodOrElse('5')(c => c) shouldBe 
+          Good(NumericChar('5'))
+        NumericChar.goodOrElse('9')(c => c) shouldBe 
+          Good(NumericChar('9'))
+      }
+      it ("returns an error value produced by passing the given Char to "+
+          "the given function if the passed Char is not between '0' and '9'")
+      {
+        NumericChar.goodOrElse('a')(c => s"'$c' did not taste good") shouldBe
+          Bad("'a' did not taste good")
+        NumericChar.goodOrElse('?')(c => s"'$c' did not taste good") shouldBe 
+          Bad("'?' did not taste good")
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it ("returns a Pass if the given Char is between '0' and '9'")
+      {
+        NumericChar.passOrElse('0')(i => i) shouldBe Pass
+        NumericChar.passOrElse('1')(i => i) shouldBe Pass
+        NumericChar.passOrElse('8')(i => i) shouldBe Pass
+        NumericChar.passOrElse('9')(i => i) shouldBe Pass
+      }
+      it (" returns an error value produced by passing the given Char to "+
+          "the given function if the passed Char is NOT between '0' and '9',"+
+          "wrapped in a Fail")
+      {
+        NumericChar.passOrElse('a')(i => s"'$i' is not so good") shouldBe
+          Fail("'a' is not so good")
+        NumericChar.passOrElse('?')(i => s"'$i' is not so good") shouldBe 
+          Fail("'?' is not so good")
+        NumericChar.passOrElse('.')(i => s"'$i' is not so good") shouldBe 
+          Fail("'.' is not so good")
+        NumericChar.passOrElse('X')(i => s"'$i' is not so good") shouldBe 
+          Fail("'X' is not so good")
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NumericChar wrapped in a Right if the given Char is "+
+         "between '0' and '9'")
+      {
+        NumericChar.rightOrElse('0')(i => i) shouldBe
+          Right(NumericChar('0'))
+        NumericChar.rightOrElse('1')(i => i) shouldBe 
+          Right(NumericChar('1'))
+        NumericChar.rightOrElse('8')(i => i) shouldBe 
+          Right(NumericChar('8'))
+        NumericChar.rightOrElse('9')(i => i) shouldBe 
+          Right(NumericChar('9'))
+      }
+      it ("returns an error value produced by passing the given Char to "+
+          "the given function if the passed Char does not contain only "+
+          "numeric characters, wrapped in a Left")
+      {
+        NumericChar.rightOrElse('a')(i => s"'$i' is not so good") shouldBe
+          Left("'a' is not so good")
+        NumericChar.rightOrElse('*')(i => s"'$i' is not so good") shouldBe 
+          Left("'*' is not so good")
+        NumericChar.rightOrElse('!')(i => s"'$i' is not so good") shouldBe 
+          Left("'!' is not so good")
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      it ("returns a NumericChar wrapped in a Success if the passed Char "+
+          "is between '0' and '9'")
+      {
+        NumericChar.tryingValid('0').success.value.value shouldBe '0'
+        NumericChar.tryingValid('2').success.value.value shouldBe '2'
+        NumericChar.tryingValid('7').success.value.value shouldBe '7'
+        NumericChar.tryingValid('9').success.value.value shouldBe '9'
+      }
+      it (" returns an AssertionError wrapped in a Failure if the passed "+
+          "Char does not contain only numeric characters")
+      {
+        NumericChar.tryingValid('a').failure.exception shouldBe
+          an [AssertionError]
+        NumericChar.tryingValid('X').failure.exception shouldBe 
+          an [AssertionError]
+        NumericChar.tryingValid('^').failure.exception shouldBe 
+          an [AssertionError]
+        NumericChar.tryingValid('o').failure.exception shouldBe 
+          an [AssertionError]
+      }
+    }
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a NumericChar if the passed Char is numeric") {
+        NumericChar.fromOrElse('0', NumericChar('1')).value shouldBe '0'
+        NumericChar.fromOrElse('3', NumericChar('1')).value shouldBe '3'
+        NumericChar.fromOrElse('6', NumericChar('1')).value shouldBe '6'
+        NumericChar.fromOrElse('9', NumericChar('1')).value shouldBe '9'
+      }
+      it("returns a given default if the passed Char is NOT numeric") {
+        NumericChar.fromOrElse('a', NumericChar('1')).value shouldBe '1'
+        NumericChar.fromOrElse('&', NumericChar('1')).value shouldBe '1'
+        NumericChar.fromOrElse('(', NumericChar('1')).value shouldBe '1'
+      }
+    } 
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Char is between '0' and '9'") {
+        NumericChar.isValid('0') shouldBe true
+        NumericChar.isValid('5') shouldBe true
+        NumericChar.isValid('6') shouldBe true
+        NumericChar.isValid('9') shouldBe true
+        NumericChar.isValid('a') shouldBe false
+        NumericChar.isValid('A') shouldBe false
+        NumericChar.isValid('@') shouldBe false
+      }
+    } 
   }
 }
 
