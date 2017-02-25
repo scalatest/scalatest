@@ -24,6 +24,9 @@ import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
 
 import scala.util.{Failure, Success, Try}
+import TryValues._
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
 class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -71,11 +74,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     } 
     describe("should offer a fromOrElse factory method that") {
-      it("returns a PosInt if the passed Int is greater than 0") {
+      it("returns a NumericString if the passed String is numeric") {
         NumericString.fromOrElse("50", NumericString("42")).value shouldBe "50"
         NumericString.fromOrElse("100", NumericString("42")).value shouldBe "100"
       }
-      it("returns a given default if the passed Int is NOT greater than 0") {
+      it("returns a given default if the passed String is NOT numeric") {
         NumericString.fromOrElse("zero", NumericString("42")).value shouldBe "42"
         NumericString.fromOrElse("-1", NumericString("42")).value shouldBe "42"
         NumericString.fromOrElse("-99", NumericString("42")).value shouldBe "42"
@@ -1942,6 +1945,108 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       forAll { (numStr: NumericString) =>
         numStr.zipWithIndex shouldEqual
           numStr.value.zipWithIndex
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      it ("returns a NumericString wrapped in a Success if the passed String "+
+          "contains only numeric characters")
+      {
+        NumericString.tryingValid("123").success.value.value shouldBe "123"
+        NumericString.tryingValid("0").success.value.value shouldBe "0"
+        NumericString.tryingValid("007").success.value.value shouldBe "007"
+        NumericString.tryingValid("").success.value.value shouldBe ""
+      }
+      it (" returns an AssertionError wrapped in a Failure if the passed "+
+          "String does not contain only numeric characters")
+      {
+        NumericString.tryingValid("-123").failure.exception shouldBe
+          an [AssertionError]
+        NumericString.tryingValid("+123").failure.exception shouldBe 
+          an [AssertionError]
+        NumericString.tryingValid("abc").failure.exception shouldBe 
+          an [AssertionError]
+        NumericString.tryingValid("1e14").failure.exception shouldBe 
+          an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it ("returns a Pass if the given String contains only numeric characters")
+      {
+        NumericString.passOrElse("50")(i => i) shouldBe Pass
+        NumericString.passOrElse("0")(i => i) shouldBe Pass
+        NumericString.passOrElse("007")(i => i) shouldBe Pass
+        NumericString.passOrElse("")(i => i) shouldBe Pass
+      }
+      it (" returns an error value produced by passing the given String to "+
+          "the given function if the passed String is NOT numeric, wrapped "+
+          "in a Fail")
+      {
+        NumericString.passOrElse("-1")(i => s"$i did not taste good") shouldBe
+          Fail("-1 did not taste good")
+        NumericString.passOrElse("+1")(i => s"$i did not taste good") shouldBe 
+          Fail("+1 did not taste good")
+        NumericString.passOrElse("broccoli")(i => s"$i did not taste good") shouldBe 
+          Fail("broccoli did not taste good")
+        NumericString.passOrElse("1E-1")(i => s"$i did not taste good") shouldBe 
+          Fail("1E-1 did not taste good")
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it ("returns a NumericString wrapped in a Good if the given String "+
+          "contains only numeric characters")
+      {
+        NumericString.goodOrElse("50")(i => i) shouldBe
+          Good(NumericString("50"))
+        NumericString.goodOrElse("100")(i => i) shouldBe 
+          Good(NumericString("100"))
+        NumericString.goodOrElse("")(i => i) shouldBe 
+          Good(NumericString(""))
+        NumericString.goodOrElse("0")(i => i) shouldBe 
+          Good(NumericString("0"))
+        NumericString.goodOrElse("00")(i => i) shouldBe 
+          Good(NumericString("00"))
+      }
+      it ("returns an error value produced by passing the given String to "+
+          "the given function if the passed String does not contains only "+
+          "numeric characters, wrapped in a Bad")
+      {
+        NumericString.goodOrElse("-1")(i => s"$i did not taste good") shouldBe
+          Bad("-1 did not taste good")
+        NumericString.goodOrElse("+1")(i => s"$i did not taste good") shouldBe 
+          Bad("+1 did not taste good")
+        NumericString.goodOrElse("salamander")(i => s"$i did not taste good") shouldBe 
+          Bad("salamander did not taste good")
+        NumericString.goodOrElse("1e0")(i => s"$i did not taste good") shouldBe 
+          Bad("1e0 did not taste good")
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a NumericString wrapped in a Right if the given String does "+
+         "not contain only numeric characters")
+      {
+        NumericString.rightOrElse("0")(i => i) shouldBe
+          Right(NumericString("0"))
+        NumericString.rightOrElse("")(i => i) shouldBe 
+          Right(NumericString(""))
+        NumericString.rightOrElse("00")(i => i) shouldBe 
+          Right(NumericString("00"))
+        NumericString.rightOrElse("456")(i => i) shouldBe 
+          Right(NumericString("456"))
+      }
+      it ("returns an error value produced by passing the given String to "+
+          "the given function if the passed String does not contain only "+
+          "numeric characters, wrapped in a Left")
+      {
+        NumericString.rightOrElse("-1")(i => s"$i did not taste good") shouldBe
+          Left("-1 did not taste good")
+        NumericString.rightOrElse("-0")(i => s"$i did not taste good") shouldBe 
+          Left("-0 did not taste good")
+        NumericString.rightOrElse("+0")(i => s"$i did not taste good") shouldBe 
+          Left("+0 did not taste good")
+        NumericString.rightOrElse("that last clam")(i => s"$i did not taste good") shouldBe 
+          Left("that last clam did not taste good")
+        NumericString.rightOrElse("0e0")(i => s"$i did not taste good") shouldBe 
+          Left("0e0 did not taste good")
       }
     }
   }

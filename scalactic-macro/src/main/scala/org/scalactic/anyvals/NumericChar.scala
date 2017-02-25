@@ -16,15 +16,146 @@
 package org.scalactic.anyvals
 
 import scala.language.implicitConversions
+import scala.util.{Try, Success, Failure}
+import org.scalactic.{Or, Good, Bad}
+import org.scalactic.{Validation, Pass, Fail}
 
-private[scalactic] final class NumericChar private (val value: Char) extends AnyVal {
+/**
+ * An <code>AnyVal</code> for numeric <code>Char</code>s.
+ *
+ * Note: a <code>NumericChar</code> has a value between '0' and '9'.
+ *
+ * <p>
+ * Because <code>NumericChar</code> is an <code>AnyVal</code> it will usually
+ * be as efficient as a <code>Char</code>, being boxed only when a
+ * <code>Char</code> would have been boxed.
+ * </p>
+ *
+ * <p>
+ * The <code>NumericChar.apply</code> factory method is implemented in terms
+ * of a macro that checks literals for validity at compile time. Calling
+ * <code>NumericChar.apply</code> with a literal <code>Char</code> value will
+ * either produce a valid <code>NumericChar</code> instance at run time or an
+ * error at compile time. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; NumericChar('4')
+ * res0: org.scalactic.anyvals.NumericChar = NumericChar(4)
+ *
+ * scala&gt; NumericChar('a')
+ * &lt;console&gt;:14: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'.
+ *               NumericChar('a')
+ *                          ^
+ * </pre>
+ *
+ * <p>
+ * <code>NumericChar.apply</code> cannot be used if the value being passed
+ * is a variable (<em>i.e.</em>, not a literal), because the macro cannot
+ * determine the validity of variables at compile time (just literals). 
+ * If you try to pass a variable to <code>NumericChar.apply</code>, you'll 
+ * get a compiler error that suggests you use a different factory method,
+ * <code>NumericChar.from</code>, instead:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val x = '1'
+ * x: Char = 1
+ *
+ * scala&gt; NumericChar(x)
+ * &lt;console&gt;:15: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'. Please use NumericChar.from instead.
+ *               NumericChar(x)
+ *                          ^
+ * </pre>
+ *
+ * <p>
+ * The <code>NumericChar.from</code> factory method will inspect the value at
+ * runtime and return an <code>Option[NumericChar]</code>. If the value is 
+ * valid, <code>NumericChar.from</code> will return a 
+ * <code>Some[NumericChar]</code>, else it will return a <code>None</code>. 
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; NumericChar.from(x)
+ * res3: Option[org.scalactic.anyvals.NumericChar] = Some(NumericChar(1))
+ *
+ * scala&gt; val y = 'a'
+ * y: Char = a
+ *
+ * scala&gt; NumericChar.from(y)
+ * res4: Option[org.scalactic.anyvals.NumericChar] = None
+ * </pre>
+ *
+ * <p>
+ * The <code>NumericChar.apply</code> factory method is marked implicit, so
+ * that you can pass literal <code>Char</code>s into methods that require 
+ * <code>NumericChar</code>, and get the same compile-time checking you get 
+ * when calling <code>NumericChar.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; def invert(ch: NumericChar): Char = ('9' - ch + '0').toChar
+ * invert: (ch: org.scalactic.anyvals.NumericChar)Char
+ *
+ * scala&gt; invert('1')
+ * res6: Char = 8
+ *
+ * scala&gt; scala> invert('9')
+ * res7: Char = 0
+ *
+ * scala&gt; invert('a')
+ * &lt;console&gt;:12: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'.
+ *               invert('a')
+ *                      ^
+ * </pre>
+ *
+ * @param value The <code>Char</code> value underlying this
+ *     <code>NumericChar</code>.
+ */
+final class NumericChar private (val value: Char) extends AnyVal {
+
+  /**
+   * A string representation of this <code>NumericChar</code>.
+   */
   override def toString: String = s"NumericChar($value)"
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>NumericChar</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>NumericChar</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
 
   def max(that: NumericChar): NumericChar =
@@ -51,6 +182,9 @@ private[scalactic] final class NumericChar private (val value: Char) extends Any
   /** Returns the negation of this value. */
   def unary_- : Int = -value
 
+  /**
+   * Prepends this <code>NumericChar</code>'s value to a string.
+   */
   def +(x: String): String = value + x
 
   /**
@@ -414,16 +548,117 @@ private[scalactic] final class NumericChar private (val value: Char) extends Any
   def %(x: Double): Double = value % x
 }
 
-private[scalactic] object NumericChar {
+/**
+ * The companion object for <code>NumericChar</code> that offers factory
+ * methods that produce <code>NumericChar</code>s and maximum and minimum
+ * constant values for <code>NumericChar</code>.
+ */
+object NumericChar {
+
+  /**
+   * A factory method that produces an <code>Option[NumericChar]</code> given
+   * a <code>Char</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a numeric <code>Char</code>, <em>i.e.</em>, between '0' and '9',
+   * it will return a <code>NumericChar</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed <code>Char</code>
+   * value is not a numeric character value, so this method will return
+   * <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas <code>from</code>
+   * inspects <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return
+   *     wrapped in a <code>Some[NumericChar]</code>.
+   * @return the specified <code>Char</code> value wrapped
+   *     in a <code>Some[NumericChar]</code>, if it is numeric, else
+   *     <code>None</code>.
+   */
   def from(value: Char): Option[NumericChar] =
     if (NumericCharMacro.isValid(value)) Some(new NumericChar(value)) else None
 
+  /**
+   * A factory/assertion method that produces a <code>NumericChar</code> given
+   * a valid <code>Char</code> value, or throws <code>AssertionError</code>,
+   * if given an invalid <code>Char</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not 
+   * sure an `ensuringValid` call will always succeed, you should use one of 
+   * the other factory or validation methods provided on this object instead: 
+   * `isValid`, `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a numeric <code>Char</code>, it will return a
+   * <code>NumericChar</code> representing that value.  Otherwise, the
+   * passed <code>Char</code> value is not numeric, so this method will 
+   * throw <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas this method inspects
+   * <code>Char</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>Char</code> is numeric.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return
+   *     wrapped in a <code>NumericChar</code>.
+   * @return the specified <code>Char</code> value wrapped
+   *     in a <code>NumericChar</code>, if it is numeric, else throws
+   *     <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is not numeric
+   */
   def ensuringValid(value: Char): NumericChar =
     if (NumericCharMacro.isValid(value)) new NumericChar(value) else {
       throw new AssertionError(s"$value was not a valid NumericChar")
     }
 
   import scala.language.experimental.macros
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>NumericChar</code> if passed a valid <code>Char</code> literal, 
+   * otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the specified 
+   * <code>Char</code> expression at compile time. If the expression is a
+   * numeric <code>Char</code> literal, <em>i.e.</em>, a value between '0'
+   * and '9', it will return a <code>NumericChar</code> representing that 
+   * value. Otherwise, the passed <code>Char</code> expression is either a 
+   * literal that is not numeric, or is not a literal, so this method will
+   * give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code> factory method
+   * in that this method is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas <code>from</code>
+   * inspects <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> literal expression to inspect at
+   *     compile time, and if numeric, to return wrapped in a 
+   *     <code>NumericChar</code> at run time.
+   * @return the specified, valid <code>Char</code> literal value wrapped
+   *     in a <code>NumericChar</code>. (If the specified expression is not 
+   *     a valid <code>Char</code> literal, the invocation of this method 
+   *     will not compile.)
+   */
   implicit def apply(value: Char): NumericChar = macro NumericCharMacro.apply
 
   /** The smallest value representable as a NumericChar. */
@@ -447,5 +682,176 @@ private[scalactic] object NumericChar {
   implicit def numericChar2PosZLong(x: NumericChar): PosZLong = PosZLong.ensuringValid(x.toLong)
   implicit def numericChar2PosZFloat(x: NumericChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
   implicit def numericChar2PosZDouble(x: NumericChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+
+  /**
+   * A factory/validation method that produces a <code>NumericChar</code>,
+   * wrapped in a <code>Good</code>, given a valid <code>Char</code> value,
+   * or if the given <code>Char</code> is invalid, an error value of type
+   * <code>B</code> produced by passing the given <em>invalid</em>
+   * <code>Char</code> value to the given function <code>f</code>, wrapped
+   * in a <code>Bad</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a numeric <code>Char</code>, it will return a
+   * <code>NumericChar</code> representing that value, wrapped in a
+   * <code>Good</code>. Otherwise, the passed <code>Char</code> value is
+   * NOT numeric, so this method will return a result of type <code>B</code>
+   * obtained by passing the invalid <code>Char</code> value to the given
+   * function <code>f</code>, wrapped in a `Bad`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas this method inspects
+   * <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return
+   *     wrapped in a <code>Good(NumericChar)</code>.
+   * @return the specified <code>Char</code> value wrapped
+   *     in a <code>Good(NumericChar)</code>, if it is numeric, else a
+   *     <code>Bad(f(value))</code>.
+   */
+  def goodOrElse[B](value: Char)(f: Char => B): NumericChar Or B =
+    if (NumericCharMacro.isValid(value)) Good(NumericChar.ensuringValid(value))
+    else Bad(f(value))
+
+  /**
+   * A validation method that produces a <code>Pass</code> given a valid
+   * <code>Char</code> value, or an error value of type <code>E</code>
+   * produced by passing the given <em>invalid</em> <code>Char</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a numeric <code>Char</code> (between '0' and '9'), it will return
+   * a <code>Pass</code>. Otherwise, the passed <code>Char</code> value is
+   * non-numeric, so this method will return a result of type <code>E</code>
+   * obtained by passing the invalid <code>Char</code> value to the given
+   * function <code>f</code>, wrapped in a `Fail`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas this method inspects
+   * <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the `Char` to validate that it is numeric.
+   * @return a `Pass` if the specified `Char` value is numeric,
+   *   else a `Fail` containing an error value produced by passing the
+   *   specified `Char` to the given function `f`.
+   */
+  def passOrElse[E](value: Char)(f: Char => E): Validation[E] =
+    if (NumericCharMacro.isValid(value)) Pass else Fail(f(value))
+
+  /**
+   * A factory/validation method that produces a <code>NumericChar</code>,
+   * wrapped in a <code>Right</code>, given a valid <code>Char</code> value,
+   * or if the given <code>Char</code> is invalid, an error value of type
+   * <code>L</code> produced by passing the given <em>invalid</em>
+   * <code>Char</code> value to the given function <code>f</code>, wrapped
+   * in a <code>Left</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a numeric <code>Char</code> (between '0' and '9'), it will return a
+   * <code>NumericChar</code> representing that value, wrapped in a
+   * <code>Right</code>. Otherwise, the passed <code>Char</code> value is
+   * NOT numeric, so this method will return a result of type <code>L</code>
+   * obtained by passing the invalid <code>Char</code> value to the given
+   * function <code>f</code>, wrapped in a `Left`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas this method inspects
+   * <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return
+   *     wrapped in a <code>Right(NumericChar)</code>.
+   * @return the specified <code>Char</code> value wrapped
+   *     in a <code>Right(NumericChar)</code>, if it is numeric, else a
+   *     <code>Left(f(value))</code>.
+   */
+  def rightOrElse[L](value: Char)(f: Char => L): Either[L, NumericChar] =
+    if (NumericCharMacro.isValid(value)) Right(NumericChar.ensuringValid(value))
+    else Left(f(value))
+
+  /**
+   * A factory/validation method that produces a <code>NumericChar</code>,
+   * wrapped in a <code>Success</code>, given a valid <code>Char</code>
+   * value, or if the given <code>Char</code> is invalid, an
+   * <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it represents a numeric value (between '0' and '9'), it will return a
+   * <code>NumericChar</code> representing that value, wrapped in a
+   * <code>Success</code>. Otherwise, the passed <code>Char</code> value is
+   * not numeric, so this method will return an <code>AssertionError</code>,
+   * wrapped in a <code>Failure</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas this method inspects
+   * <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return
+   *     wrapped in a <code>Success(NumericChar)</code>.
+   * @return the specified <code>Char</code> value wrapped
+   *     in a <code>Success(NumericChar)</code>, if it is numeric, else a
+   *     <code>Failure(AssertionError)</code>.
+   */
+   def tryingValid(value: Char): Try[NumericChar] =
+     if (NumericCharMacro.isValid(value)) Success(new NumericChar(value))
+     else Failure(new AssertionError(value + " was not a valid NumericChar"))
+
+  /**
+   * A factory method that produces a <code>NumericChar</code> given a
+   * <code>Char</code> value and a default <code>NumericChar</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Char</code> value and if
+   * it is a valid numeric Char (between '0' and '9'), it will return a
+   * <code>NumericChar</code> representing that value. Otherwise, the passed
+   * <code>Char</code> value is a non-digit character, so this method will
+   * return the passed <code>default</code> value.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Char</code> literals at compile time, whereas
+   * <code>fromOrElse</code> inspects <code>Char</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return.
+   * @param default the <code>NumericChar</code> to return if the passed
+   *     <code>Char</code> value is not numeric.
+   * @return the specified <code>Char</code> value wrapped in a
+   *     <code>NumericChar</code>, if it is numeric, else the
+   *     <code>default</code> <code>NumericChar</code> value.
+   */
+  def fromOrElse(value: Char, default: => NumericChar): NumericChar =
+    if (NumericCharMacro.isValid(value)) new NumericChar(value)
+    else default
+
+  /**
+   * A predicate method that returns true if a given <code>Char</code> value
+   * is between '0' and '9'.
+   *
+   * @param value the <code>Char</code> to inspect, and if numeric, return true.
+   * @return true if the specified <code>Char</code> is numeric, else false.
+   */
+  def isValid(value: Char): Boolean = NumericCharMacro.isValid(value)
 }
 
