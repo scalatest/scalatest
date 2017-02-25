@@ -326,15 +326,50 @@ abstract class UnitInspectorAsserting {
     }
 }
 
-trait FutureInspectorAsserting {
+/**
+ * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
+ * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
+ */
+/*abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
+
+  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+    new InspectorAssertingImpl[Expectation] {
+      type Result = Expectation
+      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Expectation = Fact.No(message)(prettifier)
+    }
+  }
+}*/
+
+/**
+ * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+ * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
+ */
+object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorAsserting*/ {
+
+  /**
+   * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
+   * enabling inspector syntax that has result type <code>Assertion</code>.
+   */
+  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
+    new InspectorAssertingImpl[Assertion] {
+      type Result = Assertion
+      def indicateSuccess(message: => String): Assertion = Succeeded
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+        val msg: String = message
+        throw new TestFailedException(
+          (_: StackDepthException) => Some(msg),
+          optionalCause,
+          pos
+        )
+      }
+    }
 
   /**
     * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
     * methods.
     */
-  abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T]] {
-
-    import InspectorAsserting._
+  private[scalatest] abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T]] {
 
     type Result = Future[T]
 
@@ -564,64 +599,6 @@ trait FutureInspectorAsserting {
 
     private[scalatest] def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): T
   }
-
-  /**
-    * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
-    * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
-    */
-  /*implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
-    new InspectorAssertingImpl[T] {
-      type Result = Unit
-      def indicateSuccess(message: => String): Unit = ()
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
-        val msg: String = message
-        throw new TestFailedException(
-          (_: StackDepthException) => Some(msg),
-          optionalCause,
-          pos
-        )
-      }
-    }*/
-}
-
-/**
- * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
- * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
- */
-/*abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
-
-  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
-    new InspectorAssertingImpl[Expectation] {
-      type Result = Expectation
-      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Expectation = Fact.No(message)(prettifier)
-    }
-  }
-}*/
-
-/**
- * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
- * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
- */
-object InspectorAsserting extends UnitInspectorAsserting with FutureInspectorAsserting /*ExpectationInspectorAsserting*/ {
-
-  /**
-   * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
-   * enabling inspector syntax that has result type <code>Assertion</code>.
-   */
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
-    new InspectorAssertingImpl[Assertion] {
-      type Result = Assertion
-      def indicateSuccess(message: => String): Assertion = Succeeded
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
-        val msg: String = message
-        throw new TestFailedException(
-          (_: StackDepthException) => Some(msg),
-          optionalCause,
-          pos
-        )
-      }
-    }
 
   implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type Result = Future[Assertion] } =
     new FutureInspectorAssertingImpl[Assertion] {
