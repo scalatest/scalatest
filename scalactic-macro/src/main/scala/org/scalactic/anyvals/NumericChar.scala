@@ -116,7 +116,7 @@ import org.scalactic.{Validation, Pass, Fail}
  * @param value The <code>Char</code> value underlying this
  *     <code>NumericChar</code>.
  */
-private[scalactic] final class NumericChar private (val value: Char) extends AnyVal {
+final class NumericChar private (val value: Char) extends AnyVal {
 
   /**
    * A string representation of this <code>NumericChar</code>.
@@ -553,7 +553,7 @@ private[scalactic] final class NumericChar private (val value: Char) extends Any
  * methods that produce <code>NumericChar</code>s and maximum and minimum
  * constant values for <code>NumericChar</code>.
  */
-private[scalactic] object NumericChar {
+object NumericChar {
 
   /**
    * A factory method that produces an <code>Option[NumericChar]</code> given
