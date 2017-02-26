@@ -23,7 +23,27 @@ import reflect.macros.Context
  */
 private[scalatest] object ExpectationsMacro {
 
-  def expect(context: Context)(expression: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Fact] =
-    new BooleanMacro[context.type](context, "expectationsHelper").genMacro[Fact](expression, "macroExpect", context.literal(""), prettifier, pos)
+  def expect(context: Context)(expression: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Fact] = {
+    import context.universe._
+    new BooleanMacro[context.type](context).genMacro[Fact](
+      Select(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
+            newTermName("scalatest")
+          ),
+          newTermName("Expectations")
+        ),
+        newTermName("expectationsHelper")
+      ),
+      expression,
+      "macroExpect",
+      context.literal(""),
+      prettifier,
+      pos)
+  }
 
 }

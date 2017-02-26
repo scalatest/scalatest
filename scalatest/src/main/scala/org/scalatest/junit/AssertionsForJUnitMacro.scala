@@ -19,17 +19,17 @@ import org.scalactic._
 import reflect.macros.Context
 
 /**
- * Macro implementation that provides rich error message for boolean expression assertion.
- */
-private[scalatest] object AssertionsMacro {
+  * Macro implementation that provides rich error message for boolean expression assertion.
+  */
+private[scalatest] object AssertionsForJUnitMacro {
 
   /**
-   * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean)</code>, with rich error message.
-   *
-   * @param context macro context
-   * @param condition original condition expression
-   * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
-   */
+    * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean)</code>, with rich error message.
+    *
+    * @param context macro context
+    * @param condition original condition expression
+    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
+    */
   def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
     import context.universe._
     new BooleanMacro[context.type](context).genMacro[Assertion](
@@ -37,12 +37,15 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
+            newTermName("junit")
           ),
-          newTermName("Assertions")
+          newTermName("AssertionsForJUnit")
         ),
         newTermName("assertionsHelper")
       ),
@@ -54,13 +57,13 @@ private[scalatest] object AssertionsMacro {
   }
 
   /**
-   * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
-   *
-   * @param context macro context
-   * @param condition original condition expression
-   * @param clue original clue expression
-   * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
-   */
+    * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
+    *
+    * @param context macro context
+    * @param condition original condition expression
+    * @param clue original clue expression
+    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
+    */
   def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
     import context.universe._
     new BooleanMacro[context.type](context).genMacro[Assertion](
@@ -68,12 +71,15 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
+            newTermName("junit")
           ),
-          newTermName("Assertions")
+          newTermName("AssertionsForJUnit")
         ),
         newTermName("assertionsHelper")
       ),
@@ -85,12 +91,12 @@ private[scalatest] object AssertionsMacro {
   }
 
   /**
-   * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
-   *
-   * @param context macro context
-   * @param condition original condition expression
-   * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
-   */
+    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
+    *
+    * @param context macro context
+    * @param condition original condition expression
+    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
+    */
   def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
     import context.universe._
     new BooleanMacro[context.type](context).genMacro[Assertion](
@@ -98,12 +104,15 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
+            newTermName("junit")
           ),
-          newTermName("Assertions")
+          newTermName("AssertionsForJUnit")
         ),
         newTermName("assertionsHelper")
       ),
@@ -115,13 +124,13 @@ private[scalatest] object AssertionsMacro {
   }
 
   /**
-   * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
-   *
-   * @param context macro context
-   * @param condition original condition expression
-   * @param clue original clue expression
-   * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message (clue included) if assumption failed
-   */
+    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
+    *
+    * @param context macro context
+    * @param condition original condition expression
+    * @param clue original clue expression
+    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message (clue included) if assumption failed
+    */
   def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
     import context.universe._
     new BooleanMacro[context.type](context).genMacro[Assertion](
@@ -129,12 +138,15 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
+            newTermName("junit")
           ),
-          newTermName("Assertions")
+          newTermName("AssertionsForJUnit")
         ),
         newTermName("assertionsHelper")
       ),
