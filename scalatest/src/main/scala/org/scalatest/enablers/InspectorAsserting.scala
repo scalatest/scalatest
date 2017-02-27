@@ -499,14 +499,14 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
     * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
     * methods.
     */
-  private[scalatest] abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T], Future[T]] {
+  private[scalatest] abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T]] {
 
-    type Result = Future[T]
+    type RESULT = Future[T]
 
     implicit def executionContext: ExecutionContext
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
-    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       val xsIsMap = isMap(original)
       val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
       future.map { result =>
@@ -523,7 +523,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): Future[(Int, IndexedSeq[String])] = {
         if (itr.hasNext) {
           val head = itr.next
@@ -596,7 +596,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -616,7 +616,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
@@ -650,7 +650,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       val xsIsMap = isMap(original)
       val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
       future.map { result =>
@@ -667,7 +667,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
@@ -705,7 +705,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
-    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): RESULT = {
       val xsIsMap = isMap(original)
       val future = runAsyncParallel(xs, xsIsMap, fun)
       future.map { result =>
@@ -815,7 +815,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
     }
   }
 
-  implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion], Future[Assertion]] { type Result = Future[Assertion] } =
+  implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type RESULT = Future[Assertion] } =
     new FutureInspectorAssertingImpl[Assertion] {
       val executionContext = execCtx
       def succeed(result: Future[Assertion]): (Boolean, Option[Throwable]) = (true, None)
