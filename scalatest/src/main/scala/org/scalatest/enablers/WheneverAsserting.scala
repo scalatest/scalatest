@@ -71,7 +71,7 @@ abstract class UnitWheneverAsserting {
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
 abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
-  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+  private[scalatest] implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
     new WheneverAsserting[Expectation] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => Expectation): Expectation =
