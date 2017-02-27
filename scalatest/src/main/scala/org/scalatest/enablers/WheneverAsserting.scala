@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalatest.Assertion
+import org.scalatest.Expectation
 import org.scalatest.exceptions.DiscardedEvaluationException
 
 /**
@@ -69,7 +70,7 @@ abstract class UnitWheneverAsserting {
  * Abstract class that in the future will hold an intermediate priority <code>WheneverAsserting</code> implicit, which will enable inspector expressions
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
-/*abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
+abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
   private[scalatest] implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
     new WheneverAsserting[Expectation] {
       type Result = Expectation
@@ -80,13 +81,13 @@ abstract class UnitWheneverAsserting {
          fun
     }
   }
-}*/
+}
 
 /**
  * Companion object to <code>WheneverAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
-object WheneverAsserting extends UnitWheneverAsserting /*ExpectationWheneverAsserting*/ {
+object WheneverAsserting extends ExpectationWheneverAsserting {
 
   implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
     new WheneverAsserting[Assertion] {
