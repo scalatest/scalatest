@@ -1,5 +1,5 @@
 /*
-3* Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2017 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,9 +102,9 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
     }
     describe("when the result type of the block is anything other than Expectation or Assertion") {
       describe("when the Boolean condition is true") {
-        it("should return the return type of the block or throw an exception") {
-          val res1 = whenever (true) { 1 == 2 }
-          assert(res1 == false)
+        it("should return the Unit value or throw an exception") {
+          val res1 = whenever (true) { Predef.assert(1 == 1) }
+          assert(res1 == ())
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2); () }
           }
@@ -115,11 +115,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { throw new java.lang.Exception; 33 }
           }
           val res2 = whenever (true) { 1 }
-          assert(res2 == 1)
+          assert(res2 == ())
           val res3 = whenever (true) { () }
           assert(res3 == ())
           val res4 = whenever (true) { 1 == 1 }
-          assert(res4 == true)
+          assert(res2 == ())
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
