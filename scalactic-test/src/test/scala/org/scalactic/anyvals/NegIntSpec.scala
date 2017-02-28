@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
@@ -27,11 +25,6 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 trait NegIntSpecSupport {
-
-  val negIntGen: Gen[NegInt] =
-    for {i <- choose(Int.MinValue, -1)} yield NegInt.from(i).get
-
-  implicit val arbNegInt: Arbitrary[NegInt] = Arbitrary(negIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

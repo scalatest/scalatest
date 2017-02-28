@@ -22,17 +22,13 @@ import org.scalatest.exceptions.TestCanceledException
 
 // As it stands, this should not extend Product with Serializable because
 // subclasses exists that anen't case classes.
-private[scalatest] sealed abstract class Fact {
+sealed abstract class Fact {
 
   val rawFactMessage: String
-  val rawSimplifiedFactMessage: String
-  val rawMidSentenceFactMessage: String
-  val rawMidSentenceSimplifiedFactMessage: String
+  val rawComposableFactMessage: String
 
   val factMessageArgs: IndexedSeq[Any]
-  val simplifiedFactMessageArgs: IndexedSeq[Any]
-  val midSentenceFactMessageArgs: IndexedSeq[Any]
-  val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
+  val composableFactMessageArgs: IndexedSeq[Any]
 
   val isLeaf: Boolean
   val isVacuousYes: Boolean
@@ -54,6 +50,7 @@ private[scalatest] sealed abstract class Fact {
     else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, pos)
   }
 
+  // TODO: When things are stable, dryign deleting this as it is identical to toAssertion now.
   // This is called internally by implicit conversions, which has different stack depth
   private[scalatest] final def internalToAssertion(pos: source.Position): Assertion = {
     if (isYes) {
@@ -64,9 +61,9 @@ private[scalatest] sealed abstract class Fact {
   }
 
   /**
-   * Get a simplified version of this Fact, sub type will be simplified and all messages field will be substituted with its counter-part.
+   * Get a composable version of this Fact, sub type will be composable and all messages field will be substituted with its counter-part.
    *
-   * @return a simplified version of this Fact
+   * @return a composable version of this Fact
    */
   def unary_!(): Fact = Fact.Unary_!(this)
 
@@ -89,7 +86,7 @@ private[scalatest] sealed abstract class Fact {
   final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
-   * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
+   * Construct failure message to report if a fact fails, using <code>rawFactMessage</code> and <code>factMessageArgs</code>
    *
    * @return failure message to report if a fact fails
    */
@@ -97,22 +94,9 @@ private[scalatest] sealed abstract class Fact {
     if (factMessageArgs.isEmpty) rawFactMessage
     else makeString(rawFactMessage, factMessageArgs)
 
-  def simplifiedFactMessage: String =
-    if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage
-    else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
-
-  /**
-   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return failure message suitable for appearing mid-sentence
-   */
-  def midSentenceFactMessage: String =
-    if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage
-    else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
-
-  def midSentenceSimplifiedFactMessage: String =
-    if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage
-    else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
+  def composableFactMessage: String =
+    if (composableFactMessageArgs.isEmpty) rawComposableFactMessage
+    else makeString(rawComposableFactMessage, composableFactMessageArgs)
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply).toArray)
@@ -121,11 +105,11 @@ private[scalatest] sealed abstract class Fact {
 
   // This one makes sense for Yes and No only. The other subclassess override it.
   def factDiagram(level: Int): String = {
-    val msg = midSentenceFactMessage // just compute this once
+    val msg = factMessage // just compute this once
     val padding = "  " * level
     if (msg.contains("\n")) {
       val padding = "  " * (level)
-      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE + ")"
+      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE + padding + ")"
     }
     else
       padding + stringPrefix + "(" + msg + ")"
@@ -134,17 +118,13 @@ private[scalatest] sealed abstract class Fact {
   override def toString: String = factDiagram(0)
 }
 
-private[scalatest] object Fact {
+object Fact {
 
   case class Leaf(
     rawFactMessage: String,
-    rawSimplifiedFactMessage: String,
-    rawMidSentenceFactMessage: String,
-    rawMidSentenceSimplifiedFactMessage: String,
+    rawComposableFactMessage: String,
     factMessageArgs: IndexedSeq[Any],
-    simplifiedFactMessageArgs: IndexedSeq[Any],
-    midSentenceFactMessageArgs: IndexedSeq[Any],
-    midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+    composableFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
     isVacuousYes: Boolean,
     prettifier: Prettifier,
@@ -159,14 +139,10 @@ private[scalatest] object Fact {
     require(underlying.isNo)
     
     val rawFactMessage: String = underlying.rawFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
+    val rawComposableFactMessage: String = underlying.rawComposableFactMessage
 
     val factMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
 
     val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
@@ -188,123 +164,31 @@ private[scalatest] object Fact {
    */
   object No {
 
-    // TODO: Does the Prettifier really need to be curried and implicit? It seems to be only used
-    // explicitly by us. Possibly this is desired, though, so people can just say No(...). But then
-    // they would need to fill in all the fields, so that seems hard anyway. When the time comes to
-    // make this public, look into this question.
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawComposableFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+      composableFactMessageArgs: IndexedSeq[Any],
       cause: Option[Throwable] = None
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawComposableFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
+        composableFactMessageArgs,
         false,
         false,
         prettifier,
         cause
       )
 
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>, 
-     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>, 
-     * <code>midSentenceSimplifiedFailureMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFailureMessageArgs</code> fields.
-     * <code>factMessageArgs</code>, and <code>simplifiedFailureMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
-     * and <code>midSentenceSimplifiedFailureMessageArgs</code>.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
-     * @param factMessageArgs arguments for constructing failure message to report if a match fails
-     * @return a <code>No</code> instance
-     */
-    def apply(
+    def apply( // Just used in tests
       rawFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
+      rawComposableFactMessage: String
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-	false,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>,
-     * <code>negativeFactMessage</code>, <code>midSentenceFactMessage</code>,
-     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
-     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
-     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
-     *
-     * @param rawFactMessage raw fact message to report if a match fails
-     * @param rawMidSentenceFactMessage raw mid sentence fact message to report if a match fails
-     * @param factMessageArgs arguments for constructing fact message to report if a match fails
-     * @param midSentenceFactMessageArgs arguments for constructing mid sentence fact message to report if a match fails
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceFactMessageArgs,
-        false,
-        false,
-        prettifier,
-        None
-      )
-  
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its mid-sentence messages need to be different.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        Vector.empty,
-        Vector.empty,
+        rawComposableFactMessage,
         Vector.empty,
         Vector.empty,
         false,
@@ -313,126 +197,15 @@ private[scalatest] object Fact {
         None
       )
 
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        false,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        false,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @param factMessageArgs arguments for <code>rawFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
-     * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
-     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
-        false,
-        false,
-        prettifier,
-        None
-      )
-  
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
      * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
-     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceSimplifiedFailureMessage</code> will return the
-     * same string as <code>rawSimplifiedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceComposableFailureMessage</code> will return the
+     * same string as <code>rawComposableFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create No with eager error messages that have same mid-sentence messages.
      *
      * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawSimplifiedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param rawComposableFailureMessage raw message with a meaning opposite to that of the failure message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -441,47 +214,8 @@ private[scalatest] object Fact {
       new Leaf(
         rawFactMessage,
         rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
         Vector.empty,
         Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        false,
-        false,
-        prettifier,
-        None
-      )
-  
-    /**
-     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>factMessageArgs</code> and <code>simplifiedFailureMessageArgs</code> fields.
-     * The <code>rawMidSentenceFactMessage</code> will return the same string as <code>rawFactMessage</code>, and the
-     * <code>rawMidSentenceSimplifiedFailureMessage</code> will return the same string as <code>rawSimplifiedFailureMessage</code>.
-     * The <code>midSentenceFactMessageArgs</code> will return the same as <code>factMessageArgs</code>, and the
-     * <code>midSentenceSimplifiedFailureMessageArgs</code> will return the same as <code>simplifiedFailureMessageArgs</code>.
-     * This is suitable to create No with lazy error messages that have same mid-sentence and use different arguments for
-     * simplified messages.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawSimplifiedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param factMessageArgs arguments for constructing failure message to report if a match fails
-     * @param simplifiedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
-     * @return a <code>No</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
         false,
         false,
         prettifier,
@@ -490,8 +224,8 @@ private[scalatest] object Fact {
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
-     * <code>cause</code> fields. The <code>rawMidSentenceFactMessage</code>, <code>rawSimplifiedFailureMessage</code> and
-     * <code>rawMidSentenceSimplifiedFailureMessage</code>will return the same string as <code>rawFactMessage</code>.
+     * <code>cause</code> fields. The <code>rawMidSentenceFactMessage</code>, <code>rawComposableFailureMessage</code> and
+     * <code>rawMidSentenceComposableFailureMessage</code>will return the same string as <code>rawFactMessage</code>.
      * All argument fields will have <code>Vector.empty</code> values.  This is suitable to create No with eager error messages
      * that have same mid-sentence messages.
      *
@@ -506,10 +240,6 @@ private[scalatest] object Fact {
       new Leaf(
         rawFactMessage,
         rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
-        Vector.empty,
-        Vector.empty,
         Vector.empty,
         Vector.empty,
         false,
@@ -528,118 +258,30 @@ private[scalatest] object Fact {
   
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawComposableFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+      composableFactMessageArgs: IndexedSeq[Any],
       isVacuousYes: Boolean = false,
       cause: Option[Throwable] = None
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawComposableFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
+        composableFactMessageArgs,
         true,
         isVacuousYes,
         prettifier,
         cause
       )
 
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>, 
-     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>, 
-     * <code>midSentenceSimplifiedFailureMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFailureMessageArgs</code> fields.
-     * <code>factMessageArgs</code>, and <code>simplifiedFailureMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
-     * and <code>midSentenceSimplifiedFailureMessageArgs</code>.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
-     * @param factMessageArgs arguments for constructing failure message to report if a match fails
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
+    def apply( // Just used in tests
       rawFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
+      rawComposableFactMessage: String
     )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-        true,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>,
-     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>,
-     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
-     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
-     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
-     *
-     * @param rawFactMessage raw fact message to report if a match fails
-     * @param rawMidSentenceFactMessage raw mid-sentence fact message to report if a match fails
-     * @param factMessageArgs arguments for constructing fact message to report if a match fails
-     * @param midSentenceFactMessageArgs arguments for constructing mid-sentence fact message to report if a match fails
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceFactMessageArgs,
-        true,
-        false,
-        prettifier,
-        None
-      )
-  
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create Yes with eager error messages, and its mid-sentence messages need to be different.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
-        Vector.empty,
-        Vector.empty,
+        rawComposableFactMessage,
         Vector.empty,
         Vector.empty,
         true,
@@ -648,125 +290,11 @@ private[scalatest] object Fact {
         None
       )
 
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
-     * need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        true,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
-     * need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        true,
-        false,
-        prettifier,
-        None
-      )
-
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
-     * need to be different.
-     *
-     * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
-     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
-     * @param factMessageArgs arguments for <code>rawFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
-     * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
-     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
-      rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
-      factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawSimplifiedFactMessage,
-        rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
-        factMessageArgs,
-        simplifiedFactMessageArgs,
-        midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
-        true,
-        false,
-        prettifier,
-        None
-      )
-  
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>, and
      * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
-     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceSimplifiedFailureMessage</code> will return the
-     * same string as <code>rawSimplifiedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceComposableFailureMessage</code> will return the
+     * same string as <code>rawComposableFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create Yes with eager error messages that have same mid-sentence messages.
      *
      * @param rawFactMessage raw failure message to report if a match fails
@@ -778,45 +306,8 @@ private[scalatest] object Fact {
       new Leaf(
         rawFactMessage,
         rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
         Vector.empty,
         Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        true,
-        false,
-        prettifier,
-        None
-      )
-  
-    /**
-     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>factMessageArgs</code> and <code>simplifiedFailureMessageArgs</code> fields.
-     * The <code>rawMidSentenceFactMessage</code> will return the same string as <code>rawFactMessage</code>, and the
-     * <code>rawMidSentenceSimplifiedFailureMessage</code> will return the same string as <code>rawSimplifiedFailureMessage</code>.
-     * The <code>midSentenceFactMessageArgs</code> will return the same as <code>factMessageArgs</code>, and the
-     * <code>midSentenceSimplifiedFailureMessageArgs</code> will return the same as <code>simplifiedFailureMessageArgs</code>.
-     * This is suitable to create Yes with lazy error messages that have same mid-sentence and use different arguments for
-     * simplified messages.
-     *
-     * @param rawFactMessage raw failure message to report if a match fails
-     * @param factMessageArgs arguments for constructing failure message to report if a match fails
-     * @return a <code>Yes</code> instance
-     */
-    def apply(
-      rawFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
-      new Leaf(
-        rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
-        factMessageArgs,
         true,
         false,
         prettifier,
@@ -824,24 +315,20 @@ private[scalatest] object Fact {
       )
   }
 
-  // The simplified Fact message is used when a Fact is negated, because
+  // The composable Fact message is used when a Fact is negated, because
   // sometimes factMessage can include info about what was expected, as in
   // "Expected 3, but got 4", for expectResult(3) { x } . But if this is inverted
   // to !expectResult(3) { x }, then it is confusing to say Expected 3 (because
-  // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
+  // now anything *but* 3 is expected. So the composable message just says, "3 did not equal 4".
   // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
-  // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
+  // the regular factMessage would be "Expected 3, but got 3" and the composable fact message would be "3 equaled 3"
   // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
 
-    val rawFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
-    val factMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
+    val rawFactMessage: String = underlying.rawComposableFactMessage
+    val rawComposableFactMessage: String = underlying.rawComposableFactMessage
+    val factMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = underlying.composableFactMessageArgs
     val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
 
@@ -876,40 +363,25 @@ private[scalatest] object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
-    val rawMidSentenceFactMessage: String = rawFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
-          SimplifiedFactMessage(left),
-          MidSentenceSimplifiedFactMessage(right)
+          ComposableFactMessage(left),
+          ComposableFactMessage(right)
         ) // Simplify if combining
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isLeaf && right.isLeaf) {
-        Vector(
-          MidSentenceSimplifiedFactMessage(left),
-          MidSentenceSimplifiedFactMessage(right)
-        ) // Simplify if combining
-      }
-      else {
-        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
-      }
-    }
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
     val isYes: Boolean = left.isYes && right.isYes
     val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
     val prettifier: Prettifier = left.prettifier
-
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
@@ -943,27 +415,16 @@ private[scalatest] object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
-    val rawMidSentenceFactMessage: String = rawFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+        Vector(ComposableFactMessage(left), ComposableFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isLeaf && right.isLeaf) {
-        Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
-      }
-      else {
-        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
-      }
-    }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
     val isLeaf: Boolean = false
     val isYes: Boolean = left.isYes || right.isYes
@@ -1009,34 +470,20 @@ private[scalatest] object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
-    val rawMidSentenceFactMessage: String = rawFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
-          SimplifiedFactMessage(left),
-          MidSentenceSimplifiedFactMessage(right)
+          ComposableFactMessage(left),
+          ComposableFactMessage(right)
         ) // Simplify if combining
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isLeaf && right.isLeaf) {
-        Vector(
-          MidSentenceSimplifiedFactMessage(left),
-          MidSentenceSimplifiedFactMessage(right)
-        ) // Simplify if combining
-      }
-      else {
-        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
-      }
-    }
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
     val isVacuousYes: Boolean = false // TODO
@@ -1065,27 +512,16 @@ private[scalatest] object Fact {
       }
       else factDiagram(0)
     }
-    val rawSimplifiedFactMessage: String = rawFactMessage
-    val rawMidSentenceFactMessage: String = rawFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val rawComposableFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+        Vector(ComposableFactMessage(left), ComposableFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isLeaf && right.isLeaf) {
-        Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
-      }
-      else {
-        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
-      }
-    }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
+    val composableFactMessageArgs: IndexedSeq[Any] = factMessageArgs
 
     val isLeaf: Boolean = false
     val isYes: Boolean = (left.isYes && right.isYes) || (left.isNo && right.isNo)
@@ -1115,18 +551,8 @@ private[scalatest] object Fact {
     override def toString: String = fact.factMessage
   }
 
-  private[scalatest] case class MidSentenceFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.midSentenceFactMessageArgs
-    override def toString: String = fact.midSentenceFactMessage
-  }
-
-  private[scalatest] case class SimplifiedFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.simplifiedFactMessageArgs
-    override def toString: String = fact.simplifiedFactMessage
-  }
-
-  private[scalatest] case class MidSentenceSimplifiedFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.midSentenceSimplifiedFactMessageArgs
-    override def toString: String = fact.midSentenceSimplifiedFactMessage
+  private[scalatest] case class ComposableFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.composableFactMessageArgs
+    override def toString: String = fact.composableFactMessage
   }
 }

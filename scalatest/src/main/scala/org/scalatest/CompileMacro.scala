@@ -88,10 +88,6 @@ private[scalatest] object CompileMacro {
         Fact.No(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -104,10 +100,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -119,10 +111,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -176,10 +164,6 @@ private[scalatest] object CompileMacro {
         Fact.No(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -193,10 +177,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -208,10 +188,6 @@ private[scalatest] object CompileMacro {
           Fact.Yes(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -263,10 +239,6 @@ private[scalatest] object CompileMacro {
         Fact.Yes(
           messageExpr.splice,
           messageExpr.splice,
-          messageExpr.splice,
-          messageExpr.splice,
-          Vector.empty,
-          Vector.empty,
           Vector.empty,
           Vector.empty
         )(prettifier.splice)
@@ -280,10 +252,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -295,10 +263,6 @@ private[scalatest] object CompileMacro {
           Fact.No(
             messageExpr.splice,
             messageExpr.splice,
-            messageExpr.splice,
-            messageExpr.splice,
-            Vector.empty,
-            Vector.empty,
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
@@ -674,7 +638,7 @@ private[scalatest] object CompileMacro {
   }
 
   // used by willNot typeCheck syntax, delegate to expectNotTypeCheckImpl to generate code
-  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
+  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(prettifier: c.Expr[Prettifier], pos: c.Expr[source.Position]): c.Expr[Fact] =
     expectNotTypeCheckImpl(c)(typeCheckWord, prettifier)
 
   // check that a code snippet compiles
@@ -859,7 +823,7 @@ private[scalatest] object CompileMacro {
   }
 
   // used by will compile syntax, delegate to expectCompileImpl to generate code
-  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
+  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], pos: c.Expr[source.Position]): c.Expr[Fact] =
     expectCompileImpl(c)(compileWord, prettifier)
 
 }

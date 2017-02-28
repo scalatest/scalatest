@@ -32,36 +32,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def simplifiedFactMessage(expectedValue: String) =
+  def composableFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.simplifiedFactMessage == expectedValue,
-          "simplifiedFactMessage",
+          exp.composableFactMessage == expectedValue,
+          "composableFactMessage",
           expectedValue,
-          exp.simplifiedFactMessage
-        )
-    }
-
-  def midSentenceFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceFactMessage == expectedValue,
-          "midSentenceFactMessage",
-          expectedValue,
-          exp.midSentenceFactMessage
-        )
-    }
-
-  def midSentenceSimplifiedFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceSimplifiedFactMessage == expectedValue,
-          "midSentenceSimplifiedFactMessage",
-          expectedValue,
-          exp.midSentenceSimplifiedFactMessage
+          exp.composableFactMessage
         )
     }
 
@@ -76,36 +54,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def rawSimplifiedFactMessage(expectedValue: String) =
+  def rawComposableFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.rawSimplifiedFactMessage == expectedValue,
-          "rawSimplifiedFailureMessage",
+          exp.rawComposableFactMessage == expectedValue,
+          "rawComposableFailureMessage",
           expectedValue,
-          exp.rawSimplifiedFactMessage
-        )
-    }
-
-  def rawMidSentenceFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.rawMidSentenceFactMessage == expectedValue,
-          "rawMidSentenceFactMessage",
-          expectedValue,
-          exp.rawMidSentenceFactMessage
-        )
-    }
-
-  def rawMidSentenceSimplifiedFactMessage(expectedValue: String) =
-    new HavePropertyMatcher[Expectation, String] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.rawMidSentenceSimplifiedFactMessage == expectedValue,
-          "rawMidSentenceSimplifidFactMessage",
-          expectedValue,
-          exp.rawMidSentenceSimplifiedFactMessage
+          exp.rawComposableFactMessage
         )
     }
 
@@ -120,36 +76,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def simplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
+  def composableFactMessageArgs(expectedValue: IndexedSeq[Any]) =
     new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.simplifiedFactMessageArgs == expectedValue,
-          "simplifiedFactMessageArgs",
+          exp.composableFactMessageArgs == expectedValue,
+          "composableFactMessageArgs",
           expectedValue,
-          exp.simplifiedFactMessageArgs
-        )
-    }
-
-  def midSentenceFactMessageArgs(expectedValue: IndexedSeq[Any]) =
-    new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceFactMessageArgs == expectedValue,
-          "midSentenceFactMessageArgs",
-          expectedValue,
-          exp.midSentenceFactMessageArgs
-        )
-    }
-
-  def midSentenceSimplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
-    new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
-      def apply(exp: Expectation) =
-        HavePropertyMatchResult(
-          exp.midSentenceSimplifiedFactMessageArgs == expectedValue,
-          "midSentenceSimplifiedFactMessageArgs",
-          expectedValue,
-          exp.midSentenceSimplifiedFactMessageArgs
+          exp.composableFactMessageArgs
         )
     }
 

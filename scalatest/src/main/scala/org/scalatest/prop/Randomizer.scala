@@ -24,15 +24,15 @@ import org.scalactic.Requirements._
 // Maybe this should be a trait, so that people can, hmm. Could 
 // make subclasses with extra methods, like nextSmallInt or something,
 // and in a pattern match narrow the type and call that method.
-private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
+class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextRandomizer: Randomizer = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
-    new Randomizer(newSeed, edges)
+    new Randomizer(newSeed)
   }
   def next(bits: Int): (Int, Randomizer) = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     val newInt = (newSeed >>> (48 - bits)).toInt
-    (newInt, new Randomizer(newSeed, edges))
+    (newInt, new Randomizer(newSeed))
   }
   def nextByte: (Byte, Randomizer) = {
     val (i, r) = next(8) 
@@ -47,7 +47,7 @@ private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
   // common in practice anyway. So this generator does favor slightly
   // the first code block.
   def nextChar: (Char, Randomizer) = {
-    val (i, r) = nextRandomizer.next(16) 
+    val (i, r) = thisRandomizer.next(16) 
     if (i >= 0xD800 && i <= 0xDFFF) (((i - 0xD800) & 0xFF).toChar, r)
     else (i.toChar, r)
   }
@@ -56,36 +56,6 @@ private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
     val (ia, ra) = thisRandomizer.next(32)
     val (ib, rb) = ra.next(32)
     ((ia.toLong << 32) + ib, rb)
-  }
-  def nextByteWithEdges: (Byte, Randomizer) = {
-    edges.byteEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(byteEdges = tail)))
-      case Nil => nextByte
-    }
-  }
-  def nextShortWithEdges: (Short, Randomizer) = {
-    edges.shortEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(shortEdges = tail)))
-      case Nil => nextShort
-    }
-  }
-  def nextCharWithEdges: (Char, Randomizer) = {
-    edges.charEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(charEdges = tail)))
-      case Nil => nextChar
-    }
-  }
-  def nextIntWithEdges: (Int, Randomizer) = {
-    edges.intEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(intEdges = tail)))
-      case Nil => nextInt
-    }
-  }
-  def nextLongWithEdges: (Long, Randomizer) = {
-    edges.longEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(longEdges = tail)))
-      case Nil => nextLong
-    }
   }
   def nextFloatBetween0And1: (Float, Randomizer) = {
     val (i, r) = thisRandomizer.next(24)
@@ -96,12 +66,6 @@ private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
     val (e, re) = chooseInt(0, 0xfe)
     val (m, rm) = chooseInt(0, 0x7fffff)
     (java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m), rm)
-  }
-  def nextFloatWithEdges: (Float, Randomizer) = {
-    edges.floatEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(floatEdges = tail)))
-      case Nil => nextFloat
-    }
   }
   def nextDoubleBetween0And1: (Double, Randomizer) = {
     val (ia, ra) = thisRandomizer.next(26)
@@ -114,237 +78,657 @@ private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
     val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL)
     (java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m), rm)
   }
-  def nextDoubleWithEdges: (Double, Randomizer) = {
-    edges.doubleEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(doubleEdges = tail)))
-      case Nil => nextDouble
-    }
-  }
   def nextPosInt: (PosInt, Randomizer) = {
     val (i, r) = next(31) // 31 ensures sign bit is 0
     val pos = if (i == 0) 1 else i
-    (PosInt.from(pos).get, r)
-  }
-  def nextPosIntWithEdges: (PosInt, Randomizer) = {
-    edges.posIntEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posIntEdges = tail)))
-      case Nil => nextPosInt
-    }
+    (PosInt.ensuringValid(pos), r)
   }
   def nextPosZInt: (PosZInt, Randomizer) = {
     val (i, r) = next(31) // 31 ensures sign bit is 0
-    (PosZInt.from(i).get, r)
-  }
-  def nextPosZIntWithEdges: (PosZInt, Randomizer) = {
-    edges.posZIntEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posZIntEdges = tail)))
-      case Nil => nextPosZInt
-    }
+    (PosZInt.ensuringValid(i), r)
   }
   def nextPosLong: (PosLong, Randomizer) = {
     val (ia, ra) = thisRandomizer.next(31) // 31 ensures sign bit is 0
     val (ib, rb) = ra.next(32)
     val candidate = (ia.toLong << 32) + ib
     val pos = if (candidate == 0L) 1L else candidate
-    (PosLong.from(pos).get, rb)
-  }
-  def nextPosLongWithEdges: (PosLong, Randomizer) = {
-    edges.posLongEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posLongEdges = tail)))
-      case Nil => nextPosLong
-    }
+    (PosLong.ensuringValid(pos), rb)
   }
   def nextPosZLong: (PosZLong, Randomizer) = {
     val (ia, ra) = thisRandomizer.next(31) // 31 ensures sign bit is 0
     val (ib, rb) = ra.next(32)
     val pos = (ia.toLong << 32) + ib
-    (PosLong.from(pos).get, rb)
-  }
-  def nextPosZLongWithEdges: (PosZLong, Randomizer) = {
-    edges.posZLongEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posZLongEdges = tail)))
-      case Nil => nextPosZLong
-    }
+    (PosLong.ensuringValid(pos), rb)
   }
   def nextPosFloat: (PosFloat, Randomizer) = {
     val (f, r) = nextFloat
     val candidate = f.abs // 0.0f or greater
     val pos = if (candidate <= 1.0f) candidate else candidate + 1.0f
-    (PosFloat.from(pos).get, r)
+    (PosFloat.ensuringValid(pos), r)
   }
-  def nextPosFloatWithEdges: (PosFloat, Randomizer) = {
-    edges.posFloatEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posFloatEdges = tail)))
-      case Nil => nextPosFloat
-    }
+  def nextPosFiniteFloat: (PosFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val posFinite =
+      n match {
+        case 0.0F => Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case v if v < 0.0F => -v
+        case _ => n
+      }
+    (PosFiniteFloat.ensuringValid(posFinite), r)
   }
   def nextPosZFloat: (PosZFloat, Randomizer) = {
     val (f, r) = nextFloat
     val pos = f.abs // 0.0f or greater
-    (PosZFloat.from(pos).get, r)
+    (PosZFloat.ensuringValid(pos), r)
   }
-  def nextPosZFloatWithEdges: (PosZFloat, Randomizer) = {
-    edges.posZFloatEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posZFloatEdges = tail)))
-      case Nil => nextPosZFloat
-    }
+  def nextFiniteFloat: (FiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val finite =
+      n match {
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case _ => n
+      }
+    (FiniteFloat.ensuringValid(finite), r)
+  }
+  def nextFiniteDouble: (FiniteDouble, Randomizer) = {
+    val (n, r) = nextDouble // TODO: Study nextFloat and nextDouble to see if it produces NaNs or Infinities.
+    val finite =            // See if it produces non-normal (less than max precision) values
+      n match {
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case _ => n
+      }
+    (FiniteDouble.ensuringValid(finite), r)
+  }
+  def nextPosZFiniteFloat: (PosZFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val posZFinite =
+      n match {
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MaxValue
+        case v if v < 0.0F => -v
+        case _ => n
+      }
+    (PosZFiniteFloat.ensuringValid(posZFinite), r)
   }
   def nextPosDouble: (PosDouble, Randomizer) = {
     val (d, r) = nextDouble
     val candidate = d.abs // 0.0 or greater
-    val pos = if (candidate <= 1.0) candidate else candidate + 1.0
-    (PosDouble.from(pos).get, r)
+    val pos = if (candidate <= 1.0) candidate else candidate + 1.0 // TODO: Is this correct? If so, document why, because it looks wrong to me.
+    (PosDouble.ensuringValid(pos), r)
   }
-  def nextPosDoubleWithEdges: (PosDouble, Randomizer) = {
-    edges.posDoubleEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posDoubleEdges = tail)))
-      case Nil => nextPosDouble
-    }
+  def nextPosFiniteDouble: (PosFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val posFinite =
+      d match {
+        case 0.0 => Double.MinPositiveValue
+        case -0.0 => Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case v if v < 0.0 => -v
+        case _ => d
+      }
+    (PosFiniteDouble.ensuringValid(posFinite), r)
+  }
+  def nextNonZeroDouble: (NonZeroDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val nonZero = if (d == 0.0 || d == -0.0) Double.MinPositiveValue else d
+    (NonZeroDouble.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroFiniteDouble: (NonZeroFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val nonZeroFinite =
+      d match {
+        case 0.0 => Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NonZeroFiniteDouble.ensuringValid(nonZeroFinite), r)
+  }
+  def nextNonZeroFloat: (NonZeroFloat, Randomizer) = {
+    val (f, r) = nextFloat
+    val nonZero = if (f == 0.0F || f == -0.0F) Float.MinPositiveValue else f
+    (NonZeroFloat.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroFiniteFloat: (NonZeroFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val nonZeroFinite =
+      n match {
+        case 0.0F => Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MaxValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0F => -v
+        case _ => n
+      }
+    (NonZeroFiniteFloat.ensuringValid(nonZeroFinite), r)
+  }
+  def nextNonZeroInt: (NonZeroInt, Randomizer) = {
+    val (i, r) = nextInt
+    val nonZero = if (i == 0) 1 else i
+    (NonZeroInt.ensuringValid(nonZero), r)
+  }
+  def nextNonZeroLong: (NonZeroLong, Randomizer) = {
+    val (i, r) = nextLong
+    val nonZero = if (i == 0) 1 else i
+    (NonZeroLong.ensuringValid(nonZero), r)
+  }
+  def nextNegDouble: (NegDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val neg =
+      d match {
+        case 0.0 => -Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegDouble.ensuringValid(neg), r)
+  }
+  def nextNegFiniteDouble: (NegFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negFinite =
+      d match {
+        case 0.0 => -Double.MinPositiveValue
+        case -0.0 => -Double.MinPositiveValue
+        case Double.PositiveInfinity => Double.MinValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegFiniteDouble.ensuringValid(negFinite), r)
+  }
+  def nextNegFloat: (NegFloat, Randomizer) = {
+    val (f, r) = nextFloat
+    val neg =
+      f match {
+        case 0.0F => -Float.MinPositiveValue
+        case -0.0F => -Float.MinPositiveValue
+        case v if v > 0.0F => -v
+        case _ => f
+      }
+    (NegFloat.ensuringValid(neg), r)
+  }
+  def nextNegFiniteFloat: (NegFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negFinite =
+      n match {
+        case 0.0 => -Float.MinPositiveValue
+        case -0.0 => -Float.MinPositiveValue
+        case Float.PositiveInfinity => Float.MinValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0 => -v
+        case _ => n
+      }
+    (NegFiniteFloat.ensuringValid(negFinite), r)
+  }
+  def nextNegInt: (NegInt, Randomizer) = {
+    val (n, r) = nextInt
+    val neg =
+      n match {
+        case 0 => -1
+        case v if v > 0 => -v
+        case _ => n
+      }
+    (NegInt.ensuringValid(neg), r)
+  }
+  def nextNegLong: (NegLong, Randomizer) = {
+    val (n, r) = nextLong
+    val neg =
+      n match {
+        case 0L => -1L
+        case v if v > 0L => -v
+        case _ => n
+      }
+    (NegLong.ensuringValid(neg), r)
+  }
+  def nextNegZDouble: (NegZDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negZ = if (d > 0.0) -d else d
+    (NegZDouble.ensuringValid(negZ), r)
+  }
+  def nextNegZFiniteDouble: (NegZFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val negFinite =
+      d match {
+        case Double.PositiveInfinity => Double.MinValue
+        case Double.NegativeInfinity => Double.MinValue
+        case v if v > 0.0 => -v
+        case _ => d
+      }
+    (NegZFiniteDouble.ensuringValid(negFinite), r)
+  }
+  def nextNegZFloat: (NegZFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negZ = if (n > 0.0F) -n else n
+    (NegZFloat.ensuringValid(negZ), r)
+  }
+  def nextNegZFiniteFloat: (NegZFiniteFloat, Randomizer) = {
+    val (n, r) = nextFloat
+    val negZFinite =
+      n match {
+        case Float.PositiveInfinity => Float.MinValue
+        case Float.NegativeInfinity => Float.MinValue
+        case v if v > 0.0 => -v
+        case _ => n
+      }
+    (NegZFiniteFloat.ensuringValid(negZFinite), r)
+  }
+  def nextNegZInt: (NegZInt, Randomizer) = {
+    val (n, r) = nextInt
+    val negZ = if (n > 0) -n else n
+    (NegZInt.ensuringValid(negZ), r)
+  }
+  def nextNegZLong: (NegZLong, Randomizer) = {
+    val (n, r) = nextLong
+    val negZ = if (n > 0L) -n else n
+    (NegZLong.ensuringValid(negZ), r)
   }
   def nextPosZDouble: (PosZDouble, Randomizer) = {
     val (d, r) = nextDouble
     val pos = d.abs // 0.0 or greater
-    (PosZDouble.from(pos).get, r)
+    (PosZDouble.ensuringValid(pos), r)
   }
-  def nextPosZDoubleWithEdges: (PosZDouble, Randomizer) = {
-    edges.posZDoubleEdges match {
-      case head :: tail => (head, new Randomizer(seed, edges.copy(posZDoubleEdges = tail)))
-      case Nil => nextPosZDouble
-    }
+  def nextPosZFiniteDouble: (PosZFiniteDouble, Randomizer) = {
+    val (d, r) = nextDouble
+    val posZFinite =
+      d match {
+        case Double.PositiveInfinity => Double.MaxValue
+        case Double.NegativeInfinity => Double.MaxValue
+        case v if v < 0.0 => -v
+        case _ => d
+      }
+    (PosZFiniteDouble.ensuringValid(posZFinite), r)
   }
   // Maybe add in some > 16 bit UTF-16 encodings
   def nextString(length: Int): (String, Randomizer) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec
-    def loop(acc: List[Char], count: Int, nextRandomizer: Randomizer): (String, Randomizer) = {
-      if (count == length) (acc.mkString, nextRandomizer)
+    def loop(acc: List[Char], count: Int, nextRnd: Randomizer): (String, Randomizer) = {
+      if (count == length) (acc.mkString, nextRnd)
       else {
-        val (c, r) = nextRandomizer.nextChar
+        val (c, r) = nextRnd.nextChar
         loop(c :: acc, count + 1, r)
       }
     }
     loop(List.empty, 0, thisRandomizer)
   }
+  // TODO: Not sure if we should have a nextList here because it ties Randomizer to Generator.
   def nextList[T](length: Int)(implicit genOfT: Generator[T]): (List[T], Randomizer) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec
-    def loop(acc: List[T], count: Int, nextRandomizer: Randomizer): (List[T], Randomizer) = {
-      if (count == length) (acc, nextRandomizer)
+    def loop(acc: List[T], count: Int, nextRnd: Randomizer): (List[T], Randomizer) = {
+      if (count == length) (acc, nextRnd)
       else {
-        val (o, r) = genOfT.next(length, nextRandomizer)
+        val (o, _, r) = genOfT.next(PosZInt.ensuringValid(length), PosZInt.ensuringValid(length), Nil, nextRnd) // Because starts at 0 and goes to a max value of type Int
         loop(o :: acc, count + 1, r)
       }
     }
     loop(List.empty, 0, thisRandomizer)
   }
-  def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
-    if(from == to) {
-      (from, this.nextInt._2)
-    } else {
+
+  def chooseChar(from: Char, to: Char): (Char, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
       val min = math.min(from, to)
       val max = math.max(from, to)
-      @annotation.tailrec
-      def loop(state: Randomizer): (Int, Randomizer) = {
-        val next = state.nextInt
-        if (min <= next._1 && next._1 <= max) {
-          next
-        } else if(0 < (max - min)){
-          val x = (next._1 % (max - min + 1)) + min
-          if (min <= x && x <= max) {
-            x -> next._2
-          } else {
-            loop(next._2)
-          }
-        } else {
-          loop(next._2)
-        }
+
+      val nextPair = nextChar
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min + 1)).abs
+        (nextBetween.toChar, nextRnd)
       }
-      loop(this)
     }
   }
-  def chooseLong(from: Long, to: Long): (Long, Randomizer) = {
-    if(from == to) {
-      (from, this.nextLong._2)
-    } else {
+
+  def chooseByte(from: Byte, to: Byte): (Byte, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
       val min = math.min(from, to)
       val max = math.max(from, to)
-      @annotation.tailrec
-      def loop(state: Randomizer): (Long, Randomizer) = {
-        val next = state.nextLong
-        if (min <= next._1 && next._1 <= max) {
-          next
-        } else if(0 < (max - min)){
-          val x = (next._1 % (max - min + 1)) + min
-          if (min <= x && x <= max) {
-            x -> next._2
-          } else {
-            loop(next._2)
-          }
-        } else {
-          loop(next._2)
-        }
+
+      val nextPair = nextByte
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min + 1)).abs
+        (nextBetween.toByte, nextRnd)
       }
-      loop(this)
+    }
+  }
+
+  def chooseShort(from: Short, to: Short): (Short, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextShort
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min + 1)).abs
+        (nextBetween.toShort, nextRnd)
+      }
+    }
+  }
+
+  def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // generate a positive Int
+      val nextPair = next(31) // 31 ensures sign bit is 0
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (nextBetween, nextRnd)
+      }
+    }
+  }
+
+  def chooseFloat(from: Float, to: Float): (Float, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (nextBetween, nextRnd)
+      }
+    }
+  }
+
+  def choosePosFloat(from: PosFloat, to: PosFloat): (PosFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextPosFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (PosFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def choosePosZFloat(from: PosZFloat, to: PosZFloat): (PosZFloat, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextPosZFloat
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (PosZFloat.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseDouble(from: Double, to: Double): (Double, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (nextBetween, nextRnd)
+      }
+    }
+  }
+
+  def choosePosInt(from: PosInt, to: PosInt): (PosInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // generate a positive Int
+      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
+
+      if (nextValue >= min && nextValue <= max)
+        (PosInt.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosInt.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def choosePosZInt(from: PosZInt, to: PosZInt): (PosZInt, Randomizer) = {
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // generate a positive Int
+      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
+
+      if (nextValue >= min && nextValue <= max)
+        (PosZInt.ensuringValid(nextValue), nextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosZInt.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def chooseLong(from: Long, to: Long): (Long, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // Generate a positive Long
+      val (ia, nextRnd) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+      val (ib, nextNextRnd) = nextRnd.next(32)
+      val nextValue = (ia.toLong << 32) + ib
+
+      if (nextValue >= min && nextValue <= max)
+        (nextValue, nextNextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (nextBetween, nextNextRnd)
+      }
+    }
+  }
+
+  def choosePosLong(from: PosLong, to: PosLong): (PosLong, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // Generate a positive Long
+      val (ia, nextRnd) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+      val (ib, nextNextRnd) = nextRnd.next(32)
+      val nextValue = (ia.toLong << 32) + ib
+
+      if (nextValue >= min && nextValue <= max)
+        (PosLong.ensuringValid(nextValue), nextNextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosLong.ensuringValid(nextBetween), nextNextRnd)
+      }
+    }
+  }
+
+  def choosePosZLong(from: PosZLong, to: PosZLong): (PosZLong, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer)
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      // Generate a positive Long
+      val (ia, nextRnd) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+      val (ib, nextNextRnd) = nextRnd.next(32)
+      val nextValue = (ia.toLong << 32) + ib
+
+      if (nextValue >= min && nextValue <= max)
+        (PosZLong.ensuringValid(nextValue), nextNextRnd)
+      else {
+        val nextBetween = (nextValue % (max - min + 1)) + min
+        (PosZLong.ensuringValid(nextBetween), nextNextRnd)
+      }
+    }
+  }
+
+  def choosePosDouble(from: PosDouble, to: PosDouble): (PosDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextPosDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (PosDouble.ensuringValid(nextBetween), nextRnd)
+      }
+    }
+  }
+
+  def choosePosZDouble(from: PosZDouble, to: PosZDouble): (PosZDouble, Randomizer) = {
+
+    if (from == to) {
+      (from, nextRandomizer) // TODO: Shouldn't this be thisRandomizer because I didn't use it? I am trying this in choosePosInt.
+    }
+    else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      val nextPair = nextPosZDouble
+      val (nextValue, nextRnd) = nextPair
+
+      if (nextValue >= min && nextValue <= max)
+        nextPair
+      else {
+        val nextBetween = min + (nextValue % (max - min)).abs
+        (PosZDouble.ensuringValid(nextBetween), nextRnd)
+      }
     }
   }
 }
 
-private[prop] object Randomizer {
-  private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
-  private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
-  private val charEdges = List(Char.MinValue, Char.MaxValue)
-  private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
-  private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
-  private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
-  private val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
-  private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
-  private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
-  private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
-  private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
-  private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
-  private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
-  private val standardEdges = 
-    Edges(
-      byteEdges,
-      shortEdges,
-      charEdges,
-      intEdges,
-      longEdges,
-      List(0.0f),
-      List(0.0),
-      posIntEdges,
-      posZIntEdges,
-      posLongEdges,
-      posZLongEdges,
-      posFloatEdges,
-      posZFloatEdges,
-      posDoubleEdges,
-      posZDoubleEdges
-    )
+object Randomizer {
+
   def default(): Randomizer =
     new Randomizer(
-      (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
-      Edges(
-        scala.util.Random.shuffle(byteEdges),
-        scala.util.Random.shuffle(shortEdges),
-        scala.util.Random.shuffle(charEdges),
-        scala.util.Random.shuffle(intEdges),
-        scala.util.Random.shuffle(longEdges),
-        List(0.0f),
-        List(0.0),
-        scala.util.Random.shuffle(posIntEdges),
-        scala.util.Random.shuffle(posZIntEdges),
-        scala.util.Random.shuffle(posLongEdges),
-        scala.util.Random.shuffle(posZLongEdges),
-        scala.util.Random.shuffle(posFloatEdges),
-        scala.util.Random.shuffle(posZFloatEdges),
-        scala.util.Random.shuffle(posDoubleEdges),
-        scala.util.Random.shuffle(posZDoubleEdges)
-      )
+      (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1)
     )
-  // Note, this method where you pass the seed in will produce edges in always the same order, so it 
-  // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
-  def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), standardEdges)
+
+  def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))
+
+  def shuffle[T](xs: List[T], rnd: Randomizer): (List[T], Randomizer) = {
+
+    import scala.collection.mutable.ArrayBuffer
+
+    val buf = ArrayBuffer.empty[T]
+    buf ++= xs
+
+    def swap(i: Int, j: Int) {
+      val tmp = buf(i)
+      buf(i) = buf(j)
+      buf(j) = tmp
+    }
+
+    var nextRnd = rnd
+
+    for (n <- buf.length to 2 by -1) {
+      val (ni, nr) = rnd.nextInt
+      nextRnd = nr
+      val k = ni.abs % n
+      swap(n - 1, k)
+    }
+
+    (buf.toList, nextRnd)
+  }
 }
 
 

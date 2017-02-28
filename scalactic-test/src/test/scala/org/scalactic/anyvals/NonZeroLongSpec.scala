@@ -17,10 +17,9 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
@@ -30,16 +29,6 @@ import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 
 trait NonZeroLongSpecSupport {
-
-  val nonZeroLongGen: Gen[NonZeroLong] =
-    for {i <- choose(Long.MinValue, Long.MaxValue)} yield {
-      if (i == 1L)
-        NonZeroLong.ensuringValid(1)
-      else
-        NonZeroLong.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroLong: Arbitrary[NonZeroLong] = Arbitrary(nonZeroLongGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

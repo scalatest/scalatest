@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
@@ -30,11 +28,6 @@ import scala.util.{Failure, Success, Try}
 //import org.scalactic.StrictCheckedEquality
 
 trait PosZIntSpecSupport {
-
-  val posZIntGen: Gen[PosZInt] =
-    for {i <- choose(0, Int.MaxValue)} yield PosZInt.from(i).get
-
-  implicit val arbPosZInt: Arbitrary[PosZInt] = Arbitrary(posZIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

@@ -1197,8 +1197,8 @@ class PropSpecSpec extends FunSpec {
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends PropSpec {
-        property("test 1") {}
-        property("test 1") {}
+        property("test 1") { /* ASSERTION_SUCCEED */ }
+        property("test 1") { /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
@@ -1210,8 +1210,8 @@ class PropSpecSpec extends FunSpec {
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
       class TestSpec extends PropSpec {
-        property("test 1") {}
-        ignore("test 1") {}
+        property("test 1") { /* ASSERTION_SUCCEED */ }
+        ignore("test 1") { /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec

@@ -1674,8 +1674,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
-          Scenario("test 1") { fixture => }
-          Scenario("test 1") { fixture => }
+          Scenario("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+          Scenario("test 1") { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {

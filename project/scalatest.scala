@@ -445,9 +445,12 @@ object ScalatestBuild extends Build {
      genCodeTask,
      genFactoriesTask,
      genCompatibleClassesTask,
-     //genSafeStylesTask,
+     genLogicStylesTask,
      sourceGenerators in Compile += Def.task {
        genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
      }.taskValue,
      sourceGenerators in Compile += Def.task {
        genFiles("gentables", "GenTable.scala")(GenTable.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -464,9 +467,9 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile += Def.task {
        genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
      }.taskValue,
-     /*sourceGenerators in Compile += Def.task {
-       genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,*/
+     sourceGenerators in Compile += Def.task {
+       genFiles("genlogicstyles", "GenLogicStyles.scala")(GenLogicStyles.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
@@ -564,7 +567,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       genFactoriesTask,
-      //genSafeStylesTask,
+      genLogicStylesTask,
       sourceGenerators in Compile += Def.task {
         genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
@@ -572,14 +575,17 @@ object ScalatestBuild extends Build {
         genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
       sourceGenerators in Compile += Def.task {
+        genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
         genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
       sourceGenerators in Compile += Def.task {
         genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
-      /*sourceGenerators in Compile += Def.task {
-        genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,*/
+      sourceGenerators in Compile += Def.task {
+        genFiles("genlogicstyles", "GenLogicStyles.scala")(GenLogicStyles.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
       /*sourceGenerators in Compile += Def.task {
         genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,*/
@@ -899,6 +905,14 @@ object ScalatestBuild extends Build {
       }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
+  lazy val genScalaCheckGenTests = Project("genScalaCheckGenTests", file("gentests/GenScalaCheckGen"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genGenTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
     .settings(
@@ -989,18 +1003,18 @@ object ScalatestBuild extends Build {
       }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  /*lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
+  lazy val genLogicStyleTests = Project("genLogicStyleTests", file("gentests/GenLogicStyles"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genSafeStyleTestsTask,
+      genLogicStyleTestsTask,
       sourceGenerators in Test += Def.task {
-        genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+        genFiles("genlogicstyletests", "GenLogicStyles.scala")(GenLogicStyles.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue
-    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
-               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests, genLogicStyleTests)
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
@@ -1128,6 +1142,16 @@ object ScalatestBuild extends Build {
         GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
       case "gentests" =>
         GenGen.genTest(new File(testTargetDir, "scala/gengen"), theVersion, theScalaVersion)
+    }
+  }
+
+  val genScalaCheckGen = TaskKey[Unit]("genscalacheckgen", "Generate ScalaCheck driven Property Checks")
+  val genScalaCheckGenTask = genScalaCheckGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+    projName match {
+      case "scalatest" =>
+        GenGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
+      case "gentests" =>
+        GenGen.genTest(new File(testTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
     }
   }
 
@@ -1275,20 +1299,31 @@ object ScalatestBuild extends Build {
     val theScalaVersion = scalaVersion.value
 
     GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
+    GenScalaCheckGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
   }
 
-  /*val genSafeStyles = TaskKey[Unit]("gensafestyles", "Generate safe style traits.")
-  val genSafeStylesTask = genSafeStyles <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenSafeStyles.genMain(new File(mainTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
+  val genLogicStyles = TaskKey[Unit]("genlogicstyles", "Generate logic style traits.")
+  val genLogicStylesTask = genLogicStyles := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
+    GenLogicStyles.genMain(new File(mainTargetDir, "scala/genlogicstyles"), theVersion, theScalaVersion)
   }
 
-  val genSafeStyleTestsTaskKey = TaskKey[Unit]("gensafestyletests", "Generate Safe Style tests")
-  val genSafeStyleTestsTask = genSafeStyleTestsTaskKey <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenSafeStyles.genTest(new File(testTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
-  }*/
+  val genLogicStyleTestsTaskKey = TaskKey[Unit]("genlogicstyletests", "Generate Logic Style tests")
+  val genLogicStyleTestsTask = genLogicStyleTestsTaskKey := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
+    GenLogicStyles.genTest(new File(testTargetDir, "scala/genlogicstyles"), theVersion, theScalaVersion)
+  }
 
   //
   // Prepares source files for running scaladoc.

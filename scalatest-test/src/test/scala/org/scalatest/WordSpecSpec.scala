@@ -3796,8 +3796,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside when") {
       class TestSpec extends WordSpec {
         "a feature" when {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3818,8 +3818,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       class TestSpec extends WordSpec {
         "a feature" when {}
         it when {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3839,8 +3839,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
       class TestSpec extends WordSpec {
         "a feature" should {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3861,8 +3861,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       class TestSpec extends WordSpec {
         "a feature" should {}
         it should {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3882,8 +3882,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
       class TestSpec extends WordSpec {
         "a feature" must {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3904,8 +3904,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       class TestSpec extends WordSpec {
         "a feature" must {}
         it must {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3925,8 +3925,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
       class TestSpec extends WordSpec {
         "a feature" that {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3946,8 +3946,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
       class TestSpec extends WordSpec {
         "a feature" which {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3967,8 +3967,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
       class TestSpec extends WordSpec {
         "a feature" can {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -3989,8 +3989,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       class TestSpec extends WordSpec {
         "a feature" can {}
         it can {
-          "test 1" in {}
-          "test 1" in {}
+          "test 1" in { /* ASSERTION_SUCCEED */ }
+          "test 1" in { /* ASSERTION_SUCCEED */ }
         }
       }
       val e = intercept[NotAllowedException] {
