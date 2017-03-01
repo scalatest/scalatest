@@ -1710,7 +1710,7 @@ $okayAssertions$
   }
 """
 
-  val generatorSuiteFutureAssertTemplate = """
+val generatorSuiteFutureAssertTemplate = """
 
   it("generator-driven property that takes $n$ args, which succeeds") {
     forAll { ($namesAndTypes$) =>
@@ -1720,11 +1720,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails") {
+  it("generator-driven property that takes $n$ args, which fails in future block") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1738,11 +1749,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails") {
+  it("generator-driven property that takes $n$ named args, which fails in future block") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($argNames$) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1756,11 +1778,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($famousArgs$) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1774,11 +1807,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($nameGenTuples$) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1793,11 +1837,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails, with config params") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with config params") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1811,11 +1866,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails, with config params") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with config params") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1829,11 +1895,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails, with config params") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with config params") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1847,11 +1924,22 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails, with config params") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with config params") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
         Future {
           assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1868,13 +1956,26 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails, with minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with minSuccessful param set to 5") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll (minSuccessful(5)) { ($namesAndTypes$) =>
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1890,13 +1991,26 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails, with minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with minSuccessful param set to 5") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1912,13 +2026,26 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails, with minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with minSuccessful param set to 5") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1934,13 +2061,26 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with minSuccessful param set to 5") {
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1960,7 +2100,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
@@ -1971,6 +2111,23 @@ $okayAssertions$
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -1990,7 +2147,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
@@ -1998,9 +2155,10 @@ $okayAssertions$
     recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
         Future {
-          i += 1
-          assert(i != 5)
+          assert(true)
         }
       }
     }
@@ -2020,7 +2178,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
@@ -2031,6 +2189,23 @@ $okayAssertions$
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -2050,7 +2225,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
@@ -2061,6 +2236,23 @@ $okayAssertions$
         Future {
           i += 1
           assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
         }
       }
     }
@@ -2078,7 +2270,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with maxDiscarded param set to 5") {
 
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
@@ -2088,6 +2280,22 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2103,7 +2311,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails, with maxDiscarded param set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with maxDiscarded param set to 5") {
 
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
@@ -2113,6 +2321,22 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2129,7 +2353,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with maxDiscarded param set to 5") {
 
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
@@ -2139,6 +2363,22 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2155,7 +2395,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with maxDiscarded param set to 5") {
 
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
@@ -2165,6 +2405,22 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2185,7 +2441,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
@@ -2196,6 +2452,23 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2215,7 +2488,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args, which fails, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
@@ -2226,6 +2499,23 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2245,7 +2535,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
@@ -2256,6 +2546,23 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
@@ -2275,7 +2582,7 @@ $okayAssertions$
     }
   }
 
-  it("generator-driven property that takes $n$ named args and generators, which fails, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
@@ -2286,6 +2593,23 @@ $okayAssertions$
         Future {
           i += 1
           whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
         }
       }
     }
