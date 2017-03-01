@@ -340,6 +340,11 @@ private[scalatest] object MatchersHelper {
     throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, pos)
   }
 
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position, difference: Difference): Assertion = {
+    val message: String = failureMessage
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, Left(pos), None, Vector(difference))
+  }
+
   def indicateFailure(e: TestFailedException): Assertion =
     throw e
 }

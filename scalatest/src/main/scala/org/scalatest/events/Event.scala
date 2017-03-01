@@ -23,6 +23,7 @@ import java.io.StringWriter
 import java.util.Date
 import scala.xml.Elem
 import exceptions.StackDepthException
+import org.scalactic.Difference
 
 /**
  * A base class for the events that can be passed to the report function passed
@@ -461,7 +462,8 @@ final case class TestFailed (
   suiteClassName: Option[String],
   testName: String,
   testText: String,
-  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], 
+  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent],
+  differences: collection.immutable.IndexedSeq[Difference],
   throwable: Option[Throwable] = None,
   duration: Option[Long] = None,
   formatter: Option[Formatter] = None,

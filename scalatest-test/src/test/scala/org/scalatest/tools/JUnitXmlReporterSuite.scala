@@ -30,6 +30,7 @@ import org.scalatest.events.RecordableEvent
 import org.scalatest.events.AlertProvided
 import org.scalatest.events.NoteProvided
 import org.scalatest.events.NameInfo
+import org.scalactic.Difference
 
 import java.io.File
 
@@ -174,7 +175,8 @@ class JUnitXmlReporterSuite extends FunSuite {
       suiteClassName = Some("Suite3Class"),
       testName = "a fail test",
       testText = "a fail test text",
-      recordedEvents = Vector.empty[RecordableEvent])
+      recordedEvents = Vector.empty[RecordableEvent],
+      differences = Vector.empty[Difference])
 
   val startTest3 =
     TestStarting(

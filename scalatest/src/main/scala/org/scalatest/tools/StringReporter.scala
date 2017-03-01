@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import Suite.indentation
 import org.scalatest.exceptions.PropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
+import org.scalactic.Difference
 
 /**
  * A <code>Reporter</code> that prints test status information to
@@ -204,6 +205,7 @@ private[scalatest] object StringReporter {
     errorMessageFun: Any => String,
     message: String,
     throwable: Option[Throwable],
+    differences: scala.collection.immutable.IndexedSeq[Difference],
     formatter: Option[Formatter],
     suiteName: Option[String],
     testName: Option[String],
@@ -216,7 +218,7 @@ private[scalatest] object StringReporter {
     ansiColor: AnsiColor
   ): Vector[Fragment] = {
 
-    val lines: Vector[String] = stringsToPrintOnError(noteMessageFun, errorMessageFun, message, throwable, formatter, suiteName, testName, duration,
+    val lines: Vector[String] = stringsToPrintOnError(noteMessageFun, errorMessageFun, message, throwable, differences, formatter, suiteName, testName, duration,
         presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname)
 
     lines map (new Fragment(_, ansiColor))
@@ -340,6 +342,7 @@ private[scalatest] object StringReporter {
       errorMessageFun: Any => String,
       message: String,
       throwable: Option[Throwable],
+      differences: scala.collection.immutable.IndexedSeq[Difference],
       duration: Option[Long],
       ansiColor: AnsiColor
     ): Vector[Fragment] = {
@@ -366,6 +369,7 @@ private[scalatest] object StringReporter {
           errorMessageFun,
           message,
           throwable,
+          differences,
           formatter,
           Some(suiteName),
           testNameOpt,
@@ -413,6 +417,7 @@ private[scalatest] object StringReporter {
           Resources.testFailed _,
           tf.message,
           tf.throwable,
+          tf.differences,
           tf.duration,
           AnsiRed
         )
@@ -425,6 +430,7 @@ private[scalatest] object StringReporter {
           Resources.testCanceled _,
           tc.message,
           tc.throwable,
+          Vector.empty,
           tc.duration,
           AnsiYellow
         )
@@ -437,6 +443,7 @@ private[scalatest] object StringReporter {
           Resources.suiteAborted _,
           sa.message,
           sa.throwable,
+          Vector.empty,
           sa.duration,
           AnsiRed
         )
@@ -516,6 +523,7 @@ private[scalatest] object StringReporter {
         Resources.infoProvided _,
         event.message,
         event.throwable,
+        Vector.empty,
         event.formatter,
         suiteName,
         testName,
@@ -550,6 +558,7 @@ private[scalatest] object StringReporter {
         Resources.alertProvided _,
         event.message,
         event.throwable,
+        Vector.empty,
         event.formatter,
         suiteName,
         testName,
@@ -583,6 +592,7 @@ private[scalatest] object StringReporter {
         Resources.noteProvided _,
         event.message,
         event.throwable,
+        Vector.empty,
         event.formatter,
         suiteName,
         testName,
@@ -769,7 +779,7 @@ private[scalatest] object StringReporter {
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted, message, throwable, formatter, None, None, duration,
+        fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted, message, throwable, Vector.empty, formatter, None, None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname, AnsiRed)
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
@@ -782,7 +792,7 @@ private[scalatest] object StringReporter {
 
       case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
-        val lines = stringsToPrintOnError(Resources.abortedNote, Resources.suiteAborted _, message, throwable, formatter, Some(suiteName), None, duration,
+        val lines = stringsToPrintOnError(Resources.abortedNote, Resources.suiteAborted _, message, throwable, Vector.empty, formatter, Some(suiteName), None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname)
 
         for (line <- lines) yield new Fragment(line, AnsiRed)
@@ -814,9 +824,9 @@ private[scalatest] object StringReporter {
  
         stringToPrint map (new Fragment(_, AnsiYellow))
 
-      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, differences, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, differences, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname, AnsiRed)
 
         val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname)
@@ -825,7 +835,7 @@ private[scalatest] object StringReporter {
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val tcf: Vector[Fragment] = fragmentsOnError(Resources.canceledNote, Resources.testCanceled _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tcf: Vector[Fragment] = fragmentsOnError(Resources.canceledNote, Resources.testCanceled _, message, throwable, Vector.empty, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname, AnsiYellow)
 
         val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname)
@@ -899,6 +909,7 @@ private[scalatest] object StringReporter {
     errorMessageFun: Any => String,
     message: String,
     throwable: Option[Throwable],
+    differences: scala.collection.immutable.IndexedSeq[Difference],
     formatter: Option[Formatter],
     suiteName: Option[String],
     testName: Option[String],
@@ -1029,11 +1040,15 @@ private[scalatest] object StringReporter {
         case None => List()
       }
 
+    val diffAnalysisContent = differences.flatMap(_.analysis).toList
+    val diffAnalysisHeader = if (diffAnalysisContent.isEmpty) List.empty else List(FailureMessages.differenceAnalysis)
+    val diffAnalysis = (diffAnalysisHeader ::: diffAnalysisContent).map(whiteSpace + _)
+
     val resultAsList =
       if (possiblyEmptyMessageWithPossibleLineNumber.isEmpty)
-        stringToPrintWithPossibleDuration :: getStackTrace(throwable)
+        stringToPrintWithPossibleDuration :: diffAnalysis ::: getStackTrace(throwable)
       else
-        stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
+        stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: diffAnalysis ::: getStackTrace(throwable)
     Vector.empty ++ resultAsList
   }
 
