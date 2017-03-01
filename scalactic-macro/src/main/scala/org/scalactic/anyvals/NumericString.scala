@@ -251,12 +251,15 @@ final class NumericString private (val value: String) extends AnyVal {
   def toLowerCase: String =
     value.toLowerCase
 
+  // SKIP-SCALATESTJS-START
   def toLowerCase(locale: Locale): String =
     value.toLowerCase(locale: Locale)
+  // SKIP-SCALATESTJS-END
 
   def toUpperCase: String =
     value.toUpperCase
 
+  // SKIP-SCALATESTJS-START
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
   // SKIP-SCALATESTJS-END
