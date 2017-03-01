@@ -163,6 +163,8 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.compareTo(sameStr)
       }
     }
+/*
+    Please leave this here as a template for other String AnyVals that will have this method.
     it("should offer a compareToIgnoreCase method that is consistent with String") {
       forAll { (numStr: NumericString, anotherString: String) =>
         numStr.compareToIgnoreCase(anotherString) shouldEqual
@@ -174,6 +176,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.compareToIgnoreCase(sameStr)
       }
     }
+*/
     it("should offer a concat method that is consistent with String") {
       forAll { (numStr: NumericString, str: String) =>
         numStr.concat(str) shouldEqual
@@ -564,6 +567,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
     // SKIP-SCALATESTJS-START
+/*  Please leave this here for other String AnyVals besides NumericString
     it("should offer toLowerCase methods that are consistent with String") {
       forAll { (numStr: NumericString) =>
         numStr.toLowerCase shouldEqual
@@ -582,6 +586,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toUpperCase(Locale.getDefault)
       }
     }
+*/
     // SKIP-SCALATESTJS-END
     it("should offer a trim method that is consistent with String") {
       forAll { (numStr: NumericString) =>

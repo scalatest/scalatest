@@ -113,6 +113,7 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   override def toString: String = s"NumericString($value)"
 
+  // Peter, missed this one
   def length: Int = value.length
 
   /**
@@ -145,12 +146,13 @@ final class NumericString private (val value: String) extends AnyVal {
   def compareTo(anotherString: String): Int =
     value.compareTo(anotherString)
 
+  // We'll leave this one out because numeric characters are the same upper and lower case.
   /**
    * Compares the `NumericString` to `anotherString` ignoring case, returning an integer <0 if `NumericString` is less than the supplied string,
    * 0 if identical, and >0 if `NumericString` is greater than the supplied string.
-   */
   def compareToIgnoreCase(anotherString: String): Int =
     value.compareToIgnoreCase(anotherString)
+   */
 
   /**
    * Concatenates supplied string `str` onto the tail end of the `NumericString` and returns the resulting String.
@@ -177,6 +179,8 @@ final class NumericString private (val value: String) extends AnyVal {
     value.contentEquals(cs)
   // SKIP-SCALATESTJS-END
 
+  // We are missing contentEquals(StringBuffer)
+
   /**
    * Returns `true` if the `NumericString` content completely matches the supplied `suffix`, when both strings are aligned at their endpoints.
    */
@@ -184,7 +188,8 @@ final class NumericString private (val value: String) extends AnyVal {
     value.endsWith(suffix)
 
   /**
-   * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the default Charset-mapping of Unicode code points.
+   * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the platform's default Charset-mapping of
+   * Unicode code points.
    */
   def getBytes: Array[Byte] =
     value.getBytes
@@ -196,7 +201,8 @@ final class NumericString private (val value: String) extends AnyVal {
     value.getBytes(charset)
 
   /**
-   * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the named `charsetName` Charset-mapping of Unicode code points.
+   * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the named `charsetName` Charset-mapping of Unicode
+   * code points.
    */
   def getBytes(charsetName: String): Array[Byte] =
     value.getBytes(charsetName)
@@ -240,7 +246,7 @@ final class NumericString private (val value: String) extends AnyVal {
     value.indexOf(str, fromIndex)
 
   /**
-   * Add this immutable `NumericString` to the pool of interned strings,
+   * Add this immutable `NumericString`'s `String` value to the pool of interned strings,
    * so there is only one copy of the string's representation in memory, shared among all instances.
    */
   def intern: String =
@@ -259,7 +265,8 @@ final class NumericString private (val value: String) extends AnyVal {
     value.lastIndexOf(ch)
 
   /**
-   * Returns zero-based index of the final occurrence of the Unicode character `ch` in the `NumericString`, with search beginning at zero-based `fromIndex`.
+   * Returns zero-based index of the final occurrence of the Unicode character `ch` in the `NumericString`, with search beginning
+   * at zero-based `fromIndex` and proceeding backwards.
    */
   def lastIndexOf(ch: Int, fromIndex: Int): Int =
     value.lastIndexOf(ch, fromIndex)
@@ -273,18 +280,20 @@ final class NumericString private (val value: String) extends AnyVal {
 
   /**
    * Returns zero-based index from the beginning of `NumericString` of the first character position for where the string `str`
-   * fully matched rightmost within `NumericString`, with search beginning at zero-based `fromIndex`.
+   * fully matched rightmost within `NumericString`, with search beginning at zero-based `fromIndex` and proceeding backwards.
    */
   def lastIndexOf(str: String, fromIndex: Int): Int =
     value.lastIndexOf(str, fromIndex)
 
   /**
-   * Returns `true` if the supplied `regex` string matches successfully anywhere within `NumericString`; otherwise returns `false`.
+   * Returns `true` if the this `NumericString`'s `String` value matches the supplied regular expression, `regex`; otherwise returns `false`.
    */
   def matches(regex: String): Boolean =
     value.matches(regex)
 
   // SKIP-SCALATESTJS-START
+  // Peter, this method returns the index of the character that is sitting at the position 
+  // computed by starting at index, and hopping over to the right codePointOffset code points.
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
   // SKIP-SCALATESTJS-END
@@ -342,13 +351,14 @@ final class NumericString private (val value: String) extends AnyVal {
     value.split(regex, limit)
 
   /**
-   * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, when both strings are aligned at their startpoints.
+   * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, when both strings are aligned at their startpoints
+   * up to the length of `prefix`.
    */
   def startsWith(prefix: String): Boolean =
     value.startsWith(prefix)
 
   /**
-   * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, when both strings are aligned with the supplied prefix offset by `toffset` characters into the `NumericString`.
+   * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, starting at `toffset` characters in the `NumericString`.
    */
   def startsWith(prefix: String, toffset: Int): Boolean =
     value.startsWith(prefix, toffset)
@@ -379,31 +389,35 @@ final class NumericString private (val value: String) extends AnyVal {
     value.toCharArray
 
   // SKIP-SCALATESTJS-START
+  // Peter, these should stay because we'll use them in aother String AnyVals, but
+  // they don't make sense to invoke on NumericString because they would have no effect.
+  // So I commmented them out. Please leave the comments here so we can use these as
+  // a template for the other AnyVals which we'll add soon.
   /**
    * Returns the string resulting from converting any upper-case characters in `NumericString` into lower-case.
-   */
   def toLowerCase: String =
     value.toLowerCase
+   */
 
   /**
    * Returns the string resulting from converting any upper-case characters in `NumericString` into lower-case
    * where case mapping is inferred from the `locale`.
-   */
   def toLowerCase(locale: Locale): String =
     value.toLowerCase(locale: Locale)
+   */
 
   /**
    * Returns the string resulting from converting any lower-case characters in `NumericString` into upper-case.
-   */
   def toUpperCase: String =
     value.toUpperCase
+   */
 
   /**
    * Returns the string resulting from converting any lower-case characters in `NumericString` into upper-case
    * where case mapping is inferred from the `locale`.
-   */
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
+   */
   // SKIP-SCALATESTJS-END
 
   /**
@@ -864,6 +878,7 @@ final class NumericString private (val value: String) extends AnyVal {
   def endsWith[B](that: GenSeq[B]): Boolean =
     value.endsWith(that)
 
+  // Peter, missed this one.
   def equalsIgnoreCase(arg0: String): Boolean =
     value.equalsIgnoreCase(arg0)
 
@@ -1816,6 +1831,8 @@ final class NumericString private (val value: String) extends AnyVal {
   def span(p: (Char) ⇒ Boolean): (String, String) =
     value.span(p)
 
+  // Peter, can you take a stab at this one too? It is added via an implicit conversion
+  // by Scala, but Scala neglected to document it.
   def split(separators: Array[Char]): Array[String] =
     value.split(separators)
 
