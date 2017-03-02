@@ -62,5 +62,13 @@ package object scalactic {
 
   @deprecated("Constraint has been deprecated and will be removed in a future version of Scalactic. Please use its new name, CanEqual, instead.")
   type Constraint[A, B] = A CanEqual B
-}
 
+  @deprecated("Chain has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.NonEmptyList instead.")
+  type Chain[+T] = org.scalactic.anyvals.NonEmptyList[T]
+
+  @deprecated("Chain has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.NonEmptyList instead.")
+  val Chain = org.scalactic.anyvals.NonEmptyList
+
+  @deprecated("End has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.End instead.")
+  val End = org.scalactic.anyvals.End
+}
