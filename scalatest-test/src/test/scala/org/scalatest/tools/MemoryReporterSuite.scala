@@ -26,6 +26,7 @@ import org.scalatest.events.RecordableEvent
 import org.scalatest.events.RunCompleted
 import org.scalatest.events.RunStarting
 import org.scalatest.ConfigMap
+import org.scalactic.Difference
 
 import java.io.File
 
@@ -62,6 +63,7 @@ class MemoryReporterSuite extends FunSuite {
       testName = "Some(say one)",
       testText = "say one",
       recordedEvents = Vector.empty[RecordableEvent],
+      differences = Vector.empty[Difference],
       rerunner = Some("org.example.OneSuite"))
 
   val testStarting2 =

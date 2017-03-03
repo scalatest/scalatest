@@ -73,7 +73,7 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   def positionExamples = 
     Table(
       "exception",
-      new TestFailedException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Vector.empty),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError(Some("message"), None, Left(source.Position.here), None),
       // SKIP-SCALATESTJS-END
@@ -89,7 +89,7 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   def stackDepthExamples = 
     Table(
       "exception",
-      new TestFailedException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None, Vector.empty),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError(Some("message"), None, Right(3), None),
       // SKIP-SCALATESTJS-END
