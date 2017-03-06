@@ -21,7 +21,7 @@ import org.scalatest.matchers._
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.transformOperatorChars

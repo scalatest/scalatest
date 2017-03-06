@@ -25,7 +25,24 @@ import org.scalactic.anyvals.NonEmptyArray
  */
 private[scalactic] final class DefaultEquality[A] extends Equality[A] {
 
-  private[scalactic] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
+  /**
+   * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by invoking <code>==</code> on <code>a</code>
+   * passing in <code>b</code>, treating arrays specially by invoking <code>.deep</code> on <code>a</code> and/or </code>b</code> if they
+   * are arrays, and using the result or results of invoking <code>.deep</code> in the equality check.
+   *
+   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   */
+  def areEqual(a: A, b: Any): Boolean = {
+    DefaultEquality.areEqualComparingArraysStructurally(a, b)
+  }
+
+  override def toString: String = "Equality.default"
+}
+
+object DefaultEquality {
+
+  private[org] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
     // when nearing 2.0.M6 to call .deep if either left or right side is an array.
     // TODO: this is the same algo as in scalactic.DefaultEquality. Put that one in
@@ -54,43 +71,5 @@ private[scalactic] final class DefaultEquality[A] extends Equality[A] {
     }
   }
 
-  /**
-   * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by invoking <code>==</code> on <code>a</code>
-   * passing in <code>b</code>, treating arrays specially by invoking <code>.deep</code> on <code>a</code> and/or </code>b</code> if they
-   * are arrays, and using the result or results of invoking <code>.deep</code> in the equality check.
-   *
-   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   */
-  def areEqual(a: A, b: Any): Boolean = {
-    areEqualComparingArraysStructurally(a, b)
-    /*a match {
-      case arr: Array[_] =>
-        b match {
-          case brr: Array[_] => arr.deep == brr.deep
-          case brr: NonEmptyArray[_] => arr.deep == brr.toArray.deep
-          case _ => arr.deep == b
-        }
-
-      case arr: NonEmptyArray[_] =>
-        b match {
-          case brr: Array[_] => arr.toArray.deep == brr.deep
-          case brr: NonEmptyArray[_] => arr.toArray.deep == brr.toArray.deep
-          case _ => arr.toArray.deep == b
-        }
-
-      case Some(elem) if b.isInstanceOf[Some[_]] =>
-        areEqual(elem, right.asInstanceOf[Some[_]].get)
-
-      case _ => {
-        b match {
-          case brr: Array[_] => a == brr.deep
-          case _ => a == b
-        }
-      }
-    }*/
-  }
-
-  override def toString: String = "Equality.default"
 }
 

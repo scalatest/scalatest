@@ -20,7 +20,7 @@ import Requirements._
 
 import scala.reflect.ClassTag
 import Assertions.NormalResult
-import Assertions.areEqualComparingArraysStructurally
+import DefaultEquality.areEqualComparingArraysStructurally
 import exceptions.StackDepthException
 import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
