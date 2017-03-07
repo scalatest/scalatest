@@ -31,6 +31,8 @@ trait Bool {
 
   val prettifier: Prettifier
 
+  def differences: scala.collection.immutable.IndexedSeq[Difference] = Vector.empty
+
   private def makeString(raw: String, args: Array[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply))
 
@@ -191,6 +193,10 @@ object Bool {
    * @return a binary macro <code>Bool</code>
    */
   def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
+
+  def tripleEqualMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier, equality: Equality[_]): Bool = new EqualityMacroBool(left, operator, right, expression, prettifier, equality)
+
+  def tripleEqualMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier, canEqual: CanEqual[_, _]): Bool = new CanEqualMacroBool(left, operator, right, expression, prettifier, canEqual)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
@@ -632,6 +638,119 @@ private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText
    */
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = if (expressionText.isEmpty) Vector.empty else Vector(UnquotedString(expressionText))
 
+}
+
+private[scalactic] class EqualityMacroBool(left: Any, operator: String, right: Any, expression: Boolean, val prettifier: Prettifier, equality: Equality[_]) extends Bool {
+
+  override lazy val differences: scala.collection.immutable.IndexedSeq[Difference] = {
+    val leftValue =
+      left match {
+        case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] => aEqualizer.leftSide
+        case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] => aEqualizer.leftSide
+        case _ => left
+      }
+    equality match {
+      case differ: Differ[Any] => Vector(differ.difference(leftValue, right))
+      case _ =>
+        Vector(
+          new Difference {
+            def inlineDiff = Some((leftValue, right))
+            def sideBySideDiff = None
+            def analysis = None
+          }
+        )
+
+    }
+  }
+
+  val value: Boolean = expression
+
+  private def getObjectsForFailureMessage =
+    left match {
+      case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] =>
+        Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
+      case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] =>
+        Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
+      case _ => Prettifier.getObjectsForFailureMessage(left, right)
+    }
+
+  def rawFailureMessage: String = Resources.rawDidNotEqual
+
+  def rawNegatedFailureMessage: String = Resources.rawEqualed
+
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  def failureMessageArgs: IndexedSeq[Any] = {
+    val (leftee, rightee) = getObjectsForFailureMessage
+    Vector(leftee, rightee)
+  }
+
+  def negatedFailureMessageArgs: IndexedSeq[Any] = {
+    val (leftee, rightee) = getObjectsForFailureMessage
+    Vector(leftee, rightee)
+  }
+
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
+}
+
+private[scalactic] class CanEqualMacroBool(left: Any, operator: String, right: Any, expression: Boolean, val prettifier: Prettifier, canEqual: CanEqual[_, _]) extends Bool {
+
+  override lazy val differences: scala.collection.immutable.IndexedSeq[Difference] = {
+    canEqual match {
+      case differ: Differ[Any] =>
+        left match {
+          case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] => Vector(differ.difference(aEqualizer.leftSide, right))
+          case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] => Vector(differ.difference(aEqualizer.leftSide, right))
+          case _ => Vector(differ.difference(left, right))
+        }
+      case _ =>
+        Vector(
+          new Difference {
+            def inlineDiff = Some((left, right))
+            def sideBySideDiff = None
+            def analysis = None
+          }
+        )
+
+    }
+  }
+
+  val value: Boolean = expression
+
+  private def getObjectsForFailureMessage =
+    left match {
+      case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] =>
+        Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
+      case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] =>
+        Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
+      case _ => Prettifier.getObjectsForFailureMessage(left, right)
+    }
+
+  def rawFailureMessage: String = Resources.rawDidNotEqual
+
+  def rawNegatedFailureMessage: String = Resources.rawEqualed
+
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  def failureMessageArgs: IndexedSeq[Any] = {
+    val (leftee, rightee) = getObjectsForFailureMessage
+    Vector(leftee, rightee)
+  }
+
+  def negatedFailureMessageArgs: IndexedSeq[Any] = {
+    val (leftee, rightee) = getObjectsForFailureMessage
+    Vector(leftee, rightee)
+  }
+
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
 }
 
 /**

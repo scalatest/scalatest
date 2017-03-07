@@ -17,6 +17,7 @@ package org.scalatest.events
 
 import org.scalatest._
 import org.scalactic.Requirements._
+import org.scalactic.Difference
 import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -461,7 +462,8 @@ final case class TestFailed (
   suiteClassName: Option[String],
   testName: String,
   testText: String,
-  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], 
+  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent],
+  differences: collection.immutable.IndexedSeq[Difference],
   throwable: Option[Throwable] = None,
   duration: Option[Long] = None,
   formatter: Option[Formatter] = None,
@@ -479,6 +481,8 @@ final case class TestFailed (
                  suiteClassName,
                  testName,
                  testText,
+                 recordedEvents,
+                 differences,
                  throwable,
                  duration,
                  formatter,

@@ -96,7 +96,7 @@ import org.scalactic._
  */
 trait AssertionsForJUnit extends Assertions {
 
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
+  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[Difference]): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
   

@@ -186,6 +186,40 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  def tripleEqualMacroBool(select: Select, secondArg: Tree, prettifier: Tree, typeClass: Tree): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
+            newTermName("scalactic")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("tripleEqualMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          Apply(
+            Select(
+              Ident("$org_scalatest_assert_macro_left"),
+              select.name
+            ),
+            List(Ident("$org_scalatest_assert_macro_right"))
+          ),
+          List(secondArg)
+        ),
+        prettifier.duplicate,
+        typeClass.duplicate
+      )
+    )
+
   /**
    * For === and !== method call that takes Equality and uses TypeCheckedTripleEquals , for example left === right, it'll generate the AST for the following code:
    *
@@ -628,6 +662,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             funApply.fun match {
               case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
                 val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), prettifierTree)
+                val equalityTree = apply.args(0)
                 /**
                  * For === and !== that takes Equality, for example a === b
                  *
@@ -642,7 +677,10 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 Block(
                   valDef("$org_scalatest_assert_macro_left", leftTree),
                   valDef("$org_scalatest_assert_macro_right", rightTree),
-                  binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree) // TODO: should apply.args(0) be traversed also?
+                  if (select.name.decoded == "===")
+                    tripleEqualMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree, equalityTree) // TODO: should apply.args(0) be traversed also?
+                  else
+                    binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree)
                 )
               case typeApply: TypeApply =>
                 typeApply.fun match {
@@ -661,10 +699,14 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                     val operator: String = select.name.decoded
                     if (operator == "===" || operator == "!==") {
                       val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), prettifierTree)
+                      val canEqualTree = apply.args(0)
                       Block(
                         valDef("$org_scalatest_assert_macro_left", leftTree),
                         valDef("$org_scalatest_assert_macro_right", rightTree),
-                        binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree) // TODO: should apply.args(0) be traversed also?
+                        if (select.name.decoded == "===")
+                          tripleEqualMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree, canEqualTree)
+                        else
+                          binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree) // TODO: should apply.args(0) be traversed also?
                       )
                     }
                     else

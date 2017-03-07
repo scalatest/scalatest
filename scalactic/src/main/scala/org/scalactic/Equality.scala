@@ -220,13 +220,28 @@ trait Equality[A] extends Equivalence[A] {
    *     <code>Equality</code> instance
    */
   final def areEquivalent(a: A, b: A): Boolean = areEqual(a, b)
-} 
+}
+
+trait LowPriorityEqualityImplicits {
+
+  /**
+    * Provides default <code>Equality</code> implementations for the specified type whose
+    * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
+    * then compares the resulting objects with <code>==</code>.
+    *
+    * @return a default <code>Equivalence[A]</code>
+    */
+  implicit def default[A]: Equality[A] = new DefaultEquality[A]
+
+  implicit def productDefault[A <: Product]: Equality[A] = new DefaultEquality[A] with ProductDiffer
+
+}
 
 /**
  * Companion object for trait <code>Equality</code> that provides factory methods for producing <code>Equality</code>
  * instances.
  */ 
-object Equality {
+object Equality extends LowPriorityEqualityImplicits {
 
   /**
    * Produces a <code>NormalizingEquality[A]</code> whose <code>normalized</code>,
@@ -245,13 +260,14 @@ object Equality {
     }
   }
 
-  /**
-   * Provides default <code>Equality</code> implementations for the specified type whose
-   * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
-   * then compares the resulting objects with <code>==</code>.
-   *
-   * @return a default <code>Equivalence[A]</code>
-   */
-  implicit def default[A]: Equality[A] = new DefaultEquality[A]
+  implicit def stringEquality: Equality[String] = new DefaultEquality[String] with StringDiffer
+
+  import scala.language.higherKinds
+
+  implicit def genSeqEquality[E, SEQ[e] <: scala.collection.GenSeq[e]]: Equality[SEQ[E]] = new DefaultEquality[SEQ[E]] with GenSeqDiffer[E]
+
+  implicit def genSetEquality[E, SET[e] <: scala.collection.GenSet[e]]: Equality[SET[E]] = new DefaultEquality[SET[E]] with GenSetDiffer[E]
+
+  implicit def genMapEquality[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Equality[MAP[K, V]] = new DefaultEquality[MAP[K, V]] with GenMapDiffer[K, V]
 }
 

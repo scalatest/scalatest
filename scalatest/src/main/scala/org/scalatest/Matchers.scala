@@ -5249,8 +5249,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!equality.areEqual(e, right)) {
-          val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos)
+          equality match {
+            case differ: Differ[T] =>
+              val difference = differ.difference(e, right)
+              val (eee, rightee) = difference.inlineDiff.getOrElse((e, right))
+              indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
+            case _ =>
+              val difference =
+                new Difference {
+                  def inlineDiff = Some((e, right))
+                  def sideBySideDiff = None
+                  def analysis = None
+                }
+              indicateFailure(FailureMessages.didNotEqual(prettifier, e, right), None, pos, difference)
+
+          }
         }
         else indicateSuccess(FailureMessages.equaled(prettifier, e, right))
       }
@@ -5416,7 +5429,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         val result = rightMatcher(e)
         MatchFailed.unapply(result)(prettifier) match {
           case Some(failureMessage) =>
-            indicateFailure(failureMessage, None, pos)
+            rightMatcher match {
+              case eqMatcher: EqualMatcher[T] => indicateFailure(failureMessage, None, pos, eqMatcher.difference(e))
+              case _ => indicateFailure(failureMessage, None, pos)
+            }
           case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
@@ -6665,7 +6681,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
       val result = rightMatcher(left)
       MatchFailed.unapply(result)(prettifier) match {
-        case Some(failureMessage) => indicateFailure(failureMessage, None, pos)
+        case Some(failureMessage) =>
+          rightMatcher match {
+            case eqMatcher: EqualMatcher[T] => indicateFailure(failureMessage, None, pos, eqMatcher.difference(left))
+            case _ => indicateFailure(failureMessage, None, pos)
+          }
         case None => indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
@@ -6738,8 +6758,23 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
       if (!equality.areEqual(leftSideValue, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos)
+        equality match {
+          case differ: Differ[T] =>
+            val difference = differ.difference(leftSideValue, right)
+            val (leftee, rightee) = difference.inlineDiff.getOrElse((leftSideValue, right))
+            indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
+
+          case _ =>
+            val localLeft = leftSideValue
+            val difference =
+              new Difference {
+                def inlineDiff = Some((localLeft, right))
+                def sideBySideDiff = None
+                def analysis = None
+              }
+            indicateFailure(FailureMessages.didNotEqual(prettifier, leftSideValue, right), None, pos, difference)
+
+        }
       }
       else indicateSuccess(FailureMessages.equaled(prettifier, leftSideValue, right))
     }
