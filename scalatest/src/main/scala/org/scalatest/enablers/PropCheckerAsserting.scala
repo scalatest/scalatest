@@ -28,6 +28,7 @@ import org.scalatest.prop.{SizeParam}
 import scala.util.{Try, Success, Failure}
 import org.scalatest.exceptions.DiscardedEvaluationException
 import scala.concurrent.Future
+import scala.compat.Platform.EOL
 
 trait PropCheckerAsserting[T] {
 
@@ -138,8 +139,9 @@ abstract class UnitPropCheckerAsserting {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
+
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -156,39 +158,40 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
       val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
-      loop(0, 0, initEdges, afterEdgesRnd, initialSizes) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
+      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
     }
 
     private def checkForAll[A, B](names: List[String], config: Parameter,
@@ -200,7 +203,7 @@ abstract class UnitPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -221,40 +224,41 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, rnd3, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes)
+      loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes, initSeed)
     }
 
     private def checkForAll[A, B, C](names: List[String], config: Parameter,
@@ -267,7 +271,7 @@ abstract class UnitPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -290,41 +294,42 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, rnd4, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes)
+      loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes, initSeed)
     }
 
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter,
@@ -338,7 +343,7 @@ abstract class UnitPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -363,42 +368,43 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes)
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
     }
 
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
@@ -413,7 +419,7 @@ abstract class UnitPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -440,35 +446,36 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, rnd6, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
@@ -476,7 +483,7 @@ abstract class UnitPropCheckerAsserting {
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
       val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes)
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed)
     }
 
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
@@ -492,7 +499,7 @@ abstract class UnitPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt]): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -521,36 +528,37 @@ abstract class UnitPropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes, initSeed)
               else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
             }
             else {
               val (success, cause) = succeed(r)
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes, initSeed)
                 else
-                  PropertyCheckResult.Success(argsPassed)
+                  PropertyCheckResult.Success(argsPassed, initSeed)
               }
               else {
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
               }
             }
 
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, rnd7, nextInitialSizes, initSeed)
             else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)
+            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
@@ -559,18 +567,18 @@ abstract class UnitPropCheckerAsserting {
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
       val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
       val (initFEdges, afterFEdgesRnd) = genF.initEdges(maxEdges, afterEEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes)
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes, initSeed)
     }
 
     private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
       val (args, labels) = argsAndLabels(result)
       result match {
-        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed) =>
+        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed, initSeed) =>
           val failureMsg =
             if (succeeded == 1)
-              FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
+              FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded) + EOL + FailureMessages.initSeed(prettifier, initSeed)
             else
-              FailureMessages.propCheckExhausted(prettifier, succeeded, discarded)
+              FailureMessages.propCheckExhausted(prettifier, succeeded, discarded) + EOL + FailureMessages.initSeed(prettifier, initSeed)
 
           indicateFailure(
             sde => failureMsg,
@@ -581,22 +589,23 @@ abstract class UnitPropCheckerAsserting {
             pos
           )
 
-        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed) =>
+        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
           indicateFailure(
-            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
+              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
                   case _ => ""
                 }
                 ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + "\n" +
+              "  " + FailureMessages.occurredOnValues + EOL +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
               "  )" +
-              getLabelDisplay(labels.toSet),
+              getLabelDisplay(labels.toSet) + EOL +
+              "  " + FailureMessages.initSeed(prettifier, initSeed),
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
@@ -716,7 +725,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -735,7 +744,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -745,11 +754,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -758,15 +767,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -776,25 +785,26 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
       val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
 
-      loop(0, 0, initEdges, afterEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -807,7 +817,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -831,7 +841,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -841,11 +851,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -854,15 +864,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -872,26 +882,27 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
 
-      loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -905,7 +916,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -931,7 +942,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -941,11 +952,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -954,15 +965,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -972,27 +983,28 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
       val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
 
-      loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -1006,7 +1018,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1034,7 +1046,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -1044,11 +1056,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -1057,15 +1069,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -1075,20 +1087,21 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
@@ -1096,7 +1109,7 @@ trait FuturePropCheckerAsserting {
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
 
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -1110,7 +1123,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1140,7 +1153,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -1150,11 +1163,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -1163,15 +1176,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -1181,20 +1194,21 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
@@ -1203,7 +1217,7 @@ trait FuturePropCheckerAsserting {
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
       val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
 
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -1218,7 +1232,7 @@ trait FuturePropCheckerAsserting {
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt]): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1250,7 +1264,7 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             }
             else {
@@ -1260,11 +1274,11 @@ trait FuturePropCheckerAsserting {
                 if (nextSucceededCount < config.minSuccessful)
                   AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
 
             }
           } recover {
@@ -1273,15 +1287,15 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             case ex =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes, initSeed)
           }
         }
         catch {
@@ -1291,20 +1305,21 @@ trait FuturePropCheckerAsserting {
               if (nextDiscardedCount < maxDiscarded)
                 AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
             if (result.result.isDefined)
               Future.successful(result)
             else
-              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes)
+              loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed)))
+            val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
       }
 
       val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
       val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
@@ -1314,7 +1329,7 @@ trait FuturePropCheckerAsserting {
       val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
       val (initFEdges, afterFEdgesRnd) = genF.initEdges(maxEdges, afterEEdgesRnd)
 
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes).map { accResult =>
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes, initSeed).map { accResult =>
         accResult.result.get
       }
     }
@@ -1322,12 +1337,12 @@ trait FuturePropCheckerAsserting {
     private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Assertion = {
       val (args, labels) = argsAndLabels(result)
       result match {
-        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed) =>
+        case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed, initSeed) =>
           val failureMsg =
             if (succeeded == 1)
-              FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
+              FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded) + EOL + FailureMessages.initSeed(prettifier, initSeed)
             else
-              FailureMessages.propCheckExhausted(prettifier, succeeded, discarded)
+              FailureMessages.propCheckExhausted(prettifier, succeeded, discarded) + EOL + FailureMessages.initSeed(prettifier, initSeed)
 
           indicateFutureFailure(
             sde => failureMsg,
@@ -1338,22 +1353,23 @@ trait FuturePropCheckerAsserting {
             pos
           )
 
-        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed) =>
+        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
           indicateFutureFailure(
-            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
+              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
                   case _ => ""
                 }
                 ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + "\n" +
+              "  " + FailureMessages.occurredOnValues + EOL +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
               "  )" +
-              getLabelDisplay(labels.toSet),
+              getLabelDisplay(labels.toSet) + EOL +
+              "  " + FailureMessages.initSeed(prettifier, initSeed),
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
@@ -1541,8 +1557,8 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
 
     val (args: List[PropertyArgument], labels: List[String]) =
       result match {
-        case PropertyCheckResult.Success(args) => (args.toList, List())
-        case PropertyCheckResult.Failure(_, _, names, args) => (args.toList, List())
+        case PropertyCheckResult.Success(args, _) => (args.toList, List())
+        case PropertyCheckResult.Failure(_, _, names, args, _) => (args.toList, List())
         case _ => (List(), List())
       }
 
