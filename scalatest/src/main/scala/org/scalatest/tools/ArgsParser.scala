@@ -204,6 +204,7 @@ private[tools] object ArgsParser {
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
     // SKIP-SCALATESTJS,NATIVE-END
+    val seeds = ListBuffer[String]()
 
     val it = args.iterator.buffered
     while (it.hasNext) {
@@ -414,6 +415,11 @@ private[tools] object ArgsParser {
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
+      else if (s == "-S") {
+        seeds += s
+        if (it.hasNext)
+          seeds += it.next()
+      }
       else if (s == "-T") {
         // SKIP-SCALATESTJS,NATIVE-START
         testSortingReporterTimeout += s
@@ -462,7 +468,6 @@ private[tools] object ArgsParser {
       concurrent.toList,
       // SKIP-SCALATESTJS,NATIVE-END
       membersOnly.toList,
-      //SCALATESTJS,NATIVE-ONLY wildcard.toList
       // SKIP-SCALATESTJS,NATIVE-START
       wildcard.toList,
       testNGXMLFiles.toList,
@@ -470,8 +475,9 @@ private[tools] object ArgsParser {
       chosenStyles.toList,
       spanScaleFactor.toList,
       testSortingReporterTimeout.toList,
-      slowpoke.toList
+      slowpoke.toList,
       // SKIP-SCALATESTJS,NATIVE-END
+      seeds.toList
     )
   }
 
@@ -1246,6 +1252,34 @@ private[tools] object ArgsParser {
       defaultValue
     else if (lb.size == 1)
       lb(0)
+    else
+      throw new IllegalArgumentException("Only one " + dashArg + " can be specified.")
+  }
+
+  def parseLongArgument(args: List[String], dashArg: String): Option[Long] = {
+    val it = args.iterator
+    val lb = new ListBuffer[Long]()
+    while (it.hasNext) {
+      val dash = it.next
+      if (dash != dashArg)
+        throw new IllegalArgumentException("Every other element, starting with the first, must be " + dashArg)
+      if (it.hasNext) {
+        val spanString = it.next
+        try {
+          lb += spanString.toLong
+        }
+        catch {
+          case e: NumberFormatException =>
+            throw new IllegalArgumentException(dashArg + " must be followed by a number, but '" + spanString + "' is not a number.")
+        }
+      }
+      else
+        throw new IllegalArgumentException("Last element must be a number, not a " + dashArg + ".")
+    }
+    if (lb.size == 0)
+      None
+    else if (lb.size == 1)
+      Some(lb(0))
     else
       throw new IllegalArgumentException("Only one " + dashArg + " can be specified.")
   }
