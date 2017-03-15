@@ -883,10 +883,10 @@ object GenAnyVals {
     val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
     val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    val autoWidenTests =6
+    val autoWidenTests =
       primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != primitiveType), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
-        anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-        shouldNotCompileTests(primitiveTypes.takeWhile(_ != primitiveType) ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
+      anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
+      shouldNotCompileTests(primitiveTypes.takeWhile(_ != primitiveType) ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
     val autoWidenPropertyTests =
       primitivesWidenPropertyTests(typeName, primitiveType, primitiveTypes.dropWhile(_ != primitiveType)) ++
