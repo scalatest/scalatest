@@ -474,8 +474,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (nextBetween, nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (nextBetween, nextNextRnd)
       }
     }
   }
@@ -495,8 +496,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (PosFloat.ensuringValid(nextBetween), nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (PosFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }
   }
@@ -516,8 +518,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (PosFiniteFloat.ensuringValid(nextBetween), nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (PosFiniteFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }
   }
@@ -537,8 +540,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (PosZFloat.ensuringValid(nextBetween), nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (PosZFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }
   }
@@ -558,7 +562,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        //val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (PosZFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -579,8 +585,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (nextBetween, nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (nextBetween, nextNextRnd)
       }
     }
   }
@@ -711,7 +718,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (PosDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -732,7 +740,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (PosFiniteDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -753,7 +762,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (PosZDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -774,7 +784,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (PosZFiniteDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -835,7 +846,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -856,7 +868,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -877,7 +890,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -898,7 +912,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegFiniteDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -959,7 +974,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegZFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -980,7 +996,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegZFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -1001,7 +1018,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegZDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -1022,7 +1040,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         (NegZFiniteDouble.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -1089,7 +1108,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         if (nextBetween == 0.0f)
           (NonZeroFloat(1.0f), nextRnd)
         else
@@ -1113,7 +1133,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         if (nextBetween == 0.0f)
           (NonZeroFiniteFloat(1.0f), nextRnd)
         else
@@ -1137,7 +1158,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         if (nextBetween == 0.0)
           (NonZeroDouble(1.0), nextRnd)
         else
@@ -1161,11 +1183,13 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
         if (nextBetween == 0.0)
-          (NonZeroFiniteDouble(1.0), nextRnd)
+          (NonZeroFiniteDouble(1.0), nextNextRnd)
         else
-          (NonZeroFiniteDouble.ensuringValid(nextBetween), nextRnd)
+          (NonZeroFiniteDouble.ensuringValid(nextBetween), nextNextRnd)
+
       }
     }
   }
@@ -1185,8 +1209,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (FiniteFloat.ensuringValid(nextBetween), nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (FiniteFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }
   }
@@ -1206,8 +1231,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       if (nextValue >= min && nextValue <= max)
         nextPair
       else {
-        val nextBetween = min + (nextValue % (max - min)).abs
-        (FiniteDouble.ensuringValid(nextBetween), nextRnd)
+        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
+        val nextBetween = min + (between0And1 * (max - min)).abs
+        (FiniteDouble.ensuringValid(nextBetween), nextNextRnd)
       }
     }
   }
