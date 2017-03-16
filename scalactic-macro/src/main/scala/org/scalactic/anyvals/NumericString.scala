@@ -113,28 +113,55 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   override def toString: String = s"NumericString($value)"
 
-  // Peter, missed this one
+  /**
+   * Returns length of this `NumericString` in Unicode characters.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      length of this `NumericString`
+   */
   def length: Int = value.length
 
   /**
    * Returns the character at the zero-based `index` within the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param index zero-based offset within `NumericString`
+   * @return      character found at `index`
    */
   def charAt(index: Int): Char = value.charAt(index)
 
   /**
    * Returns the integer value of the Unicode code point at the zero-based `index` within the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param index zero-based offset within `NumericString`
+   * @return      Unicode code point found at 'index'
    */
   def codePointAt(index: Int): Int = value.codePointAt(index)
 
   // SKIP-SCALATESTJS-START
   /**
    * Returns the integer value of the Unicode code point immediately prior to the zero-based `index` within the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param index zero-based offset within `NumericString`
+   * @return      Unicode code point found immediately prior to 'index'
    */
   def codePointBefore(index: Int): Int = value.codePointBefore(index)
   // SKIP-SCALATESTJS-END
 
   /**
    * Returns the count of complete Unicode code points beginning at zero-based `beginIndex` and ending at (but not including) zero-based `endIndex`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param beginIndex  zero-based starting offset within `NumericString`
+   * @param endIndex    zero-based ending offset within `NumericString`, one-past character range of interest
+   * @return            count of complete Unicode code points found from BeginIndex, up to endIndex
    */
   def codePointCount(beginIndex: Int, endIndex: Int): Int =
     value.codePointCount(beginIndex, endIndex)
@@ -142,6 +169,11 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Compares the `NumericString` to `anotherString`, returning an integer <0 if `NumericString` is less than the supplied string,
    * 0 if identical, and >0 if `NumericString` is greater than the supplied string.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param anotherString  other string we compare `NumericString` against
+   * @return               integer <0, 0 or >0 corresponding to lexicographic ordering of `NumericString` vs. `anotherString`
    */
   def compareTo(anotherString: String): Int =
     value.compareTo(anotherString)
@@ -150,12 +182,23 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Compares the `NumericString` to `anotherString` ignoring case, returning an integer <0 if `NumericString` is less than the supplied string,
    * 0 if identical, and >0 if `NumericString` is greater than the supplied string.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param anotherString    other string we compare `NumericString` against
+   * @return                 integer <0, 0 or >0 corresponding to case-insensitive lexicographic ordering
+   *                         of `NumericString` vs. `anotherString`
   def compareToIgnoreCase(anotherString: String): Int =
     value.compareToIgnoreCase(anotherString)
    */
 
   /**
    * Concatenates supplied string `str` onto the tail end of the `NumericString` and returns the resulting String.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param str   additional string to concatenate onto `NumericString`
+   * @return      string resulting from the concatenation
    */
   def concat(str: String): String =
     value.concat(str)
@@ -174,6 +217,12 @@ final class NumericString private (val value: String) extends AnyVal {
   // SKIP-SCALATESTJS-START
   /**
    * Returns `true` if the `NumericString` content is the same as the supplied character sequence `cs`, otherwise returns `false`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param cs    character sequence for comparison
+   * @return      `true` if `NumericString` content is the same as `cs`
+   *              `false` otherwise.
    */
   def contentEquals(cs: CharSequence): Boolean =
     value.contentEquals(cs)
@@ -183,6 +232,12 @@ final class NumericString private (val value: String) extends AnyVal {
 
   /**
    * Returns `true` if the `NumericString` content completely matches the supplied `suffix`, when both strings are aligned at their endpoints.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param suffix    string for comparison as a suffix
+   * @return          `true` if `NumericString` content completely matches the supplied `suffix`
+   *                  `false` otherwise.
    */
   def endsWith(suffix: String): Boolean =
     value.endsWith(suffix)
@@ -190,12 +245,21 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the platform's default Charset-mapping of
    * Unicode code points.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      array of bytes corresponding to `NumericString` characters
    */
   def getBytes: Array[Byte] =
     value.getBytes
 
   /**
    * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the supplied `charset` mapping of Unicode code points.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param charset    a mapping of Unicode code points to bytes
+   * @return           array of bytes corresponding to `NumericString` characters
    */
   def getBytes(charset: Charset): Array[Byte] =
     value.getBytes(charset)
@@ -203,6 +267,11 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns an array of bytes corresponding to the `NumericString` characters, interpreted via the named `charsetName` Charset-mapping of Unicode
    * code points.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param charsetName    string that names an already-known mapping of Unicode code points to bytes
+   * @return               array of bytes corresponding to `NumericString` characters
    */
   def getBytes(charsetName: String): Array[Byte] =
     value.getBytes(charsetName)
@@ -210,6 +279,14 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Extracts the range of `NumericString` characters beginning at zero-based `srcBegin` through but not including `srcEnd`,
    * into the supplied character array `dst`, writing the characters at the zero-based `dstBegin` index forward within that array.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param srcBegin    zero-based index where to begin extracting characters from `NumericString`
+   * @param srcEnd      zero-based limit before which to stop extracting characters from `NumericString`
+   * @param dst         supplied character array to write extracted characters into
+   * @param dstBegin    zero-based index within destination array at which to begin writing
+   * @return            Unit -- this function modifies the supplied `dst` array
    */
   def getChars(srcBegin: Int, srcEnd: Int, dst: Array[Char], dstBegin: Int): Unit =
     value.getChars(srcBegin, srcEnd, dst, dstBegin)
@@ -217,6 +294,11 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns zero-based index in Unicode code units (logical index of characters) of first-encountered `NumericString` character
    * matching the supplied Unicode `ch`; returns -1 if no matching character is found.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param ch    Unicode character to look for
+   * @return      zero-based integer index in Unicode code units of first-encountered instance of `ch`
    */
   def indexOf(ch: Int): Int =
     value.indexOf(ch)
@@ -225,6 +307,12 @@ final class NumericString private (val value: String) extends AnyVal {
    * Returns zero-based index (in Unicode code units: logical index of characters) of first-encountered `NumericString` character
    * matching supplied Unicode `ch`, beginning search at zero-based index `fromIndex`; returns -1 if no matching character is found
    * or if `fromIndex` is outside the bounds of `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param ch           Unicode character to look for
+   * @param fromIndex    zero-based integer index at which to begin search for match of `ch` character
+   * @return             zero-based integer index in Unicode code units of first-encountered instance of `ch` at/beyond `fromIndex`
    */
   def indexOf(ch: Int, fromIndex: Int): Int =
     value.indexOf(ch, fromIndex)
@@ -233,6 +321,12 @@ final class NumericString private (val value: String) extends AnyVal {
    * Returns zero-based index (in Unicode code units: logical index of characters) of starting-character position 
    * of first-encountered match of `str` within `NumericString`;
    * returns -1 if no fully-matching substring is found.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param str          Unicode string to look for
+   * @return             zero-based integer index in Unicode code units,
+   *                     of starting position of first-encountered instance of `str` in `NumericString`
    */
   def indexOf(str: String): Int =
     value.indexOf(str)
@@ -241,6 +335,13 @@ final class NumericString private (val value: String) extends AnyVal {
    * Returns zero-based index (in Unicode code units: logical index of characters) of starting-character position 
    * of first-encountered match of `str` within `NumericString`, beginning search at zero-based index `fromIndex`;
    * returns -1 if no fully-matching substring is found, or if `fromIndex` is outside the bounds of `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param str          Unicode string to look for
+   * @param fromIndex    zero-based integer index at which to begin search for match of `str` string
+   * @return             zero-based integer index in Unicode code units, of starting position of 
+   *                     first-encountered instance of `str` in `NumericString` at/beyond `fromIndex`
    */
   def indexOf(str: String, fromIndex: Int): Int =
     value.indexOf(str, fromIndex)
@@ -248,18 +349,33 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Add this immutable `NumericString`'s `String` value to the pool of interned strings,
    * so there is only one copy of the string's representation in memory, shared among all instances.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      String which is now in the pool of interned strings
    */
   def intern: String =
     value.intern
 
   /**
    * Returns `true` if `NumericString` contains no characters (not even whitespace); otherwise returns `false`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      `true` if `NumericString` contains no characters (not even whitespace)
+   *              `false` otherwise.
    */
   def isEmpty: Boolean =
     value.isEmpty
 
   /**
    * Returns zero-based index of the final occurrence of the Unicode character `ch` in the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param ch    Unicode character for which to search backwards
+   * @return      zero-based integer index of the final occurrence of this character in `NumericString`;
+   *              -1 if not found
    */
   def lastIndexOf(ch: Int): Int =
     value.lastIndexOf(ch)
@@ -267,6 +383,13 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns zero-based index of the final occurrence of the Unicode character `ch` in the `NumericString`, with search beginning
    * at zero-based `fromIndex` and proceeding backwards.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param ch           Unicode character for which to search backwards
+   * @param fromIndex    zero-based index of starting position
+   * @return             zero-based index of the final (rightmost) occurrence of this character in `NumericString`;
+   *                     -1 if not found
    */
   def lastIndexOf(ch: Int, fromIndex: Int): Int =
     value.lastIndexOf(ch, fromIndex)
@@ -274,6 +397,12 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns zero-based index from the beginning of `NumericString` of the first character position for where the string `str` 
    * fully matched rightmost within `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param str    string for comparison
+   * @return      zero-based integer index of first character position of where `str` fully matched rightmost within `NumericString`;
+   *              -1 if not found
    */
   def lastIndexOf(str: String): Int =
     value.lastIndexOf(str)
@@ -281,19 +410,43 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns zero-based index from the beginning of `NumericString` of the first character position for where the string `str`
    * fully matched rightmost within `NumericString`, with search beginning at zero-based `fromIndex` and proceeding backwards.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param str          string for comparison
+   * @param fromIndex    zero-based index of starting position
+   * @return             zero-based integer index of first character position of where `str` fully matched rightmost within `NumericString`;
+   *                     -1 if not found
    */
   def lastIndexOf(str: String, fromIndex: Int): Int =
     value.lastIndexOf(str, fromIndex)
 
   /**
    * Returns `true` if the this `NumericString`'s `String` value matches the supplied regular expression, `regex`; otherwise returns `false`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param regex    regular-expression string
+   * @return         `true` if `NumericString` content matches supplied regular expression `regex`;
+   *                 `false` otherwise.
    */
   def matches(regex: String): Boolean =
     value.matches(regex)
 
   // SKIP-SCALATESTJS-START
-  // Peter, this method returns the index of the character that is sitting at the position 
+  // This method returns the index of the character that is sitting at the position 
   // computed by starting at index, and hopping over to the right codePointOffset code points.
+
+  /**
+   * Returns the "byte distance" required from start of string,
+   * to reach the position of the supplied byte `index` plus the number of `codePointOffset` points further.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param index              byte index of start position in spacing computation
+   * @param codePointOffset    how many code points to advance (may be variable length per code point)
+   * @return                   zero-based offset in bytes from start of `NumericString`, to reach the designated position
+   */
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
   // SKIP-SCALATESTJS-END
@@ -301,6 +454,16 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns `true` if the given region of text matches completely for the `len` characters beginning at `toffset` in the `NumericString` text
    * and at `ooffset` in the supplied `other` string text, with the option to `ignoreCase` during matching; otherwise returns `false`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param ignoreCase    if nonzero, comparison ignores case
+   * @param toffset       zero-based offset of start point of comparison in `NumericString` text
+   * @param other         string supplied for comparison
+   * @param ooffset       zero-based offset of start point of comparison in `other` string text
+   * @param len           length of comparison, in characters
+   * @return              `true` if region of text matches completely for given length;
+   *                      `false` otherwise.
    */
   def regionMatches(ignoreCase: Boolean, toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
     value.regionMatches(ignoreCase, toffset, other, ooffset, len)
@@ -308,30 +471,63 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns `true` if the given region of text matches completely for the `len` characters beginning at `toffset` in the `NumericString` text
    * and at `ooffset` in the supplied `other` string text; otherwise returns `false`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param toffset       zero-based offset of start point of comparison in `NumericString` text
+   * @param other         string supplied for comparison
+   * @param ooffset       zero-based offset of start point of comparison in `other` string text
+   * @param len           length of comparison, in characters
+   * @return              `true` if region of text matches completely for given length;
+   *                      `false` otherwise.
    */
   def regionMatches(toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
     value.regionMatches(toffset, other, ooffset, len)
 
   /**
    * Returns the new `String` resulting from replacing all occurrences of `oldChar` with `newChar`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param oldChar    character to replace
+   * @param newChar    character that will take its place
+   * @return           string resulting from zero or more replacement(s)
    */
   def replace(oldChar: Char, newChar: Char): String =
     value.replace(oldChar, newChar)
 
   /**
    * Returns the new `String` resulting from replacing all occurrences of `CharSequence` `target` with `replacement`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param target         character sequence to replace
+   * @param replacement    character sequence that will take its place
+   * @return               string resulting from zero or more replacement(s)
    */
   def replace(target: CharSequence, replacement: CharSequence): String =
     value.replace(target, replacement)
 
   /**
    * Returns the new `String` resulting from replacing all `regex` string matches with the `replacement` string.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param regex          regular expression string
+   * @param replacement    string to replace in place of any regular expression matches in the original `NumericString`
+   * @return               string resulting from zero or more replacement(s)
    */
   def replaceAll(regex: String, replacement: String): String =
     value.replaceAll(regex, replacement)
 
   /**
    * Returns the new `String` resulting from replacing the first-found `regex` string match with the `replacement` string.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param regex          regular expression string
+   * @param replacement    string to replace in place of first regular expression match in the original `NumericString`
+   * @return               string resulting from zero or one replacement(s)
    */
   def replaceFirst(regex: String, replacement: String): String =
     value.replaceFirst(regex, replacement)
@@ -339,6 +535,11 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns an array of strings produced by splitting `NumericString` at every location matching the supplied `regex`;
    * the `regex`-matching characters are omitted from the output.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param regex    string for pattern matching
+   * @return         array of strings produced by splitting `NumericString` at every location matching supplied `regex`
    */
   def split(regex: String): Array[String] =
     value.split(regex)
@@ -346,6 +547,12 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns an array of strings produced by splitting `NumericString` at up to `limit` locations matching the supplied `regex`;
    * the `regex`-matching characters are omitted from the output.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param regex    string for pattern matching
+   * @param limit    maximum number of split output strings that will be generated by this function; further potential splits get ignored
+   * @return         array of strings produced by splitting `NumericString` at every location matching supplied `regex`, up to `limit` occurrences
    */
   def split(regex: String, limit: Int): Array[String] =
     value.split(regex, limit)
@@ -353,12 +560,25 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, when both strings are aligned at their startpoints
    * up to the length of `prefix`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param prefix    string for comparison as prefix
+   * @return          `true` if `NumericString` content is the same as `prefix` for the entire length of `prefix`
+   *                  `false` otherwise.
    */
   def startsWith(prefix: String): Boolean =
     value.startsWith(prefix)
 
   /**
    * Returns `true` if the `NumericString` content completely matches the supplied `prefix`, starting at `toffset` characters in the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param prefix    string for comparison as prefix
+   * @param toffset   zero-based integer start point for comparison within the `NumericString`
+   * @return          `true` if `NumericString` content is the same as `prefix` for the entire length of `prefix` shifted over,
+   *                  `false` otherwise.
    */
   def startsWith(prefix: String, toffset: Int): Boolean =
     value.startsWith(prefix, toffset)
@@ -366,35 +586,60 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns the character sequence extracted from `NumericString` beginning at zero-based offset `beginIndex`
    * and continuing until (but not including) offset `endIndex`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param beginIndex    zero-based integer offset at which character extraction begins
+   * @param endIndex      zero-based integer offset before which character extraction ends
+   * @return              CharSequence of zero or more extracted characters
    */
   def subSequence(beginIndex: Int, endIndex: Int): CharSequence =
     value.subSequence(beginIndex, endIndex)
 
   /**
    * Returns a string extracted from `NumericString` from the zero-based `beginIndex` through the end of the string.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param beginIndex    zero-based integer offset at which substring extraction begins (continues through end of `NumericIndex` string)
+   * @return              returns string extracted from `NumericString`
    */
   def substring(beginIndex: Int): String =
     value.substring(beginIndex)
 
   /**
    * Returns a string extracted `NumericString` starting from the zero-based `beginIndex` through but not including the zero-based `endIndex` offset.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param beginIndex    zero-based integer offset at which substring extraction begins
+   * @param endIndex      zero-based integer offset before which substring extraction ends 
+   * @return              returns string extracted from `NumericString`
    */
   def substring(beginIndex: Int, endIndex: Int): String =
     value.substring(beginIndex, endIndex)
 
   /**
    * Returns an array of Unicode characters corresponding to the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      array of Unicode characters corresponding to the `NumericString`
    */
   def toCharArray: Array[Char] =
     value.toCharArray
 
   // SKIP-SCALATESTJS-START
-  // Peter, these should stay because we'll use them in aother String AnyVals, but
+  // These should stay because we'll use them in other String AnyVals, but
   // they don't make sense to invoke on NumericString because they would have no effect.
   // So I commmented them out. Please leave the comments here so we can use these as
   // a template for the other AnyVals which we'll add soon.
   /**
    * Returns the string resulting from converting any upper-case characters in `NumericString` into lower-case.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      string corresponding to the original string but with upper case characters converted to lower case
   def toLowerCase: String =
     value.toLowerCase
    */
@@ -402,12 +647,22 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns the string resulting from converting any upper-case characters in `NumericString` into lower-case
    * where case mapping is inferred from the `locale`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param locale    locale mapping to determine case equivalence
+   * @return          string corresponding to the original string but with upper case characters converted to lower case
+
   def toLowerCase(locale: Locale): String =
     value.toLowerCase(locale: Locale)
    */
 
   /**
    * Returns the string resulting from converting any lower-case characters in `NumericString` into upper-case.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      string corresponding to the original string but with lower case characters converted to upper case
   def toUpperCase: String =
     value.toUpperCase
    */
@@ -415,6 +670,12 @@ final class NumericString private (val value: String) extends AnyVal {
   /**
    * Returns the string resulting from converting any lower-case characters in `NumericString` into upper-case
    * where case mapping is inferred from the `locale`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param locale    locale mapping to determine case equivalence
+   * @return          string corresponding to the original string but with lower case characters converted to upper case
+
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
    */
@@ -422,6 +683,10 @@ final class NumericString private (val value: String) extends AnyVal {
 
   /**
    * Return new string resulting from removing any whitespace characters from the start and end of the `NumericString`.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @return      string resulting from removing any whitespace characters from start and end of original string
    */
   def trim: String =
     value.trim
@@ -878,7 +1143,14 @@ final class NumericString private (val value: String) extends AnyVal {
   def endsWith[B](that: GenSeq[B]): Boolean =
     value.endsWith(that)
 
-  // Peter, missed this one.
+  /** Returns `true` if the supplied `arg0` string is considered equal to this `NumericString`.
+   *
+   *  For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   *  @param arg0  string for comparison
+   *  @return      `true` if `NumericString` content is the same as `arg0`
+   *               `false` otherwise.
+   */
   def equalsIgnoreCase(arg0: String): Boolean =
     value.equalsIgnoreCase(arg0)
 
@@ -1831,8 +2103,15 @@ final class NumericString private (val value: String) extends AnyVal {
   def span(p: (Char) ⇒ Boolean): (String, String) =
     value.span(p)
 
-  // Peter, can you take a stab at this one too? It is added via an implicit conversion
-  // by Scala, but Scala neglected to document it.
+  /**
+   * Returns an array of Strings resulting from splitting this `NumericString` at all points where one of the `separators` characters is encountered.
+   *
+   * For more detail, see the documentation for the corresponding method in the Javadoc documentation for java.lang.String.
+   *
+   * @param separators    array of characters, any of which are valid split triggers
+   * @return              array of strings, after splitting `NumericString` at all points where one of the `separators` characters is encountered
+   */
+
   def split(separators: Array[Char]): Array[String] =
     value.split(separators)
 
