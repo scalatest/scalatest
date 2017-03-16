@@ -391,6 +391,13 @@ object GenAnyVals {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Finite" + p)
   }
 
+  def numericCharWidens: List[String] =
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "Finite" + p) ++
+    primitiveTypes.map(p => "Pos" + p) ++
+    primitiveTypes.map(p => "PosZ" + p) ++
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "PosFinite" + p) ++
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "PosZFinite" + p)
+
   def positiveInfinity(typePrefix: String, primitiveName: String): String =
     s"""/**
       |  * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
@@ -770,6 +777,9 @@ object GenAnyVals {
       else
         s"${value}.0"
     }
+    else if (typeName.endsWith("Char")) {
+      s"'${value}'"
+    }
     else {
       if (value.indexOf('.') >= 0)
         value.substring(0, value.indexOf('.'))
@@ -780,7 +790,11 @@ object GenAnyVals {
   def primitivesShouldEqualTests(typeName: String, types: Seq[String], lhsFun: String => String, resultValue: String): String =
     types.map { pType =>
       val widerValue = pickWiderType(typeName, pType)
-      val expectedValue = valueFormat(resultValue, widerValue)
+      val expectedValue =
+        if (typeName.endsWith("Char") && !pType.endsWith("Char"))
+          valueFormat(resultValue.charAt(0).toInt.toString, widerValue)
+        else
+          valueFormat(resultValue, widerValue)
       lhsFun(pType) + " shouldEqual " + expectedValue
     }.mkString("\n")
 
@@ -809,7 +823,12 @@ object GenAnyVals {
 
   def anyValsWidenShouldEqualTests(typeName: String, widensToTypes: Seq[String], validValue: String): String =
     (widensToTypes map { widenType =>
-      val expectedValue = valueFormat(validValue, widenType)
+      //val expectedValue = valueFormat(validValue, widenType)
+      val expectedValue =
+        if (typeName.endsWith("Char") && !widenType.endsWith("Char"))
+          valueFormat(validValue.charAt(0).toInt.toString, widenType)
+        else
+          valueFormat(validValue, widenType)
       val lhsValue = valueFormat(validValue, typeName)
       s"($typeName($lhsValue): $widenType) shouldEqual $widenType($expectedValue)"
     }).mkString("\n")
@@ -839,7 +858,8 @@ object GenAnyVals {
       ("Pos", (3, 2, 2, 3, 3)),
       ("NonZero", (3, 2, 2, 3, 3)),
       ("Neg", (-3, -2, -2, -3, -3)),
-      ("Finite", (3, 2, 2, 3, 3))
+      ("Finite", (3, 2, 2, 3, 3)),
+      ("NumericChar", (3, 2, 2, 3, 3))
     )
 
   def getModifyValue(typeName: String, operator: String): Int =
@@ -857,25 +877,31 @@ object GenAnyVals {
       case None => throw new IllegalArgumentException("Cannot find modifyValue for " + typeName + ", operator: " + operator)
     }
 
-  def getResultValue(lhsValue: Int, operator: String, rhsValue: Int): Int =
+  def getResultValue(primitiveType: String, lhsValue: Int, operator: String, rhsValue: Int): Int = {
+    val leftValue =
+      if (primitiveType == "Char")
+        lhsValue.toString.charAt(0).toInt
+      else
+        lhsValue
     operator match {
-      case "+" => lhsValue + rhsValue
-      case "-" => lhsValue - rhsValue
-      case "*" => lhsValue * rhsValue
-      case "/" => lhsValue / rhsValue
-      case "%" => lhsValue % rhsValue
+      case "+" => leftValue + rhsValue
+      case "-" => leftValue - rhsValue
+      case "*" => leftValue * rhsValue
+      case "/" => leftValue / rhsValue
+      case "%" => leftValue % rhsValue
     }
+  }
 
   def operatorShouldEqualTests(typeName: String, primitiveType: String, lhsValue: Int, operator: String): String = {
     val primitiveModifyValue = getModifyValue(typeName, operator)
     primitiveTypes.map { pType =>
       val widerType = pickWiderType(typeName, pType)
-      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + valueFormat(primitiveModifyValue.toString, pType) + " shouldEqual " + valueFormat(getResultValue(lhsValue, operator, primitiveModifyValue).toString, pType)
+      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + valueFormat(primitiveModifyValue.toString, pType) + " shouldEqual " + valueFormat(getResultValue(primitiveType, lhsValue, operator, primitiveModifyValue).toString, pType)
     }.mkString("\n") + "\n" +
     allAnyValTypes.map { rhsType =>
       val widerType = pickWiderType(typeName, rhsType)
       val modifyValue = getModifyValue(rhsType, operator)
-      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + rhsType + "(" + valueFormat(modifyValue.toString, rhsType) + ") shouldEqual " + valueFormat(getResultValue(lhsValue, operator, modifyValue).toString, rhsType)
+      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + rhsType + "(" + valueFormat(modifyValue.toString, rhsType) + ") shouldEqual " + valueFormat(getResultValue(primitiveType, lhsValue, operator, modifyValue).toString, rhsType)
     }.mkString("\n")
   }
 
@@ -957,7 +983,8 @@ object GenAnyVals {
     genAnyValTests(dir, "NegZFiniteFloat", "Float", -3, negZFiniteWidens("Float")) ++
     genAnyValTests(dir, "NegZFiniteDouble", "Double", -3, negZFiniteWidens("Double")) ++
     genAnyValTests(dir, "FiniteFloat", "Float", 3, finiteWidens("Float")) ++
-    genAnyValTests(dir, "FiniteDouble", "Double", 3, finiteWidens("Double"))
+    genAnyValTests(dir, "FiniteDouble", "Double", 3, finiteWidens("Double")) ++
+    genAnyValTests(dir, "NumericChar", "Char", 3, numericCharWidens)
   }
 
 }
