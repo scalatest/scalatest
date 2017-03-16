@@ -82,6 +82,28 @@ trait Expectations {
     }
   }
 
+  import language.experimental.macros
+
+  def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
+
+  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
+
+  def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
+
+  def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
+
+  import scala.language.implicitConversions
+
+  /**
+    * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+    */
+  implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
+  
+  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+}
+
+object Expectations extends Expectations {
+
   class ExpectationsHelper {
 
     def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position): Fact = {
@@ -105,26 +127,4 @@ trait Expectations {
   }
 
   val expectationsHelper = new ExpectationsHelper
-
-  import language.experimental.macros
-
-  def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
-
-  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
-
-  def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
-
-  def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
-
-  import scala.language.implicitConversions
-
-  /**
-    * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
-    */
-  implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
-  
-  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
-
-object Expectations extends Expectations
-
