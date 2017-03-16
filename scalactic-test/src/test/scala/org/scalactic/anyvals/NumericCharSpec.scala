@@ -22,6 +22,7 @@ import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.choose
 import org.scalactic.Equality
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 //import org.scalactic.StrictCheckedEquality
 
 import scala.util.{Failure, Success, Try}
@@ -50,7 +51,7 @@ trait NumericCharSpecSupport {
 }
 
 
-class NumericCharSpec extends FunSpec with Matchers with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
+class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
   describe("A NumericChar") {
     describe("should offer a from factory method that") {
       it("returns Some[NumericChar] if the passed Char is between '0' and '9'") {
@@ -420,12 +421,13 @@ class NumericCharSpec extends FunSpec with Matchers with NumericCharSpecSupport/
       }
     }
 
-    describe("should offer 'min' and 'max' methods that are consistent with Int") {
-      NumericChar('0').min(NumericChar('1')) shouldBe NumericChar('0')
-      /*forAll { (pint1: PosInt, pint2: PosInt) =>
-        pint1.max(pint2).toInt shouldEqual pint1.toInt.max(pint2.toInt)
-        pint1.min(pint2).toInt shouldEqual pint1.toInt.min(pint2.toInt)
-      }*/
+    describe("should offer 'min' and 'max' methods that") {
+      it("are consistent with Char") {
+        forAll { (p1: NumericChar, p2: NumericChar) =>
+          p1.max(p2).toChar shouldEqual p1.toChar.max(p2.toChar)
+          p1.min(p2).toChar shouldEqual p1.toChar.min(p2.toChar)
+        }
+      }
     }
   }
 }
