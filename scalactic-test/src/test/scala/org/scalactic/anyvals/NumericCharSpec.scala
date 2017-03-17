@@ -105,7 +105,8 @@ class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     }
     it("should return the same type from its unary_+ method") {
       +NumericChar('3') shouldEqual NumericChar('3')
-    } 
+    }
+
     it("should be automatically widened to compatible AnyVal targets") {
       (NumericChar('3'): Int) shouldEqual '3'.toInt
       (NumericChar('3'): Long) shouldEqual '3'.toLong
@@ -426,6 +427,139 @@ class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         forAll { (p1: NumericChar, p2: NumericChar) =>
           p1.max(p2).toChar shouldEqual p1.toChar.max(p2.toChar)
           p1.min(p2).toChar shouldEqual p1.toChar.min(p2.toChar)
+        }
+      }
+    }
+
+    describe("should offer asDigit method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigit shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer asDigitPosInt method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigitPosInt.value shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer asDigitPosZInt method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigitPosZInt.value shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer a unary ~ method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar) =>
+          (~p) shouldEqual (~(p.toChar))
+        }
+      }
+    }
+
+    describe("should offer a + method that") {
+      it("takes a String which is consistent with Char") {
+        forAll { (p: NumericChar) =>
+          p + "test" shouldEqual p.value + "test"
+        }
+      }
+    }
+
+    describe("should offer << methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p << shift shouldEqual p.value << shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p << shift shouldEqual p.value << shift
+        }
+      }
+    }
+
+    describe("should offer >>> methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p >>> shift shouldEqual p.value >>> shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p >>> shift shouldEqual p.value >>> shift
+        }
+      }
+    }
+
+    describe("should offer >> methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p >> shift shouldEqual p.value >> shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p >> shift shouldEqual p.value >> shift
+        }
+      }
+    }
+
+    describe("should offer a '|' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p | byte) shouldEqual (p.value | byte)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p | short) shouldEqual (p.value | short)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p | char) shouldEqual (p.value | char)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p | int) shouldEqual (p.value | int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p | long) shouldEqual (p.value | long)
+        }
+      }
+    }
+
+    describe("should offer an '&' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p & byte) shouldEqual (p.value & byte)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p & short) shouldEqual (p.value & short)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p & char) shouldEqual (p.value & char)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p & int) shouldEqual (p.value & int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p & long) shouldEqual (p.value & long)
+        }
+      }
+    }
+
+    describe("should offer an '^' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p ^ byte) shouldEqual (p.value ^ byte)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p ^ char) shouldEqual (p.value ^ char)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p ^ short) shouldEqual (p.value ^ short)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p ^ int) shouldEqual (p.value ^ int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p ^ long) shouldEqual (p.value ^ long)
         }
       }
     }

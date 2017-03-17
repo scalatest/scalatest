@@ -176,11 +176,11 @@ final class NumericChar private (val value: Char) extends AnyVal {
  * //             11111010
  * }}}
  */
-  def unary_~ : Int = ~value.asDigit
+  def unary_~ : Int = ~value
   /** Returns this value, unmodified. */
   def unary_+ : NumericChar = this
   /** Returns the negation of this value. */
-  def unary_- : Int = -value
+  def unary_- : NegZInt = NegZInt.ensuringValid(-value)
 
   /**
    * Prepends this <code>NumericChar</code>'s value to a string.
@@ -667,22 +667,6 @@ object NumericChar {
   /** The largest value representable as a NumericChar. */
   final val MaxValue = '9'
 
-  /** Language mandated coercions from Char to "wider" types. */
-  implicit def numericChar2Int(x: NumericChar): Int = x.toInt
-  implicit def numericChar2Long(x: NumericChar): Long = x.toLong
-  implicit def numericChar2Float(x: NumericChar): Float = x.toFloat
-  implicit def numericChar2Double(x: NumericChar): Double = x.toDouble
-
-  /*implicit def numericChar2PosInt(x: NumericChar): PosInt = PosInt.ensuringValid(x.toInt)
-  implicit def numericChar2PosLong(x: NumericChar): PosLong = PosLong.ensuringValid(x.toLong)
-  implicit def numericChar2PosFloat(x: NumericChar): PosFloat = PosFloat.ensuringValid(x.toFloat)
-  implicit def numericChar2PosDouble(x: NumericChar): PosDouble = PosDouble.ensuringValid(x.toDouble)
-
-  implicit def numericChar2PosZInt(x: NumericChar): PosZInt = PosZInt.ensuringValid(x.toInt)
-  implicit def numericChar2PosZLong(x: NumericChar): PosZLong = PosZLong.ensuringValid(x.toLong)
-  implicit def numericChar2PosZFloat(x: NumericChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
-  implicit def numericChar2PosZDouble(x: NumericChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)*/
-
   /**
    * A factory/validation method that produces a <code>NumericChar</code>,
    * wrapped in a <code>Good</code>, given a valid <code>Char</code> value,
@@ -854,11 +838,45 @@ object NumericChar {
    */
   def isValid(value: Char): Boolean = NumericCharMacro.isValid(value)
 
+  /** Language mandated coercions from Char to "wider" types. */
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Int</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Int</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToInt(value: NumericChar): Int = value.toInt
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Long</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Long</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToLong(value: NumericChar): Long = value.toLong
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Float</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Float</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToFloat(value: NumericChar): Float = value.toFloat
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Double</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Double</code> widen from the specified <code>NumericChar</code>.
+   */
+  implicit def widenToDouble(value: NumericChar): Double = value.toDouble
+
   /**
     * Implicit widening conversion from <code>NumericChar</code> to <code>FiniteFloat</code>.
     *
     * @param value the <code>NumericChar</code> to widen
-    * @return the <code>FiniteFloat</code> widen form the specified  <code>NumericChar</code>.
+    * @return the <code>FiniteFloat</code> widen from the specified <code>NumericChar</code>.
     */
   implicit def widenToFiniteFloat(value: NumericChar): FiniteFloat = FiniteFloat.ensuringValid(value.value.toFloat)
 
@@ -866,47 +884,47 @@ object NumericChar {
    * Implicit widening conversion from <code>NumericChar</code> to <code>FiniteDouble</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>FiniteDouble</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>FiniteDouble</code> widen from the specified <code>NumericChar</code>.
    */
   implicit def widenToFiniteDouble(value: NumericChar): FiniteDouble = FiniteDouble.ensuringValid(value.value.toDouble)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosInt</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZInt</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZInt</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosInt(value: NumericChar): PosInt = PosInt.ensuringValid(value.value.toInt)
+  implicit def widenToPosInt(value: NumericChar): PosInt = PosInt.ensuringValid(value.value.toInt)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosLong</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosLong</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosLong</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosLong(value: NumericChar): PosLong = PosLong.ensuringValid(value.value.toLong)
+  implicit def widenToPosLong(value: NumericChar): PosLong = PosLong.ensuringValid(value.value.toLong)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosFloat</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosFloat</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosFloat</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosFloat(value: NumericChar): PosFloat = PosFloat.ensuringValid(value.value.toFloat)
+  implicit def widenToPosFloat(value: NumericChar): PosFloat = PosFloat.ensuringValid(value.value.toFloat)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosDouble</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosDouble</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosDouble</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosDouble(value: NumericChar): PosDouble = PosDouble.ensuringValid(value.value.toDouble)
+  implicit def widenToPosDouble(value: NumericChar): PosDouble = PosDouble.ensuringValid(value.value.toDouble)
 
   /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZInt</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZInt</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZInt</code> widen from the specified <code>NumericChar</code>.
    */
   implicit def widenToPosZInt(value: NumericChar): PosZInt = PosZInt.ensuringValid(value.value.toInt)
 
@@ -914,57 +932,57 @@ object NumericChar {
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZLong</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZLong</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZLong</code> widen from the specified <code>NumericChar</code>.
    */
   implicit def widenToPosZLong(value: NumericChar): PosZLong = PosZLong.ensuringValid(value.value.toLong)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZFloat</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZFloat</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZFloat</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosZFloat(value: NumericChar): PosZFloat = PosZFloat.ensuringValid(value.value.toFloat)
+  implicit def widenToPosZFloat(value: NumericChar): PosZFloat = PosZFloat.ensuringValid(value.value.toFloat)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZDouble</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZDouble</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZDouble</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosZDouble(value: NumericChar): PosZDouble = PosZDouble.ensuringValid(value.value.toDouble)
+  implicit def widenToPosZDouble(value: NumericChar): PosZDouble = PosZDouble.ensuringValid(value.value.toDouble)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosFiniteFloat</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosFiniteFloat</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosFiniteFloat</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosFiniteFloat(value: NumericChar): PosFiniteFloat = PosFiniteFloat.ensuringValid(value.value.toFloat)
+  implicit def widenToPosFiniteFloat(value: NumericChar): PosFiniteFloat = PosFiniteFloat.ensuringValid(value.value.toFloat)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosFiniteDouble</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosFiniteDouble</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosFiniteDouble</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosFiniteDouble(value: NumericChar): PosFiniteDouble = PosFiniteDouble.ensuringValid(value.value.toDouble)
+  implicit def widenToPosFiniteDouble(value: NumericChar): PosFiniteDouble = PosFiniteDouble.ensuringValid(value.value.toDouble)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZFiniteFloat</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZFiniteFloat</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZFiniteFloat</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosZFiniteFloat(value: NumericChar): PosZFiniteFloat = PosZFiniteFloat.ensuringValid(value.value.toFloat)
+  implicit def widenToPosZFiniteFloat(value: NumericChar): PosZFiniteFloat = PosZFiniteFloat.ensuringValid(value.value.toFloat)
 
- /**
+  /**
    * Implicit widening conversion from <code>NumericChar</code> to <code>PosZFiniteDouble</code>.
    *
    * @param value the <code>NumericChar</code> to widen
-   * @return the <code>PosZFiniteDouble</code> widen form the specified  <code>NumericChar</code>.
+   * @return the <code>PosZFiniteDouble</code> widen from the specified <code>NumericChar</code>.
    */
- implicit def widenToPosZFiniteDouble(value: NumericChar): PosZFiniteDouble = PosZFiniteDouble.ensuringValid(value.value.toDouble)
+  implicit def widenToPosZFiniteDouble(value: NumericChar): PosZFiniteDouble = PosZFiniteDouble.ensuringValid(value.value.toDouble)
 
 
 }
