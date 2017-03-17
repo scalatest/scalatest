@@ -82,8 +82,8 @@ class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       }
     } 
     it("should define min and max values") {
-      NumericChar.MinValue shouldBe '0'
-      NumericChar.MaxValue shouldBe '9'
+      NumericChar.MinValue shouldBe NumericChar.ensuringValid('0')
+      NumericChar.MaxValue shouldBe NumericChar.ensuringValid('9')
     } 
     it("should define min and max methods") {
       NumericChar('0') min NumericChar('1') shouldBe NumericChar('0')

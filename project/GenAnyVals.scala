@@ -270,6 +270,53 @@ object GenAnyVals {
     List(targetFile, genMacro(targetDir, "Double", typeName, typeBooleanExpr))
   }
 
+  def genCharAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
+                   typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
+                   widensToTypes: Seq[String]): List[File] = {
+    val templateSource = scala.io.Source.fromFile("project/templates/CharAnyVal.template")
+    val templateText = try templateSource.mkString finally templateSource.close()
+    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
+
+    st.setAttribute("typeName", typeName)
+    st.setAttribute("typeDesc", typeDesc)
+    st.setAttribute("typeNote", typeNote)
+    st.setAttribute("typeBooleanExpr", typeBooleanExpr)
+    st.setAttribute("typeValidExample", typeValidExample)
+    st.setAttribute("typeInvalidExample", typeInvalidExample)
+    st.setAttribute("typeValidValue", typeValidValue)
+    st.setAttribute("typeInvalidValue", typeInvalidValue)
+    st.setAttribute("typeMinValue", typeMinValue)
+    st.setAttribute("typeMinValueNumber", typeMinValueNumber)
+    st.setAttribute("typeMaxValue", typeMaxValue)
+    st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negation", negation(typeName))
+
+    val widensToOtherAnyVals =
+      widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
+        s"""/**
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Int</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
+           |""".stripMargin
+      }.mkString
+
+    st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
+
+    val targetFile = new File(targetDir, typeName + ".scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
+
+    bw.write(st.toString)
+    bw.flush()
+    bw.close()
+    println("Generated: " + targetFile.getAbsolutePath)
+    List(targetFile, genMacro(targetDir, "Char", typeName, typeBooleanExpr))
+  }
+
   val primitiveTypes =
     List(
       "Int",
@@ -754,7 +801,9 @@ object GenAnyVals {
       ceil("Finite", "Double") +
       floor("Finite", "Double"),
       minPositiveValue("Finite", "Double"),
-      finiteWidens("Double"))
+      finiteWidens("Double")) :::
+    genCharAnyVal(dir, "NumericChar", "numeric", "Note: a <code>NumericChar</code> has a value between '0' and '9'.", "i >= '0' && i <= '9'", "NumericChar('4')", "NumericChar('a')", "'4'", "'a'", "'0'", "'0'",
+      "'9'", "'9'", numericCharWidens)
 
   }
 
