@@ -20,7 +20,7 @@ import org.scalatest.enablers._
 import org.scalatest.matchers._
 import org.scalatest._
 import org.scalactic.TripleEqualsSupport.Spread
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS-START

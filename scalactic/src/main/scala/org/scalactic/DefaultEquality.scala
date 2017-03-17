@@ -15,6 +15,8 @@
  */
 package org.scalactic
 
+import org.scalactic.anyvals.NonEmptyArray
+
 /**
  * A default <code>Equality</code> type class implementation (which can be used for any type) whose
  * <code>areEqual</code> method compares the passed objects with <code>==</code>, calling <code>.deep</code>
@@ -32,21 +34,42 @@ private[scalactic] final class DefaultEquality[A] extends Equality[A] {
    * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
    */
   def areEqual(a: A, b: Any): Boolean = {
-    a match {
-      case arr: Array[_] =>
-        b match {
-          case brr: Array[_] => arr.deep == brr.deep
-          case _ => arr.deep == b
+    DefaultEquality.areEqualComparingArraysStructurally(a, b)
+  }
+
+  override def toString: String = "Equality.default"
+}
+
+object DefaultEquality {
+
+  private[org] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
+    // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
+    // when nearing 2.0.M6 to call .deep if either left or right side is an array.
+    // TODO: this is the same algo as in scalactic.DefaultEquality. Put that one in
+    // a singleton and use it in both places.
+    left match {
+      case leftArray: Array[_] =>
+        right match {
+          case rightArray: Array[_] => leftArray.deep == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => leftArray.deep == rightNonEmptyArray.toArray.deep
+          case _ => leftArray.deep == right
         }
-      case _ => {
-        b match {
-          case brr: Array[_] => a == brr.deep
-          case _ => a == b
+      case leftNonEmptyArray: NonEmptyArray[_] =>
+        right match {
+          case rightArray: Array[_] => leftNonEmptyArray.toArray.deep == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => leftNonEmptyArray.toArray.deep == rightNonEmptyArray.toArray.deep
+          case _ => leftNonEmptyArray.toArray.deep == right
+        }
+
+      case other => {
+        right match {
+          case rightArray: Array[_] => left == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => left == rightNonEmptyArray.toArray.deep
+          case _ => left == right
         }
       }
     }
   }
 
-  override def toString: String = "Equality.default"
 }
 
