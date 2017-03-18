@@ -39,6 +39,7 @@ import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
 import org.scalactic.Requirements._
+import org.scalatest.prop.Randomizer
 
 /*
 Command line args:
@@ -80,7 +81,7 @@ Q - equalivalent to -q Suite -q Spec
 r - custom reporter (currently deprecated, will be runpath)
 R - space-separated runpath (temporarily)
 s - suite class name (to become a glob)
-S -
+S - initial seed for Randomizer.default
 t - test name
 T - sorting timeout                        --sorting-timeout
 u - JUnit XML reporter
@@ -879,7 +880,8 @@ object Runner {
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      seedArgs
     ) = parseArgs(args)
 
     val fullReporterConfigurations: ReporterConfigurations =
@@ -904,8 +906,15 @@ object Runner {
     val testNGList: List[String] = parseSuiteArgsIntoNameStrings(testNGArgs, "-b")
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
+    val seedList: Option[Long] = parseLongArgument(seedArgs, "-S")
+
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
+
+    seedList match {
+      case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+      case None => // do nothing
+    }
 
     // If there's a graphic reporter, we need to leave it out of
     // reporterSpecs, because we want to pass all reporterSpecs except

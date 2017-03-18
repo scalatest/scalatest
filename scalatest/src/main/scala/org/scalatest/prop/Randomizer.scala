@@ -1241,9 +1241,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
 object Randomizer {
 
+  import java.util.concurrent.atomic.AtomicReference
+
+  private[scalatest] val defaultSeed: AtomicReference[Option[Long]] = new AtomicReference(None)
+
   def default(): Randomizer =
-    new Randomizer(
-      (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1)
+    apply(
+      defaultSeed.get() match {
+        case Some(seed) => seed
+        case None => System.currentTimeMillis()
+      }
     )
 
   def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))

@@ -19,12 +19,15 @@ import org.scalatest._
 import org.scalatest.events._
 import ArgsParser._
 import SuiteDiscoveryHelper._
+
 import scala.collection.JavaConverters._
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import org.scalatest.time.{Span, Millis}
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
+import java.io.{PrintWriter, StringWriter}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
+import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+
+import org.scalatest.time.{Millis, Span}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import StringReporter.fragmentsForEvent
@@ -33,6 +36,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+import org.scalatest.prop.Randomizer
 
 
 /**
@@ -925,7 +929,8 @@ import java.net.{ServerSocket, InetAddress}
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      seedArgs
     ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
     
     if (!runpathArgs.isEmpty)
@@ -971,6 +976,11 @@ import java.net.{ServerSocket, InetAddress}
       }
     
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    parseLongArgument(seedArgs, "-S") match {
+      case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+      case None => // do nothing
+    }
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 
