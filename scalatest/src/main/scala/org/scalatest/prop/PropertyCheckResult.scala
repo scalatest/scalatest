@@ -19,10 +19,10 @@ sealed trait PropertyCheckResult
 
 object PropertyCheckResult {
 
-  case class Success(args: List[PropertyArgument]) extends PropertyCheckResult
+  case class Success(args: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
 
-  case class Exhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument]) extends PropertyCheckResult
+  case class Exhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
 
-  case class Failure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument]) extends PropertyCheckResult
+  case class Failure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
 
 }
