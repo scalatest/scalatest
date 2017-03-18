@@ -39,6 +39,9 @@ import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
 import org.scalactic.Requirements._
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
+import java.util.concurrent.atomic.AtomicReference
 
 /*
 Command line args:
@@ -179,6 +182,8 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">memorize failed and canceled tests in a file, so they can be rerun with -A (again)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M rerun.txt</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">used in conjunction with -M (momento) to select previously failed<br/>and canceled tests to rerun again</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A rerun.txt</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W <em>&lt;delay&gt;</em> <em>&lt;period&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">requests <a href="#slowpokeNotifications">notifications of <em>slowpoke</em> tests</a>, tests that have been running<br/>longer than <em>delay</em> seconds, every <em>period</em> seconds.</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W 60 60</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-N <em>&lt;generatorMinSize&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>minSize</code>'s default value for <code>PropertyCheckConfiguration</code><br/>(Note: only one <code>-N</code> is allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-N 10</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-S <em>&lt;generatorSizeRange&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>sizeRange</code>'s default value for <code>PropertyCheckConfiguration</code><br/>(Note: only one <code>-S</code> is allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-S 50</code></td></tr>
  * </table>
  *
  * <p>
@@ -743,6 +748,9 @@ object Runner {
   
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
+  private[scalatest] val minSize: AtomicReference[PosZInt] = new AtomicReference(PosZInt(0))
+  private[scalatest] val sizeRange: AtomicReference[PosZInt] = new AtomicReference(PosZInt(100))
+
   private final val DefaultNumFilesToArchive = 2
   
   //                     TO
@@ -879,7 +887,9 @@ object Runner {
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      generatorMinSize,
+      generatorSizeRange
     ) = parseArgs(args)
 
     val fullReporterConfigurations: ReporterConfigurations =
@@ -906,6 +916,8 @@ object Runner {
     val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
+    minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
 
     // If there's a graphic reporter, we need to leave it out of
     // reporterSpecs, because we want to pass all reporterSpecs except

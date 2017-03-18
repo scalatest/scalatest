@@ -31,6 +31,8 @@ import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatools.testing.{Framework => SbtFramework, _}
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -151,7 +153,9 @@ class ScalaTestFramework extends SbtFramework {
             chosenStyles, 
             spanScaleFactors, 
             testSortingReporterTimeouts,
-            slowpokeArgs
+            slowpokeArgs,
+            generatorMinSize,
+            generatorSizeRange
           ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
           
           if (!runpathArgs.isEmpty)
@@ -200,8 +204,18 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionDelay.getAndSet(60000L)
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
-          
-          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+          import scala.reflect.runtime._
+
+          val runtimeMirror = universe.runtimeMirror(testLoader)
+
+          val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+          val obj = runtimeMirror.reflectModule(module)
+          val runnerInstance = obj.instance.asInstanceOf[Runner.type]
+
+          runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+          runnerInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+          runnerInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
           
           val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")

@@ -304,6 +304,9 @@ class ScalaTestAntTask extends Task {
   private var fork          = false
   private var spanScaleFactor = 1.0
 
+  private var generatorMinSize = 0
+  private var generatorSizeRange = 100
+
   private var numthreads = 0
 
   private val runpath      = new ListBuffer[String]
@@ -348,6 +351,8 @@ class ScalaTestAntTask extends Task {
     addTestsfileArgs(args)
     addChosenStyles(args)
     addSpanScaleFactorArg(args)
+    addGeneratorMinSize(args)
+    addGeneratorSizeRange(args)
 
     args.toList
   }
@@ -418,6 +423,24 @@ class ScalaTestAntTask extends Task {
   private def addSpanScaleFactorArg(args: ListBuffer[String]): Unit = {
     args += "-F"
     args += spanScaleFactor.toString
+  }
+
+  //
+  // Add -N arg to args list if spanScaleFactor attribute was
+  // specified for task
+  //
+  private def addGeneratorMinSize(args: ListBuffer[String]): Unit = {
+    args += "-N"
+    args += generatorMinSize.toString
+  }
+
+  //
+  // Add -S arg to args list if spanScaleFactor attribute was
+  // specified for task
+  //
+  private def addGeneratorSizeRange(args: ListBuffer[String]): Unit = {
+    args += "-S"
+    args += generatorSizeRange.toString
   }
 
   //
@@ -804,6 +827,20 @@ class ScalaTestAntTask extends Task {
    */
   def setSpanScaleFactor(spanScaleFactor: Double): Unit = {
     this.spanScaleFactor = spanScaleFactor
+  }
+
+  /**
+    * Sets value of the <code>generatorMinSize</code> attribute.
+    */
+  def setGeneratorMinSize(generatorMinSize: Int): Unit = {
+    this.generatorMinSize = generatorMinSize
+  }
+
+  /**
+    * Sets value of the <code>generatorSizeRange</code> attribute.
+    */
+  def setGeneratorSizeRange(generatorSizeRange: Int): Unit = {
+    this.generatorSizeRange = generatorSizeRange
   }
 
   /**

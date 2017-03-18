@@ -19,12 +19,15 @@ import org.scalatest._
 import org.scalatest.events._
 import ArgsParser._
 import SuiteDiscoveryHelper._
+
 import scala.collection.JavaConverters._
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import org.scalatest.time.{Span, Millis}
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
+import java.io.{PrintWriter, StringWriter}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
+import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+
+import org.scalatest.time.{Millis, Span}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import StringReporter.fragmentsForEvent
@@ -33,6 +36,9 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
 
 
 /**
@@ -925,7 +931,9 @@ import java.net.{ServerSocket, InetAddress}
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      generatorMinSize,
+      generatorSizeRange
     ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
     
     if (!runpathArgs.isEmpty)
@@ -969,8 +977,18 @@ import java.net.{ServerSocket, InetAddress}
         case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
         case _ => (false, 60000L, 60000L)
       }
-    
-    Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    import scala.reflect.runtime._
+
+    val runtimeMirror = universe.runtimeMirror(testClassLoader)
+
+    val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+    val obj = runtimeMirror.reflectModule(module)
+    val runnerInstance = obj.instance.asInstanceOf[Runner.type]
+
+    runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+    runnerInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    runnerInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 
