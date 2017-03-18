@@ -1180,8 +1180,8 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3, 4, 5).startsWith(Chain(3, 4, 5, 6), 2) shouldBe false
   }
   it should "have a stringPrefix method" in {
-    Chain(1).stringPrefix shouldBe "Chain"
-    Chain(1, 2, 3).stringPrefix shouldBe "Chain"
+    Chain(1).stringPrefix shouldBe "NonEmptyList"
+    Chain(1, 2, 3).stringPrefix shouldBe "NonEmptyList"
   }
   it should "have a sum method" in {
     Chain(1).sum shouldBe 1
@@ -1281,9 +1281,9 @@ class ChainSpec extends UnitSpec {
     Chain(1).toStream should === (Stream(1))
   }
   it should "have a toString method" in {
-    Chain(1, 2, 3).toString should === ("Chain(1, 2, 3)")
-    Chain(1, 2, 3).toString should === ("Chain(1, 2, 3)")
-    Chain(1).toString should === ("Chain(1)")
+    Chain(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
+    Chain(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
+    Chain(1).toString should === ("NonEmptyList(1)")
   }
   it should "have a toTraversable method" in {
     Chain(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))

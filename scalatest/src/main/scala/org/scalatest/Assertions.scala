@@ -17,13 +17,15 @@ package org.scalatest
 
 import org.scalactic._
 import Requirements._
+
 import scala.reflect.ClassTag
 import Assertions.NormalResult
-import Assertions.areEqualComparingArraysStructurally
+import DefaultEquality.areEqualComparingArraysStructurally
 import exceptions.StackDepthException
 import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
 import exceptions.TestPendingException
+import org.scalactic.anyvals.NonEmptyArray
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -1341,11 +1343,20 @@ object Assertions extends Assertions {
       case leftArray: Array[_] =>
         right match {
           case rightArray: Array[_] => leftArray.deep == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => leftArray.deep == rightNonEmptyArray.toArray.deep
           case _ => leftArray.deep == right
         }
-      case _ => {
+      case leftNonEmptyArray: NonEmptyArray[_] =>
+        right match {
+          case rightArray: Array[_] => leftNonEmptyArray.toArray.deep == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => leftNonEmptyArray.toArray.deep == rightNonEmptyArray.toArray.deep
+          case _ => leftNonEmptyArray.toArray.deep == right
+        }
+
+      case other => {
         right match {
           case rightArray: Array[_] => left == rightArray.deep
+          case rightNonEmptyArray: NonEmptyArray[_] => left == rightNonEmptyArray.toArray.deep
           case _ => left == right
         }
       }

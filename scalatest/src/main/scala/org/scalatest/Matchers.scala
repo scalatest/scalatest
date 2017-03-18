@@ -24,7 +24,7 @@ import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.collection.GenTraversable
 import scala.reflect.{classTag, ClassTag}
 import scala.util.matching.Regex
-import Assertions.areEqualComparingArraysStructurally
+import DefaultEquality.areEqualComparingArraysStructurally
 import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation

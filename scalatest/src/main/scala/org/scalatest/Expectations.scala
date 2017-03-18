@@ -25,7 +25,7 @@ trait Expectations {
 
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
-    if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
+    if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
       val rawComposableFactMessage = Resources.rawDidNotEqual
