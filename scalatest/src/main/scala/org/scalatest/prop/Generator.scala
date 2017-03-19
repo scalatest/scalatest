@@ -207,6 +207,58 @@ object Generator extends LowerPriorityGeneratorImplicits {
   private[prop] val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
   private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
 
+  implicit def vectorGenerator[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] =
+    new Generator[Vector[T]] with HavingLength[Vector[T]] {
+
+      def generatorWithSize(size: PosZInt): Generator[Vector[T]] =
+        new Generator[Vector[T]] {
+
+          def next(szp: org.scalatest.prop.SizeParam, edges: List[Vector[T]], rnd: org.scalatest.prop.Randomizer): (Vector[T], List[Vector[T]], org.scalatest.prop.Randomizer) = {
+            @scala.annotation.tailrec
+            def loop (result: Vector[T], rnd: org.scalatest.prop.Randomizer): (Vector[T], List[Vector[T]], org.scalatest.prop.Randomizer) =
+            if (result.length == size.value)
+              (result, edges, rnd)
+            else {
+              val (nextT, nextEdges, nextRnd) = genOfT.next (szp, List.empty, rnd)
+              loop (result :+ nextT, nextRnd)
+            }
+
+            loop (Vector.empty, rnd)
+          }
+        }
+
+      def next(szp: org.scalatest.prop.SizeParam, edges: List[Vector[T]],rnd: org.scalatest.prop.Randomizer): (Vector[T], List[Vector[T]], org.scalatest.prop.Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
+            val gen = generatorWithSize(size)
+            gen.next(szp, List.empty, nextRnd)
+        }
+      }
+      // Members declared in org.scalatest.prop.HavingSize
+      def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = generatorWithSize(len)
+      def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = {
+        val (size, _) = Randomizer.default.choosePosZInt(from, to)
+        generatorWithSize(size)
+      }
+      def havingSizesDeterminedBy(f: org.scalatest.prop.SizeParam => org.scalatest.prop.SizeParam): org.scalatest.prop.Generator[Vector[T]] =
+        new Generator[Vector[T]] {
+          def next(szp: org.scalatest.prop.SizeParam, edges: List[Vector[T]],rnd: org.scalatest.prop.Randomizer): (Vector[T], List[Vector[T]], org.scalatest.prop.Randomizer) = {
+            edges match {
+              case head :: tail =>
+                (head, tail, rnd)
+              case _ =>
+                val s = f(szp)
+                val (size, _) = Randomizer.default.choosePosZInt(s.minSize, s.maxSize)
+                val gen = generatorWithSize(size)
+                gen.next(s, List.empty, rnd)
+            }
+          }
+        }
+    }
+
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
 
