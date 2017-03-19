@@ -2193,6 +2193,16 @@ class GeneratorSpec extends FunSpec with Matchers {
           v.size should (be >= 3 and be <= 5)
         }
       }
+      it("should produce IllegalArgumentException when havingSizesBetween is called with invalid from and to pair") {
+        val aGen= Generator.vectorGenerator[Int]
+        aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(3))
+        }
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
+        }
+      }
       it("should produce Vector[T] following lengths determined by havingLengthBetween method") {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
@@ -2201,6 +2211,16 @@ class GeneratorSpec extends FunSpec with Matchers {
 
         forAll { v: Vector[Int] =>
           v.length should (be >= 3 and be <= 5)
+        }
+      }
+      it("should produce IllegalArgumentException when havingLengthBetween is called with invalid from and to pair") {
+        val aGen= Generator.vectorGenerator[Int]
+        aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
+        assertThrows[IllegalArgumentException] {
+          aGen.havingLengthsBetween(PosZInt(3), PosZInt(3))
+        }
+        assertThrows[IllegalArgumentException] {
+          aGen.havingLengthsBetween(PosZInt(3), PosZInt(2))
         }
       }
       it("should produce Vector[T] following sizes determined by havingSizesDeterminedBy method") {
