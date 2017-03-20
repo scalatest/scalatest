@@ -23,6 +23,7 @@ import scala.annotation.tailrec
 import org.scalatest.Resources
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
+import scala.collection.immutable.SortedSet
 
 class CommonGeneratorsSpec extends WordSpec with Matchers {
   import CommonGenerators._
@@ -4672,6 +4673,20 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[Set[Int]]]
         val namedGen = sets[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a sortedSets method" that {
+      "returns the default implicit generator that produces arbitrary Sets" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[SortedSet[Int]]]
+        val namedGen = sortedSets[Int]
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
