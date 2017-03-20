@@ -1139,6 +1139,7 @@ trait CommonGenerators {
   val finiteDoubleValues: Generator[Double] = Generator.finiteDoubleGenerator.map(_.value)
 
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
+  def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingLength[Set[T]] = Generator.setGenerator
 
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
