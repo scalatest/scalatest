@@ -24,6 +24,7 @@ import org.scalatest.Resources
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
 import scala.collection.immutable.SortedSet
+import scala.collection.immutable.SortedMap
 
 class CommonGeneratorsSpec extends WordSpec with Matchers {
   import CommonGenerators._
@@ -4701,6 +4702,20 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[Map[Int, String]]]
         val namedGen = maps[Int, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a sortedMaps method" that {
+      "returns the default implicit generator that produces arbitrary SortedMaps" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[SortedMap[Int, String]]]
+        val namedGen = sortedMaps[Int, String]
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)

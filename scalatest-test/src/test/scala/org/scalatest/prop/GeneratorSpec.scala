@@ -2547,6 +2547,80 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+
+    describe("for SortedMaps") {
+      it("should produce the same SortedMap[K, V] values in the same order given the same Randomizer") {
+        val aGen= Generator.sortedMapGenerator[Int, String]
+        val bGen = Generator.sortedMapGenerator[Int, String]
+        val (a1, _, ar1) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (a2, _, ar2) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar1)
+        val (a3, _, ar3) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar2)
+        val (a4, _, ar4) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar3)
+        val (a5, _, ar5) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar4)
+        val (a6, _, ar6) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar5)
+        val (a7, _, _) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar6)
+        val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
+        val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
+        val (b3, _, br3) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
+        val (b4, _, br4) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br3)
+        val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
+        val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
+        val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
+        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
+        a6 shouldEqual b6
+        a7 shouldEqual b7
+      }
+      /*it("should produce Map[K, V] edge values first in random order") {
+        val gen = Generator.mapGenerator[Int, String]
+        val (a1: Map[Int, String], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val edges = List(a1, a2, a3)
+        edges should contain (Map.empty[Int, String])
+        edges should contain (Map(1 -> "one", 2 -> "two"))
+        edges should contain (Map(3 -> "three", 4 -> "four", 5 -> "five"))
+      }
+      it("should produce Map[K, V] following size determined by havingSize method") {
+        val aGen= Generator.mapGenerator[Int, String]
+        implicit val sGen = aGen.havingSize(PosZInt(3))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { s: Map[Int, String] =>
+          s.size shouldBe 3
+        }
+      }
+      it("should produce Map[K, V] following sizes determined by havingSizeBetween method") {
+        val aGen= Generator.mapGenerator[Int, String]
+        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { s: Map[Int, String] =>
+          s.size should (be >= 3 and be <= 5)
+        }
+      }
+      it("should produce IllegalArgumentException when havingSizesBetween is called with invalid from and to pair") {
+        val aGen= Generator.mapGenerator[Int, String]
+        aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(3))
+        }
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
+        }
+      }
+      it("should produce Map[K, V] following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.mapGenerator[Int, String]
+        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { s: Map[Int, String] =>
+          s.size shouldBe 5
+        }
+      }*/
+    }
   }
 }
 
