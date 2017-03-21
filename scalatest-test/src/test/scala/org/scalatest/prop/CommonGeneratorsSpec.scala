@@ -4696,6 +4696,20 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a maps method" that {
+      "returns the default implicit generator that produces arbitrary Maps" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[Map[Int, String]]]
+        val namedGen = maps[Int, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a classify method" that {
       "takes a partial function and returns an object containing a Map of String classifications to Int totals" in {
         val classification: Classification =

@@ -2308,6 +2308,59 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
     }
 
+  implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
+    new Generator[Map[K, V]] with HavingLength[Map[K, V]] {
+
+      def generatorWithSize(szp: SizeParam): Generator[Map[K, V]] =
+        new Generator[Map[K, V]] {
+
+          def next(ignoredSzp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): (Map[K, V], List[Map[K, V]], org.scalatest.prop.Randomizer) = {
+            @scala.annotation.tailrec
+            def loop (targetSize: Int, result: Map[K, V], rnd: org.scalatest.prop.Randomizer): (Map[K, V], List[Map[K, V]], org.scalatest.prop.Randomizer) =
+              if (result.size == targetSize)
+                (result, edges, rnd)
+              else {
+                val (nextT, nextEdges, nextRnd) = genOfTuple2KV.next (szp, List.empty, rnd)
+                loop (targetSize, result + nextT, nextRnd)
+              }
+
+            val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
+            loop (size.value, Map.empty, nextRnd)
+          }
+        }
+
+      def next(szp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[Map[K, V], List[Map[K, V]], org.scalatest.prop.Randomizer] = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+
+          case _ =>
+            val gen = generatorWithSize(szp)
+            gen.next(szp, List.empty, rnd)
+        }
+      }
+      // Members declared in org.scalatest.prop.HavingSize
+      def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = generatorWithSize(SizeParam(len, 0, len))
+      def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = {
+        require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
+        require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
+        generatorWithSize(SizeParam(from, PosZInt.ensuringValid(to - from), from))
+      }
+      def havingSizesDeterminedBy(f: org.scalatest.prop.SizeParam => org.scalatest.prop.SizeParam): org.scalatest.prop.Generator[Map[K, V]] =
+        new Generator[Map[K, V]] {
+          def next(szp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]],rnd: org.scalatest.prop.Randomizer): (Map[K, V], List[Map[K, V]], org.scalatest.prop.Randomizer) = {
+            edges match {
+              case head :: tail =>
+                (head, tail, rnd)
+              case _ =>
+                val s = f(szp)
+                val gen = generatorWithSize(s)
+                gen.next(s, List.empty, rnd)
+            }
+          }
+        }
+    }
+
 }
 
 
