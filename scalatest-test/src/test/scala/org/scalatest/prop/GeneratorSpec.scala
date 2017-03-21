@@ -20,6 +20,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.immutable.SortedSet
+import scala.collection.immutable.SortedMap
 
 class GeneratorSpec extends FunSpec with Matchers {
   describe("A Generator") {
@@ -2288,16 +2289,6 @@ class GeneratorSpec extends FunSpec with Matchers {
           s.size shouldBe 3
         }
       }
-      it("should produce Set[T] following length determined by havingLength method") {
-        val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingLength(PosZInt(3))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: Set[Int] =>
-          s.size shouldBe 3
-        }
-      }
       it("should produce Set[T] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.setGenerator[Int]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
@@ -2318,39 +2309,9 @@ class GeneratorSpec extends FunSpec with Matchers {
           aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
         }
       }
-      it("should produce Set[T] following lengths determined by havingLengthBetween method") {
-        val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: Set[Int] =>
-          s.size should (be >= 3 and be <= 5)
-        }
-      }
-      it("should produce IllegalArgumentException when havingLengthBetween is called with invalid from and to pair") {
-        val aGen= Generator.setGenerator[Int]
-        aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
-        assertThrows[IllegalArgumentException] {
-          aGen.havingLengthsBetween(PosZInt(3), PosZInt(3))
-        }
-        assertThrows[IllegalArgumentException] {
-          aGen.havingLengthsBetween(PosZInt(3), PosZInt(2))
-        }
-      }
       it("should produce Set[T] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.setGenerator[Int]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: Set[Int] =>
-          s.size shouldBe 5
-        }
-      }
-      it("should produce Set[T] following sizes determined by havingLengthsDeterminedBy method") {
-        val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
@@ -2402,16 +2363,6 @@ class GeneratorSpec extends FunSpec with Matchers {
           s.size shouldBe 3
         }
       }
-      it("should produce Set[T] following length determined by havingLength method") {
-        val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingLength(PosZInt(3))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: SortedSet[Int] =>
-          s.size shouldBe 3
-        }
-      }
       it("should produce Set[T] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.sortedSetGenerator[Int]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
@@ -2432,39 +2383,9 @@ class GeneratorSpec extends FunSpec with Matchers {
           aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
         }
       }
-      it("should produce Set[T] following lengths determined by havingLengthBetween method") {
-        val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: SortedSet[Int] =>
-          s.size should (be >= 3 and be <= 5)
-        }
-      }
-      it("should produce IllegalArgumentException when havingLengthBetween is called with invalid from and to pair") {
-        val aGen= Generator.sortedSetGenerator[Int]
-        aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
-        assertThrows[IllegalArgumentException] {
-          aGen.havingLengthsBetween(PosZInt(3), PosZInt(3))
-        }
-        assertThrows[IllegalArgumentException] {
-          aGen.havingLengthsBetween(PosZInt(3), PosZInt(2))
-        }
-      }
       it("should produce Set[T] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.sortedSetGenerator[Int]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
-
-        import GeneratorDrivenPropertyChecks._
-
-        forAll { s: SortedSet[Int] =>
-          s.size shouldBe 5
-        }
-      }
-      it("should produce Set[T] following sizes determined by havingLengthsDeterminedBy method") {
-        val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
@@ -2570,38 +2491,38 @@ class GeneratorSpec extends FunSpec with Matchers {
         a6 shouldEqual b6
         a7 shouldEqual b7
       }
-      /*it("should produce Map[K, V] edge values first in random order") {
-        val gen = Generator.mapGenerator[Int, String]
-        val (a1: Map[Int, String], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+      it("should produce SortedMap[K, V] edge values first in random order") {
+        val gen = Generator.sortedMapGenerator[Int, String]
+        val (a1: SortedMap[Int, String], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3)
-        edges should contain (Map.empty[Int, String])
-        edges should contain (Map(1 -> "one", 2 -> "two"))
-        edges should contain (Map(3 -> "three", 4 -> "four", 5 -> "five"))
+        edges should contain (SortedMap.empty[Int, String])
+        edges should contain (SortedMap(1 -> "one", 2 -> "two"))
+        edges should contain (SortedMap(3 -> "three", 4 -> "four", 5 -> "five"))
       }
-      it("should produce Map[K, V] following size determined by havingSize method") {
-        val aGen= Generator.mapGenerator[Int, String]
+      it("should produce SortedMap[K, V] following size determined by havingSize method") {
+        val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { s: SortedMap[Int, String] =>
           s.size shouldBe 3
         }
       }
-      it("should produce Map[K, V] following sizes determined by havingSizeBetween method") {
-        val aGen= Generator.mapGenerator[Int, String]
+      it("should produce SortedMap[K, V] following sizes determined by havingSizeBetween method") {
+        val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { s: SortedMap[Int, String] =>
           s.size should (be >= 3 and be <= 5)
         }
       }
       it("should produce IllegalArgumentException when havingSizesBetween is called with invalid from and to pair") {
-        val aGen= Generator.mapGenerator[Int, String]
+        val aGen= Generator.sortedMapGenerator[Int, String]
         aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
         assertThrows[IllegalArgumentException] {
           aGen.havingSizesBetween(PosZInt(3), PosZInt(3))
@@ -2610,16 +2531,16 @@ class GeneratorSpec extends FunSpec with Matchers {
           aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
         }
       }
-      it("should produce Map[K, V] following sizes determined by havingSizesDeterminedBy method") {
-        val aGen= Generator.mapGenerator[Int, String]
+      it("should produce SortedMap[K, V] following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { s: SortedMap[Int, String] =>
           s.size shouldBe 5
         }
-      }*/
+      }
     }
   }
 }

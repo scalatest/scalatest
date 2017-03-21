@@ -2205,8 +2205,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
     }
 
-  implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingLength[Set[T]] =
-    new Generator[Set[T]] with HavingLength[Set[T]] {
+  implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
+    new Generator[Set[T]] with HavingSize[Set[T]] {
 
       def generatorWithSize(szp: SizeParam): Generator[Set[T]] =
         new Generator[Set[T]] {
@@ -2257,8 +2257,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
     }
 
-  implicit def sortedSetGenerator[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingLength[SortedSet[T]] =
-    new Generator[SortedSet[T]] with HavingLength[SortedSet[T]] {
+  implicit def sortedSetGenerator[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] =
+    new Generator[SortedSet[T]] with HavingSize[SortedSet[T]] {
 
       def generatorWithSize(szp: SizeParam): Generator[SortedSet[T]] =
         new Generator[SortedSet[T]] {
@@ -2310,7 +2310,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
 
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
-    new Generator[Map[K, V]] with HavingLength[Map[K, V]] {
+    new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
       def generatorWithSize(szp: SizeParam): Generator[Map[K, V]] =
         new Generator[Map[K, V]] {
@@ -2363,7 +2363,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
 
   implicit def sortedMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
-    new Generator[SortedMap[K, V]] with HavingLength[SortedMap[K, V]] {
+    new Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] {
 
       def generatorWithSize(szp: SizeParam): Generator[SortedMap[K, V]] =
         new Generator[SortedMap[K, V]] {
