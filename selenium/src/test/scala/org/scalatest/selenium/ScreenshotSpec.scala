@@ -28,7 +28,7 @@ import java.io.File
 import org.scalatest.TestSuite
 import org.scalatest.Args
 import org.scalatest.ScreenshotOnFailure
-import org.scalatest.SharedHelpers.SilentReporter
+import SharedHelpers.SilentReporter
 import org.scalatest.Ignore
 import org.scalatest.Matchers
 

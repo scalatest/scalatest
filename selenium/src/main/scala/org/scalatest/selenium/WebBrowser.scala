@@ -57,7 +57,7 @@ import org.scalactic.source
  * To use ScalaTest's Selenium DSL, mix trait <code>WebBrowser</code> into your test class. This trait provides the DSL in its
  * entirety except for one missing piece: an implicit <code>org.openqa.selenium.WebDriver</code>. One way to provide the missing
  * implicit driver is to declare one as a member of your test class, like this:
- * 
+ *
  * <pre class="stHighlight">
  * import org.scalatest._
  * import selenium._
@@ -67,7 +67,7 @@ import org.scalactic.source
  * class BlogSpec extends FlatSpec with Matchers with WebBrowser {
  *
  *   implicit val webDriver: WebDriver = new HtmlUnitDriver
- * 
+ *
  *   val host = "http://localhost:9000/"
  *
  *   "The blog app home page" should "have the correct title" in {
@@ -76,14 +76,14 @@ import org.scalactic.source
  *   }
  * }
  * </pre>
- * 
+ *
  * <p>
  * For convenience, however, ScalaTest provides a <code>WebBrowser</code> subtrait containing an implicit <code>WebDriver</code> for each
- * driver provided by Selenium. 
+ * driver provided by Selenium.
  * Thus a simpler way to use the <code>HtmlUnit</code> driver, for example, is to extend
  * ScalaTest's <a href="HtmlUnit.html"><code>HtmlUnit</code></a> trait, like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * import org.scalatest._
  * import selenium._
@@ -98,11 +98,11 @@ import org.scalactic.source
  *   }
  * }
  * </pre>
- * 
+ *
  * <p>
  * The web driver traits provided by ScalaTest are:
  * </p>
- * 
+ *
  * <table style="border-collapse: collapse; border: 1px solid black">
  * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Driver</strong></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong><code>WebBrowser</code> subtrait</strong></th></tr>
  * <tr>
@@ -152,22 +152,22 @@ import org.scalactic.source
  * <p>
  * You can ask the browser to retrieve a page (go to a URL) like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * go to "http://www.artima.com"
  * </pre>
- * 
+ *
  * <p>
  * Note: If you are using the <em>page object pattern</em>, you can also go to a page using the <code>Page</code> instance, as
  * illustrated in the section on <a href="#pageObjects">page objects</a> below.
  * </p>
  *
  * <p>
- * Once you have retrieved a page, you can fill in and submit forms, query for the values of page elements, and make assertions.  
+ * Once you have retrieved a page, you can fill in and submit forms, query for the values of page elements, and make assertions.
  * In the following example, selenium will go to <code>http://www.google.com</code>, fill in the text box with
  * <code>Cheese!</code>, press the submit button, and wait for result returned from an AJAX call:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * go to "http://www.google.com"
  * click on "q"
@@ -176,27 +176,27 @@ import org.scalactic.source
  * // Google's search is rendered dynamically with JavaScript.
  * eventually { pageTitle should be ("Cheese! - Google Search") }
  * </pre>
- * 
+ *
  * <p>
- * In the above example, the <code>"q"</code> used in &ldquo;<code>click on "q"</code>&rdquo; 
- * can be either the id or name of an element. ScalaTest's Selenium DSL will try to lookup by id first. If it cannot find 
+ * In the above example, the <code>"q"</code> used in &ldquo;<code>click on "q"</code>&rdquo;
+ * can be either the id or name of an element. ScalaTest's Selenium DSL will try to lookup by id first. If it cannot find
  * any element with an id equal to <code>&quot;q&quot;</code>, it will then try lookup by name <code>&quot;q&quot;</code>.
  * </p>
- * 
+ *
  * <p>
  * Alternatively, you can be more specific:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
- * click on id("q")   // to lookup by id "q" 
- * click on name("q") // to lookup by name "q" 
+ * click on id("q")   // to lookup by id "q"
+ * click on name("q") // to lookup by name "q"
  * </pre>
- * 
+ *
  * <p>
  * In addition to <code>id</code> and <code>name</code>, you can use the following approaches to lookup elements, just as you can do with
  * Selenium's <code>org.openqa.selenium.By</code> class:
  * </p>
- * 
+ *
  * <ul>
  *   <li><code>xpath</code></li>
  *   <li><code>className</code></li>
@@ -205,7 +205,7 @@ import org.scalactic.source
  *   <li><code>partialLinkText</code></li>
  *   <li><code>tagName</code></li>
  * </ul>
- * 
+ *
  * <p>
  * For example, you can select by link text with:
  * </p>
@@ -213,13 +213,13 @@ import org.scalactic.source
  * <pre class="stHighlight">
  * click on linkText("click here!")
  * </pre>
- * 
+ *
  * <p>
  * If an element is not found via any form of lookup, evaluation will complete abruptly with a <code>TestFailedException</code>.
  * <p>
  *
  * <h2>Getting and setting input element values</h2>
- * 
+ *
  * <p>
  * ScalaTest's Selenium DSL provides a clear, simple syntax for accessing and updating the values of input elements such as
  * text fields, radio buttons, checkboxes, selection lists, and the input types introduced in HTML5. If a requested element is not found, or if it is found but is
@@ -424,44 +424,44 @@ import org.scalactic.source
  * <p>
  * You can change a input field's value by assigning it via the <code>=</code> operator, like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * textField("q").value = "Cheese!"
  * </pre>
- * 
+ *
  * <p>
  * And you can access a input field's value by simply invoking <code>value</code> on it:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * textField("q").value should be ("Cheese!")
  * </pre>
- * 
+ *
  * <p>
  * If the text field is empty, <code>value</code> will return an empty string (<code>""</code>).
  * </p>
- * 
+ *
  * <p>
  * You can use the same syntax with other type of input fields by replacing <code>textField</code> with <code>Lookup Method</code> listed in table above,
  * for example to use text area:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * textArea("body").value = "I saw something cool today!"
  * textArea("body").value should be ("I saw something cool today!")
  * </pre>
- * 
+ *
  * <p>
  * or with a password field:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * pwdField("secret").value = "Don't tell anybody!"
  * pwdField("secret").value should be ("Don't tell anybody!")
  * </pre>
  *
  * <h3>Alternate Way for Data Entry</h3>
- * 
+ *
  * <p>
  * An alternate way to enter data into a input fields is to use <code>enter</code> or <code>pressKeys</code>.
  * Although both of <code>enter</code> and <code>pressKeys</code> send characters to the active element, <code>pressKeys</code> can be used on any kind of
@@ -484,7 +484,7 @@ import org.scalactic.source
  * <code>pressKeys</code> does not do any clearing&#8212;it just appends more characters to any existing text.
  * You can backup with <code>pressKeys</code>, however, by sending explicit backspace characters, <code>"&#92;u0008"</code>.
  * </p>
- * 
+ *
  * <p>
  * To use these commands, you must first click on the input field you are interested in
  * to give it the focus. Here's an example:
@@ -494,7 +494,7 @@ import org.scalactic.source
  * click on "q"
  * enter("Cheese!")
  * </pre>
- * 
+ *
  * <p>
  * Here's a (contrived) example of using <code>pressKeys</code> with backspace to fix a typo:
  * </p>
@@ -505,19 +505,19 @@ import org.scalactic.source
  * pressKeys("&#92;u0008&#92;u0008") // Send two backspaces; now the value is Cheese
  * pressKeys("!")            // Send the missing exclamation point; now the value is Cheese!
  * </pre>
- * 
+ *
  * <h3>Radio buttons</h3>
- * 
+ *
  * <p>
  * Radio buttons work together in groups. For example, you could have a group of radio buttons, like this:
  * </p>
- * 
+ *
  * <pre>
  * &lt;input type="radio" id="opt1" name="group1" value="Option 1"&gt; Option 1&lt;/input&gt;
  * &lt;input type="radio" id="opt2" name="group1" value="Option 2"&gt; Option 2&lt;/input&gt;
  * &lt;input type="radio" id="opt3" name="group1" value="Option 3"&gt; Option 3&lt;/input&gt;
  * </pre>
- * 
+ *
  * <p>
  * You can select an option in either of two ways:
  * </p>
@@ -535,69 +535,69 @@ import org.scalactic.source
  * radioButtonGroup("group1").value should be ("Option 2")
  * radioButtonGroup("group1").selection should be (Some("Option 2"))
  * </pre>
- * 
+ *
  * <p>
  * If the radio button has no selection at all, <code>selection</code> will return <code>None</code> whereas <code>value</code>
  * will throw a <code>TestFailedException</code>. By using <code>value</code>, you are indicating you expect a selection, and if there
  * isn't a selection that should result in a failed test.
  * </p>
- * 
+ *
  * <p>
  * If you would like to work with <code>RadioButton</code> element directly, you can select it by calling <code>radioButton</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * click on radioButton("opt1")
  * </pre>
- * 
+ *
  * <p>
  * you can check if an option is selected by calling <code>isSelected</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * radioButton("opt1").isSelected should be (true)
  * </pre>
- * 
+ *
  * <p>
  * to get the value of radio button, you can call <code>value</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * radioButton("opt1").value should be ("Option 1")
  * </pre>
- * 
+ *
  * <h3>Checkboxes</h3>
- * 
+ *
  * <p>
  * A checkbox in one of two states: selected or cleared. Here's how you select a checkbox:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * checkbox("cbx1").select()
  * </pre>
- * 
+ *
  * <p>
  * And here's how you'd clear one:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * checkbox("cbx1").clear()
  * </pre>
- * 
+ *
  * <p>
  * You can access the current state of a checkbox with <code>isSelected</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * checkbox("cbx1").isSelected should be (true)
  * </pre>
- * 
+ *
  * <h3>Single-selection dropdown lists</h3>
- * 
+ *
  * <p>
  * Given the following single-selection dropdown list:
  * </p>
- * 
+ *
  * <pre>
  * &lt;select id="select1"&gt;
  *  &lt;option value="option1"&gt;Option 1&lt;/option&gt;
@@ -605,16 +605,16 @@ import org.scalactic.source
  *  &lt;option value="option3"&gt;Option 3&lt;/option&gt;
  * &lt;/select&gt;
  * </pre>
- * 
+ *
  * <p>
  * You could select <code>Option 2</code> in either of two ways:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * singleSel("select1").value = "option2"
  * singleSel("select1").selection = Some("option2")
  * </pre>
- * 
+ *
  * <p>
  * To clear the selection, either invoke <code>clear</code> or set <code>selection</code> to <code>None</code>:
  * </p>
@@ -623,7 +623,7 @@ import org.scalactic.source
  * singleSel("select1").clear()
  * singleSel("select1").selection = None
  * </pre>
- * 
+ *
  * <p>
  * You can read the currently selected value of a single-selection list in the same manner as radio buttons:
  * </p>
@@ -632,19 +632,19 @@ import org.scalactic.source
  * singleSel("select1").value should be ("option2")
  * singleSel("select1").selection should be (Some("option2"))
  * </pre>
- * 
+ *
  * <p>
  * If the single-selection list has no selection at all, <code>selection</code> will return <code>None</code> whereas <code>value</code>
  * will throw a <code>TestFailedException</code>. By using <code>value</code>, you are indicating you expect a selection, and if there
  * isn't a selection that should result in a failed test.
  * </p>
- * 
+ *
  * <h3>Multiple-selection lists</h3>
- * 
+ *
  * <p>
  * Given the following multiple-selection list:
  * </p>
- * 
+ *
  * <pre>
  * &lt;select name="select2" multiple="multiple"&gt;
  *  &lt;option value="option4"&gt;Option 4&lt;/option&gt;
@@ -652,157 +652,157 @@ import org.scalactic.source
  *  &lt;option value="option6"&gt;Option 6&lt;/option&gt;
  * &lt;/select&gt;
  * </pre>
- * 
+ *
  * <p>
  * You could select <code>Option 5</code> and <code>Option 6</code> like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * multiSel("select2").values = Seq("option5", "option6")
  * </pre>
- * 
+ *
  * <p>
  * The previous command would essentially clear all selections first, then select <code>Option 5</code> and <code>Option 6</code>.
  * If instead you want to <em>not</em> clear any existing selection, just additionally select <code>Option 5</code> and <code>Option 6</code>,
  * you can use the <code>+=</code> operator, like this.
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * multiSel("select2").values += "option5"
  * multiSel("select2").values += "option6"
  * </pre>
- * 
+ *
  * <p>
  * To clear a specific option, pass its name to <code>clear</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * multiSel("select2").clear("option5")
  * </pre>
- * 
+ *
  * <p>
  * To clear all selections, call <code>clearAll</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * multiSel("select2").clearAll()
  * </pre>
- * 
+ *
  * <p>
  * You can access the current selections with <code>values</code>, which returns an immutable <code>IndexedSeq[String]</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * multiSel("select2").values should have size 2
  * multiSel("select2").values(0) should be ("option5")
  * multiSel("select2").values(1) should be ("option6")
  * </pre>
- * 
+ *
  * <h3>Clicking and submitting</h3>
- * 
+ *
  * <p>
  * You can click on any element with &ldquo;<code>click on</code>&rdquo; as shown previously:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * click on "aButton"
  * click on name("aTextField")
  * </pre>
- * 
+ *
  * <p>
  * If the requested element is not found, <code>click on</code> will throw an exception, failing the test.
  * </p>
- * 
+ *
  * <p>
- * Clicking on a input element will give it the focus. If current focus is in on an input element within a form, you can submit the form by 
+ * Clicking on a input element will give it the focus. If current focus is in on an input element within a form, you can submit the form by
  * calling <code>submit</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * submit()
  * </pre>
- * 
+ *
  * <h2>Switching</h2>
- * 
+ *
  * <p>
  * You can switch to a popup alert bo using the following code:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * switch to alertBox
  * </pre>
- * 
+ *
  * <p>
  * to switch to a frame, you could:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * switch to frame(0) // switch by index
  * switch to frame("name") // switch by name
  * </pre>
- * 
+ *
  * <p>
- * If you have reference to a window handle (can be obtained from calling windowHandle/windowHandles), you can switch to a particular 
+ * If you have reference to a window handle (can be obtained from calling windowHandle/windowHandles), you can switch to a particular
  * window by:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * switch to window(windowHandle)
  * </pre>
- * 
+ *
  * <p>
  * You can also switch to active element and default content:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * switch to activeElement
  * switch to defaultContent
  * </pre>
- * 
+ *
  * <h2>Navigation history</h2>
- * 
+ *
  * <p>
  * In real web browser, you can press the 'Back' button to go back to previous page.  To emulate that action in your test, you can call <code>goBack</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * goBack()
  * </pre>
- * 
+ *
  * <p>
  * To emulate the 'Forward' button, you can call:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * goForward()
  * </pre>
- * 
+ *
  * And to refresh or reload the current page, you can call:
- * 
+ *
  * <pre class="stHighlight">
  * reloadPage()
  * </pre>
- * 
+ *
  * <h2>Cookies!</h2>
- * 
+ *
  * <p>To create a new cookie, you'll say:</p>
- * 
+ *
  * <pre class="stHighlight">
  * add cookie ("cookie_name", "cookie_value")
  * </pre>
- * 
+ *
  * <p>
  * to read a cookie value, you do:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * cookie("cookie_name").value should be ("cookie_value") // If value is undefined, throws TFE right then and there. Never returns null.
  * </pre>
- * 
+ *
  * <p>
  * In addition to the common use of name-value cookie, you can pass these extra fields when creating the cookie, available ways are:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * cookie(name: String, value: String)
  * cookie(name: String, value: String, path: String)
@@ -810,9 +810,9 @@ import org.scalactic.source
  * cookie(name: String, value: String, path: String, expiry: Date, domain: String)
  * cookie(name: String, value: String, path: String, expiry: Date, domain: String, secure: Boolean)
  * </pre>
- * 
+ *
  * and to read those extra fields:
- * 
+ *
  * <pre class="stHighlight">
  * cookie("cookie_name").value   // Read cookie's value
  * cookie("cookie_name").path    // Read cookie's path
@@ -820,36 +820,36 @@ import org.scalactic.source
  * cookie("cookie_name").domain  // Read cookie's domain
  * cookie("cookie_name").isSecure  // Read cookie's isSecure flag
  * </pre>
- * 
+ *
  * <p>
- * In order to delete a cookie, you could use the following code: 
+ * In order to delete a cookie, you could use the following code:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * delete cookie "cookie_name"
  * </pre>
- * 
+ *
  * <p>
  * or to delete all cookies in the same domain:-
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * delete all cookies
  * </pre>
- * 
+ *
  * To get the underlying Selenium cookie, you can use <code>underlying</code>:
- * 
+ *
  * <pre class="stHighlight">
  * cookie("cookie_name").underlying.validate()  // call the validate() method on underlying Selenium cookie
  * </pre>
- * 
+ *
  * <h2>Other useful element properties</h2>
- * 
+ *
  * <p>
- * All element types (<code>textField</code>, <code>textArea</code>, <code>radioButton</code>, <code>checkbox</code>, <code>singleSel</code>, <code>multiSel</code>) 
+ * All element types (<code>textField</code>, <code>textArea</code>, <code>radioButton</code>, <code>checkbox</code>, <code>singleSel</code>, <code>multiSel</code>)
  * support the following useful properties:
  * </p>
- * 
+ *
  * <table style="border-collapse: collapse; border: 1px solid black">
  * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Method</strong></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Description</strong></th></tr>
  * <tr>
@@ -926,102 +926,102 @@ import org.scalactic.source
  * </td>
  * </tr>
  * </table>
- * 
+ *
  * <h2>Implicit wait</h2>
- * 
+ *
  * <p>
  * To set Selenium's implicit wait timeout, you can call the <code>implicitlyWait</code> method:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * implicitlyWait(Span(10, Seconds))
  * </pre>
- * 
+ *
  * <p>
  * Invoking this method sets the amount of time the driver will wait when searching for an element that is not immediately present. For
  * more information, see the documentation for method <code>implicitlyWait</code>.
  * </p>
  *
  * <h2>Page source and current URL</h2>
- * 
+ *
  * <p>
  * It is possible to get the html source of currently loaded page, using:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * pageSource
  * </pre>
- * 
+ *
  * <p>
  * and if needed, get the current URL of currently loaded page:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * currentUrl
  * </pre>
- * 
+ *
  * <h2>Screen capture</h2>
- * 
+ *
  * <p>
  * You can capture screen using the following code:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * val file = capture
  * </pre>
- * 
+ *
  * <p>
- * By default, the captured image file will be saved in temporary folder (returned by java.io.tmpdir property), with random file name 
+ * By default, the captured image file will be saved in temporary folder (returned by java.io.tmpdir property), with random file name
  * ends with .png extension.  You can specify a fixed file name:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * capture to "MyScreenShot.png"
  * </pre>
- * 
+ *
  * <p>
  * or
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * capture to "MyScreenShot"
  * </pre>
- * 
+ *
  * <p>
  * Both will result in a same file name <code>MyScreenShot.png</code>.
  * </p>
- * 
+ *
  * <p>
  * You can also change the target folder screenshot file is written to, by saying:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * setCaptureDir("/home/your_name/screenshots")
  * </pre>
- * 
+ *
  * <p>
  * If you want to capture a screenshot when something goes wrong (e.g. test failed), you can use <code>withScreenshot</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * withScreenshot {
  *   assert("Gold" == "Silver", "Expected gold, but got silver")
  * }
  * </pre>
- * 
+ *
  * <p>
  * In case the test code fails, you'll see the screenshot location appended to the error message, for example:
  * </p>
- * 
+ *
  * <pre>
  * Expected gold but got silver; screenshot capture in /tmp/AbCdEfGhIj.png
  * </pre>
- * 
+ *
  * <a name="pageObjects"></a>
  * <h2>Using the page object pattern</h2>
  *
  * <p>
- * If you use the page object pattern, mixing trait <code>Page</code> into your page classes will allow you to use the <code>go to</code> 
+ * If you use the page object pattern, mixing trait <code>Page</code> into your page classes will allow you to use the <code>go to</code>
  * syntax with your page objects. Here's an example:
  * </p>
  *
@@ -1080,26 +1080,26 @@ import org.scalactic.source
  * </pre>
  *
  * <h2>Cleaning up</h2>
- * 
+ *
  * <p>
  * To close the current browser window, and exit the driver if the current window was the only one remaining, use <code>close</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * close()
  * </pre>
- * 
+ *
  * <p>
  * To close all windows, and exit the driver, use <code>quit</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * quit()
  * </pre>
- * 
+ *
  * <a name="alternateForms"></a>
  * <h2>Alternate forms</h2>
- * 
+ *
  * <p>
  * Although statements like &ldquo;<code>delete all cookies</code>&rdquo; fit well with matcher statements
  * like &ldquo;<code>title should be ("Cheese!")</code>&rdquo;, they do not fit as well
@@ -1115,7 +1115,7 @@ import org.scalactic.source
  * // Google's search is rendered dynamically with JavaScript.
  * eventually(assert(pageTitle === "Cheese! - Google Search"))
  * </pre>
- * 
+ *
  * <p>
  * Here's a table showing the complete list of alternatives:
  * </p>
@@ -1179,11 +1179,11 @@ import org.scalactic.source
  * </td>
  * </tr>
  * </table>
- * 
+ *
  * @author Chua Chee Seng
  * @author Bill Venners
  */
-trait WebBrowser { 
+trait WebBrowser {
 
   /**
    * A point containing an XY screen location.
@@ -1281,7 +1281,7 @@ trait WebBrowser {
      * The underlying <code>WebElement</code> wrapped by this <code>Element</code>
      */
     val underlying: WebElement
-    
+
     /**
      * The attribute value of the given attribute name of this element, wrapped in a <code>Some</code>, or <code>None</code> if no
      * such attribute exists on this <code>Element</code>.
@@ -1327,7 +1327,7 @@ trait WebBrowser {
      *
      * @return a string representation of this object
      */
-    override def toString: String = underlying.toString 
+    override def toString: String = underlying.toString
   }
 
   // fluentLinium has a doubleClick. Wonder how they are doing that?
@@ -1351,7 +1351,7 @@ trait WebBrowser {
      *
      * @return the domain of this cookie
      */
-    def domain: String = underlying.getDomain 
+    def domain: String = underlying.getDomain
 
     /**
      * The expire date of this cookie.
@@ -1384,7 +1384,7 @@ trait WebBrowser {
      *
      * @return the path of this cookie
      */
-    def path: String = underlying.getPath 
+    def path: String = underlying.getPath
 
     /**
      * The value of this cookie.
@@ -1434,7 +1434,7 @@ trait WebBrowser {
      *
      * @return a string representation of this object
      */
-    override def toString: String = underlying.toString 
+    override def toString: String = underlying.toString
   }
 
   /**
@@ -1457,7 +1457,7 @@ trait WebBrowser {
    * </pre>
    */
   val cookies = new CookiesNoun
-  
+
   /**
    * This sealed abstract class supports switching in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1552,7 +1552,7 @@ trait WebBrowser {
       driver.switchTo.defaultContent
     }
   }
- 
+
   /**
    * This class supports switching to a frame by index in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1578,7 +1578,7 @@ trait WebBrowser {
         driver.switchTo.frame(index)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchFrameException => 
+        case e: org.openqa.selenium.NoSuchFrameException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame at index '" + index + "' not found."),
                      None,
@@ -1612,7 +1612,7 @@ trait WebBrowser {
         driver.switchTo.frame(nameOrId)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchFrameException => 
+        case e: org.openqa.selenium.NoSuchFrameException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame with name or ID '" + nameOrId + "' not found."),
                      None,
@@ -1637,7 +1637,7 @@ trait WebBrowser {
         driver.switchTo.frame(webElement)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchFrameException => 
+        case e: org.openqa.selenium.NoSuchFrameException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame element '" + webElement + "' not found."),
                      None,
@@ -1645,7 +1645,7 @@ trait WebBrowser {
                    )
       }
   }
-  
+
   /**
    * This class supports switching to a frame by element in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1662,7 +1662,7 @@ trait WebBrowser {
         driver.switchTo.frame(element.underlying)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchFrameException => 
+        case e: org.openqa.selenium.NoSuchFrameException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame element '" + element + "' not found."),
                      None,
@@ -1696,7 +1696,7 @@ trait WebBrowser {
         driver.switchTo.window(nameOrHandle)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchWindowException => 
+        case e: org.openqa.selenium.NoSuchWindowException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
                      None,
@@ -1704,10 +1704,10 @@ trait WebBrowser {
                    )
       }
   }
-  
-  private def isInputField(webElement: WebElement, name: String): Boolean = 
+
+  private def isInputField(webElement: WebElement, name: String): Boolean =
     webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
-      
+
   private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
   private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
   private def isCheckBox(webElement: WebElement): Boolean = isInputField(webElement, "checkbox")
@@ -1726,9 +1726,9 @@ trait WebBrowser {
   private def isUrlField(webElement: WebElement): Boolean = isInputField(webElement, "url") || isInputField(webElement, "text")
   private def isWeekField(webElement: WebElement): Boolean = isInputField(webElement, "week") || isInputField(webElement, "text")
 
-  private def isTextArea(webElement: WebElement): Boolean = 
+  private def isTextArea(webElement: WebElement): Boolean =
     webElement.getTagName.toLowerCase == "textarea"
-  
+
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1745,14 +1745,14 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text field
    */
   final class TextField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    
+
     if(!isTextField(underlying))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
                      None,
                      pos
                    )
-    
+
     /**
      * Gets this text field's value.
      *
@@ -1762,8 +1762,8 @@ trait WebBrowser {
      *
      * @return the text field's value
      */
-    def value: String = underlying.getAttribute("value")  
-    
+    def value: String = underlying.getAttribute("value")
+
     /**
      * Sets this text field's value.
      *
@@ -1802,7 +1802,7 @@ trait WebBrowser {
                      None,
                      pos
                    )
-    
+
     /**
      * Gets this text area's value.
      *
@@ -1829,7 +1829,7 @@ trait WebBrowser {
      */
     def clear(): Unit = { underlying.clear() }
   }
-  
+
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1846,14 +1846,14 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a password field
    */
   final class PasswordField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    
+
     if(!isPasswordField(underlying))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
                      None,
                      pos
                    )
-    
+
     /**
      * Gets this password field's value.
      *
@@ -1863,8 +1863,8 @@ trait WebBrowser {
      *
      * @return the password field's value
      */
-    def value: String = underlying.getAttribute("value")  
-    
+    def value: String = underlying.getAttribute("value")
+
     /**
      * Sets this password field's value.
      *
@@ -1880,7 +1880,7 @@ trait WebBrowser {
      */
     def clear(): Unit = { underlying.clear() }
   }
-  
+
   trait ValueElement extends Element {
     val underlying: WebElement
 
@@ -1902,8 +1902,8 @@ trait WebBrowser {
      *
      * @return the field's value
      */
-    def value: String = underlying.getAttribute("value")  
-    
+    def value: String = underlying.getAttribute("value")
+
     /**
      * Sets this field's value.
      *
@@ -2235,7 +2235,7 @@ trait WebBrowser {
      */
     def value(implicit pos: source.Position): String = selection match {
       case Some(v) => v
-      case None => 
+      case None =>
         throw new TestFailedException(
                      (_: StackDepthException) => Some("The radio button group on which value was invoked contained no selected radio button."),
                      None,
@@ -2251,7 +2251,7 @@ trait WebBrowser {
      */
     def selection: Option[String] = {
       groupElements.find(_.isSelected) match {
-        case Some(radio) => 
+        case Some(radio) =>
           Some(radio.getAttribute("value"))
         case None =>
           None
@@ -2266,9 +2266,9 @@ trait WebBrowser {
      */
     def value_=(value: String)(implicit pos: source.Position): Unit = {
       groupElements.find(_.getAttribute("value") == value) match {
-        case Some(radio) => 
+        case Some(radio) =>
           radio.click()
-        case None => 
+        case None =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
                      None,
@@ -2300,7 +2300,7 @@ trait WebBrowser {
                      None,
                      pos
                    )
-    
+
     /**
      * Selects this checkbox.
      */
@@ -2469,7 +2469,7 @@ trait WebBrowser {
                      None,
                      pos
                    )
-    
+
     /**
      * Returns the value of this single selection list, wrapped in a <code>Some</code>, or <code>None</code>, if this single
      * selection list has no currently selected value.
@@ -2483,7 +2483,7 @@ trait WebBrowser {
       else
         Some(first.getAttribute("value"))
     }
-    
+
     /**
      * Gets this single selection list's selected value, or throws <code>TestFailedException</code> if no value is currently selected.
      *
@@ -2492,14 +2492,14 @@ trait WebBrowser {
      */
     def value(implicit pos: source.Position): String = selection match {
       case Some(v) => v
-      case None => 
+      case None =>
         throw new TestFailedException(
                      (_: StackDepthException) => Some("The single selection list on which value was invoked had no selection."),
                      None,
                      pos
                    )
     }
-    
+
     /**
      * Sets this single selection list's value to the passed value.
      *
@@ -2511,7 +2511,7 @@ trait WebBrowser {
         select.selectByValue(value)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
@@ -2521,7 +2521,7 @@ trait WebBrowser {
     }
   }
 
-  
+
 
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
@@ -2561,7 +2561,7 @@ trait WebBrowser {
     def clear(value: String): Unit = {
       select.deselectByValue(value)
     }
-  
+
     /**
      * Gets all selected values of this multiple selection list.
      *
@@ -2595,7 +2595,7 @@ trait WebBrowser {
         values.foreach(select.selectByValue(_))
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
           throw new TestFailedException(
                      (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
@@ -2603,7 +2603,7 @@ trait WebBrowser {
                    )
       }
     }
-    
+
     /**
      * Clears all selected values in this multiple selection list.
      *
@@ -2613,7 +2613,7 @@ trait WebBrowser {
       select.deselectAll()
     }
   }
-  
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -2667,7 +2667,7 @@ trait WebBrowser {
       driver.get(page.url)
     }
   }
-  
+
   /**
    * Sends the browser to the passed URL.
    *
@@ -2685,7 +2685,7 @@ trait WebBrowser {
   def goTo(url: String)(implicit driver: WebDriver): Unit = {
     go to url
   }
-  
+
   /**
    * Sends the browser to the URL contained in the passed <code>Page</code> object.
    *
@@ -2703,7 +2703,7 @@ trait WebBrowser {
   def goTo(page: Page)(implicit driver: WebDriver): Unit = {
     go to page
   }
-  
+
   /**
    * Closes the current browser window, and exits the driver if the current window was the only one remaining.
    *
@@ -2712,7 +2712,7 @@ trait WebBrowser {
   def close()(implicit driver: WebDriver): Unit = {
     driver.close()
   }
-  
+
   /**
    * Returns the title of the current page, or the empty string if the current page has no title.
    *
@@ -2723,7 +2723,7 @@ trait WebBrowser {
     val t = driver.getTitle
     if (t != null) t else ""
   }
-  
+
   /**
    * Returns the source of the current page.
    *
@@ -2735,7 +2735,7 @@ trait WebBrowser {
    * @return the source of the current page
    */
   def pageSource(implicit driver: WebDriver): String = driver.getPageSource
-  
+
   /**
    * Returns the URL of the current page.
    *
@@ -2747,7 +2747,7 @@ trait WebBrowser {
    * @return the URL of the current page
    */
   def currentUrl(implicit driver: WebDriver): String = driver.getCurrentUrl
-  
+
   /**
    * This trait is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -2807,7 +2807,7 @@ trait WebBrowser {
                    )
       }
     }
-    
+
     /**
      * Returns the first <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code>
      * if no <code>Element</code> is selected.
@@ -2848,7 +2848,7 @@ trait WebBrowser {
      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
      */
     def findAllElements(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
-    
+
     /**
      * Returns the first <code>WebElement</code> selected by this query, or throws <code>TestFailedException</code>
      * if no <code>WebElement</code> is selected.
@@ -3002,7 +3002,7 @@ trait WebBrowser {
    * @param queryString the query string for this query.
    */
   case class TagNameQuery(queryString: String) extends Query { val by = By.tagName(queryString) }
-  
+
   /**
    * Returns an ID query.
    *
@@ -3178,7 +3178,7 @@ trait WebBrowser {
     else
       new Element() { val underlying = element }
   }
-  
+
 // XXX
   /**
    * Finds and returns the first element selected by the specified <code>Query</code>, wrapped
@@ -3202,7 +3202,7 @@ trait WebBrowser {
    * in a <code>Some</code>, or <code>None</code> if no element is selected. YYY
    *
    * <p>
-   * This method will try to lookup by id first. If it cannot find 
+   * This method will try to lookup by id first. If it cannot find
    * any element with an id equal to the specified <code>queryString</code>, it will then try lookup by name.
    * </p>
    *
@@ -3217,7 +3217,7 @@ trait WebBrowser {
    * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
    *   no <code>Element</code> is selected
    */
-  def find(queryString: String)(implicit driver: WebDriver): Option[Element] = 
+  def find(queryString: String)(implicit driver: WebDriver): Option[Element] =
     new IdQuery(queryString).findElement match {
       case Some(element) => Some(element)
       case None => new NameQuery(queryString).findElement match {
@@ -3247,10 +3247,10 @@ trait WebBrowser {
   def findAll(query: Query)(implicit driver: WebDriver): Iterator[Element] = query.findAllElements
 
   /**
-   * Returns an <code>Iterator</code> over all <code>Element</code>s selected by the specified string ID or name 
+   * Returns an <code>Iterator</code> over all <code>Element</code>s selected by the specified string ID or name
    *
    * <p>
-   * This method will try to lookup by id first. If it cannot find 
+   * This method will try to lookup by id first. If it cannot find
    * any element with an id equal to the specified <code>queryString</code>, it will then try lookup by name.
    * </p>
    *
@@ -3268,10 +3268,10 @@ trait WebBrowser {
     val byIdItr = new IdQuery(queryString).findAllElements
     if (byIdItr.hasNext)
       byIdItr
-    else 
+    else
       new NameQuery(queryString).findAllElements
   }
-  
+
   private def tryQueries[T](queryString: String)(f: Query => T)(implicit driver: WebDriver): T = {
     try {
       f(IdQuery(queryString))
@@ -3280,9 +3280,9 @@ trait WebBrowser {
       case _: Throwable => f(NameQuery(queryString))
     }
   }
-  
+
   /**
-   * Finds and returns the first <code>TextField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TextField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TextField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3291,9 +3291,9 @@ trait WebBrowser {
    * @return the <code>TextField</code> selected by this query
    */
   def textField(query: Query)(implicit driver: WebDriver, pos: source.Position): TextField = new TextField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>TextField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TextField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TextField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3303,9 +3303,9 @@ trait WebBrowser {
    */
   def textField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextField =
     tryQueries(queryString)(q => new TextField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>TextArea</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TextArea</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TextArea</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3314,9 +3314,9 @@ trait WebBrowser {
    * @return the <code>TextArea</code> selected by this query
    */
   def textArea(query: Query)(implicit driver: WebDriver, pos: source.Position) = new TextArea(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>TextArea</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TextArea</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TextArea</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3326,9 +3326,9 @@ trait WebBrowser {
    */
   def textArea(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextArea =
     tryQueries(queryString)(q => new TextArea(q.webElement)(pos))
-    
+
   /**
-   * Finds and returns the first <code>PasswordField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>PasswordField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>PasswordField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3337,9 +3337,9 @@ trait WebBrowser {
    * @return the <code>PasswordField</code> selected by this query
    */
   def pwdField(query: Query)(implicit driver: WebDriver, pos: source.Position): PasswordField = new PasswordField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>PasswordField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>PasswordField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>PasswordField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3349,9 +3349,9 @@ trait WebBrowser {
    */
   def pwdField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): PasswordField =
     tryQueries(queryString)(q => new PasswordField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>EmailField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>EmailField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>EmailField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3360,9 +3360,9 @@ trait WebBrowser {
    * @return the <code>EmailField</code> selected by this query
    */
   def emailField(query: Query)(implicit driver: WebDriver, pos: source.Position): EmailField = new EmailField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>EmailField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>EmailField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>EmailField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3372,9 +3372,9 @@ trait WebBrowser {
    */
   def emailField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): EmailField =
     tryQueries(queryString)(q => new EmailField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>ColorField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>ColorField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>ColorField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3383,9 +3383,9 @@ trait WebBrowser {
    * @return the <code>ColorField</code> selected by this query
    */
   def colorField(query: Query)(implicit driver: WebDriver, pos: source.Position): ColorField = new ColorField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>ColorField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>ColorField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>ColorField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3395,9 +3395,9 @@ trait WebBrowser {
    */
   def colorField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): ColorField =
     tryQueries(queryString)(q => new ColorField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>DateField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3406,9 +3406,9 @@ trait WebBrowser {
    * @return the <code>DateField</code> selected by this query
    */
   def dateField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateField = new DateField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>DateField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3418,9 +3418,9 @@ trait WebBrowser {
    */
   def dateField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateField =
     tryQueries(queryString)(q => new DateField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>DateTimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateTimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateTimeField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3429,9 +3429,9 @@ trait WebBrowser {
    * @return the <code>DateTimeField</code> selected by this query
    */
   def dateTimeField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateTimeField = new DateTimeField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>DateTimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateTimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateTimeField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3443,7 +3443,7 @@ trait WebBrowser {
     tryQueries(queryString)(q => new DateTimeField(q.webElement)(pos))
 
   /**
-   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateTimeLocalField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3452,9 +3452,9 @@ trait WebBrowser {
    * @return the <code>DateTimeLocalField</code> selected by this query
    */
   def dateTimeLocalField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateTimeLocalField = new DateTimeLocalField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>DateTimeLocalField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3466,7 +3466,7 @@ trait WebBrowser {
     tryQueries(queryString)(q => new DateTimeLocalField(q.webElement)(pos))
 
   /**
-   * Finds and returns the first <code>MonthField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>MonthField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>MonthField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3475,9 +3475,9 @@ trait WebBrowser {
    * @return the <code>MonthField</code> selected by this query
    */
   def monthField(query: Query)(implicit driver: WebDriver, pos: source.Position): MonthField = new MonthField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>MonthField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>MonthField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>MonthField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3487,9 +3487,9 @@ trait WebBrowser {
    */
   def monthField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MonthField =
     tryQueries(queryString)(q => new MonthField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>NumberField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>NumberField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>NumberField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3498,9 +3498,9 @@ trait WebBrowser {
    * @return the <code>NumberField</code> selected by this query
    */
   def numberField(query: Query)(implicit driver: WebDriver, pos: source.Position): NumberField = new NumberField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>NumberField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>NumberField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>NumberField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3510,9 +3510,9 @@ trait WebBrowser {
    */
   def numberField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): NumberField =
     tryQueries(queryString)(q => new NumberField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>RangeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>RangeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>RangeField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3521,9 +3521,9 @@ trait WebBrowser {
    * @return the <code>RangeField</code> selected by this query
    */
   def rangeField(query: Query)(implicit driver: WebDriver, pos: source.Position): RangeField = new RangeField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>RangeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>RangeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>RangeField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3533,9 +3533,9 @@ trait WebBrowser {
    */
   def rangeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RangeField =
     tryQueries(queryString)(q => new RangeField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>SearchField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>SearchField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>SearchField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3544,9 +3544,9 @@ trait WebBrowser {
    * @return the <code>SearchField</code> selected by this query
    */
   def searchField(query: Query)(implicit driver: WebDriver, pos: source.Position): SearchField = new SearchField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>SearchField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>SearchField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>SearchField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3556,9 +3556,9 @@ trait WebBrowser {
    */
   def searchField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SearchField =
     tryQueries(queryString)(q => new SearchField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>TelField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TelField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TelField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3567,9 +3567,9 @@ trait WebBrowser {
    * @return the <code>TelField</code> selected by this query
    */
   def telField(query: Query)(implicit driver: WebDriver, pos: source.Position): TelField = new TelField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>TelField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TelField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TelField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3579,9 +3579,9 @@ trait WebBrowser {
    */
   def telField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TelField =
     tryQueries(queryString)(q => new TelField(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>TimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TimeField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3590,9 +3590,9 @@ trait WebBrowser {
    * @return the <code>TimeField</code> selected by this query
    */
   def timeField(query: Query)(implicit driver: WebDriver, pos: source.Position): TimeField = new TimeField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>TimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>TimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>TimeField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3604,7 +3604,7 @@ trait WebBrowser {
     tryQueries(queryString)(q => new TimeField(q.webElement)(pos))
 
   /**
-   * Finds and returns the first <code>UrlField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>UrlField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>UrlField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3613,9 +3613,9 @@ trait WebBrowser {
    * @return the <code>UrlField</code> selected by this query
    */
   def urlField(query: Query)(implicit driver: WebDriver, pos: source.Position): UrlField = new UrlField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>UrlField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>UrlField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>UrlField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3627,7 +3627,7 @@ trait WebBrowser {
     tryQueries(queryString)(q => new UrlField(q.webElement)(pos))
 
   /**
-   * Finds and returns the first <code>WeekField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>WeekField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>WeekField</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3636,9 +3636,9 @@ trait WebBrowser {
    * @return the <code>WeekField</code> selected by this query
    */
   def weekField(query: Query)(implicit driver: WebDriver, pos: source.Position): WeekField = new WeekField(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>WeekField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>WeekField</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>WeekField</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3650,18 +3650,18 @@ trait WebBrowser {
     tryQueries(queryString)(q => new WeekField(q.webElement)(pos))
 
   /**
-   * Finds and returns <code>RadioButtonGroup</code> selected by the specified group name, throws <code>TestFailedException</code> if 
+   * Finds and returns <code>RadioButtonGroup</code> selected by the specified group name, throws <code>TestFailedException</code> if
    * no element with the specified group name is found, or found any element with the specified group name but not a <code>RadioButton</code>
-   * 
+   *
    * @param groupName the group name with which to search
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @throws TestFailedException if no element with the specified group name is found, or found any element with the specified group name but not a <code>RadioButton</code>
    * @return the <code>RadioButtonGroup</code> selected by this query
    */
   def radioButtonGroup(groupName: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new RadioButtonGroup(groupName, driver)(pos)
-  
+
   /**
-   * Finds and returns the first <code>RadioButton</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>RadioButton</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>RadioButton</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3670,9 +3670,9 @@ trait WebBrowser {
    * @return the <code>RadioButton</code> selected by this query
    */
   def radioButton(query: Query)(implicit driver: WebDriver, pos: source.Position) = new RadioButton(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>RadioButton</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>RadioButton</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>RadioButton</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3682,9 +3682,9 @@ trait WebBrowser {
    */
   def radioButton(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RadioButton =
     tryQueries(queryString)(q => new RadioButton(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>Checkbox</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>Checkbox</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>Checkbox</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3693,9 +3693,9 @@ trait WebBrowser {
    * @return the <code>Checkbox</code> selected by this query
    */
   def checkbox(query: Query)(implicit driver: WebDriver, pos: source.Position) = new Checkbox(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>Checkbox</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>Checkbox</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>Checkbox</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3705,9 +3705,9 @@ trait WebBrowser {
    */
   def checkbox(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Checkbox =
     tryQueries(queryString)(q => new Checkbox(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>SingleSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>SingleSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>SingleSel</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3716,9 +3716,9 @@ trait WebBrowser {
    * @return the <code>SingleSel</code> selected by this query
    */
   def singleSel(query: Query)(implicit driver: WebDriver, pos: source.Position) = new SingleSel(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>SingleSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>SingleSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>SingleSel</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3728,9 +3728,9 @@ trait WebBrowser {
    */
   def singleSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SingleSel =
     tryQueries(queryString)(q => new SingleSel(q.webElement)(pos))
-  
+
   /**
-   * Finds and returns the first <code>MultiSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>MultiSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>MultiSel</code>.
    *
    * @param query the <code>Query</code> with which to search
@@ -3739,9 +3739,9 @@ trait WebBrowser {
    * @return the <code>MultiSel</code> selected by this query
    */
   def multiSel(query: Query)(implicit driver: WebDriver, pos: source.Position) = new MultiSel(query.webElement)(pos)
-  
+
   /**
-   * Finds and returns the first <code>MultiSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * Finds and returns the first <code>MultiSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code>
    * if element not found or the found element is not a <code>MultiSel</code>.
    *
    * @param queryString the string with which to search, first by ID then by name
@@ -3751,7 +3751,7 @@ trait WebBrowser {
    */
   def multiSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MultiSel =
     tryQueries(queryString)(q => new MultiSel(q.webElement)(pos))
-    
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -3768,88 +3768,88 @@ trait WebBrowser {
   object click {
     /**
      * Click on the specified <code>WebElement</code>
-     * 
+     *
      * @param element the <code>WebElement</code> to click on
      */
     def on(element: WebElement): Unit = {
       element.click()
     }
-    
+
     /**
      * Click on the first <code>Element</code> selected by the specified <code>Query</code>
-     * 
+     *
      * @param query the <code>Query</code> with which to search
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
     def on(query: Query)(implicit driver: WebDriver): Unit = {
       query.webElement.click()
     }
-  
+
     /**
      * Click on the first <code>Element</code> selected by the specified string ID or name
-     * 
+     *
      * @param queryString the string with which to search, first by ID then by name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(queryString: String)(implicit driver: WebDriver): Unit = {
+    def on(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       // stack depth is not correct if just call the button("...") directly.
       val target = tryQueries(queryString)(q => q.webElement)
       on(target)
     }
-    
+
     /**
      * Click on the specified <code>Element</code>
-     * 
+     *
      * @param element the <code>Element</code> to click on
      */
     def on(element: Element): Unit = {
       element.underlying.click()
     }
   }
-  
+
   /**
    * Click on the specified <code>WebElement</code>
-   * 
+   *
    * @param element the <code>WebElement</code> to click on
    */
   def clickOn(element: WebElement): Unit = {
     click on element
   }
-  
+
   /**
    * Click on the first <code>Element</code> selected by the specified <code>Query</code>
-   * 
+   *
    * @param query the <code>Query</code> with which to search
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def clickOn(query: Query)(implicit driver: WebDriver): Unit = {
     click on query
   }
-  
+
   /**
    * Click on the first <code>Element</code> selected by the specified string ID or name
-   * 
+   *
    * @param queryString the string with which to search, first by ID then by name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(queryString: String)(implicit driver: WebDriver): Unit = {
+  def clickOn(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     click on queryString
   }
-  
+
   /**
    * Click on the specified <code>Element</code>
-   * 
+   *
    * @param element the <code>Element</code> to click on
    */
   def clickOn(element: Element): Unit = {
     click on element
   }
-  
+
   /**
-   * Submit the form where current active element belongs to, and throws TestFailedException if current active element is not 
-   * in a form or underlying WebDriver encounters problem when submitting the form.  If this causes the current page to change, 
+   * Submit the form where current active element belongs to, and throws TestFailedException if current active element is not
+   * in a form or underlying WebDriver encounters problem when submitting the form.  If this causes the current page to change,
    * this call will block until the new page is loaded.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @throws TestFailedException if current active element is not in a form or underlying WebDriver encounters problem when submitting the form.
    */
@@ -3858,13 +3858,13 @@ trait WebBrowser {
       (switch to activeElement).underlying.submit()
     }
     catch {
-      case e: org.openqa.selenium.NoSuchElementException => 
+      case e: org.openqa.selenium.NoSuchElementException =>
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Current element is not a form element."),
                      Some(e),
                      pos
                    )
-      case e: Throwable => 
+      case e: Throwable =>
         // Could happens as bug in different WebDriver, like NullPointerException in HtmlUnitDriver when element is not a form element.
         // Anyway, we'll just wrap them as TestFailedException
         throw new TestFailedException(
@@ -3874,7 +3874,7 @@ trait WebBrowser {
                    )
     }
   }
-  
+
   /**
    * Sets the amount of time the driver should wait when searching for an element that is not immediately present.
    *
@@ -3902,27 +3902,27 @@ trait WebBrowser {
 
   /**
    * Close all windows, and exit the driver.
-   * 
-   * @param driver the <code>WebDriver</code> on which to quit. 
+   *
+   * @param driver the <code>WebDriver</code> on which to quit.
    */
   def quit()(implicit driver: WebDriver): Unit = {
     driver.quit()
   }
-  
+
   /**
    * Get an opaque handle to current active window that uniquely identifies it within the implicit driver instance.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def windowHandle(implicit driver: WebDriver): String = driver.getWindowHandle
-  
+
   /**
    * Get a set of window handles which can be used to iterate over all open windows
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def windowHandles(implicit driver: WebDriver): Set[String] = driver.getWindowHandles.asScala.toSet
-  
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -3939,7 +3939,7 @@ trait WebBrowser {
   object switch {
     /**
      * Switch to the specified <code>SwitchTarget</code>
-     * 
+     *
      * @param target the <code>SwitchTarget</code> to switch to
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return instance of specified <code>SwitchTarget</code>'s type parameter
@@ -3948,7 +3948,7 @@ trait WebBrowser {
       target.switch(driver)(pos)
     }
   }
-  
+
   /**
    * This value supports switching to the currently active element in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -3963,7 +3963,7 @@ trait WebBrowser {
    * </pre>
    */
   val activeElement = new ActiveElementTarget()
-  
+
   /**
    * This value supports switching to the alert box in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -3978,7 +3978,7 @@ trait WebBrowser {
    * </pre>
    */
   val alertBox = new AlertTarget()
-  
+
   /**
    * This value supports switching to the default content in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -3993,7 +3993,7 @@ trait WebBrowser {
    * </pre>
    */
   val defaultContent = new DefaultContentTarget()
-  
+
   /**
    * This method supports switching to a frame by index in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4006,12 +4006,12 @@ trait WebBrowser {
    * switch to frame(0)
    *           ^
    * </pre>
-   * 
+   *
    * @param index the index of frame to switch to
    * @return a FrameIndexTarget instance
    */
   def frame(index: Int) = new FrameIndexTarget(index)
-  
+
   /**
    * This method supports switching to a frame by name or ID in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4024,39 +4024,39 @@ trait WebBrowser {
    * switch to frame("name")
    *           ^
    * </pre>
-   * 
+   *
    * @param nameOrId name or ID of the frame to switch to
    * @return a FrameNameOrIdTarget instance
    */
   def frame(nameOrId: String) = new FrameNameOrIdTarget(nameOrId)
-  
+
   /**
    * This method supports switching to a frame by web element in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
-   * 
+   *
    * @param element <code>WebElement</code> which is contained in the frame to switch to
    * @return a FrameWebElementTarget instance
    */
   def frame(element: WebElement) = new FrameWebElementTarget(element)
-  
+
   /**
    * This method supports switching to a frame by element in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
-   * 
+   *
    * @param element <code>Element</code> which is contained in the frame to switch to
    * @return a FrameElementTarget instance
    */
   def frame(element: Element) = new FrameElementTarget(element)
-  
+
   /**
    * This method supports switching to a frame by <code>Query</code> in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
-   * 
-   * @param query <code>Query</code> used to select <code>WebElement</code> which is contained in the frame to switch to 
+   *
+   * @param query <code>Query</code> used to select <code>WebElement</code> which is contained in the frame to switch to
    * @return a FrameWebElementTarget instance
    */
-  def frame(query: Query)(implicit driver: WebDriver) = new FrameWebElementTarget(query.webElement)
-  
+  def frame(query: Query)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new FrameWebElementTarget(query.webElement)
+
   /**
    * This class supports switching to a window by name or handle in ScalaTest's Selenium DSL.
    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4069,48 +4069,48 @@ trait WebBrowser {
    * switch to window(windowHandle)
    *           ^
    * </pre>
-   * 
+   *
    * @param nameOrHandle name or window handle of the window to switch to
    * @return a WindowTarget instance
    */
   def window(nameOrHandle: String) = new WindowTarget(nameOrHandle)
-  
+
   /**
    * Switch to the specified <code>SwitchTarget</code>
-   * 
+   *
    * @param target the <code>SwitchTarget</code> to switch to
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @return instance of specified <code>SwitchTarget</code>'s type parameter
    */
   def switchTo[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): T = switch to target
-  
+
   /**
    * Go back to previous page.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def goBack()(implicit driver: WebDriver): Unit = {
     driver.navigate.back()
   }
-  
+
   /**
    * Go forward to next page.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def goForward()(implicit driver: WebDriver): Unit = {
     driver.navigate.forward()
   }
-  
+
   /**
    * Reload the current page.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def reloadPage()(implicit driver: WebDriver): Unit = {
     driver.navigate.refresh()
   }
-  
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4120,7 +4120,7 @@ trait WebBrowser {
    * </p>
    *
    * <pre class="stHighlight">
-   * add cookie("aName", "aValue") 
+   * add cookie("aName", "aValue")
    * ^
    * </pre>
    */
@@ -4128,37 +4128,37 @@ trait WebBrowser {
     private def addCookie(cookie: Cookie)(implicit driver: WebDriver): Unit = {
       driver.manage.addCookie(cookie)
     }
-    
+
     // Default values determined from http://code.google.com/p/selenium/source/browse/trunk/java/client/src/org/openqa/selenium/Cookie.java
     /**
      * Add cookie in the web browser.  If the cookie's domain name is left blank (default), it is assumed that the cookie is meant for the domain of the current document.
-     * 
+     *
      * @param name cookie's name
      * @param value cookie's value
      * @param path cookie's path
      * @param expiry cookie's expiry data
      * @param domain cookie's domain name
      * @param secure whether this cookie is secured.
-     * @param driver the <code>WebDriver</code> with which to drive the browser 
+     * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = { 
+    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = {
       addCookie(new Cookie(name, value, domain, path, expiry, secure))
     }
   }
-  
+
   /**
    * Get a saved cookie from web browser, throws TestFailedException if the cookie does not exist.
-   * 
+   *
    * @param name cookie's name
    * @return a WrappedCookie instance
    */
   def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
     getCookie(name)(driver, pos)
   }
-  
+
   private def getCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
     driver.manage.getCookies.asScala.toList.find(_.getName == name) match {
-      case Some(cookie) => 
+      case Some(cookie) =>
         new WrappedCookie(cookie)
       case None =>
         throw new TestFailedException(
@@ -4168,7 +4168,7 @@ trait WebBrowser {
                    )
     }
   }
-  
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4178,9 +4178,9 @@ trait WebBrowser {
    * </p>
    *
    * <pre class="stHighlight">
-   * delete cookie "aName" 
+   * delete cookie "aName"
    * ^
-   * 
+   *
    * delete all cookies
    * ^
    * </pre>
@@ -4188,7 +4188,7 @@ trait WebBrowser {
   object delete {
     private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       val cookie = getCookie(name)
-      if (cookie == null) 
+      if (cookie == null)
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
@@ -4196,20 +4196,20 @@ trait WebBrowser {
                    )
       driver.manage.deleteCookie(cookie.underlying)
     }
-    
+
     /**
      * Delete cookie with the specified name from web browser, throws TestFailedException if the specified cookie does not exists.
-     * 
+     *
      * @param name cookie's name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
     def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       deleteCookie(name)
     }
-    
+
     /**
      * Delete all cookies in the current domain from web browser.
-     * 
+     *
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
     def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
@@ -4219,46 +4219,46 @@ trait WebBrowser {
 
   /**
      * Add cookie in the web browser.  If the cookie's domain name is left blank (default), it is assumed that the cookie is meant for the domain of the current document.
-     * 
+     *
      * @param name cookie's name
      * @param value cookie's value
      * @param path cookie's path
      * @param expiry cookie's expiry data
      * @param domain cookie's domain name
      * @param secure whether this cookie is secured.
-     * @param driver the <code>WebDriver</code> with which to drive the browser 
+     * @param driver the <code>WebDriver</code> with which to drive the browser
      */
   def addCookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = {
     add cookie (name, value, path, expiry, domain, secure)
   }
-  
+
   /**
    * Delete cookie with the specified name from web browser, throws TestFailedException if the specified cookie does not exists.
-   * 
+   *
    * @param name cookie's name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete cookie name
   }
-  
+
   /**
    * Delete all cookies in the current domain from web browser.
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
   def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete all cookies
   }
-  
+
   /**
    * Check if screenshot is supported
-   * 
+   *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @return true if screenshot is supported, false otherwise
    */
   def isScreenshotSupported(implicit driver: WebDriver): Boolean = driver.isInstanceOf[TakesScreenshot]
-  
+
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -4270,22 +4270,22 @@ trait WebBrowser {
    * <pre class="stHighlight">
    * capture
    * ^
-   * 
-   * capture to "MyScreenshot.png" 
+   *
+   * capture to "MyScreenshot.png"
    * ^
    * </pre>
    */
   object capture {
-    
+
     /**
-     * Capture screenshot and save it as the specified name (if file name does not end with .png, it will be extended automatically) in capture directory, 
+     * Capture screenshot and save it as the specified name (if file name does not end with .png, it will be extended automatically) in capture directory,
      * which by default is system property's java.io.tmpdir.  You can change capture directory by calling <code>setCaptureDir</code>
-     * 
+     *
      * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
      */
     def to(fileName: String)(implicit driver: WebDriver): Unit = {
       driver match {
-        case takesScreenshot: TakesScreenshot => 
+        case takesScreenshot: TakesScreenshot =>
           val tmpFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
           val outFile = new File(targetDir, if (fileName.toLowerCase.endsWith(".png")) fileName else fileName + ".png")
           new FileOutputStream(outFile).getChannel.transferFrom(
@@ -4294,14 +4294,14 @@ trait WebBrowser {
           throw new UnsupportedOperationException("Screen capture is not support by " + driver.getClass.getName)
       }
     }
-    
+
     /**
-     * Capture screenshot and save it in capture directory, which by default is system property's java.io.tmpdir.  
+     * Capture screenshot and save it in capture directory, which by default is system property's java.io.tmpdir.
      * You can change capture directory by calling <code>setCaptureDir</code>
      */
     def apply()(implicit driver: WebDriver): File = {
       driver match {
-        case takesScreenshot: TakesScreenshot => 
+        case takesScreenshot: TakesScreenshot =>
           val tmpFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
           val fileName = tmpFile.getName
           val outFile = new File(targetDir, if (fileName.toLowerCase.endsWith(".png")) fileName else fileName + ".png")
@@ -4313,27 +4313,27 @@ trait WebBrowser {
       }
     }
   }
-  
+
   /**
-   * Capture screenshot and save it as the specified name (if file name does not end with .png, it will be extended automatically) in capture directory, 
+   * Capture screenshot and save it as the specified name (if file name does not end with .png, it will be extended automatically) in capture directory,
    * which by default is system property's java.io.tmpdir.  You can change capture directory by calling <code>setCaptureDir</code>
-   * 
+   *
    * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
    */
   def captureTo(fileName: String)(implicit driver: WebDriver): Unit = {
     capture to fileName
   }
-  
+
   // Can get by with volatile, because the setting doesn't depend on the getting
   @volatile private var targetDir = new File(System.getProperty("java.io.tmpdir"))
-    
+
   /**
    * Set capture directory.
-   * 
+   *
    * @param targetDirPath the path of capture directory
    */
   def setCaptureDir(targetDirPath: String): Unit = {
-      targetDir = 
+      targetDir =
         if (targetDirPath.endsWith(File.separator))
           new File(targetDirPath)
         else
@@ -4341,12 +4341,12 @@ trait WebBrowser {
       if (!targetDir.exists)
         targetDir.mkdirs()
   }
-  
+
   /**
-   * Execute the given function, if <code>ModifiableMessage</code> exception is thrown from the given function, 
-   * a screenshot will be captured automatically into capture directory, which by default is system property's java.io.tmpdir.  
+   * Execute the given function, if <code>ModifiableMessage</code> exception is thrown from the given function,
+   * a screenshot will be captured automatically into capture directory, which by default is system property's java.io.tmpdir.
    * You can change capture directory by calling <code>setCaptureDir</code>
-   * 
+   *
    * @param fun function to execute
    * @return the value returned by <code>fun</code>
    */
@@ -4356,29 +4356,29 @@ trait WebBrowser {
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] =>
-        throw e.modifyMessage{ (currentMessage: Option[String]) => 
+        throw e.modifyMessage{ (currentMessage: Option[String]) =>
           val captureFile: File = capture.apply()
           currentMessage match {
-            case Some(currentMsg) => 
+            case Some(currentMsg) =>
               Some(currentMsg + "; screenshot captured in " + captureFile.getAbsolutePath)
-            case None => 
+            case None =>
               Some("screenshot captured in " + captureFile.getAbsolutePath)
           }
         }
     }
   }
-  
+
   /**
-   * Executes JavaScript in the context of the currently selected frame or window.  The script fragment provided will be executed as the body of an anonymous function. 
-   * 
+   * Executes JavaScript in the context of the currently selected frame or window.  The script fragment provided will be executed as the body of an anonymous function.
+   *
    * <p>
    * Within the script, you can use <code>document</code> to refer to the current document. Local variables will not be available once the script has finished executing, but global variables will.
    * </p>
-   * 
+   *
    * <p>
    * To return a value (e.g. if the script contains a return statement), then the following steps will be taken:
    * </p>
-   * 
+   *
    * <ol>
    *   <li>For an HTML element, this method returns a WebElement</li>
    *   <li>For a decimal, a Double is returned</li>
@@ -4396,7 +4396,7 @@ trait WebBrowser {
    * it may still be possible for the underlying <code>JavascriptExecutor</code> implementation to return an objects of other types.
    * For example, <code>HtmlUnit</code> has been observed to return a <code>java.util.Map</code> for a Javascript object.)
    * </p>
-   * 
+   *
    * @param script the JavaScript to execute
    * @param args the arguments to the script, may be empty
    * @return One of Boolean, Long, String, List or WebElement. Or null (following <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>)
@@ -4406,17 +4406,17 @@ trait WebBrowser {
       case executor: JavascriptExecutor => executor.executeScript(script, args.toArray : _*)
       case _ => throw new UnsupportedOperationException("Web driver " + driver.getClass.getName + " does not support javascript execution.")
     }
-  
+
   /**
-   * Executes an asynchronous piece of JavaScript in the context of the currently selected frame or window.  Unlike executing synchronous JavaScript, 
-   * scripts executed with this method must explicitly signal they are finished by invoking the provided callback. This callback is always injected into 
+   * Executes an asynchronous piece of JavaScript in the context of the currently selected frame or window.  Unlike executing synchronous JavaScript,
+   * scripts executed with this method must explicitly signal they are finished by invoking the provided callback. This callback is always injected into
    * the executed function as the last argument.
-   * 
+   *
    * <p>
-   * The first argument passed to the callback function will be used as the script's result. This value will be handled as follows: 
+   * The first argument passed to the callback function will be used as the script's result. This value will be handled as follows:
    * </p>
-   * 
-   * <ol> 
+   *
+   * <ol>
    *   <li>For an HTML element, this method returns a WebElement</li>
    *   <li>For a number, a Long is returned</li>
    *   <li>For a boolean, a Boolean is returned</li>
@@ -4424,15 +4424,15 @@ trait WebBrowser {
    *   <li>For an array, return a List<Object> with each object following the rules above. We support nested lists</li>
    *   <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ol>
-   * 
+   *
    * <p>
-   * Script arguments must be a number, boolean, String, WebElement, or a List of any combination of these. An exception will 
+   * Script arguments must be a number, boolean, String, WebElement, or a List of any combination of these. An exception will
    * be thrown if the arguments do not meet these criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
    * (Note that although this behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
    * it may still be possible for the underlying <code>JavascriptExecutor</code> implementation to return an objects of other types.
    * For example, <code>HtmlUnit</code> has been observed to return a <code>java.util.Map</code> for a Javascript object.)
    * </p>
-   * 
+   *
    * @param script the JavaScript to execute
    * @param args the arguments to the script, may be empty
    * @return One of Boolean, Long, String, List, WebElement, or null (following <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>)
@@ -4442,10 +4442,10 @@ trait WebBrowser {
       case executor: JavascriptExecutor => executor.executeAsyncScript(script, args.toArray : _*)
       case _ => throw new UnsupportedOperationException("Web driver " + driver.getClass.getName + " does not support javascript execution.")
     }
-  
+
   /**
    * Sets the amount of time to wait for an asynchronous script to finish execution before throwing an exception.
-   * 
+   *
    * @param timeout the amount of time to wait for an asynchronous script to finish execution before throwing exception
    */
   def setScriptTimeout(timeout: Span)(implicit driver: WebDriver): Unit = {
@@ -4454,9 +4454,9 @@ trait WebBrowser {
 
   // Clears the text field or area, then presses the passed keys
   /**
-   * Clears the current active <code>TextField</code> or <code>TextArea</code>, and presses the passed keys.  
+   * Clears the current active <code>TextField</code> or <code>TextArea</code>, and presses the passed keys.
    * Throws <code>TestFailedException</code> if current active is not <code>TextField</code> or <code>TextArea</code>.
-   * 
+   *
    * @param value keys to press in current active <code>TextField</code> or <code>TextArea</code>
    */
   def enter(value: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
@@ -4469,7 +4469,7 @@ trait WebBrowser {
       case pf: SearchField => pf.value = value
       case pf: TelField => pf.value = value
       case pf: UrlField => pf.value = value
-      case _ => 
+      case _ =>
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
                      None,
@@ -4480,7 +4480,7 @@ trait WebBrowser {
 
   /**
    * Press the passed keys to current active element.
-   * 
+   *
    * @param value keys to press in current active element
    */
   def pressKeys(value: String)(implicit driver: WebDriver): Unit = {
@@ -4490,7 +4490,7 @@ trait WebBrowser {
 }
 
 /**
- * Companion object that facilitates the importing of <code>WebBrowser</code> members as 
+ * Companion object that facilitates the importing of <code>WebBrowser</code> members as
  * an alternative to mixing it in. One use case is to import <code>WebBrowser</code> members so you can use
  * them in the Scala interpreter.
  */
@@ -4572,7 +4572,7 @@ trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
 }
 
 /**
- * Companion object that facilitates the importing of <code>HtmlUnit</code> members as 
+ * Companion object that facilitates the importing of <code>HtmlUnit</code> members as
  * an alternative to mixing it in. One use case is to import <code>HtmlUnit</code> members so you can use
  * them in the Scala interpreter.
  */
@@ -4618,7 +4618,7 @@ trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
 }
 
 /**
- * Companion object that facilitates the importing of <code>Firefox</code> members as 
+ * Companion object that facilitates the importing of <code>Firefox</code> members as
  * an alternative to mixing it in. One use case is to import <code>Firefox</code> members so you can use
  * them in the Scala interpreter.
  */
@@ -4642,7 +4642,7 @@ trait Safari extends WebBrowser with Driver with ScreenshotCapturer {
 }
 
 /**
- * Companion object that facilitates the importing of <code>Safari</code> members as 
+ * Companion object that facilitates the importing of <code>Safari</code> members as
  * an alternative to mixing it in. One use case is to import <code>Safari</code> members so you can use
  * them in the Scala interpreter.
  */
@@ -4666,7 +4666,7 @@ trait Chrome extends WebBrowser with Driver with ScreenshotCapturer {
 }
 
 /**
- * Companion object that facilitates the importing of <code>Chrome</code> members as 
+ * Companion object that facilitates the importing of <code>Chrome</code> members as
  * an alternative to mixing it in. One use case is to import <code>Chrome</code> members so you can use
  * them in the Scala interpreter.
  */
@@ -4690,7 +4690,7 @@ trait InternetExplorer extends WebBrowser with Driver with ScreenshotCapturer {
 }
 
 /**
- * Companion object that facilitates the importing of <code>InternetExplorer</code> members as 
+ * Companion object that facilitates the importing of <code>InternetExplorer</code> members as
  * an alternative to mixing it in. One use case is to import <code>InternetExplorer</code> members so you can use
  * them in the Scala interpreter.
  */
