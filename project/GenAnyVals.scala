@@ -270,6 +270,53 @@ object GenAnyVals {
     List(targetFile, genMacro(targetDir, "Double", typeName, typeBooleanExpr))
   }
 
+  def genCharAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
+                   typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
+                   widensToTypes: Seq[String]): List[File] = {
+    val templateSource = scala.io.Source.fromFile("project/templates/CharAnyVal.template")
+    val templateText = try templateSource.mkString finally templateSource.close()
+    val st = new org.antlr.stringtemplate.StringTemplate(templateText)
+
+    st.setAttribute("typeName", typeName)
+    st.setAttribute("typeDesc", typeDesc)
+    st.setAttribute("typeNote", typeNote)
+    st.setAttribute("typeBooleanExpr", typeBooleanExpr)
+    st.setAttribute("typeValidExample", typeValidExample)
+    st.setAttribute("typeInvalidExample", typeInvalidExample)
+    st.setAttribute("typeValidValue", typeValidValue)
+    st.setAttribute("typeInvalidValue", typeInvalidValue)
+    st.setAttribute("typeMinValue", typeMinValue)
+    st.setAttribute("typeMinValueNumber", typeMinValueNumber)
+    st.setAttribute("typeMaxValue", typeMaxValue)
+    st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+    st.setAttribute("negation", negation(typeName))
+
+    val widensToOtherAnyVals =
+      widensToTypes.map { targetType =>
+        val targetPrimitiveType = getPrimitiveType(targetType)
+        s"""/**
+           | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
+           | *
+           | * @param pos the <code>$typeName</code> to widen
+           | * @return the <code>Int</code> value underlying the specified <code>$typeName</code>,
+           | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
+           | */
+           |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
+           |""".stripMargin
+      }.mkString
+
+    st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
+
+    val targetFile = new File(targetDir, typeName + ".scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
+
+    bw.write(st.toString)
+    bw.flush()
+    bw.close()
+    println("Generated: " + targetFile.getAbsolutePath)
+    List(targetFile, genMacro(targetDir, "Char", typeName, typeBooleanExpr))
+  }
+
   val primitiveTypes =
     List(
       "Int",
@@ -390,6 +437,13 @@ object GenAnyVals {
   def finiteWidens(primitiveType: String): List[String] = {
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Finite" + p)
   }
+
+  def numericCharWidens: List[String] =
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "Finite" + p) ++
+    primitiveTypes.map(p => "Pos" + p) ++
+    primitiveTypes.map(p => "PosZ" + p) ++
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "PosFinite" + p) ++
+    primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "PosZFinite" + p)
 
   def positiveInfinity(typePrefix: String, primitiveName: String): String =
     s"""/**
@@ -747,7 +801,9 @@ object GenAnyVals {
       ceil("Finite", "Double") +
       floor("Finite", "Double"),
       minPositiveValue("Finite", "Double"),
-      finiteWidens("Double"))
+      finiteWidens("Double")) :::
+    genCharAnyVal(dir, "NumericChar", "numeric", "Note: a <code>NumericChar</code> has a value between '0' and '9'.", "i >= '0' && i <= '9'", "NumericChar('4')", "NumericChar('a')", "'4'", "'a'", "'0'", "'0'",
+      "'9'", "'9'", numericCharWidens)
 
   }
 
@@ -770,6 +826,9 @@ object GenAnyVals {
       else
         s"${value}.0"
     }
+    else if (typeName.endsWith("Char")) {
+      s"'${value}'"
+    }
     else {
       if (value.indexOf('.') >= 0)
         value.substring(0, value.indexOf('.'))
@@ -780,7 +839,11 @@ object GenAnyVals {
   def primitivesShouldEqualTests(typeName: String, types: Seq[String], lhsFun: String => String, resultValue: String): String =
     types.map { pType =>
       val widerValue = pickWiderType(typeName, pType)
-      val expectedValue = valueFormat(resultValue, widerValue)
+      val expectedValue =
+        if (typeName.endsWith("Char") && !pType.endsWith("Char"))
+          valueFormat(resultValue.charAt(0).toInt.toString, widerValue)
+        else
+          valueFormat(resultValue, widerValue)
       lhsFun(pType) + " shouldEqual " + expectedValue
     }.mkString("\n")
 
@@ -809,7 +872,12 @@ object GenAnyVals {
 
   def anyValsWidenShouldEqualTests(typeName: String, widensToTypes: Seq[String], validValue: String): String =
     (widensToTypes map { widenType =>
-      val expectedValue = valueFormat(validValue, widenType)
+      //val expectedValue = valueFormat(validValue, widenType)
+      val expectedValue =
+        if (typeName.endsWith("Char") && !widenType.endsWith("Char"))
+          valueFormat(validValue.charAt(0).toInt.toString, widenType)
+        else
+          valueFormat(validValue, widenType)
       val lhsValue = valueFormat(validValue, typeName)
       s"($typeName($lhsValue): $widenType) shouldEqual $widenType($expectedValue)"
     }).mkString("\n")
@@ -839,7 +907,8 @@ object GenAnyVals {
       ("Pos", (3, 2, 2, 3, 3)),
       ("NonZero", (3, 2, 2, 3, 3)),
       ("Neg", (-3, -2, -2, -3, -3)),
-      ("Finite", (3, 2, 2, 3, 3))
+      ("Finite", (3, 2, 2, 3, 3)),
+      ("NumericChar", (3, 2, 2, 3, 3))
     )
 
   def getModifyValue(typeName: String, operator: String): Int =
@@ -857,25 +926,31 @@ object GenAnyVals {
       case None => throw new IllegalArgumentException("Cannot find modifyValue for " + typeName + ", operator: " + operator)
     }
 
-  def getResultValue(lhsValue: Int, operator: String, rhsValue: Int): Int =
+  def getResultValue(primitiveType: String, lhsValue: Int, operator: String, rhsValue: Int): Int = {
+    val leftValue =
+      if (primitiveType == "Char")
+        lhsValue.toString.charAt(0).toInt
+      else
+        lhsValue
     operator match {
-      case "+" => lhsValue + rhsValue
-      case "-" => lhsValue - rhsValue
-      case "*" => lhsValue * rhsValue
-      case "/" => lhsValue / rhsValue
-      case "%" => lhsValue % rhsValue
+      case "+" => leftValue + rhsValue
+      case "-" => leftValue - rhsValue
+      case "*" => leftValue * rhsValue
+      case "/" => leftValue / rhsValue
+      case "%" => leftValue % rhsValue
     }
+  }
 
   def operatorShouldEqualTests(typeName: String, primitiveType: String, lhsValue: Int, operator: String): String = {
     val primitiveModifyValue = getModifyValue(typeName, operator)
     primitiveTypes.map { pType =>
       val widerType = pickWiderType(typeName, pType)
-      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + valueFormat(primitiveModifyValue.toString, pType) + " shouldEqual " + valueFormat(getResultValue(lhsValue, operator, primitiveModifyValue).toString, pType)
+      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + valueFormat(primitiveModifyValue.toString, pType) + " shouldEqual " + valueFormat(getResultValue(primitiveType, lhsValue, operator, primitiveModifyValue).toString, pType)
     }.mkString("\n") + "\n" +
     allAnyValTypes.map { rhsType =>
       val widerType = pickWiderType(typeName, rhsType)
       val modifyValue = getModifyValue(rhsType, operator)
-      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + rhsType + "(" + valueFormat(modifyValue.toString, rhsType) + ") shouldEqual " + valueFormat(getResultValue(lhsValue, operator, modifyValue).toString, rhsType)
+      typeName + "(" + valueFormat(lhsValue.toString, typeName) + ") " + operator + " " + rhsType + "(" + valueFormat(modifyValue.toString, rhsType) + ") shouldEqual " + valueFormat(getResultValue(primitiveType, lhsValue, operator, modifyValue).toString, rhsType)
     }.mkString("\n")
   }
 
@@ -883,10 +958,10 @@ object GenAnyVals {
     val targetFile = new File(targetDir, typeName + "GeneratedSpec.scala")
     val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    val autoWidenTests =6
+    val autoWidenTests =
       primitivesShouldEqualTests(typeName, primitiveTypes.dropWhile(_ != primitiveType), pType => "(" + typeName + "(" + validValue + "): " + pType + ")", validValue.toString) + "\n" +
-        anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
-        shouldNotCompileTests(primitiveTypes.takeWhile(_ != primitiveType) ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
+      anyValsWidenShouldEqualTests(typeName, widensToTypes, validValue.toString) + "\n" +
+      shouldNotCompileTests(primitiveTypes.takeWhile(_ != primitiveType) ++ allAnyValTypes.filter(t => !widensToTypes.contains(t) && t != typeName), pType => "(" + typeName + "(" + validValue + "): " + pType + ")")
 
     val autoWidenPropertyTests =
       primitivesWidenPropertyTests(typeName, primitiveType, primitiveTypes.dropWhile(_ != primitiveType)) ++
@@ -957,7 +1032,8 @@ object GenAnyVals {
     genAnyValTests(dir, "NegZFiniteFloat", "Float", -3, negZFiniteWidens("Float")) ++
     genAnyValTests(dir, "NegZFiniteDouble", "Double", -3, negZFiniteWidens("Double")) ++
     genAnyValTests(dir, "FiniteFloat", "Float", 3, finiteWidens("Float")) ++
-    genAnyValTests(dir, "FiniteDouble", "Double", 3, finiteWidens("Double"))
+    genAnyValTests(dir, "FiniteDouble", "Double", 3, finiteWidens("Double")) ++
+    genAnyValTests(dir, "NumericChar", "Char", 3, numericCharWidens)
   }
 
 }

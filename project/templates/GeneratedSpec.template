@@ -6,6 +6,8 @@ import scala.util.Try
 
 class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
 
+  val typeName = "$typeName$"
+
   describe("$typeName$") {
 
     it("should be automatically widened to compatible AnyVal targets") {
@@ -48,7 +50,10 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
 
     it("should offer a unary - method that is consistent with $primitiveType$") {
       forAll { (p: $typeName$) =>
-        (-p).to$primitiveType$ shouldEqual (-(p.to$primitiveType$))
+        if (typeName.endsWith("Char"))
+          (-p).to$primitiveType$ should not equal (-(p.to$primitiveType$))
+        else
+          (-p).to$primitiveType$ shouldEqual (-(p.to$primitiveType$))
       }
     }
 
