@@ -16,8 +16,13 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
+
 import scala.collection.mutable.WrappedArray
 import OptionValues._
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen.choose
+import org.scalactic.Equality
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 //import org.scalactic.StrictCheckedEquality
 
 import scala.util.{Failure, Success, Try}
@@ -25,7 +30,28 @@ import TryValues._
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
+trait NumericCharSpecSupport {
+
+  val numericCharGen: Gen[NumericChar] =
+    for {i <- choose(1, 9)} yield NumericChar.from(i.toString.charAt(0)).get
+
+  implicit val arbNumericChar: Arbitrary[NumericChar] = Arbitrary(numericCharGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+
+}
+
+
+class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
   describe("A NumericChar") {
     describe("should offer a from factory method that") {
       it("returns Some[NumericChar] if the passed Char is between '0' and '9'") {
@@ -56,8 +82,8 @@ class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality
       }
     } 
     it("should define min and max values") {
-      NumericChar.MinValue shouldBe '0'
-      NumericChar.MaxValue shouldBe '9'
+      NumericChar.MinValue shouldBe NumericChar.ensuringValid('0')
+      NumericChar.MaxValue shouldBe NumericChar.ensuringValid('9')
     } 
     it("should define min and max methods") {
       NumericChar('0') min NumericChar('1') shouldBe NumericChar('0')
@@ -74,12 +100,13 @@ class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality
       NumericChar('9').asDigitPosZInt shouldBe PosZInt(9)
     } 
     it("should have a pretty toString") {
-      NumericChar.from('0').value.toString shouldBe "NumericChar(0)"
-      NumericChar.from('9').value.toString shouldBe "NumericChar(9)"
+      NumericChar.from('0').value.toString shouldBe "NumericChar('0')"
+      NumericChar.from('9').value.toString shouldBe "NumericChar('9')"
     }
     it("should return the same type from its unary_+ method") {
       +NumericChar('3') shouldEqual NumericChar('3')
-    } 
+    }
+
     it("should be automatically widened to compatible AnyVal targets") {
       (NumericChar('3'): Int) shouldEqual '3'.toInt
       (NumericChar('3'): Long) shouldEqual '3'.toLong
@@ -293,7 +320,249 @@ class NumericCharSpec extends FunSpec with Matchers/* with StrictCheckedEquality
         NumericChar.isValid('A') shouldBe false
         NumericChar.isValid('@') shouldBe false
       }
-    } 
+    }
+    describe("should offer a toByte method that") {
+      it("returns correct Byte value") {
+        NumericChar('0').toByte shouldBe 48
+        NumericChar('1').toByte shouldBe 49
+        NumericChar('2').toByte shouldBe 50
+        NumericChar('3').toByte shouldBe 51
+        NumericChar('4').toByte shouldBe 52
+        NumericChar('5').toByte shouldBe 53
+        NumericChar('6').toByte shouldBe 54
+        NumericChar('7').toByte shouldBe 55
+        NumericChar('8').toByte shouldBe 56
+        NumericChar('9').toByte shouldBe 57
+      }
+    }
+    describe("should offer a toShort method that") {
+      it("returns correct Short value") {
+        NumericChar('0').toShort shouldBe 48
+        NumericChar('1').toShort shouldBe 49
+        NumericChar('2').toShort shouldBe 50
+        NumericChar('3').toShort shouldBe 51
+        NumericChar('4').toShort shouldBe 52
+        NumericChar('5').toShort shouldBe 53
+        NumericChar('6').toShort shouldBe 54
+        NumericChar('7').toShort shouldBe 55
+        NumericChar('8').toShort shouldBe 56
+        NumericChar('9').toShort shouldBe 57
+      }
+    }
+    describe("should offer a toChar method that") {
+      it("returns correct Char value") {
+        NumericChar('0').toChar shouldBe '0'
+        NumericChar('1').toChar shouldBe '1'
+        NumericChar('2').toChar shouldBe '2'
+        NumericChar('3').toChar shouldBe '3'
+        NumericChar('4').toChar shouldBe '4'
+        NumericChar('5').toChar shouldBe '5'
+        NumericChar('6').toChar shouldBe '6'
+        NumericChar('7').toChar shouldBe '7'
+        NumericChar('8').toChar shouldBe '8'
+        NumericChar('9').toChar shouldBe '9'
+      }
+    }
+    describe("should offer a toInt method that") {
+      it("returns correct Int value") {
+        NumericChar('0').toInt shouldBe 48
+        NumericChar('1').toInt shouldBe 49
+        NumericChar('2').toInt shouldBe 50
+        NumericChar('3').toInt shouldBe 51
+        NumericChar('4').toInt shouldBe 52
+        NumericChar('5').toInt shouldBe 53
+        NumericChar('6').toInt shouldBe 54
+        NumericChar('7').toInt shouldBe 55
+        NumericChar('8').toInt shouldBe 56
+        NumericChar('9').toInt shouldBe 57
+      }
+    }
+    describe("should offer a toLong method that") {
+      it("returns correct Long value") {
+        NumericChar('0').toLong shouldBe 48L
+        NumericChar('1').toLong shouldBe 49L
+        NumericChar('2').toLong shouldBe 50L
+        NumericChar('3').toLong shouldBe 51L
+        NumericChar('4').toLong shouldBe 52L
+        NumericChar('5').toLong shouldBe 53L
+        NumericChar('6').toLong shouldBe 54L
+        NumericChar('7').toLong shouldBe 55L
+        NumericChar('8').toLong shouldBe 56L
+        NumericChar('9').toLong shouldBe 57L
+      }
+    }
+
+    describe("should offer a toFloat method that") {
+      it("returns correct Float value") {
+        NumericChar('0').toFloat shouldBe 48.0f
+        NumericChar('1').toFloat shouldBe 49.0f
+        NumericChar('2').toFloat shouldBe 50.0f
+        NumericChar('3').toFloat shouldBe 51.0f
+        NumericChar('4').toFloat shouldBe 52.0f
+        NumericChar('5').toFloat shouldBe 53.0f
+        NumericChar('6').toFloat shouldBe 54.0f
+        NumericChar('7').toFloat shouldBe 55.0f
+        NumericChar('8').toFloat shouldBe 56.0f
+        NumericChar('9').toFloat shouldBe 57.0f
+      }
+    }
+
+    describe("should offer a toDouble method that") {
+      it("returns correct Double value") {
+        NumericChar('0').toFloat shouldBe 48.0
+        NumericChar('1').toFloat shouldBe 49.0
+        NumericChar('2').toFloat shouldBe 50.0
+        NumericChar('3').toFloat shouldBe 51.0
+        NumericChar('4').toFloat shouldBe 52.0
+        NumericChar('5').toFloat shouldBe 53.0
+        NumericChar('6').toFloat shouldBe 54.0
+        NumericChar('7').toFloat shouldBe 55.0
+        NumericChar('8').toFloat shouldBe 56.0
+        NumericChar('9').toFloat shouldBe 57.0
+      }
+    }
+
+    describe("should offer 'min' and 'max' methods that") {
+      it("are consistent with Char") {
+        forAll { (p1: NumericChar, p2: NumericChar) =>
+          p1.max(p2).toChar shouldEqual p1.toChar.max(p2.toChar)
+          p1.min(p2).toChar shouldEqual p1.toChar.min(p2.toChar)
+        }
+      }
+    }
+
+    describe("should offer asDigit method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigit shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer asDigitPosInt method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigitPosInt.value shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer asDigitPosZInt method that") {
+      it("is consistent with Char's asDigit") {
+        forAll { (p1: NumericChar) =>
+          p1.asDigitPosZInt.value shouldEqual p1.value.asDigit
+        }
+      }
+    }
+
+    describe("should offer a unary ~ method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar) =>
+          (~p) shouldEqual (~(p.toChar))
+        }
+      }
+    }
+
+    describe("should offer a + method that") {
+      it("takes a String which is consistent with Char") {
+        forAll { (p: NumericChar) =>
+          p + "test" shouldEqual p.value + "test"
+        }
+      }
+    }
+
+    describe("should offer << methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p << shift shouldEqual p.value << shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p << shift shouldEqual p.value << shift
+        }
+      }
+    }
+
+    describe("should offer >>> methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p >>> shift shouldEqual p.value >>> shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p >>> shift shouldEqual p.value >>> shift
+        }
+      }
+    }
+
+    describe("should offer >> methods that") {
+      it("are consistent with Char") {
+        forAll { (p: NumericChar, shift: Int) =>
+          p >> shift shouldEqual p.value >> shift
+        }
+        forAll { (p: NumericChar, shift: Long) =>
+          p >> shift shouldEqual p.value >> shift
+        }
+      }
+    }
+
+    describe("should offer a '|' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p | byte) shouldEqual (p.value | byte)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p | short) shouldEqual (p.value | short)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p | char) shouldEqual (p.value | char)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p | int) shouldEqual (p.value | int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p | long) shouldEqual (p.value | long)
+        }
+      }
+    }
+
+    describe("should offer an '&' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p & byte) shouldEqual (p.value & byte)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p & short) shouldEqual (p.value & short)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p & char) shouldEqual (p.value & char)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p & int) shouldEqual (p.value & int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p & long) shouldEqual (p.value & long)
+        }
+      }
+    }
+
+    describe("should offer an '^' method that") {
+      it("is consistent with Char") {
+        forAll { (p: NumericChar, byte: Byte) =>
+          (p ^ byte) shouldEqual (p.value ^ byte)
+        }
+        forAll { (p: NumericChar, char: Char) =>
+          (p ^ char) shouldEqual (p.value ^ char)
+        }
+        forAll { (p: NumericChar, short: Short) =>
+          (p ^ short) shouldEqual (p.value ^ short)
+        }
+        forAll { (p: NumericChar, int: Int) =>
+          (p ^ int) shouldEqual (p.value ^ int)
+        }
+        forAll { (p: NumericChar, long: Long) =>
+          (p ^ long) shouldEqual (p.value ^ long)
+        }
+      }
+    }
   }
 }
 

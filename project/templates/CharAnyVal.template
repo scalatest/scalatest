@@ -1,5 +1,5 @@
 /*
-* Copyright 2001-2014 Artima, Inc.
+* Copyright 2001-2017 Artima, Inc.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -21,18 +21,18 @@ import org.scalactic.{Or, Good, Bad}
 import org.scalactic.{Validation, Pass, Fail}
 
 /**
- * An <code>AnyVal</code> for numeric <code>Char</code>s.
+ * An <code>AnyVal</code> for $typeDesc$ <code>Char</code>s.
  *
- * Note: a <code>NumericChar</code> has a value between '0' and '9'.
+ * $typeNote$
  *
  * <p>
- * Because <code>NumericChar</code> is an <code>AnyVal</code> it will usually
+ * Because <code>$typeName$</code> is an <code>AnyVal</code> it will usually
  * be as efficient as a <code>Char</code>, being boxed only when a
  * <code>Char</code> would have been boxed.
  * </p>
  *
  * <p>
- * The <code>NumericChar.apply</code> factory method is implemented in terms
+ * The <code>$typeName$.apply</code> factory method is implemented in terms
  * of a macro that checks literals for validity at compile time. Calling
  * <code>NumericChar.apply</code> with a literal <code>Char</code> value will
  * either produce a valid <code>NumericChar</code> instance at run time or an
@@ -43,58 +43,58 @@ import org.scalactic.{Validation, Pass, Fail}
  * scala&gt; import anyvals._
  * import anyvals._
  *
- * scala&gt; NumericChar('4')
- * res0: org.scalactic.anyvals.NumericChar = NumericChar(4)
+ * scala&gt; $typeValidExample$
+ * res0: org.scalactic.anyvals.$typeName$ = $typeValidExample$
  *
- * scala&gt; NumericChar('a')
- * &lt;console&gt;:14: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'.
- *               NumericChar('a')
+ * scala&gt; $typeInvalidExample$
+ * &lt;console&gt;:14: error: $typeName$.apply can only be invoked on Char literals that are $typeDesc$, like $typeValidExample$.
+ *               $typeInvalidExample$
  *                          ^
  * </pre>
  *
  * <p>
- * <code>NumericChar.apply</code> cannot be used if the value being passed
+ * <code>$typeName$.apply</code> cannot be used if the value being passed
  * is a variable (<em>i.e.</em>, not a literal), because the macro cannot
- * determine the validity of variables at compile time (just literals). 
- * If you try to pass a variable to <code>NumericChar.apply</code>, you'll 
+ * determine the validity of variables at compile time (just literals).
+ * If you try to pass a variable to <code>$typeName$.apply</code>, you'll
  * get a compiler error that suggests you use a different factory method,
- * <code>NumericChar.from</code>, instead:
+ * <code>$typeName$.from</code>, instead:
  * </p>
  *
  * <pre class="stREPL">
  * scala&gt; val x = '1'
  * x: Char = 1
  *
- * scala&gt; NumericChar(x)
- * &lt;console&gt;:15: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'. Please use NumericChar.from instead.
- *               NumericChar(x)
+ * scala&gt; $typeName$(x)
+ * &lt;console&gt;:15: error: $typeName$.apply can only be invoked on Char literals that are $typeDesc$, like $typeValidExample$. Please use $typeName$.from instead.
+ *               $typeName$(x)
  *                          ^
  * </pre>
  *
  * <p>
- * The <code>NumericChar.from</code> factory method will inspect the value at
- * runtime and return an <code>Option[NumericChar]</code>. If the value is 
- * valid, <code>NumericChar.from</code> will return a 
- * <code>Some[NumericChar]</code>, else it will return a <code>None</code>. 
+ * The <code>$typeName$.from</code> factory method will inspect the value at
+ * runtime and return an <code>Option[$typeName$]</code>. If the value is
+ * valid, <code>$typeName$.from</code> will return a
+ * <code>Some[$typeName$]</code>, else it will return a <code>None</code>.
  * Here's an example:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; NumericChar.from(x)
- * res3: Option[org.scalactic.anyvals.NumericChar] = Some(NumericChar(1))
+ * scala&gt; $typeName$.from(x)
+ * res3: Option[org.scalactic.anyvals.$typeName$] = Some($typeName$('1'))
  *
  * scala&gt; val y = 'a'
  * y: Char = a
  *
- * scala&gt; NumericChar.from(y)
- * res4: Option[org.scalactic.anyvals.NumericChar] = None
+ * scala&gt; $typeName$.from(y)
+ * res4: Option[org.scalactic.anyvals.$typeName$] = None
  * </pre>
  *
  * <p>
- * The <code>NumericChar.apply</code> factory method is marked implicit, so
- * that you can pass literal <code>Char</code>s into methods that require 
- * <code>NumericChar</code>, and get the same compile-time checking you get 
- * when calling <code>NumericChar.apply</code> explicitly. Here's an example:
+ * The <code>$typeName$.apply</code> factory method is marked implicit, so
+ * that you can pass literal <code>Char</code>s into methods that require
+ * <code>$typeName$</code>, and get the same compile-time checking you get
+ * when calling <code>$typeName$.apply</code> explicitly. Here's an example:
  * </p>
  *
  * <pre class="stREPL">
@@ -108,7 +108,7 @@ import org.scalactic.{Validation, Pass, Fail}
  * res7: Char = 0
  *
  * scala&gt; invert('a')
- * &lt;console&gt;:12: error: NumericChar.apply can only be invoked on Char literals that are numbers, like '8'.
+ * &lt;console&gt;:12: error: $typeName$.apply can only be invoked on Char literals that are $typeDesc$, like $typeValidExample$.
  *               invert('a')
  *                      ^
  * </pre>
@@ -116,52 +116,52 @@ import org.scalactic.{Validation, Pass, Fail}
  * @param value The <code>Char</code> value underlying this
  *     <code>NumericChar</code>.
  */
-final class NumericChar private (val value: Char) extends AnyVal {
+final class $typeName$ private (val value: Char) extends AnyVal {
 
   /**
-   * A string representation of this <code>NumericChar</code>.
+   * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = s"NumericChar($value)"
+  override def toString: String = "$typeName$('" + value + "')"
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Byte</code>.
+   * Converts this <code>$typeName$</code> to a <code>Byte</code>.
    */
   def toByte: Byte = value.toByte
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Short</code>.
+   * Converts this <code>$typeName$</code> to a <code>Short</code>.
    */
   def toShort: Short = value.toShort
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Char</code>.
+   * Converts this <code>$typeName$</code> to a <code>Char</code>.
    */
   def toChar: Char = value.toChar
 
   /**
-   * Converts this <code>NumericChar</code> to an <code>Int</code>.
+   * Converts this <code>$typeName$</code> to an <code>Int</code>.
    */
   def toInt: Int = value.toInt
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Long</code>.
+   * Converts this <code>$typeName$</code> to a <code>Long</code>.
    */
   def toLong: Long = value.toLong
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Float</code>.
+   * Converts this <code>$typeName$</code> to a <code>Float</code>.
    */
   def toFloat: Float = value.toFloat
 
   /**
-   * Converts this <code>NumericChar</code> to a <code>Double</code>.
+   * Converts this <code>$typeName$</code> to a <code>Double</code>.
    */
   def toDouble: Double = value.toDouble
 
-  def max(that: NumericChar): NumericChar =
+  def max(that: $typeName$): $typeName$ =
     if (math.max(value.toInt, that.value.toInt) == value.toInt) this
     else that
-  def min(that: NumericChar): NumericChar =
+  def min(that: $typeName$): $typeName$ =
     if (math.min(value.toInt, that.value.toInt) == value.toInt) this
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
@@ -176,14 +176,14 @@ final class NumericChar private (val value: Char) extends AnyVal {
  * //             11111010
  * }}}
  */
-  def unary_~ : Int = ~value.asDigit
+  def unary_~ : Int = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : NumericChar = this
+  def unary_+ : $typeName$ = this
   /** Returns the negation of this value. */
-  def unary_- : Int = -value
+  def unary_- : NegZInt = NegZInt.ensuringValid(-value)
 
   /**
-   * Prepends this <code>NumericChar</code>'s value to a string.
+   * Prepends this <code>$typeName$</code>'s value to a string.
    */
   def +(x: String): String = value + x
 
@@ -592,16 +592,16 @@ object NumericChar {
    * Note: you should use this method only when you are convinced that it will
    * always succeed, i.e., never throw an exception. It is good practice to
    * add a comment near the invocation of this method indicating ''why'' you
-   * think it will always succeed to document your reasoning. If you are not 
-   * sure an `ensuringValid` call will always succeed, you should use one of 
-   * the other factory or validation methods provided on this object instead: 
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
    * `isValid`, `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
    *
    * <p>
    * This method will inspect the passed <code>Char</code> value and if
    * it is a numeric <code>Char</code>, it will return a
    * <code>NumericChar</code> representing that value.  Otherwise, the
-   * passed <code>Char</code> value is not numeric, so this method will 
+   * passed <code>Char</code> value is not numeric, so this method will
    * throw <code>AssertionError</code>.
    * </p>
    *
@@ -622,24 +622,24 @@ object NumericChar {
    *     <code>AssertionError</code>.
    * @throws AssertionError if the passed value is not numeric
    */
-  def ensuringValid(value: Char): NumericChar =
-    if (NumericCharMacro.isValid(value)) new NumericChar(value) else {
-      throw new AssertionError(s"$value was not a valid NumericChar")
+  def ensuringValid(value: Char): $typeName$ =
+    if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
+      throw new AssertionError(value + " was not a valid $typeName$")
     }
 
   import scala.language.experimental.macros
 
   /**
    * A factory method, implemented via a macro, that produces a
-   * <code>NumericChar</code> if passed a valid <code>Char</code> literal, 
+   * <code>NumericChar</code> if passed a valid <code>Char</code> literal,
    * otherwise a compile time error.
    *
    * <p>
-   * The macro that implements this method will inspect the specified 
+   * The macro that implements this method will inspect the specified
    * <code>Char</code> expression at compile time. If the expression is a
    * numeric <code>Char</code> literal, <em>i.e.</em>, a value between '0'
-   * and '9', it will return a <code>NumericChar</code> representing that 
-   * value. Otherwise, the passed <code>Char</code> expression is either a 
+   * and '9', it will return a <code>NumericChar</code> representing that
+   * value. Otherwise, the passed <code>Char</code> expression is either a
    * literal that is not numeric, or is not a literal, so this method will
    * give a compiler error.
    * </p>
@@ -652,36 +652,20 @@ object NumericChar {
    * </p>
    *
    * @param value the <code>Char</code> literal expression to inspect at
-   *     compile time, and if numeric, to return wrapped in a 
+   *     compile time, and if numeric, to return wrapped in a
    *     <code>NumericChar</code> at run time.
    * @return the specified, valid <code>Char</code> literal value wrapped
-   *     in a <code>NumericChar</code>. (If the specified expression is not 
-   *     a valid <code>Char</code> literal, the invocation of this method 
+   *     in a <code>NumericChar</code>. (If the specified expression is not
+   *     a valid <code>Char</code> literal, the invocation of this method
    *     will not compile.)
    */
   implicit def apply(value: Char): NumericChar = macro NumericCharMacro.apply
 
-  /** The smallest value representable as a NumericChar. */
-  final val MinValue = '0'
+  /** The smallest value representable as a $typeName$. */
+  final val MinValue: $typeName$ = $typeName$.ensuringValid($typeMinValue$)
 
-  /** The largest value representable as a NumericChar. */
-  final val MaxValue = '9'
-
-  /** Language mandated coercions from Char to "wider" types. */
-  implicit def numericChar2Int(x: NumericChar): Int = x.toInt
-  implicit def numericChar2Long(x: NumericChar): Long = x.toLong
-  implicit def numericChar2Float(x: NumericChar): Float = x.toFloat
-  implicit def numericChar2Double(x: NumericChar): Double = x.toDouble
-
-  implicit def numericChar2PosInt(x: NumericChar): PosInt = PosInt.ensuringValid(x.toInt)
-  implicit def numericChar2PosLong(x: NumericChar): PosLong = PosLong.ensuringValid(x.toLong)
-  implicit def numericChar2PosFloat(x: NumericChar): PosFloat = PosFloat.ensuringValid(x.toFloat)
-  implicit def numericChar2PosDouble(x: NumericChar): PosDouble = PosDouble.ensuringValid(x.toDouble)
-
-  implicit def numericChar2PosZInt(x: NumericChar): PosZInt = PosZInt.ensuringValid(x.toInt)
-  implicit def numericChar2PosZLong(x: NumericChar): PosZLong = PosZLong.ensuringValid(x.toLong)
-  implicit def numericChar2PosZFloat(x: NumericChar): PosZFloat = PosZFloat.ensuringValid(x.toFloat)
-  implicit def numericChar2PosZDouble(x: NumericChar): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+  /** The largest value representable as a $typeName$. */
+  final val MaxValue: $typeName$ = $typeName$.ensuringValid($typeMaxValue$)
 
   /**
    * A factory/validation method that produces a <code>NumericChar</code>,
@@ -853,5 +837,41 @@ object NumericChar {
    * @return true if the specified <code>Char</code> is numeric, else false.
    */
   def isValid(value: Char): Boolean = NumericCharMacro.isValid(value)
-}
 
+  /** Language mandated coercions from Char to "wider" types. */
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Int</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Int</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToInt(value: NumericChar): Int = value.toInt
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Long</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Long</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToLong(value: NumericChar): Long = value.toLong
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Float</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Float</code> widen from the specified  <code>NumericChar</code>.
+   */
+  implicit def widenToFloat(value: NumericChar): Float = value.toFloat
+
+  /**
+   * Implicit widening conversion from <code>NumericChar</code> to <code>Double</code>.
+   *
+   * @param value the <code>NumericChar</code> to widen
+   * @return the <code>Double</code> widen from the specified <code>NumericChar</code>.
+   */
+  implicit def widenToDouble(value: NumericChar): Double = value.toDouble
+
+  $widensToOtherAnyVals$
+
+}
