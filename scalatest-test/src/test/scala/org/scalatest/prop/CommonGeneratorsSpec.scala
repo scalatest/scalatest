@@ -4290,6 +4290,20 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a numericChars method" that {
+      "returns the default implicit generator that produces arbitrary NumericChars" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NumericChar]]
+        val namedGen = numericChars
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
     "offer a finiteFloatValues method" that {
       "returns the default implicit generator that produces arbitrary FiniteFloats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
@@ -4309,6 +4323,20 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         val implicitGen = implicitly[Generator[FiniteDouble]]
         val namedGen = finiteDoubleValues
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.value) shouldEqual namedGenSamples
+      }
+    }
+    "offer a numericCharValues method" that {
+      "returns the default implicit generator that produces arbitrary NumericChars" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NumericChar]]
+        val namedGen = numericCharValues
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)

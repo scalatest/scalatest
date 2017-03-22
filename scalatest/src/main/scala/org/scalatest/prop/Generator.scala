@@ -206,6 +206,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
   private[prop] val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat.MaxValue)
   private[prop] val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
   private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
+  private[prop] val numericCharEdges = List(NumericChar('0'))
 
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
@@ -1029,6 +1030,24 @@ object Generator extends LowerPriorityGeneratorImplicits {
         }
       }
       override def toString = "Generator[NegZLong]"
+    }
+
+  implicit val numericCharGenerator: Generator[NumericChar] =
+    new Generator[NumericChar] {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(szp: SizeParam, edges: List[NumericChar], rnd: Randomizer): (NumericChar, List[NumericChar], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (posZInt, nextRnd) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
+            (NumericChar.ensuringValid((posZInt.value + 48).toChar), Nil, nextRnd)
+        }
+      }
+      override def toString = "Generator[NumericChar]"
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
