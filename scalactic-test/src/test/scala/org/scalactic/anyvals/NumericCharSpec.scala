@@ -33,12 +33,25 @@ import org.scalactic.{Good, Bad}
 trait NumericCharSpecSupport {
 
   val numericCharGen: Gen[NumericChar] =
-    for {i <- choose(1, 9)} yield NumericChar.from(i.toString.charAt(0)).get
+    for {i <- choose(0, 9)} yield NumericChar.from(i.toString.charAt(0)).get
 
   implicit val arbNumericChar: Arbitrary[NumericChar] = Arbitrary(numericCharGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+        // I needed this because with GenDrivenPropertyChecks, got:
+        // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+        // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
       case _: Success[_] => a == b
       case Failure(ex) => b match {
         case _: Success[_] => false
@@ -94,8 +107,6 @@ class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     it("should define methods to convert to the numeric value the character represents") {
       NumericChar('0').asDigit shouldBe 0
       NumericChar('9').asDigit shouldBe 9
-      NumericChar('1').asDigitPosInt shouldBe PosInt(1)
-      NumericChar('9').asDigitPosInt shouldBe PosInt(9)
       NumericChar('0').asDigitPosZInt shouldBe PosZInt(0)
       NumericChar('9').asDigitPosZInt shouldBe PosZInt(9)
     } 
@@ -435,14 +446,6 @@ class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       it("is consistent with Char's asDigit") {
         forAll { (p1: NumericChar) =>
           p1.asDigit shouldEqual p1.value.asDigit
-        }
-      }
-    }
-
-    describe("should offer asDigitPosInt method that") {
-      it("is consistent with Char's asDigit") {
-        forAll { (p1: NumericChar) =>
-          p1.asDigitPosInt.value shouldEqual p1.value.asDigit
         }
       }
     }
