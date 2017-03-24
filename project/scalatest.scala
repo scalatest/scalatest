@@ -431,7 +431,7 @@ object ScalatestBuild extends Build {
       crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.1"),
       version := releaseVersion,
       projectTitle := "ScalaTest Selenium",
-      organization := "org.scalatest",
+      organization := "org.scalatestplus.selenium",
       moduleName := "scalatestplus-selenium",
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "3.0.1",
@@ -439,7 +439,7 @@ object ScalatestBuild extends Build {
         "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
       )
-    )
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalatest)
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
