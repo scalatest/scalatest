@@ -19,6 +19,8 @@ import org.scalactic.anyvals._
 import scala.annotation.tailrec
 import org.scalactic.source.TypeInfo
 import org.scalactic.Requirements._
+import scala.collection.immutable.SortedSet
+import scala.collection.immutable.SortedMap
 
 trait CommonGenerators {
 
@@ -1137,6 +1139,12 @@ trait CommonGenerators {
   val nonZeroFiniteDoubleValues: Generator[Double] = Generator.nonZeroFiniteDoubleGenerator.map(_.value)
   val finiteFloatValues: Generator[Float] = Generator.finiteFloatGenerator.map(_.value)
   val finiteDoubleValues: Generator[Double] = Generator.finiteDoubleGenerator.map(_.value)
+
+  def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
+  def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
+  def sortedSets[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] = Generator.sortedSetGenerator
+  def maps[K, V](implicit genOfTupleKV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] = Generator.mapGenerator
+  def sortedMaps[K, V](implicit genOfTupleKV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] = Generator.sortedMapGenerator
 
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
