@@ -1106,6 +1106,7 @@ trait CommonGenerators {
   val nonZeroFiniteDoubles: Generator[NonZeroFiniteDouble] = Generator.nonZeroFiniteDoubleGenerator
   val finiteFloats: Generator[FiniteFloat] = Generator.finiteFloatGenerator
   val finiteDoubles: Generator[FiniteDouble] = Generator.finiteDoubleGenerator
+  val numericChars: Generator[NumericChar] = Generator.numericCharGenerator
 
   val posIntValues: Generator[Int] = Generator.posIntGenerator.map(_.value)
   val posZIntValues: Generator[Int] = Generator.posZIntGenerator.map(_.value)
@@ -1139,6 +1140,7 @@ trait CommonGenerators {
   val nonZeroFiniteDoubleValues: Generator[Double] = Generator.nonZeroFiniteDoubleGenerator.map(_.value)
   val finiteFloatValues: Generator[Float] = Generator.finiteFloatGenerator.map(_.value)
   val finiteDoubleValues: Generator[Double] = Generator.finiteDoubleGenerator.map(_.value)
+  val numericCharValues: Generator[Double] = Generator.numericCharGenerator.map(_.value)
 
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
   def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
