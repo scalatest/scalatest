@@ -1140,7 +1140,7 @@ trait CommonGenerators {
   val nonZeroFiniteDoubleValues: Generator[Double] = Generator.nonZeroFiniteDoubleGenerator.map(_.value)
   val finiteFloatValues: Generator[Float] = Generator.finiteFloatGenerator.map(_.value)
   val finiteDoubleValues: Generator[Double] = Generator.finiteDoubleGenerator.map(_.value)
-  val numericCharValues: Generator[Double] = Generator.numericCharGenerator.map(_.value)
+  val numericCharValues: Generator[Char] = Generator.numericCharGenerator.map(_.value)
 
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
   def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
