@@ -165,7 +165,6 @@ final class $typeName$ private (val value: Char) extends AnyVal {
     if (math.min(value.toInt, that.value.toInt) == value.toInt) this
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
-  def asDigitPosInt: PosInt = PosInt.ensuringValid(asDigit)
   def asDigitPosZInt: PosZInt = PosZInt.ensuringValid(asDigit)
 
  /**
