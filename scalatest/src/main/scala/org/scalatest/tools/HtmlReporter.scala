@@ -240,7 +240,7 @@ private[scalatest] class HtmlReporter(
             case None => NodeSeq.Empty
           }
         }
-        <script type="text/javascript">
+        <script type="text/javascript"><![CDATA[
           { unparsedXml(
             "function toggleDetails(contentId, linkId) {" + "\n" + 
             "  var ele = document.getElementById(contentId);" + "\n" + 
@@ -258,7 +258,7 @@ private[scalatest] class HtmlReporter(
             "  if (top === self) { document.getElementById('printlink').style.display = 'none'; }" + "\n" + 
             "}" + "\n")
           }
-        </script>
+        ]]></script>
       </head>
       <body class="specification">
         <div id="suite_header_name">{ suiteResult.suiteName }</div>
@@ -520,7 +520,7 @@ private[scalatest] class HtmlReporter(
         }
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
-        <script type="text/javascript">
+        <script type="text/javascript"><![CDATA[
           { unparsedXml(
             "var tagMap = {};" + "\n" +     
             "var SUCCEEDED_BIT = 1;" + "\n" + 
@@ -563,7 +563,7 @@ private[scalatest] class HtmlReporter(
             "  detailsView.style.width = (window.innerWidth - left - 30) + \"px\";" + "\n" + 
             "  detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + \"px\";" + "\n" + 
             "}\n") }
-        </script>
+        ]]></script>
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
