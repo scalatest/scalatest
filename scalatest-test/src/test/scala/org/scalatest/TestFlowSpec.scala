@@ -49,7 +49,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size === 1)
 */
-succeed
+          pending
         }
       }
     }
