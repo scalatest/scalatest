@@ -30,6 +30,10 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       }
       x shouldBe false
     }
+    it("should have a name method") {
+      Test0("first")(3).name shouldBe "first"
+      Test0("first")(3).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
+    }
     it("should have an andThen method") {
       Test0("first")(3).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
     }
@@ -38,21 +42,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
-    describe("when it was not composed with anything else") {
+    /*describe("when it was not composed with anything else") {
       describe("when the test succeeds") {
         it("should report a test succeeded event to the passed-in reporter") {
-/*
           val myRep = new EventRecordingReporter
           Test0("happy path")(42).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size === 1)
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size === 1)
-*/
-          pending
         }
       }
-    }
+    }*/
   }
   describe("A TestFlow") {
     it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
@@ -63,6 +64,12 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
         x = true
       }
       x shouldBe false
+    }
+    it("should have a name method") {
+      TestFlow("first")((i: Int) => i + 1).name shouldBe "first"
+      TestFlow("first")((i: Int) => i + 1).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
+      TestFlow("second") { (i: Int) => (i * 4).toString }.compose(TestFlow("first")((i: Int) => i + 1)).name shouldEqual "first"
+      TestFlow("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4)).name shouldEqual "first"
     }
     val fut = Future.successful(99)
     it("should have an andThen method") {

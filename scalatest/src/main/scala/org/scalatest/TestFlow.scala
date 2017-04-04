@@ -20,10 +20,12 @@ import scala.concurrent.ExecutionContext
 
 trait Test0[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
+  def name: String
   def testNames: Set[String]
   def andThen[B](next: TestFlow[A, B]): Test0[B] =
     new Test0[B] {
       def apply(): B = next(thisTest0())
+      val name = thisTest0.name
       def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
     }
   // def runTests(testName: Option[String], args: Args): Status = ???
@@ -33,25 +35,30 @@ object Test0 {
   def apply[A](testName: String)(f: => A): Test0[A] =
     new Test0[A] {
       def apply(): A = f
+      val name: String = testName
       def testNames: Set[String] = Set(testName) 
     }
 }
 
 trait TestFlow[A, B] { thisTestFlow =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
+  def name: String
   def andThen[C](next: TestFlow[B, C]): TestFlow[A, C] =
     new TestFlow[A, C] {
       def apply(a: A): C = next(thisTestFlow(a))
+      val name = thisTestFlow.name
       def testNames: Set[String] = thisTestFlow.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
     }
   def compose[C](prev: TestFlow[C, A]): TestFlow[C, B] = // Could have an overloaded compose that takes a Test0
     new TestFlow[C, B] {
       def apply(c: C): B = thisTestFlow(prev(c))
+      val name = prev.name
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
     }
   def compose(prev: Test0[A]): Test0[B] = // Could have an overloaded compose that takes a Test0
     new Test0[B] {
       def apply(): B = thisTestFlow(prev())
+      val name = prev.name
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
     }
   def testNames: Set[String]
@@ -61,6 +68,7 @@ object TestFlow {
   def apply[A, B](testName: String)(f: A => B): TestFlow[A, B] =
     new TestFlow[A, B] {
       def apply(a: A): B = f(a)
+      val name: String = testName
       def testNames: Set[String] = Set(testName) 
     }
 }
