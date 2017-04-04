@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalatest.events.{MotionToSuppress, TestStarting, TestSucceeded}
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
@@ -27,8 +29,24 @@ trait Test0[A] { thisTest0 =>
       def apply(): B = next(thisTest0())
       val name = thisTest0.name
       def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      override def runTests(testName: Option[String], args: Args): Status = {
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+          None, None))
+        val res0 = thisTest0
+        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+          None, None))
+        // TODO: What to do with next here?
+        SucceededStatus
+      }
     }
-  // def runTests(testName: Option[String], args: Args): Status = ???
+  def runTests(testName: Option[String], args: Args): Status = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+      None, None))
+    thisTest0
+    args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+      None, None))
+    SucceededStatus
+  }
 }
 
 object Test0 {

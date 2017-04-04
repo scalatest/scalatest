@@ -42,7 +42,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
-    /*describe("when it was not composed with anything else") {
+    describe("when it was not composed with anything else") {
       describe("when the test succeeds") {
         it("should report a test succeeded event to the passed-in reporter") {
           val myRep = new EventRecordingReporter
@@ -51,6 +51,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testStarting.size === 1)
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size === 1)
+        }
+      }
+    }
+    /*describe("when it was composed with something else") {
+      describe("when the test succeeds") {
+        it("should report test succeeded events to the passed-in reporter") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size === 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size === 2)
         }
       }
     }*/
