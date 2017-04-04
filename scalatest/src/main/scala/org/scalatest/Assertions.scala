@@ -26,6 +26,7 @@ import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
 import exceptions.TestPendingException
 import org.scalactic.anyvals.NonEmptyArray
+import enablers.Fixable
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -1254,8 +1255,8 @@ trait Assertions extends TripleEquals  {
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
    * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = {
-    val isPending =
+  def pendingUntilFixed[T](f: => T)(implicit fixable: Fixable[T], pos: source.Position): fixable.Result = {
+    /*val isPending =
       try {
         f
         false
@@ -1267,7 +1268,8 @@ trait Assertions extends TripleEquals  {
       if (isPending)
         throw new TestPendingException
       else
-        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
+        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)*/
+    fixable.pendingUntilFixed(f, pos)
   }
 
   /**
