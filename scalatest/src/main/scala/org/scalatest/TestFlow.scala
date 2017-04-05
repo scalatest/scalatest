@@ -27,7 +27,7 @@ trait Test0[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def name: String
   def testNames: Set[String]
-  def andThen[B](next: TestFlow[A, B])(implicit pos: source.Position): Test0[B] = {
+  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): Test0[B] = {
     thisTest0.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
@@ -61,53 +61,53 @@ object Test0 {
     new Test0[A] {
       def apply(): A = f
       val name: String = testName
-      def testNames: Set[String] = Set(testName) 
+      def testNames: Set[String] = Set(testName)
     }
 }
 
-trait TestFlow[A, B] { thisTestFlow =>
+trait Test1[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
-  def andThen[C](next: TestFlow[B, C])(implicit pos: source.Position): TestFlow[A, C] = {
-    thisTestFlow.testNames.find(tn => next.testNames.contains(tn)) match {
+  def andThen[C](next: Test1[B, C])(implicit pos: source.Position): Test1[A, C] = {
+    thisTest1.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
     }
 
-    new TestFlow[A, C] {
-      def apply(a: A): C = next(thisTestFlow(a))
+    new Test1[A, C] {
+      def apply(a: A): C = next(thisTest1(a))
 
-      val name = thisTestFlow.name
+      val name = thisTest1.name
 
-      def testNames: Set[String] = thisTestFlow.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      def testNames: Set[String] = thisTest1.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(testName: Option[String], args: Args, input: A): C = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val res0 = thisTestFlow(input)
+        val res0 = thisTest1(input)
         args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
           None, None))
         next.runTests(testName, args, res0)
       }
     }
   }
-  def compose[C](prev: TestFlow[C, A])(implicit pos: source.Position): TestFlow[C, B] = {
-    thisTestFlow.testNames.find(tn => prev.testNames.contains(tn)) match {
+  def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, B] = {
+    thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
     }
 
-    new TestFlow[C, B] {
-      def apply(c: C): B = thisTestFlow(prev(c))
+    new Test1[C, B] {
+      def apply(c: C): B = thisTest1(prev(c))
 
       val name = prev.name
 
-      def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+      def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
       override def runTests(testName: Option[String], args: Args, input: C): B = {
         val res0 = prev.runTests(testName, args, input)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val result = thisTestFlow(res0)
+        val result = thisTest1(res0)
         args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
           None, None))
         result
@@ -115,23 +115,23 @@ trait TestFlow[A, B] { thisTestFlow =>
     }
   }
   def compose(prev: Test0[A])(implicit pos: source.Position): Test0[B] = {
-    thisTestFlow.testNames.find(tn => prev.testNames.contains(tn)) match {
+    thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
     }
 
     new Test0[B] {
-      def apply(): B = thisTestFlow(prev())
+      def apply(): B = thisTest1(prev())
 
       val name = prev.name
 
-      def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+      def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
       override def runTests(testName: Option[String], args: Args): B = {
         val res0 = prev.runTests(testName, args)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val result = thisTestFlow(res0)
+        val result = thisTest1(res0)
         args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
           None, None))
         result
@@ -142,16 +142,16 @@ trait TestFlow[A, B] { thisTestFlow =>
   def runTests(testName: Option[String], args: Args, input: A): B = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
       None, None))
-    val result = thisTestFlow(input)
+    val result = thisTest1(input)
     args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
       None, None))
     result
   }
 }
 
-object TestFlow {
-  def apply[A, B](testName: String)(f: A => B): TestFlow[A, B] =
-    new TestFlow[A, B] {
+object Test1 {
+  def apply[A, B](testName: String)(f: A => B): Test1[A, B] =
+    new Test1[A, B] {
       def apply(a: A): B = f(a)
       val name: String = testName
       def testNames: Set[String] = Set(testName) 
