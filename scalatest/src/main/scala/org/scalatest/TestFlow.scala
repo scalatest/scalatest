@@ -20,11 +20,18 @@ import org.scalatest.events.{MotionToSuppress, TestStarting, TestSucceeded}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalactic.source
+
 trait Test0[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def name: String
   def testNames: Set[String]
-  def andThen[B](next: TestFlow[A, B]): Test0[B] =
+  def andThen[B](next: TestFlow[A, B])(implicit pos: source.Position): Test0[B] = {
+    thisTest0.testNames.find(tn => next.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
     new Test0[B] {
       def apply(): B = next(thisTest0())
       val name = thisTest0.name
@@ -38,6 +45,7 @@ trait Test0[A] { thisTest0 =>
         next.runTests(testName, args, res0)
       }
     }
+  }
   def runTests(testName: Option[String], args: Args): A = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
       None, None))
@@ -60,10 +68,17 @@ object Test0 {
 trait TestFlow[A, B] { thisTestFlow =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
-  def andThen[C](next: TestFlow[B, C]): TestFlow[A, C] =
+  def andThen[C](next: TestFlow[B, C])(implicit pos: source.Position): TestFlow[A, C] = {
+    thisTestFlow.testNames.find(tn => next.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
     new TestFlow[A, C] {
       def apply(a: A): C = next(thisTestFlow(a))
+
       val name = thisTestFlow.name
+
       def testNames: Set[String] = thisTestFlow.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(testName: Option[String], args: Args, input: A): C = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
@@ -74,11 +89,20 @@ trait TestFlow[A, B] { thisTestFlow =>
         next.runTests(testName, args, res0)
       }
     }
-  def compose[C](prev: TestFlow[C, A]): TestFlow[C, B] = // Could have an overloaded compose that takes a Test0
+  }
+  def compose[C](prev: TestFlow[C, A])(implicit pos: source.Position): TestFlow[C, B] = {
+    thisTestFlow.testNames.find(tn => prev.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
     new TestFlow[C, B] {
       def apply(c: C): B = thisTestFlow(prev(c))
+
       val name = prev.name
+
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+
       override def runTests(testName: Option[String], args: Args, input: C): B = {
         val res0 = prev.runTests(testName, args, input)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
@@ -89,11 +113,20 @@ trait TestFlow[A, B] { thisTestFlow =>
         result
       }
     }
-  def compose(prev: Test0[A]): Test0[B] = // Could have an overloaded compose that takes a Test0
+  }
+  def compose(prev: Test0[A])(implicit pos: source.Position): Test0[B] = {
+    thisTestFlow.testNames.find(tn => prev.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
     new Test0[B] {
       def apply(): B = thisTestFlow(prev())
+
       val name = prev.name
+
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+
       override def runTests(testName: Option[String], args: Args): B = {
         val res0 = prev.runTests(testName, args)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
@@ -104,6 +137,7 @@ trait TestFlow[A, B] { thisTestFlow =>
         result
       }
     }
+  }
   def testNames: Set[String]
   def runTests(testName: Option[String], args: Args, input: A): B = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),

@@ -18,6 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.util.Success
 import SharedHelpers._
+import exceptions.{DuplicateTestNameException, NotAllowedException}
 
 class TestFlowSpec extends AsyncFunSpec with Matchers {
   describe("A Test0") {
@@ -88,6 +89,11 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 3)
         }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            Test0("same")(0).andThen(TestFlow("same") { (i: Int) => (i * 4).toString })
+          }
+        }
       }
     }
   }
@@ -109,15 +115,15 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
     }
     val fut = Future.successful(99)
     it("should have an andThen method") {
-      TestFlow("my name")((i: Int) => i + 1).andThen(TestFlow("my name") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
+      TestFlow("first")((i: Int) => i + 1).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
       // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
     it("should have an overloaded compose method that takes another TestFlow") {
-      TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(TestFlow("my name")((i: Int) => i + 1)).apply(1) shouldEqual "8"
+      TestFlow("first") { (i: Int) => (i * 4).toString }.compose(TestFlow("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
       // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
     it("should have an overloaded compose method that takes a Test0") {
-      TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(Test0("my name")(5)).apply() shouldEqual "20"
+      TestFlow("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).apply() shouldEqual "20"
       // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
     it("should return a Set with one test name when the TestFlow factory is used") {
@@ -143,16 +149,28 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       describe("when the test succeeds") {
         it("should report 2 test succeeded events to the passed-in reporter when compose with another Test0") {
           val myRep = new EventRecordingReporter
-          TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(Test0("my name")(5)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          TestFlow("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
         }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            TestFlow("same")((i: Int) => i + 1).andThen(TestFlow("same") { (i: Int) => (i * 4).toString })
+          }
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing compose with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            (TestFlow("same")  { (i: Int) => (i * 4).toString }).compose(TestFlow("same")((i: Int) => i + 1))
+          }
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing compose with another Test0") {
+          assertThrows[DuplicateTestNameException] {
+            (TestFlow("same")  { (i: Int) => (i * 4).toString }).compose(Test0("same")(0))
+          }
+        }
       }
-    }
-    it("should throw NotAllowedException if a duplicate test name registration is attempted") {
-      pending
     }
     it("should, perhaps, have a way to put a non-test in there, in the middle, for Fixture setup and teardown?") {
       pending
