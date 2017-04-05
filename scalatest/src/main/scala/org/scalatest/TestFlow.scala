@@ -29,23 +29,22 @@ trait Test0[A] { thisTest0 =>
       def apply(): B = next(thisTest0())
       val name = thisTest0.name
       def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(testName: Option[String], args: Args): Status = {
+      override def runTests(testName: Option[String], args: Args): B = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val res0 = thisTest0
+        val res0 = thisTest0()
         args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
           None, None))
-        // TODO: What to do with next here?
-        SucceededStatus
+        next.runTests(testName, args, res0)
       }
     }
-  def runTests(testName: Option[String], args: Args): Status = {
+  def runTests(testName: Option[String], args: Args): A = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
       None, None))
-    thisTest0
+    val result = thisTest0()
     args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
       None, None))
-    SucceededStatus
+    result
   }
 }
 
@@ -66,20 +65,54 @@ trait TestFlow[A, B] { thisTestFlow =>
       def apply(a: A): C = next(thisTestFlow(a))
       val name = thisTestFlow.name
       def testNames: Set[String] = thisTestFlow.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      override def runTests(testName: Option[String], args: Args, input: A): C = {
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+          None, None))
+        val res0 = thisTestFlow(input)
+        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+          None, None))
+        next.runTests(testName, args, res0)
+      }
     }
   def compose[C](prev: TestFlow[C, A]): TestFlow[C, B] = // Could have an overloaded compose that takes a Test0
     new TestFlow[C, B] {
       def apply(c: C): B = thisTestFlow(prev(c))
       val name = prev.name
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+      override def runTests(testName: Option[String], args: Args, input: C): B = {
+        val res0 = prev.runTests(testName, args, input)
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+          None, None))
+        val result = thisTestFlow(res0)
+        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+          None, None))
+        result
+      }
     }
   def compose(prev: Test0[A]): Test0[B] = // Could have an overloaded compose that takes a Test0
     new Test0[B] {
       def apply(): B = thisTestFlow(prev())
       val name = prev.name
       def testNames: Set[String] = prev.testNames ++ thisTestFlow.testNames
+      override def runTests(testName: Option[String], args: Args): B = {
+        val res0 = prev.runTests(testName, args)
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+          None, None))
+        val result = thisTestFlow(res0)
+        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+          None, None))
+        result
+      }
     }
   def testNames: Set[String]
+  def runTests(testName: Option[String], args: Args, input: A): B = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+      None, None))
+    val result = thisTestFlow(input)
+    args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+      None, None))
+    result
+  }
 }
 
 object TestFlow {

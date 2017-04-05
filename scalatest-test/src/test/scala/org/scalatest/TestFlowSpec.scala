@@ -48,24 +48,48 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           Test0("happy path")(42).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
-          assert(testStarting.size === 1)
+          assert(testStarting.size == 1)
           val testSucceeded = myRep.testSucceededEventsReceived
-          assert(testSucceeded.size === 1)
+          assert(testSucceeded.size == 1)
         }
       }
     }
-    /*describe("when it was composed with something else") {
+    describe("when it was composed with something else") {
       describe("when the test succeeds") {
-        it("should report test succeeded events to the passed-in reporter") {
+        it("should report 2 test succeeded events to the passed-in reporter when andThen with another TestFlow") {
           val myRep = new EventRecordingReporter
           Test0("first")(3).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
-          assert(testStarting.size === 2)
+          assert(testStarting.size == 2)
           val testSucceeded = myRep.testSucceededEventsReceived
-          assert(testSucceeded.size === 2)
+          assert(testSucceeded.size == 2)
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that andThen with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(
+            (TestFlow("second") { (i: Int) => (i * 4) }).andThen(
+              TestFlow("third") { (i: Int) => (i * 7).toString }
+            )
+          ).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(
+            (TestFlow("third") { (i: Int) => (i * 7).toString }).compose(
+              TestFlow("second") { (i: Int) => (i * 4) }
+            )
+          ).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
         }
       }
-    }*/
+    }
   }
   describe("A TestFlow") {
     it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
@@ -114,6 +138,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       val flow = TestFlow("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4))
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
+    }
+    describe("when it was composed with something else") {
+      describe("when the test succeeds") {
+        it("should report 2 test succeeded events to the passed-in reporter when compose with another Test0") {
+          val myRep = new EventRecordingReporter
+          TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(Test0("my name")(5)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+        }
+      }
     }
     it("should throw NotAllowedException if a duplicate test name registration is attempted") {
       pending
