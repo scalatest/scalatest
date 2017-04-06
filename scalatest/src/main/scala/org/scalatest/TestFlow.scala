@@ -15,12 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.events.{MotionToSuppress, TestStarting, TestSucceeded}
+import org.scalatest.events.{MotionToSuppress, TestFailed, TestStarting, TestSucceeded, TestCanceled}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-
-import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField}
 import org.scalactic.source
 
 trait Test0[A] { thisTest0 =>
@@ -36,23 +35,53 @@ trait Test0[A] { thisTest0 =>
       def apply(): B = next(thisTest0())
       val name = thisTest0.name
       def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(testName: Option[String], args: Args): B = {
+      override def runTests(testName: Option[String], args: Args): (Option[B], Status) = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val res0 = thisTest0()
-        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
-          None, None))
-        next.runTests(testName, args, res0)
+        try {
+          val res0 = thisTest0()
+          args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+            None, None))
+          next.runTests(testName, args, res0)
+        }
+        catch {
+          case t: Throwable =>
+            val message = Suite.getMessageForException(t)
+            val payload =
+              t match {
+                case optPayload: PayloadField =>
+                  optPayload.payload
+                case _ =>
+                  None
+              }
+            args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+            (None, FailedStatus)
+        }
       }
     }
   }
-  def runTests(testName: Option[String], args: Args): A = {
+  def runTests(testName: Option[String], args: Args): (Option[A], Status) = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
       None, None))
-    val result = thisTest0()
-    args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
-      None, None))
-    result
+    try {
+      val result = thisTest0()
+      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+        None, None))
+      (Some(result), SucceededStatus)
+    }
+    catch {
+      case t: Throwable =>
+        val message = Suite.getMessageForException(t)
+        val payload =
+          t match {
+            case optPayload: PayloadField =>
+              optPayload.payload
+            case _ =>
+              None
+          }
+        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+        (None, FailedStatus)
+    }
   }
 }
 
@@ -68,6 +97,11 @@ object Test0 {
 trait Test1[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
+  def cancel(args: Args): Unit = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+      None, None))
+    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+  }
   def andThen[C](next: Test1[B, C])(implicit pos: source.Position): Test1[A, C] = {
     thisTest1.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
@@ -80,13 +114,36 @@ trait Test1[A, B] { thisTest1 =>
       val name = thisTest1.name
 
       def testNames: Set[String] = thisTest1.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(testName: Option[String], args: Args, input: A): C = {
+      override def cancel(args: Args): Unit = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val res0 = thisTest1(input)
-        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+        next.cancel(args)
+      }
+      override def runTests(testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        next.runTests(testName, args, res0)
+        try {
+          val res0 = thisTest1(input)
+          args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+            None, None))
+          next.runTests(testName, args, res0)
+        }
+        catch {
+          case t: Throwable =>
+            val message = Suite.getMessageForException(t)
+            val payload =
+              t match {
+                case optPayload: PayloadField =>
+                  optPayload.payload
+                case _ =>
+                  None
+              }
+            args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+            next.cancel(args)
+            (None, FailedStatus)
+        }
+
       }
     }
   }
@@ -103,14 +160,35 @@ trait Test1[A, B] { thisTest1 =>
 
       def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
-      override def runTests(testName: Option[String], args: Args, input: C): B = {
-        val res0 = prev.runTests(testName, args, input)
+      override def runTests(testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(testName, args, input)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val result = thisTest1(res0)
-        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
-          None, None))
-        result
+        res0 match {
+          case Some(res0) =>
+            try {
+              val result = thisTest1(res0)
+              args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None))
+              (Some(result), SucceededStatus)
+            }
+            catch {
+              case t: Throwable =>
+                val message = Suite.getMessageForException(t)
+                val payload =
+                  t match {
+                    case optPayload: PayloadField =>
+                      optPayload.payload
+                    case _ =>
+                      None
+                  }
+                args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+                (None, FailedStatus)
+            }
+
+          case None =>
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            (None, SucceededStatus)
+        }
       }
     }
   }
@@ -127,25 +205,59 @@ trait Test1[A, B] { thisTest1 =>
 
       def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
-      override def runTests(testName: Option[String], args: Args): B = {
-        val res0 = prev.runTests(testName, args)
+      override def runTests(testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(testName, args)
         args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
           None, None))
-        val result = thisTest1(res0)
-        args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
-          None, None))
-        result
+        res0 match {
+          case Some(res0) =>
+            try {
+              val result = thisTest1(res0)
+              args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None))
+              (Some(result), SucceededStatus)
+            }
+            catch {
+              case t: Throwable =>
+                val message = Suite.getMessageForException(t)
+                val payload =
+                  t match {
+                    case optPayload: PayloadField =>
+                      optPayload.payload
+                    case _ =>
+                      None
+                  }
+                args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+                (None, FailedStatus)
+            }
+
+          case None =>
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            (None, SucceededStatus)
+        }
       }
     }
   }
   def testNames: Set[String]
-  def runTests(testName: Option[String], args: Args, input: A): B = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
-      None, None))
-    val result = thisTest1(input)
-    args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
-      None, None))
-    result
+  def runTests(testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress), None, None))
+    try {
+      val result = thisTest1(input)
+      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None))
+      (Some(result), SucceededStatus)
+    }
+    catch {
+      case t: Throwable =>
+        val message = Suite.getMessageForException(t)
+        val payload =
+          t match {
+            case optPayload: PayloadField =>
+              optPayload.payload
+            case _ =>
+              None
+          }
+        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+        (None, FailedStatus)
+    }
   }
 }
 
