@@ -18,6 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.util.Success
 import SharedHelpers._
+import exceptions.{DuplicateTestNameException, NotAllowedException}
 
 class TestFlowSpec extends AsyncFunSpec with Matchers {
   describe("A Test0") {
@@ -30,74 +31,146 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       }
       x shouldBe false
     }
+    it("should have a name method") {
+      Test0("first")(3).name shouldBe "first"
+      Test0("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
+    }
     it("should have an andThen method") {
-      Test0("first")(3).andThen(TestFlow("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
+      Test0("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
     }
     it("should return the all test names from testNames when andThen is used to compose Test0s and TestFlows, a Set that iterates in left to right order") {
-      val flow = Test0("first")(5).andThen(TestFlow("second") { (i: Int) => (i * 4).toString })
+      val flow = Test0("first")(5).andThen(Test1("second") { (i: Int) => (i * 4).toString })
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
     describe("when it was not composed with anything else") {
       describe("when the test succeeds") {
         it("should report a test succeeded event to the passed-in reporter") {
-/*
           val myRep = new EventRecordingReporter
           Test0("happy path")(42).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
-          assert(testStarting.size === 1)
+          assert(testStarting.size == 1)
           val testSucceeded = myRep.testSucceededEventsReceived
-          assert(testSucceeded.size === 1)
-*/
-          pending
+          assert(testSucceeded.size == 1)
+        }
+      }
+    }
+    describe("when it was composed with something else") {
+      describe("when the test succeeds") {
+        it("should report 2 test succeeded events to the passed-in reporter when andThen with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that andThen with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(
+            (Test1("second") { (i: Int) => (i * 4) }).andThen(
+              Test1("third") { (i: Int) => (i * 7).toString }
+            )
+          ).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(
+            (Test1("third") { (i: Int) => (i * 7).toString }).compose(
+              Test1("second") { (i: Int) => (i * 4) }
+            )
+          ).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            Test0("same")(0).andThen(Test1("same") { (i: Int) => (i * 4).toString })
+          }
         }
       }
     }
   }
-  describe("A TestFlow") {
+  describe("A Test1") {
     it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
-      """TestFlow("my name") { (u: Unit) => 99 }: TestFlow[Unit, Int]""" should compile
-      """TestFlow("my name") { (i: Long) => "hello" }: TestFlow[Long, String]""" should compile
+      """Test1("my name") { (u: Unit) => 99 }: Test1[Unit, Int]""" should compile
+      """Test1("my name") { (i: Long) => "hello" }: Test1[Long, String]""" should compile
       var x = false
-      TestFlow("my name") { (i: Int) =>
+      Test1("my name") { (i: Int) =>
         x = true
       }
       x shouldBe false
     }
+    it("should have a name method") {
+      Test1("first")((i: Int) => i + 1).name shouldBe "first"
+      Test1("first")((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
+      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test1("first")((i: Int) => i + 1)).name shouldEqual "first"
+      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4)).name shouldEqual "first"
+    }
     val fut = Future.successful(99)
     it("should have an andThen method") {
-      TestFlow("my name")((i: Int) => i + 1).andThen(TestFlow("my name") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
-      // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
+      Test1("first")((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
+      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
-    it("should have an overloaded compose method that takes another TestFlow") {
-      TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(TestFlow("my name")((i: Int) => i + 1)).apply(1) shouldEqual "8"
-      // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
+    it("should have an overloaded compose method that takes another Test1") {
+      Test1("first") { (i: Int) => (i * 4).toString }.compose(Test1("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
+      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
     it("should have an overloaded compose method that takes a Test0") {
-      TestFlow("my name") { (i: Int) => (i * 4).toString }.compose(Test0("my name")(5)).apply() shouldEqual "20"
-      // TestFlow(fut).andThen(TestFlow { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
+      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).apply() shouldEqual "20"
+      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
     }
     it("should return a Set with one test name when the TestFlow factory is used") {
-      TestFlow("my test name")((i: Int) => i + 1).testNames shouldEqual Set("my test name")
-      TestFlow("your test name")((i: Int) => i + 1).testNames shouldEqual Set("your test name")
+      Test1("my test name")((i: Int) => i + 1).testNames shouldEqual Set("my test name")
+      Test1("your test name")((i: Int) => i + 1).testNames shouldEqual Set("your test name")
     }
     it("should return the all test names from testNames when andThen is used to compose TestFlows, a Set that iterates in left to right order") {
-      val flow = TestFlow("first")((i: Int) => i + 1).andThen(TestFlow("second") { (i: Int) => (i * 4).toString })
+      val flow = Test1("first")((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString })
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
     it("should return the all test names from testNames when compose is used to compose TestFlows, a Set that iterates in right to left order") {
-      val flow = TestFlow("second") { (i: Int) => (i * 4).toString }.compose(TestFlow("first")((i: Int) => i + 1))
+      val flow = Test1("second") { (i: Int) => (i * 4).toString }.compose(Test1("first")((i: Int) => i + 1))
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
     it("should return the all test names from testNames when compose is used to compose TestFlows with Test0s, a Set that iterates in right to left order") {
-      val flow = TestFlow("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4))
+      val flow = Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4))
       flow.testNames shouldEqual Set("first", "second")
       flow.testNames.iterator.toList shouldEqual List("first", "second")
     }
-    it("should throw NotAllowedException if a duplicate test name registration is attempted") {
-      pending
+    describe("when it was composed with something else") {
+      describe("when the test succeeds") {
+        it("should report 2 test succeeded events to the passed-in reporter when compose with another Test0") {
+          val myRep = new EventRecordingReporter
+          Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            Test1("same")((i: Int) => i + 1).andThen(Test1("same") { (i: Int) => (i * 4).toString })
+          }
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing compose with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            (Test1("same")  { (i: Int) => (i * 4).toString }).compose(Test1("same")((i: Int) => i + 1))
+          }
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing compose with another Test0") {
+          assertThrows[DuplicateTestNameException] {
+            (Test1("same")  { (i: Int) => (i * 4).toString }).compose(Test0("same")(0))
+          }
+        }
+      }
     }
     it("should, perhaps, have a way to put a non-test in there, in the middle, for Fixture setup and teardown?") {
       pending
