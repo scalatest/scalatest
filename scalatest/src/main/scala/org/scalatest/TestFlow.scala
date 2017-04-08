@@ -155,8 +155,8 @@ trait Test1[A, B] { thisTest1 =>
             thisTest1.runTests(suite, testName, args, res0)
 
           case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress), None, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, "", Some(MotionToSuppress), None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
             (None, SucceededStatus)
         }
       }
@@ -182,8 +182,8 @@ trait Test1[A, B] { thisTest1 =>
             thisTest1.runTests(suite, testName, args, res0)
 
           case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress), None, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, "", Some(MotionToSuppress), None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
             (None, SucceededStatus)
         }
       }
