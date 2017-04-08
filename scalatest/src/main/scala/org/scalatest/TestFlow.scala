@@ -35,23 +35,23 @@ trait Test0[A] { thisTest0 =>
       def apply(): B = next(thisTest0())
       val name = thisTest0.name
       def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisTest0.runTests(testName, args)
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = thisTest0.runTests(suite, testName, args)
         res0 match {
-          case Some(res0) => next.runTests(testName, args, res0)
+          case Some(res0) => next.runTests(suite, testName, args, res0)
           case None =>
-            next.cancel(args)
+            next.cancel(suite, args)
             (None, status)
         }
       }
     }
   }
-  def runTests(testName: Option[String], args: Args): (Option[A], Status) = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+  def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress),
       None, None))
     try {
       val result = thisTest0()
-      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None,
+      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None,
         None, None))
       (Some(result), SucceededStatus)
     }
@@ -66,11 +66,11 @@ trait Test0[A] { thisTest0 =>
               None
           }
         //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
         (None, SucceededStatus)
 
       case tpe: TestPendingException =>
-        args.reporter(TestPending(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
+        args.reporter(TestPending(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -82,7 +82,7 @@ trait Test0[A] { thisTest0 =>
             case _ =>
               None
           }
-        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
         (None, FailedStatus)
     }
   }
@@ -100,10 +100,10 @@ object Test0 {
 trait Test1[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
-  def cancel(args: Args): Unit = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+  def cancel(suite: Suite, args: Args): Unit = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress),
       None, None))
-    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
   }
   def andThen[C](next: Test1[B, C])(implicit pos: source.Position): Test1[A, C] = {
     thisTest1.testNames.find(tn => next.testNames.contains(tn)) match {
@@ -117,18 +117,18 @@ trait Test1[A, B] { thisTest1 =>
       val name = thisTest1.name
 
       def testNames: Set[String] = thisTest1.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def cancel(args: Args): Unit = {
-        args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress),
+      override def cancel(suite: Suite, args: Args): Unit = {
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress),
           None, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
-        next.cancel(args)
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+        next.cancel(suite, args)
       }
-      override def runTests(testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = thisTest1.runTests(testName, args, input)
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
         res0 match {
-          case Some(res0) => next.runTests(testName, args, res0)
+          case Some(res0) => next.runTests(suite, testName, args, res0)
           case None =>
-            next.cancel(args)
+            next.cancel(suite, args)
             (None, status)
         }
 
@@ -148,15 +148,15 @@ trait Test1[A, B] { thisTest1 =>
 
       def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
-      override def runTests(testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(testName, args, input)
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args, input)
         res0 match {
           case Some(res0) =>
-            thisTest1.runTests(testName, args, res0)
+            thisTest1.runTests(suite, testName, args, res0)
 
           case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress), None, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress), None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
             (None, SucceededStatus)
         }
       }
@@ -175,26 +175,26 @@ trait Test1[A, B] { thisTest1 =>
 
       def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
-      override def runTests(testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(testName, args)
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args)
         res0 match {
           case Some(res0) =>
-            thisTest1.runTests(testName, args, res0)
+            thisTest1.runTests(suite, testName, args, res0)
 
           case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress), None, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
+            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress), None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None, None, None))
             (None, SucceededStatus)
         }
       }
     }
   }
   def testNames: Set[String]
-  def runTests(testName: Option[String], args: Args, input: A): (Option[B], Status) = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TOTO suite class name"), name, "", Some(MotionToSuppress), None, None))
+  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", Some(MotionToSuppress), None, None))
     try {
       val result = thisTest1(input)
-      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None))
+      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, None, None, None))
       (Some(result), SucceededStatus)
     }
     catch {
@@ -208,11 +208,11 @@ trait Test1[A, B] { thisTest1 =>
               None
           }
         //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
         (None, SucceededStatus)
 
       case tce: TestPendingException =>
-        args.reporter(TestPending(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
+        args.reporter(TestPending(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -224,7 +224,7 @@ trait Test1[A, B] { thisTest1 =>
             case _ =>
               None
           }
-        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
+        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, "", collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), None, None, payload))
         (None, FailedStatus)
     }
   }
@@ -237,6 +237,17 @@ object Test1 {
       val name: String = testName
       def testNames: Set[String] = Set(testName) 
     }
+}
+
+trait TestFlow[A] extends Suite {
+
+  def flow: Test0[A]
+
+  override def runTests(testName: Option[String], args: Args): Status = {
+    val (res, status) = flow.runTests(this, testName, args)
+    status
+  }
+
 }
 
 /*
