@@ -152,6 +152,41 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
         }
       }
+      describe("when the test cancel") {
+        it("should report 1 test pending evetns to the passed-in reporter when the test is pending") {
+          val myRep = new EventRecordingReporter
+          val t = Test0("first") { pending }
+          t.runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+        }
+        it("should report 1 test pending and 1 test canceled events to the passed-in reporter when there are 2 tests and the first test is pending") {
+          val myRep = new EventRecordingReporter
+          val t0 = Test0("first") {
+            pending
+            3
+          }
+          t0.andThen(Test1("second") { (i: Int) => i + 1 }).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+        }
+        it("should report 1 test succeeded and 1 test pending events to the passed-in reporter when first test passed and second test is pending") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(3).andThen(Test1("second") { (i: Int) => pending }).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 1)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+        }
+      }
     }
   }
   describe("A Test1") {
@@ -333,6 +368,68 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testSucceeded.size == 2)
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
+        }
+      }
+      describe("when the test is pending") {
+        it("should report 1 test succeeded and 1 test pending event to the passed-in reporter when compose with another Test0") {
+          val myRep = new EventRecordingReporter
+          Test1("second") { (i: Int) => pending }.compose(Test0("first")(5)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 1)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+        }
+        it("should report 2 test succeeded and 1 test pending event to the passed-in reporter when tests combined with andThen passed first 2 and is pending in last") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(30).andThen((Test1("second") { (i: Int) => i + 1 }).andThen(Test1("third") { (i: Int) => pending })).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+        }
+        it("should report 1 test succeeded, 1 test pending and 1 test canceled event to the passed-in reporter when tests combined with andThen passed first but is pending in second") {
+          val myRep = new EventRecordingReporter
+          Test0("first")(30).andThen((Test1("second") { (i: Int) => pending; 1 }).andThen(Test1("third") { (i: Int) => i + 1 })).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 1)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+        }
+        it("should report 1 test succeeded 1 test pending and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one is pending") {
+          val myRep = new EventRecordingReporter
+          val first = Test0("first")(5)
+          val second = Test1("second") { (i: Int) => pending; 1 }
+          val third = Test1("third") { (i: Int) => i + 1 }
+          third.compose(second.compose(first)).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 1)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+        }
+        it("should report 2 test succeeded and 1 test pending event to the passed-in reporter when compose with another Test1 and Test0, where the third one is pending") {
+          val myRep = new EventRecordingReporter
+          val first = Test0("first")(5)
+          val second = Test1("second") { (i: Int) => i + 1 }
+          val third = Test1("third") { (i: Int) => pending; 1 }
+          third.compose(second).compose(first).runTests(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
         }
       }
     }

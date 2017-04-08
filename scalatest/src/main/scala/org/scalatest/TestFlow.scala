@@ -15,11 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.events.{MotionToSuppress, TestFailed, TestStarting, TestSucceeded, TestCanceled}
+import org.scalatest.events.{MotionToSuppress, TestFailed, TestStarting, TestSucceeded, TestCanceled, TestPending}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException}
+import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
 
 trait Test0[A] { thisTest0 =>
@@ -67,6 +67,10 @@ trait Test0[A] { thisTest0 =>
           }
         //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
         args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
+        (None, SucceededStatus)
+
+      case tpe: TestPendingException =>
+        args.reporter(TestPending(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -205,6 +209,10 @@ trait Test1[A, B] { thisTest1 =>
           }
         //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
         args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), None, None, payload))
+        (None, SucceededStatus)
+
+      case tce: TestPendingException =>
+        args.reporter(TestPending(args.tracker.nextOrdinal(), "TODO suiteName", "TODO suiteId", Some("TODO suite class name"), name, "", collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), None))
         (None, SucceededStatus)
 
       case t: Throwable =>
