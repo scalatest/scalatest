@@ -115,7 +115,7 @@ class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks w
         NonZeroFiniteFloat.passOrElse(-99.0F)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Fail") {
-        NonZeroFiniteFloat.passOrElse(0.0F)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        NonZeroFiniteFloat.passOrElse(0.0F)(i => s"$i did not taste good") shouldBe Fail(0.0F + " did not taste good")
       }
     }
     describe("should offer a goodOrElse factory method that") {
@@ -127,7 +127,7 @@ class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks w
         NonZeroFiniteFloat.goodOrElse(-99.0F)(i => i) shouldBe Good(NonZeroFiniteFloat(-99.0F))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Bad") {
-        NonZeroFiniteFloat.goodOrElse(0.0F)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        NonZeroFiniteFloat.goodOrElse(0.0F)(i => s"$i did not taste good") shouldBe Bad(0.0F + " did not taste good")
       }
     }
     describe("should offer a rightOrElse factory method that") {
@@ -139,7 +139,7 @@ class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks w
         NonZeroFiniteFloat.rightOrElse(-99.0F)(i => i) shouldBe Right(NonZeroFiniteFloat(-99.0F))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT non-zero, wrapped in a Left") {
-        NonZeroFiniteFloat.rightOrElse(0.0F)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        NonZeroFiniteFloat.rightOrElse(0.0F)(i => s"$i did not taste good") shouldBe Left(0.0F + " did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {
