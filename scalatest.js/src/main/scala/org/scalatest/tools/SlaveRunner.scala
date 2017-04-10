@@ -21,6 +21,7 @@ import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => Sbt
 import ArgsParser._
 
 import scala.compat.Platform
+import org.scalatest.prop.Randomizer
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
 
@@ -31,7 +32,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     tagsToIncludeArgs,
     tagsToExcludeArgs,
     membersOnlyArgs,
-    wildcardArgs
+    wildcardArgs,
+    seeds
   ) = parseArgs(args)
 
   val (
@@ -75,6 +77,11 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
   val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
   val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+
+  parseLongArgument(seeds, "-S") match {
+    case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+    case None => // do nothing
+  }
 
   private def parseSuiteArgs(suiteArgs: List[String]): List[Selector] = {
     val itr = suiteArgs.iterator
