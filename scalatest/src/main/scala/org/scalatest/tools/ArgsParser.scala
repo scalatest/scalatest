@@ -184,8 +184,8 @@ private[tools] object ArgsParser {
     val spanScaleFactor = new ListBuffer[String]()
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
-    val seeds = ListBuffer[String]()
     // SKIP-SCALATESTJS-END
+    val seeds = ListBuffer[String]()
 
     val it = args.iterator.buffered
     while (it.hasNext) {

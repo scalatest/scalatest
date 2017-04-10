@@ -101,7 +101,7 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         NegFiniteFloat.passOrElse(-100.0f)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT lesser than 0, wrapped in a Fail") {
-        NegFiniteFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        NegFiniteFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail(0.0f + " did not taste good")
         NegFiniteFloat.passOrElse(1.1f)(i => i) shouldBe Fail(1.1f)
         NegFiniteFloat.passOrElse(99.0f)(i => i + 3.0f) shouldBe Fail(102.0f)
       }
@@ -112,7 +112,7 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         NegFiniteFloat.goodOrElse(-100.0f)(i => i) shouldBe Good(NegFiniteFloat(-100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT lesser than 0, wrapped in a Bad") {
-        NegFiniteFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        NegFiniteFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad(0.0f + " did not taste good")
         NegFiniteFloat.goodOrElse(1.1f)(i => i) shouldBe Bad(1.1f)
         NegFiniteFloat.goodOrElse(99.0f)(i => i + 3.0f) shouldBe Bad(102.0f)
       }
@@ -123,7 +123,7 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         NegFiniteFloat.rightOrElse(-100.0f)(i => i) shouldBe Right(NegFiniteFloat(-100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT lesser than 0, wrapped in a Left") {
-        NegFiniteFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        NegFiniteFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left(0.0f + " did not taste good")
         NegFiniteFloat.rightOrElse(1.1f)(i => i) shouldBe Left(1.1f)
         NegFiniteFloat.rightOrElse(99.9f)(i => i + 3.0f) shouldBe Left(102.9f)
       }

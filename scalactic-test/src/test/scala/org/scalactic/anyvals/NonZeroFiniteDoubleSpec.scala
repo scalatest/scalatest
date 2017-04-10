@@ -106,7 +106,7 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
         NonZeroFiniteDouble.passOrElse(-99.0)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Doule is NOT non-zero, wrapped in a Fail") {
-        NonZeroFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        NonZeroFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail(0.0 + " did not taste good")
       }
     }
     describe("should offer a goodOrElse factory method that") {
@@ -118,7 +118,7 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
         NonZeroFiniteDouble.goodOrElse(-99.0)(i => i) shouldBe Good(NonZeroFiniteDouble(-99.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT non-zero, wrapped in a Bad") {
-        NonZeroFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        NonZeroFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad(0.0 + " did not taste good")
       }
     }
     describe("should offer a rightOrElse factory method that") {
@@ -130,7 +130,7 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
         NonZeroFiniteDouble.rightOrElse(-99.0)(i => i) shouldBe Right(NonZeroFiniteDouble(-99.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT non-zero, wrapped in a Left") {
-        NonZeroFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        NonZeroFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left(0.0 + " did not taste good")
       }
     }
     describe("should offer an isValid predicate method that") {

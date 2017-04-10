@@ -101,7 +101,7 @@ class PosFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         PosFiniteFloat.passOrElse(100.0f)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Fail") {
-        PosFiniteFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosFiniteFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail(0.0f + " did not taste good")
         PosFiniteFloat.passOrElse(-1.1f)(i => i) shouldBe Fail(-1.1f)
         PosFiniteFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
       }
@@ -112,7 +112,7 @@ class PosFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         PosFiniteFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosFiniteFloat(100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Bad") {
-        PosFiniteFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosFiniteFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad(0.0f + " did not taste good")
         PosFiniteFloat.goodOrElse(-1.1f)(i => i) shouldBe Bad(-1.1f)
         PosFiniteFloat.goodOrElse(-99.0f)(i => i + 3.0f) shouldBe Bad(-96.0f)
       }
@@ -123,7 +123,7 @@ class PosFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         PosFiniteFloat.rightOrElse(100.0f)(i => i) shouldBe Right(PosFiniteFloat(100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Left") {
-        PosFiniteFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosFiniteFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left(0.0f + " did not taste good")
         PosFiniteFloat.rightOrElse(-1.1f)(i => i) shouldBe Left(-1.1f)
         PosFiniteFloat.rightOrElse(-99.9f)(i => i + 3.0f) shouldBe Left(-96.9f)
       }

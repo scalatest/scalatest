@@ -96,7 +96,7 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         PosFiniteDouble.passOrElse(100.0)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Fail") {
-        PosFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail(0.0 + " did not taste good")
         PosFiniteDouble.passOrElse(-1.1)(i => i) shouldBe Fail(-1.1)
         PosFiniteDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
       }
@@ -107,7 +107,7 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         PosFiniteDouble.goodOrElse(100.0)(i => i) shouldBe Good(PosFiniteDouble(100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Bad") {
-        PosFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad(0.0 + " did not taste good")
         PosFiniteDouble.goodOrElse(-1.1)(i => i) shouldBe Bad(-1.1)
         PosFiniteDouble.goodOrElse(-99.0)(i => i + 3.0) shouldBe Bad(-96.0)
       }
@@ -118,7 +118,7 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         PosFiniteDouble.rightOrElse(100.0)(i => i) shouldBe Right(PosFiniteDouble(100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Left") {
-        PosFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left(0.0 + " did not taste good")
         PosFiniteDouble.rightOrElse(-1.1)(i => i) shouldBe Left(-1.1)
         PosFiniteDouble.rightOrElse(-99.9)(i => i + 3.0) shouldBe Left(-96.9)
       }
