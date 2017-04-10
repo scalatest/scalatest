@@ -1949,5 +1949,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     transform(itr, 0, builder)
     builder.toString
   }
+
+  val testFilePathname = Some("Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
 }
 
