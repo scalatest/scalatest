@@ -96,7 +96,7 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         NegDouble.passOrElse(-100.0)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Fail") {
-        NegDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        NegDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail(0.0 + " did not taste good")
         NegDouble.passOrElse(1.1)(i => i) shouldBe Fail(1.1)
         NegDouble.passOrElse(99.0)(i => i + 3.0) shouldBe Fail(102.0)
       }
@@ -107,7 +107,7 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         NegDouble.goodOrElse(-100.0)(i => i) shouldBe Good(NegDouble(-100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Bad") {
-        NegDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        NegDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad(0.0 + " did not taste good")
         NegDouble.goodOrElse(1.1)(i => i) shouldBe Bad(1.1)
         NegDouble.goodOrElse(99.0)(i => i + 3.0) shouldBe Bad(102.0)
       }
@@ -118,7 +118,7 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         NegDouble.rightOrElse(-100.0)(i => i) shouldBe Right(NegDouble(-100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Left") {
-        NegDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        NegDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left(0.0 + " did not taste good")
         NegDouble.rightOrElse(1.1)(i => i) shouldBe Left(1.1)
         NegDouble.rightOrElse(99.9)(i => i + 3.0) shouldBe Left(102.9)
       }

@@ -101,7 +101,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.passOrElse(100.0f)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Fail") {
-        PosFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosFloat.passOrElse(0.0f)(i => s"$i did not taste good") shouldBe Fail(0.0f + " did not taste good")
         PosFloat.passOrElse(-1.1f)(i => i) shouldBe Fail(-1.1f)
         PosFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
       }
@@ -112,7 +112,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosFloat(100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Bad") {
-        PosFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosFloat.goodOrElse(0.0f)(i => s"$i did not taste good") shouldBe Bad(0.0f + " did not taste good")
         PosFloat.goodOrElse(-1.1f)(i => i) shouldBe Bad(-1.1f)
         PosFloat.goodOrElse(-99.0f)(i => i + 3.0f) shouldBe Bad(-96.0f)
       }
@@ -123,7 +123,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.rightOrElse(100.0f)(i => i) shouldBe Right(PosFloat(100.0f))
       }
       it("returns an error value produced by passing the given Float to the given function if the passed Float is NOT greater than 0, wrapped in a Left") {
-        PosFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosFloat.rightOrElse(0.0f)(i => s"$i did not taste good") shouldBe Left(0.0f + " did not taste good")
         PosFloat.rightOrElse(-1.1f)(i => i) shouldBe Left(-1.1f)
         PosFloat.rightOrElse(-99.9f)(i => i + 3.0f) shouldBe Left(-96.9f)
       }

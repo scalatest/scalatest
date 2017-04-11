@@ -96,7 +96,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.passOrElse(100.0)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Fail") {
-        PosDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        PosDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail(0.0 + " did not taste good")
         PosDouble.passOrElse(-1.1)(i => i) shouldBe Fail(-1.1)
         PosDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
       }
@@ -107,7 +107,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.goodOrElse(100.0)(i => i) shouldBe Good(PosDouble(100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Bad") {
-        PosDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        PosDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad(0.0 + " did not taste good")
         PosDouble.goodOrElse(-1.1)(i => i) shouldBe Bad(-1.1)
         PosDouble.goodOrElse(-99.0)(i => i + 3.0) shouldBe Bad(-96.0)
       }
@@ -118,7 +118,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.rightOrElse(100.0)(i => i) shouldBe Right(PosDouble(100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Left") {
-        PosDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        PosDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left(0.0 + " did not taste good")
         PosDouble.rightOrElse(-1.1)(i => i) shouldBe Left(-1.1)
         PosDouble.rightOrElse(-99.9)(i => i + 3.0) shouldBe Left(-96.9)
       }

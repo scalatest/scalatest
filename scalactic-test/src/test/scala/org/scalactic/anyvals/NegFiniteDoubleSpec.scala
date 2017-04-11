@@ -96,7 +96,7 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         NegFiniteDouble.passOrElse(-100.0)(i => i) shouldBe Pass
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Fail") {
-        NegFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail("0.0 did not taste good")
+        NegFiniteDouble.passOrElse(0.0)(i => s"$i did not taste good") shouldBe Fail(0.0 + " did not taste good")
         NegFiniteDouble.passOrElse(1.1)(i => i) shouldBe Fail(1.1)
         NegFiniteDouble.passOrElse(99.0)(i => i + 3.0) shouldBe Fail(102.0)
       }
@@ -107,7 +107,7 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         NegFiniteDouble.goodOrElse(-100.0)(i => i) shouldBe Good(NegFiniteDouble(-100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Bad") {
-        NegFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad("0.0 did not taste good")
+        NegFiniteDouble.goodOrElse(0.0)(i => s"$i did not taste good") shouldBe Bad(0.0 + " did not taste good")
         NegFiniteDouble.goodOrElse(1.1)(i => i) shouldBe Bad(1.1)
         NegFiniteDouble.goodOrElse(99.0)(i => i + 3.0) shouldBe Bad(102.0)
       }
@@ -118,7 +118,7 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         NegFiniteDouble.rightOrElse(-100.0)(i => i) shouldBe Right(NegFiniteDouble(-100.0))
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT lesser than 0, wrapped in a Left") {
-        NegFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left("0.0 did not taste good")
+        NegFiniteDouble.rightOrElse(0.0)(i => s"$i did not taste good") shouldBe Left(0.0 + " did not taste good")
         NegFiniteDouble.rightOrElse(1.1)(i => i) shouldBe Left(1.1)
         NegFiniteDouble.rightOrElse(99.9)(i => i + 3.0) shouldBe Left(102.9)
       }
