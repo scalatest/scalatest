@@ -21,7 +21,13 @@ import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
 
-trait Test0[A] { thisTest0 =>
+trait StartNode[A] {
+
+  def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
+
+}
+
+trait Test0[A] extends StartNode[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def name: String
   def location: Option[Location]
@@ -255,7 +261,7 @@ object Test1 {
 
 trait TestFlow[A] extends Suite {
 
-  def flow: Test0[A]
+  def flow: StartNode[A]
 
   override def runTests(testName: Option[String], args: Args): Status = {
     val (res, status) = flow.runTests(this, testName, args)
