@@ -948,6 +948,288 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       pending
     }
   }
+
+  describe("A BeforeNode") {
+    it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
+      """BeforeNode("my name") { 99 }: BeforeNode[Int]""" should compile
+      """BeforeNode("my name") { "hello" }: BeforeNode[String]""" should compile
+      var x = false
+      BeforeNode("my name") {
+        x = true
+      }
+      x shouldBe false
+    }
+    it("should have a name method") {
+      BeforeNode("first")(3).name shouldBe "first"
+      BeforeNode("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
+    }
+    it("should have an andThen method") {
+      BeforeNode("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
+    }
+    it("should return the all test names from testNames when andThen is used to compose Test0s and TestFlows, a Set that iterates in left to right order") {
+      val flow = BeforeNode("first")(5).andThen(Test1("second") { (i: Int) => (i * 4).toString })
+      flow.testNames shouldEqual Set("first", "second")
+      flow.testNames.iterator.toList shouldEqual List("first", "second")
+    }
+    describe("when it was not composed with anything else") {
+      describe("when the test succeeds") {
+        it("should report a test succeeded event to the passed-in reporter") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Int] {
+            val flow = BeforeNode("happy path")(42)
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 0)
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 0)
+        }
+      }
+      describe("when the test fails") {
+        it("should report a test failed event to the passed-in reporter") {
+          val myRep = new EventRecordingReporter
+          val suite =
+            new TestFlow[Nothing] {
+              val flow =
+                BeforeNode("happy path") {
+                  throw new RuntimeException("oops!")
+                }
+            }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 0)
+          val testFailed = myRep.testFailedEventsReceived
+          assert(testFailed.size == 0)
+        }
+      }
+    }
+    describe("when it was composed with something else") {
+      describe("when the test succeeds") {
+        it("should report 2 test succeeded events to the passed-in reporter when andThen with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[String] {
+            val flow =
+              BeforeNode("first")(3).andThen(
+                Test1("second") { (i: Int) => (i * 4).toString }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 1)
+          assert(testSucceeded(0).testName == "second")
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+        }
+        it("should report 2 test succeeded events to the passed-in reporter when andThen with TestFlow that andThen with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[String] {
+            val flow =
+              BeforeNode("first")(3).andThen(
+                (Test1("second") { (i: Int) => (i * 4) }).andThen(
+                  Test1("third") { (i: Int) => (i * 7).toString }
+                )
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).testName == "third")
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+          assert(testSucceeded(0).testName == "second")
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).testName == "third")
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+        }
+        it("should report 2 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[String] {
+            val flow =
+              BeforeNode("first")(3).andThen(
+                (Test1("third") { (i: Int) => (i * 7).toString }).compose(
+                  Test1("second") { (i: Int) => (i * 4) }
+                )
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 2)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).testName == "third")
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 2)
+          assert(testSucceeded(0).testName == "second")
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).testName == "third")
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+        }
+        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
+          assertThrows[DuplicateTestNameException] {
+            BeforeNode("same")(0).andThen(Test1("same") { (i: Int) => (i * 4).toString })
+          }
+        }
+      }
+      describe("when the test fails") {
+        it("should report 1 test succeeded and 1 test failed events to the passed-in reporter when first test passed and second test failed") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Nothing] {
+            val flow =
+              BeforeNode("first")(3).andThen(
+                Test1("second") { (i: Int) => throw new RuntimeException("oops!!") }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 0)
+          val testFailed = myRep.testFailedEventsReceived
+          assert(testFailed.size == 1)
+          assert(testFailed(0).testName == "second")
+          assert(testFailed(0).location == Some(SeeStackDepthException))
+        }
+      }
+      describe("when the test cancel") {
+        it("should report 1 test canceled evetns to the passed-in reporter when the test canceled") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Nothing] {
+            val flow =
+              BeforeNode("first") {
+                cancel
+              }
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 0)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 0)
+        }
+        it("should report 2 test canceled events to the passed-in reporter when there are 2 tests and the first test canceled") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Int] {
+            val t0 =
+              BeforeNode("first") {
+                cancel
+                3
+              }
+            val flow =
+              t0.andThen(
+                Test1("second") { (i: Int) =>
+                  i + 1
+                }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+          assert(testCanceled(0).testName == "second")
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+        }
+        it("should report 1 test succeeded and 1 test canceled events to the passed-in reporter when first test passed and second test canceled") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Nothing] {
+            val flow =
+              BeforeNode("first")(3).andThen(
+                Test1("second") { (i: Int) =>
+                  cancel
+                }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 0)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+          assert(testCanceled(0).testName == "second")
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+        }
+      }
+      describe("when the test cancel") {
+        it("should report 1 test pending evetns to the passed-in reporter when the test is pending") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[PendingStatement] {
+            val t: BeforeNode[PendingStatement] =
+              BeforeNode("first") {
+                pending
+              }
+            val flow = t
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 0)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 0)
+        }
+        it("should report 1 test pending and 1 test canceled events to the passed-in reporter when there are 2 tests and the first test is pending") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Int] {
+            val t0 = BeforeNode("first") {
+              pending
+              3
+            }
+            val flow =
+              t0.andThen(
+                Test1("second") { (i: Int) =>
+                  i + 1
+                }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 0)
+          val testCanceled = myRep.testCanceledEventsReceived
+          assert(testCanceled.size == 1)
+          assert(testCanceled(0).testName == "second")
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+        }
+        it("should report 1 test succeeded and 1 test pending events to the passed-in reporter when first test passed and second test is pending") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[PendingStatement] {
+            val flow: BeforeNode[PendingStatement] =
+              BeforeNode("first")(3).andThen(
+                Test1("second") { (i: Int) =>
+                  pending
+                }
+              )
+          }
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 1)
+          assert(testStarting(0).testName == "second")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 0)
+          val testPending = myRep.testPendingEventsReceived
+          assert(testPending.size == 1)
+          assert(testPending(0).testName == "second")
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+        }
+      }
+    }
+  }
+
   /*describe("when failure happens") {
     it("should fire TestFailed event with correct stack depth info when test failed") {
       pending
