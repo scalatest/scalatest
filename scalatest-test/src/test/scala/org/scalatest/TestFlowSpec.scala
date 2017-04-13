@@ -951,32 +951,23 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
 
   describe("A BeforeNode") {
     it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
-      """BeforeNode("my name") { 99 }: BeforeNode[Int]""" should compile
-      """BeforeNode("my name") { "hello" }: BeforeNode[String]""" should compile
+      """BeforeNode { 99 }: BeforeNode[Int]""" should compile
+      """BeforeNode { "hello" }: BeforeNode[String]""" should compile
       var x = false
-      BeforeNode("my name") {
+      BeforeNode {
         x = true
       }
       x shouldBe false
     }
-    it("should have a name method") {
-      BeforeNode("first")(3).name shouldBe "first"
-      BeforeNode("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
-    }
     it("should have an andThen method") {
-      BeforeNode("first")(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
-    }
-    it("should return the all test names from testNames when andThen is used to compose Test0s and TestFlows, a Set that iterates in left to right order") {
-      val flow = BeforeNode("first")(5).andThen(Test1("second") { (i: Int) => (i * 4).toString })
-      flow.testNames shouldEqual Set("first", "second")
-      flow.testNames.iterator.toList shouldEqual List("first", "second")
+      BeforeNode(3).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply() shouldEqual "12"
     }
     describe("when it was not composed with anything else") {
       describe("when the test succeeds") {
         it("should report a test succeeded event to the passed-in reporter") {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Int] {
-            val flow = BeforeNode("happy path")(42)
+            val flow = BeforeNode(42)
           }
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
@@ -991,7 +982,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite =
             new TestFlow[Nothing] {
               val flow =
-                BeforeNode("happy path") {
+                BeforeNode {
                   throw new RuntimeException("oops!")
                 }
             }
@@ -1009,7 +1000,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[String] {
             val flow =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 Test1("second") { (i: Int) => (i * 4).toString }
               )
           }
@@ -1027,7 +1018,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[String] {
             val flow =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 (Test1("second") { (i: Int) => (i * 4) }).andThen(
                   Test1("third") { (i: Int) => (i * 7).toString }
                 )
@@ -1051,7 +1042,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[String] {
             val flow =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 (Test1("third") { (i: Int) => (i * 7).toString }).compose(
                   Test1("second") { (i: Int) => (i * 4) }
                 )
@@ -1071,18 +1062,13 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
         }
-        it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
-          assertThrows[DuplicateTestNameException] {
-            BeforeNode("same")(0).andThen(Test1("same") { (i: Int) => (i * 4).toString })
-          }
-        }
       }
       describe("when the test fails") {
         it("should report 1 test succeeded and 1 test failed events to the passed-in reporter when first test passed and second test failed") {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Nothing] {
             val flow =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 Test1("second") { (i: Int) => throw new RuntimeException("oops!!") }
               )
           }
@@ -1104,7 +1090,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Nothing] {
             val flow =
-              BeforeNode("first") {
+              BeforeNode {
                 cancel
               }
           }
@@ -1118,7 +1104,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Int] {
             val t0 =
-              BeforeNode("first") {
+              BeforeNode {
                 cancel
                 3
               }
@@ -1143,7 +1129,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Nothing] {
             val flow =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 Test1("second") { (i: Int) =>
                   cancel
                 }
@@ -1167,7 +1153,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[PendingStatement] {
             val t: BeforeNode[PendingStatement] =
-              BeforeNode("first") {
+              BeforeNode {
                 pending
               }
             val flow = t
@@ -1181,7 +1167,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
         it("should report 1 test pending and 1 test canceled events to the passed-in reporter when there are 2 tests and the first test is pending") {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[Int] {
-            val t0 = BeforeNode("first") {
+            val t0 = BeforeNode {
               pending
               3
             }
@@ -1208,7 +1194,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val myRep = new EventRecordingReporter
           val suite = new TestFlow[PendingStatement] {
             val flow: BeforeNode[PendingStatement] =
-              BeforeNode("first")(3).andThen(
+              BeforeNode(3).andThen(
                 Test1("second") { (i: Int) =>
                   pending
                 }

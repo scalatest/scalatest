@@ -110,19 +110,11 @@ object Test0 {
 
 trait BeforeNode[A] extends StartNode[A] { thisBeforeNode =>
   def apply(): A // This is the test function, like what we pass into withFixture
-  def name: String
   def location: Option[Location]
-  def testNames: Set[String]
   def andThen[B](next: Test1[A, B])(implicit pos: source.Position): BeforeNode[B] = {
-    thisBeforeNode.testNames.find(tn => next.testNames.contains(tn)) match {
-      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
-      case _ =>
-    }
     new BeforeNode[B] {
       def apply(): B = next(thisBeforeNode())
-      val name = thisBeforeNode.name
       val location = thisBeforeNode.location
-      def testNames: Set[String] = thisBeforeNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = thisBeforeNode.runTests(suite, testName, args)
         res0 match {
@@ -153,12 +145,10 @@ trait BeforeNode[A] extends StartNode[A] { thisBeforeNode =>
 }
 
 object BeforeNode {
-  def apply[A](testName: String)(f: => A)(implicit pos: source.Position): BeforeNode[A] =
+  def apply[A](f: => A)(implicit pos: source.Position): BeforeNode[A] =
     new BeforeNode[A] {
       def apply(): A = f
-      val name: String = testName
       val location: Option[Location] = Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
-      def testNames: Set[String] = Set(testName)
     }
 }
 
