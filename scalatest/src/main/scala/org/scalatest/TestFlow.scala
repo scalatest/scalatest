@@ -53,6 +53,23 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
   }
+  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): Test0[B] = {
+    new Test0[B] {
+      def apply(): B = next(thisTest0())
+      val name = thisTest0.name
+      val location = thisTest0.location
+      def testNames: Set[String] = thisTest0.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        res0 match {
+          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case None =>
+            next.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+  }
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
     try {
@@ -190,6 +207,31 @@ trait Test1[A, B] { thisTest1 =>
       }
     }
   }
+  def andThen[C](next: InBetweenNode[B, C])(implicit pos: source.Position): Test1[A, C] = {
+    new Test1[A, C] {
+      def apply(a: A): C = next(thisTest1(a))
+
+      val name = thisTest1.name
+      val location = thisTest1.location
+
+      def testNames: Set[String] = thisTest1.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      override def cancel(suite: Suite, args: Args): Unit = {
+        args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, None, location, None, None))
+        next.cancel(suite, args)
+      }
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case None =>
+            next.cancel(suite, args)
+            (None, status)
+        }
+
+      }
+    }
+  }
   def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, B] = {
     thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
@@ -235,6 +277,25 @@ trait Test1[A, B] { thisTest1 =>
 
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = prev.runTests(suite, testName, args)
+        res0 match {
+          case Some(res0) =>
+            thisTest1.runTests(suite, testName, args, res0)
+
+          case None =>
+            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, None, thisTest1.location, None, None))
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
+  def compose[C](prev: InBetweenNode[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
+    new InBetweenNode[C, B] {
+      def apply(c: C): B = thisTest1(prev(c))
+      val location = prev.location
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args, input)
         res0 match {
           case Some(res0) =>
             thisTest1.runTests(suite, testName, args, res0)
@@ -300,6 +361,137 @@ object Test1 {
       val name: String = testName
       val location: Option[Location] = Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
       def testNames: Set[String] = Set(testName) 
+    }
+}
+
+trait InBetweenNode[A, B] { thisTest1 =>
+  def apply(a: A): B // This is the test function, like what we pass into withFixture
+  def location: Option[Location]
+  def cancel(suite: Suite, args: Args): Unit = {}
+  def andThen[C](next: Test1[B, C])(implicit pos: source.Position): InBetweenNode[A, C] = {
+    new InBetweenNode[A, C] {
+      def apply(a: A): C = next(thisTest1(a))
+
+      val location = thisTest1.location
+
+      override def cancel(suite: Suite, args: Args): Unit = {
+        next.cancel(suite, args)
+      }
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case None =>
+            next.cancel(suite, args)
+            (None, status)
+        }
+
+      }
+    }
+  }
+  def andThen[C](next: InBetweenNode[B, C])(implicit pos: source.Position): InBetweenNode[A, C] = {
+    new InBetweenNode[A, C] {
+      def apply(a: A): C = next(thisTest1(a))
+
+      val location = thisTest1.location
+
+      override def cancel(suite: Suite, args: Args): Unit = {
+        next.cancel(suite, args)
+      }
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case None =>
+            next.cancel(suite, args)
+            (None, status)
+        }
+
+      }
+    }
+  }
+  def compose[C](prev: Test1[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
+    new InBetweenNode[C, B] {
+      def apply(c: C): B = thisTest1(prev(c))
+
+      val location = prev.location
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            thisTest1.runTests(suite, testName, args, res0)
+
+          case None =>
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
+  def compose[C](prev: InBetweenNode[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
+    new InBetweenNode[C, B] {
+      def apply(c: C): B = thisTest1(prev(c))
+
+      val location = prev.location
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            thisTest1.runTests(suite, testName, args, res0)
+
+          case None =>
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
+  def compose(prev: Test0[A])(implicit pos: source.Position): Test0[B] = {
+
+    new Test0[B] {
+      def apply(): B = thisTest1(prev())
+
+      val name = prev.name
+
+      val location = prev.location
+
+      def testNames: Set[String] = prev.testNames
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args)
+        res0 match {
+          case Some(res0) =>
+            thisTest1.runTests(suite, testName, args, res0)
+
+          case None =>
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
+  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+    try {
+      val result = thisTest1(input)
+      (Some(result), SucceededStatus)
+    }
+    catch {
+      case tce: TestCanceledException =>
+        (None, SucceededStatus)
+
+      case tce: TestPendingException =>
+        (None, SucceededStatus)
+
+      case t: Throwable =>
+        (None, FailedStatus)
+    }
+  }
+}
+
+object InBetweenNode {
+  def apply[A, B](f: A => B)(implicit pos: source.Position): InBetweenNode[A, B] =
+    new InBetweenNode[A, B] {
+      def apply(a: A): B = f(a)
+      val location: Option[Location] = Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
     }
 }
 
