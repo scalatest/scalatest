@@ -1364,52 +1364,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def union(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
-     * Converts this `EquaSet` of pairs into two collections of the first and second
-     * half of each pair.
-     *
-     * {{{
-     * val xs = `EquaSet`(
-     * (1, "one"),
-     * (2, "two"),
-     * (3, "three")).unzip
-     * // xs == (`EquaSet`(1, 2, 3),
-     * // `EquaSet`(one, two, three))
-     * }}}
-     *
-     * @tparam T1 the type of the first half of the element pairs
-     * @tparam T2 the type of the second half of the element pairs
-     * @param asPair an implicit conversion which asserts that the element type
-     * of this `EquaSet` is a pair.
-     * @return a pair of `EquaSet`s, containing the first, respectively second
-     * half of each element pair of this `EquaSet`.
-     */
-    def unzip[T1, T2](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2])(implicit asPair: T => (T1, T2)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet)
-
-    /**
-     * Converts this `EquaSet` of triples into three collections of the first, second,
-     * and third element of each triple.
-     *
-     * {{{
-     * val xs = `EquaSet`(
-     * (1, "one", '1'),
-     * (2, "two", '2'),
-     * (3, "three", '3')).unzip3
-     * // xs == (`EquaSet`(1, 2, 3),
-     * // `EquaSet`(one, two, three),
-     * // `EquaSet`(1, 2, 3))
-     * }}}
-     *
-     * @tparam T1 the type of the first member of the element triples
-     * @tparam T2 the type of the second member of the element triples
-     * @tparam T3 the type of the third member of the element triples
-     * @param asTriple an implicit conversion which asserts that the element type
-     * of this `EquaSet` is a triple.
-     * @return a triple of `EquaSet`s, containing the first, second, respectively
-     * third member of each element triple of this `EquaSet`.
-     */
-    def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet, t3EquaPath.EquaSet)
-
-    /**
      * Creates a non-strict filter of this `EquaSet`.
      *
      * Note: the difference between `c filter p` and `c withFilter p` is that

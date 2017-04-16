@@ -22,6 +22,8 @@ trait LazySeq[+T] extends LazyBag[T] {
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
+  def unzip[U1, U2](implicit asPair: T => (U1, U2)): (LazySeq[U1], LazySeq[U2])
+  def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (LazySeq[U1], LazySeq[U2], LazySeq[U3])
   def zip[U](that: LazyBag[U]): LazySeq[(T, U)]
   def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazySeq[(T1, U)]
   def zipWithIndex: LazySeq[(T, Int)]
@@ -35,6 +37,18 @@ object LazySeq {
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = toPath.TreeEquaSet(args: _*)
     def toList: List[T] = args
     def size: Int = args.size
+
+    def unzip[U1, U2](implicit asPair: T => (U1, U2)): (LazySeq[U1], LazySeq[U2]) = (
+      new UnzipLeftLazySeq[T, U1, U2](thisLazySeq)(asPair),
+      new UnzipRightLazySeq[T, U1, U2](thisLazySeq)(asPair)
+    )
+
+    def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (LazySeq[U1], LazySeq[U2], LazySeq[U3]) = (
+      new Unzip3LeftLazySeq[T, U1, U2, U3](thisLazySeq),
+      new Unzip3MiddleLazySeq[T, U1, U2, U3](thisLazySeq),
+      new Unzip3RightLazySeq[T, U1, U2, U3](thisLazySeq)
+    )
+
     def zip[U](that: LazyBag[U]): LazySeq[(T, U)] = new ZipLazySeq(thisLazySeq, that)
     def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazySeq[(T1, U)] =
       new ZipAllLazySeq(thisLazySeq, that, thisElem, thatElem)
@@ -56,6 +70,18 @@ object LazySeq {
     }
     def toList: List[U]
     def size: Int = toList.size
+
+    def unzip[V1, V2](implicit asPair: U => (V1, V2)): (LazySeq[V1], LazySeq[V2]) = (
+      new UnzipLeftLazySeq[U, V1, V2](thisLazySeq)(asPair),
+      new UnzipRightLazySeq[U, V1, V2](thisLazySeq)(asPair)
+    )
+
+    def unzip3[V1, V2, V3](implicit asTriple: U => (V1, V2, V3)): (LazySeq[V1], LazySeq[V2], LazySeq[V3]) = (
+      new Unzip3LeftLazySeq[U, V1, V2, V3](thisLazySeq),
+      new Unzip3MiddleLazySeq[U, V1, V2, V3](thisLazySeq),
+      new Unzip3RightLazySeq[U, V1, V2, V3](thisLazySeq)
+    )
+
     def zip[V](that: LazyBag[V]): LazySeq[(U, V)] = new ZipLazySeq(thisLazySeq, that)
     def zipAll[V, U1 >: U](that: LazyBag[V], thisElem: U1, thatElem: V): LazySeq[(U1, V)] =
       new ZipAllLazySeq(thisLazySeq, that, thisElem, thatElem)
@@ -89,6 +115,26 @@ object LazySeq {
 
   private class ZipWithIndex[T, U](thisSeq: LazySeq[T]) extends TransformLazySeq[T, (T, Int)] {
     def toList: List[(T, Int)] = thisSeq.toList.zipWithIndex
+  }
+
+  private class UnzipLeftLazySeq[T, U1, U2](lazySeq: LazySeq[T])(implicit asPair: T => (U1, U2)) extends TransformLazySeq[T, U1] {
+    def toList: List[U1] = lazySeq.toList.unzip._1.toList
+  }
+
+  private class UnzipRightLazySeq[T, U1, U2](lazySeq: LazySeq[T])(implicit asPair: T => (U1, U2)) extends TransformLazySeq[T, U2] {
+    def toList: List[U2] = lazySeq.toList.unzip._2.toList
+  }
+
+  private class Unzip3LeftLazySeq[T, U1, U2, U3](lazySeq: LazySeq[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformLazySeq[T, U1] {
+    def toList: List[U1] = lazySeq.toList.unzip3._1.toList
+  }
+
+  private class Unzip3MiddleLazySeq[T, U1, U2, U3](lazySeq: LazySeq[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformLazySeq[T, U2] {
+    def toList: List[U2] = lazySeq.toList.unzip3._2.toList
+  }
+
+  private class Unzip3RightLazySeq[T, U1, U2, U3](lazySeq: LazySeq[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformLazySeq[T, U3] {
+    def toList: List[U3] = lazySeq.toList.unzip3._3.toList
   }
 
   def apply[T](args: T*): LazySeq[T] = new BasicLazySeq(args.toList)
