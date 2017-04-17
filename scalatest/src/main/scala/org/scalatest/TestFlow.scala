@@ -87,6 +87,40 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
   }
+  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): Test0[Assertion] =
+    new Test0[Assertion] {
+      def apply(): Assertion = {
+        val res0 = thisTest0()
+        first(res0)
+        second(res0)
+        more.foreach(_.apply(res0))
+        org.scalatest.Succeeded
+      }
+      val name = thisTest0.name
+      val location = thisTest0.location
+      def testNames: Set[String] = thisTest0.testNames
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
+        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = first.runTests(suite, testName, args, res0)
+            val (res2, s2) = second.runTests(suite, testName, args, res0)
+            val resList = more.map(_.runTests(suite, testName, args, res0))
+
+            val retV = if (res1.isDefined && res2.isDefined && resList.forall(_._1.isDefined)) Some(org.scalatest.Succeeded) else None
+            val retS = if (s1.succeeds && s2.succeeds && resList.forall(_._2.succeeds())) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            first.cancel(suite, args)
+            second.cancel(suite, args)
+            more.foreach(_.cancel(suite, args))
+            (None, status)
+        }
+      }
+    }
+
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
@@ -215,7 +249,16 @@ object BeforeNode {
     }
 }
 
-trait Test1[A, B] { thisTest1 =>
+trait FunctionFlow[A, B] {
+
+  def apply(a: A): B
+
+  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
+
+  def cancel(suite: Suite, args: Args): Unit
+}
+
+trait Test1[A, B] extends FunctionFlow[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
   def location: Option[Location]
@@ -434,7 +477,7 @@ object Test1 {
     }
 }
 
-trait InBetweenNode[A, B] { thisTest1 =>
+trait InBetweenNode[A, B] extends FunctionFlow[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {}
