@@ -135,6 +135,83 @@ class ShouldExistLogicalAndSpec extends FunSpec {
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
   }
+
+  describe("The exist syntax when used with Path") {
+
+    it("should do nothing when the path exists") {
+      existFile.toPath should (equal (existFile.toPath) and exist)
+      existFile.toPath should (exist and equal (existFile.toPath))
+      existFile.toPath should (be (existFile.toPath) and exist)
+      existFile.toPath should (exist and be (existFile.toPath))
+    }
+
+    it("should throw TFE with correct stack depth and message when the path does not exist") {
+      val e1 = intercept[exceptions.TestFailedException] {
+        imaginaryFile.toPath should (equal (imaginaryFile.toPath) and exist)
+      }
+      assert(e1.message === Some(equaled(imaginaryFile.toPath, imaginaryFile.toPath) + ", but " + doesNotExist(imaginaryFile.toPath)))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e2 = intercept[exceptions.TestFailedException] {
+        existFile.toPath should (exist and equal (imaginaryFile.toPath))
+      }
+      assert(e2.message === Some(exists(existFile.toPath) + ", but " + didNotEqual(existFile.toPath, imaginaryFile.toPath)))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e3 = intercept[exceptions.TestFailedException] {
+        imaginaryFile.toPath should (be (imaginaryFile.toPath) and exist)
+      }
+      assert(e3.message === Some(wasEqualTo(imaginaryFile.toPath, imaginaryFile.toPath) + ", but " + doesNotExist(imaginaryFile.toPath)))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e4 = intercept[exceptions.TestFailedException] {
+        existFile.toPath should (exist and be (imaginaryFile.toPath))
+      }
+      assert(e4.message === Some(exists(existFile.toPath) + ", but " + wasNotEqualTo(existFile.toPath, imaginaryFile.toPath)))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with not and the path does not exists") {
+      imaginaryFile.toPath should (equal (imaginaryFile.toPath) and not (exist))
+      imaginaryFile.toPath should (not (exist) and equal (imaginaryFile.toPath))
+      imaginaryFile.toPath should (be (imaginaryFile.toPath) and not (exist))
+      imaginaryFile.toPath should (not (exist) and be (imaginaryFile.toPath))
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with not and the path exists") {
+      val e1 = intercept[exceptions.TestFailedException] {
+        existFile.toPath should (equal (existFile.toPath) and not (exist))
+      }
+      assert(e1.message === Some(equaled(existFile.toPath, existFile.toPath) + ", but " + exists(existFile.toPath)))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e2 = intercept[exceptions.TestFailedException] {
+        imaginaryFile.toPath should (not (exist) and equal (existFile.toPath))
+      }
+      assert(e2.message === Some(doesNotExist(imaginaryFile.toPath) + ", but " + didNotEqual(imaginaryFile.toPath, existFile.toPath)))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e3 = intercept[exceptions.TestFailedException] {
+        existFile.toPath should (be (existFile.toPath) and not (exist))
+      }
+      assert(e3.message === Some(wasEqualTo(existFile.toPath, existFile.toPath) + ", but " + exists(existFile.toPath)))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val e4 = intercept[exceptions.TestFailedException] {
+        imaginaryFile.toPath should (not (exist) and be (existFile.toPath))
+      }
+      assert(e4.message === Some(doesNotExist(imaginaryFile.toPath) + ", but " + wasNotEqualTo(imaginaryFile.toPath, existFile.toPath)))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+  }
   
   describe("The exist syntax when used with all(xs)") {
     
@@ -220,5 +297,90 @@ class ShouldExistLogicalAndSpec extends FunSpec {
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
+  }
+
+  describe("The exist syntax when used with all(paths)") {
+
+    it("should do nothing when the path exists") {
+      all(List(existFile.toPath)) should (equal (existFile.toPath) and exist)
+      all(List(existFile.toPath)) should (exist and equal (existFile.toPath))
+      all(List(existFile.toPath)) should (be (existFile.toPath) and exist)
+      all(List(existFile.toPath)) should (exist and be (existFile.toPath))
+    }
+
+    it("should throw TFE with correct stack depth and message when the path does not exist") {
+      val left1 = List(imaginaryFile.toPath)
+      val e1 = intercept[exceptions.TestFailedException] {
+        all(left1) should (equal (imaginaryFile.toPath) and exist)
+      }
+      assert(e1.message === Some(allError(left1, equaled(imaginaryFile.toPath, imaginaryFile.toPath) + ", but " + doesNotExist(imaginaryFile.toPath), thisLineNumber - 2)))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left2 = List(existFile.toPath)
+      val e2 = intercept[exceptions.TestFailedException] {
+        all(left2) should (exist and equal (imaginaryFile.toPath))
+      }
+      assert(e2.message === Some(allError(left2, exists(existFile.toPath) + ", but " + didNotEqual(existFile.toPath, imaginaryFile.toPath), thisLineNumber - 2)))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left3 = List(imaginaryFile.toPath)
+      val e3 = intercept[exceptions.TestFailedException] {
+        all(left3) should (be (imaginaryFile.toPath) and exist)
+      }
+      assert(e3.message === Some(allError(left3, wasEqualTo(imaginaryFile.toPath, imaginaryFile.toPath) + ", but " + doesNotExist(imaginaryFile.toPath), thisLineNumber - 2)))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left4 = List(existFile.toPath)
+      val e4 = intercept[exceptions.TestFailedException] {
+        all(left4) should (exist and be (imaginaryFile.toPath))
+      }
+      assert(e4.message === Some(allError(left4, exists(existFile.toPath) + ", but " + wasNotEqualTo(existFile.toPath, imaginaryFile.toPath), thisLineNumber - 2)))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with not and the path does not exists") {
+      all(List(imaginaryFile.toPath)) should (equal (imaginaryFile.toPath) and not (exist))
+      all(List(imaginaryFile.toPath)) should (not (exist) and equal (imaginaryFile.toPath))
+      all(List(imaginaryFile.toPath)) should (be (imaginaryFile.toPath) and not (exist))
+      all(List(imaginaryFile.toPath)) should (not (exist) and be (imaginaryFile.toPath))
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with not and the path exists") {
+      val left1 = List(existFile.toPath)
+      val e1 = intercept[exceptions.TestFailedException] {
+        all(left1) should (equal (existFile.toPath) and not (exist))
+      }
+      assert(e1.message === Some(allError(left1, equaled(existFile.toPath, existFile.toPath) + ", but " + exists(existFile.toPath), thisLineNumber - 2)))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left2 = List(imaginaryFile.toPath)
+      val e2 = intercept[exceptions.TestFailedException] {
+        all(left2) should (not (exist) and equal (existFile.toPath))
+      }
+      assert(e2.message === Some(allError(left2, doesNotExist(imaginaryFile.toPath) + ", but " + didNotEqual(imaginaryFile.toPath, existFile.toPath), thisLineNumber - 2)))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left3 = List(existFile.toPath)
+      val e3 = intercept[exceptions.TestFailedException] {
+        all(left3) should (be (existFile.toPath) and not (exist))
+      }
+      assert(e3.message === Some(allError(left3, wasEqualTo(existFile.toPath, existFile.toPath) + ", but " + exists(existFile.toPath), thisLineNumber - 2)))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val left4 = List(imaginaryFile.toPath)
+      val e4 = intercept[exceptions.TestFailedException] {
+        all(left4) should (not (exist) and be (existFile.toPath))
+      }
+      assert(e4.message === Some(allError(left4, doesNotExist(imaginaryFile.toPath) + ", but " + wasNotEqualTo(imaginaryFile.toPath, existFile.toPath), thisLineNumber - 2)))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
   }
 }

@@ -145,6 +145,88 @@ class ShouldBeWritableLogicalAndSpec extends FunSpec {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
+
+    describe("when work with 'path should be (writable)'") {
+
+      it("should do nothing when path is writable") {
+        writableFile.toPath should (equal (writableFile.toPath) and be (writable))
+        writableFile.toPath should (be (writable) and equal (writableFile.toPath))
+
+        writableFile.toPath should (be (writableFile.toPath) and be (writable))
+        writableFile.toPath should (be (writable) and be (writableFile.toPath))
+      }
+
+      it("should throw TestFailedException with correct stack depth when path is not writable") {
+        val caught1 = intercept[TestFailedException] {
+          secretFile.toPath should (equal (secretFile.toPath) and be (writable))
+        }
+        assert(caught1.message === Some(equaled(secretFile.toPath, secretFile.toPath) + ", but " + wasNotWritable(secretFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught2 = intercept[TestFailedException] {
+          secretFile.toPath should (be (writable) and equal (secretFile.toPath))
+        }
+        assert(caught2.message === Some(wasNotWritable(secretFile.toPath)))
+        assert(caught2.failedCodeFileName === Some(fileName))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          secretFile.toPath should (be (secretFile.toPath) and be (writable))
+        }
+        assert(caught3.message === Some(wasEqualTo(secretFile.toPath, secretFile.toPath) + ", but " + wasNotWritable(secretFile.toPath)))
+        assert(caught3.failedCodeFileName === Some(fileName))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught4 = intercept[TestFailedException] {
+          secretFile.toPath should (be (writable) and be (secretFile.toPath))
+        }
+        assert(caught4.message === Some(wasNotWritable(secretFile.toPath)))
+        assert(caught4.failedCodeFileName === Some(fileName))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
+
+    describe("when work with 'path should not be sorted'") {
+
+      it("should do nothing when path is not writable") {
+        secretFile.toPath should (not equal writableFile.toPath and not be writable)
+        secretFile.toPath should (not be writable and not equal writableFile.toPath)
+
+        secretFile.toPath should (not be writableFile.toPath and not be writable)
+        secretFile.toPath should (not be writable and not be writableFile.toPath)
+      }
+
+      it("should throw TestFailedException with correct stack depth when paths is not sorted") {
+        val caught1 = intercept[TestFailedException] {
+          writableFile.toPath should (not equal secretFile.toPath and not be writable)
+        }
+        assert(caught1.message === Some(didNotEqual(writableFile.toPath, secretFile.toPath) + ", but " + wasWritable(writableFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught2 = intercept[TestFailedException] {
+          writableFile.toPath should (not be writable and not equal secretFile.toPath)
+        }
+        assert(caught2.message === Some(wasWritable(writableFile.toPath)))
+        assert(caught2.failedCodeFileName === Some(fileName))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          writableFile.toPath should (not be secretFile.toPath and not be writable)
+        }
+        assert(caught3.message === Some(wasNotEqualTo(writableFile.toPath, secretFile.toPath) + ", but " + wasWritable(writableFile.toPath)))
+        assert(caught3.failedCodeFileName === Some(fileName))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught4 = intercept[TestFailedException] {
+          writableFile.toPath should (not be writable and not be secretFile.toPath)
+        }
+        assert(caught4.message === Some(wasWritable(writableFile.toPath)))
+        assert(caught4.failedCodeFileName === Some(fileName))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
     
     describe("when work with 'all(xs) should be (writable)'") {
       
@@ -230,6 +312,96 @@ class ShouldBeWritableLogicalAndSpec extends FunSpec {
           all(left4) should (not be writable and not equal secretFile)
         }
         assert(caught4.message === Some(allError(wasWritable(writableFile), thisLineNumber - 2, left4)))
+        assert(caught4.failedCodeFileName === Some(fileName))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
+
+    describe("when work with 'all(paths) should be (writable)'") {
+
+      it("should do nothing when all(paths) is writable") {
+        all(List(writableFile.toPath)) should (be (writableFile.toPath) and be (writable))
+        all(List(writableFile.toPath)) should (be (writable) and be (writableFile.toPath))
+
+        all(List(writableFile.toPath)) should (equal (writableFile.toPath) and be (writable))
+        all(List(writableFile.toPath)) should (be (writable) and equal (writableFile.toPath))
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(pats) is not writable") {
+        val left1 = List(secretFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) should (be (secretFile.toPath) and be (writable))
+        }
+        assert(caught1.message === Some(allError(wasEqualTo(secretFile.toPath, secretFile.toPath) + ", but " + wasNotWritable(secretFile.toPath), thisLineNumber - 2, left1)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left2 = List(secretFile.toPath)
+        val caught2 = intercept[TestFailedException] {
+          all(left2) should (be (writable) and be (secretFile.toPath))
+        }
+        assert(caught2.message === Some(allError(wasNotWritable(secretFile.toPath), thisLineNumber - 2, left2)))
+        assert(caught2.failedCodeFileName === Some(fileName))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(secretFile.toPath)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) should (equal (secretFile.toPath) and be (writable))
+        }
+        assert(caught3.message === Some(allError(equaled(secretFile.toPath, secretFile.toPath) + ", but " + wasNotWritable(secretFile.toPath), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some(fileName))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left4 = List(secretFile.toPath)
+        val caught4 = intercept[TestFailedException] {
+          all(left4) should (be (writable) and equal (secretFile.toPath))
+        }
+        assert(caught4.message === Some(allError(wasNotWritable(secretFile.toPath), thisLineNumber - 2, left4)))
+        assert(caught4.failedCodeFileName === Some(fileName))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
+
+    describe("when work with 'all(paths) should not be writable'") {
+      
+      it("should do nothing when all(paths) is not writable") {
+        all(List(secretFile.toPath)) should (not be writable and not be writableFile.toPath)
+        all(List(secretFile.toPath)) should (not be writableFile.toPath and not be writable)
+
+        all(List(secretFile.toPath)) should (not be writable and not equal writableFile.toPath)
+        all(List(secretFile.toPath)) should (not equal writableFile.toPath and not be writable)
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(paths) is writable") {
+        val left1 = List(writableFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) should (not be secretFile.toPath and not be writable)
+        }
+        assert(caught1.message === Some(allError(wasNotEqualTo(writableFile.toPath, secretFile.toPath) + ", but " + wasWritable(writableFile.toPath), thisLineNumber - 2, left1)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left2 = List(writableFile.toPath)
+        val caught2 = intercept[TestFailedException] {
+          all(left2) should (not be writable and not be secretFile.toPath)
+        }
+        assert(caught2.message === Some(allError(wasWritable(writableFile.toPath), thisLineNumber - 2, left2)))
+        assert(caught2.failedCodeFileName === Some(fileName))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(writableFile.toPath)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) should (not equal secretFile.toPath and not be writable)
+        }
+        assert(caught3.message === Some(allError(didNotEqual(writableFile.toPath, secretFile.toPath) + ", but " + wasWritable(writableFile.toPath), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some(fileName))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left4 = List(writableFile.toPath)
+        val caught4 = intercept[TestFailedException] {
+          all(left4) should (not be writable and not equal secretFile.toPath)
+        }
+        assert(caught4.message === Some(allError(wasWritable(writableFile.toPath), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }

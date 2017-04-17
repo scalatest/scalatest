@@ -88,6 +88,48 @@ class ShouldExistSpec extends FunSpec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
   }
+
+  describe("The exist syntax when used with Path") {
+
+    it("should do nothing when the path exists") {
+      existFile.toPath should exist
+    }
+
+    it("should throw TFE with correct stack depth and message when the path does not exist") {
+      val e = intercept[exceptions.TestFailedException] {
+        imaginaryFile.toPath should exist
+      }
+      assert(e.message === Some(doesNotExist(imaginaryFile.toPath)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with not and the path does not exists") {
+      imaginaryFile.toPath should not (exist)
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with not and the path exists") {
+      val e = intercept[exceptions.TestFailedException] {
+        existFile.toPath should not (exist)
+      }
+      assert(e.message === Some(exists(existFile.toPath)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with shouldNot and the path does not exists") {
+      imaginaryFile.toPath shouldNot exist
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with shouldNot and the path exists") {
+      val e = intercept[exceptions.TestFailedException] {
+        existFile.toPath shouldNot exist
+      }
+      assert(e.message === Some(exists(existFile.toPath)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+  }
   
   describe("The exist syntax when used with all(xs)") {
     
@@ -129,6 +171,51 @@ class ShouldExistSpec extends FunSpec {
         all(left) shouldNot exist
       }
       assert(e.message === Some(allError(left, exists(existFile), thisLineNumber - 2)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+  }
+
+  describe("The exist syntax when used with all(paths)") {
+
+    it("should do nothing when the path exists") {
+      all(List(existFile.toPath)) should exist
+    }
+
+    it("should throw TFE with correct stack depth and message when the path does not exist") {
+      val left = List(imaginaryFile.toPath)
+      val e = intercept[exceptions.TestFailedException] {
+        all(left) should exist
+      }
+      assert(e.message === Some(allError(left, doesNotExist(imaginaryFile.toPath), thisLineNumber - 2)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with not and the path does not exists") {
+      all(List(imaginaryFile.toPath)) should not (exist)
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with not and the path exists") {
+      val left = List(existFile.toPath)
+      val e = intercept[exceptions.TestFailedException] {
+        all(left) should not (exist)
+      }
+      assert(e.message === Some(allError(left, exists(existFile.toPath), thisLineNumber - 2)))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    it("should do nothing when it is used with shouldNot and the path does not exists") {
+      all(List(imaginaryFile.toPath)) shouldNot exist
+    }
+
+    it("should throw TFE with correct stack depth and message when it is used with shouldNot and the path exists") {
+      val left = List(existFile.toPath)
+      val e = intercept[exceptions.TestFailedException] {
+        all(left) shouldNot exist
+      }
+      assert(e.message === Some(allError(left, exists(existFile.toPath), thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
