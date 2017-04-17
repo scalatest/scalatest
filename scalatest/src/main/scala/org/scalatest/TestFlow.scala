@@ -88,10 +88,10 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
     }
   }
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
+    Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest0()
-      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, location, None))
+      Suite.reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), None, location)
       (Some(result), SucceededStatus)
     }
     catch {
@@ -104,17 +104,16 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
             case _ =>
               None
           }
-        //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
         val loc =
           tce.position match {
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None => location
           }
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), loc, None, payload))
+        Suite.reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), loc)
         (None, SucceededStatus)
 
       case tpe: TestPendingException =>
-        args.reporter(TestPending(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), location))
+        Suite.reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), location)
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -126,7 +125,7 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
             case _ =>
               None
           }
-        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), Some(SeeStackDepthException), None, payload))
+        Suite.reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
         (None, FailedStatus)
     }
   }
@@ -221,8 +220,8 @@ trait Test1[A, B] { thisTest1 =>
   def name: String
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, None, location, None, None))
+    Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
+    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
   }
   def andThen[C](next: Test1[B, C])(implicit pos: source.Position): Test1[A, C] = {
     thisTest1.testNames.find(tn => next.testNames.contains(tn)) match {
@@ -239,7 +238,7 @@ trait Test1[A, B] { thisTest1 =>
       def testNames: Set[String] = thisTest1.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def cancel(suite: Suite, args: Args): Unit = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, None, location, None, None))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
         next.cancel(suite, args)
       }
       override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
@@ -264,7 +263,7 @@ trait Test1[A, B] { thisTest1 =>
       def testNames: Set[String] = thisTest1.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def cancel(suite: Suite, args: Args): Unit = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, None, location, None, None))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
         next.cancel(suite, args)
       }
       override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
@@ -289,7 +288,7 @@ trait Test1[A, B] { thisTest1 =>
       def testNames: Set[String] = thisTest1.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def cancel(suite: Suite, args: Args): Unit = {
         args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, None, location, None, None))
+        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
         next.cancel(suite, args)
       }
       override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
@@ -326,7 +325,7 @@ trait Test1[A, B] { thisTest1 =>
 
           case None =>
             args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, None, thisTest1.location, None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
             (None, SucceededStatus)
         }
       }
@@ -355,7 +354,7 @@ trait Test1[A, B] { thisTest1 =>
 
           case None =>
             args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, None, thisTest1.location, None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
             (None, SucceededStatus)
         }
       }
@@ -374,7 +373,7 @@ trait Test1[A, B] { thisTest1 =>
 
           case None =>
             args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, None, thisTest1.location, None, None))
+            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
             (None, SucceededStatus)
         }
       }
@@ -382,10 +381,10 @@ trait Test1[A, B] { thisTest1 =>
   }
   def testNames: Set[String]
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
-    args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
+    Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest1(input)
-      args.reporter(TestSucceeded(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, location, None))
+      Suite.reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), None, location)
       (Some(result), SucceededStatus)
     }
     catch {
@@ -403,12 +402,11 @@ trait Test1[A, B] { thisTest1 =>
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None => location
           }
-        //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, Some(tce), None, Some(MotionToSuppress), loc, None, payload))
+        Suite.reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), loc)
         (None, SucceededStatus)
 
       case tce: TestPendingException =>
-        args.reporter(TestPending(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, Some(MotionToSuppress), location))
+        Suite.reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), location)
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -420,7 +418,7 @@ trait Test1[A, B] { thisTest1 =>
             case _ =>
               None
           }
-        args.reporter(TestFailed(args.tracker.nextOrdinal(), message, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, Some(t), None, Some(MotionToSuppress), Some(SeeStackDepthException), None, payload))
+        Suite.reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, Suite.getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
         (None, FailedStatus)
     }
   }
