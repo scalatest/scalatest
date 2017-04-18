@@ -48,7 +48,7 @@ trait Flow0[A] { thisNode =>
 
   def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): Flow0[B] = {
     new Flow0[B] {
-      def testNames: Set[String] = thisNode.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
@@ -78,7 +78,7 @@ trait Flow0[A] { thisNode =>
 
   def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): Flow0[Assertion] =
     new Flow0[Assertion] {
-      def testNames: Set[String] = thisNode.testNames
+      def testNames: Set[String] = thisNode.testNames ++ first.testNames ++ second.testNames ++ more.flatMap(_.testNames)
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
@@ -195,6 +195,8 @@ object BeforeNode {
 }
 
 trait FunctionFlow[A, B] {
+
+  def testNames: Set[String]
 
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
 
@@ -330,7 +332,7 @@ trait Test1[A, B] extends FunctionFlow[A, B] { thisTest1 =>
 
       val location = prev.location
 
-      def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
+      lazy val testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = prev.runTests(suite, testName, args)
@@ -350,6 +352,7 @@ trait Test1[A, B] extends FunctionFlow[A, B] { thisTest1 =>
     new InBetweenNode[C, B] {
       def apply(c: C): B = thisTest1(prev(c))
       val location = prev.location
+      override lazy val testNames: Set[String] = prev.testNames ++ thisTest1.testNames
 
       override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
         val (res0, status) = prev.runTests(suite, testName, args, input)
@@ -422,6 +425,7 @@ object Test1 {
 
 trait InBetweenNode[A, B] extends FunctionFlow[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
+  def testNames: Set[String] = Set.empty[String]
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {}
   def andThen[C](next: Test1[B, C])(implicit pos: source.Position): InBetweenNode[A, C] = {
@@ -429,6 +433,8 @@ trait InBetweenNode[A, B] extends FunctionFlow[A, B] { thisTest1 =>
       def apply(a: A): C = next(thisTest1(a))
 
       val location = thisTest1.location
+
+      override lazy val testNames = thisTest1.testNames ++ next.testNames
 
       override def cancel(suite: Suite, args: Args): Unit = {
         next.cancel(suite, args)
@@ -532,7 +538,7 @@ trait InBetweenNode[A, B] extends FunctionFlow[A, B] { thisTest1 =>
 
       val location = prev.location
 
-      def testNames: Set[String] = prev.testNames
+      def testNames: Set[String] = thisTest1.testNames ++ prev.testNames
 
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = prev.runTests(suite, testName, args)
@@ -686,6 +692,8 @@ object AfterNode {
 trait TestFlow[A] extends Suite {
 
   def flow: Flow0[A]
+
+  override def testNames = flow.testNames
 
   override def runTests(testName: Option[String], args: Args): Status = {
     val (res, status) = flow.runTests(this, testName, args)

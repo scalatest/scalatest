@@ -47,17 +47,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = Test0("happy path")(42)
           }
+          assert(suite.testNames == Set("happy path"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "happy path")
           assert(testStarting(0).testText == "happy path")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "happy path")
           assert(testSucceeded(0).testText == "happy path")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- happy path", "happy path", 1)))
         }
       }
@@ -71,12 +72,13 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                   throw new RuntimeException("oops!")
                 }
             }
+          assert(suite.testNames == Set("happy path"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "happy path")
           assert(testStarting(0).testText == "happy path")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
           assert(testFailed(0).testName == "happy path")
@@ -96,24 +98,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("second") { (i: Int) => (i * 4).toString }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that andThen with another TestFlow") {
@@ -126,6 +129,82 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          assert(testStarting(0).testName == "first")
+          assert(testStarting(0).testText == "first")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).testName == "second")
+          assert(testStarting(1).testText == "second")
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).testName == "third")
+          assert(testStarting(2).testText == "third")
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
+          assert(testSucceeded(0).testName == "first")
+          assert(testSucceeded(0).testText == "first")
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
+          assert(testSucceeded(1).testName == "second")
+          assert(testSucceeded(1).testText == "second")
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
+          assert(testSucceeded(2).testName == "third")
+          assert(testSucceeded(2).testText == "third")
+          assert(testSucceeded(2).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(2).formatter == Some(IndentedText("- third", "third", 1)))
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[String] {
+            val flow =
+              Test0("first")(3).andThen(
+                (Test1("third") { (i: Int) => (i * 7).toString }).compose(
+                  Test1("second") { (i: Int) => (i * 4) }
+                )
+              )
+          }
+          assert(suite.testNames == Set("first", "second", "third"))
+          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+          val testStarting = myRep.testStartingEventsReceived
+          assert(testStarting.size == 3)
+          assert(testStarting(0).testName == "first")
+          assert(testStarting(0).testText == "first")
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).testName == "second")
+          assert(testStarting(1).testText == "second")
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).testName == "third")
+          assert(testStarting(2).testText == "third")
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          val testSucceeded = myRep.testSucceededEventsReceived
+          assert(testSucceeded.size == 3)
+          assert(testSucceeded(0).testName == "first")
+          assert(testSucceeded(0).testText == "first")
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
+          assert(testSucceeded(1).testName == "second")
+          assert(testSucceeded(1).testText == "second")
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
+          assert(testSucceeded(2).testName == "third")
+          assert(testSucceeded(2).testText == "third")
+          assert(testSucceeded(2).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(2).formatter == Some(IndentedText("- third", "third", 1)))
+        }
+        it("should report 3 test succeeded events to the passed-in reporter when andThen with another 2 succeeded Test1") {
+          val myRep = new EventRecordingReporter
+          val suite = new TestFlow[Assertion] {
+            val flow =
+              Test0("first")(3).andThen(
+                Test1("second") { (i: Int) => succeed },
+                Test1("third") { (i: Int) => succeed }
+              )
+          }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
@@ -153,79 +232,6 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testSucceeded(2).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(2).formatter == Some(IndentedText("- third", "third", 1)))
         }
-        it("should report 3 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
-          val myRep = new EventRecordingReporter
-          val suite = new TestFlow[String] {
-            val flow =
-              Test0("first")(3).andThen(
-                (Test1("third") { (i: Int) => (i * 7).toString }).compose(
-                  Test1("second") { (i: Int) => (i * 4) }
-                )
-              )
-          }
-          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
-          val testStarting = myRep.testStartingEventsReceived
-          assert(testStarting.size == 3)
-          assert(testStarting(0).testName == "first")
-          assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
-          assert(testStarting(1).testName == "second")
-          assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
-          assert(testStarting(2).testName == "third")
-          assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
-          val testSucceeded = myRep.testSucceededEventsReceived
-          assert(testSucceeded.size == 3)
-          assert(testSucceeded(0).testName == "first")
-          assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
-          assert(testSucceeded(1).testName == "second")
-          assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
-          assert(testSucceeded(2).testName == "third")
-          assert(testSucceeded(2).testText == "third")
-          assert(testSucceeded(2).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(2).formatter == Some(IndentedText("- third", "third", 1)))
-        }
-        it("should report 3 test succeeded events to the passed-in reporter when andThen with another 2 succeeded Test1") {
-          val myRep = new EventRecordingReporter
-          val suite = new TestFlow[Assertion] {
-            val flow =
-              Test0("first")(3).andThen(
-                Test1("second") { (i: Int) => succeed },
-                Test1("third") { (i: Int) => succeed }
-              )
-          }
-          suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
-          val testStarting = myRep.testStartingEventsReceived
-          assert(testStarting.size == 3)
-          assert(testStarting(0).testName == "first")
-          assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
-          assert(testStarting(1).testName == "second")
-          assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
-          assert(testStarting(2).testName == "third")
-          assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
-          val testSucceeded = myRep.testSucceededEventsReceived
-          assert(testSucceeded.size == 3)
-          assert(testSucceeded(0).testName == "first")
-          assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
-          assert(testSucceeded(1).testName == "second")
-          assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
-          assert(testSucceeded(2).testName == "third")
-          assert(testSucceeded(2).testText == "third")
-          assert(testSucceeded(2).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
-          assert(testSucceeded(2).formatter == Some(IndentedText("- third", "third", 1)))
-        }
         it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
           assertThrows[DuplicateTestNameException] {
             Test0("same")(0).andThen(Test1("same") { (i: Int) => (i * 4).toString })
@@ -241,20 +247,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("second") { (i: Int) => throw new RuntimeException("oops!!"); 1 }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -272,27 +279,28 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("third") { (i: Int) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed(0).testName == "second")
@@ -311,30 +319,31 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("forth") { (a: Assertion) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third", "forth"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 4)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(3).testName == "forth")
           assert(testStarting(3).testText == "forth")
-          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed(0).testName == "second")
@@ -344,7 +353,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled(0).testName == "forth")
           assert(testCanceled(0).testText == "forth")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 36, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 37, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- forth", "forth", 1)))
         }
       }
@@ -357,17 +366,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 cancel
               }
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "first")
           assert(testCanceled(0).testText == "first")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- first", "first", 1)))
         }
         it("should report 2 test canceled events to the passed-in reporter when there are 2 tests and the first test canceled") {
@@ -385,24 +395,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 2)
           assert(testCanceled(0).testName == "first")
           assert(testCanceled(0).testText == "first")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testCanceled(1).testName == "second")
           assert(testCanceled(1).testText == "second")
-          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(1).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test canceled events to the passed-in reporter when first test passed and second test canceled") {
@@ -416,22 +427,23 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
 
@@ -444,32 +456,33 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("third") { (i: Int) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 2 test succeeded events, 2 cancel events to the passed-in reporter when andThen with 1 succeeded and 1 canceled Test1 and andThen with another succeeded test") {
@@ -483,40 +496,41 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("forth") { (a: Assertion) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third", "forth"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 4)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(3).testName == "forth")
           assert(testStarting(3).testText == "forth")
-          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 2)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 35, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 36, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(testCanceled(1).testName == "forth")
           assert(testCanceled(1).testText == "forth")
-          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 36, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 37, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(1).formatter == Some(IndentedText("- forth", "forth", 1)))
         }
       }
@@ -530,17 +544,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               }
             val flow = t
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "first")
           assert(testPending(0).testText == "first")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- first", "first", 1)))
         }
         it("should report 1 test pending and 1 test canceled events to the passed-in reporter when there are 2 tests and the first test is pending") {
@@ -557,26 +572,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "first")
           assert(testPending(0).testText == "first")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test pending events to the passed-in reporter when first test passed and second test is pending") {
@@ -589,26 +605,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
 
@@ -621,32 +638,33 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("third") { (i: Int) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 2 test succeeded events, 1 pending and 1 cancel events to the passed-in reporter when andThen with 1 succeeded and 1 pending Test1 and andThen with another succeeded test") {
@@ -660,41 +678,42 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("forth") { (a: Assertion) => succeed }
               )
           }
+          assert(suite.testNames == Set("first", "second", "third", "forth"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 4)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(3).testName == "forth")
           assert(testStarting(3).testText == "forth")
-          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(3).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "forth")
           assert(testCanceled(0).testText == "forth")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- forth", "forth", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 40, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 41, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
       }
@@ -760,24 +779,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test0("first")(5)
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should throw DuplicateTestNameException if a duplicate test name registration is detected when doing andThen with another TestFlow") {
@@ -806,20 +826,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               Test0("first")(5)
             )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -843,27 +864,28 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText== "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -882,23 +904,24 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -910,7 +933,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded and 1 test failed and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one failed") {
@@ -921,23 +944,24 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -949,7 +973,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
       }
@@ -961,26 +985,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               cancel
             }.compose(Test0("first")(5))
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 2 test succeeded and 1 test canceled event to the passed-in reporter when tests combined with andThen passed first 2 and canceled in last") {
@@ -993,33 +1018,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded, 2 test canceled event to the passed-in reporter when tests combined with andThen passed first but canceled in second") {
@@ -1032,33 +1058,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 2)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(testCanceled(1).testName == "third")
           assert(testCanceled(1).testText == "third")
-          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(1).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded and 2 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one canceled") {
@@ -1069,33 +1096,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 2)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(testCanceled(1).testName == "third")
           assert(testCanceled(1).testText == "third")
-          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(1).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(1).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 2 test succeeded and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the third one canceled") {
@@ -1106,33 +1134,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second).compose(first)
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
       }
@@ -1147,26 +1176,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test0("first")(5)
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 2 test succeeded and 1 test pending event to the passed-in reporter when tests combined with andThen passed first 2 and is pending in last") {
@@ -1183,33 +1213,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 29, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "third")
           assert(testPending(0).testText == "third")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded, 1 test pending and 1 test canceled event to the passed-in reporter when tests combined with andThen passed first but is pending in second") {
@@ -1226,35 +1257,36 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testName == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 34, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 35, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded 1 test pending and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one is pending") {
@@ -1265,35 +1297,36 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 2 test succeeded and 1 test pending event to the passed-in reporter when compose with another Test1 and Test0, where the third one is pending") {
@@ -1304,33 +1337,34 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second).compose(first)
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "third")
           assert(testPending(0).testText == "third")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 30, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 31, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 2 test succeeded event to the passed-in reporter when andThen with Test1 and InBetweenNode where 2 tests are passing") {
@@ -1341,24 +1375,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = first.andThen(second.andThen(third))
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(testSucceeded(1).testName == "second")
           assert(testSucceeded(1).testText == "second")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- second", "second", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 0)
@@ -1470,6 +1505,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = BeforeNode(42)
           }
+          assert(suite.testNames == Set())
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 0)
@@ -1487,6 +1523,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                   throw new RuntimeException("oops!")
                 }
             }
+          assert(suite.testNames == Set())
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 0)
@@ -1506,17 +1543,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("second") { (i: Int) => isRun = true; (i * 4).toString }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "second")
           assert(testSucceeded(0).testText == "second")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(isRun)
         }
@@ -1530,24 +1568,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "third")
           assert(testStarting(1).testText == "third")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "second")
           assert(testSucceeded(0).testText == "second")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 2 test succeeded events to the passed-in reporter when andThen with TestFlow that compose with another TestFlow") {
@@ -1560,24 +1599,25 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "third")
           assert(testStarting(1).testText == "third")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 2)
           assert(testSucceeded(0).testName == "second")
           assert(testSucceeded(0).testText == "second")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(testSucceeded(1).testName == "third")
           assert(testSucceeded(1).testText == "third")
-          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(1).formatter == Some(IndentedText("- third", "third", 1)))
         }
       }
@@ -1590,12 +1630,13 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test1("second") { (i: Int) => throw new RuntimeException("oops!!"); 1 }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 0)
           val testFailed = myRep.testFailedEventsReceived
@@ -1617,6 +1658,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 cancel
               }
           }
+          assert(suite.testNames == Set())
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 0)
@@ -1641,17 +1683,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(isRun)
         }
@@ -1666,19 +1709,20 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 0)
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
       }
@@ -1694,6 +1738,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               }
             val flow = t
           }
+          assert(suite.testNames == Set())
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 0)
@@ -1717,19 +1762,20 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 10, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 0)
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(isRun)
         }
@@ -1744,19 +1790,20 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 }
               )
           }
+          assert(suite.testNames == Set("second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "second")
           assert(testStarting(0).testText == "second")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 0)
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
       }
@@ -1808,17 +1855,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test0("first")(5)
               )
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           assert(isRun)
         }
@@ -1835,17 +1883,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               Test0("first")(5)
             )
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 0)
@@ -1868,20 +1917,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -1901,23 +1951,24 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second", "third"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 3)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(2).testName == "third")
           assert(testStarting(2).testText == "third")
-          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(2).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 1)
@@ -1929,7 +1980,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "third")
           assert(testCanceled(0).testText == "third")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 32, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 33, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- third", "third", 1)))
         }
         it("should report 1 test succeeded and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one failed") {
@@ -1941,20 +1992,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testFailed = myRep.testFailedEventsReceived
           assert(testFailed.size == 0)
@@ -1962,7 +2014,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
           assert(isRun)
         }
@@ -1975,17 +2027,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
               cancel
             }.compose(Test0("first")(5))
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 0)
@@ -2000,26 +2053,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded, 1 test canceled event to the passed-in reporter when tests combined with andThen passed first but canceled in second") {
@@ -2032,26 +2086,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second one canceled") {
@@ -2062,26 +2117,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 2 test succeeded and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the third one canceled") {
@@ -2092,26 +2148,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second).compose(first)
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testCanceled = myRep.testCanceledEventsReceived
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
       }
@@ -2126,17 +2183,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 Test0("first")(5)
               )
           }
+          assert(suite.testNames == Set("first"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 1)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 9, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 0)
@@ -2155,26 +2213,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test canceled event to the passed-in reporter when tests combined with andThen passed first but is pending in InBetweenNode") {
@@ -2191,20 +2250,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
                 )
               )
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testName == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 0)
@@ -2212,7 +2272,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 28, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test canceled event to the passed-in reporter when compose with another Test1 and Test0, where the second InBetweenNode is pending") {
@@ -2223,20 +2283,21 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second.compose(first))
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 0)
@@ -2244,7 +2305,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           assert(testCanceled.size == 1)
           assert(testCanceled(0).testName == "second")
           assert(testCanceled(0).testText == "second")
-          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
+          assert(testCanceled(0).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
           assert(testCanceled(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
         it("should report 1 test succeeded and 1 test pending event to the passed-in reporter when compose with another InBetweenNode and Test0, where the last one is pending") {
@@ -2255,26 +2316,27 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
           val suite = new TestFlow[Int] {
             val flow = third.compose(second).compose(first)
           }
+          assert(suite.testNames == Set("first", "second"))
           suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
           val testStarting = myRep.testStartingEventsReceived
           assert(testStarting.size == 2)
           assert(testStarting(0).testName == "first")
           assert(testStarting(0).testText == "first")
-          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 11, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
           assert(testStarting(1).testName == "second")
           assert(testStarting(1).testText == "second")
-          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+          assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
           val testSucceeded = myRep.testSucceededEventsReceived
           assert(testSucceeded.size == 1)
           assert(testSucceeded(0).testName == "first")
           assert(testSucceeded(0).testText == "first")
-          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
+          assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 20, "TestFlowSpec.scala", testFilePathname)))
           assert(testSucceeded(0).formatter == Some(IndentedText("- first", "first", 1)))
           val testPending = myRep.testPendingEventsReceived
           assert(testPending.size == 1)
           assert(testPending(0).testName == "second")
           assert(testPending(0).testText == "second")
-          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
+          assert(testPending(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
           assert(testPending(0).formatter == Some(IndentedText("- second", "second", 1)))
         }
       }
@@ -2408,17 +2470,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             }
           )
       }
+      assert(suite.testNames == Set("first"))
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 1)
       assert(testStarting(0).testName == "first")
       assert(testStarting(0).testText == "first")
-      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
       val testSucceeded = myRep.testSucceededEventsReceived
       assert(testSucceeded.size == 1)
       assert(testSucceeded(0).testName == "first")
       assert(testSucceeded(0).testText == "first")
-      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
       assert(x)
     }
     it("can be used with Test1's andThen") {
@@ -2437,23 +2500,24 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             )
           )
       }
+      assert(suite.testNames == Set("first", "second"))
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 2)
       assert(testStarting(0).testName == "first")
       assert(testStarting(0).testText == "first")
-      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
       assert(testStarting(1).testName == "second")
       assert(testStarting(1).testText == "second")
-      assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 18, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 19, "TestFlowSpec.scala", testFilePathname)))
       val testSucceeded = myRep.testSucceededEventsReceived
       assert(testSucceeded.size == 2)
       assert(testSucceeded(0).testName == "first")
       assert(testSucceeded(0).testText == "first")
-      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
       assert(testSucceeded(1).testName == "second")
       assert(testSucceeded(1).testText == "second")
-      assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 26, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 27, "TestFlowSpec.scala", testFilePathname)))
       assert(x)
     }
     it("can be used with InBetweenNode's andThen") {
@@ -2472,17 +2536,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             )
           )
       }
+      assert(suite.testNames == Set("first"))
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 1)
       assert(testStarting(0).testName == "first")
       assert(testStarting(0).testText == "first")
-      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
       val testSucceeded = myRep.testSucceededEventsReceived
       assert(testSucceeded.size == 1)
       assert(testSucceeded(0).testName == "first")
       assert(testSucceeded(0).testText == "first")
-      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 21, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
       assert(x)
     }
     it("should have a compose method that takes Test0") {
@@ -2495,17 +2560,18 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             ()
           } compose (Test0("first")(30))
       }
+      assert(suite.testNames == Set("first"))
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 1)
       assert(testStarting(0).testName == "first")
       assert(testStarting(0).testText == "first")
-      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 7, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 8, "TestFlowSpec.scala", testFilePathname)))
       val testSucceeded = myRep.testSucceededEventsReceived
       assert(testSucceeded.size == 1)
       assert(testSucceeded(0).testName == "first")
       assert(testSucceeded(0).testText == "first")
-      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 12, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 13, "TestFlowSpec.scala", testFilePathname)))
       assert(x)
     }
     it("should have a compose method that takes Test1") {
@@ -2524,23 +2590,24 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             )
           )
       }
+      assert(suite.testNames == Set("first", "second"))
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 2)
       assert(testStarting(0).testName == "first")
       assert(testStarting(0).testText == "first")
-      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 16, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(0).location == Some(LineInFile(thisLineNumber - 17, "TestFlowSpec.scala", testFilePathname)))
       assert(testStarting(1).testName == "second")
       assert(testStarting(1).testText == "second")
-      assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 14, "TestFlowSpec.scala", testFilePathname)))
+      assert(testStarting(1).location == Some(LineInFile(thisLineNumber - 15, "TestFlowSpec.scala", testFilePathname)))
       val testSucceeded = myRep.testSucceededEventsReceived
       assert(testSucceeded.size == 2)
       assert(testSucceeded(0).testName == "first")
       assert(testSucceeded(0).testText == "first")
-      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 24, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(0).location == Some(LineInFile(thisLineNumber - 25, "TestFlowSpec.scala", testFilePathname)))
       assert(testSucceeded(1).testName == "second")
       assert(testSucceeded(1).testText == "second")
-      assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 22, "TestFlowSpec.scala", testFilePathname)))
+      assert(testSucceeded(1).location == Some(LineInFile(thisLineNumber - 23, "TestFlowSpec.scala", testFilePathname)))
       assert(x)
     }
     it("should have a compose method that takes BeforeNode") {
@@ -2553,6 +2620,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             ()
           } compose (BeforeNode(30))
       }
+      assert(suite.testNames == Set())
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 0)
@@ -2576,6 +2644,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
             )
           )
       }
+      assert(suite.testNames == Set())
       suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 0)
