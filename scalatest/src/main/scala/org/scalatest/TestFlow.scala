@@ -76,7 +76,7 @@ trait Flow0[A] { thisNode =>
     }
   }
 
-  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): Flow0[Assertion] =
+  def andThen(first: Flow1[A, Assertion], second: Flow1[A, Assertion], more: Flow1[A, Assertion]*): Flow0[Assertion] =
     new Flow0[Assertion] {
       def testNames: Set[String] = thisNode.testNames ++ first.testNames ++ second.testNames ++ more.flatMap(_.testNames)
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
@@ -194,7 +194,7 @@ object BeforeNode {
     }
 }
 
-trait FunctionFlow[A, B] {
+trait Flow1[A, B] {
 
   def testNames: Set[String]
 
@@ -203,7 +203,7 @@ trait FunctionFlow[A, B] {
   def cancel(suite: Suite, args: Args): Unit
 }
 
-trait Test1[A, B] extends FunctionFlow[A, B] { thisTest1 =>
+trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def name: String
   def location: Option[Location]
@@ -423,7 +423,7 @@ object Test1 {
     }
 }
 
-trait InBetweenNode[A, B] extends FunctionFlow[A, B] { thisTest1 =>
+trait InBetweenNode[A, B] extends Flow1[A, B] { thisTest1 =>
   def apply(a: A): B // This is the test function, like what we pass into withFixture
   def testNames: Set[String] = Set.empty[String]
   def location: Option[Location]
