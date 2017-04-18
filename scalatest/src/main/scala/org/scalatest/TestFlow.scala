@@ -21,29 +21,21 @@ import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
 
-trait StartNode[A] {
+trait StartNode[A] { thisNode =>
+
+  def testNames: Set[String]
 
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
 
-}
-
-trait Test0[A] extends StartNode[A] { thisTest0 =>
-  def apply(): A // This is the test function, like what we pass into withFixture
-  def name: String
-  def location: Option[Location]
-  def testNames: Set[String]
-  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): Test0[B] = {
-    thisTest0.testNames.find(tn => next.testNames.contains(tn)) match {
+  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): StartNode[B] = {
+    thisNode.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
     }
-    new Test0[B] {
-      def apply(): B = next(thisTest0())
-      val name = thisTest0.name
-      val location = thisTest0.location
-      def testNames: Set[String] = thisTest0.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+    new StartNode[B] {
+      def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
           case Some(res0) => next.runTests(suite, testName, args, res0)
           case None =>
@@ -53,14 +45,12 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
   }
-  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): Test0[B] = {
-    new Test0[B] {
-      def apply(): B = next(thisTest0())
-      val name = thisTest0.name
-      val location = thisTest0.location
-      def testNames: Set[String] = thisTest0.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+
+  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): StartNode[B] = {
+    new StartNode[B] {
+      def testNames: Set[String] = thisNode.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
           case Some(res0) => next.runTests(suite, testName, args, res0)
           case None =>
@@ -70,14 +60,12 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
   }
-  def andThen(next: AfterNode[A])(implicit pos: source.Position): Test0[Unit] = {
-    new Test0[Unit] {
-      def apply(): Unit = next(thisTest0())
-      val name = thisTest0.name
-      val location = thisTest0.location
-      def testNames: Set[String] = thisTest0.testNames
+
+  def andThen(next: AfterNode[A])(implicit pos: source.Position): StartNode[Unit] = {
+    new StartNode[Unit] {
+      def testNames: Set[String] = thisNode.testNames
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
-        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
           case Some(res0) => next.runTests(suite, testName, args, res0)
           case None =>
@@ -87,20 +75,12 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
   }
-  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): Test0[Assertion] =
-    new Test0[Assertion] {
-      def apply(): Assertion = {
-        val res0 = thisTest0()
-        first(res0)
-        second(res0)
-        more.foreach(_.apply(res0))
-        org.scalatest.Succeeded
-      }
-      val name = thisTest0.name
-      val location = thisTest0.location
-      def testNames: Set[String] = thisTest0.testNames
+
+  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): StartNode[Assertion] =
+    new StartNode[Assertion] {
+      def testNames: Set[String] = thisNode.testNames
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
-        val (res0, status) = thisTest0.runTests(suite, testName, args)
+        val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
           case Some(res0) =>
             val (res1, s1) = first.runTests(suite, testName, args, res0)
@@ -121,6 +101,15 @@ trait Test0[A] extends StartNode[A] { thisTest0 =>
       }
     }
 
+  //def andThen(next: AfterNode[A])(implicit pos: source.Position): StartNode[Unit]
+
+  //def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): StartNode[B]
+}
+
+trait Test0[A] extends StartNode[A] { thisTest0 =>
+  def apply(): A // This is the test function, like what we pass into withFixture
+  def name: String
+  def location: Option[Location]
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
@@ -178,51 +167,6 @@ object Test0 {
 trait BeforeNode[A] extends StartNode[A] { thisBeforeNode =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def location: Option[Location]
-  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): BeforeNode[B] = {
-    new BeforeNode[B] {
-      def apply(): B = next(thisBeforeNode())
-      val location = thisBeforeNode.location
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisBeforeNode.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-      }
-    }
-  }
-  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): BeforeNode[B] = {
-    new BeforeNode[B] {
-      def apply(): B = next(thisBeforeNode())
-      val location = thisBeforeNode.location
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisBeforeNode.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-      }
-    }
-  }
-  def andThen(next: AfterNode[A])(implicit pos: source.Position): BeforeNode[Unit] = {
-    new BeforeNode[Unit] {
-      def apply(): Unit = next(thisBeforeNode())
-      val location = thisBeforeNode.location
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
-        val (res0, status) = thisBeforeNode.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-      }
-    }
-  }
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     try {
       val result = thisBeforeNode()
@@ -245,13 +189,12 @@ object BeforeNode {
   def apply[A](f: => A)(implicit pos: source.Position): BeforeNode[A] =
     new BeforeNode[A] {
       def apply(): A = f
+      val testNames = Set.empty[String]
       val location: Option[Location] = Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
     }
 }
 
 trait FunctionFlow[A, B] {
-
-  def apply(a: A): B
 
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
 
@@ -681,6 +624,7 @@ trait AfterNode[A] { thisTest1 =>
     new BeforeNode[Unit] {
       def apply(): Unit = thisTest1(prev())
 
+      val testNames = Set.empty[String]
       val location = prev.location
 
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
