@@ -21,18 +21,18 @@ import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
 
-trait StartNode[A] { thisNode =>
+trait Flow0[A] { thisNode =>
 
   def testNames: Set[String]
 
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
 
-  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): StartNode[B] = {
+  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): Flow0[B] = {
     thisNode.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
     }
-    new StartNode[B] {
+    new Flow0[B] {
       def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
@@ -46,8 +46,8 @@ trait StartNode[A] { thisNode =>
     }
   }
 
-  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): StartNode[B] = {
-    new StartNode[B] {
+  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): Flow0[B] = {
+    new Flow0[B] {
       def testNames: Set[String] = thisNode.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
@@ -61,8 +61,8 @@ trait StartNode[A] { thisNode =>
     }
   }
 
-  def andThen(next: AfterNode[A])(implicit pos: source.Position): StartNode[Unit] = {
-    new StartNode[Unit] {
+  def andThen(next: AfterNode[A])(implicit pos: source.Position): Flow0[Unit] = {
+    new Flow0[Unit] {
       def testNames: Set[String] = thisNode.testNames
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
@@ -76,8 +76,8 @@ trait StartNode[A] { thisNode =>
     }
   }
 
-  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): StartNode[Assertion] =
-    new StartNode[Assertion] {
+  def andThen(first: FunctionFlow[A, Assertion], second: FunctionFlow[A, Assertion], more: FunctionFlow[A, Assertion]*): Flow0[Assertion] =
+    new Flow0[Assertion] {
       def testNames: Set[String] = thisNode.testNames
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
@@ -106,7 +106,7 @@ trait StartNode[A] { thisNode =>
   //def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): StartNode[B]
 }
 
-trait Test0[A] extends StartNode[A] { thisTest0 =>
+trait Test0[A] extends Flow0[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def name: String
   def location: Option[Location]
@@ -164,7 +164,7 @@ object Test0 {
     }
 }
 
-trait BeforeNode[A] extends StartNode[A] { thisBeforeNode =>
+trait BeforeNode[A] extends Flow0[A] { thisBeforeNode =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def location: Option[Location]
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
@@ -416,7 +416,7 @@ object Test1 {
       def apply(a: A): B = f(a)
       val name: String = testName
       val location: Option[Location] = Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
-      def testNames: Set[String] = Set(testName) 
+      def testNames: Set[String] = Set(testName)
     }
 }
 
@@ -685,7 +685,7 @@ object AfterNode {
 
 trait TestFlow[A] extends Suite {
 
-  def flow: StartNode[A]
+  def flow: Flow0[A]
 
   override def runTests(testName: Option[String], args: Args): Status = {
     val (res, status) = flow.runTests(this, testName, args)
