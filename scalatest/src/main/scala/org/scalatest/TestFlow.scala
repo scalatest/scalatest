@@ -370,9 +370,9 @@ object AfterNode {
     }
 }
 
-trait TestFlow[A] extends Suite {
+trait TestFlow extends Suite {
 
-  def flow: Flow0[A]
+  def flow: Flow0[_]
 
   override def testNames = flow.testNames
 
