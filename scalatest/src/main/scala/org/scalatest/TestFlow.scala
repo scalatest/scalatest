@@ -25,7 +25,7 @@ trait Flow0[A] { thisNode =>
 
   def testNames: Set[String]
 
-  def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
+  def run(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
 
   def andThen[B](next: Flow1[A, B])(implicit pos: source.Position): Flow0[B] = {
     thisNode.testNames.find(tn => next.testNames.contains(tn)) match {
@@ -34,10 +34,10 @@ trait Flow0[A] { thisNode =>
     }
     new Flow0[B] {
       def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisNode.runTests(suite, testName, args)
+      override def run(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = thisNode.run(suite, testName, args)
         res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case Some(res0) => next.run(suite, testName, args, res0)
           case None =>
             next.cancel(suite, args)
             (None, status)
@@ -49,13 +49,13 @@ trait Flow0[A] { thisNode =>
   def andThen(first: Flow1[A, Assertion], second: Flow1[A, Assertion], more: Flow1[A, Assertion]*): Flow0[Assertion] =
     new Flow0[Assertion] {
       def testNames: Set[String] = thisNode.testNames ++ first.testNames ++ second.testNames ++ more.flatMap(_.testNames)
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
-        val (res0, status) = thisNode.runTests(suite, testName, args)
+      override def run(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
+        val (res0, status) = thisNode.run(suite, testName, args)
         res0 match {
           case Some(res0) =>
-            val (res1, s1) = first.runTests(suite, testName, args, res0)
-            val (res2, s2) = second.runTests(suite, testName, args, res0)
-            val resList = more.map(_.runTests(suite, testName, args, res0))
+            val (res1, s1) = first.run(suite, testName, args, res0)
+            val (res2, s2) = second.run(suite, testName, args, res0)
+            val resList = more.map(_.run(suite, testName, args, res0))
 
             val retV = if (res1.isDefined && res2.isDefined && resList.forall(_._1.isDefined)) Some(org.scalatest.Succeeded) else None
             val retS = if (s1.succeeds && s2.succeeds && resList.forall(_._2.succeeds())) SucceededStatus else FailedStatus
@@ -76,7 +76,7 @@ trait Test0[A] extends Flow0[A] { thisTest0 =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def name: String
   def location: Option[Location]
-  def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
+  def run(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest0()
@@ -133,7 +133,7 @@ object Test0 {
 trait BeforeNode[A] extends Flow0[A] { thisBeforeNode =>
   def apply(): A // This is the test function, like what we pass into withFixture
   def location: Option[Location]
-  def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
+  def run(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
     try {
       val result = thisBeforeNode()
       (Some(result), SucceededStatus)
@@ -164,7 +164,7 @@ trait Flow1[A, B] { self =>
 
   def testNames: Set[String]
 
-  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
+  def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
 
   def cancel(suite: Suite, args: Args): Unit
 
@@ -180,10 +180,10 @@ trait Flow1[A, B] { self =>
         self.cancel(suite, args)
         next.cancel(suite, args)
       }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = self.runTests(suite, testName, args, input)
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
         res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case Some(res0) => next.run(suite, testName, args, res0)
           case None =>
             next.cancel(suite, args)
             (None, status)
@@ -208,11 +208,11 @@ trait Flow1[A, B] { self =>
         self.cancel(suite, args)
       }
 
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
+      override def run(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.run(suite, testName, args, input)
         res0 match {
           case Some(res0) =>
-            self.runTests(suite, testName, args, res0)
+            self.run(suite, testName, args, res0)
 
           case None =>
             self.cancel(suite, args)
@@ -232,11 +232,11 @@ trait Flow1[A, B] { self =>
 
       lazy val testNames: Set[String] = prev.testNames ++ self.testNames
 
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args)
+      override def run(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = prev.run(suite, testName, args)
         res0 match {
           case Some(res0) =>
-            self.runTests(suite, testName, args, res0)
+            self.run(suite, testName, args, res0)
 
           case None =>
             self.cancel(suite, args)
@@ -256,7 +256,7 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
     args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
   }
   def testNames: Set[String]
-  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+  def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest1(input)
@@ -315,7 +315,7 @@ trait InBetweenNode[A, B] extends Flow1[A, B] { thisTest1 =>
   def testNames: Set[String] = Set.empty[String]
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {}
-  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+  def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
     try {
       val result = thisTest1(input)
       (Some(result), SucceededStatus)
@@ -346,7 +346,7 @@ trait AfterNode[A] extends Flow1[A, Unit] { thisTest1 =>
   def location: Option[Location]
   val testNames = Set.empty[String]
   def cancel(suite: Suite, args: Args): Unit = {}
-  def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
+  def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
     try {
       val result = thisTest1(input)
       (Some(result), SucceededStatus)
@@ -379,7 +379,7 @@ trait TestFlow[A] extends Suite {
   override def testNames = flow.testNames
 
   override def runTests(testName: Option[String], args: Args): Status = {
-    val (res, status) = flow.runTests(this, testName, args)
+    val (res, status) = flow.run(this, testName, args)
     status
   }
 
