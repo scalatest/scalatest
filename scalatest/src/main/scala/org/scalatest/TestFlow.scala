@@ -192,6 +192,59 @@ trait Flow1[A, B] { self =>
       }
     }
   }
+
+  def compose[C](prev: Flow1[C, A])(implicit pos: source.Position): Flow1[C, B] = {
+    self.testNames.find(tn => prev.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
+    new Flow1[C, B] {
+
+      def testNames: Set[String] = prev.testNames ++ self.testNames
+
+      def cancel(suite: Suite, args: Args): Unit = {
+        prev.cancel(suite, args)
+        self.cancel(suite, args)
+      }
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            self.runTests(suite, testName, args, res0)
+
+          case None =>
+            self.cancel(suite, args)
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
+
+  def compose(prev: Flow0[A])(implicit pos: source.Position): Flow0[B] = {
+    self.testNames.find(tn => prev.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
+    new Flow0[B] {
+
+      lazy val testNames: Set[String] = prev.testNames ++ self.testNames
+
+      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
+        val (res0, status) = prev.runTests(suite, testName, args)
+        res0 match {
+          case Some(res0) =>
+            self.runTests(suite, testName, args, res0)
+
+          case None =>
+            self.cancel(suite, args)
+            (None, SucceededStatus)
+        }
+      }
+    }
+  }
 }
 
 trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
@@ -201,83 +254,6 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
   def cancel(suite: Suite, args: Args): Unit = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
-  }
-  def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, B] = {
-    thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
-      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
-      case _ =>
-    }
-
-    new Test1[C, B] {
-      def apply(c: C): B = thisTest1(prev(c))
-
-      val name = prev.name
-      val location = prev.location
-
-      def testNames: Set[String] = prev.testNames ++ thisTest1.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose(prev: Test0[A])(implicit pos: source.Position): Test0[B] = {
-    thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
-      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
-      case _ =>
-    }
-
-    new Test0[B] {
-      def apply(): B = thisTest1(prev())
-
-      val name = prev.name
-
-      val location = prev.location
-
-      lazy val testNames: Set[String] = prev.testNames ++ thisTest1.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose[C](prev: InBetweenNode[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
-    new InBetweenNode[C, B] {
-      def apply(c: C): B = thisTest1(prev(c))
-      val location = prev.location
-      override lazy val testNames: Set[String] = prev.testNames ++ thisTest1.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, Some(MotionToSuppress), thisTest1.location, None))
-            args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), thisTest1.name, thisTest1.name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(thisTest1.name, 1, true)), thisTest1.location, None, None))
-            (None, SucceededStatus)
-        }
-      }
-    }
   }
   def testNames: Set[String]
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
@@ -339,65 +315,6 @@ trait InBetweenNode[A, B] extends Flow1[A, B] { thisTest1 =>
   def testNames: Set[String] = Set.empty[String]
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {}
-  def compose[C](prev: Test1[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
-    new InBetweenNode[C, B] {
-      def apply(c: C): B = thisTest1(prev(c))
-
-      val location = prev.location
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose[C](prev: InBetweenNode[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
-    new InBetweenNode[C, B] {
-      def apply(c: C): B = thisTest1(prev(c))
-
-      val location = prev.location
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose(prev: Test0[A])(implicit pos: source.Position): Test0[B] = {
-
-    new Test0[B] {
-      def apply(): B = thisTest1(prev())
-
-      val name = prev.name
-
-      val location = prev.location
-
-      def testNames: Set[String] = thisTest1.testNames ++ prev.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
     try {
       val result = thisTest1(input)
@@ -429,87 +346,6 @@ trait AfterNode[A] extends Flow1[A, Unit] { thisTest1 =>
   def location: Option[Location]
   val testNames = Set.empty[String]
   def cancel(suite: Suite, args: Args): Unit = {}
-  def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, Unit] = {
-    new Test1[C, Unit] {
-      def apply(c: C): Unit = thisTest1(prev(c))
-
-      val name = prev.name
-      val location = prev.location
-
-      def testNames: Set[String] = prev.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: C): (Option[Unit], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose(prev: Test0[A])(implicit pos: source.Position): Test0[Unit] = {
-
-    new Test0[Unit] {
-      def apply(): Unit = thisTest1(prev())
-
-      val name = prev.name
-
-      val location = prev.location
-
-      def testNames: Set[String] = prev.testNames
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose(prev: BeforeNode[A])(implicit pos: source.Position): BeforeNode[Unit] = {
-    new BeforeNode[Unit] {
-      def apply(): Unit = thisTest1(prev())
-
-      val testNames = Set.empty[String]
-      val location = prev.location
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
-  def compose[B](prev: InBetweenNode[B, A])(implicit pos: source.Position): InBetweenNode[B, Unit] = {
-    new InBetweenNode[B, Unit] {
-      def apply(b: B): Unit = thisTest1(prev(b))
-
-      val location = prev.location
-
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: B): (Option[Unit], Status) = {
-        val (res0, status) = prev.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) =>
-            thisTest1.runTests(suite, testName, args, res0)
-
-          case None =>
-            (None, SucceededStatus)
-        }
-      }
-    }
-  }
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
     try {
       val result = thisTest1(input)

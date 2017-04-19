@@ -729,19 +729,7 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       }
       x shouldBe false
     }
-    it("should have a name method") {
-      Test1("first")((i: Int) => i + 1).name shouldBe "first"
-      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test1("first")((i: Int) => i + 1)).name shouldEqual "first"
-    }
     val fut = Future.successful(99)
-    it("should have an overloaded compose method that takes another Test1") {
-      Test1("first") { (i: Int) => (i * 4).toString }.compose(Test1("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
-    it("should have an overloaded compose method that takes a Test0") {
-      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).apply() shouldEqual "20"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
     it("should return a Set with one test name when the TestFlow factory is used") {
       Test1("my test name")((i: Int) => i + 1).testNames shouldEqual Set("my test name")
       Test1("your test name")((i: Int) => i + 1).testNames shouldEqual Set("your test name")
@@ -1815,18 +1803,6 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       x shouldBe false
     }
     val fut = Future.successful(99)
-    it("should have an overloaded compose method that takes another Test1") {
-      InBetweenNode { (i: Int) => (i * 4).toString }.compose(Test1("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
-    it("should have an overloaded compose method that takes another InBetweenNode") {
-      InBetweenNode { (i: Int) => (i * 4).toString }.compose(InBetweenNode((i: Int) => i + 1)).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
-    it("should have an overloaded compose method that takes a Test0") {
-      InBetweenNode { (i: Int) => (i * 4).toString }.compose(Test0("first")(5)).apply() shouldEqual "20"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
     describe("when it was composed with something else") {
       describe("when the code succeeds") {
         it("should report 1 test succeeded events to the passed-in reporter when compose with another Test0") {
