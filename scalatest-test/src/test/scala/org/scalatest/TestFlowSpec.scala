@@ -731,15 +731,9 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
     }
     it("should have a name method") {
       Test1("first")((i: Int) => i + 1).name shouldBe "first"
-      Test1("first")((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString }).name shouldBe "first"
       Test1("second") { (i: Int) => (i * 4).toString }.compose(Test1("first")((i: Int) => i + 1)).name shouldEqual "first"
-      Test1("second") { (i: Int) => (i * 4).toString }.compose(Test0("first")(4)).name shouldEqual "first"
     }
     val fut = Future.successful(99)
-    it("should have an andThen method") {
-      Test1("first")((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
     it("should have an overloaded compose method that takes another Test1") {
       Test1("first") { (i: Int) => (i * 4).toString }.compose(Test1("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
       // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
@@ -1821,14 +1815,6 @@ class TestFlowSpec extends AsyncFunSpec with Matchers {
       x shouldBe false
     }
     val fut = Future.successful(99)
-    it("should have an andThen method that takes Test1") {
-      InBetweenNode((i: Int) => i + 1).andThen(Test1("second") { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
-    it("should have an andThen method that takes InBetweenNode") {
-      InBetweenNode((i: Int) => i + 1).andThen(InBetweenNode { (i: Int) => (i * 4).toString }).apply(1) shouldEqual "8"
-      // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)
-    }
     it("should have an overloaded compose method that takes another Test1") {
       InBetweenNode { (i: Int) => (i * 4).toString }.compose(Test1("second")((i: Int) => i + 1)).apply(1) shouldEqual "8"
       // Test1(fut).andThen(Test1 { futI => futI.map(i => i + 1) }).value.map(i => i shouldEqual 100)

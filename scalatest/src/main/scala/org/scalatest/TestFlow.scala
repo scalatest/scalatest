@@ -27,7 +27,7 @@ trait Flow0[A] { thisNode =>
 
   def runTests(suite: Suite, testName: Option[String], args: Args): (Option[A], Status)
 
-  def andThen[B](next: Test1[A, B])(implicit pos: source.Position): Flow0[B] = {
+  def andThen[B](next: Flow1[A, B])(implicit pos: source.Position): Flow0[B] = {
     thisNode.testNames.find(tn => next.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)
       case _ =>
@@ -35,36 +35,6 @@ trait Flow0[A] { thisNode =>
     new Flow0[B] {
       def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
       override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisNode.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-      }
-    }
-  }
-
-  def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): Flow0[B] = {
-    new Flow0[B] {
-      def testNames: Set[String] = thisNode.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[B], Status) = {
-        val (res0, status) = thisNode.runTests(suite, testName, args)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-      }
-    }
-  }
-
-  def andThen(next: AfterNode[A])(implicit pos: source.Position): Flow0[Unit] = {
-    new Flow0[Unit] {
-      def testNames: Set[String] = thisNode.testNames
-      override def runTests(suite: Suite, testName: Option[String], args: Args): (Option[Unit], Status) = {
         val (res0, status) = thisNode.runTests(suite, testName, args)
         res0 match {
           case Some(res0) => next.runTests(suite, testName, args, res0)
@@ -100,10 +70,6 @@ trait Flow0[A] { thisNode =>
         }
       }
     }
-
-  //def andThen(next: AfterNode[A])(implicit pos: source.Position): StartNode[Unit]
-
-  //def andThen[B](next: InBetweenNode[A, B])(implicit pos: source.Position): StartNode[B]
 }
 
 trait Test0[A] extends Flow0[A] { thisTest0 =>
@@ -194,13 +160,38 @@ object BeforeNode {
     }
 }
 
-trait Flow1[A, B] {
+trait Flow1[A, B] { self =>
 
   def testNames: Set[String]
 
   def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status)
 
   def cancel(suite: Suite, args: Args): Unit
+
+  def andThen[C](next: Flow1[B, C])(implicit pos: source.Position): Flow1[A, C] = {
+    self.testNames.find(tn => next.testNames.contains(tn)) match {
+      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
+      case _ =>
+    }
+
+    new Flow1[A, C] {
+      def testNames: Set[String] = self.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        next.cancel(suite, args)
+      }
+      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
+        val (res0, status) = self.runTests(suite, testName, args, input)
+        res0 match {
+          case Some(res0) => next.runTests(suite, testName, args, res0)
+          case None =>
+            next.cancel(suite, args)
+            (None, status)
+        }
+
+      }
+    }
+  }
 }
 
 trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
@@ -210,86 +201,6 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
   def cancel(suite: Suite, args: Args): Unit = {
     Suite.reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
-  }
-  def andThen[C](next: Test1[B, C])(implicit pos: source.Position): Test1[A, C] = {
-    thisTest1.testNames.find(tn => next.testNames.contains(tn)) match {
-      case Some(testName) => throw new DuplicateTestNameException(testName, pos)
-      case _ =>
-    }
-
-    new Test1[A, C] {
-      def apply(a: A): C = next(thisTest1(a))
-
-      val name = thisTest1.name
-      val location = thisTest1.location
-
-      def testNames: Set[String] = thisTest1.testNames ++ next.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def cancel(suite: Suite, args: Args): Unit = {
-        args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
-  }
-  def andThen[C](next: InBetweenNode[B, C])(implicit pos: source.Position): Test1[A, C] = {
-    new Test1[A, C] {
-      def apply(a: A): C = next(thisTest1(a))
-
-      val name = thisTest1.name
-      val location = thisTest1.location
-
-      def testNames: Set[String] = thisTest1.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def cancel(suite: Suite, args: Args): Unit = {
-        args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
-  }
-  def andThen(next: AfterNode[B])(implicit pos: source.Position): Test1[A, Unit] = {
-    new Test1[A, Unit] {
-      def apply(a: A): Unit = next(thisTest1(a))
-
-      val name = thisTest1.name
-      val location = thisTest1.location
-
-      def testNames: Set[String] = thisTest1.testNames // TODO: Ensure iterator order is reasonable, either depth or breadth first
-      override def cancel(suite: Suite, args: Args): Unit = {
-        args.reporter(TestStarting(args.tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, Some(MotionToSuppress), location, None))
-        args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(Suite.getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
   }
   def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, B] = {
     thisTest1.testNames.find(tn => prev.testNames.contains(tn)) match {
@@ -428,71 +339,6 @@ trait InBetweenNode[A, B] extends Flow1[A, B] { thisTest1 =>
   def testNames: Set[String] = Set.empty[String]
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {}
-  def andThen[C](next: Test1[B, C])(implicit pos: source.Position): InBetweenNode[A, C] = {
-    new InBetweenNode[A, C] {
-      def apply(a: A): C = next(thisTest1(a))
-
-      val location = thisTest1.location
-
-      override lazy val testNames = thisTest1.testNames ++ next.testNames
-
-      override def cancel(suite: Suite, args: Args): Unit = {
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
-  }
-  def andThen[C](next: InBetweenNode[B, C])(implicit pos: source.Position): InBetweenNode[A, C] = {
-    new InBetweenNode[A, C] {
-      def apply(a: A): C = next(thisTest1(a))
-
-      val location = thisTest1.location
-
-      override def cancel(suite: Suite, args: Args): Unit = {
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[C], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
-  }
-  def andThen(next: AfterNode[B])(implicit pos: source.Position): InBetweenNode[A, Unit] = {
-    new InBetweenNode[A, Unit] {
-      def apply(a: A): Unit = next(thisTest1(a))
-
-      val location = thisTest1.location
-
-      override def cancel(suite: Suite, args: Args): Unit = {
-        next.cancel(suite, args)
-      }
-      override def runTests(suite: Suite, testName: Option[String], args: Args, input: A): (Option[Unit], Status) = {
-        val (res0, status) = thisTest1.runTests(suite, testName, args, input)
-        res0 match {
-          case Some(res0) => next.runTests(suite, testName, args, res0)
-          case None =>
-            next.cancel(suite, args)
-            (None, status)
-        }
-
-      }
-    }
-  }
   def compose[C](prev: Test1[C, A])(implicit pos: source.Position): InBetweenNode[C, B] = {
     new InBetweenNode[C, B] {
       def apply(c: C): B = thisTest1(prev(c))
@@ -578,9 +424,10 @@ object InBetweenNode {
     }
 }
 
-trait AfterNode[A] { thisTest1 =>
+trait AfterNode[A] extends Flow1[A, Unit] { thisTest1 =>
   def apply(a: A): Unit // This is the test function, like what we pass into withFixture
   def location: Option[Location]
+  val testNames = Set.empty[String]
   def cancel(suite: Suite, args: Args): Unit = {}
   def compose[C](prev: Test1[C, A])(implicit pos: source.Position): Test1[C, Unit] = {
     new Test1[C, Unit] {
