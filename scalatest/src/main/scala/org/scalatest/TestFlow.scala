@@ -46,26 +46,24 @@ trait Flow0[A] { thisNode =>
     }
   }
 
-  def andThen(first: Flow1[A, Assertion], second: Flow1[A, Assertion], more: Flow1[A, Assertion]*): Flow0[Assertion] =
-    new Flow0[Assertion] {
-      def testNames: Set[String] = thisNode.testNames ++ first.testNames ++ second.testNames ++ more.flatMap(_.testNames)
-      override def run(suite: Suite, testName: Option[String], args: Args): (Option[Assertion], Status) = {
+  def andThen[B, C](first: Flow1[A, B], second: Flow1[A, C]): Flow0[(B, C)] =
+    new Flow0[(B, C)] {
+      def testNames: Set[String] = thisNode.testNames ++ first.testNames ++ second.testNames
+      override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C)], Status) = {
         val (res0, status) = thisNode.run(suite, testName, args)
         res0 match {
           case Some(res0) =>
             val (res1, s1) = first.run(suite, testName, args, res0)
             val (res2, s2) = second.run(suite, testName, args, res0)
-            val resList = more.map(_.run(suite, testName, args, res0))
 
-            val retV = if (res1.isDefined && res2.isDefined && resList.forall(_._1.isDefined)) Some(org.scalatest.Succeeded) else None
-            val retS = if (s1.succeeds && s2.succeeds && resList.forall(_._2.succeeds())) SucceededStatus else FailedStatus
+            val retV = if (res1.isDefined && res2.isDefined) Some((res1.get, res2.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds) SucceededStatus else FailedStatus
 
             (retV, retS)
 
           case None =>
             first.cancel(suite, args)
             second.cancel(suite, args)
-            more.foreach(_.cancel(suite, args))
             (None, status)
         }
       }
