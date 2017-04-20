@@ -43,6 +43,7 @@ import Suite.wrapReporterIfNecessary
 import annotation.tailrec
 import collection.GenTraversable
 import collection.mutable.ListBuffer
+import org.scalatest.tools.AnnotationHelper
 
 // SKIP-SCALATESTJS-START
 import Suite.getTopOfClass
@@ -1347,7 +1348,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     val suiteClass = getClass
     // SKIP-SCALATESTJS-START
     val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
-    val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
+    val hasWrapWithAnnotation = AnnotationHelper.findWrapWith(suiteClass).isDefined
     if (isAccessible || hasWrapWithAnnotation)
       Some(suiteClass.getName)
     else

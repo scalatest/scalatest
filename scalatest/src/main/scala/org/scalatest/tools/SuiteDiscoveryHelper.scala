@@ -210,17 +210,14 @@ private[scalatest] object SuiteDiscoveryHelper {
   }
   
   private[scalatest] def isRunnable(clazz: java.lang.Class[_]): Boolean = {
-    val wrapWithAnnotation = clazz.getAnnotation(classOf[WrapWith])
-    if (wrapWithAnnotation != null) {
+    AnnotationHelper.findWrapWith(clazz).map(wrapWithAnnotation => {
       val wrapperSuiteClazz = wrapWithAnnotation.value
       val constructorList = wrapperSuiteClazz.getDeclaredConstructors()
       constructorList.exists { c => 
         val types = c.getParameterTypes
         types.length == 1 && types(0) == classOf[java.lang.Class[_]]
       }
-    }
-    else
-      false
+    }).getOrElse(false)
   }
   
   private[scalatest] def isRunnable(className: String, loader: ClassLoader): Boolean = {
