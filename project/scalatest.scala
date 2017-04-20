@@ -19,7 +19,7 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.11"
+  val buildScalaVersion = "2.12.2"
 
   val releaseVersion = "3.0.3"
 
@@ -80,7 +80,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.11.11"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
