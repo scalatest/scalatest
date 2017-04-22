@@ -1,8 +1,8 @@
 language: scala
 scala:
-  - 2.11.8
+  - 2.11.11
   - 2.10.6
-  - 2.12.0
+  - 2.12.2
 jdk:
   - oraclejdk7
   - openjdk6
@@ -46,10 +46,18 @@ env:
 
 matrix:
   exclude:
-    - scala: "2.12.0"
+    - scala: "2.12.2"
       jdk: oraclejdk7
-    - scala: "2.12.0"
+    - scala: "2.12.2"
       jdk: openjdk6
+    - scala: "2.11.11"
+      jdk: oraclejdk7
+    - scala: "2.11.11"
+      jdk: oraclejdk8
+    - scala: "2.10.6"
+      jdk: oraclejdk7
+    - scala: "2.10.6"
+      jdk: oraclejdk8
 
 branches:
   only:
