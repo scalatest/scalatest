@@ -136,7 +136,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 case dtne: DuplicateTestNameException => throw dtne
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
                   if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
-                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 6))
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 9))
                   else
                     throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 8))
                 case other: Throwable => throw other
@@ -172,8 +172,12 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
 
               if (isIgnore)
                 registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
-              else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
+              else {
+                if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+                  registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
+                else
+                  registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
+              }
             }
           }
         }
