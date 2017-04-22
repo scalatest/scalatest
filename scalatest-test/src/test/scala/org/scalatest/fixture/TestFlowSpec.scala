@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.fixture
 
 import scala.concurrent.Future
 import scala.util.Success
-import SharedHelpers._
-import exceptions.{DuplicateTestNameException, NotAllowedException}
-import events.{LineInFile, SeeStackDepthException, IndentedText}
+import org.scalatest.{Matchers, Args, Stopper, Tracker, Filter, ConfigMap, Assertion, PendingStatement}
+import org.scalatest.SharedHelpers._
+import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
+import org.scalatest.events.{LineInFile, SeeStackDepthException, IndentedText}
 
-class TestFlowSpec extends AsyncFunSpec with Matchers {
+class TestFlowSpec extends org.scalatest.AsyncFunSpec with Matchers {
   describe("A Test0") {
     it("should offer a factory method in its companion that takes a by-name of type Future[T]") {
       """Test0("my name") { 99 }: Test0[Int]""" should compile

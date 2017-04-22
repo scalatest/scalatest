@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.fixture
 
 import org.scalatest.events.{MotionToSuppress, TestFailed, TestStarting, TestSucceeded, TestCanceled, TestPending, Location, LineInFile, SeeStackDepthException}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
+import org.scalatest.{Args, Status, SucceededStatus, FailedStatus, Suite}
 
 trait Flow0[A] { thisNode =>
 
