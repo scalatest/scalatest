@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.tools
+/*package org.scalatest.tools
 
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import scala.util.parsing.combinator.lexical.StdLexical
@@ -122,5 +122,5 @@ private[scalatest] object SbtCommandParser {
     (new SbtCommandParser).parseCommand("""st wildcard("a", "b", "c") stdout(config = "dropteststarting droptestpending")""")
 */
   }
-}
+}*/
 
