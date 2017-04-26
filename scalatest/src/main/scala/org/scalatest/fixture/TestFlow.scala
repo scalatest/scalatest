@@ -1011,6 +1011,1226 @@ trait Flow1[A, B] { self =>
     }
   }
 
+  def andThen[C, D](fun1: Flow1[B, C], fun2: Flow1[B, D]): Flow1[A, (C, D)] =
+    new Flow1[A, (C, D)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined) Some((res1.get, res2.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+
+  def andThen[C, D, E](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E]): Flow1[A, (C, D, E)] =
+    new Flow1[A, (C, D, E)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined) Some((res1.get, res2.get, res3.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F]): Flow1[A, (C, D, E, F)] =
+    new Flow1[A, (C, D, E, F)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined) Some((res1.get, res2.get, res3.get, res4.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G]): Flow1[A, (C, D, E, F, G)] =
+    new Flow1[A, (C, D, E, F, G)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H]): Flow1[A, (C, D, E, F, G, H)] =
+    new Flow1[A, (C, D, E, F, G, H)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I]): Flow1[A, (C, D, E, F, G, H, I)] =
+    new Flow1[A, (C, D, E, F, G, H, I)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J]): Flow1[A, (C, D, E, F, G, H, I, J)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K]): Flow1[A, (C, D, E, F, G, H, I, J, K)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L]): Flow1[A, (C, D, E, F, G, H, I, J, K, L)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+        fun18.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+            val (res18, s18) = fun18.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            fun18.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+        fun18.cancel(suite, args)
+        fun19.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+            val (res18, s18) = fun18.run(suite, testName, args, res0)
+            val (res19, s19) = fun19.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            fun18.cancel(suite, args)
+            fun19.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+        fun18.cancel(suite, args)
+        fun19.cancel(suite, args)
+        fun20.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+            val (res18, s18) = fun18.run(suite, testName, args, res0)
+            val (res19, s19) = fun19.run(suite, testName, args, res0)
+            val (res20, s20) = fun20.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            fun18.cancel(suite, args)
+            fun19.cancel(suite, args)
+            fun20.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames ++ fun21.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+        fun18.cancel(suite, args)
+        fun19.cancel(suite, args)
+        fun20.cancel(suite, args)
+        fun21.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+            val (res18, s18) = fun18.run(suite, testName, args, res0)
+            val (res19, s19) = fun19.run(suite, testName, args, res0)
+            val (res20, s20) = fun20.run(suite, testName, args, res0)
+            val (res21, s21) = fun21.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined && res21.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get, res21.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds && s21.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            fun18.cancel(suite, args)
+            fun19.cancel(suite, args)
+            fun20.cancel(suite, args)
+            fun21.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W], fun22: Flow1[B, X]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)] =
+    new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)] {
+      def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames ++ fun21.testNames ++ fun22.testNames
+      override def cancel(suite: Suite, args: Args): Unit = {
+        self.cancel(suite, args)
+        fun1.cancel(suite, args)
+        fun2.cancel(suite, args)
+        fun3.cancel(suite, args)
+        fun4.cancel(suite, args)
+        fun5.cancel(suite, args)
+        fun6.cancel(suite, args)
+        fun7.cancel(suite, args)
+        fun8.cancel(suite, args)
+        fun9.cancel(suite, args)
+        fun10.cancel(suite, args)
+        fun11.cancel(suite, args)
+        fun12.cancel(suite, args)
+        fun13.cancel(suite, args)
+        fun14.cancel(suite, args)
+        fun15.cancel(suite, args)
+        fun16.cancel(suite, args)
+        fun17.cancel(suite, args)
+        fun18.cancel(suite, args)
+        fun19.cancel(suite, args)
+        fun20.cancel(suite, args)
+        fun21.cancel(suite, args)
+        fun22.cancel(suite, args)
+      }
+      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[(C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)], Status) = {
+        val (res0, status) = self.run(suite, testName, args, input)
+        res0 match {
+          case Some(res0) =>
+            val (res1, s1) = fun1.run(suite, testName, args, res0)
+            val (res2, s2) = fun2.run(suite, testName, args, res0)
+            val (res3, s3) = fun3.run(suite, testName, args, res0)
+            val (res4, s4) = fun4.run(suite, testName, args, res0)
+            val (res5, s5) = fun5.run(suite, testName, args, res0)
+            val (res6, s6) = fun6.run(suite, testName, args, res0)
+            val (res7, s7) = fun7.run(suite, testName, args, res0)
+            val (res8, s8) = fun8.run(suite, testName, args, res0)
+            val (res9, s9) = fun9.run(suite, testName, args, res0)
+            val (res10, s10) = fun10.run(suite, testName, args, res0)
+            val (res11, s11) = fun11.run(suite, testName, args, res0)
+            val (res12, s12) = fun12.run(suite, testName, args, res0)
+            val (res13, s13) = fun13.run(suite, testName, args, res0)
+            val (res14, s14) = fun14.run(suite, testName, args, res0)
+            val (res15, s15) = fun15.run(suite, testName, args, res0)
+            val (res16, s16) = fun16.run(suite, testName, args, res0)
+            val (res17, s17) = fun17.run(suite, testName, args, res0)
+            val (res18, s18) = fun18.run(suite, testName, args, res0)
+            val (res19, s19) = fun19.run(suite, testName, args, res0)
+            val (res20, s20) = fun20.run(suite, testName, args, res0)
+            val (res21, s21) = fun21.run(suite, testName, args, res0)
+            val (res22, s22) = fun22.run(suite, testName, args, res0)
+
+            val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined && res21.isDefined && res22.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get, res21.get, res22.get)) else None
+            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds && s21.succeeds && s22.succeeds) SucceededStatus else FailedStatus
+
+            (retV, retS)
+
+          case None =>
+            fun1.cancel(suite, args)
+            fun2.cancel(suite, args)
+            fun3.cancel(suite, args)
+            fun4.cancel(suite, args)
+            fun5.cancel(suite, args)
+            fun6.cancel(suite, args)
+            fun7.cancel(suite, args)
+            fun8.cancel(suite, args)
+            fun9.cancel(suite, args)
+            fun10.cancel(suite, args)
+            fun11.cancel(suite, args)
+            fun12.cancel(suite, args)
+            fun13.cancel(suite, args)
+            fun14.cancel(suite, args)
+            fun15.cancel(suite, args)
+            fun16.cancel(suite, args)
+            fun17.cancel(suite, args)
+            fun18.cancel(suite, args)
+            fun19.cancel(suite, args)
+            fun20.cancel(suite, args)
+            fun21.cancel(suite, args)
+            fun22.cancel(suite, args)
+            (None, status)
+        }
+      }
+    }
+
+
   def compose[C](prev: Flow1[C, A])(implicit pos: source.Position): Flow1[C, B] = {
     self.testNames.find(tn => prev.testNames.contains(tn)) match {
       case Some(testName) => throw new DuplicateTestNameException(testName, pos)

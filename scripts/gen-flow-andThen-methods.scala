@@ -1,19 +1,6 @@
-val alphaAll = "abcdefghijklmnopqrstuvw"
+val alphaAll = "abcdefghijklmnopqrstuvwx"
 
 for (i <- 3 to 22) {
-
-  /*
-   * implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] =
-   * new GeneratorFor2[A, B, (A, B)]((a: A, b: B) => (a, b), (c: (A, B)) => c)(genOfA, genOfB)
-   */
-
-  /*val alpha = alphaAll.take(i)
-  val alphaUpper = alpha.toUpperCase.mkString(", ")
-  val alphaLower = alpha.mkString(", ")
-  val gensWithTypes = alpha.toUpperCase.map(a => "genOf" + a + ": Generator[" + a + "]").mkString(", ")
-  val gens = alpha.toUpperCase.map(a => "genOf" + a).mkString(", ")
-  val alphaWithTypes = alpha.map(a => a + ": " + a.toString.toUpperCase).mkString(", ")
-  val alphaPlusOne = alphaAll(i)*/
 
   val alpha = alphaAll.take(i)
   val head = alpha.head
@@ -85,7 +72,86 @@ for (i <- 3 to 22) {
        |    }
     """.stripMargin)
 
-  //println("implicit def tuple" + i + "Generator[" + alphaUpper + "](implicit " + gensWithTypes + "): Generator[(" + alphaUpper + ")] = \n" +
-    //"new GeneratorFor" + i + "[" + alphaUpper + ", (" + alphaUpper + ")]((" + alphaWithTypes + ") => (" + alphaLower + "), (" + alphaPlusOne + ": (" + alphaUpper + ")) => " + alphaPlusOne + ")(" + gens + ")")
+}
+
+println("================================================================================================")
+
+for (i <- 4 to 24) {
+
+  val alpha = alphaAll.take(i)
+  val first2 = alpha.take(2)
+  val first = first2.head
+  val second = first2.last
+  val tail = alpha.drop(2)
+  val tailUpperComma = tail.toUpperCase.mkString(", ")
+
+  val funs =
+    tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+      val idxPlusOne = idx + 1
+      "fun" + idxPlusOne + ": Flow1[B, " + e.toString.toUpperCase + "]"
+    }.mkString(", ")
+
+  val invocations =
+    tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+      val idxPlusOne = idx + 1
+      "            val (res" + idxPlusOne + ", s" + idxPlusOne + ") = fun" + idxPlusOne + ".run(suite, testName, args, res0)"
+    }.mkString("\n")
+
+  val combineResult =
+    "if (" +
+      tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+        val idxPlusOne = idx + 1
+        "res" + idxPlusOne + ".isDefined"
+      }.mkString(" && ") + ") Some((" +
+      tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+        val idxPlusOne = idx + 1
+        "res" + idxPlusOne + ".get"
+      }.mkString(", ") + ")) else None"
+
+  val combineStatus =
+    "if (" +
+      tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+        val idxPlusOne = idx + 1
+        "s" + idxPlusOne + ".succeeds"
+      }.mkString(" && ") + ") SucceededStatus else FailedStatus"
+
+  val cancellations =
+    tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+      val idxPlusOne = idx + 1
+      "            fun" + idxPlusOne + ".cancel(suite, args)"
+    }.mkString("\n")
+
+  val testNames =
+    tail.zipWithIndex.map { case (e: Char, idx: Int) =>
+      val idxPlusOne = idx + 1
+      "fun" + idxPlusOne + ".testNames"
+    }.mkString(" ++ ")
+
+  println(
+    s"""def andThen[$tailUpperComma]($funs): Flow1[A, ($tailUpperComma)] =
+       |    new Flow1[A, ($tailUpperComma)] {
+       |      def testNames: Set[String] = self.testNames ++ $testNames
+       |      override def cancel(suite: Suite, args: Args): Unit = {
+       |        self.cancel(suite, args)
+       |$cancellations
+       |      }
+       |      override def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[($tailUpperComma)], Status) = {
+       |        val (res0, status) = self.run(suite, testName, args, input)
+       |        res0 match {
+       |          case Some(res0) =>
+       |$invocations
+       |
+       |            val retV = $combineResult
+       |            val retS = $combineStatus
+       |
+       |            (retV, retS)
+       |
+       |          case None =>
+       |$cancellations
+       |            (None, status)
+       |        }
+       |      }
+       |    }
+    """.stripMargin)
 
 }
