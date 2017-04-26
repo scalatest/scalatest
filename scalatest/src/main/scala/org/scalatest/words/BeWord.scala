@@ -18,7 +18,7 @@ package org.scalatest.words
 import org.scalactic._
 import org.scalatest.matchers._
 import org.scalactic.TripleEqualsSupport.Spread
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.Suite

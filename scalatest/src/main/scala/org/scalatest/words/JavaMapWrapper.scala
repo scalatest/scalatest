@@ -22,7 +22,7 @@ import java.lang.reflect.Field
 import scala.reflect.Manifest
 import org.scalatest.MatchersHelper.transformOperatorChars
 import scala.collection.Traversable
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap

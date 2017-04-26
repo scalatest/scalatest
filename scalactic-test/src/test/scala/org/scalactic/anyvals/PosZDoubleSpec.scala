@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -27,13 +27,21 @@ import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import Double.NaN
 import org.scalactic.Equality
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
+import scala.util.{Try, Success, Failure}
 
-class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosZDoubleSpecSupport {
 
   val posZDoubleGen: Gen[PosZDouble] =
     for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
 
   implicit val arbPosZDouble: Arbitrary[PosZDouble] = Arbitrary(posZDoubleGen)
+
+  val posDoubleGen: Gen[PosDouble] =
+    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
+
+  implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -53,6 +61,25 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         }
     }
 
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+
+}
+
+class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZDoubleSpecSupport {
 
   describe("A PosZDouble") {
     describe("should offer a from factory method that") {
@@ -66,34 +93,105 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         PosZDouble.from(-99.9) shouldBe None
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    describe("should offer an ensuringValid factory method that") {
+      it("returns PosZDouble if the passed Double is greater than or equal to 0") {
+        PosZDouble.ensuringValid(0.0).value shouldBe 0.0
+        PosZDouble.ensuringValid(50.23).value shouldBe 50.23
+        PosZDouble.ensuringValid(100.0).value shouldBe 100.0
+        PosZDouble.ensuringValid(Double.PositiveInfinity).value shouldBe Double.PositiveInfinity
+      }
+      it("throws AssertionError if the passed Double is NOT greater than or equal to 0") {
+        an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-0.00001)
+        an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-99.9)
+        an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NegativeInfinity)
+        an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NaN)
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosZDouble wrapped in a Success if the passed Double is greater than or equal 0") {
+        PosZDouble.tryingValid(0.0).success.value.value shouldBe 0.0
+        PosZDouble.tryingValid(50.0).success.value.value shouldBe 50.0
+        PosZDouble.tryingValid(100.0f).success.value.value shouldBe 100.0
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Double is lesser than 0") {
+        PosZDouble.tryingValid(-1.0).failure.exception shouldBe an [AssertionError]
+        PosZDouble.tryingValid(-99.0).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Double is greater than or equal 0") {
+        PosZDouble.passOrElse(0.0)(i => i) shouldBe Pass
+        PosZDouble.passOrElse(50.0)(i => i) shouldBe Pass
+        PosZDouble.passOrElse(100.0)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is lesser than 0, wrapped in a Fail") {
+        PosZDouble.passOrElse(-1.0)(i => i) shouldBe Fail(-1.0)
+        PosZDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosZDouble wrapped in a Good if the given Double is greater than or equal 0") {
+        PosZDouble.goodOrElse(0.0)(i => i) shouldBe Good(PosZDouble(0.0))
+        PosZDouble.goodOrElse(50.0)(i => i) shouldBe Good(PosZDouble(50.0))
+        PosZDouble.goodOrElse(100.0)(i => i) shouldBe Good(PosZDouble(100.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is lesser than 0, wrapped in a Bad") {
+        PosZDouble.goodOrElse(-1.0)(i => i) shouldBe Bad(-1.0)
+        PosZDouble.goodOrElse(-99.0)(i => i + 3.0f) shouldBe Bad(-96.0)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosZDouble wrapped in a Right if the given Double is greater than or equal 0") {
+        PosZDouble.rightOrElse(0.0)(i => i) shouldBe Right(PosZDouble(0.0))
+        PosZDouble.rightOrElse(50.0)(i => i) shouldBe Right(PosZDouble(50.0))
+        PosZDouble.rightOrElse(100.0)(i => i) shouldBe Right(PosZDouble(100.0))
+      }
+      it("returns an error value produced by passing the given Double to the given function if the passed Double is lesser than 0, wrapped in a Left") {
+        PosZDouble.rightOrElse(-1.0)(i => i) shouldBe Left(-1.0)
+        PosZDouble.rightOrElse(-99.0)(i => i + 3.0f) shouldBe Left(-96.0)
+      }
+    }
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Double is greater than or equal to 0") {
+        PosZDouble.isValid(50.23) shouldBe true
+        PosZDouble.isValid(100.0) shouldBe true
+        PosZDouble.isValid(0.0) shouldBe true
+        PosZDouble.isValid(-0.0) shouldBe true
+        PosZDouble.isValid(-0.00001) shouldBe false
+        PosZDouble.isValid(-99.9) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZDouble if the passed Double is greater than or equal to 0") {
+        PosZDouble.fromOrElse(50.23, PosZDouble(42.0)).value shouldBe 50.23
+        PosZDouble.fromOrElse(100.0, PosZDouble(42.0)).value shouldBe 100.0
+        PosZDouble.fromOrElse(0.0, PosZDouble(42.0)).value shouldBe 0.0
+      }
+      it("returns a given default if the passed Double is NOT greater than or equal to 0") {
+        PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)).value shouldBe 42.0
+        PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
+      }
+    } 
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)
+      PosZDouble.MinPositiveValue shouldEqual
+        PosZDouble.from(Double.MinPositiveValue).get
     }
-    it("should have a pretty toString") {
-      // SKIP-SCALATESTJS-START
-      PosZDouble.from(42.0).value.toString shouldBe "PosZDouble(42.0)"
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY PosZDouble.from(42.0).value.toString shouldBe "PosZDouble(42)"
+    it("should offer a PositiveInfinity factory method") {
+      PosZDouble.PositiveInfinity shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
     }
-    it("should return the same type from its unary_+ method") {
-      +PosZDouble(3.0) shouldEqual PosZDouble(3.0)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      "PosZDouble(3.0): Int" shouldNot typeCheck
-      "PosZDouble(3.0): Long" shouldNot typeCheck
-      "PosZDouble(3.0): Float" shouldNot typeCheck
-      (PosZDouble(3.0): Double) shouldEqual 3.0
-
-      "PosZDouble(3.0): PosInt" shouldNot typeCheck
-      "PosZDouble(3.0): PosLong" shouldNot typeCheck
-      "PosZDouble(3.0): PosFloat" shouldNot typeCheck
-      "PosZDouble(3.0): PosDouble" shouldNot typeCheck
-
-      "PosZDouble(3.0): PosZInt" shouldNot typeCheck
-      "PosZDouble(3.0): PosZLong" shouldNot typeCheck
-      "PosZDouble(3.0): PosZFloat" shouldNot typeCheck
-      (PosZDouble(3.0): PosZDouble) shouldEqual PosZDouble(3.0)
+    it("should not offer a PositiveInfinity factory method") {
+      "PosZDouble.NegativeInfinity" shouldNot compile
+    }
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      PosZDouble.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
+      PosZDouble(1.0f).isPosInfinity shouldBe false
+    }
+    it("should not offer a isNegInfinity method") {
+      "PosZDouble(1.0f).isNegInfinity" shouldNot compile
     }
 
     it("should be sortable") {
@@ -101,49 +199,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
                     PosZDouble(3.3))
       xs.sorted shouldEqual List(PosZDouble(0.0), PosZDouble(1.1),
                                  PosZDouble(2.2), PosZDouble(3.3))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosZDouble(3.0) + 3
-        opInt shouldEqual 6.0
-
-        val opLong = PosZDouble(3.0) + 3L
-        opLong shouldEqual 6.0
-
-        val opFloat = PosZDouble(3.0) + 3.0F
-        opFloat shouldEqual 6.0
-
-        val opDouble = PosZDouble(3.0) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosZDouble(3.0) + PosInt(3)
-        opPosInt shouldEqual 6.0
-
-        val opPosLong = PosZDouble(3.0) + PosLong(3L)
-        opPosLong shouldEqual 6.0
-
-        val opPosFloat = PosZDouble(3.0) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0
-
-        val opPosDouble = PosZDouble(3.0) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosZDouble(3.0) + PosZInt(3)
-        opPosZ shouldEqual 6.0
-
-        val opPosZLong = PosZDouble(3.0) + PosZLong(3L)
-        opPosZLong shouldEqual 6.0
-
-        val opPosZFloat = PosZDouble(3.0) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0
-
-        val opPosZDouble = PosZDouble(3.0) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -233,260 +288,105 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
     }
 
     it("should offer a unary + method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble) =>
-        (+pzdouble).toDouble shouldEqual (+(pzdouble.toDouble))
+      forAll { (p: PosZDouble) =>
+        (+p).toDouble shouldEqual (+(p.toDouble))
       }
     }
 
-    it("should offer a unary - method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble) =>
-        (-pzdouble) shouldEqual (-(pzdouble.toDouble))
+    it("should offer a unary - method that returns NegZDouble") {
+      forAll { (p: PosZDouble) =>
+        (-p) shouldEqual (NegZDouble.ensuringValid(-(p.toDouble)))
       }
     }
 
-    it("should offer '<' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble < byte) shouldEqual (pzdouble.toDouble < byte)
+    it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
+
+      forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
+        (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
       }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble < short) shouldEqual (pzdouble.toDouble < short)
+
+      val examples =
+        Table(
+          (                "posZDouble1",                "posZDouble2" ),
+          (         PosZDouble.MinValue,         PosZDouble.MinValue ),
+          (         PosZDouble.MinValue, PosZDouble.MinPositiveValue ),
+          (         PosZDouble.MinValue,         PosZDouble.MaxValue ),
+          (         PosZDouble.MinValue, PosZDouble.PositiveInfinity ),
+          (         PosZDouble.MaxValue,         PosZDouble.MinValue ),
+          (         PosZDouble.MaxValue, PosZDouble.MinPositiveValue ),
+          (         PosZDouble.MaxValue,         PosZDouble.MaxValue ),
+          (         PosZDouble.MaxValue, PosZDouble.PositiveInfinity ),
+          ( PosZDouble.PositiveInfinity,         PosZDouble.MinValue ),
+          ( PosZDouble.PositiveInfinity, PosZDouble.MinPositiveValue ),
+          ( PosZDouble.PositiveInfinity,         PosZDouble.MaxValue ),
+          ( PosZDouble.PositiveInfinity, PosZDouble.PositiveInfinity )
+        )
+
+      forAll (examples) { (a, b) =>
+        (a plus b).value should be >= 0.0
       }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble < char) shouldEqual (pzdouble.toDouble < char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble < int) shouldEqual (pzdouble.toDouble < int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble < long) shouldEqual (pzdouble.toDouble < long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble < float) shouldEqual (pzdouble.toDouble < float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble < double) shouldEqual (pzdouble.toDouble < double)
-      }
+
+      // Sanity check that implicit widening conversions work too.
+      // Here a PosDouble gets widened to a PosZDouble.
+      PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
-    it("should offer '<=' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble <= byte) shouldEqual (pzdouble.toDouble <= byte)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble <= char) shouldEqual (pzdouble.toDouble <= char)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble <= short) shouldEqual (pzdouble.toDouble <= short)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble <= int) shouldEqual (pzdouble.toDouble <= int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble <= long) shouldEqual (pzdouble.toDouble <= long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble <= float) shouldEqual (pzdouble.toDouble <= float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble <= double) shouldEqual (pzdouble.toDouble <= double)
-      }
-    }
+    it("should offer overloaded 'sumOf' methods on the companion that takes two or more PosZDoubles and returns a PosZDouble") {
 
-    it("should offer '>' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble > byte) shouldEqual (pzdouble.toDouble > byte)
+      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
+      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
+      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
+        PosZDouble.sumOf(posZDouble1, posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value))
       }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble > short) shouldEqual (pzdouble.toDouble > short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble > char) shouldEqual (pzdouble.toDouble > char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble > int) shouldEqual (pzdouble.toDouble > int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble > long) shouldEqual (pzdouble.toDouble > long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble > float) shouldEqual (pzdouble.toDouble > float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble > double) shouldEqual (pzdouble.toDouble > double)
-      }
-    }
 
-    it("should offer '>=' comparison that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble >= byte) shouldEqual (pzdouble.toDouble >= byte)
+      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
+      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
+      // but it doesn't matter. 
+      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
+        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
+          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
+        }
       }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble >= short) shouldEqual (pzdouble.toDouble >= short)
+      // Then add some real lists in there
+      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble, posZDoubles: List[PosZDouble]) =>
+        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDoubles: _*) should === {
+          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDoubles.map(_.value).sum)
+        }
       }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble >= char) shouldEqual (pzdouble.toDouble >= char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble >= int) shouldEqual (pzdouble.toDouble >= int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble >= long) shouldEqual (pzdouble.toDouble >= long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble >= float) shouldEqual (pzdouble.toDouble >= float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble >= double) shouldEqual (pzdouble.toDouble >= double)
-      }
-    }
 
-    it("should offer a '+' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble + byte) shouldEqual (pzdouble.toDouble + byte)
+      // I want to try all combinations of edge cases in the boxing sumOf.
+      // And out of an abundance of caution, all permutations of them (all the different orders)
+      val posZEdgeValues = List(PosZDouble.MinValue, PosZDouble.MinPositiveValue, PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
+      Inspectors.forAll (posZEdgeValues.permutations.toList) { case List(a, b, c, d) =>
+        PosZDouble.sumOf(a, b, c, d) should === {
+          PosZDouble.ensuringValid(a.value + b.value + c.value + d.value)
+        }
       }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble + short) shouldEqual (pzdouble.toDouble + short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble + char) shouldEqual (pzdouble.toDouble + char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble + int) shouldEqual (pzdouble.toDouble + int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble + long) shouldEqual (pzdouble.toDouble + long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble + float) shouldEqual (pzdouble.toDouble + float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble + double) shouldEqual (pzdouble.toDouble + double)
-      }
-    }
 
-    it("should offer a '-' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble - byte) shouldEqual (pzdouble.toDouble - byte)
+      // Now try all combinations of 2 PosZEdgeDoubles followed by both nothing and an empty varargs.
+      // The idea is to test both forms with two args, though it is possible the compiler optiizes
+      // the empty list (though I don't think it can tell at compile time, because I don't let it have
+      // element type Nothing).
+      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
+      val halfOfThePairs = posZEdgeValues.combinations(2).toList
+      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
+      Inspectors.forAll (posZPairCombos) { case posZDouble1 :: posZDouble2 :: Nil  =>
+        // Call the two-arg form
+        PosZDouble.sumOf(posZDouble1, posZDouble2) should === {
+          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
+        }
+        // Most likely call the var-args form
+        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
+          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
+        }
       }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble - short) shouldEqual (pzdouble.toDouble - short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble - char) shouldEqual (pzdouble.toDouble - char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble - int) shouldEqual (pzdouble.toDouble - int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble - long) shouldEqual (pzdouble.toDouble - long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble - float) shouldEqual (pzdouble.toDouble - float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble - double) shouldEqual (pzdouble.toDouble - double)
-      }
-    }
 
-    it("should offer a '*' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        (pzdouble * byte) shouldEqual (pzdouble.toDouble * byte)
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        (pzdouble * short) shouldEqual (pzdouble.toDouble * short)
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        (pzdouble * char) shouldEqual (pzdouble.toDouble * char)
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        (pzdouble * int) shouldEqual (pzdouble.toDouble * int)
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        (pzdouble * long) shouldEqual (pzdouble.toDouble * long)
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        (pzdouble * float) shouldEqual (pzdouble.toDouble * float)
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        (pzdouble * double) shouldEqual (pzdouble.toDouble * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        pzdouble / byte shouldEqual pzdouble.toDouble / byte
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        pzdouble / short shouldEqual pzdouble.toDouble / short
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        pzdouble / char shouldEqual pzdouble.toDouble / char
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        pzdouble / int shouldEqual pzdouble.toDouble / int
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        pzdouble / long shouldEqual pzdouble.toDouble / long
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        pzdouble / float shouldEqual pzdouble.toDouble / float
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        pzdouble / double shouldEqual pzdouble.toDouble / double
-      }
-    }
-
-    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
-    // extra logic is needed to convert to a comparable type (boolean, in this case)
-    it("should offer a '%' method that is consistent with Double") {
-      forAll { (pzdouble: PosZDouble, byte: Byte) =>
-        val res = pzdouble % byte
-        if (res.isNaN)
-          (pzdouble.toDouble % byte).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % byte
-      }
-      forAll { (pzdouble: PosZDouble, short: Short) =>
-        val res = pzdouble % short
-        if (res.isNaN)
-          (pzdouble.toDouble % short).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % short
-      }
-      forAll { (pzdouble: PosZDouble, char: Char) =>
-        val res = pzdouble % char
-        if (res.isNaN)
-          (pzdouble.toDouble % char).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % char
-      }
-      forAll { (pzdouble: PosZDouble, int: Int) =>
-        val res = pzdouble % int
-        if (res.isNaN)
-          (pzdouble.toDouble % int).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % int
-      }
-      forAll { (pzdouble: PosZDouble, long: Long) =>
-        val res = pzdouble % long
-        if (res.isNaN)
-          (pzdouble.toDouble % long).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % long
-      }
-      forAll { (pzdouble: PosZDouble, float: Float) =>
-        val res = pzdouble % float
-        if (res.isNaN)
-          (pzdouble.toDouble % float).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % float
-      }
-      forAll { (pzdouble: PosZDouble, double: Double) =>
-        val res = pzdouble % double
-        if (res.isNaN)
-          (pzdouble.toDouble % double).isNaN shouldBe true
-        else
-          res shouldEqual pzdouble.toDouble % double
+      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
+      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
+      Inspectors.forAll (posZTripleCombos) { case posZDouble1 :: posZDouble2 :: posZDouble3 :: Nil  =>
+        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDouble3) should === {
+          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDouble3.value)
+        }
       }
     }
 
@@ -536,6 +436,13 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         def widen(value: Double): Double = value
         widen(pzdouble) shouldEqual widen(pzdouble.toDouble)
       }
+    }
+    it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
+      PosZDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosZDouble(34.0)
+      PosZDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
+      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
     }
   }
 }

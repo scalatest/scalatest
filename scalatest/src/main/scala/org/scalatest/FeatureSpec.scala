@@ -53,8 +53,8 @@ package org.scalatest
  *   info("So I can watch TV when I want")
  *   info("And save energy when I'm not watching TV")
  * 
- *   feature("TV power button") {
- *     scenario("User presses power button when TV is off") {
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off") {
  * 
  *       Given("a TV set that is switched off")
  *       val tv = new TVSet
@@ -67,7 +67,7 @@ package org.scalatest
  *       assert(tv.isOn)
  *     }
  *     
- *     scenario("User presses power button when TV is on") {
+ *     Scenario("User presses power button when TV is on") {
  * 
  *       Given("a TV set that is switched on")
  *       val tv = new TVSet
@@ -207,7 +207,7 @@ package org.scalatest
  * 
  * class TVSetSpec extends FeatureSpec {
  * 
- *   feature("TV power button") {
+ *   Feature("TV power button") {
  *     ignore("User presses power button when TV is off") {
  *       val tv = new TVSet
  *       assert(!tv.isOn)
@@ -215,7 +215,7 @@ package org.scalatest
  *       assert(tv.isOn)
  *     }
  * 
- *     scenario("User presses power button when TV is on") {
+ *     Scenario("User presses power button when TV is on") {
  *       val tv = new TVSet
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
@@ -313,8 +313,8 @@ package org.scalatest
  *
  *   """ }
  *
- *   feature("An element can be added to an empty mutable Set") {
- *     scenario("When an element is added to an empty mutable Set") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *       Given("an empty mutable Set")
  *       val set = mutable.Set.empty[String]
  *
@@ -365,8 +365,8 @@ package org.scalatest
  *
  * class SetSpec extends FeatureSpec {
  *
- *   feature("An element can be added to an empty mutable Set") {
- *     scenario("When an element is added to an empty mutable Set") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *
  *       info("info is recorded")
  *       markup("markup is *also* recorded")
@@ -454,11 +454,11 @@ package org.scalatest
  * 
  * class TVSetSpec extends FeatureSpec {
  * 
- *   feature("TV power button") {
+ *   Feature("TV power button") {
  *
- *     scenario("User presses power button when TV is off") (pending)
+ *     Scenario("User presses power button when TV is off") (pending)
  *
- *     scenario("User presses power button when TV is on") {
+ *     Scenario("User presses power button when TV is on") {
  *       val tv = new TVSet
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
@@ -535,15 +535,15 @@ package org.scalatest
  *   info("So I can watch TV when I want")
  *   info("And save energy when I'm not watching TV")
  * 
- *   feature("TV power button") {
- *     scenario("User presses power button when TV is off") {
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off") {
  *       Given("a TV that is switched off")
  *       When("the power button is pressed")
  *       Then("the TV should switch on")
  *       pending
  *     }
  * 
- *     scenario("User presses power button when TV is on") {
+ *     Scenario("User presses power button when TV is on") {
  *       Given("a TV that is switched on")
  *       When("the power button is pressed")
  *       Then("the TV should switch off")
@@ -617,15 +617,15 @@ package org.scalatest
  * 
  * class TVSetSpec extends FeatureSpec {
  * 
- *   feature("TV power button") {
- *     scenario("User presses power button when TV is off", Slow) {
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off", Slow) {
  *       val tv = new TVSet
  *       assert(!tv.isOn)
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
  *     }
  * 
- *     scenario("User presses power button when TV is on", Slow, DbTest) {
+ *     Scenario("User presses power button when TV is on", Slow, DbTest) {
  *       val tv = new TVSet
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
@@ -813,8 +813,8 @@ package org.scalatest
  *  
  *   def fixture = new Fixture
  *  
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       val f = fixture
  *       f.builder.append("encourage clear code!")
  *       assert(f.builder.toString === "ScalaTest is designed to encourage clear code!")
@@ -822,7 +822,7 @@ package org.scalatest
  *       f.buffer += "sweet"
  *     }
  *   
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       val f = fixture
  *       f.builder.append("be easy to reason about!")
  *       assert(f.builder.toString === "ScalaTest is designed to be easy to reason about!")
@@ -873,9 +873,9 @@ package org.scalatest
  *     val buffer = ListBuffer("ScalaTest", "is", "designed", "to")
  *   }
  * 
- *   feature("Simplicity") {
+ *   Feature("Simplicity") {
  *     // This test needs the StringBuilder fixture
- *     scenario("User needs to read test code written by others") {
+ *     Scenario("User needs to read test code written by others") {
  *       new Builder {
  *         builder.append("encourage clear code!")
  *         assert(builder.toString === "ScalaTest is designed to encourage clear code!")
@@ -883,7 +883,7 @@ package org.scalatest
  *     }
  *     
  *     // This test needs the ListBuffer[String] fixture
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       new Buffer {
  *         buffer += ("be", "easy", "to", "reason", "about!")
  *         assert(buffer === List("ScalaTest", "is", "designed", "to", "be", "easy", "to", "reason", "about!"))
@@ -891,7 +891,7 @@ package org.scalatest
  *     }
  * 
  *     // This test needs both the StringBuilder and ListBuffer
- *     scenario("User needs to write tests") {
+ *     Scenario("User needs to write tests") {
  *       new Builder with Buffer {
  *         builder.append("be easy to learn!")
  *         buffer += ("be", "easy", "to", "remember", "how", "to", "write!")
@@ -977,11 +977,11 @@ package org.scalatest
  *     }
  *   }
  * 
- *   scenario("This scenario should succeed") {
+ *   Scenario("This scenario should succeed") {
  *     assert(1 + 1 === 2)
  *   }
  * 
- *   scenario("This scenario should fail") {
+ *   Scenario("This scenario should fail") {
  *     assert(1 + 1 === 3)
  *   }
  * }
@@ -1068,9 +1068,9 @@ package org.scalatest
  *     finally writer.close() // clean up the fixture
  *   }
  * 
- *   feature("Simplicity") {
+ *   Feature("Simplicity") {
  *     // This test needs the file fixture
- *     scenario("User needs to read test code written by others") {
+ *     Scenario("User needs to read test code written by others") {
  *       withFile { (file, writer) =&gt;
  *         writer.write("encourage clear code!")
  *         writer.flush()
@@ -1078,14 +1078,14 @@ package org.scalatest
  *       }
  *     }
  *     // This test needs the database fixture
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       withDatabase { db =&gt;
  *         db.append("be easy to reason about!")
  *         assert(db.toString === "ScalaTest is designed to be easy to reason about!")
  *       }
  *     }
  *     // This test needs both the file and the database
- *     scenario("User needs to write tests") {
+ *     Scenario("User needs to write tests") {
  *       withDatabase { db =&gt;
  *         withFile { (file, writer) =&gt; // loan-fixture methods compose
  *           db.append("be easy to learn!")
@@ -1166,14 +1166,14 @@ package org.scalatest
  *     finally writer.close() // clean up the fixture
  *   }
  * 
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") { f =&gt;
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") { f =&gt;
  *       f.writer.write("encourage clear code!")
  *       f.writer.flush()
  *       assert(f.file.length === 49)
  *     }
  * 
- *     scenario("User needs to understand what the tests are doing") { f =&gt;
+ *     Scenario("User needs to understand what the tests are doing") { f =&gt;
  *       f.writer.write("be easy to reason about!")
  *       f.writer.flush()
  *       assert(f.file.length === 52)
@@ -1220,15 +1220,15 @@ package org.scalatest
  *     buffer.clear()
  *   }
  * 
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       builder.append("encourage clear code!")
  *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "sweet"
  *     }
  * 
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       builder.append("be easy to reason about!")
  *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
  *       assert(buffer.isEmpty)
@@ -1294,15 +1294,15 @@ package org.scalatest
  * 
  * class ExampleSpec extends FeatureSpec with Builder with Buffer {
  * 
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       builder.append("encourage clear code!")
  *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "clear"
  *     }
  * 
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       builder.append("be easy to reason about!")
  *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
  *       assert(buffer.isEmpty)
@@ -1374,15 +1374,15 @@ package org.scalatest
  * 
  * class ExampleSpec extends FeatureSpec with Builder with Buffer {
  * 
- *   feature("Simplicity") {
- *     scenario("User needs to read test code written by others") {
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       builder.append("encourage clear code!")
  *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "clear"
  *     }
  * 
- *     scenario("User needs to understand what the tests are doing") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       builder.append("be easy to reason about!")
  *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
  *       assert(buffer.isEmpty)
@@ -1484,7 +1484,7 @@ package org.scalatest
  * 
  *   def nonEmptyStack(createNonEmptyStack: =&gt; Stack[Int], lastItemAdded: Int) {
  * 
- *     scenario("empty is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ *     Scenario("empty is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
  * 
  *       Given("a non-empty stack")
  *       val stack = createNonEmptyStack
@@ -1494,7 +1494,7 @@ package org.scalatest
  *       assert(!stack.empty)
  *     }
  * 
- *     scenario("peek is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ *     Scenario("peek is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
  * 
  *       Given("a non-empty stack")
  *       val stack = createNonEmptyStack
@@ -1508,7 +1508,7 @@ package org.scalatest
  *       assert(stack.size === size)
  *     }
  * 
- *     scenario("pop is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ *     Scenario("pop is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
  * 
  *       Given("a non-empty stack")
  *       val stack = createNonEmptyStack
@@ -1525,7 +1525,7 @@ package org.scalatest
  *   
  *   def nonFullStack(createNonFullStack: =&gt; Stack[Int]) {
  *       
- *     scenario("full is invoked on this non-full stack: " + createNonFullStack.toString) {
+ *     Scenario("full is invoked on this non-full stack: " + createNonFullStack.toString) {
  * 
  *       Given("a non-full stack")
  *       val stack = createNonFullStack
@@ -1535,7 +1535,7 @@ package org.scalatest
  *       assert(!stack.full)
  *     }
  *       
- *     scenario("push is invoked on this non-full stack: " + createNonFullStack.toString) {
+ *     Scenario("push is invoked on this non-full stack: " + createNonFullStack.toString) {
  * 
  *       Given("a non-full stack")
  *       val stack = createNonFullStack
@@ -1560,8 +1560,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
- * scenariosFor(nonFullStack(stackWithOneItem))
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * ScenariosFor(nonFullStack(stackWithOneItem))
  * </pre>
  *
  * <p>
@@ -1572,8 +1572,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
- * scenariosFor(nonFullStack)
+ * ScenariosFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
+ * ScenariosFor(nonFullStack)
  * </pre>
  *
  * <p>
@@ -1612,9 +1612,9 @@ package org.scalatest
  *  
  *   val lastValuePushed = 9
  *  
- *   feature("A Stack is pushed and popped") {
+ *   Feature("A Stack is pushed and popped") {
  *  
- *     scenario("empty is invoked on an empty stack") {
+ *     Scenario("empty is invoked on an empty stack") {
  * 
  *       Given("an empty stack")
  *       val stack = emptyStack
@@ -1624,7 +1624,7 @@ package org.scalatest
  *       assert(stack.empty)
  *     }
  *  
- *     scenario("peek is invoked on an empty stack") {
+ *     Scenario("peek is invoked on an empty stack") {
  * 
  *       Given("an empty stack")
  *       val stack = emptyStack
@@ -1636,7 +1636,7 @@ package org.scalatest
  *       }
  *     }
  *  
- *     scenario("pop is invoked on an empty stack") {
+ *     Scenario("pop is invoked on an empty stack") {
  * 
  *       Given("an empty stack")
  *       val stack = emptyStack
@@ -1648,13 +1648,13 @@ package org.scalatest
  *       }
  *     }
  *  
- *     scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
- *     scenariosFor(nonFullStack(stackWithOneItem))
+ *     ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItem))
  *  
- *     scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
- *     scenariosFor(nonFullStack(stackWithOneItemLessThanCapacity))
+ *     ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItemLessThanCapacity))
  *  
- *     scenario("full is invoked on a full stack") {
+ *     Scenario("full is invoked on a full stack") {
  * 
  *       Given("an full stack")
  *       val stack = fullStack
@@ -1664,9 +1664,9 @@ package org.scalatest
  *       assert(stack.full)
  *     }
  *  
- *     scenariosFor(nonEmptyStack(fullStack, lastValuePushed))
+ *     ScenariosFor(nonEmptyStack(fullStack, lastValuePushed))
  *  
- *     scenario("push is invoked on a full stack") {
+ *     Scenario("push is invoked on a full stack") {
  * 
  *       Given("an full stack")
  *       val stack = fullStack
@@ -1788,7 +1788,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
  * </pre>
  *
  * <p>
@@ -1806,7 +1806,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
  * </pre>
  *
  * <p>

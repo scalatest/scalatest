@@ -1,0 +1,295 @@
+package org.scalactic.anyvals
+
+import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import scala.util.Try
+
+class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
+
+  val typeName = "$typeName$"
+
+  describe("$typeName$") {
+
+    it("should be automatically widened to compatible AnyVal targets") {
+      $autoWidenTests$
+    }
+
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $additionTests$
+    }
+
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $minusTests$
+    }
+
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $multiplyTests$
+    }
+
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $divideTests$
+    }
+
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      $modulusTests$
+    }
+
+    it("should have a pretty toString") {
+      $typeName$.from($formattedValidValue$).value.toString shouldBe "$typeName$($formattedValidValue$)"
+    }
+
+    it("should return the same type from its unary_+ method") {
+      +$typeName$($formattedValidValue$) shouldEqual $typeName$($formattedValidValue$)
+    }
+
+    it("should offer a unary + method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$) =>
+        (+p).to$primitiveType$ shouldEqual (+(p.to$primitiveType$))
+      }
+    }
+
+    it("should offer a unary - method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$) =>
+        if (typeName.endsWith("Char"))
+          (-p).to$primitiveType$ should not equal (-(p.to$primitiveType$))
+        else
+          (-p).to$primitiveType$ shouldEqual (-(p.to$primitiveType$))
+      }
+    }
+
+    it("should offer '<' comparison that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p < byte) shouldEqual (p.to$primitiveType$ < byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p < short) shouldEqual (p.to$primitiveType$ < short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        (p < char) shouldEqual (p.to$primitiveType$ < char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p < int) shouldEqual (p.to$primitiveType$ < int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p < long) shouldEqual (p.to$primitiveType$ < long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p < float) shouldEqual (p.to$primitiveType$ < float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p < double) shouldEqual (p.to$primitiveType$ < double)
+      }
+    }
+
+    it("should offer '<=' comparison that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p <= byte) shouldEqual (p.to$primitiveType$ <= byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p <= short) shouldEqual (p.to$primitiveType$ <= short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        (p <= char) shouldEqual (p.to$primitiveType$ <= char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p <= int) shouldEqual (p.to$primitiveType$ <= int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p <= long) shouldEqual (p.to$primitiveType$ <= long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p <= float) shouldEqual (p.to$primitiveType$ <= float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p <= double) shouldEqual (p.to$primitiveType$ <= double)
+      }
+    }
+
+    it("should offer '>' comparison that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p > byte) shouldEqual (p.to$primitiveType$ > byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p > short) shouldEqual (p.to$primitiveType$ > short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        (p > char) shouldEqual (p.to$primitiveType$ > char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p > int) shouldEqual (p.to$primitiveType$ > int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p > long) shouldEqual (p.to$primitiveType$ > long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p > float) shouldEqual (p.to$primitiveType$ > float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+       (p > double) shouldEqual (p.to$primitiveType$ > double)
+      }
+    }
+
+    it("should offer '>=' comparison that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p >= byte) shouldEqual (p.to$primitiveType$ >= byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p >= short) shouldEqual (p.to$primitiveType$ >= short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        (p >= char) shouldEqual (p.to$primitiveType$ >= char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p >= int) shouldEqual (p.to$primitiveType$ >= int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p >= long) shouldEqual (p.to$primitiveType$ >= long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p >= float) shouldEqual (p.to$primitiveType$ >= float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p >= double) shouldEqual (p.to$primitiveType$ >= double)
+      }
+    }
+
+    it("should offer a '+' method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p + byte) shouldEqual (p.to$primitiveType$ + byte)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        (p + char) shouldEqual (p.to$primitiveType$ + char)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p + short) shouldEqual (p.to$primitiveType$ + short)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p + int) shouldEqual (p.to$primitiveType$ + int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p + long) shouldEqual (p.to$primitiveType$ + long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p + float) shouldEqual (p.to$primitiveType$ + float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p + double) shouldEqual (p.to$primitiveType$ + double)
+      }
+    }
+
+    it("should offer a '-' method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p - byte) shouldEqual (p.to$primitiveType$ - byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p - short) shouldEqual (p.to$primitiveType$ - short)
+      }
+      forAll { (p: $typeName$, byte: Char) =>
+        (p - byte) shouldEqual (p.to$primitiveType$ - byte)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p - int) shouldEqual (p.to$primitiveType$ - int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p - long) shouldEqual (p.to$primitiveType$ - long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p - float) shouldEqual (p.to$primitiveType$ - float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p - double) shouldEqual (p.to$primitiveType$ - double)
+      }
+    }
+
+    it("should offer a '*' method that is consistent with $primitiveType$") {
+      forAll { (p: $typeName$, byte: Byte) =>
+        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        (p * short) shouldEqual (p.to$primitiveType$ * short)
+      }
+      forAll { (p: $typeName$, byte: Char) =>
+        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        (p * int) shouldEqual (p.to$primitiveType$ * int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        (p * long) shouldEqual (p.to$primitiveType$ * long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        (p * float) shouldEqual (p.to$primitiveType$ * float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        (p * double) shouldEqual (p.to$primitiveType$ * double)
+      }
+    }
+
+    it("should offer a '/' method that is consistent with $primitiveType$") {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
+      forAll { (p: $typeName$, byte: Byte) =>
+        Try(p / byte) shouldEqual Try(p.to$primitiveType$ / byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        Try(p / short) shouldEqual Try(p.to$primitiveType$ / short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        Try(p / char) shouldEqual Try(p.to$primitiveType$ / char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        Try(p / int) shouldEqual Try(p.to$primitiveType$ / int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        Try(p / long) shouldEqual Try(p.to$primitiveType$ / long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        Try(p / float) shouldEqual Try(p.to$primitiveType$ / float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        Try(p / double) shouldEqual Try(p.to$primitiveType$ / double)
+      }
+    }
+
+    it("should offer a '%' method that is consistent with $primitiveType$") {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
+      forAll { (p: $typeName$, byte: Byte) =>
+        Try(p % byte) shouldEqual Try(p.to$primitiveType$ % byte)
+      }
+      forAll { (p: $typeName$, short: Short) =>
+        Try(p % short) shouldEqual Try(p.to$primitiveType$ % short)
+      }
+      forAll { (p: $typeName$, char: Char) =>
+        Try(p % char) shouldEqual Try(p.to$primitiveType$ % char)
+      }
+      forAll { (p: $typeName$, int: Int) =>
+        Try(p % int) shouldEqual Try(p.to$primitiveType$ % int)
+      }
+      forAll { (p: $typeName$, long: Long) =>
+        Try(p % long) shouldEqual Try(p.to$primitiveType$ % long)
+      }
+      forAll { (p: $typeName$, float: Float) =>
+        Try(p % float) shouldEqual Try(p.to$primitiveType$ % float)
+      }
+      forAll { (p: $typeName$, double: Double) =>
+        Try(p % double) shouldEqual Try(p.to$primitiveType$ % double)
+      }
+    }
+
+    it("should offer 'min' and 'max' methods that are consistent with $primitiveType$") {
+      forAll { (p1: $typeName$, p2: $typeName$) =>
+        p1.max(p2).to$primitiveType$ shouldEqual p1.to$primitiveType$.max(p2.to$primitiveType$)
+        p1.min(p2).to$primitiveType$ shouldEqual p1.to$primitiveType$.min(p2.to$primitiveType$)
+      }
+    }
+
+    it("should offer widening methods for basic types that are consistent with $primitiveType$") {
+      $autoWidenPropertyTests$
+    }
+
+  }
+
+}

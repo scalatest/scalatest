@@ -26,9 +26,10 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 
-
-class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosLongSpecSupport {
 
   val posLongGen: Gen[PosLong] =
     for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
@@ -59,6 +60,10 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
   }
 
+}
+
+class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosLongSpecSupport {
+
   describe("A PosLong") {
     describe("should offer a from factory method that") {
       it("returns Some[PosLong] if the passed Long is greater than 0") {
@@ -71,79 +76,92 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosLong.from(-99L) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns Some[PosLong if the passed Long is greater than 0") {
+        PosLong.ensuringValid(50L).value shouldBe 50L
+        PosLong.ensuringValid(100L).value shouldBe 100L
+      }
+      it("throws AssertionError if the passed Long is NOT greater than 0") {
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(0L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-1L)
+        an [AssertionError] should be thrownBy PosLong.ensuringValid(-99L)
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosLong wrapped in a Success if the passed Long is greater than 0") {
+        PosLong.tryingValid(50L).success.value.value shouldBe 50L
+        PosLong.tryingValid(100L).success.value.value shouldBe 100L
+      }
+
+      it("returns an AssertionError wrapped in a Failure if the passed Long is NOT greater than 0") {
+        PosLong.tryingValid(0L).failure.exception shouldBe an [AssertionError]
+        PosLong.tryingValid(-1L).failure.exception shouldBe an [AssertionError]
+        PosLong.tryingValid(-99L).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Long is greater than 0") {
+        PosLong.passOrElse(50L)(i => i) shouldBe Pass
+        PosLong.passOrElse(100L)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Fail") {
+        PosLong.passOrElse(0L)(i => s"$i did not taste good") shouldBe Fail("0 did not taste good")
+        PosLong.passOrElse(-1L)(i => i) shouldBe Fail(-1L)
+        PosLong.passOrElse(-99L)(i => i + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosLong wrapped in a Good if the given Long is greater than 0") {
+        PosLong.goodOrElse(50L)(i => i) shouldBe Good(PosLong(50L))
+        PosLong.goodOrElse(100L)(i => i) shouldBe Good(PosLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Bad") {
+        PosLong.goodOrElse(0L)(i => s"$i did not taste good") shouldBe Bad("0 did not taste good")
+        PosLong.goodOrElse(-1L)(i => i) shouldBe Bad(-1L)
+        PosLong.goodOrElse(-99L)(i => i + 3L) shouldBe Bad(-96L)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosLong wrapped in a Right if the given Long is greater than 0") {
+        PosLong.rightOrElse(50L)(i => i) shouldBe Right(PosLong(50L))
+        PosLong.rightOrElse(100L)(i => i) shouldBe Right(PosLong(100L))
+      }
+      it("returns an error value produced by passing the given Long to the given function if the passed Long is NOT greater than 0, wrapped in a Left") {
+        PosLong.rightOrElse(0L)(i => s"$i did not taste good") shouldBe Left("0 did not taste good")
+        PosLong.rightOrElse(-1L)(i => i) shouldBe Left(-1L)
+        PosLong.rightOrElse(-99L)(i => i + 3L) shouldBe Left(-96L)
+      }
+    }
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Long is greater than 0") {
+        PosLong.isValid(50L) shouldBe true
+        PosLong.isValid(100L) shouldBe true
+        PosLong.isValid(0L) shouldBe false
+        PosLong.isValid(-0L) shouldBe false
+        PosLong.isValid(-1L) shouldBe false
+        PosLong.isValid(-99L) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosLong if the passed Long is greater than 0") {
+        PosLong.fromOrElse(50L, PosLong(42L)).value shouldBe 50L
+        PosLong.fromOrElse(100L, PosLong(42L)).value shouldBe 100L
+      }
+      it("returns a given default if the passed Long is NOT greater than 0") {
+        PosLong.fromOrElse(0L, PosLong(42L)).value shouldBe 42L
+        PosLong.fromOrElse(-1L, PosLong(42L)).value shouldBe 42L
+        PosLong.fromOrElse(-99L, PosLong(42L)).value shouldBe 42L
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosLong.MaxValue shouldEqual PosLong.from(Long.MaxValue).get
       PosLong.MinValue shouldEqual PosLong(1L)
-    }
-    it("should have a pretty toString") {
-      PosLong.from(42L).value.toString shouldBe "PosLong(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +PosLong(3L) shouldEqual PosLong(3L)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      "PosLong(3L): Int" shouldNot typeCheck
-      (PosLong(3L): Long) shouldEqual 3L
-      (PosLong(3L): Float) shouldEqual 3.0F
-      (PosLong(3L): Double) shouldEqual 3.0
-
-      "PosLong(3L): PosInt" shouldNot typeCheck
-      (PosLong(3L): PosLong) shouldEqual PosLong(3L)
-      (PosLong(3L): PosFloat) shouldEqual PosFloat(3.0F)
-      (PosLong(3L): PosDouble) shouldEqual PosDouble(3.0)
-
-      "PosLong(3L): PosZInt" shouldNot typeCheck
-      (PosLong(3L): PosZLong) shouldEqual PosZLong(3L)
-      (PosLong(3L): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosLong(3L): PosZDouble) shouldEqual PosZDouble(3.0)
     }
 
     it("should be sortable") {
       val xs = List(PosLong(2), PosLong(4), PosLong(1), PosLong(3))
       xs.sorted shouldEqual List(PosLong(1), PosLong(2), PosLong(3), PosLong(4))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosLong(3L) + 3
-        opInt shouldEqual 6L
-
-        val opLong = PosLong(3L) + 3L
-        opLong shouldEqual 6L
-
-        val opFloat = PosLong(3L) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosLong(3L) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a Pos*
-        val opPosInt = PosLong(3L) + PosInt(3)
-        opPosInt shouldEqual 6L
-
-        val opPosLong = PosLong(3L) + PosLong(3L)
-        opPosLong shouldEqual 6L
-
-        val opPosFloat = PosLong(3L) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = PosLong(3L) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosLong(3L) + PosZInt(3)
-        opPosZ shouldEqual 6L
-
-        val opPosZLong = PosLong(3L) + PosZLong(3L)
-        opPosZLong shouldEqual 6L
-
-        val opPosZFloat = PosLong(3L) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = PosLong(3L) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -207,14 +225,14 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
 
       it("should offer a unary + method that is consistent with Long") {
-        forAll { (plong: PosLong) =>
-          (+plong).toLong shouldEqual (+(plong.toLong))
+        forAll { (p: PosLong) =>
+          (+p).toLong shouldEqual (+(p.toLong))
         }
       }
 
-      it("should offer a unary - method that is consistent with Long") {
-        forAll { (plong: PosLong) =>
-          (-plong) shouldEqual (-(plong.toLong))
+      it("should offer a unary - method that returns NegLong") {
+        forAll { (p: PosLong) =>
+          (-p) shouldEqual (NegLong.ensuringValid(-(p.toLong)))
         }
       }
 
@@ -242,102 +260,6 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         }
         forAll { (plong: PosLong, shift: Long) =>
           plong >> shift shouldEqual plong.toLong >> shift
-        }
-      }
-
-      it("should offer '<' comparison that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong < byte) shouldEqual (plong.toLong < byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong < short) shouldEqual (plong.toLong < short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong < char) shouldEqual (plong.toLong < char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong < int) shouldEqual (plong.toLong < int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong < long) shouldEqual (plong.toLong < long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong < float) shouldEqual (plong.toLong < float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong < double) shouldEqual (plong.toLong < double)
-        }
-      }
-
-      it("should offer '<=' comparison that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong <= byte) shouldEqual (plong.toLong <= byte)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong <= char) shouldEqual (plong.toLong <= char)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong <= short) shouldEqual (plong.toLong <= short)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong <= int) shouldEqual (plong.toLong <= int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong <= long) shouldEqual (plong.toLong <= long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong <= float) shouldEqual (plong.toLong <= float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong <= double) shouldEqual (plong.toLong <= double)
-        }
-      }
-
-      it("should offer '>' comparison that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong > byte) shouldEqual (plong.toLong > byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong > short) shouldEqual (plong.toLong > short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong > char) shouldEqual (plong.toLong > char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong > int) shouldEqual (plong.toLong > int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong > long) shouldEqual (plong.toLong > long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong > float) shouldEqual (plong.toLong > float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong > double) shouldEqual (plong.toLong > double)
-        }
-      }
-
-      it("should offer '>=' comparison that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong >= byte) shouldEqual (plong.toLong >= byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong >= short) shouldEqual (plong.toLong >= short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong >= char) shouldEqual (plong.toLong >= char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong >= int) shouldEqual (plong.toLong >= int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong >= long) shouldEqual (plong.toLong >= long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong >= float) shouldEqual (plong.toLong >= float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong >= double) shouldEqual (plong.toLong >= double)
         }
       }
 
@@ -392,126 +314,6 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         }
         forAll { (plong: PosLong, long: Long) =>
           (plong ^ long) shouldEqual (plong.toLong ^ long)
-        }
-      }
-
-      it("should offer a '+' method that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong + byte) shouldEqual (plong.toLong + byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong + short) shouldEqual (plong.toLong + short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong + char) shouldEqual (plong.toLong + char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong + int) shouldEqual (plong.toLong + int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong + long) shouldEqual (plong.toLong + long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong + float) shouldEqual (plong.toLong + float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong + double) shouldEqual (plong.toLong + double)
-        }
-      }
-
-      it("should offer a '-' method that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong - byte) shouldEqual (plong.toLong - byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong - short) shouldEqual (plong.toLong - short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong - char) shouldEqual (plong.toLong - char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong - int) shouldEqual (plong.toLong - int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong - long) shouldEqual (plong.toLong - long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong - float) shouldEqual (plong.toLong - float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong - double) shouldEqual (plong.toLong - double)
-        }
-      }
-
-      it("should offer a '*' method that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          (plong * byte) shouldEqual (plong.toLong * byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          (plong * short) shouldEqual (plong.toLong * short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          (plong * char) shouldEqual (plong.toLong * char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          (plong * int) shouldEqual (plong.toLong * int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          (plong * long) shouldEqual (plong.toLong * long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          (plong * float) shouldEqual (plong.toLong * float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          (plong * double) shouldEqual (plong.toLong * double)
-        }
-      }
-
-      it("should offer a '/' method that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          Try(plong / byte) shouldEqual Try(plong.toLong / byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          Try(plong / short) shouldEqual Try(plong.toLong / short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          Try(plong / char) shouldEqual Try(plong.toLong / char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          Try(plong / int) shouldEqual Try(plong.toLong / int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          Try(plong / long) shouldEqual Try(plong.toLong / long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          Try(plong / float) shouldEqual Try(plong.toLong / float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          Try(plong / double) shouldEqual Try(plong.toLong / double)
-        }
-      }
-
-      it("should offer a '%' method that is consistent with Long") {
-        forAll { (plong: PosLong, byte: Byte) =>
-          Try(plong % byte) shouldEqual Try(plong.toLong % byte)
-        }
-        forAll { (plong: PosLong, short: Short) =>
-          Try(plong % short) shouldEqual Try(plong.toLong % short)
-        }
-        forAll { (plong: PosLong, char: Char) =>
-          Try(plong % char) shouldEqual Try(plong.toLong % char)
-        }
-        forAll { (plong: PosLong, int: Int) =>
-          Try(plong % int) shouldEqual Try(plong.toLong % int)
-        }
-        forAll { (plong: PosLong, long: Long) =>
-          Try(plong % long) shouldEqual Try(plong.toLong % long)
-        }
-        forAll { (plong: PosLong, float: Float) =>
-          Try(plong % float) shouldEqual Try(plong.toLong % float)
-        }
-        forAll { (plong: PosLong, double: Double) =>
-          Try(plong % double) shouldEqual Try(plong.toLong % double)
         }
       }
 
@@ -587,7 +389,23 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
           def widen(value: PosZDouble): PosZDouble = value
           widen(plong) shouldEqual widen(PosZDouble.from(plong.toLong).get)
         }
+        forAll { (plong: PosLong) =>
+          def widen(value: NonZeroLong): NonZeroLong = value
+          widen(plong) shouldEqual widen(NonZeroLong.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: NonZeroFloat): NonZeroFloat = value
+          widen(plong) shouldEqual widen(NonZeroFloat.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: NonZeroDouble): NonZeroDouble = value
+          widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)
+        }
       }
+    }
+    it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
+      PosLong(33L).ensuringValid(_ + 1L) shouldEqual PosLong(34L)
+      an [AssertionError] should be thrownBy { PosLong.MaxValue.ensuringValid(_ + 1L) }
     }
   }
 }

@@ -19,7 +19,7 @@ import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
 import org.scalatest.WordSpec
 
-trait AssertionsForJUnit3SharedTests { this: WordSpec =>
+trait AssertionsForJUnit3SharedTests { this: WordSpec with AssertionsForJUnit =>
 
   def fromAssertExpectInterceptAndFail(): Unit = {
 

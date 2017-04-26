@@ -23,6 +23,8 @@ import scala.collection.GenTraversable
 import StackDepthExceptionHelper.getStackDepth
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
+import scala.concurrent.{Future, ExecutionContext}
+import scala.util.{Try, Success, Failure}
 
 /**
  * Supertrait for <code>InspectorAsserting</code> typeclasses, which are used to implement and determine the result
@@ -363,6 +365,265 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       }
     }
 
+  /**
+    * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
+    * methods.
+    */
+  private[scalatest] abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T]] {
+
+    type Result = Future[T]
+
+    implicit def executionContext: ExecutionContext
+
+    // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
+    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      val xsIsMap = isMap(original)
+      val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
+      future.map { result =>
+        if (result.failedElements.length > 0)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+              Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            Some(result.failedElements(0)._3),
+            pos
+          )
+        else indicateSuccessFuture("forAll succeeded")
+      }
+    }
+
+    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): Future[(Int, IndexedSeq[String])] = {
+        if (itr.hasNext) {
+          val head = itr.next
+          try {
+            val future = fun(head)
+            future.map { r =>
+              (passedCount + 1, messageAcc)
+            } recover {
+              case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) => throw execEx.getCause
+              case e if !shouldPropagate(e) =>
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+              case other => throw other
+            } flatMap { result =>
+              val (newPassedCount, newMessageAcc) = result
+              if (newPassedCount < min)
+                forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+              else
+                Future.successful((newPassedCount, newMessageAcc))
+            }
+          }
+          catch {
+            case e if !shouldPropagate(e) =>
+              val xsIsMap = isMap(original)
+              val messageKey = head match {
+                case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                case _ => index.toString
+              }
+              val (newPassedCount, newMessageAcc) = (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+              if (newPassedCount < min)
+                forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+              else
+                Future.successful((newPassedCount, newMessageAcc))
+
+            case other => Future { throw other}
+          }
+        }
+        else
+          Future.successful((passedCount, messageAcc))
+      }
+
+      if (min <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'min'"))
+
+      val resultFuture = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
+      resultFuture.map { result =>
+        val (passedCount, messageAcc) = result
+        if (passedCount < min)
+          indicateFailureFuture(
+            if (shorthand)
+              if (passedCount > 0)
+                Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else
+                Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+            if (passedCount > 0)
+              Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+              Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forAtLeast succeeded")
+      }
+    }
+
+    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      if (max <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
+
+      val xsIsMap = isMap(original)
+      val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max)
+      future.map { result =>
+        if (result.passedCount > max)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            else
+              Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forAtMost succeeded")
+      }
+    }
+
+    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      if (succeededCount <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
+
+      val xsIsMap = isMap(original)
+      val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
+      future.map { result =>
+        if (result.passedCount != succeededCount) {
+          indicateFailureFuture(
+            if (shorthand)
+              if (result.passedCount == 0)
+                Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else {
+                if (result.passedCount < succeededCount)
+                  Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                else
+                  Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+              }
+            else if (result.passedCount == 0)
+              Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else {
+              if (result.passedCount < succeededCount)
+                Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else
+                Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            },
+            None,
+            pos
+          )
+        }
+        else indicateSuccessFuture("forExactly succeeded")
+      }
+    }
+
+    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      val xsIsMap = isMap(original)
+      val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
+      future.map { result =>
+        if (result.passedCount != 0)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            else
+              Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forNo succeeded")
+      }
+    }
+
+    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      if (from < 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
+      if (upTo <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'upTo'"))
+      if (upTo <= from)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThan("'upTo'", "'from'"))
+
+      val xsIsMap = isMap(original)
+      val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo)
+
+      future.map { result =>
+        if (result.passedCount < from || result.passedCount > upTo)
+          indicateFailureFuture(
+            if (shorthand)
+              if (result.passedCount == 0)
+                Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else {
+                if (result.passedCount < from)
+                  Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+                else
+                  Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+              }
+            else if (result.passedCount == 0)
+              Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else {
+              if (result.passedCount < from)
+                Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+              else
+                Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
+            },
+            None,
+            pos
+          )
+        else indicateSuccessFuture("forBetween succeeded")
+      }
+    }
+
+    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+      val xsIsMap = isMap(original)
+      val future = runAsyncParallel(xs, xsIsMap, fun)(executionContext)
+      future.map { result =>
+        if (result.failedElements.length > 0)
+          indicateFailureFuture(
+            if (shorthand)
+              Resources.everyShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+            else
+              Resources.forEveryFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            Some(result.failedElements(0)._3),
+            pos
+          )
+        else indicateSuccessFuture("forAll succeeded")
+      }
+    }
+
+    // TODO: Why is this a by-name? Well, I made it a by-name because it was one in MatchersHelper.
+    // Why is it a by-name there?
+    // CS: because we want to construct the message lazily.
+    private[scalatest] def indicateSuccessFuture(message: => String): T
+
+    private[scalatest] def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): T
+  }
+
+  implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type Result = Future[Assertion] } =
+    new FutureInspectorAssertingImpl[Assertion] {
+      val executionContext = execCtx
+      def indicateSuccessFuture(message: => String): Assertion = Succeeded
+      def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+        val msg: String = message
+        optionalCause match {
+          case Some(ex: java.util.concurrent.ExecutionException) if shouldPropagate(ex.getCause) =>
+            throw ex.getCause
+
+          case other =>
+            other match {
+              case Some(ex) if shouldPropagate(ex) => throw ex
+              case _ =>
+                throw new TestFailedException(
+                  (_: StackDepthException) => Some(msg),
+                  optionalCause,
+                  pos
+                )
+            }
+        }
+      }
+    }
+
   private[scalatest] final def indentErrorMessages(messages: IndexedSeq[String]) = indentLines(1, messages)
 
   private[scalatest] final def isMap(xs: Any): Boolean =
@@ -436,6 +697,91 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
     }
     else
       result
+  }
+
+  private[scalatest] final def runAsyncParallel[T, ASSERTION](col: scala.collection.GenTraversable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
+    val futCol: IndexedSeq[Future[(T, Int, Try[ASSERTION])]] =
+      col.toIndexedSeq.zipWithIndex map { case (next, idx) =>
+        try {
+          fun(next) map { r =>
+            (next, idx, Success(r))
+          } recover {
+            case e: Throwable => (next, idx, Failure(e))
+          }
+        }
+        catch {
+          case e if !shouldPropagate(e) =>
+            Future.successful((next, idx, Failure(e)))
+          case other =>
+            Future { throw other }
+        }
+      }
+    Future.sequence(futCol).map { col =>
+      val (passedCol, failedCol) = col.partition { case (e, i, r) =>
+        r match {
+          case Success(_) => true
+          case Failure(_) => false
+        }
+      }
+      val messages =
+        failedCol.map { case (e, i, f) =>
+          val messageKey = e match {
+            case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+            case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+            case _ => i.toString
+          }
+          createMessage(messageKey, f.asInstanceOf[Failure[_]].exception, xsIsMap)
+        }
+      ForResult(passedCol.length, messages,
+                passedCol.map(e => (e._2, e._1)), failedCol.map(e => (e._2, e._1, e._3.asInstanceOf[Failure[_]].exception)))
+    }
+  }
+
+  private[scalatest] final def runAsyncSerial[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => Future[ASSERTION], stopFun: ForResult[_] => Boolean)(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
+    if (itr.hasNext) {
+      val head = itr.next
+      try {
+        val future = fun(head)
+        future map { r =>
+          result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+        } recover {
+          case execEx: java.util.concurrent.ExecutionException if shouldPropagate(execEx.getCause) =>
+            throw execEx.getCause
+          case e if !shouldPropagate(e) =>
+            val messageKey = head match {
+              case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+              case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+              case _ => index.toString
+            }
+            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+          case other =>
+            throw other
+        } flatMap { newResult =>
+          if (stopFun(newResult))
+            Future.successful(newResult)
+          else
+            runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+        }
+      }
+      catch {
+        case e if !shouldPropagate(e) =>
+          val messageKey = head match {
+            case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+            case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+            case _ => index.toString
+          }
+          val newResult = result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+          if (stopFun(newResult))
+            Future.successful(newResult)
+          else
+            runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+
+        case other => Future { throw other }
+      }
+    }
+    else {
+      Future.successful(result)
+    }
   }
 
   private[scalatest] final def keyOrIndexLabel(xs: Any, passedElements: IndexedSeq[(Int, _)]): String = {

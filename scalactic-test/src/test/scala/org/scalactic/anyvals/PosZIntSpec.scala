@@ -18,6 +18,8 @@ package org.scalactic.anyvals
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen._
 import org.scalactic.Equality
+import org.scalactic.{Pass, Fail}
+import org.scalactic.{Good, Bad}
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.mutable.WrappedArray
@@ -27,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+trait PosZIntSpecSupport {
 
   val posZIntGen: Gen[PosZInt] =
     for {i <- choose(0, Int.MaxValue)} yield PosZInt.from(i).get
@@ -58,6 +60,10 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
   }
 
+}
+
+class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
+
   describe("A PosZInt") {
     describe("should offer a from factory method that") {
       it("returns Some[PosZInt] if the passed Int is greater than or equal to 0")
@@ -71,81 +77,93 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         PosZInt.from(-99) shouldBe None
       }
     } 
+    describe("should offer an ensuringValid factory method that") {
+      it("returns PosZInt if the passed Int is greater than or equal to 0")
+      {
+        PosZInt.ensuringValid(0).value shouldBe 0
+        PosZInt.ensuringValid(50).value shouldBe 50
+        PosZInt.ensuringValid(100).value shouldBe 100
+      }
+      it("throws AssertionError if the passed Int is NOT greater than or equal to 0") {
+        an [AssertionError] should be thrownBy PosZInt.ensuringValid(-1)
+        an [AssertionError] should be thrownBy PosZInt.ensuringValid(-99)
+      }
+    }
+    describe("should offer a tryingValid factory method that") {
+      import TryValues._
+      it("returns a PosZInt wrapped in a Success if the passed Int is greater than or equal 0") {
+        PosZInt.tryingValid(0).success.value.value shouldBe 0
+        PosZInt.tryingValid(50).success.value.value shouldBe 50
+        PosZInt.tryingValid(100).success.value.value shouldBe 100
+      }
 
+      it("returns an AssertionError wrapped in a Failure if the passed Int is lesser than 0") {
+        PosZInt.tryingValid(-1).failure.exception shouldBe an [AssertionError]
+        PosZInt.tryingValid(-99).failure.exception shouldBe an [AssertionError]
+      }
+    }
+    describe("should offer a passOrElse factory method that") {
+      it("returns a Pass if the given Int is greater than or equal 0") {
+        PosZInt.passOrElse(0)(i => i) shouldBe Pass
+        PosZInt.passOrElse(50)(i => i) shouldBe Pass
+        PosZInt.passOrElse(100)(i => i) shouldBe Pass
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Fail") {
+        PosZInt.passOrElse(-1)(i => i) shouldBe Fail(-1)
+        PosZInt.passOrElse(-99)(i => i.toLong + 3L) shouldBe Fail(-96L)
+      }
+    }
+    describe("should offer a goodOrElse factory method that") {
+      it("returns a PosZInt wrapped in a Good if the given Int is greater than or equal 0") {
+        PosZInt.goodOrElse(0)(i => i) shouldBe Good(PosZInt(0))
+        PosZInt.goodOrElse(50)(i => i) shouldBe Good(PosZInt(50))
+        PosZInt.goodOrElse(100)(i => i) shouldBe Good(PosZInt(100))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Bad") {
+        PosZInt.goodOrElse(-1)(i => i) shouldBe Bad(-1)
+        PosZInt.goodOrElse(-99)(i => i.toLong + 3L) shouldBe Bad(-96L)
+      }
+    }
+    describe("should offer a rightOrElse factory method that") {
+      it("returns a PosZInt wrapped in a Right if the given Int is greater than or equal 0") {
+        PosZInt.rightOrElse(0)(i => i) shouldBe Right(PosZInt(0))
+        PosZInt.rightOrElse(50)(i => i) shouldBe Right(PosZInt(50))
+        PosZInt.rightOrElse(100)(i => i) shouldBe Right(PosZInt(100))
+      }
+      it("returns an error value produced by passing the given Int to the given function if the passed Int is lesser than 0, wrapped in a Left") {
+        PosZInt.rightOrElse(-1)(i => i) shouldBe Left(-1)
+        PosZInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
+      }
+    }
+    describe("should offer an isValid predicate method that") {
+      it("returns true if the passed Int is greater than or equal to 0") {
+        PosZInt.isValid(50) shouldBe true
+        PosZInt.isValid(100) shouldBe true
+        PosZInt.isValid(0) shouldBe true
+        PosZInt.isValid(-0) shouldBe true
+        PosZInt.isValid(-1) shouldBe false
+        PosZInt.isValid(-99) shouldBe false
+      }
+    } 
+    describe("should offer a fromOrElse factory method that") {
+      it("returns a PosZInt if the passed Int is greater than or equal to 0") {
+        PosZInt.fromOrElse(50, PosZInt(42)).value shouldBe 50
+        PosZInt.fromOrElse(100, PosZInt(42)).value shouldBe 100
+        PosZInt.fromOrElse(0, PosZInt(42)).value shouldBe 0
+      }
+      it("returns a given default if the passed Int is NOT greater than or equal to 0") {
+        PosZInt.fromOrElse(-1, PosZInt(42)).value shouldBe 42
+        PosZInt.fromOrElse(-99, PosZInt(42)).value shouldBe 42
+      }
+    } 
     it("should offer MaxValue and MinValue factory methods") {
       PosZInt.MaxValue shouldEqual PosZInt.from(Int.MaxValue).get
       PosZInt.MinValue shouldEqual PosZInt(0)
     }
 
-    it("should have a pretty toString") {
-      PosZInt.from(42).value.toString shouldBe "PosZInt(42)"
-    }
-    it("should return the same type from its unary_+ method") {
-      +PosZInt(3) shouldEqual PosZInt(3)
-    } 
-    it("should be automatically widened to compatible AnyVal targets") {
-      (PosZInt(3): Int) shouldEqual 3
-      (PosZInt(3): Long) shouldEqual 3L
-      (PosZInt(3): Float) shouldEqual 3.0F
-      (PosZInt(3): Double) shouldEqual 3.0
-
-      "(PosZInt(3): PosInt)" shouldNot typeCheck
-      "(PosZInt(3): PosLong)" shouldNot typeCheck
-      "(PosZInt(3): PosFloat)" shouldNot typeCheck
-      "(PosZInt(3): PosDouble)" shouldNot typeCheck
-
-      (PosZInt(3): PosZInt) shouldEqual PosZInt(3)
-      (PosZInt(3): PosZLong) shouldEqual PosZLong(3L)
-      (PosZInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
-      (PosZInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
-    }
-
     it("should be sortable") {
       val xs = List(PosZInt(2), PosZInt(0), PosZInt(1), PosZInt(3))
       xs.sorted shouldEqual List(PosZInt(0), PosZInt(1), PosZInt(2), PosZInt(3))
-    }
-
-    describe("when a compatible AnyVal is passed to a + method invoked on it") {
-      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
-        // When adding a "primitive"
-        val opInt = PosZInt(3) + 3
-        opInt shouldEqual 6
-
-        val opLong = PosZInt(3) + 3L
-        opLong shouldEqual 6L
-
-        val opFloat = PosZInt(3) + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosZInt(3) + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a PosZ*
-        val opPosInt = PosZInt(3) + PosInt(3)
-        opPosInt shouldEqual 6
-
-        val opPosLong = PosZInt(3) + PosLong(3L)
-        opPosLong shouldEqual 6L
-
-        val opPosFloat = PosZInt(3) + PosFloat(3.0F)
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = PosZInt(3) + PosDouble(3.0)
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *PosZ
-        val opPosZ = PosZInt(3) + PosZInt(3)
-        opPosZ shouldEqual 6
-
-        val opPosZLong = PosZInt(3) + PosZLong(3L)
-        opPosZLong shouldEqual 6L
-
-        val opPosZFloat = PosZInt(3) + PosZFloat(3.0F)
-        opPosZFloat shouldEqual 6.0F
-
-        val opPosZDouble = PosZInt(3) + PosZDouble(3.0)
-        opPosZDouble shouldEqual 6.0
-      }
     }
 
     describe("when created with apply method") {
@@ -199,14 +217,14 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
 
     it("should offer a unary + method that is consistent with Int") {
-      forAll { (pzint: PosZInt) =>
-        (+pzint).toInt shouldEqual (+(pzint.toInt))
+      forAll { (p: PosZInt) =>
+        (+p).toInt shouldEqual (+(p.toInt))
       }
     }
 
-    it("should offer a unary - method that is consistent with Int") {
-      forAll { (pzint: PosZInt) =>
-        (-pzint) shouldEqual (-(pzint.toInt))
+    it("should offer a unary - method that returns NegZInt") {
+      forAll { (p: PosZInt) =>
+        (-p) shouldEqual (NegZInt.ensuringValid(-(p.toInt)))
       }
     }
 
@@ -234,102 +252,6 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
       forAll { (pzint: PosZInt, shift: Long) =>
         pzint >> shift shouldEqual pzint.toInt >> shift
-      }
-    }
-
-    it("should offer '<' comparison that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint < byte) shouldEqual (pzint.toInt < byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint < short) shouldEqual (pzint.toInt < short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        (pzint < char) shouldEqual (pzint.toInt < char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint < int) shouldEqual (pzint.toInt < int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint < long) shouldEqual (pzint.toInt < long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint < float) shouldEqual (pzint.toInt < float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint < double) shouldEqual (pzint.toInt < double)
-      }
-    }
-
-    it("should offer '<=' comparison that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint <= byte) shouldEqual (pzint.toInt <= byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint <= short) shouldEqual (pzint.toInt <= short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        (pzint <= char) shouldEqual (pzint.toInt <= char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint <= int) shouldEqual (pzint.toInt <= int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint <= long) shouldEqual (pzint.toInt <= long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint <= float) shouldEqual (pzint.toInt <= float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint <= double) shouldEqual (pzint.toInt <= double)
-      }
-    }
-
-    it("should offer '>' comparison that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint > byte) shouldEqual (pzint.toInt > byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint > short) shouldEqual (pzint.toInt > short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        (pzint > char) shouldEqual (pzint.toInt > char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint > int) shouldEqual (pzint.toInt > int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint > long) shouldEqual (pzint.toInt > long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint > float) shouldEqual (pzint.toInt > float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint > double) shouldEqual (pzint.toInt > double)
-      }
-    }
-
-    it("should offer '>=' comparison that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint >= byte) shouldEqual (pzint.toInt >= byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint >= short) shouldEqual (pzint.toInt >= short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        (pzint >= char) shouldEqual (pzint.toInt >= char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint >= int) shouldEqual (pzint.toInt >= int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint >= long) shouldEqual (pzint.toInt >= long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint >= float) shouldEqual (pzint.toInt >= float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint >= double) shouldEqual (pzint.toInt >= double)
       }
     }
 
@@ -384,132 +306,6 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       }
       forAll { (pzint: PosZInt, long: Long) =>
         (pzint ^ long) shouldEqual (pzint.toInt ^ long)
-      }
-    }
-
-    it("should offer a '+' method that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint + byte) shouldEqual (pzint.toInt + byte)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        (pzint + char) shouldEqual (pzint.toInt + char)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint + short) shouldEqual (pzint.toInt + short)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint + int) shouldEqual (pzint.toInt + int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint + long) shouldEqual (pzint.toInt + long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint + float) shouldEqual (pzint.toInt + float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint + double) shouldEqual (pzint.toInt + double)
-      }
-    }
-
-    it("should offer a '-' method that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint - byte) shouldEqual (pzint.toInt - byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint - short) shouldEqual (pzint.toInt - short)
-      }
-      forAll { (pzint: PosZInt, byte: Char) =>
-        (pzint - byte) shouldEqual (pzint.toInt - byte)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint - int) shouldEqual (pzint.toInt - int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint - long) shouldEqual (pzint.toInt - long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint - float) shouldEqual (pzint.toInt - float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint - double) shouldEqual (pzint.toInt - double)
-      }
-    }
-
-    it("should offer a '*' method that is consistent with Int") {
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        (pzint * byte) shouldEqual (pzint.toInt * byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        (pzint * short) shouldEqual (pzint.toInt * short)
-      }
-      forAll { (pzint: PosZInt, byte: Char) =>
-        (pzint * byte) shouldEqual (pzint.toInt * byte)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        (pzint * int) shouldEqual (pzint.toInt * int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        (pzint * long) shouldEqual (pzint.toInt * long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        (pzint * float) shouldEqual (pzint.toInt * float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        (pzint * double) shouldEqual (pzint.toInt * double)
-      }
-    }
-
-    it("should offer a '/' method that is consistent with Int") {
-      // Note that Try (and associated Equality[Try]) are used since some values
-      // will legitimately throw an exception
-
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        Try(pzint / byte) shouldEqual Try(pzint.toInt / byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        Try(pzint / short) shouldEqual Try(pzint.toInt / short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        Try(pzint / char) shouldEqual Try(pzint.toInt / char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        Try(pzint / int) shouldEqual Try(pzint.toInt / int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        Try(pzint / long) shouldEqual Try(pzint.toInt / long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        Try(pzint / float) shouldEqual Try(pzint.toInt / float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        Try(pzint / double) shouldEqual Try(pzint.toInt / double)
-      }
-    }
-
-    it("should offer a '%' method that is consistent with Int") {
-      // Note that Try (and associated Equality[Try]) are used since some values
-      // will legitimately throw an exception
-
-      forAll { (pzint: PosZInt, byte: Byte) =>
-        Try(pzint % byte) shouldEqual Try(pzint.toInt % byte)
-      }
-      forAll { (pzint: PosZInt, short: Short) =>
-        Try(pzint % short) shouldEqual Try(pzint.toInt % short)
-      }
-      forAll { (pzint: PosZInt, char: Char) =>
-        Try(pzint % char) shouldEqual Try(pzint.toInt % char)
-      }
-      forAll { (pzint: PosZInt, int: Int) =>
-        Try(pzint % int) shouldEqual Try(pzint.toInt % int)
-      }
-      forAll { (pzint: PosZInt, long: Long) =>
-        Try(pzint % long) shouldEqual Try(pzint.toInt % long)
-      }
-      forAll { (pzint: PosZInt, float: Float) =>
-        Try(pzint % float) shouldEqual Try(pzint.toInt % float)
-      }
-      forAll { (pzint: PosZInt, double: Double) =>
-        Try(pzint % double) shouldEqual Try(pzint.toInt % double)
       }
     }
 
@@ -576,6 +372,10 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         def widen(value: PosZDouble): PosZDouble = value
         widen(pzint) shouldEqual widen(PosZDouble.from(pzint.toInt).get)
       }
+    }
+    it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
+      PosZInt(33).ensuringValid(_ + 1) shouldEqual PosZInt(34)
+      an [AssertionError] should be thrownBy { PosZInt.MaxValue.ensuringValid(_ + 1) }
     }
   }
 }
