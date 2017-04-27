@@ -22,6 +22,7 @@ import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestC
 import org.scalactic.source
 import org.scalatest.{Args, Status, SucceededStatus, FailedStatus}
 import org.scalatest.Suite._
+import scala.compat.Platform.currentTime
 
 trait Flow0[A] { thisNode =>
 
@@ -895,10 +896,12 @@ trait Test0[A] extends Flow0[A] { thisTest0 =>
   def name: String
   def location: Option[Location]
   def run(suite: Suite, testName: Option[String], args: Args): (Option[A], Status) = {
+    val startTime = currentTime
     reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest0()
-      reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, getEscapedIndentedTextForTest(name, 1, true), None, location)
+      val duration = currentTime - startTime
+      reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, duration, getEscapedIndentedTextForTest(name, 1, true), None, location)
       (Some(result), SucceededStatus)
     }
     catch {
@@ -916,11 +919,13 @@ trait Test0[A] extends Flow0[A] { thisTest0 =>
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None => location
           }
-        reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, getEscapedIndentedTextForTest(name, 1, true), loc)
+        val duration = currentTime - startTime
+        reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, duration, getEscapedIndentedTextForTest(name, 1, true), loc)
         (None, SucceededStatus)
 
       case tpe: TestPendingException =>
-        reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, getEscapedIndentedTextForTest(name, 1, true), location)
+        val duration = currentTime - startTime
+        reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, duration, getEscapedIndentedTextForTest(name, 1, true), location)
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -932,7 +937,8 @@ trait Test0[A] extends Flow0[A] { thisTest0 =>
             case _ =>
               None
           }
-        reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
+        val duration = currentTime - startTime
+        reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, duration, getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
         (None, FailedStatus)
     }
   }
@@ -2290,15 +2296,19 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
   def name: String
   def location: Option[Location]
   def cancel(suite: Suite, args: Args): Unit = {
+    val startTime = currentTime
     reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
-    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, None, Some(getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
+    val duration = currentTime - startTime
+    args.reporter(TestCanceled(args.tracker.nextOrdinal(), "Dependent test did not pass.", suite.suiteName, suite.suiteId, Some(suite.getClass.getName), name, name, collection.immutable.IndexedSeq.empty, None, Some(duration), Some(getEscapedIndentedTextForTest(name, 1, true)), location, None, None))
   }
   def testNames: Set[String]
   def run(suite: Suite, testName: Option[String], args: Args, input: A): (Option[B], Status) = {
+    val startTime = currentTime
     reportTestStarting(suite, args.reporter, args.tracker, name, name, None, location)
     try {
       val result = thisTest1(input)
-      reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, getEscapedIndentedTextForTest(name, 1, true), None, location)
+      val duration = currentTime - startTime
+      reportTestSucceeded(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, duration, getEscapedIndentedTextForTest(name, 1, true), None, location)
       (Some(result), SucceededStatus)
     }
     catch {
@@ -2316,11 +2326,13 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None => location
           }
-        reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, getEscapedIndentedTextForTest(name, 1, true), loc)
+        val duration = currentTime - startTime
+        reportTestCanceled(suite, args.reporter, tce, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, duration, getEscapedIndentedTextForTest(name, 1, true), loc)
         (None, SucceededStatus)
 
       case tce: TestPendingException =>
-        reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, 0L, getEscapedIndentedTextForTest(name, 1, true), location)
+        val duration = currentTime - startTime
+        reportTestPending(suite, args.reporter, args.tracker, name, name, collection.immutable.IndexedSeq.empty, duration, getEscapedIndentedTextForTest(name, 1, true), location)
         (None, SucceededStatus)
 
       case t: Throwable =>
@@ -2332,7 +2344,8 @@ trait Test1[A, B] extends Flow1[A, B] { thisTest1 =>
             case _ =>
               None
           }
-        reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, 0L, getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
+        val duration = currentTime - startTime
+        reportTestFailed(suite, args.reporter, t, name, name, collection.immutable.IndexedSeq.empty, None, args.tracker, duration, getEscapedIndentedTextForTest(name, 1, true), Some(SeeStackDepthException))
         (None, FailedStatus)
     }
   }
