@@ -23,15 +23,14 @@ import scala.collection.generic.FilterMonadic
 import scala.concurrent.{ExecutionContext, Future}
 
 trait Fixable[T] {
-  type Result
-  def pendingUntilFixed(f: => T, pos: source.Position): Result
+  def pendingUntilFixed(f: => T, pos: source.Position): Assertion with PendingStatement
 }
 
 trait LowerPriorityFixable {
 
-  implicit def fixableForUnit: Fixable[Unit] { type Result = Unit with PendingStatement } = new Fixable[Unit] {
+  implicit def fixableForUnit: Fixable[Unit] = new Fixable[Unit] {
     type Result = Unit with PendingStatement
-    def pendingUntilFixed(f: => Unit, pos: source.Position): Unit with PendingStatement = {
+    def pendingUntilFixed(f: => Unit, pos: source.Position): Assertion with PendingStatement = {
       val isPending =
         try {
           f
@@ -48,7 +47,7 @@ trait LowerPriorityFixable {
     }
   }
 
-  implicit def fixableForNothing: Fixable[Nothing] { type Result = Nothing with PendingStatement } = new Fixable[Nothing] {
+  /*implicit def fixableForNothing: Fixable[Nothing] { type Result = Nothing with PendingStatement } = new Fixable[Nothing] {
     type Result = Nothing with PendingStatement
     def pendingUntilFixed(f: => Nothing, pos: source.Position): Nothing with PendingStatement = {
       val isPending =
@@ -79,12 +78,12 @@ trait LowerPriorityFixable {
         case _ => throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
       }
     }
-  }
+  }*/
 }
 
 object Fixable extends LowerPriorityFixable {
 
-  implicit def fixableForAssertion: Fixable[Assertion] { type Result = Assertion with PendingStatement } = new Fixable[Assertion] {
+  implicit def fixableForAssertion: Fixable[Assertion] = new Fixable[Assertion] {
     type Result = Assertion with PendingStatement
     def pendingUntilFixed(f: => Assertion, pos: source.Position): Assertion with PendingStatement = {
       val isPending =

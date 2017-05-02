@@ -1255,20 +1255,7 @@ trait Assertions extends TripleEquals  {
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
    * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  def pendingUntilFixed[T](f: => T)(implicit fixable: Fixable[T], pos: source.Position): fixable.Result = {
-    /*val isPending =
-      try {
-        f
-        false
-      }
-      catch {
-        case _: Exception => true
-        case _: AssertionError => true
-      }
-      if (isPending)
-        throw new TestPendingException
-      else
-        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)*/
+  def pendingUntilFixed[T](f: => T)(implicit fixable: Fixable[T], pos: source.Position): Assertion with PendingStatement = {
     fixable.pendingUntilFixed(f, pos)
   }
 
