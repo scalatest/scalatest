@@ -212,6 +212,20 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
       )
     }
 
+  private[scalatest] def transformPendingToOutcome(testFun: FixtureParam => Future[PendingStatement]): FixtureParam => AsyncOutcome =
+    (fixture: FixtureParam) => {
+      new InternalFutureOutcome(
+        testFun(fixture).map { r =>
+          Succeeded
+        } recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
   /**
    * A test function taking no arguments and returning an <code>FutureOutcome</code>.
    *

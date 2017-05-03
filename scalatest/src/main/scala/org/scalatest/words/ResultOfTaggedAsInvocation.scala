@@ -57,7 +57,7 @@ import org.scalatest._
   *
  * @author Bill Venners
  */
-abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, val tags: List[Tag]) {
+abstract class ResultOfTaggedAsInvocation[RESULT](val verb: String, val rest: String, val tags: List[Tag]) {
 
   /**
    * Supports the registration of tagged, pending tests in shorthand form in <code>FlatSpec</code>
@@ -79,5 +79,5 @@ abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, va
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(testFun: => PendingStatement)
+  def is(testFun: => RESULT)
 }

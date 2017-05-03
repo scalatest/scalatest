@@ -99,7 +99,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-private[scalatest] trait WillVerb {
+private[scalatest] trait WillVerb[RESULT] {
 
   // This can't be final or abstract, because it is instantiated directly by the implicit conversion, and
   // extended by something in Matchers.
@@ -141,7 +141,7 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
-    def will(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+    def will(right: String)(implicit svsi: StringVerbStringInvocation[RESULT]): ResultOfStringPassedToVerb[RESULT] = {
       svsi(leftSideString, "will", right, pos)
     }
 

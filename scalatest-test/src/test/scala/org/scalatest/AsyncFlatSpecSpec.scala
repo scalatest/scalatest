@@ -769,6 +769,37 @@ class AsyncFlatSpecSpec extends FunSpec {
       assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
+    it("should allow is pendingUntilFixed to be used after is") {
+
+      val a = new AsyncFlatSpec {
+
+        it should "do this" is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        it should "do that" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        it should "do those" in {
+          assert(2 + 2 === 4)
+        }
+
+        it should "do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 3)
+    }
+
   }
 
 }

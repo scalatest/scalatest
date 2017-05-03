@@ -23,13 +23,14 @@ import scala.collection.generic.FilterMonadic
 import scala.concurrent.{ExecutionContext, Future}
 
 trait Fixable[T] {
-  def pendingUntilFixed(f: => T, pos: source.Position): Assertion with PendingStatement
+  type Result
+  def pendingUntilFixed(f: => T, pos: source.Position): Result
 }
 
 trait LowerPriorityFixable {
 
-  implicit def fixableForUnit: Fixable[Unit] = new Fixable[Unit] {
-    type Result = Unit with PendingStatement
+  implicit def fixableForUnit: Fixable[Unit] { type Result = Assertion with PendingStatement } = new Fixable[Unit] {
+    type Result = Assertion with PendingStatement
     def pendingUntilFixed(f: => Unit, pos: source.Position): Assertion with PendingStatement = {
       val isPending =
         try {
@@ -47,28 +48,9 @@ trait LowerPriorityFixable {
     }
   }
 
-  /*implicit def fixableForNothing: Fixable[Nothing] { type Result = Nothing with PendingStatement } = new Fixable[Nothing] {
-    type Result = Nothing with PendingStatement
-    def pendingUntilFixed(f: => Nothing, pos: source.Position): Nothing with PendingStatement = {
-      val isPending =
-        try {
-          f
-          false
-        }
-        catch {
-          case _: Exception => true
-          case _: AssertionError => true
-        }
-      if (isPending)
-        throw new TestPendingException
-      else
-        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
-    }
-  }
-
-  implicit def fixableForFutureAssertion(implicit ec: ExecutionContext): Fixable[Future[Assertion]] { type Result = Future[Assertion] } = new Fixable[Future[Assertion]] {
-    type Result = Future[Assertion]
-    def pendingUntilFixed(f: => Future[Assertion], pos: source.Position): Future[Assertion] = {
+  implicit def fixableForFutureAssertion(implicit ec: ExecutionContext): Fixable[Future[Assertion]] { type Result = Future[Assertion with PendingStatement] } = new Fixable[Future[Assertion]] {
+    type Result = Future[Assertion with PendingStatement]
+    def pendingUntilFixed(f: => Future[Assertion], pos: source.Position): Future[Assertion with PendingStatement] = {
       val future: Future[Assertion] = f
       future map { _ =>
         throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
@@ -78,12 +60,12 @@ trait LowerPriorityFixable {
         case _ => throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
       }
     }
-  }*/
+  }
 }
 
 object Fixable extends LowerPriorityFixable {
 
-  implicit def fixableForAssertion: Fixable[Assertion] = new Fixable[Assertion] {
+  implicit def fixableForAssertion: Fixable[Assertion] { type Result = Assertion with PendingStatement } = new Fixable[Assertion] {
     type Result = Assertion with PendingStatement
     def pendingUntilFixed(f: => Assertion, pos: source.Position): Assertion with PendingStatement = {
       val isPending =

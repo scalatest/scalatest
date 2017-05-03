@@ -262,6 +262,12 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    */
   implicit def convertAssertionToFutureAssertion(assertion: compatible.Assertion): Future[compatible.Assertion] = Future.successful(assertion)
 
+  implicit def convertAssertionToFuturePendingStatement(assertion: compatible.Assertion)(implicit pos: org.scalactic.source.Position): Future[PendingStatement] = Future {
+    //assertion
+    import org.scalatest.exceptions.{TestFailedException, StackDepthException}
+    throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
+  }
+
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncTestSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncTestSuite.isInstanceOf[org.scalatest.RandomTestOrder]
 

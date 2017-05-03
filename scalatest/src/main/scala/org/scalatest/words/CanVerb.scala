@@ -76,7 +76,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-trait CanVerb {
+trait CanVerb[RESULT] {
 
   // This one can be final, because it isn't extended by anything in the matchers DSL.
   /**
@@ -116,7 +116,7 @@ trait CanVerb {
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
-    def can(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+    def can(right: String)(implicit svsi: StringVerbStringInvocation[RESULT]): ResultOfStringPassedToVerb[RESULT] = {
       svsi(leftSideString, "can", right, pos)
     }
 

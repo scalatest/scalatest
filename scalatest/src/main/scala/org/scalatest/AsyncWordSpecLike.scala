@@ -44,7 +44,7 @@ MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb[Future[PendingStatement]] with MustVerb[Future[PendingStatement]] with CanVerb[Future[PendingStatement]] with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {

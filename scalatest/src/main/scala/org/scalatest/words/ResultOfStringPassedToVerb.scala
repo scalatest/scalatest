@@ -66,7 +66,7 @@ import org.scalatest._
  *
  * @author Bill Venners
  */
-abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
+abstract class ResultOfStringPassedToVerb[RESULT](val verb: String, val rest: String) {
 
   /**
    * Supports the registration of pending tests in a
@@ -86,7 +86,7 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(fun: => PendingStatement)
+  def is(fun: => RESULT)
 
   /**
    * Supports the registration of tagged tests in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -105,5 +105,5 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
-  def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocation
+  def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocation[RESULT]
 }

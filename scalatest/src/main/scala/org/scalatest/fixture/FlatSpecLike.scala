@@ -47,7 +47,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb[PendingStatement] with MustVerb[PendingStatement] with CanVerb[PendingStatement] with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
 
@@ -1717,7 +1717,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    *
    * @author Bill Venners
    */
-  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
+  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[PendingStatement]) {
 
     import resultOfStringPassedToVerb.rest
 import resultOfStringPassedToVerb.verb
@@ -1824,7 +1824,7 @@ import resultOfStringPassedToVerb.verb
    *
    * @param resultOfStringPassedToVerb an <code>ResultOfStringPassedToVerb</code> instance
    */
-  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
+  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[PendingStatement]): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
 
   /**
@@ -1869,7 +1869,7 @@ import resultOfStringPassedToVerb.verb
    * @author Bill Venners
    * @author Chee Seng
    */
-  protected final class InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
+  protected final class InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation[PendingStatement]) {
 
     import resultOfTaggedAsInvocation.verb
     import resultOfTaggedAsInvocation.rest
@@ -1979,7 +1979,7 @@ import resultOfStringPassedToVerb.verb
    *
    * @param resultOfTaggedAsInvocation an <code>ResultOfTaggedAsInvocation</code> instance
    */
-  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
+  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation[PendingStatement]): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
 
   /**
@@ -2004,21 +2004,21 @@ import resultOfStringPassedToVerb.verb
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
-    new StringVerbStringInvocation {
-      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
+  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation[PendingStatement] =
+    new StringVerbStringInvocation[PendingStatement] {
+      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb[PendingStatement] = {
         // SKIP-SCALATESTJS-START
         val stackDepth = 6
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepth = 8
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
-        new ResultOfStringPassedToVerb(verb, rest) {
+        new ResultOfStringPassedToVerb[PendingStatement](verb, rest) {
           def is(testFun: => PendingStatement): Unit = {
             registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
           }
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
-            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+            new ResultOfTaggedAsInvocation[PendingStatement](verb, rest, tagList) {
               // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
               //                                                            ^
               def is(testFun: => PendingStatement): Unit = {

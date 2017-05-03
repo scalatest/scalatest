@@ -99,7 +99,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-trait ShouldVerb {
+trait ShouldVerb[RESULT] {
 
   // This can't be final or abstract, because it is instantiated directly by the implicit conversion, and
   // extended by something in Matchers.
@@ -141,7 +141,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+    def should(right: String)(implicit svsi: StringVerbStringInvocation[RESULT]): ResultOfStringPassedToVerb[RESULT] = {
       svsi(leftSideString, "should", right, pos)
     }
 
