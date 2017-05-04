@@ -795,7 +795,8 @@ class AsyncFlatSpecSpec extends FunSpec {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep))
+      val status = a.run(None, Args(rep))
+      status.waitUntilCompleted()
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 3)
     }

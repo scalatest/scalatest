@@ -877,5 +877,38 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
       }
     }
 
+    it("should allow is pendingUntilFixed to be used after is") {
+      val a = new AsyncFreeSpec {
+
+        "should do this" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        "should do that" is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        "should do those" in {
+          assert(2 + 2 === 4)
+        }
+        "should do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        val tp = rep.testPendingEventsReceived
+        assert(tp.size === 3)
+      }
+    }
+
   }
 }
