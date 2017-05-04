@@ -1381,7 +1381,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * @author Bill Venners
    */
-  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[Future[PendingStatement]]) {
+  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[_]) {
 
     import resultOfStringPassedToVerb.rest
 import resultOfStringPassedToVerb.verb
@@ -1436,7 +1436,7 @@ import resultOfStringPassedToVerb.verb
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
-  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[Future[PendingStatement]]): InAndIgnoreMethods =
+  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[_]): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
 
   /**
