@@ -117,6 +117,18 @@ If you would like to export a particular private key into a separate GPG file, y
 
 With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
 
+Before publishing any patch release, binary compatibility with previous version should be checked, using Java 6 (for Scala 2.10 and 2.11):
+
+    $ sbt ++2.11.8 mimaReportBinaryIssues
+    $ sbt ++2.11.8 scalatestAppJS/mimaReportBinaryIssues
+    $ sbt ++2.10.6 mimaReportBinaryIssues
+    $ sbt ++2.10.6 scalatestAppJS/mimaReportBinaryIssues
+
+and using Java 8 (for Scala 2.12): 
+
+    $ sbt ++2.12.2 mimaReportBinaryIssues
+    $ sbt ++2.12.2 scalatestAppJS/mimaReportBinaryIssues
+
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
   `$ sbt clean publishSigned ++2.11.12 "project scalatestAppJS" clean publishSigned ++2.10.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
