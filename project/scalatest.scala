@@ -7,6 +7,9 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.core.ProblemFilters._
 
 object ScalatestBuild extends Build {
 
@@ -21,7 +24,8 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.4"
 
-  val releaseVersion = "3.0.1"
+  val releaseVersion = "3.1.0"
+  val previousReleaseVersion = "3.0.5"
 
   val scalacheckVersion = "1.13.5"
   val easyMockVersion = "3.2"
@@ -31,7 +35,7 @@ object ScalatestBuild extends Build {
   val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
 
-  val githubTag = "release-3.0.1" // for scaladoc source urls
+  val githubTag = "release-3.1.0" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -356,7 +360,9 @@ object ScalatestBuild extends Build {
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
       scalacticDocSourcesSetting,
-      docTaskSetting
+      docTaskSetting,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -396,7 +402,9 @@ object ScalatestBuild extends Build {
         Def.task {
           GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
-      }
+      },
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -500,7 +508,9 @@ object ScalatestBuild extends Build {
          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
        }.taskValue
      },
-     docTaskSetting
+     docTaskSetting,
+     mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+     mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -610,7 +620,9 @@ object ScalatestBuild extends Build {
           //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalatestJSDocTaskSetting
+      scalatestJSDocTaskSetting,
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -701,7 +713,9 @@ object ScalatestBuild extends Build {
           Seq.empty[File]
         }.taskValue
       },
-      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources"
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -773,7 +787,9 @@ object ScalatestBuild extends Build {
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      }
+      },
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
