@@ -126,7 +126,6 @@ object TypeMatcherHelper {
   def assertAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
-      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded
@@ -158,7 +157,6 @@ object TypeMatcherHelper {
   def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
-      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded

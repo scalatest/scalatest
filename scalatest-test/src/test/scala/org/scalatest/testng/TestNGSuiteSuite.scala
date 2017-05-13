@@ -69,7 +69,7 @@ import org.scalatest.jmock.JMockCycle
 
       // then
       testReporter.lastEvent match {
-        case Some(TestFailed(_, _, _, _, _, _, _, _, throwable, _, _, _, _, _, _, _)) =>
+        case Some(TestFailed(_, _, _, _, _, _, _, _, _, throwable, _, _, _, _, _, _, _)) =>
           assert(throwable.get.getMessage === "fail")
         case _ => fail()
       }
@@ -139,7 +139,7 @@ import org.scalatest.jmock.JMockCycle
 
       // then get rerunnable from the event 
       testReporter.lastEvent match {
-        case Some(TestFailed(_, _, _, _, _, _, _, _, _, _, _, _, rerunnable, _, _, _)) =>
+        case Some(TestFailed(_, _, _, _, _, _, _, _, _, _, _, _, _, rerunnable, _, _, _)) =>
           assert(rerunnable.isDefined)
         case _ => fail()
       }

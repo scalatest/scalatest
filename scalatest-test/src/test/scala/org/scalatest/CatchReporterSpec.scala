@@ -56,9 +56,9 @@ class CatchReporterSpec extends FunSpec {
     catchReporter(TestIgnored(new Ordinal(99), "suite name", "suite ID", Some("suite.className"), "test name", "test name"))
 
     intercept[RuntimeException] {
-      buggyReporter(TestFailed(new Ordinal(99), "message", "suite name", "suite ID", Some("suite.className"), "test name", "test name", Vector.empty, None))
+      buggyReporter(TestFailed(new Ordinal(99), "message", "suite name", "suite ID", Some("suite.className"), "test name", "test name", Vector.empty, Vector.empty, None))
     }
-    catchReporter(TestFailed(new Ordinal(99), "message", "suite name", "suite ID", Some("suite.className"), "test name", "test name", Vector.empty, None))
+    catchReporter(TestFailed(new Ordinal(99), "message", "suite name", "suite ID", Some("suite.className"), "test name", "test name", Vector.empty, Vector.empty, None))
 
     intercept[RuntimeException] {
       buggyReporter(SuiteStarting(new Ordinal(99), "suite name", "suite ID", None, None))

@@ -325,7 +325,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
         case _ => 
           None
       }
-    report(TestFailed(tracker.nextOrdinal(), getMessageGivenThrowable(throwable, false), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Vector.empty, Some(throwable), None, Some(formatter), Some(SeeStackDepthException), None, payload))
+    report(TestFailed(tracker.nextOrdinal(), getMessageGivenThrowable(throwable, false), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Vector.empty, Vector.empty, Some(throwable), None, Some(formatter), Some(SeeStackDepthException), None, payload))
 
     failedTestsSet += testCase
   }
@@ -336,7 +336,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
 
     val formatter = getIndentedTextForTest(testCase.toString, 1, true)
     val suiteName = getSuiteNameForTestCase(testCase)
-    report(TestFailed(tracker.nextOrdinal(), getMessageGivenThrowable(assertionFailedError, true), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Vector.empty, Some(assertionFailedError), None, Some(formatter), Some(SeeStackDepthException), None))
+    report(TestFailed(tracker.nextOrdinal(), getMessageGivenThrowable(assertionFailedError, true), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Vector.empty, Vector.empty, Some(assertionFailedError), None, Some(formatter), Some(SeeStackDepthException), None))
 
     failedTestsSet += testCase
   }

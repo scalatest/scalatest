@@ -17,8 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic._
-import org.scalatest.Resources
-import org.scalatest.Suite
+import org.scalatest.{Differ, Difference, Resources, Suite}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
 /**
@@ -292,9 +291,32 @@ trait MatcherWords {
     new MatcherFactory1[Any, Equality] {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
-        new Matcher[T] {
+        new EqualMatcher[T] {
+          def difference(left: T): Option[Difference] = {
+            equality match {
+              case differ: Differ[T] => Some(differ.difference(left, right))
+              case _ =>
+                (left, right) match {
+                  case (leftStr: String, rightStr: String) =>
+                    Some(
+                      new Difference {
+                        val inlineDiff = {
+                          val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+                          Some((leftee.toString, rightee.toString))
+                        }
+
+                        lazy val sideBySideDiff = None
+
+                        lazy val analysis = None
+                      }
+                    )
+
+                  case _ => None
+                }
+            }
+          }
           def apply(left: T): MatchResult = {
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
+            val (leftee, rightee) = difference(left).flatMap(_.inlineDiff).getOrElse(Suite.getObjectsForFailureMessage(left, right))
             MatchResult(
               equality.areEqual(left, right),
               Resources.rawDidNotEqual,
