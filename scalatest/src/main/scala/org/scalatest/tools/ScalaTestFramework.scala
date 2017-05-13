@@ -394,11 +394,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             val tracker = new Tracker
             val suiteStartTime = System.currentTimeMillis
 
-            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
-            val suite = 
-            if (wrapWithAnnotation == null)
-              suiteClass.newInstance.asInstanceOf[Suite]
-            else {
+            val suite = AnnotationHelper.findWrapWith(suiteClass).map(wrapWithAnnotation => {
               val suiteClazz = wrapWithAnnotation.value
               val constructorList = suiteClazz.getDeclaredConstructors()
               val constructor = constructorList.find { c => 
@@ -406,7 +402,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
                   types.length == 1 && types(0) == classOf[java.lang.Class[_]]
                 }
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-            }
+            }).getOrElse(suiteClass.newInstance.asInstanceOf[Suite])
 
             val formatter = formatterForSuiteStarting(suite)
 
