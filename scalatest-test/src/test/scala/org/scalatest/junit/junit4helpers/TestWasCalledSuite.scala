@@ -101,3 +101,13 @@ class ShouldFailSuite extends JUnitSuite {
   @Test def doThrowsPlainOldError(): Unit = { throw new Error }
   @Test def doThrowsThrowable(): Unit = { throw new Throwable }
 }
+
+class InferredJUnitSuite extends JUnitSuite {
+  val v = 1
+  @Test def doThis() = {
+    assert(v == 1)
+  }
+  @Test def doThat() = {
+    assert(v == 2)
+  }
+}

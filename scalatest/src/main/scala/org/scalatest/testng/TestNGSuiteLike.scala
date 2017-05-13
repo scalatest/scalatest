@@ -48,7 +48,7 @@ import events.MotionToSuppress
  *
  * @author Bill Venners
  */
-trait TestNGSuiteLike extends Suite { thisSuite =>
+trait TestNGSuiteLike extends Suite with AssertionsForTestNG { thisSuite =>
 
   // This was also originally inherited from Suite, but would never be used. I think I'll leave it off.
 /*

@@ -135,7 +135,7 @@ import org.scalactic._
  * }
  * </pre>
  */
-trait TestSuite extends Suite { thisTestSuite =>
+trait TestSuite extends Suite with Assertions { thisTestSuite =>
 
   /**
    * A test function taking no arguments and returning an <code>Outcome</code>.

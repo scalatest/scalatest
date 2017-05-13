@@ -25,6 +25,7 @@ import org.hamcrest.core.IsAnything
 import org.jmock.Expectations
 import org.jmock.Mockery
 import org.scalatest.jmock.JMockCycle
+  import org.scalatest.SharedHelpers._
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
 
@@ -167,7 +168,15 @@ import org.scalatest.jmock.JMockCycle
     
     test("infoProvided should be available for AfterMethod/Class/Suite annotations") { () =>
       // this needs to be written after i figure out the mock integration
-    }     
+    }
+
+    test("should run test method written without the explicit Unit type") { () =>
+      val a = new InferredTestNGSuite()
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived.length == 1)
+    }
   }
 
   package testpackage {
@@ -198,6 +207,13 @@ import org.scalatest.jmock.JMockCycle
     
     class SuiteWithBeforeAndAfterAnnotations extends TestNGSuite {
     }
+
+    class InferredTestNGSuite extends TestNGSuite {
+      val a = 1
+      @Test def testThatPasses() = { assert(a == 1) }
+      @Test def testThatFails() = { assert(a == 2) }
+    }
+
   }
 }
 

@@ -183,5 +183,13 @@ class JUnitSuiteSpec extends FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
+
+    it("should run test method written without the explicit Unit type") {
+      val a = new InferredJUnitSuite()
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived.length == 1)
+    }
   }
 }

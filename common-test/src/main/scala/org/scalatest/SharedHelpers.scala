@@ -27,7 +27,9 @@ import FailureMessages.decorateToStringValue
 import java.util.concurrent.Executors
 import org.scalactic.Prettifier
 
-object SharedHelpers extends Assertions with LineNumberHelper {
+object SharedHelpers extends LineNumberHelper {
+
+  import Assertions._
 
   object SilentReporter extends Reporter {
     def apply(event: Event): Unit = ()
