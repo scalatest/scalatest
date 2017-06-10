@@ -129,29 +129,33 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.Suite") {
     it("should pass in the fixture to every test method") {
-      val a = new TestSuite { // TODO: This should no longer work. Why does it not fail?
+      val a = new FunSuite {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
           test(hello)
         }
-        def testThis(fixture: String): Unit = {
+        test("test this") { fixture =>
           assert(fixture === hello)
         }
-        def testThat(fixture: String, info: Informer): Unit = {
+        test("test that") { fixture =>
           assert(fixture === hello)
         }
       }
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
-      assert(!rep.eventsReceived.exists(_.isInstanceOf[TestFailed]))
+      assert(rep.testFailedEventsReceived.isEmpty)
+      assert(rep.testSucceededEventsReceived.length == 2)
     }
     
     it("should not pass a NoArgTest to withFixture for test methods that take a Fixture") {
-      class MySuite extends TestSuite { // Also should no longer work. Why is it not failing?
+      class MySuite extends FunSuite { // Also should no longer work. Why is it not failing?
         type FixtureParam = String
         var aNoArgTestWasPassed = false
+        var oneArgTestCalled = false
+        var testWasCalled = false
         def withFixture(test: OneArgTest): Outcome = {
+          oneArgTestCalled = true
           // Shouldn't be called
           Succeeded
         }
@@ -159,7 +163,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           aNoArgTestWasPassed = true
           Succeeded
         }
-        def testSomething(fixture: FixtureParam): Unit = {
+        test("Something") { fixture =>
+          testWasCalled = true
           assert(1 + 1 === 2)
         }
       }
@@ -167,6 +172,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val s = new MySuite
       s.run(None, Args(SilentReporter))
       assert(!s.aNoArgTestWasPassed)
+      assert(s.oneArgTestCalled)
+      assert(!s.testWasCalled)
     }
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
