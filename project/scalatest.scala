@@ -396,7 +396,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest,
-          "-oDI",
+          "-oDIF",
           "-W", "120", "60")),
       logBuffered in Test := false,
       libraryDependencies += scalacheckDependency("test"),
@@ -416,6 +416,8 @@ object ScalatestBuild extends Build {
       //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      testOptions in Test ++=
+        Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
