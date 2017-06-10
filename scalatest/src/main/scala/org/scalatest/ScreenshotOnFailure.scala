@@ -50,7 +50,7 @@ private[scalatest] trait ScreenshotOnFailure extends TestSuiteMixin { this: Test
    */
   abstract override def withFixture(test: NoArgTest): Outcome = {
     super.withFixture(test) match {
-      case failed: Failed => 
+      case failed: Failed =>
         try captureScreenshot(screenshotDir)
         catch {
           case innerE: Throwable =>
