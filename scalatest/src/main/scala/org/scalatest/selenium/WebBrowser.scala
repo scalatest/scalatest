@@ -25,14 +25,17 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 import java.util.concurrent.TimeUnit
+
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.openqa.selenium.support.ui.Clock
 import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.ExpectedCondition
+
 import scala.collection.mutable.Buffer
 import scala.collection.JavaConverters._
 import org.openqa.selenium.Cookie
 import java.util.Date
+
 import org.scalatest.time.Span
 import org.scalatest.time.Milliseconds
 import org.openqa.selenium.TakesScreenshot
@@ -40,6 +43,7 @@ import org.openqa.selenium.OutputType
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileInputStream
+
 import org.openqa.selenium.Alert
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.exceptions.TestFailedException
@@ -1704,30 +1708,87 @@ trait WebBrowser {
                    )
       }
   }
-  
-  private def isInputField(webElement: WebElement, name: String): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
-      
-  private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
-  private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
-  private def isCheckBox(webElement: WebElement): Boolean = isInputField(webElement, "checkbox")
-  private def isRadioButton(webElement: WebElement): Boolean = isInputField(webElement, "radio")
-  private def isEmailField(webElement: WebElement): Boolean = isInputField(webElement, "email") || isInputField(webElement, "text")
-  private def isColorField(webElement: WebElement): Boolean = isInputField(webElement, "color") || isInputField(webElement, "text")
-  private def isDateField(webElement: WebElement): Boolean = isInputField(webElement, "date") || isInputField(webElement, "text")
-  private def isDateTimeField(webElement: WebElement): Boolean = isInputField(webElement, "datetime") || isInputField(webElement, "text")
-  private def isDateTimeLocalField(webElement: WebElement): Boolean = isInputField(webElement, "datetime-local") || isInputField(webElement, "text")
-  private def isMonthField(webElement: WebElement): Boolean = isInputField(webElement, "month") || isInputField(webElement, "text")
-  private def isNumberField(webElement: WebElement): Boolean = isInputField(webElement, "number") || isInputField(webElement, "text")
-  private def isRangeField(webElement: WebElement): Boolean = isInputField(webElement, "range") || isInputField(webElement, "text")
-  private def isSearchField(webElement: WebElement): Boolean = isInputField(webElement, "search") || isInputField(webElement, "text")
-  private def isTelField(webElement: WebElement): Boolean = isInputField(webElement, "tel") || isInputField(webElement, "text")
-  private def isTimeField(webElement: WebElement): Boolean = isInputField(webElement, "time") || isInputField(webElement, "text")
-  private def isUrlField(webElement: WebElement): Boolean = isInputField(webElement, "url") || isInputField(webElement, "text")
-  private def isWeekField(webElement: WebElement): Boolean = isInputField(webElement, "week") || isInputField(webElement, "text")
 
-  private def isTextArea(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "textarea"
+  /**
+    * This class encapsulates WebElement's tag name and type.
+    * Please see the documentation for <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+    *
+    * <p>
+    *   This primarily serves as a cache for tag and type properties and helps reduce number of requests to browser
+    * </p>
+    *
+    * @param elementTag WebElement's tag name
+    * @param elementType WebElement's type attribute
+    */
+  case class ElementType(elementTag: String, elementType: Option[String])
+
+  object ElementType {
+    def apply(webElement: WebElement): ElementType = webElement.getTagName.toLowerCase match {
+      case "input" => ElementType("input", Some(webElement.getAttribute("type").toLowerCase()))
+      case tag: String => ElementType(tag, None)
+    }
+  }
+
+
+  private def isInputField(elementType: ElementType, name: String): Boolean = elementType == ElementType("input", Some(name))
+  private def isInputField(webElement: WebElement, name: String): Boolean = isInputField(ElementType(webElement), name)
+
+  private def isTextField(elementType: ElementType): Boolean = isInputField(elementType, "text")
+  private def isTextField(webElement: WebElement): Boolean = isTextField(ElementType(webElement))
+
+  private def isPasswordField(elementType: ElementType): Boolean = isInputField(elementType, "password")
+  private def isPasswordField(webElement: WebElement): Boolean = isPasswordField(ElementType(webElement))
+
+  private def isCheckBox(elementType: ElementType): Boolean = isInputField(elementType, "checkbox")
+  private def isCheckBox(webElement: WebElement): Boolean = isCheckBox(ElementType(webElement))
+
+  private def isRadioButton(elementType: ElementType): Boolean = isInputField(elementType, "radio")
+  private def isRadioButton(webElement: WebElement): Boolean = isRadioButton(ElementType(webElement))
+
+  private def isEmailField(elementType: ElementType): Boolean = isInputField(elementType, "email") || isTextField(elementType)
+  private def isEmailField(webElement: WebElement): Boolean = isEmailField(ElementType(webElement))
+
+  private def isColorField(elementType: ElementType): Boolean = isInputField(elementType, "color") || isTextField(elementType)
+  private def isColorField(webElement: WebElement): Boolean = isColorField(ElementType(webElement))
+
+  private def isDateField(elementType: ElementType): Boolean = isInputField(elementType, "date") || isTextField(elementType)
+  private def isDateField(webElement: WebElement): Boolean = isDateField(ElementType(webElement))
+
+  private def isDateTimeField(elementType: ElementType): Boolean = isInputField(elementType, "datetime") || isTextField(elementType)
+  private def isDateTimeField(webElement: WebElement): Boolean = isDateTimeField(ElementType(webElement))
+
+  private def isDateTimeLocalField(elementType: ElementType): Boolean = isInputField(elementType, "datetime-local") || isTextField(elementType)
+  private def isDateTimeLocalField(webElement: WebElement): Boolean = isDateTimeLocalField(ElementType(webElement))
+
+  private def isMonthField(elementType: ElementType): Boolean = isInputField(elementType, "month") || isTextField(elementType)
+  private def isMonthField(webElement: WebElement): Boolean = isMonthField(ElementType(webElement))
+
+  private def isNumberField(elementType: ElementType): Boolean = isInputField(elementType, "number") || isTextField(elementType)
+  private def isNumberField(webElement: WebElement): Boolean = isNumberField(ElementType(webElement))
+
+  private def isRangeField(elementType: ElementType): Boolean = isInputField(elementType, "range") || isTextField(elementType)
+  private def isRangeField(webElement: WebElement): Boolean = isRangeField(ElementType(webElement))
+
+  private def isSearchField(elementType: ElementType): Boolean = isInputField(elementType, "search") || isTextField(elementType)
+  private def isSearchField(webElement: WebElement): Boolean = isSearchField(ElementType(webElement))
+
+  private def isTelField(elementType: ElementType): Boolean = isInputField(elementType, "tel") || isTextField(elementType)
+  private def isTelField(webElement: WebElement): Boolean = isTelField(ElementType(webElement))
+
+  private def isTimeField(elementType: ElementType): Boolean = isInputField(elementType, "time") || isTextField(elementType)
+  private def isTimeField(webElement: WebElement): Boolean = isTimeField(ElementType(webElement))
+
+  private def isUrlField(elementType: ElementType): Boolean = isInputField(elementType, "url") || isTextField(elementType)
+  private def isUrlField(webElement: WebElement): Boolean = isUrlField(ElementType(webElement))
+
+  private def isWeekField(elementType: ElementType): Boolean = isInputField(elementType, "week") || isTextField(elementType)
+  private def isWeekField(webElement: WebElement): Boolean = isWeekField(ElementType(webElement))
+
+  private def isTextArea(elementType: ElementType): Boolean = elementType.elementTag == "textarea"
+  private def isTextArea(webElement: WebElement): Boolean = isTextArea(ElementType(webElement))
+
+  private def isSelectField(elementType: ElementType): Boolean = elementType.elementTag == "select"
+  private def isSelectField(webElement: WebElement): Boolean = isSelectField(ElementType(webElement))
   
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
@@ -2456,7 +2517,7 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a single selection list
    */
   class SingleSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(underlying.getTagName.toLowerCase != "select")
+    if(!isSelectField(underlying))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
@@ -2539,7 +2600,7 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a multiple selection list
    */
   class MultiSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(underlying.getTagName.toLowerCase != "select")
+    if(!isSelectField(underlying))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
@@ -3132,43 +3193,45 @@ trait WebBrowser {
   def tagName(tagName: String): TagNameQuery = new TagNameQuery(tagName)
 
   private def createTypedElement(element: WebElement, pos: source.Position = implicitly[source.Position]): Element = {
-    if (isTextField(element))
+    val elementType = ElementType(element)
+
+    if (isTextField(elementType))
       new TextField(element)(pos)
-    else if (isTextArea(element))
+    else if (isTextArea(elementType))
       new TextArea(element)(pos)
-    else if (isPasswordField(element))
+    else if (isPasswordField(elementType))
       new PasswordField(element)(pos)
-    else if (isEmailField(element))
+    else if (isEmailField(elementType))
       new EmailField(element)(pos)
-    else if (isColorField(element))
+    else if (isColorField(elementType))
       new ColorField(element)(pos)
-    else if (isDateField(element))
+    else if (isDateField(elementType))
       new DateField(element)(pos)
-    else if (isDateTimeField(element))
+    else if (isDateTimeField(elementType))
       new DateTimeField(element)(pos)
-    else if (isDateTimeLocalField(element))
+    else if (isDateTimeLocalField(elementType))
       new DateTimeLocalField(element)(pos)
-    else if (isMonthField(element))
+    else if (isMonthField(elementType))
       new MonthField(element)(pos)
-    else if (isNumberField(element))
+    else if (isNumberField(elementType))
       new NumberField(element)(pos)
-    else if (isRangeField(element))
+    else if (isRangeField(elementType))
       new RangeField(element)(pos)
-    else if (isSearchField(element))
+    else if (isSearchField(elementType))
       new SearchField(element)(pos)
-    else if (isTelField(element))
+    else if (isTelField(elementType))
       new TelField(element)(pos)
-    else if (isTimeField(element))
+    else if (isTimeField(elementType))
       new TimeField(element)(pos)
-    else if (isUrlField(element))
+    else if (isUrlField(elementType))
       new UrlField(element)(pos)
-    else if (isWeekField(element))
+    else if (isWeekField(elementType))
       new WeekField(element)(pos)
-    else if (isCheckBox(element))
+    else if (isCheckBox(elementType))
       new Checkbox(element)(pos)
-    else if (isRadioButton(element))
+    else if (isRadioButton(elementType))
       new RadioButton(element)(pos)
-    else if (element.getTagName.toLowerCase == "select") {
+    else if (isSelectField(elementType)) {
       val select = new Select(element)
       if (select.isMultiple)
         new MultiSel(element)(pos)
