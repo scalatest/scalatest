@@ -32,62 +32,6 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   type FixtureServices = TestLocationMethodServices
-
-  def suite = new TestLocationSuite
-  class TestLocationSuite extends Suite with FixtureServices {
-    val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite"
-    val expectedStartingList = List(TestStartingPair("testSucceed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testSucceed()"), 
-                                TestStartingPair("testPending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testPending()"), 
-                                TestStartingPair("testCancel", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testCancel()"))
-    val expectedResultList = List(TestResultPair(classOf[TestSucceeded], "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testSucceed()"), 
-                              TestResultPair(classOf[TestPending], "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testPending()"),
-                              TestResultPair(classOf[TestCanceled], "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testCancel()"),
-                              TestResultPair(classOf[TestIgnored], "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite", "testIgnore()"))
-    val expectedScopeOpenedList = Nil
-    val expectedScopeClosedList = Nil
-    
-    def `test succeed`: Unit = {
-      
-    }
-    def `test pending` = {
-      pending
-    }
-    def `test cancel` = {
-      cancel
-    }
-    @Ignore
-    def `test ignore`: Unit = {
-      
-    }
-  }
-  
-  def fixtureSuite = new TestLocationFixtureSuite
-  class TestLocationFixtureSuite extends fixture.TestSuite with FixtureServices with StringFixture {
-    val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite"
-    val expectedStartingList = List(TestStartingPair("testSucceed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testSucceed()"), 
-                                TestStartingPair("testPending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testPending()"), 
-                                TestStartingPair("testCancel", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testCancel()"))
-    val expectedResultList = List(TestResultPair(classOf[TestSucceeded], "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testSucceed()"), 
-                              TestResultPair(classOf[TestPending], "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testPending()"),
-                              TestResultPair(classOf[TestCanceled], "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testCancel()"),
-                              TestResultPair(classOf[TestIgnored], "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testIgnore()"))
-    val expectedScopeOpenedList = Nil
-    val expectedScopeClosedList = Nil
-    
-    def `test succeed`: Unit = {
-      
-    }
-    def `test pending` = {
-      pending
-    }
-    def `test cancel` = {
-      cancel
-    }
-    @Ignore
-    def `test ignore`: Unit = {
-      
-    }
-  }
   
   def spec = new TestLocationSpec
   class TestLocationSpec extends RefSpec with FixtureServices {

@@ -2729,6 +2729,24 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
 
         val minMaxPairs: Generator[(NonZeroFiniteFloat, NonZeroFiniteFloat)] =
           for {
+/*
+TODO: The following ensuringValid call is occassionally failing with a passed Infinity:
+[info] CommonGeneratorsSpec:
+[info] The CommonGenerators object should offer a nonZeroFiniteFloatsBetween method that 
+[info] - returns a generator whose initEdges method includes min and max *** FAILED *** (5 milliseconds)
+[info]   java.lang.AssertionError: Infinity was not a valid NonZeroFiniteFloat
+[info]   at org.scalactic.anyvals.NonZeroFiniteFloat$.ensuringValid(NonZeroFiniteFloat.scala:541)
+[info]   at org.scalatest.prop.Randomizer.chooseNonZeroFiniteFloat(Randomizer.scala:1141)
+[info]   at org.scalatest.prop.CommonGenerators$$anon$35.next(CommonGenerators.scala:781)
+[info]   at org.scalatest.prop.Generator$$anon$9.next(Generator.scala:44)
+[info]   at org.scalatest.prop.Generator$$anon$10.next(Generator.scala:82)
+[info]   at org.scalatest.enablers.UnitPropCheckerAsserting$PropCheckerAssertingImpl.loop$1(PropCheckerAsserting.scala:152)
+[info]   at org.scalatest.enablers.UnitPropCheckerAsserting$PropCheckerAssertingImpl.checkForAll(PropCheckerAsserting.scala:194)
+[info]   at org.scalatest.enablers.UnitPropCheckerAsserting$PropCheckerAssertingImpl.check1(PropCheckerAsserting.scala:627)
+[info]   at org.scalatest.prop.GeneratorDrivenPropertyChecks$class.forAll(GeneratorDrivenPropertyChecks.scala:755)
+[info]   at org.scalatest.prop.GeneratorDrivenPropertyChecks$.forAll(GeneratorDrivenPropertyChecks.scala:1281)
+[info]   ...
+*/
             min <- nonZeroFiniteFloatsBetween(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat.ensuringValid(NonZeroFiniteFloat.MaxValue - 1E32f))
             max <- nonZeroFiniteFloatsBetween(min, NonZeroFiniteFloat.MaxValue)
           } yield (min, max)

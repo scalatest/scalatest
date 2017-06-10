@@ -137,10 +137,12 @@ class NonEmptyArraySpec extends UnitSpec {
     arr3(0) shouldEqual "hi"
     val arr4 = NonEmptyArray(7, 8, 9)
     arr4(2) shouldEqual 9
-    the [IndexOutOfBoundsException] thrownBy {
-      val arr5 = NonEmptyArray(1, 2, 3)
+    // SKIP-SCALATESTJS-START
+    the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
+      val arr5 = NonEmptyArray(1, 2, 3)        // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
       arr5(3)
     } should have message "3"
+    // SKIP-SCALATESTJS-END
   }
   it should "have a length method" in {
     NonEmptyArray(1).length shouldBe 1
