@@ -75,9 +75,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123")(1) shouldEqual '2'
     NonEmptyString("hi")(0) shouldEqual 'h'
     NonEmptyString("789")(2) shouldEqual '9'
-    the [IndexOutOfBoundsException] thrownBy {
-      NonEmptyString("123")(3)
+    // SKIP-SCALATESTJS-START
+    the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
+      NonEmptyString("123")(3)                 // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
     } should have message "String index out of range: 3"
+    // SKIP-SCALATESTJS-END
   }
   it should "have a length method" in {
     NonEmptyString("1").length shouldBe 1
