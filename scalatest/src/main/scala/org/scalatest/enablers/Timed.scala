@@ -204,6 +204,9 @@ below:
           val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
           val timer = new Timer
 
+          // This call should come before the onComplete call, to avoid race condition between the schedule call and cancel call in the onComplete block as reported in:
+          // https://github.com/scalatest/scalatest/issues/1147
+          timer.schedule(task, delay)
           result.onComplete { t =>
             t match {
               case Success(r) =>
@@ -232,7 +235,6 @@ below:
             }
           }
 
-          timer.schedule(task, delay)
           promise.future
         }
         catch {
@@ -303,6 +305,9 @@ below:
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
         val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
 
+        // This call should come before the onCompletedThen call, to avoid race condition between the schedule call and cancel call in the onComplete block as reported in:
+        // https://github.com/scalatest/scalatest/issues/1147
+        timer.schedule(task, delay)
         val futureOutcome = result.onCompletedThen { t =>
           t match {
             case Good(r) =>
@@ -332,7 +337,6 @@ below:
           }
         }
 
-        timer.schedule(task, delay)
         futureOutcome
       }
     }
