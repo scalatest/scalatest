@@ -80,7 +80,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.1"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -180,7 +180,6 @@ object ScalatestBuild extends Build {
       "org.testng" % "testng" % "6.7" % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
@@ -188,9 +187,7 @@ object ScalatestBuild extends Build {
 
   def scalatestTestLibraryDependencies =
     Seq(
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
+      "commons-io" % "commons-io" % "1.3.2" % "test"
     )
 
   def scalatestJSLibraryDependencies =
@@ -434,6 +431,23 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
+  lazy val selenium = Project("selenium", file("selenium"))
+    .settings(
+      javaHome := getJavaHome,
+      scalaVersion := buildScalaVersion,
+      crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.1"),
+      version := releaseVersion,
+      projectTitle := "ScalaTest Selenium",
+      organization := "org.scalatestplus.selenium",
+      moduleName := "scalatestplus-selenium",
+      libraryDependencies ++= Seq(
+        "org.scalatest" %% "scalatest" % "3.0.1",
+        "org.seleniumhq.selenium" % "selenium-java" % "2.45.0",
+        "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
+        "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
+      )
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalatest)
+
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
    .settings(scalatestDocSettings: _*)
@@ -501,7 +515,6 @@ object ScalatestBuild extends Build {
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
         "org.scalatest.testng",

@@ -31,7 +31,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.ParallelTestExecution
 import org.scalatest.ScreenshotOnFailure
-import org.scalatest.SharedHelpers.SilentReporter
+import SharedHelpers.SilentReporter
 import org.scalatest.Suite
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.tagobjects.Slow
@@ -1317,7 +1317,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
   
     it("should support capturing screenshot", Slow) {
-      go to "http://www.artima.com"
+      go to "http://www.scalatest.org"
       try {
         capture
         capture to ("MyScreenShot.png")
@@ -1330,7 +1330,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
     
     it("should support setting capture target directory", Slow) {
-      go to "http://www.artima.com"
+      go to "http://www.scalatest.org"
       val tempDir = new File(System.getProperty("java.io.tmpdir"))
       val targetDir1 = new File(tempDir, "scalatest-test-target1")
       val targetDir2 = new File(tempDir, "scalatest-test-target2")
