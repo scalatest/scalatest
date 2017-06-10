@@ -394,6 +394,11 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
+      testOptions in Test ++=
+        Seq(Tests.Argument(TestFrameworks.ScalaTest,
+          "-oDI",
+          "-W", "120", "60")),
+      logBuffered in Test := false,
       libraryDependencies += scalacheckDependency("test"),
       publishArtifact := false,
       publish := {},
