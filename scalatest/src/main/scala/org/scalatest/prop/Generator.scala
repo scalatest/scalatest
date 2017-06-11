@@ -208,7 +208,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
   private[prop] val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat.MaxValue)
   private[prop] val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
   private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
-  private[prop] val numericCharEdges = List(NumericChar('0'))
+  private[prop] val numericCharEdges = List(NumericChar('0'), NumericChar('9'))
 
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
