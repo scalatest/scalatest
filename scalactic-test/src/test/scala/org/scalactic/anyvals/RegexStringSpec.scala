@@ -25,22 +25,8 @@ import java.util.Locale
 // SKIP-SCALATESTJS-END
 
 
-class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
+class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
-  val regexStringGen: Gen[RegexString] =
-    Gen.oneOf(
-      RegexString(""),
-      RegexString("."),
-      RegexString(".*"),
-      RegexString("^Now is the time for all good men$"),
-      RegexString("(a|b)"),
-      RegexString("""^\\(&amp;|\W|\p{Alpha}+\*?|_)"""),
-      RegexString("[abc]")
-    )
-
-  implicit val arbRegexString: Arbitrary[RegexString] = Arbitrary(regexStringGen)
-
-/*
   import prop._
 
   implicit val RegexStringGen: Generator[RegexString] =
@@ -52,7 +38,6 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       RegexString("(a|b)"),
       RegexString("""^\\(&amp;|\W|\p{Alpha}+\*?|_)"""),
       RegexString("[abc]"))
-*/
 
   describe("A RegexString") {
 
