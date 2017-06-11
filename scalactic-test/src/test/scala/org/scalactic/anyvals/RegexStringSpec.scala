@@ -15,14 +15,29 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest._
 import org.scalatest.prop._
 import OptionValues._
 import java.nio.charset.Charset
 import java.util.Locale
 
-class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
 
+  val regexStringGen: Gen[RegexString] =
+    Gen.oneOf(
+      RegexString(""),
+      RegexString("."),
+      RegexString(".*"),
+      RegexString("^Now is the time for all good men$"),
+      RegexString("(a|b)"),
+      RegexString("""^\\(&amp;|\W|\p{Alpha}+\*?|_)"""),
+      RegexString("[abc]")
+    )
+
+  implicit val arbRegexString: Arbitrary[RegexString] = Arbitrary(regexStringGen)
+
+/*
   import prop._
 
   implicit val RegexStringGen: Generator[RegexString] =
@@ -34,6 +49,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       RegexString("(a|b)"),
       RegexString("""^\\(&amp;|\W|\p{Alpha}+\*?|_)"""),
       RegexString("[abc]"))
+*/
 
   describe("A RegexString") {
 
