@@ -25,10 +25,10 @@ import scala.xml
  * where &ldquo;pretty&rdquo; is in the eye of the implementer. 
  *
  * <p>
- * Scala's <code>Any</code> type declares a <code>toString</code> that will convert any object to a <code>String</code>
- * representation. This <code>String</code> representation is primarily intended for programmers, and is usually sufficient.
- * However, sometimes it can be helpful to provide an alternative implementation of <code>toString</code> for certain types.
- * For example, the <code>toString</code> implementation on <code>String</code> prints out the value of the <code>String</code>:
+ * Scala's `Any` type declares a `toString` that will convert any object to a `String`
+ * representation. This `String` representation is primarily intended for programmers, and is usually sufficient.
+ * However, sometimes it can be helpful to provide an alternative implementation of `toString` for certain types.
+ * For example, the `toString` implementation on `String` prints out the value of the `String`:
  * </p>
  *
  * <pre class="stREPL">
@@ -37,8 +37,8 @@ import scala.xml
  * </pre>
  *
  * <p>
- * If the error message that resulted from comparing <code>Int</code> 1 with <code>String</code> <code>"1"</code>
- * in a ScalaTest assertion used <code>toString</code>, therefore, the error message would be:
+ * If the error message that resulted from comparing `Int` 1 with `String` `"1"`
+ * in a ScalaTest assertion used `toString`, therefore, the error message would be:
  * </p>
  *
  * <pre>
@@ -46,9 +46,9 @@ import scala.xml
  * </pre>
  *
  * <p>
- * To make it quicker to figure out why the assertion failed, ScalaTest <em>prettifies</em> the objects involved in 
- * the error message. The default <code>Prettifier</code> will place double quotes on either side of a <code>String</code>s
- * <code>toString</code> result:
+ * To make it quicker to figure out why the assertion failed, ScalaTest ''prettifies'' the objects involved in 
+ * the error message. The default `Prettifier` will place double quotes on either side of a `String`s
+ * `toString` result:
  * </p>
  *
  * <pre class="stREPL">
@@ -60,7 +60,7 @@ import scala.xml
  * </pre>
  *
  * <p>
- * Thus the error message resulting from comparing <code>Int</code> 1 with <code>String</code> <code>"1"</code>,
+ * Thus the error message resulting from comparing `Int` 1 with `String` `"1"`,
  * in a ScalaTest assertion is:
  * </p>
  *
@@ -70,7 +70,7 @@ import scala.xml
  *
  * <p>
  * If you wish to prettify an object in production code, for example, to issue a profoundly clear debug message, you can use
- * <code>PrettyMethods</code> and invoke <code>pretty</code>. Here's an example:
+ * `PrettyMethods` and invoke `pretty`. Here's an example:
  * </p>
  *
  * <pre class="stREPL">
@@ -85,39 +85,39 @@ import scala.xml
  * </pre>
  *
  * <p>
- * For example, the default <code>Prettifier</code>, <a href="Prettifier$.html"><code>Prettifier.default</code></a>, transforms:
+ * For example, the default `Prettifier`, <a href="Prettifier$.html">`Prettifier.default`</a>, transforms:
  * </p>
  *
  * <ul>
- * <li><code>Null</code> to: <code>null</code></li>
- * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
- * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
- * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
- * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
- * <li><code>scala.Some</code> to: <code>Some("3")</code></li>
- * <li><code>scala.util.Left</code> to: <code>Left("3")</code></li>
- * <li><code>scala.util.Right</code> to: <code>Right("3")</code></li>
- * <li><code>scala.util.Success</code> to: <code>Success("3")</code></li>
- * <li><code>org.scalactic.Good</code> to: <code>Good("3")</code></li>
- * <li><code>org.scalactic.Bad</code> to: <code>Bad("3")</code></li>
- * <li><code>org.scalactic.One</code> to: <code>One("3")</code></li>
- * <li><code>org.scalactic.Many</code> to: <code>Many("1", "2", "3")</code></li>
- * <li><code>scala.collection.GenTraversable</code> to: <code>List("1", "2", "3")</code></li>
- * <li><code>java.util.Collection</code> to: <code>["1", "2", "3"]</code></li>
- * <li><code>java.util.Map</code> to: <code>{1="one", 2="two", 3="three"}</code></li>
+ * <li>`Null` to: `null`</li>
+ * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+ * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+ * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+ * <li>`Array` to: `Array("1", "2", "3")`</li>
+ * <li>`scala.Some` to: `Some("3")`</li>
+ * <li>`scala.util.Left` to: `Left("3")`</li>
+ * <li>`scala.util.Right` to: `Right("3")`</li>
+ * <li>`scala.util.Success` to: `Success("3")`</li>
+ * <li>`org.scalactic.Good` to: `Good("3")`</li>
+ * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
+ * <li>`org.scalactic.One` to: `One("3")`</li>
+ * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
+ * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+ * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
+ * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
  * </ul>
  *
  * <p>
- * For anything else, the default <code>Prettifier</code> returns the result of invoking <code>toString</code>.
+ * For anything else, the default `Prettifier` returns the result of invoking `toString`.
  * </p>
  *
  * <p>
- * Note: <code>Prettifier</code> is not parameterized (<em>i.e.</em>, <code>Prettifier[T]</code>, where <code>T</code> is the type
- * to prettify) because assertions (including matcher expressions) in ScalaTest would then need to look up <code>Prettifier</code>s implicitly by type. This would slow
+ * Note: `Prettifier` is not parameterized (''i.e.'', `Prettifier[T]`, where `T` is the type
+ * to prettify) because assertions (including matcher expressions) in ScalaTest would then need to look up `Prettifier`s implicitly by type. This would slow
  * compilation even though most (let's guess 99.9%) of the time in practice assertions do not fail, and thus 99.9% of the time no error messages need to be generated.
  * If no error messages are needed 99.9% of the time, no prettification is needed 99.9% of the time, so the slow down in compile time for the implicit
  * look ups is unlikely to be worth the benefit. Only a few types in practice usually need prettification for testing error message purposes, and those will be covered
- * by the default <code>Prettifier</code>. A future version of ScalaTest will provide a simple mechanism to replace the default <code>Prettifier</code> with a
+ * by the default `Prettifier`. A future version of ScalaTest will provide a simple mechanism to replace the default `Prettifier` with a
  * custom one when a test actually fails.
  * </p>
  */
@@ -129,14 +129,14 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
 }
 
 /**
- * Companion object for <code>Prettifier</code> that provides a default <code>Prettifier</code> implementation.
+ * Companion object for `Prettifier` that provides a default `Prettifier` implementation.
  */
 object Prettifier {
 
   /**
-   * Constract a new <code>Prettifier</code> from a given partial function.
+   * Constract a new `Prettifier` from a given partial function.
    *
-   * @param fun a partial function with which to implement the apply method of the returned <code>Prettifier</code>.
+   * @param fun a partial function with which to implement the apply method of the returned `Prettifier`.
    */
   def apply(fun: PartialFunction[Any, String]): Prettifier =
     new Prettifier {
@@ -144,10 +144,10 @@ object Prettifier {
     }
 
   /**
-   * A default <code>Prettifier</code>. 
+   * A default `Prettifier`. 
    *
    * <p>
-   * This default <code>Prettifier</code> is used in ScalaTest to clarify error messages.
+   * This default `Prettifier` is used in ScalaTest to clarify error messages.
    * </p>
    *
    * <p>
@@ -155,27 +155,27 @@ object Prettifier {
    * </p>
    *
    * <ul>
-   * <li><code>Null</code> to: <code>null</code></li>
-   * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
-   * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
-   * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
-   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
-   * <li><code>scala.Some</code> to: <code>Some("3")</code></li>
-   * <li><code>scala.util.Left</code> to: <code>Left("3")</code></li>
-   * <li><code>scala.util.Right</code> to: <code>Right("3")</code></li>
-   * <li><code>scala.util.Success</code> to: <code>Success("3")</code></li>
-   * <li><code>org.scalactic.Good</code> to: <code>Good("3")</code></li>
-   * <li><code>org.scalactic.Bad</code> to: <code>Bad("3")</code></li>
-   * <li><code>org.scalactic.One</code> to: <code>One("3")</code></li>
-   * <li><code>org.scalactic.Many</code> to: <code>Many("1", "2", "3")</code></li>
-   * <li><code>scala.collection.GenTraversable</code> to: <code>List("1", "2", "3")</code></li>
-   * <li><code>java.util.Collection</code> to: <code>["1", "2", "3"]</code></li>
-   * <li><code>java.util.Map</code> to: <code>{1="one", 2="two", 3="three"}</code></li>
+   * <li>`Null` to: `null`</li>
+   * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+   * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+   * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+   * <li>`Array` to: `Array("1", "2", "3")`</li>
+   * <li>`scala.Some` to: `Some("3")`</li>
+   * <li>`scala.util.Left` to: `Left("3")`</li>
+   * <li>`scala.util.Right` to: `Right("3")`</li>
+   * <li>`scala.util.Success` to: `Success("3")`</li>
+   * <li>`org.scalactic.Good` to: `Good("3")`</li>
+   * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
+   * <li>`org.scalactic.One` to: `One("3")`</li>
+   * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
+   * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+   * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
+   * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
    * </ul>
    *
    *
    * <p>
-   * For anything else, it returns the result of invoking <code>toString</code>.
+   * For anything else, it returns the result of invoking `toString`.
    * </p>
    */
   implicit val default: Prettifier =
@@ -258,10 +258,10 @@ object Prettifier {
     }
 
   /**
-   * A basic <code>Prettifier</code>.
+   * A basic `Prettifier`.
    *
    * <p>
-   * This was the default <code>Prettifier</code> used in ScalaTest 2.0 release.
+   * This was the default `Prettifier` used in ScalaTest 2.0 release.
    * </p>
    *
    * <p>
@@ -269,16 +269,16 @@ object Prettifier {
    * </p>
    *
    * <ul>
-   * <li><code>Null</code> to: <code>null</code></li>
-   * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
-   * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
-   * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
-   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
-   * <li><code>scala.util.Some</code> to: <code>Some("3")</code></li>
+   * <li>`Null` to: `null`</li>
+   * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+   * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+   * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+   * <li>`Array` to: `Array("1", "2", "3")`</li>
+   * <li>`scala.util.Some` to: `Some("3")`</li>
    * </ul>
    *
    * <p>
-   * For anything else, it returns the result of invoking <code>toString</code>.
+   * For anything else, it returns the result of invoking `toString`.
    * </p>
    */
   val basic = new BasicPrettifier
