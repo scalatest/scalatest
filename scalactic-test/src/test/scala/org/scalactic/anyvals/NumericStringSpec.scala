@@ -20,7 +20,6 @@ import org.scalatest._
 import org.scalatest.prop._
 import OptionValues._
 import java.nio.charset.Charset
-import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
 
 import scala.util.{Failure, Success, Try}

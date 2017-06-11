@@ -17,7 +17,9 @@ package org.scalactic.anyvals
 
 import reflect.macros.whitebox.Context
 import java.util.regex.Pattern
+// SKIP-SCALATESTJS-START
 import java.util.regex.PatternSyntaxException
+// SKIP-SCALATESTJS-END
 
 import CompileTimeAssertions._
 private[scalactic] object RegexStringMacro {
@@ -31,7 +33,10 @@ private[scalactic] object RegexStringMacro {
       (true, "")
     }
     catch {
+// SKIP-SCALATESTJS-START
       case e: PatternSyntaxException =>
+// SKIP-SCALATESTJS-END
+//SCALATESTJS-ONLY case e: Exception => // TODO: Figure out exactly what exception JS throws in this case
         (false, "\n" + e.getMessage)
     }
 

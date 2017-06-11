@@ -16,7 +16,9 @@
 package org.scalactic.anyvals
 
 import java.nio.charset.Charset
+// SKIP-SCALATESTJS-START
 import java.util.Locale
+// SKIP-SCALATESTJS-END
 
 private[scalactic] final class RegexString private (val value: String) extends AnyVal {
   override def toString: String = s"RegexString($value)"
@@ -27,7 +29,9 @@ private[scalactic] final class RegexString private (val value: String) extends A
 
   def codePointAt(index: Int): Int = value.codePointAt(index)
 
+  // SKIP-SCALATESTJS-START
   def codePointBefore(index: Int): Int = value.codePointBefore(index)
+  // SKIP-SCALATESTJS-END
 
   def codePointCount(beginIndex: Int, endIndex: Int): Int =
     value.codePointCount(beginIndex, endIndex)
@@ -44,8 +48,10 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def contains(s: CharSequence): Boolean =
     value.contains(s)
 
+  // SKIP-SCALATESTJS-START
   def contentEquals(cs: CharSequence): Boolean =
     value.contentEquals(cs)
+  // SKIP-SCALATESTJS-END
 
   def endsWith(suffix: String): Boolean =
     value.endsWith(suffix)
@@ -95,8 +101,10 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def matches(regex: String): Boolean =
     value.matches(regex)
 
+  // SKIP-SCALATESTJS-START
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
+  // SKIP-SCALATESTJS-END
 
   def regionMatches(ignoreCase: Boolean, toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
     value.regionMatches(ignoreCase, toffset, other, ooffset, len)
@@ -143,14 +151,18 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def toLowerCase: String =
     value.toLowerCase
 
+// SKIP-SCALATESTJS-START
   def toLowerCase(locale: Locale): String =
     value.toLowerCase(locale: Locale)
+// SKIP-SCALATESTJS-END
 
   def toUpperCase: String =
     value.toUpperCase
 
+// SKIP-SCALATESTJS-START
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
+// SKIP-SCALATESTJS-END
 
   def trim: String =
     value.trim
