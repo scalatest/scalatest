@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import enablers.Isable
 
 /**
  * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
@@ -1564,9 +1565,7 @@ import resultOfStringPassedToVerb.verb
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
 
-          def is(testFun: => PendingStatement): Unit = {
-            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _, pos)
-          }
+          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, List.empty, pos)
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -1574,14 +1573,20 @@ import resultOfStringPassedToVerb.verb
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
-              }
+              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, tags, pos)
             }
           }
         }
       }
     }
+
+   // TODO: Scaladoc
+   protected implicit val isableForPendingStatement: Isable[Assertion with PendingStatement] =
+     new Isable[Assertion with PendingStatement] {
+       def registerPendingTestToRun(testFun: => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
+       }
+     }
 
   /**
    * Supports the shorthand form of shared test registration.
