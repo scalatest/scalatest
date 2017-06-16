@@ -788,6 +788,8 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       promise.future.map { repo =>
         val tp = rep.testPendingEventsReceived
         assert(tp.size === 3)
+        val tf = rep.testFailedEventsReceived
+        assert(tf.size === 0)
       }
     }
   }

@@ -786,6 +786,8 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
       status.waitUntilCompleted()
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 3)
+      val tf = rep.testFailedEventsReceived
+      assert(tf.size === 0)
     }
   }
 }
