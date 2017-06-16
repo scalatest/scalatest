@@ -74,14 +74,16 @@ object Fixable extends LowerPriorityFixable {
     type Result = Future[Assertion with PendingStatement] 
     def pendingUntilFixed(f: => Future[Assertion], pos: source.Position): Future[Assertion with PendingStatement] = {
       val future: Future[Assertion] = f
-      future map { _ =>
+      future.transform(
         // Given the Future succeeded, the Future should now fail to indicate the pendingUntilFixed should be removed.
-        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
-      } recoverWith {
-        case _: Exception => throw new TestPendingException
-        case _: AssertionError => throw new TestPendingException
-        case _ => throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
-      }
+        _ => throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos),
+        ex => 
+          ex match {
+            case _: Exception => new TestPendingException
+            case _: AssertionError => new TestPendingException
+            case _ => new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
+          }
+      )
     }
   }
 }

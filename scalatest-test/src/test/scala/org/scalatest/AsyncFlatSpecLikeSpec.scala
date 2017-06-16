@@ -772,6 +772,16 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
           }
         }
 
+        it should "do this but fail" is pendingUntilFixed {
+          succeed
+        }
+
+        it should "do that but fail" is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
         it should "do those" in {
           assert(2 + 2 === 4)
         }
@@ -787,7 +797,7 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 3)
       val tf = rep.testFailedEventsReceived
-      assert(tf.size === 0)
+      assert(tf.size === 2)
     }
   }
 }
