@@ -24,5 +24,5 @@ import scala.collection.generic.FilterMonadic
 import scala.concurrent.{ExecutionContext, Future}
 
 trait Isable[T] {
-  def registerPendingTestToRun(f: => T, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit
+  def registerPendingTestToRun(f: () => T, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit
 }

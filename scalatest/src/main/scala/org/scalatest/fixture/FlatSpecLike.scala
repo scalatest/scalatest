@@ -2014,13 +2014,13 @@ import resultOfStringPassedToVerb.verb
         //SCALATESTJS-ONLY val stackDepth = 8
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
-          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, List.empty, pos)
+          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, List.empty, pos)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
               //                                                            ^
-              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, tags, pos)
+              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, tags, pos)
             }
           }
         }
@@ -2030,10 +2030,10 @@ import resultOfStringPassedToVerb.verb
    // TODO: Scaladoc
    protected implicit val isableForPendingStatement: Isable[Assertion with PendingStatement] =
      new Isable[Assertion with PendingStatement] {
-       def registerPendingTestToRun(testFun: => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+       def registerPendingTestToRun(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
          // TODO: Get rid of unusedfixture, and use NoArgTestFunction instead
          // registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
-         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _), pos)
+         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun), pos)
        }
      }
 

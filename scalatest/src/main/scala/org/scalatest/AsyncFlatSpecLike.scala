@@ -53,8 +53,22 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {
       PastOutcome(
-        try { testFun; Succeeded }
+        try { testFun(); Succeeded }
         catch {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+   private[scalatest] def transformFuturePendingToOutcome(testFun: () => Future[PendingStatement]): () => AsyncOutcome =
+    () => {
+      new InternalFutureOutcome(
+        testFun().map { r =>
+          Succeeded
+        } recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
@@ -408,8 +422,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToRun(testFun _, verb.trim, name.trim, List(), pos)
     }
 
     /**
@@ -1565,7 +1579,7 @@ import resultOfStringPassedToVerb.verb
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
 
-          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, List.empty, pos)
+          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, List.empty, pos)
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -1573,7 +1587,7 @@ import resultOfStringPassedToVerb.verb
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun, verb, rest, tags, pos)
+              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, tags, pos)
             }
           }
         }
@@ -1583,8 +1597,15 @@ import resultOfStringPassedToVerb.verb
    // TODO: Scaladoc
    protected implicit val isableForPendingStatement: Isable[Assertion with PendingStatement] =
      new Isable[Assertion with PendingStatement] {
-       def registerPendingTestToRun(testFun: => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
-         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
+       def registerPendingTestToRun(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+     }
+
+   protected implicit val isableForFuturePendingStatement: Isable[Future[Assertion with PendingStatement]] =
+     new Isable[Future[Assertion with PendingStatement]] {
+       def registerPendingTestToRun(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerFuturePendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
      }
 
@@ -1659,6 +1680,16 @@ import resultOfStringPassedToVerb.verb
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
+  }
+
+  private def registerFuturePendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
+    //def transformPendingToOutcomeParam: PendingStatement = testFun()
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   /**
