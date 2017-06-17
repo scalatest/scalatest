@@ -59,7 +59,7 @@ sealed abstract class Side[+W,+E] extends Product with Serializable {
    * @return if this is a <code>East</code>, the result of applying the given function to the contained value wrapped in a <code>East</code>,
    *         else this <code>West</code>
    */
-  def eastMap[E2](f: E => E2): W Side E2
+  def eastMap[E2](f: E => E2): Side[W, E2]
 
   /**
    * Returns an <code>Side</code> with the <code>West</code> and <code>East</code> types swapped: <code>East</code> becomes <code>West</code> and <code>West</code>
@@ -412,7 +412,7 @@ final case class West[+W](b: W) extends Side[W,Nothing] {
   def elseEast[E]: W Side E = this
 
   def westMap[W2](f: W => W2): W2 Side Nothing = West(f(b))
-  def eastMap[E2](f: Nothing => E2): W Side E2 = this
+  def eastMap[E2](f: Nothing => E2): Side[W, E2] = this
   def swap: Nothing Side W = East(b)
   def transform[W2, E2](bf: W => W2 Side E2, wf: Nothing => W2 Side E2): W2 Side E2 = bf(b)
   def fold[V](bf: W => V, wf: Nothing => V): V = bf(b)
