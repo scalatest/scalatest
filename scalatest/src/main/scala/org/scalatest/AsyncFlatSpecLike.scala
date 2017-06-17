@@ -344,7 +344,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "ignore", tags, testFun _, pos)
     }
   }
 
@@ -454,7 +454,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "ignore", List.empty, testFun _, pos)
     }
 
     /**
@@ -706,7 +706,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
     }
 
     /**
@@ -803,7 +803,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "in", List.empty, testFun _, pos)
     }
 
     /**
@@ -1211,7 +1211,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, "ignore", List.empty, testFun _, pos)
     }
   }
 
@@ -1311,7 +1311,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, "ignore", tagsList, testFun _, pos)
     }
   }
 
@@ -1373,7 +1373,7 @@ import resultOfStringPassedToVerb.verb
          thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
        def registerPendingTestToIgnore(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
-         thisSuite.registerPendingTestToIgnore(verb.trim + " " + rest.trim, tags, "is", testFun, pos)
+         thisSuite.registerPendingTestToIgnore(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
      }
 
@@ -1383,7 +1383,7 @@ import resultOfStringPassedToVerb.verb
          thisSuite.registerFuturePendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
        def registerPendingTestToIgnore(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
-         thisSuite.registerFuturePendingTestToIgnore(verb.trim + " " + rest.trim, tags, "is", testFun, pos)
+         thisSuite.registerFuturePendingTestToIgnore(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
      }
 
@@ -1439,7 +1439,7 @@ import resultOfStringPassedToVerb.verb
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1450,9 +1450,7 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  // TODO: Swap order of testTags and methodName so the order here is consistent with registerTestToRun. And do this
-  // for similar methods. I think all the register*Ignore methods have this order. Make them consistent.
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1462,7 +1460,7 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  private def registerFuturePendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion with PendingStatement], pos: source.Position): Unit = {
+  private def registerFuturePendingTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[Assertion with PendingStatement], pos: source.Position): Unit = {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
