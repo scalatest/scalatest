@@ -59,7 +59,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @return if this is a <code>East</code>, the result of applying the given function to the contained value wrapped in a <code>East</code>,
    *         else this <code>West</code>
    */
-  def eastMap[X](f: W => X): B Side X
+  def eastMap[E2](f: W => E2): B Side E2
 
   /**
    * Returns an <code>Side</code> with the <code>West</code> and <code>East</code> types swapped: <code>East</code> becomes <code>West</code> and <code>West</code>
@@ -92,7 +92,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def transform[UU2, X](bf: B => UU2 Side X, wf: W => UU2 Side X): UU2 Side X
+  def transform[UU2, E2](bf: B => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2
 
   /**
    * Folds this <code>Side</code> into a value of type <code>V</code> by applying the given <code>bf</code> function if this is
@@ -412,9 +412,9 @@ final case class West[+B](b: B) extends Side[B,Nothing] {
   def elseEast[W]: B Side W = this
 
   def westMap[UU2](f: B => UU2): UU2 Side Nothing = West(f(b))
-  def eastMap[X](f: Nothing => X): B Side X = this
+  def eastMap[E2](f: Nothing => E2): B Side E2 = this
   def swap: Nothing Side B = East(b)
-  def transform[UU2, X](bf: B => UU2 Side X, wf: Nothing => UU2 Side X): UU2 Side X = bf(b)
+  def transform[UU2, E2](bf: B => UU2 Side E2, wf: Nothing => UU2 Side E2): UU2 Side E2 = bf(b)
   def fold[V](bf: B => V, wf: Nothing => V): V = bf(b)
 }
 
@@ -497,7 +497,7 @@ final case class East[+W](w: W) extends Side[Nothing,W] {
 
   def westMap[UU2](f: Nothing => UU2): UU2 Side W = this
 
-  def eastMap[X](f: W => X): Nothing Side X = East(f(w))
+  def eastMap[E2](f: W => E2): Nothing Side E2 = East(f(w))
 
   /*
    * Returns this <code>East</code> with the type widened to <code>Side</code>.
@@ -552,7 +552,7 @@ final case class East[+W](w: W) extends Side[Nothing,W] {
    * </pre>
    */
   def swap: W Side Nothing = West(w)
-  def transform[UU2, X](bf: Nothing => UU2 Side X, wf: W => UU2 Side X): UU2 Side X = wf(w)
+  def transform[UU2, E2](bf: Nothing => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2 = wf(w)
   def fold[V](bf: Nothing => V, wf: W => V): V = wf(w)
 }
 
