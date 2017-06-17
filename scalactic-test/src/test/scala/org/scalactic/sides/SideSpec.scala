@@ -63,16 +63,16 @@ class SideSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "An Side" can "be either West or East" in {
+  "A Side" can "be either West or East" in {
     West(7).isWest shouldBe true
     West(7).isEast shouldBe false
     East("oops").isEast shouldBe true
     East("oops").isWest shouldBe false
 
-    West(7) shouldBe an [Side[_, _]]
+    West(7) shouldBe a [Side[_, _]]
     West(7) shouldBe a [West[_]]
 
-    East("oops") shouldBe an [Side[_, _]]
+    East("oops") shouldBe a [Side[_, _]]
     East("oops") shouldBe an [East[_]]
   }
   it can "have its non-inferred type widened by an apply call with a type param" in {
