@@ -409,7 +409,7 @@ final case class West[+W](b: W) extends Side[W,Nothing] {
    * res1: org.scalactic.West[Int,String] = West(3)
    * </pre>
    */
-  def elseEast[E]: W Side E = this
+  def elseEast[E]: Side[W, E] = this
 
   def westMap[W2](f: W => W2): W2 Side Nothing = West(f(b))
   def eastMap[E2](f: Nothing => E2): Side[W, E2] = this
@@ -447,7 +447,7 @@ object West {
      * @param b the &ldquo;bad&rdquo; value
      * @return a new <code>East</code> instance containing the passed <code>b</code> value
      */
-    def elseEast[E](w: E): W Side E = East[E](w)
+    def elseEast[E](w: E): Side[W, E] = East[E](w)
 
     override def toString: String = "WestType"
   }

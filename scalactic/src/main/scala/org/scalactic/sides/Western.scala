@@ -27,7 +27,7 @@ import scala.collection.mutable.Builder
 /**
  * @param value the underlying <code>Side</code> value wrapped in this <code>Western</code>.
  */
-class Western[+W,+E] private[scalactic] (val value: W Side E) extends AnyVal with Serializable { thisWestern =>
+class Western[+W,+E] private[scalactic] (val value: Side[W, E]) extends AnyVal with Serializable { thisWestern =>
 
   /**
    * Indicates whether the <code>Side</code> underlying this </code>Western</code> is a <code>West</code>
