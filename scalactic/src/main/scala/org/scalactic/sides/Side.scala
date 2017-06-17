@@ -27,7 +27,7 @@ import scala.collection.mutable.Builder
 /**
  * Represents a value that is one of two possible types, with both types &ldquo;equally acceptable.&rdquo;
  */
-sealed abstract class Side[+UU,+W] extends Product with Serializable {
+sealed abstract class Side[+UU,+E] extends Product with Serializable {
 
   /**
    * Indicates whether this <code>Side</code> is a <code>West</code>
@@ -50,7 +50,7 @@ sealed abstract class Side[+UU,+W] extends Product with Serializable {
    * @return if this is a <code>West</code>, the result of applying the given function to the contained value wrapped in a <code>West</code>,
    *         else this <code>East</code>
    */
-  def westMap[UU2](f: UU => UU2): UU2 Side W
+  def westMap[UU2](f: UU => UU2): UU2 Side E
 
   /**
    * Applies the given function to this <code>Side</code>'s value if it is a <code>East</code> or returns <code>this</code> if it is a <code>West</code>.
@@ -59,7 +59,7 @@ sealed abstract class Side[+UU,+W] extends Product with Serializable {
    * @return if this is a <code>East</code>, the result of applying the given function to the contained value wrapped in a <code>East</code>,
    *         else this <code>West</code>
    */
-  def eastMap[E2](f: W => E2): UU Side E2
+  def eastMap[E2](f: E => E2): UU Side E2
 
   /**
    * Returns an <code>Side</code> with the <code>West</code> and <code>East</code> types swapped: <code>East</code> becomes <code>West</code> and <code>West</code>
@@ -82,7 +82,7 @@ sealed abstract class Side[+UU,+W] extends Product with Serializable {
    * @return if this <code>Side</code> is a <code>West</code>, its <code>West</code> value wrapped in a <code>East</code>; if this <code>Side</code> is
    *     a <code>East</code>, its <code>East</code> value wrapped in a <code>West</code>.
    */
-  def swap: W Side UU
+  def swap: E Side UU
 
   /**
    * Transforms this <code>Side</code> by applying the function <code>bf</code> to this <code>Side</code>'s <code>West</code> value if it
@@ -92,7 +92,7 @@ sealed abstract class Side[+UU,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def transform[UU2, E2](bf: UU => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2
+  def transform[UU2, E2](bf: UU => UU2 Side E2, wf: E => UU2 Side E2): UU2 Side E2
 
   /**
    * Folds this <code>Side</code> into a value of type <code>V</code> by applying the given <code>bf</code> function if this is
@@ -102,19 +102,19 @@ sealed abstract class Side[+UU,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def fold[V](bf: UU => V, wf: W => V): V
+  def fold[V](bf: UU => V, wf: E => V): V
 
   /**
    * Wraps this <code>Side</code> in an <code>Western</code>, an <code>AnyVal</code> that enables you to transform <code>West</code> values in a <code>for</code> expression with
    * <code>East</code> values passing through unchanged.
    */
-  def western: Western[UU, W] = new Western(this)
+  def western: Western[UU, E] = new Western(this)
 
   /**
    * Wraps this <code>Side</code> in an <code>Eastern</code>, an <code>AnyVal</code> that enables you to transform <code>East</code> values in a <code>for</code> expression with
    * <code>West</code> values passing through unchanged.
    */
-  def eastern: Eastern[UU, W] = new Eastern(this)
+  def eastern: Eastern[UU, E] = new Eastern(this)
 }
 
 /**
@@ -202,7 +202,7 @@ object Side {
    * fixed to <code>ErrorMessage</code> and its "good" type, <code>G</code>, left unspecified.
    * </p>
    */
-  private[scalactic] trait W[WHITE] {
+  private[scalactic] trait E[WHITE] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>UU</code>.
@@ -303,7 +303,7 @@ object Side {
      * See the main documentation for trait <code>G</code> for more detail.
      * </p>
      */
-    type W[WHITE] = BLAUU2K Side WHITE
+    type E[WHITE] = BLAUU2K Side WHITE
   }
 }
 
@@ -409,7 +409,7 @@ final case class West[+UU](b: UU) extends Side[UU,Nothing] {
    * res1: org.scalactic.West[Int,String] = West(3)
    * </pre>
    */
-  def elseEast[W]: UU Side W = this
+  def elseEast[E]: UU Side E = this
 
   def westMap[UU2](f: UU => UU2): UU2 Side Nothing = West(f(b))
   def eastMap[E2](f: Nothing => E2): UU Side E2 = this
@@ -447,7 +447,7 @@ object West {
      * @param b the &ldquo;bad&rdquo; value
      * @return a new <code>East</code> instance containing the passed <code>b</code> value
      */
-    def elseEast[W](w: W): UU Side W = East[W](w)
+    def elseEast[E](w: E): UU Side E = East[E](w)
 
     override def toString: String = "WestType"
   }
@@ -491,13 +491,13 @@ object West {
  *
  * @param b the &ldquo;bad&rdquo; value
  */
-final case class East[+W](w: W) extends Side[Nothing,W] {
+final case class East[+E](w: E) extends Side[Nothing,E] {
 
   override val isEast: Boolean = true
 
-  def westMap[UU2](f: Nothing => UU2): UU2 Side W = this
+  def westMap[UU2](f: Nothing => UU2): UU2 Side E = this
 
-  def eastMap[E2](f: W => E2): Nothing Side E2 = East(f(w))
+  def eastMap[E2](f: E => E2): Nothing Side E2 = East(f(w))
 
   /*
    * Returns this <code>East</code> with the type widened to <code>Side</code>.
@@ -551,8 +551,8 @@ final case class East[+W](w: W) extends Side[Nothing,W] {
    * res5: org.scalactic.Side[Int,ErrorMessage] = East(No even nums)
    * </pre>
    */
-  def swap: W Side Nothing = West(w)
-  def transform[UU2, E2](bf: Nothing => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2 = wf(w)
-  def fold[V](bf: Nothing => V, wf: W => V): V = wf(w)
+  def swap: E Side Nothing = West(w)
+  def transform[UU2, E2](bf: Nothing => UU2 Side E2, wf: E => UU2 Side E2): UU2 Side E2 = wf(w)
+  def fold[V](bf: Nothing => V, wf: E => V): V = wf(w)
 }
 

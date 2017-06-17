@@ -27,7 +27,7 @@ import scala.collection.mutable.Builder
 /**
  * @param value the underlying <code>Side</code> value wrapped in this <code>Western</code>.
  */
-class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal with Serializable { thisWestern =>
+class Western[+UU,+E] private[scalactic] (val value: UU Side E) extends AnyVal with Serializable { thisWestern =>
 
   /**
    * Indicates whether the <code>Side</code> underlying this </code>Western</code> is a <code>West</code>
@@ -53,10 +53,10 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    *         value wrapped in a <code>West</code> wrapped in an <code>Western</code>,
    *         else this <code>Western</code> (already containing a <code>East</code>)
    */
-  def map[UU2](f: UU => UU2): Western[UU2, W] =
+  def map[UU2](f: UU => UU2): Western[UU2, E] =
     thisWestern.value match {
       case West(b) => new Western(West(f(b)))
-      case w: East[W] => new Western(w)
+      case w: East[E] => new Western(w)
     }
 
   /**
@@ -70,7 +70,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    *         contained value wrapped in a <code>West</code> wrapped in an <code>Western</code>,
    *         else this <code>Western</code> (already containing a <code>West</code>)
    */
-  def recover[UU2 >: UU](f: W => UU2): Western[UU2, W] =
+  def recover[UU2 >: UU](f: E => UU2): Western[UU2, E] =
     thisWestern.value match {
       case East(w) => new Western(West(f(w)))
       case b: West[UU] => new Western(b)
@@ -85,7 +85,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @return if the underlying <code>Side</code> is a <code>East</code>, the result of applying the given function to the
    *         contained value, else this <code>Western</code> (already containing a <code>West</code>)
    */
-  def recoverWith[UU2 >: UU, E2](f: W => Western[UU2, E2]): Western[UU2, E2] =
+  def recoverWith[UU2 >: UU, E2](f: E => Western[UU2, E2]): Western[UU2, E2] =
     thisWestern.value match {
       case East(w) => f(w)
       case b: West[UU] => new Western(b)
@@ -113,10 +113,10 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    *         underlying <code>West</code>,
    *         else this <code>Western</code> (already containing a <code>East</code>)
    */
-  def flatMap[UU2, E2 >: W](f: UU => Western[UU2, E2]): Western[UU2, E2] =
+  def flatMap[UU2, E2 >: E](f: UU => Western[UU2, E2]): Western[UU2, E2] =
     thisWestern.value match {
       case West(b) => f(b)
-      case w: East[W] => new Western(w)
+      case w: East[E] => new Western(w)
     }
 
   /**
@@ -133,7 +133,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @param f the validation function to apply
    * @return an <code>Western</code> wrapping a <code>West</code> if the underlying <code>Side</code> is a <code>West</code> that passes the validation function, else an <code>Western</code> wrapping a <code>East</code>.
    */
-  def filter[E2 >: W](f: UU => Validation[E2]): Western[UU, E2] =
+  def filter[E2 >: E](f: UU => Validation[E2]): Western[UU, E2] =
     thisWestern.value match {
       case West(b) =>
         f(b) match {
@@ -147,7 +147,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
   /**
    * UU2urrently just forwards to </code>filter</code>, and therefore, returns the same result.
    */
-  def withFilter[E2 >: W](f: UU => Validation[E2]): Western[UU, E2] = filter(f)
+  def withFilter[E2 >: E](f: UU => Validation[E2]): Western[UU, E2] = filter(f)
 
   /**
    * Returns <code>true</code> if the <code>Side</code> underlying this </code>Western</code> is a <code>West</code> and the predicate <code>p</code> returns true when applied to the underlying <code>West</code>'s value.
@@ -202,7 +202,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @param alternative the alternative by-name to evaluate if the underlying <code>Side</code> is a <code>East</code>
    * @return this <code>Western</code>, if the underlying <code>Side</code> is a <code>West</code>, else the result of evaluating <code>alternative</code>
    */
-  def orElse[UU2 >: UU, E2 >: W](alternative: => Western[UU2, E2]): Western[UU2, E2] =
+  def orElse[UU2 >: UU, E2 >: E](alternative: => Western[UU2, E2]): Western[UU2, E2] =
     if (isWest) thisWestern else alternative
 
   /**
@@ -245,7 +245,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @return if the underlying <code>Side</code> is a <code>West</code>, the <code>West</code> value wrapped in a <code>Right</code>, else the
    *         underlying <code>East</code> value, wrapped in a <code>Left</code>.
    */
-  def toEither: Either[W, UU] =
+  def toEither: Either[E, UU] =
     thisWestern.value match {
       case West(b) => Right(b)
       case East(w) => Left(w)
@@ -265,7 +265,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @return if the underlying <code>Side</code> is a <code>West</code>, the <code>West</code> value wrapped in a <code>Good</code>, else the
    *         underlying <code>East</code> value, wrapped in a <code>Bad</code>.
    */
-  def toOr: UU Or W =
+  def toOr: UU Or E =
     thisWestern.value match {
       case West(b) => Good(b)
       case East(w) => Bad(w)
@@ -284,7 +284,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @return the underlying <code>West</code> value, wrapped in a <code>Success</code>, if the underlying <code>Side</code> is a <code>West</code>; else
    * the underlying <code>East</code> value, wrapped in a <code>Failure</code>.
    */
-  def toTry(implicit ev: W <:< Throwable): Try[UU] =
+  def toTry(implicit ev: E <:< Throwable): Try[UU] =
     thisWestern.value match {
       case West(b) => Success(b)
       case East(w) => Failure(w)
@@ -298,7 +298,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    *     <code>Western</code>; if the underlying <code>Side</code> is
    *     a <code>East</code>, its <code>East</code> value wrapped in a <code>West</code> then wrapped in an <code>Western</code>.
    */
-  def swap: Western[W, UU] =
+  def swap: Western[E, UU] =
     thisWestern.value match {
       case West(b) => new Western(East(b))
       case East(w) => new Western(West(w))
@@ -312,7 +312,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @param wf the function to apply to the <code>Western</code>'s underlying <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to the underlying <code>Side</code>'s value
    */
-  def transform[UU2, E2](bf: UU => Western[UU2, E2], wf: W => Western[UU2, E2]): Western[UU2, E2] =
+  def transform[UU2, E2](bf: UU => Western[UU2, E2], wf: E => Western[UU2, E2]): Western[UU2, E2] =
     thisWestern.value match {
       case West(b) => bf(b)
       case East(w) => wf(w)
@@ -326,7 +326,7 @@ class Western[+UU,+W] private[scalactic] (val value: UU Side W) extends AnyVal w
    * @param wf the function to apply to the underlying <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to the underlying <code>Side</code>'s value
    */
-  def fold[V](bf: UU => V, wf: W => V): V =
+  def fold[V](bf: UU => V, wf: E => V): V =
     thisWestern.value match {
       case West(b) => bf(b)
       case East(w) => wf(w)
