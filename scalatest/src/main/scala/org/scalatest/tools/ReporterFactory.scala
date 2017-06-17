@@ -78,7 +78,8 @@ private[scalatest] class ReporterFactory {
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-        presentFilePathname = configSet.contains(PresentFilePathname)
+        presentFilePathname = configSet.contains(PresentFilePathname),
+        presentJson = configSet.contains(PresentJson)
       )
     else
       new FilterReporter(
@@ -95,7 +96,8 @@ private[scalatest] class ReporterFactory {
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-          presentFilePathname = configSet.contains(PresentFilePathname)
+          presentFilePathname = configSet.contains(PresentFilePathname),
+          presentJson = configSet.contains(PresentJson)
         ),
         configSet
       )
@@ -116,7 +118,8 @@ private[scalatest] class ReporterFactory {
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-        presentFilePathname = configSet.contains(PresentFilePathname)
+        presentFilePathname = configSet.contains(PresentFilePathname),
+        presentJson = configSet.contains(PresentJson)
       )
     else
       new FilterReporter(
@@ -133,7 +136,8 @@ private[scalatest] class ReporterFactory {
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-          presentFilePathname = configSet.contains(PresentFilePathname)
+          presentFilePathname = configSet.contains(PresentFilePathname),
+          presentJson = configSet.contains(PresentJson)
           ),
         configSet
       )
@@ -155,7 +159,8 @@ private[scalatest] class ReporterFactory {
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-        presentFilePathname = configSet.contains(PresentFilePathname)
+        presentFilePathname = configSet.contains(PresentFilePathname),
+        presentJson = configSet.contains(PresentJson)
       )
     else
       new FilterReporter(
@@ -173,7 +178,8 @@ private[scalatest] class ReporterFactory {
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
-          presentFilePathname = configSet.contains(PresentFilePathname)
+          presentFilePathname = configSet.contains(PresentFilePathname),
+          presentJson = configSet.contains(PresentJson)
         ),
         configSet
       )

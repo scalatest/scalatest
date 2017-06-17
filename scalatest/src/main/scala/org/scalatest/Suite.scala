@@ -747,7 +747,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     if (testName != null && desiredTests.isEmpty)
       throw new IllegalArgumentException(Resources.testNotFound(testName))
 
-    val dispatch = new DispatchReporter(List(new StandardOutReporter(durations, color, shortstacks, fullstacks, false, false, false, false, false, false)))
+    val dispatch = new DispatchReporter(List(new StandardOutReporter(durations, color, shortstacks, fullstacks, false, false, false, false, false, false, false)))
     val tracker = new Tracker
     val filter =
       if (testName == null) Filter()
