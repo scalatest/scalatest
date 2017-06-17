@@ -758,6 +758,125 @@ class AsyncFlatSpecLikeSpec2 extends AsyncFunSpec {
       }
     }
 
+    it("should allow pendingUntilFixed to transform sync and async failures into pendings given a subject") {
+
+      val a = new AsyncFlatSpecLike {
+
+        "the subject" should "do this" is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        "the subject" should "do that" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        "the subject" should "do this with in" in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        "the subject" should "do that with in" in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        "the subject" should "do this with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        "the subject" should "do that with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        "the subject" should "do this with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        "the subject" should "do that with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        val tp = rep.testPendingEventsReceived
+        assert(tp.size === 8)
+        val tf = rep.testFailedEventsReceived
+        assert(tf.size === 0)
+      }
+    }
+
+    it("should allow pendingUntilFixed to transform sync and async successes into failures given a subject") {
+      val a = new AsyncFlatSpecLike {
+
+        "the subject" should "do this but fail" is pendingUntilFixed {
+          succeed
+        }
+
+        "the subject" should "do that but fail" is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        "the subject" should "do this but fail with in" in pendingUntilFixed {
+          succeed
+        }
+
+        "the subject" should "do that but fail with in" in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        "the subject" should "do this but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          succeed
+        }
+
+        "the subject" should "do that but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        "the subject" should "do this but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          succeed
+        }
+
+        "the subject" should "do that but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        val tp = rep.testPendingEventsReceived
+        assert(tp.size === 0)
+        val tf = rep.testFailedEventsReceived
+        assert(tf.size === 8)
+      }
+    }
+
     it("should allow pendingUntilFixed to transform sync and async failures into pendings") {
 
       val a = new AsyncFlatSpecLike {
