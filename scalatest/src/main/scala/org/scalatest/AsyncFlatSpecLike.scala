@@ -50,7 +50,7 @@ import enablers.Isable
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToOutcome(testFun: () => Assertion with PendingStatement): () => AsyncOutcome =
     () => {
       PastOutcome(
         try { testFun(); Succeeded }
@@ -160,7 +160,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
@@ -1352,7 +1352,7 @@ import resultOfStringPassedToVerb.verb
         new ResultOfStringPassedToVerb(verb, rest) {
 
           def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, List.empty, pos)
-            // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
+            // Note, won't have an is method that takes fixture => Assertion with PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
