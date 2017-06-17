@@ -25,4 +25,5 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait Isable[T] {
   def registerPendingTestToRun(f: () => T, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit
+  def registerPendingTestToIgnore(f: () => T, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit
 }

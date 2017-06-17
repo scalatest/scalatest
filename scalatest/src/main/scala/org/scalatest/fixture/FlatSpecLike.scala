@@ -2035,6 +2035,8 @@ import resultOfStringPassedToVerb.verb
          // registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
          thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun), pos)
        }
+       // TODO: write tests to get this to fail.
+       def registerPendingTestToIgnore(f: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = ???
      }
 
   /**

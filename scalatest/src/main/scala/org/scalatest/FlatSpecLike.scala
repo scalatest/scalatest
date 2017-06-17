@@ -1582,6 +1582,10 @@ import resultOfStringPassedToVerb.verb
        def registerPendingTestToRun(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
          thisSuite.registerTestToRun(verb.trim + " " + rest.trim, "is", tags, () => { testFun(); succeed }, pos)
        }
+       def registerPendingTestToIgnore(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         ??? // TODO: Write a test that causes this to fail, then fill it in
+         // thisSuite.registerPendingTestToIgnore(verb.trim + " " + rest.trim, tags, "is", testFun, pos)
+       }
      }
 
   /**

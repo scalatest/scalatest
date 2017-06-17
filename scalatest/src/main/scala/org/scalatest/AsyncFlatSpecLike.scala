@@ -170,6 +170,16 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
+  private def registerFuturePendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
+    //def transformPendingToOutcomeParam: PendingStatement = testFun()
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+  }
+
   /**
    * Class that supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
    * instance referenced from <code>FlatSpec</code>'s <code>behavior</code> field.
@@ -725,8 +735,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToIgnore(testFun _, verb.trim, name.trim, tags, pos)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -821,8 +831,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToIgnore(testFun _, verb.trim, name.trim, List.empty, pos)
     }
 
     /**
@@ -1362,12 +1372,18 @@ import resultOfStringPassedToVerb.verb
        def registerPendingTestToRun(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
          thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
        }
+       def registerPendingTestToIgnore(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerPendingTestToIgnore(verb.trim + " " + rest.trim, tags, "is", testFun, pos)
+       }
      }
 
    protected implicit val isableForFuturePendingStatement: Isable[Future[Assertion with PendingStatement]] =
      new Isable[Future[Assertion with PendingStatement]] {
        def registerPendingTestToRun(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
          thisSuite.registerFuturePendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+       def registerPendingTestToIgnore(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerFuturePendingTestToIgnore(verb.trim + " " + rest.trim, tags, "is", testFun, pos)
        }
      }
 
@@ -1434,7 +1450,9 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
+  // TODO: Swap order of testTags and methodName so the order here is consistent with registerTestToRun. And do this
+  // for similar methods. I think all the register*Ignore methods have this order. Make them consistent.
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1444,14 +1462,14 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  private def registerFuturePendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
+  private def registerFuturePendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion with PendingStatement], pos: source.Position): Unit = {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, pos, testTags: _*)
   }
 
   /**

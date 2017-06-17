@@ -994,5 +994,128 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
         assert(tf.size === 8)
       }
     }
+
+    it("should allow pendingUntilFixed to transform sync and async failures into pendings for ignore") {
+
+      val a = new AsyncFlatSpec {
+
+        ignore should "do this" is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        ignore should "do that" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        ignore should "do this with in" in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        ignore should "do that with in" in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        ignore should "do this with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        ignore should "do that with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        ignore should "do this with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        ignore should "do that with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        val tp = rep.testPendingEventsReceived
+        assert(tp.size === 0)
+        val tf = rep.testFailedEventsReceived
+        assert(tf.size === 0)
+        val ti = rep.testIgnoredEventsReceived
+        assert(ti.size === 8)
+      }
+    }
+
+    it("should allow pendingUntilFixed to transform sync and async successes into failures for ignore") {
+      val a = new AsyncFlatSpec {
+
+        ignore should "do this but fail" is pendingUntilFixed {
+          succeed
+        }
+
+        ignore should "do that but fail" is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        ignore should "do this but fail with in" in pendingUntilFixed {
+          succeed
+        }
+
+        ignore should "do that but fail with in" in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        ignore should "do this but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          succeed
+        }
+
+        ignore should "do that but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        ignore should "do this but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          succeed
+        }
+
+        ignore should "do that but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        val tp = rep.testPendingEventsReceived
+        assert(tp.size === 0)
+        val tf = rep.testFailedEventsReceived
+        assert(tf.size === 0)
+        val ti = rep.testIgnoredEventsReceived
+        assert(ti.size === 8)
+      }
+    }
   }
 }
