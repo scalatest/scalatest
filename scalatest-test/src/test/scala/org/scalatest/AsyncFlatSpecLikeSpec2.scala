@@ -809,6 +809,16 @@ class AsyncFlatSpecLikeSpec2 extends AsyncFunSpec {
             succeed
           }
         }
+
+        it should "do this but fail with in" in pendingUntilFixed {
+          succeed
+        }
+
+        it should "do that but fail with in" in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
@@ -818,7 +828,7 @@ class AsyncFlatSpecLikeSpec2 extends AsyncFunSpec {
         val tp = rep.testPendingEventsReceived
         assert(tp.size === 0)
         val tf = rep.testFailedEventsReceived
-        assert(tf.size === 2)
+        assert(tf.size === 4)
       }
     }
   }
