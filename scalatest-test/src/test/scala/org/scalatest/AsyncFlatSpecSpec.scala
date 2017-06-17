@@ -769,7 +769,7 @@ class AsyncFlatSpecSpec extends FunSpec {
       assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
-    it("should allow is pendingUntilFixed to be used after is") {
+    it("should allow pendingUntilFixed to transform sync and async failures into pendings") {
 
       val a = new AsyncFlatSpec {
 
@@ -781,16 +781,6 @@ class AsyncFlatSpecSpec extends FunSpec {
         it should "do that" is pendingUntilFixed {
           Future {
             fail("i meant to do that")
-            succeed
-          }
-        }
-
-        it should "do this but fail" is pendingUntilFixed {
-          succeed
-        }
-
-        it should "do that but fail" is pendingUntilFixed {
-          Future {
             succeed
           }
         }
@@ -809,6 +799,27 @@ class AsyncFlatSpecSpec extends FunSpec {
       status.waitUntilCompleted()
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 3)
+      val tf = rep.testFailedEventsReceived
+      assert(tf.size === 0)
+    }
+    it("should allow pendingUntilFixed to transform sync and async successes into failures") {
+      val a = new AsyncFlatSpec {
+
+        it should "do this but fail" is pendingUntilFixed {
+          succeed
+        }
+
+        it should "do that but fail" is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      status.waitUntilCompleted()
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 2)
     }
