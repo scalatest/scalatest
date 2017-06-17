@@ -29,18 +29,18 @@ val x: (Int Choice String) Or ErrorMessage
 
 val x: (Int Choice String) Or ErrorMessage
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = West(3).orEast[String]
+val y = West[Int].orEast("III")
 
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = West(3).orEast[String]
+val y = West[Int].orEast("III")
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = West(3).orEast[String]
+val y = West[Int].orEast("III")
 
-val x = West(3).elseEast[String]
-val y = West[Int].elseEast("III")
+val x = West(3).orEast[String]
+val y = West[Int].orEast("III")
 
 num match {
   case West(e) => e + 10
@@ -77,26 +77,26 @@ class ChoiceSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals
   }
   it can "have its non-inferred type widened by an apply call with a type param" in {
     /*
-      scala> West[Int].elseEast("hi")
+      scala> West[Int].orEast("hi")
       res0: org.scalautils.East[Int,String] = East(hi)
 
-      scala> West(3).elseEast[String]
+      scala> West(3).orEast[String]
       res1: org.scalautils.West[Int,String] = West(3)
 
-      scala> West(3).elseEast[ErrorMessage]
+      scala> West(3).orEast[ErrorMessage]
       res2: org.scalautils.West[Int,org.scalautils.ErrorMessage] = West(3)
 
-      scala> West(3).elseEast("oops")
+      scala> West(3).orEast("oops")
       <console>:11: error: type mismatch;
        found   : String("oops")
        required: <:<[Nothing,?]
-                    West(3).elseEast("oops")
+                    West(3).orEast("oops")
                                   ^
 
-      scala> West[Int].elseEast[String]
-      <console>:11: error: missing arguments for method elseEast in class WestieWestieGumdrop;
+      scala> West[Int].orEast[String]
+      <console>:11: error: missing arguments for method orEast in class WestieWestieGumdrop;
       follow this method with `_' if you want to treat it as a partially applied function
-                    West[Int].elseEast[String]
+                    West[Int].orEast[String]
                                    ^
     */
     // If the expected type is known, then you can just say West or East:
@@ -108,8 +108,8 @@ class ChoiceSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals
     // East("oops") will be a East[Nothing, String]
 
     // If you want to specify a more specific type than Nothing, you can use this syntax:
-    West(3).elseEast[String] shouldBe West(3)
-    West[Int].elseEast("oops") shouldBe East("oops")
+    West(3).orEast[String] shouldBe West(3)
+    West[Int].orEast("oops") shouldBe East("oops")
 
     // You could also do it this way:
     West[Int](3) shouldBe West(3)
@@ -146,25 +146,25 @@ class ChoiceSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals
   }
   it can "be used with westMap" in {
     West(8) westMap (_ + 1) should equal (West(9))
-    West[Int].elseEast("eight") westMap (_ + 1) should equal (East("eight"))
+    West[Int].orEast("eight") westMap (_ + 1) should equal (East("eight"))
   }
   it can "be used with eastMap" in {
-    West(8).elseEast[ErrorMessage] eastMap (_.toUpperCase) should equal (West(8))
-    West[Int].elseEast("eight") eastMap (_.toUpperCase) should equal (East("EIGHT"))
+    West(8).orEast[ErrorMessage] eastMap (_.toUpperCase) should equal (West(8))
+    West[Int].orEast("eight") eastMap (_.toUpperCase) should equal (East("EIGHT"))
   }
   it can "be used with transform" in {
-    West(12).elseEast[String].transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (West(13))
-    West[Int].elseEast("hi").transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (East("HI"))
-    West(12).elseEast[String].transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (East(13))
-    West[Int].elseEast("hi").transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (West("HI"))
+    West(12).orEast[String].transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (West(13))
+    West[Int].orEast("hi").transform((i: Int) => West(i + 1), (s: String) => East(s.toUpperCase)) should === (East("HI"))
+    West(12).orEast[String].transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (East(13))
+    West[Int].orEast("hi").transform((i: Int) => East(i + 1), (s: String) => West(s.toUpperCase)) should === (West("HI"))
   }
   it can "be used with swap" in {
-    West(12).elseEast[String].swap should === (West[String].elseEast(12))
-    West[Int].elseEast("hi").swap should === (West("hi").elseEast[Int])
+    West(12).orEast[String].swap should === (West[String].orEast(12))
+    West[Int].orEast("hi").swap should === (West("hi").orEast[Int])
   }
   it can "be folded with fold" in {
-    West(3).elseEast[String].fold(_ + 1, _.length) shouldBe 4
-    West[Int].elseEast("howdy").fold(_ + 1, _.length) shouldBe 5
+    West(3).orEast[String].fold(_ + 1, _.length) shouldBe 4
+    West[Int].orEast("howdy").fold(_ + 1, _.length) shouldBe 5
   }
   // SKIP-SCALATESTJS-START
   it can "be serialized correctly" in {

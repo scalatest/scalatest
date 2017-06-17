@@ -41,22 +41,22 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     East("oops").eastern.value shouldBe an [East[_]]
   }
   it can "be used with map" in {
-    West(8).elseEast[ErrorMessage].eastern map (_.toUpperCase) should equal (West(8).eastern)
-    West[Int].elseEast("eight").eastern map (_.toUpperCase) should equal (East("EIGHT").eastern)
+    West(8).orEast[ErrorMessage].eastern map (_.toUpperCase) should equal (West(8).eastern)
+    West[Int].orEast("eight").eastern map (_.toUpperCase) should equal (East("EIGHT").eastern)
   }
   it can "be used with recover" in {
-    West[Throwable].elseEast(8).eastern recover {
+    West[Throwable].orEast(8).eastern recover {
       case iae: IllegalArgumentException => 9
     } should equal (East(8).eastern)
-    West(new IllegalArgumentException).elseEast[Int].eastern recover {
+    West(new IllegalArgumentException).orEast[Int].eastern recover {
       case iae: IllegalArgumentException => 9
     } should equal (East(9).eastern)
   }
   it can "be used with recoverWith" in {
-    West[Throwable].elseEast(8).eastern recoverWith {
+    West[Throwable].orEast(8).eastern recoverWith {
       case iae: IllegalArgumentException => East(9).eastern
     } should equal (East(8).eastern)
-    West(new IllegalArgumentException).elseEast[Int].eastern recoverWith {
+    West(new IllegalArgumentException).orEast[Int].eastern recoverWith {
       case iae: IllegalArgumentException => East(9).eastern
     } should equal (East(9).eastern)
   }
@@ -65,17 +65,17 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     var eCount = 0
     East(8).eastern foreach { vCount += _ }
     vCount should equal (8)
-    West("eight").elseEast[Int].eastern foreach { eCount += _ }
+    West("eight").orEast[Int].eastern foreach { eCount += _ }
     eCount should equal (0)
   }
   it can "be used with flatMap" in {
-    West[String].elseEast(8).eastern flatMap ((x: Int) => East(x + 1).eastern) should equal (East(9).eastern)
-    West("eight").elseEast[Int].eastern flatMap ((x: Int) => East(x + 1).eastern) should equal (West("eight").eastern)
+    West[String].orEast(8).eastern flatMap ((x: Int) => East(x + 1).eastern) should equal (East(9).eastern)
+    West("eight").orEast[Int].eastern flatMap ((x: Int) => East(x + 1).eastern) should equal (West("eight").eastern)
   }
   it can "be used with filter" in {
     East(12).eastern.filter(isRound) shouldBe West("12 was not a round number").eastern
     East(10).eastern.filter(isRound) shouldBe East(10).eastern
-    West(12).elseEast[Int].eastern.filter(isRound) shouldBe West(12).eastern
+    West(12).orEast[Int].eastern.filter(isRound) shouldBe West(12).eastern
     (for (i <- East(10).eastern if isRound(i)) yield i) shouldBe East(10).eastern
     (for (i <- East(12).eastern if isRound(i)) yield i) shouldBe West("12 was not a round number").eastern
     (for (i <- East(12).eastern if isRound(i)) yield i) shouldBe West("12 was not a round number").eastern
@@ -87,23 +87,23 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
   it can "be used with exists" in {
     East(12).eastern.exists(_ == 12) shouldBe true
     East(12).eastern.exists(_ == 13) shouldBe false
-    West(12).elseEast[Int].eastern.exists(_ == 12) shouldBe false
+    West(12).orEast[Int].eastern.exists(_ == 12) shouldBe false
   }
   it can "be used with forall" in {
     East(12).eastern.forall(_ > 10) shouldBe true
     East(7).eastern.forall(_ > 10) shouldBe false
-    West(12).elseEast[Int].eastern.forall(_ > 10) shouldBe true
-    West(7).elseEast[Int].eastern.forall(_ > 10) shouldBe true
+    West(12).orEast[Int].eastern.forall(_ > 10) shouldBe true
+    West(7).orEast[Int].eastern.forall(_ > 10) shouldBe true
   }
   it can "be used with getOrElse, which takes a by-name" in {
 
     East(12).eastern.getOrElse(17) shouldBe 12
-    West(12).elseEast[Int].eastern.getOrElse(17) shouldBe 17
+    West(12).orEast[Int].eastern.getOrElse(17) shouldBe 17
 
     var x = 16 // should not increment if West
     East(12).eastern getOrElse { x += 1; x } shouldBe 12
     x shouldBe 16
-    West(12).elseEast[Int].eastern getOrElse { x += 1; x } shouldBe 17
+    West(12).orEast[Int].eastern getOrElse { x += 1; x } shouldBe 17
     x shouldBe 17
   }
   it can "be used with orElse, which takes a by-name" in {
@@ -117,22 +117,22 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     var x = 16 // should not increment if East
     East(12).eastern orElse { x += 1; East(x).eastern } shouldBe East(12).eastern
     x shouldBe 16
-    West(12).elseEast[Int].eastern orElse { x += 1; East(x).eastern } shouldBe East(17).eastern
+    West(12).orEast[Int].eastern orElse { x += 1; East(x).eastern } shouldBe East(17).eastern
     x shouldBe 17
 
     var y = 16 // should not increment if East
     East(12).eastern orElse { y += 1; West(y).eastern } shouldBe East(12).eastern
     y shouldBe 16
-    West(12).elseEast[Int].eastern orElse { y += 1; West(y).eastern } shouldBe West(17).eastern
+    West(12).orEast[Int].eastern orElse { y += 1; West(y).eastern } shouldBe West(17).eastern
     y shouldBe 17
   }
   it can "be used with toOption" in {
     East(12).eastern.toOption shouldBe Some(12)
-    West(12).elseEast[Int].eastern.toOption shouldBe None
+    West(12).orEast[Int].eastern.toOption shouldBe None
   }
   it can "be used with toSeq" in {
     East(12).eastern.toSeq shouldEqual Seq(12)
-    West(12).elseEast[Int].eastern.toSeq shouldEqual Seq.empty
+    West(12).orEast[Int].eastern.toSeq shouldEqual Seq.empty
   }
 // toArray, toBuffer, toIndexedSeq, toIterable, toIterator, toList, 
 // toSeq, toStream, toTraversable, toVector
@@ -145,31 +145,31 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     West(12).eastern.toOr shouldBe Bad(12)
   }
   it can "be used with toTry, if the error type is a subtype of Throwable" in {
-    West[Throwable].elseEast(12).eastern.toTry shouldBe Success(12)
-    West[RuntimeException].elseEast(12).eastern.toTry shouldBe Success(12)
+    West[Throwable].orEast(12).eastern.toTry shouldBe Success(12)
+    West[RuntimeException].orEast(12).eastern.toTry shouldBe Success(12)
     val ex = new RuntimeException("oops")
-    West(ex).elseEast[Int].eastern.toTry shouldBe Failure(ex)
-    West(ex).elseEast[Int].eastern.toTry shouldBe Failure(ex)
-    "West(12).elseEast[Int].eastern.toTry" shouldNot typeCheck
+    West(ex).orEast[Int].eastern.toTry shouldBe Failure(ex)
+    West(ex).orEast[Int].eastern.toTry shouldBe Failure(ex)
+    "West(12).orEast[Int].eastern.toTry" shouldNot typeCheck
   }
   it can "be used with swap" in {
-    West(12).elseEast[String].eastern.swap should === (West[String].elseEast(12).eastern)
-    West[Int].elseEast("hi").eastern.swap should === (West("hi").elseEast[Int].eastern)
+    West(12).orEast[String].eastern.swap should === (West[String].orEast(12).eastern)
+    West[Int].orEast("hi").eastern.swap should === (West("hi").orEast[Int].eastern)
   }
   it can "be used with transform" in {
-    West[String].elseEast(12).eastern.transform((s: String) => East(s.toUpperCase).eastern, (i: Int) => West(i + 1).eastern) should === (West(13).eastern)
-    West("hi").elseEast[Int].eastern.transform( (s: String) => East(s.toUpperCase).eastern, (i: Int) => West(i + 1).eastern) should === (East("HI").eastern)
-    West[String].elseEast(12).eastern.transform((s: String) => West(s.toUpperCase).eastern, (i: Int) => East(i + 1).eastern) should === (East(13).eastern)
-    West("hi").elseEast[Int].eastern.transform((s: String) => West(s.toUpperCase).eastern, (i: Int) => East(i + 1).eastern) should === (West("HI").eastern)
+    West[String].orEast(12).eastern.transform((s: String) => East(s.toUpperCase).eastern, (i: Int) => West(i + 1).eastern) should === (West(13).eastern)
+    West("hi").orEast[Int].eastern.transform( (s: String) => East(s.toUpperCase).eastern, (i: Int) => West(i + 1).eastern) should === (East("HI").eastern)
+    West[String].orEast(12).eastern.transform((s: String) => West(s.toUpperCase).eastern, (i: Int) => East(i + 1).eastern) should === (East(13).eastern)
+    West("hi").orEast[Int].eastern.transform((s: String) => West(s.toUpperCase).eastern, (i: Int) => East(i + 1).eastern) should === (West("HI").eastern)
   }
   it can "be folded with fold" in {
-    West[String].elseEast(3).eastern.fold(_.length, _ + 1) shouldBe 4
-    West("howdy").elseEast[Int].eastern.fold(_.length ,_ + 1) shouldBe 5
+    West[String].orEast(3).eastern.fold(_.length, _ + 1) shouldBe 4
+    West("howdy").orEast[Int].eastern.fold(_.length ,_ + 1) shouldBe 5
   }
 /*
   it can "be used with zip" in {
-    West(12).elseEast[Every[ErrorMessage]] zip West("hi").elseEast[Every[ErrorMessage]] should === (West((12, "hi")).elseEast[Every[ErrorMessage]])
-    West[Int].elseEast(One("so")) zip West[String].elseEast(One("ho")) should === (East(Many("so", "ho")))
+    West(12).orEast[Every[ErrorMessage]] zip West("hi").orEast[Every[ErrorMessage]] should === (West((12, "hi")).orEast[Every[ErrorMessage]])
+    West[Int].orEast(One("so")) zip West[String].orEast(One("ho")) should === (East(Many("so", "ho")))
     (West(12): Int Or Every[ErrorMessage]) zip East[Every[ErrorMessage]](One("ho")) should === (East(One("ho")))
     East[Every[ErrorMessage]](One("so")) zip West[String]("hi") should === (East(One("so")))
 
@@ -184,10 +184,10 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     East[Every[ErrorMessage]](One("so")) zip West[String]("hi") should === (East(One("so")))
 
     // Works when right hand side ERR type is a supertype of left hand side ERR type, because that's what Every's ++ does.
-    West[Int].elseEast(One("oops")) zip West[Int].elseEast(One(-1: Any)) shouldBe East(Many("oops", -1))
-    West[Int].elseEast(One("oops": Any)) zip West[Int].elseEast(One(-1)) shouldBe East(Many("oops", -1))
-    West[Int].elseEast(One("oops")) zip West[Int].elseEast(One(-1)) shouldBe East(Many("oops", -1))
-    West[Int].elseEast(One(-1)) zip West[Int].elseEast(One("oops": Any)) shouldBe East(Many(-1, "oops"))
+    West[Int].orEast(One("oops")) zip West[Int].orEast(One(-1: Any)) shouldBe East(Many("oops", -1))
+    West[Int].orEast(One("oops": Any)) zip West[Int].orEast(One(-1)) shouldBe East(Many("oops", -1))
+    West[Int].orEast(One("oops")) zip West[Int].orEast(One(-1)) shouldBe East(Many("oops", -1))
+    West[Int].orEast(One(-1)) zip West[Int].orEast(One("oops": Any)) shouldBe East(Many(-1, "oops"))
   }
 
   it can "be used with when" in {
@@ -211,17 +211,17 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe East(Many("12 was not greater than 99", "12 was not less than 3", "12 was not odd"))
-    West[Int].elseEast[Every[ErrorMessage]](One("original error")).when(
+    West[Int].orEast[Every[ErrorMessage]](One("original error")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe East(One("original error"))
-    West[Int].elseEast[Every[ErrorMessage]](Many("original error 1", "original error 2")).when(
+    West[Int].orEast[Every[ErrorMessage]](Many("original error 1", "original error 2")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe East(Many("original error 1", "original error 2"))
-    West("hi").elseEast[Every[Int]].when((i: String) => Fail(2.0)) shouldBe East(One(2.0))
+    West("hi").orEast[Every[Int]].when((i: String) => Fail(2.0)) shouldBe East(One(2.0))
 
     (for (i <- West(10) when isRound) yield i) shouldBe West(10)
     (for (i <- West(12) when isRound) yield i) shouldBe East(One("12 was not a round number"))
@@ -436,7 +436,7 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
     Set(West(3), West(4), West(5)).combined shouldBe West(Set(3, 4, 5))
 
     // Every
-    Every(West(3).elseEast[Every[String]], West[Int].elseEast(Every("oops"))).combined shouldBe East(One("oops"))
+    Every(West(3).orEast[Every[String]], West[Int].orEast(Every("oops"))).combined shouldBe East(One("oops"))
 
     Every(West(3)).combined shouldBe West(Every(3))
     One(West(3)).combined shouldBe West(Every(3))
@@ -468,18 +468,18 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
   "A West" can "be widened to an Or type via .asOr" in {
     West(1).asOr shouldBe West(1)
     /*
-      scala> xs.foldLeft(West(6).elseEast[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+      scala> xs.foldLeft(West(6).orEast[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
       <console>:12: error: type mismatch;
        found   : org.scalautils.Or[Int,org.scalautils.ErrorMessage]
        required: org.scalautils.West[Int,org.scalautils.ErrorMessage]
-                    xs.foldLeft(West(6).elseEast[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+                    xs.foldLeft(West(6).orEast[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
                                                                          ^
 
-      scala> xs.foldLeft(West(6).elseEast[ErrorMessage].asOr) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+      scala> xs.foldLeft(West(6).orEast[ErrorMessage].asOr) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
       res2: org.scalautils.Or[Int,org.scalautils.ErrorMessage] = West(6)
 */
     val xs = List(1, 2, 3)
-    xs.foldLeft(West(6).elseEast[ErrorMessage].asOr) {
+    xs.foldLeft(West(6).orEast[ErrorMessage].asOr) {
       (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc)
     } shouldBe West(6)
   }
@@ -491,22 +491,22 @@ class EasternSpec extends UnitSpec with TypeCheckedTripleEquals {
   "A East" can "be widened to an Or type via .asOr" in {
     East("oops").asOr shouldBe East("oops")
     /*
-      scala> xs.foldLeft(West[Int].elseEast("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+      scala> xs.foldLeft(West[Int].orEast("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
       <console>:12: error: type mismatch;
        found   : org.scalautils.Or[Int,String]
        required: org.scalautils.East[Int,String]
-                    xs.foldLeft(West[Int].elseEast("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+                    xs.foldLeft(West[Int].orEast("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
                                                                                ^
 
-      scala> xs.foldLeft(West[Int].elseEast("no evens").asOr) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
+      scala> xs.foldLeft(West[Int].orEast("no evens").asOr) { (acc, x) => acc orElse (if (x % 2 == 0) West(x) else acc) }
       res7: org.scalautils.Or[Int,String] = West(2)
 */
     val xs = List(1, 2, 3)
-    xs.foldLeft(West[Int].elseEast("no evens").asOr) { (acc, x) =>
+    xs.foldLeft(West[Int].orEast("no evens").asOr) { (acc, x) =>
       acc orElse (if (x % 2 == 0) West(x) else acc)
     } shouldBe West(2)
     val ys = List(1, 3, 5)
-    ys.foldLeft(West[Int].elseEast("no evens").asOr) { (acc, x) =>
+    ys.foldLeft(West[Int].orEast("no evens").asOr) { (acc, x) =>
       acc orElse (if (x % 2 == 0) West(x) else acc)
     } shouldBe East("no evens")
   }

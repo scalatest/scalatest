@@ -70,7 +70,7 @@ sealed abstract class Choice[+W,+E] extends Product with Serializable {
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; val lyrics = West[Double].elseEast("But we decide which is right. And which is an illusion?")
+   * scala&gt; val lyrics = West[Double].orEast("But we decide which is right. And which is an illusion?")
    * lyrics: org.scalactic.Choice[Double,String] =
    *     East(But we decide which is right. And which is an illusion?)
    *
@@ -334,7 +334,7 @@ final case class West[+W](b: W) extends Choice[W,Nothing] {
    * import org.scalactic._
    *
    * scala&gt; def oddSum(xs: List[Int]): Int Choice ErrorMessage =
-   *      |   xs.foldLeft(West(0).elseEast[ErrorMessage]) { (acc, x) =&gt;
+   *      |   xs.foldLeft(West(0).orEast[ErrorMessage]) { (acc, x) =&gt;
    *      |     acc match {
    *      |       case East(_) =&gt; acc
    *      |       case West(_) if (x % 2 == 0) =&gt; East(x + " is not odd")
@@ -363,7 +363,7 @@ final case class West[+W](b: W) extends Choice[W,Nothing] {
    *
    * <pre class="stREPL">
    * scala&gt; def oddSum(xs: List[Int]): Int Choice ErrorMessage =
-   *      |   xs.foldLeft(West(0).elseEast[ErrorMessage].asChoice) { (acc, x) =&gt;
+   *      |   xs.foldLeft(West(0).orEast[ErrorMessage].asChoice) { (acc, x) =&gt;
    *      |     acc match {
    *      |       case East(_) =&gt; acc
    *      |       case West(_) if (x % 2 == 0) =&gt; East(x + " is not odd")
@@ -401,15 +401,15 @@ final case class West[+W](b: W) extends Choice[W,Nothing] {
    *
    * <p>
    * Often <code>Nothing</code> will work fine, as it will be widened as soon as the compiler encounters a more specific <code>East</code> type.
-   * Sometimes, however, you may need to specify it. In such situations you can use this <code>elseEast</code> method, like this:
+   * Sometimes, however, you may need to specify it. In such situations you can use this <code>orEast</code> method, like this:
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; West(3).elseEast[String]
+   * scala&gt; West(3).orEast[String]
    * res1: org.scalactic.West[Int,String] = West(3)
    * </pre>
    */
-  def elseEast[E]: Choice[W, E] = this
+  def orEast[E]: Choice[W, E] = this
 
   def westMap[W2](f: W => W2): Choice[W2, Nothing] = West(f(b))
   def eastMap[E2](f: Nothing => E2): Choice[W, E2] = this
@@ -440,14 +440,14 @@ object West {
      * </p>
      *
      * <pre class="stHighlight">
-     * West[Int].elseEast("oops")
+     * West[Int].orEast("oops")
      *           ^
      * </pre>
      *
      * @param b the &ldquo;bad&rdquo; value
      * @return a new <code>East</code> instance containing the passed <code>b</code> value
      */
-    def elseEast[E](w: E): Choice[W, E] = East[E](w)
+    def orEast[E](w: E): Choice[W, E] = East[E](w)
 
     override def toString: String = "WestType"
   }
@@ -472,7 +472,7 @@ object West {
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; West[Int].elseEast("oops")
+   * scala&gt; West[Int].orEast("oops")
    * res3: org.scalactic.East[Int,String] = East(oops)
    * </pre>
    */
@@ -513,7 +513,7 @@ final case class East[+E](w: E) extends Choice[Nothing,E] {
    * import org.scalactic._
    *
    * scala&gt; def findFirstEven(xs: List[Int]): Int Choice ErrorMessage =
-   *      |   xs.foldLeft(West[Int].elseEast("No even nums")) { (acc, x) =&gt;
+   *      |   xs.foldLeft(West[Int].orEast("No even nums")) { (acc, x) =&gt;
    *      |     acc orChoice (if (x % 2 == 0) West(x) else acc)
    *      |   }
    * &lt;console&gt;:13: error: type mismatch;
@@ -533,7 +533,7 @@ final case class East[+E](w: E) extends Choice[Nothing,E] {
    *
    * <pre class="stREPL">
    * scala&gt; def findFirstEven(xs: List[Int]): Int Choice ErrorMessage =
-   *      |   xs.foldLeft(West[Int].elseEast("No even nums").asChoice) { (acc, x) =&gt;
+   *      |   xs.foldLeft(West[Int].orEast("No even nums").asChoice) { (acc, x) =&gt;
    *      |     acc orChoice (if (x % 2 == 0) West(x) else acc)
    *      |   }
    * findFirstEven: (xs: List[Int])org.scalactic.Choice[Int,String]
