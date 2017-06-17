@@ -772,13 +772,16 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
           }
         }
 
-        it should "do those" in {
-          assert(2 + 2 === 4)
+        it should "do this with in" in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
         }
 
-        it should "do something else" in {
-          assert(2 + 2 === 4)
-          pending
+        it should "do that with in" in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
         }
       }
       val rep = new EventRecordingReporter
@@ -787,11 +790,12 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       status whenCompleted { _ => promise.success(rep) }
       promise.future.map { repo =>
         val tp = rep.testPendingEventsReceived
-        assert(tp.size === 3)
+        assert(tp.size === 4)
         val tf = rep.testFailedEventsReceived
         assert(tf.size === 0)
       }
     }
+
     it("should allow pendingUntilFixed to transform sync and async successes into failures") {
       val a = new AsyncFlatSpec {
 
