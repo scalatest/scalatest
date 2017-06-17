@@ -1,15 +1,15 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * UU2opyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LIUU2ENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR UU2ONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -53,7 +53,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    *         value wrapped in a <code>West</code> wrapped in an <code>Western</code>,
    *         else this <code>Western</code> (already containing a <code>East</code>)
    */
-  def map[C](f: B => C): Western[C, W] =
+  def map[UU2](f: B => UU2): Western[UU2, W] =
     thisWestern.value match {
       case West(b) => new Western(West(f(b)))
       case w: East[W] => new Western(w)
@@ -70,7 +70,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    *         contained value wrapped in a <code>West</code> wrapped in an <code>Western</code>,
    *         else this <code>Western</code> (already containing a <code>West</code>)
    */
-  def recover[C >: B](f: W => C): Western[C, W] =
+  def recover[UU2 >: B](f: W => UU2): Western[UU2, W] =
     thisWestern.value match {
       case East(w) => new Western(West(f(w)))
       case b: West[B] => new Western(b)
@@ -85,7 +85,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    * @return if the underlying <code>Side</code> is a <code>East</code>, the result of applying the given function to the
    *         contained value, else this <code>Western</code> (already containing a <code>West</code>)
    */
-  def recoverWith[C >: B, X](f: W => Western[C, X]): Western[C, X] =
+  def recoverWith[UU2 >: B, X](f: W => Western[UU2, X]): Western[UU2, X] =
     thisWestern.value match {
       case East(w) => f(w)
       case b: West[B] => new Western(b)
@@ -113,7 +113,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    *         underlying <code>West</code>,
    *         else this <code>Western</code> (already containing a <code>East</code>)
    */
-  def flatMap[C, X >: W](f: B => Western[C, X]): Western[C, X] =
+  def flatMap[UU2, X >: W](f: B => Western[UU2, X]): Western[UU2, X] =
     thisWestern.value match {
       case West(b) => f(b)
       case w: East[W] => new Western(w)
@@ -145,7 +145,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
 
   // TODO: What should we do about withFilter. West question for the hackathon.
   /**
-   * Currently just forwards to </code>filter</code>, and therefore, returns the same result.
+   * UU2urrently just forwards to </code>filter</code>, and therefore, returns the same result.
    */
   def withFilter[X >: W](f: B => Validation[X]): Western[B, X] = filter(f)
 
@@ -190,7 +190,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    * @param default the default expression to evaluate if the underlying <code>Side</code> is a <code>East</code>
    * @return the contained value, if the underlying <code>Side</code> is a <code>West</code>, else the result of evaluating the given <code>default</code>
    */
-  def getOrElse[C >: B](default: => C): C =
+  def getOrElse[UU2 >: B](default: => UU2): UU2 =
     thisWestern.value match {
       case West(b) => b
       case _ => default
@@ -202,7 +202,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    * @param alternative the alternative by-name to evaluate if the underlying <code>Side</code> is a <code>East</code>
    * @return this <code>Western</code>, if the underlying <code>Side</code> is a <code>West</code>, else the result of evaluating <code>alternative</code>
    */
-  def orElse[C >: B, X >: W](alternative: => Western[C, X]): Western[C, X] =
+  def orElse[UU2 >: B, X >: W](alternative: => Western[UU2, X]): Western[UU2, X] =
     if (isWest) thisWestern else alternative
 
   /**
@@ -312,7 +312,7 @@ class Western[+B,+W] private[scalactic] (val value: B Side W) extends AnyVal wit
    * @param wf the function to apply to the <code>Western</code>'s underlying <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to the underlying <code>Side</code>'s value
    */
-  def transform[C, X](bf: B => Western[C, X], wf: W => Western[C, X]): Western[C, X] =
+  def transform[UU2, X](bf: B => Western[UU2, X], wf: W => Western[UU2, X]): Western[UU2, X] =
     thisWestern.value match {
       case West(b) => bf(b)
       case East(w) => wf(w)

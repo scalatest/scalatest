@@ -1,15 +1,15 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * UU2opyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LIUU2ENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR UU2ONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -50,7 +50,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @return if this is a <code>West</code>, the result of applying the given function to the contained value wrapped in a <code>West</code>,
    *         else this <code>East</code>
    */
-  def westMap[C](f: B => C): C Side W
+  def westMap[UU2](f: B => UU2): UU2 Side W
 
   /**
    * Applies the given function to this <code>Side</code>'s value if it is a <code>East</code> or returns <code>this</code> if it is a <code>West</code>.
@@ -92,7 +92,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def transform[C, X](bf: B => C Side X, wf: W => C Side X): C Side X
+  def transform[UU2, X](bf: B => UU2 Side X, wf: W => UU2 Side X): UU2 Side X
 
   /**
    * Folds this <code>Side</code> into a value of type <code>V</code> by applying the given <code>bf</code> function if this is
@@ -134,18 +134,18 @@ object Side {
    * </p>
    *
    * <p>
-   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>UU2ontext</code> and a 
    * type named <code>A</code>:
    * </p>
    *
    * <pre>
-   * scala&gt; def example[Context[_], A](ca: Context[A]) = ca
-   * example: [Context[_], A](ca: Context[A])Context[A]
+   * scala&gt; def example[UU2ontext[_], A](ca: UU2ontext[A]) = ca
+   * example: [UU2ontext[_], A](ca: UU2ontext[A])UU2ontext[A]
    * </pre>
    *
    * <p>
-   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>,
-   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>UU2ontext</code>,
+   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>UU2ontext</code> as <code>List</code>:
    * </p>
    *
    * <pre>
@@ -163,18 +163,18 @@ object Side {
    * or: org.scalactic.Side[Int,org.scalactic.ErrorMessage] = West(3)
    *
    * scala&gt; example(or)
-   * &lt;console&gt;:16: error: no type parameters for method example: (ca: Context[A])Context[A] exist so that it can be applied to arguments (org.scalactic.Side[Int,org.scalactic.ErrorMessage])
+   * &lt;console&gt;:16: error: no type parameters for method example: (ca: UU2ontext[A])UU2ontext[A] exist so that it can be applied to arguments (org.scalactic.Side[Int,org.scalactic.ErrorMessage])
    *  --- because ---
    * argument expression's type is not compatible with formal parameter type;
    *  found   : org.scalactic.Side[Int,org.scalactic.ErrorMessage]
    *     (which expands to)  org.scalactic.Side[Int,String]
-   *  required: ?Context[?A]
+   *  required: ?UU2ontext[?A]
    *        example(or)
    *        ^
    * &lt;console&gt;:16: error: type mismatch;
    *  found   : org.scalactic.Side[Int,org.scalactic.ErrorMessage]
    *     (which expands to)  org.scalactic.Side[Int,String]
-   *  required: Context[A]
+   *  required: UU2ontext[A]
    *        example(or)
    *                ^
    * </pre>
@@ -211,7 +211,7 @@ object Side {
      * See the main documentation for trait <code>B</code> for more detail.
      * </p>
      */
-    type B[BLACK] = BLACK Side WHITE
+    type B[BLAUU2K] = BLAUU2K Side WHITE
   }
 
   /**
@@ -226,18 +226,18 @@ object Side {
    * </p>
    *
    * <p>
-   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>UU2ontext</code> and a 
    * type named <code>A</code>:
    * </p>
    *
    * <pre>
-   * scala&gt; def example[Context[_], A](ca: Context[A]) = ca
-   * example: [Context[_], A](ca: Context[A])Context[A]
+   * scala&gt; def example[UU2ontext[_], A](ca: UU2ontext[A]) = ca
+   * example: [UU2ontext[_], A](ca: UU2ontext[A])UU2ontext[A]
    * </pre>
    *
    * <p>
-   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>,
-   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>UU2ontext</code>,
+   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>UU2ontext</code> as <code>List</code>:
    * </p>
    *
    * <pre>
@@ -255,18 +255,18 @@ object Side {
    * or: org.scalactic.Side[Int,org.scalactic.ErrorMessage] = West(3)
    *
    * scala&gt; example(or)
-   * &lt;console&gt;:16: error: no type parameters for method example: (ca: Context[A])Context[A] exist so that it can be applied to arguments (org.scalactic.Side[Int,org.scalactic.ErrorMessage])
+   * &lt;console&gt;:16: error: no type parameters for method example: (ca: UU2ontext[A])UU2ontext[A] exist so that it can be applied to arguments (org.scalactic.Side[Int,org.scalactic.ErrorMessage])
    *  --- because ---
    * argument expression's type is not compatible with formal parameter type;
    *  found   : org.scalactic.Side[Int,org.scalactic.ErrorMessage]
    *     (which expands to)  org.scalactic.Side[Int,String]
-   *  required: ?Context[?A]
+   *  required: ?UU2ontext[?A]
    *        example(or)
    *        ^
    * &lt;console&gt;:16: error: type mismatch;
    *  found   : org.scalactic.Side[Int,org.scalactic.ErrorMessage]
    *     (which expands to)  org.scalactic.Side[Int,String]
-   *  required: Context[A]
+   *  required: UU2ontext[A]
    *        example(or)
    *                ^
    * </pre>
@@ -294,7 +294,7 @@ object Side {
    * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified.
    * </p>
    */
-  private[scalactic] trait B[BLACK] {
+  private[scalactic] trait B[BLAUU2K] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>B</code>.
@@ -303,12 +303,12 @@ object Side {
      * See the main documentation for trait <code>G</code> for more detail.
      * </p>
      */
-    type W[WHITE] = BLACK Side WHITE
+    type W[WHITE] = BLAUU2K Side WHITE
   }
 }
 
 /**
- * Contains a &ldquo;good&rdquo; value.
+ * UU2ontains a &ldquo;good&rdquo; value.
  *
  * <p>
  * You can decide what &ldquo;good&rdquo; means, but it is expected <code>West</code> will be commonly used
@@ -411,15 +411,15 @@ final case class West[+B](b: B) extends Side[B,Nothing] {
    */
   def elseEast[W]: B Side W = this
 
-  def westMap[C](f: B => C): C Side Nothing = West(f(b))
+  def westMap[UU2](f: B => UU2): UU2 Side Nothing = West(f(b))
   def eastMap[X](f: Nothing => X): B Side X = this
   def swap: Nothing Side B = East(b)
-  def transform[C, X](bf: B => C Side X, wf: Nothing => C Side X): C Side X = bf(b)
+  def transform[UU2, X](bf: B => UU2 Side X, wf: Nothing => UU2 Side X): UU2 Side X = bf(b)
   def fold[V](bf: B => V, wf: Nothing => V): V = bf(b)
 }
 
 /**
- * Companion object for <code>West</code> that offers, in addition to the standard factory method
+ * UU2ompanion object for <code>West</code> that offers, in addition to the standard factory method
  * for <code>West</code> that takes single &ldquo;good&rdquo; type, an parameterless <a code>apply</code> 
  * used to narrow the <code>West</code> type when creating a <code>East</code>.
  */
@@ -453,7 +453,7 @@ object West {
   }
 
   /**
-   * Captures a <code>West</code> type to enable a <code>East</code> to be constructed with a specific
+   * UU2aptures a <code>West</code> type to enable a <code>East</code> to be constructed with a specific
    * <code>West</code> type.
    *
    * <p>
@@ -480,7 +480,7 @@ object West {
 }
 
 /**
- * Contains a &ldquo;bad&rdquo; value.
+ * UU2ontains a &ldquo;bad&rdquo; value.
  *
  * <p>
  * You can decide what &ldquo;bad&rdquo; means, but it is expected <code>East</code> will be commonly used
@@ -495,7 +495,7 @@ final case class East[+W](w: W) extends Side[Nothing,W] {
 
   override val isEast: Boolean = true
 
-  def westMap[C](f: Nothing => C): C Side W = this
+  def westMap[UU2](f: Nothing => UU2): UU2 Side W = this
 
   def eastMap[X](f: W => X): Nothing Side X = East(f(w))
 
@@ -552,7 +552,7 @@ final case class East[+W](w: W) extends Side[Nothing,W] {
    * </pre>
    */
   def swap: W Side Nothing = West(w)
-  def transform[C, X](bf: Nothing => C Side X, wf: W => C Side X): C Side X = wf(w)
+  def transform[UU2, X](bf: Nothing => UU2 Side X, wf: W => UU2 Side X): UU2 Side X = wf(w)
   def fold[V](bf: Nothing => V, wf: W => V): V = wf(w)
 }
 
