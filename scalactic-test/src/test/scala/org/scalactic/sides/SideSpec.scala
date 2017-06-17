@@ -177,10 +177,10 @@ class SideSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     trait Functor[Context[_]] {
       def map[A, B](ca: Context[A])(f: A => B): Context[B]
     }
-    class WestSideFunctor[WHITE] extends Functor[Side.W[WHITE]#B] {
+    class WestSideFunctor[WHITE] extends Functor[Side.W[WHITE]#UU] {
       override def map[B, C](ca: B Side WHITE)(f: B => C): C Side WHITE = ???
     }
-    class EastSideFunctor[BLACK] extends Functor[Side.B[BLACK]#W] {
+    class EastSideFunctor[BLACK] extends Functor[Side.UU[BLACK]#W] {
       override def map[W, X](ca: BLACK Side W)(f: W => X): BLACK Side X = ???
     }
   }

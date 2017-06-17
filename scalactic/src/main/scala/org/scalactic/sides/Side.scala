@@ -27,7 +27,7 @@ import scala.collection.mutable.Builder
 /**
  * Represents a value that is one of two possible types, with both types &ldquo;equally acceptable.&rdquo;
  */
-sealed abstract class Side[+B,+W] extends Product with Serializable {
+sealed abstract class Side[+UU,+W] extends Product with Serializable {
 
   /**
    * Indicates whether this <code>Side</code> is a <code>West</code>
@@ -50,7 +50,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @return if this is a <code>West</code>, the result of applying the given function to the contained value wrapped in a <code>West</code>,
    *         else this <code>East</code>
    */
-  def westMap[UU2](f: B => UU2): UU2 Side W
+  def westMap[UU2](f: UU => UU2): UU2 Side W
 
   /**
    * Applies the given function to this <code>Side</code>'s value if it is a <code>East</code> or returns <code>this</code> if it is a <code>West</code>.
@@ -59,7 +59,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @return if this is a <code>East</code>, the result of applying the given function to the contained value wrapped in a <code>East</code>,
    *         else this <code>West</code>
    */
-  def eastMap[E2](f: W => E2): B Side E2
+  def eastMap[E2](f: W => E2): UU Side E2
 
   /**
    * Returns an <code>Side</code> with the <code>West</code> and <code>East</code> types swapped: <code>East</code> becomes <code>West</code> and <code>West</code>
@@ -82,7 +82,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @return if this <code>Side</code> is a <code>West</code>, its <code>West</code> value wrapped in a <code>East</code>; if this <code>Side</code> is
    *     a <code>East</code>, its <code>East</code> value wrapped in a <code>West</code>.
    */
-  def swap: W Side B
+  def swap: W Side UU
 
   /**
    * Transforms this <code>Side</code> by applying the function <code>bf</code> to this <code>Side</code>'s <code>West</code> value if it
@@ -92,7 +92,7 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def transform[UU2, E2](bf: B => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2
+  def transform[UU2, E2](bf: UU => UU2 Side E2, wf: W => UU2 Side E2): UU2 Side E2
 
   /**
    * Folds this <code>Side</code> into a value of type <code>V</code> by applying the given <code>bf</code> function if this is
@@ -102,19 +102,19 @@ sealed abstract class Side[+B,+W] extends Product with Serializable {
    * @param wf the function to apply to this <code>Side</code>'s <code>East</code> value, if it is a <code>East</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Side</code>'s value
    */
-  def fold[V](bf: B => V, wf: W => V): V
+  def fold[V](bf: UU => V, wf: W => V): V
 
   /**
    * Wraps this <code>Side</code> in an <code>Western</code>, an <code>AnyVal</code> that enables you to transform <code>West</code> values in a <code>for</code> expression with
    * <code>East</code> values passing through unchanged.
    */
-  def western: Western[B, W] = new Western(this)
+  def western: Western[UU, W] = new Western(this)
 
   /**
    * Wraps this <code>Side</code> in an <code>Eastern</code>, an <code>AnyVal</code> that enables you to transform <code>East</code> values in a <code>for</code> expression with
    * <code>West</code> values passing through unchanged.
    */
-  def eastern: Eastern[B, W] = new Eastern(this)
+  def eastern: Eastern[UU, W] = new Eastern(this)
 }
 
 /**
@@ -198,20 +198,20 @@ object Side {
    * </pre>
    * 
    * <p>
-   * You can read <code>Side.B[ErrorMessage]#G</code> as: an <code>Side</code> with its "bad" type, <code>B</code>,
+   * You can read <code>Side.B[ErrorMessage]#G</code> as: an <code>Side</code> with its "bad" type, <code>UU</code>,
    * fixed to <code>ErrorMessage</code> and its "good" type, <code>G</code>, left unspecified.
    * </p>
    */
   private[scalactic] trait W[WHITE] {
 
     /**
-     * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>B</code>.
+     * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>UU</code>.
      *
      * <p>
-     * See the main documentation for trait <code>B</code> for more detail.
+     * See the main documentation for trait <code>UU</code> for more detail.
      * </p>
      */
-    type B[BLAUU2K] = BLAUU2K Side WHITE
+    type UU[BLAUU2K] = BLAUU2K Side WHITE
   }
 
   /**
@@ -294,10 +294,10 @@ object Side {
    * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified.
    * </p>
    */
-  private[scalactic] trait B[BLAUU2K] {
+  private[scalactic] trait UU[BLAUU2K] {
 
     /**
-     * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>B</code>.
+     * Type member that provides a curried alias to  <code>G</code> <code>Side</code> <code>UU</code>.
      *
      * <p>
      * See the main documentation for trait <code>G</code> for more detail.
@@ -317,7 +317,7 @@ object Side {
  *
  * @param g the &ldquo;good&rdquo; value
  */
-final case class West[+B](b: B) extends Side[B,Nothing] {
+final case class West[+UU](b: UU) extends Side[UU,Nothing] {
   override val isWest: Boolean = true
 
   /*
@@ -342,7 +342,7 @@ final case class West[+B](b: B) extends Side[B,Nothing] {
    *      |     }
    *      |   }
    * &lt;console&gt;:13: error: constructor cannot be instantiated to expected type;
-   *  found   : org.scalactic.East[G,B]
+   *  found   : org.scalactic.East[G,UU]
    *  required: org.scalactic.West[Int,org.scalactic.ErrorMessage]
    *              case East(_) =&gt; acc
    *                   ^
@@ -409,13 +409,13 @@ final case class West[+B](b: B) extends Side[B,Nothing] {
    * res1: org.scalactic.West[Int,String] = West(3)
    * </pre>
    */
-  def elseEast[W]: B Side W = this
+  def elseEast[W]: UU Side W = this
 
-  def westMap[UU2](f: B => UU2): UU2 Side Nothing = West(f(b))
-  def eastMap[E2](f: Nothing => E2): B Side E2 = this
-  def swap: Nothing Side B = East(b)
-  def transform[UU2, E2](bf: B => UU2 Side E2, wf: Nothing => UU2 Side E2): UU2 Side E2 = bf(b)
-  def fold[V](bf: B => V, wf: Nothing => V): V = bf(b)
+  def westMap[UU2](f: UU => UU2): UU2 Side Nothing = West(f(b))
+  def eastMap[E2](f: Nothing => E2): UU Side E2 = this
+  def swap: Nothing Side UU = East(b)
+  def transform[UU2, E2](bf: UU => UU2 Side E2, wf: Nothing => UU2 Side E2): UU2 Side E2 = bf(b)
+  def fold[V](bf: UU => V, wf: Nothing => V): V = bf(b)
 }
 
 /**
@@ -429,7 +429,7 @@ object West {
    * Supports the syntax that enables <code>East</code> instances to be created with a specific
    * <code>West</code> type.
    */
-  class WestType[B] {
+  class WestType[UU] {
 
     /**
      * Factory method for <code>East</code> instances whose <code>West</code> type is specified
@@ -447,7 +447,7 @@ object West {
      * @param b the &ldquo;bad&rdquo; value
      * @return a new <code>East</code> instance containing the passed <code>b</code> value
      */
-    def elseEast[W](w: W): B Side W = East[W](w)
+    def elseEast[W](w: W): UU Side W = East[W](w)
 
     override def toString: String = "WestType"
   }
@@ -476,7 +476,7 @@ object West {
    * res3: org.scalactic.East[Int,String] = East(oops)
    * </pre>
    */
-  def apply[B]: WestType[B] = new WestType[B]
+  def apply[UU]: WestType[UU] = new WestType[UU]
 }
 
 /**
