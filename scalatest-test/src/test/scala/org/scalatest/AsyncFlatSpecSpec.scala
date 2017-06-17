@@ -882,5 +882,118 @@ class AsyncFlatSpecSpec extends FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 8)
     }
+
+    it("should allow pendingUntilFixed to transform sync and async failures into pendings for they") {
+
+      val a = new AsyncFlatSpec {
+
+        they should "do this" is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        they should "do that" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        they should "do this with in" in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        they should "do that with in" in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        they should "do this with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        they should "do that with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        they should "do this with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        they should "do that with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      status.waitUntilCompleted()
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 8)
+      val tf = rep.testFailedEventsReceived
+      assert(tf.size === 0)
+    }
+
+    it("should allow pendingUntilFixed to transform sync and async successes into failures for they") {
+      val a = new AsyncFlatSpec {
+
+        they should "do this but fail" is pendingUntilFixed {
+          succeed
+        }
+
+        they should "do that but fail" is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        they should "do this but fail with in" in pendingUntilFixed {
+          succeed
+        }
+
+        they should "do that but fail with in" in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        they should "do this but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          succeed
+        }
+
+        they should "do that but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        they should "do this but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          succeed
+        }
+
+        they should "do that but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val status = a.run(None, Args(rep))
+      status.waitUntilCompleted()
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 0)
+      val tf = rep.testFailedEventsReceived
+      assert(tf.size === 8)
+    }
   }
 }
