@@ -20,6 +20,7 @@ import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.tagobjects.Slow
 
 import scala.util.Success
 
@@ -796,12 +797,36 @@ class AsyncFlatSpecSpec extends FunSpec {
             succeed
           }
         }
+
+        it should "do this with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        it should "do that with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        it should "do this with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          fail("i meant to do that")
+          succeed
+        }
+
+        it should "do that with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
       status.waitUntilCompleted()
       val tp = rep.testPendingEventsReceived
-      assert(tp.size === 4)
+      assert(tp.size === 8)
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 0)
     }
@@ -828,6 +853,26 @@ class AsyncFlatSpecSpec extends FunSpec {
             succeed
           }
         }
+
+        it should "do this but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          succeed
+        }
+
+        it should "do that but fail with taggedAs" taggedAs(Slow) is pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
+
+        it should "do this but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          succeed
+        }
+
+        it should "do that but fail with in with taggedAs" taggedAs(Slow) in pendingUntilFixed {
+          Future {
+            succeed
+          }
+        }
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
@@ -835,7 +880,7 @@ class AsyncFlatSpecSpec extends FunSpec {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
-      assert(tf.size === 4)
+      assert(tf.size === 8)
     }
   }
 }

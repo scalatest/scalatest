@@ -311,8 +311,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToRun(testFun _, verb.trim, name.trim, tags, pos)
     }
 
     /**
