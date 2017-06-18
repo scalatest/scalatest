@@ -190,7 +190,8 @@ object ScalatestBuild extends Build {
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test",
+      "io.circe" %% "circe-parser" % "0.7.1" % "test"
     )
 
   def scalatestJSLibraryDependencies =

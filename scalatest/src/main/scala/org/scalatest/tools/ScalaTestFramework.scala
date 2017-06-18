@@ -121,7 +121,7 @@ class ScalaTestFramework extends SbtFramework {
     val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
-    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname = new AtomicBoolean(false)
+    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson = new AtomicBoolean(false)
     val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
     val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
@@ -223,6 +223,7 @@ class ScalaTestFramework extends SbtFramework {
               presentReminderWithShortStackTraces.getAndSet(configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces))
               presentReminderWithFullStackTraces.getAndSet(configSet.contains(PresentReminderWithFullStackTraces))
               presentReminderWithoutCanceledTests.getAndSet(configSet.contains(PresentReminderWithoutCanceledTests))
+              presentJson.getAndSet(configSet.contains(PresentJson))
             case None => 
               useStdout.getAndSet(reporterArgs.isEmpty)  // If no reporters specified, just give them a default stdout reporter
               presentAllDurations.getAndSet(false)
@@ -234,6 +235,7 @@ class ScalaTestFramework extends SbtFramework {
               presentReminderWithShortStackTraces.getAndSet(false)
               presentReminderWithFullStackTraces.getAndSet(false)
               presentReminderWithoutCanceledTests.getAndSet(false)
+              presentJson.getAndSet(false)
           }
           
           fullReporterConfigurations.graphicReporterConfiguration match {
@@ -284,7 +286,8 @@ class ScalaTestFramework extends SbtFramework {
           presentReminderWithShortStackTraces.get,
           presentReminderWithFullStackTraces.get,
           presentReminderWithoutCanceledTests.get,
-          presentFilePathname.get
+          presentFilePathname.get,
+          presentJson.get
         )
     }
   }
@@ -308,7 +311,8 @@ class ScalaTestFramework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentFilePathname: Boolean
+    presentFilePathname: Boolean,
+    presentJson: Boolean
   ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -319,12 +323,19 @@ class ScalaTestFramework extends SbtFramework {
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
-    presentFilePathname
+    presentFilePathname,
+    presentJson
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
+      }
+    }
+
+    protected def printNoColor(text: String): Unit = {
+      loggers.foreach { logger =>
+        logger.info(text)
       }
     }
 
