@@ -1271,6 +1271,9 @@ class ArgsParserSpec extends FunSpec {
     assertResult(Set(PresentFilePathname)) {
       ArgsParser.parseConfigSet("-oV")
     }
+    assertResult(Set(PresentJson)) {
+      ArgsParser.parseConfigSet("-oJ")
+    }
     assertResult(Set[ReporterConfigParam]()) {
       ArgsParser.parseConfigSet("-f")
     }
