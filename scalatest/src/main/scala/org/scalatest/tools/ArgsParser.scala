@@ -554,6 +554,7 @@ private[tools] object ArgsParser {
         case 'D' => set += PresentAllDurations
         case 'U' => set += PresentUnformatted
         case 'V' => set += PresentFilePathname
+        case 'J' => set += PresentJson
         case c: Char => {
 
           // this should be moved to the checker, and just throw an exception here with a debug message. Or allow a MatchError.
