@@ -390,6 +390,7 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
     presentFilePathname: Boolean,
+    presentJson: Boolean,
     configSet: Set[ReporterConfigParam],
     execService: ExecutorService
   ) extends Task {
@@ -462,6 +463,7 @@ class Framework extends SbtFramework {
                 presentReminderWithFullStackTraces,
                 presentReminderWithoutCanceledTests,
                 presentFilePathname,
+                presentJson,
                 summaryCounter
               ),
               configSet
@@ -567,6 +569,7 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
     presentFilePathname: Boolean,
+    presentJson: Boolean,
     summaryCounter: SummaryCounter
   ) extends StringReporter(
     presentAllDurations,
@@ -578,12 +581,19 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
-    presentFilePathname: Boolean
+    presentFilePathname,
+    presentJson
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
+      }
+    }
+
+    protected def printNoColor(text: String): Unit = {
+      loggers.foreach { logger =>
+        logger.info(text)
       }
     }
     
@@ -595,19 +605,23 @@ class Framework extends SbtFramework {
           }
         case _ =>
       }
-      fragmentsForEvent(
-        event,
-        presentUnformatted,
-        presentAllDurations,
-        presentShortStackTraces,
-        presentFullStackTraces,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests,
-        presentFilePathname,
-        reminderEventsBuf
-      ) foreach printPossiblyInColor
+
+      if (presentJson)
+        printNoColor(event.toJson)
+      else
+        fragmentsForEvent(
+          event,
+          presentUnformatted,
+          presentAllDurations,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests,
+          presentFilePathname,
+          reminderEventsBuf
+        ) foreach printPossiblyInColor
     }
 
     def dispose(): Unit = ()
@@ -634,6 +648,7 @@ class Framework extends SbtFramework {
     val presentReminderWithFullStackTraces: Boolean,
     val presentReminderWithoutCanceledTests: Boolean,
     val presentFilePathname: Boolean,
+    val presentJson: Boolean,
     val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
@@ -699,6 +714,7 @@ class Framework extends SbtFramework {
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
           presentFilePathname,
+          presentJson,
           configSet,
           execSvc
         )
@@ -1005,6 +1021,7 @@ import java.net.{ServerSocket, InetAddress}
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
       presentFilePathname,
+      presentJson,
       configSet
     ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
@@ -1024,6 +1041,7 @@ import java.net.{ServerSocket, InetAddress}
             configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithoutCanceledTests),
             configSet.contains(PresentFilePathname),
+            configSet.contains(PresentJson),
             configSet
           )
         case None =>
@@ -1031,7 +1049,7 @@ import java.net.{ServerSocket, InetAddress}
           // the reason that sub-process must use stdout is that the Array[Logger] is passed in from SBT only when the
           // suite is run, in the fork mode case this happens only at the sub-process side, the main process will not be
           // able to get the Array[Logger] to create SbtInfoLoggerReporter.
-          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
@@ -1068,6 +1086,7 @@ import java.net.{ServerSocket, InetAddress}
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
       presentFilePathname,
+      presentJson,
       configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,
