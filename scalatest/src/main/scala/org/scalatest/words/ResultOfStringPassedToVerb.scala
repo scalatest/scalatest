@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
+import enablers.Isable
 
 /**
  * Abstract class that supports test registration in <code>FlatSpec</code>
@@ -86,7 +87,7 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(fun: => PendingStatement)
+  def is[T](fun: => T)(implicit ev: Isable[T]): Unit
 
   /**
    * Supports the registration of tagged tests in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.

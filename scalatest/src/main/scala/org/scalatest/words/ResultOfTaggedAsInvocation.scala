@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
+import enablers.Isable
 
 /**
  * Supports the registration of tagged tests in shorthand form in <code>FlatSpec</code>
@@ -79,5 +80,5 @@ abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, va
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(testFun: => PendingStatement)
+  def is[T](testFun: => T)(implicit isable: Isable[T]): Unit
 }

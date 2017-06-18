@@ -43,7 +43,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean,
-  presentFilePathname: Boolean
+  presentFilePathname: Boolean,
+  presentJson: Boolean
 ) extends StringReporter(
   presentAllDurations,
   presentInColor,
@@ -54,7 +55,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests,
-  presentFilePathname
+  presentFilePathname,
+  presentJson
 ) {
 
   /**
@@ -77,7 +79,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentFilePathname: Boolean
+    presentFilePathname: Boolean,
+    presentJson: Boolean
   ) =
     this(
       new PrintWriter(
@@ -94,7 +97,8 @@ private[scalatest] abstract class PrintReporter(
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentFilePathname
+      presentFilePathname,
+      presentJson
     )
 
   // SKIP-SCALATESTJS-START
@@ -119,7 +123,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentFilePathname: Boolean
+    presentFilePathname: Boolean,
+    presentJson: Boolean
   ) =
     this(
       new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(filename)), BufferSize)),
@@ -132,13 +137,18 @@ private[scalatest] abstract class PrintReporter(
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentFilePathname
+      presentFilePathname,
+      presentJson
     )
 
   // SKIP-SCALATESTJS-END
 
   protected def printPossiblyInColor(fragment: Fragment): Unit = {
     pw.println(fragment.toPossiblyColoredText(presentInColor))
+  }
+
+  protected def printNoColor(text: String): Unit = {
+    pw.println(text)
   }
 
   override def apply(event: Event): Unit = {

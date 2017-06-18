@@ -1905,8 +1905,9 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = numericCharGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NumericChar, ae1: List[NumericChar], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
-        a1 shouldBe NumericChar('0')
+        val (a1, ae1, ar1) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, _, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        List(a1, a2) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
       }
     }
 

@@ -2731,6 +2731,8 @@ class CommonGeneratorsSpec extends WordSpec with Matchers {
           for {
 /*
 TODO: The following ensuringValid call is occassionally failing with a passed Infinity:
+This may be fixed by https://github.com/scalatest/scalatest/pull/1129/files
+If it doesn't show up for a while, please delete this comment.
 [info] CommonGeneratorsSpec:
 [info] The CommonGenerators object should offer a nonZeroFiniteFloatsBetween method that 
 [info] - returns a generator whose initEdges method includes min and max *** FAILED *** (5 milliseconds)

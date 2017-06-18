@@ -519,7 +519,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         nextPair
       else {
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         (PosFiniteFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }
@@ -564,7 +564,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       else {
         //val nextBetween = min + (nextValue % (max - min)).abs
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         (PosZFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -869,7 +869,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         nextPair
       else {
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         (NegFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -997,7 +997,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         nextPair
       else {
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         (NegZFiniteFloat.ensuringValid(nextBetween), nextRnd)
       }
     }
@@ -1118,6 +1118,21 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     }
   }
 
+  def finiteFloatBetweenAlgorithm(between0And1: Float, min: Float, max: Float): Float = {
+    if (min < 0.0f && max > 0.0f) {
+      val maxMinusMin = max - min
+      if (maxMinusMin.isInfinity) {
+        val neg = between0And1 * min
+        val pos = between0And1 * max
+        min + neg + pos
+      }
+      else
+        min + (between0And1 * maxMinusMin).abs
+    }
+    else
+      min + (between0And1 * (max - min)).abs
+  }
+
   def chooseNonZeroFiniteFloat(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): (NonZeroFiniteFloat, Randomizer) = {
 
     if (from == to) {
@@ -1134,7 +1149,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         nextPair
       else {
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         if (nextBetween == 0.0f)
           (NonZeroFiniteFloat(1.0f), nextRnd)
         else
@@ -1210,7 +1225,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         nextPair
       else {
         val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
+        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
         (FiniteFloat.ensuringValid(nextBetween), nextNextRnd)
       }
     }

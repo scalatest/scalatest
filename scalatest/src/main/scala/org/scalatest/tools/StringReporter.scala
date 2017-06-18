@@ -39,12 +39,15 @@ private[scalatest] abstract class StringReporter(
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean,
-  presentFilePathname: Boolean
+  presentFilePathname: Boolean,
+  presentJson: Boolean
 ) extends ResourcefulReporter {
 
   val reminderEventsBuf = new ListBuffer[ExceptionalEvent]
 
   protected def printPossiblyInColor(fragment: Fragment): Unit
+
+  protected def printNoColor(text: String): Unit
 
 /*
 I either want to print the full stack trace, like this:
@@ -154,19 +157,23 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         }
       case _ =>
     }
-    fragmentsForEvent(
-      event,
-      presentUnformatted,
-      presentAllDurations,
-      presentShortStackTraces,
-      presentFullStackTraces,
-      presentReminder,
-      presentReminderWithShortStackTraces,
-      presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests,
-      presentFilePathname,
-      reminderEventsBuf
-   ) foreach printPossiblyInColor
+
+    if (presentJson)
+      printNoColor(event.toJson)
+    else
+      fragmentsForEvent(
+        event,
+        presentUnformatted,
+        presentAllDurations,
+        presentShortStackTraces,
+        presentFullStackTraces,
+        presentReminder,
+        presentReminderWithShortStackTraces,
+        presentReminderWithFullStackTraces,
+        presentReminderWithoutCanceledTests,
+        presentFilePathname,
+        reminderEventsBuf
+     ) foreach printPossiblyInColor
   }
 
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1

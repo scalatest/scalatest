@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import enablers.Isable
 
 /**
  * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
@@ -49,11 +50,25 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToOutcome(testFun: () => Assertion with PendingStatement): () => AsyncOutcome =
     () => {
       PastOutcome(
-        try { testFun; Succeeded }
+        try { testFun(); Succeeded }
         catch {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+   private[scalatest] def transformFuturePendingToOutcome(testFun: () => Future[PendingStatement]): () => AsyncOutcome =
+    () => {
+      new InternalFutureOutcome(
+        testFun().map { r =>
+          Succeeded
+        } recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
@@ -145,7 +160,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
@@ -153,6 +168,16 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
     engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+  }
+
+  private def registerFuturePendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
+    //def transformPendingToOutcomeParam: PendingStatement = testFun()
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   /**
@@ -296,8 +321,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToRun(testFun _, verb.trim, name.trim, tags, pos)
     }
 
     /**
@@ -319,7 +344,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "ignore", tags, testFun _, pos)
     }
   }
 
@@ -407,8 +432,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToRun(testFun _, verb.trim, name.trim, List(), pos)
     }
 
     /**
@@ -429,7 +454,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "ignore", List.empty, testFun _, pos)
     }
 
     /**
@@ -681,7 +706,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
     }
 
     /**
@@ -710,8 +735,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToIgnore(testFun _, verb.trim, name.trim, tags, pos)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -778,7 +803,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, "in", List.empty, testFun _, pos)
     }
 
     /**
@@ -806,8 +831,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _, pos)
+    def is[T](testFun: => T)(implicit pos: source.Position, isable: Isable[T]): Unit = {
+      isable.registerPendingTestToIgnore(testFun _, verb.trim, name.trim, List.empty, pos)
     }
 
     /**
@@ -931,244 +956,6 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </p>
    */
   protected val ignore = new IgnoreWord
-
-  /**
-   * Class that supports the registration of tagged tests via the <code>TheyWord</code> instance
-   * referenced from <code>FlatSpec</code>'s <code>they</code> field.
-   *
-   * <p>
-   * This class enables syntax such as the following tagged test registration:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
-   *                                                                        ^
-   * </pre>
-   *
-   * <p>
-   * It also enables syntax such as the following registration of an ignored, tagged test:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
-   *                                                                        ^
-   * </pre>
-   *
-   * <p>
-   * In addition, it enables syntax such as the following registration of a pending, tagged test:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" taggedAs(SlowTest) is (pending)
-   *                                                                        ^
-   * </pre>
-   *
-   * <p>
-   * For more information and examples of the use of the <code>they</code> field to register tagged tests, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
-   * For examples of tagged test registration, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
-   * </p>
-   */
-  protected final class TheyVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
-
-    /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
-     *                                                                      ^
-     * </pre>
-     *
-     * <p>
-     * For examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
-    }
-
-    /**
-     * Supports the registration of pending, tagged tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" taggedAs(SlowTest) is (pending)
-     *                                                                      ^
-     * </pre>
-     *
-     * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
-    }
-
-    /**
-     * Supports the registration of ignored, tagged tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
-     *                                                                      ^
-     * </pre>
-     *
-     * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
-    }
-  }
-
-  /**
-   * Class that supports test registration via the <code>TheyWord</code> instance referenced from <code>FlatSpec</code>'s <code>they</code> field.
-   *
-   * <p>
-   * This class enables syntax such as the following test registration:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" in { ... }
-   *                                                     ^
-   * </pre>
-   *
-   * <p>
-   * It also enables syntax such as the following registration of an ignored test:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" ignore { ... }
-   *                                                     ^
-   * </pre>
-   *
-   * <p>
-   * In addition, it enables syntax such as the following registration of a pending test:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" is (pending)
-   *                                                     ^
-   * </pre>
-   *
-   * <p>
-   * And finally, it also enables syntax such as the following tagged test registration:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * they should "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
-   *                                                     ^
-   * </pre>
-   *
-   * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the <a href="FlatSpec.html">main documentation</a>
-   * for trait <code>FlatSpec</code>.
-   * </p>
-   */
-  protected final class TheyVerbString(verb: String, name: String) {
-
-    /**
-     * Supports the registration of tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" in { ... }
-     *                                                   ^
-     * </pre>
-     *
-     * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _, pos)
-    }
-
-    /**
-     * Supports the registration of pending tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" is (pending)
-     *                                                   ^
-     * </pre>
-     *
-     * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
-    }
-
-    /**
-     * Supports the registration of ignored tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" ignore { ... }
-     *                                                   ^
-     * </pre>
-     *
-     * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
-    }
-
-    /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
-     *
-     * <p>
-     * This method supports syntax such as the following:
-     * </p>
-     *
-     * <pre class="stHighlight">
-     * they must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
-     *                                                   ^
-     * </pre>
-     *
-     * <p>
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
-     * </p>
-     */
-    def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
-      val tagList = firstTestTag :: otherTestTags.toList
-      new ItVerbStringTaggedAs(verb, name, tagList)
-    }
-  }
 
   /**
    * Class that supports test (and shared test) registration via the instance referenced from <code>FlatSpec</code>'s <code>it</code> field.
@@ -1424,7 +1211,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, "ignore", List.empty, testFun _, pos)
     }
   }
 
@@ -1524,7 +1311,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, "ignore", tagsList, testFun _, pos)
     }
   }
 
@@ -1564,24 +1351,41 @@ import resultOfStringPassedToVerb.verb
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
 
-          def is(testFun: => PendingStatement): Unit = {
-            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _, pos)
-          }
-            // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
+          def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, List.empty, pos)
+            // Note, won't have an is method that takes fixture => Assertion with PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
-              }
+              def is[T](testFun: => T)(implicit isable: Isable[T]): Unit = isable.registerPendingTestToRun(testFun _, verb, rest, tags, pos)
             }
           }
         }
       }
     }
+
+   // TODO: Scaladoc
+   protected implicit val isableForPendingStatement: Isable[Assertion with PendingStatement] =
+     new Isable[Assertion with PendingStatement] {
+       def registerPendingTestToRun(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+       def registerPendingTestToIgnore(testFun: () => Assertion with PendingStatement, verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerPendingTestToIgnore(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+     }
+
+   protected implicit val isableForFuturePendingStatement: Isable[Future[Assertion with PendingStatement]] =
+     new Isable[Future[Assertion with PendingStatement]] {
+       def registerPendingTestToRun(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerFuturePendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+       def registerPendingTestToIgnore(testFun: () => Future[Assertion with PendingStatement], verb: String, rest: String, tags: List[Tag], pos: source.Position): Unit = {
+         thisSuite.registerFuturePendingTestToIgnore(verb.trim + " " + rest.trim, "is", tags, testFun, pos)
+       }
+     }
 
   /**
    * Supports the shorthand form of shared test registration.
@@ -1635,7 +1439,7 @@ import resultOfStringPassedToVerb.verb
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1646,7 +1450,7 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Assertion with PendingStatement, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1654,6 +1458,16 @@ import resultOfStringPassedToVerb.verb
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
+  }
+
+  private def registerFuturePendingTestToIgnore(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[Assertion with PendingStatement], pos: source.Position): Unit = {
+    //def transformPendingToOutcomeParam: PendingStatement = testFun()
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerIgnoredAsyncTest(specText, transformFuturePendingToOutcome(testFun), testRegistrationClosedMessageFun, None, pos, testTags: _*)
   }
 
   /**
