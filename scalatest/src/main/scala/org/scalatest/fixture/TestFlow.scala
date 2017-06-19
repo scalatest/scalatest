@@ -15,13 +15,15 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.events.{MotionToSuppress, TestFailed, TestStarting, TestSucceeded, TestCanceled, TestPending, Location, LineInFile, SeeStackDepthException}
+import org.scalatest.events._
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.{DuplicateTestNameException, PayloadField, TestCanceledException, TestPendingException}
 import org.scalactic.source
-import org.scalatest.{Args, Status, SucceededStatus, FailedStatus}
+import org.scalatest._
 import org.scalatest.Suite._
+
 import scala.compat.Platform.currentTime
 
 trait Flow0[A] { thisNode =>
@@ -49,7 +51,7 @@ trait Flow0[A] { thisNode =>
     }
   }
 
-  def andThen[B, C](fun1: Flow1[A, B], fun2: Flow1[A, C]): Flow0[(B, C)] =
+  def andThen[B, C](fun1: Flow1[A, B], fun2: Flow1[A, C])(implicit execCtx: ExecutionContext): Flow0[(B, C)] =
     new Flow0[(B, C)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C)], Status) = {
@@ -60,7 +62,18 @@ trait Flow0[A] { thisNode =>
             val (res2, s2) = fun2.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined) Some((res1.get, res2.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture
+              ) {
+                if (!r1 || !r2)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -72,7 +85,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D]): Flow0[(B, C, D)] =
+  def andThen[B, C, D](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D])(implicit execCtx: ExecutionContext): Flow0[(B, C, D)] =
     new Flow0[(B, C, D)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D)], Status) = {
@@ -84,7 +97,19 @@ trait Flow0[A] { thisNode =>
             val (res3, s3) = fun3.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined) Some((res1.get, res2.get, res3.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture
+              ) {
+                if (!r1 || !r2 || !r3)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -97,7 +122,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E]): Flow0[(B, C, D, E)] =
+  def andThen[B, C, D, E](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E)] =
     new Flow0[(B, C, D, E)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E)], Status) = {
@@ -110,7 +135,20 @@ trait Flow0[A] { thisNode =>
             val (res4, s4) = fun4.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined) Some((res1.get, res2.get, res3.get, res4.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -124,7 +162,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F]): Flow0[(B, C, D, E, F)] =
+  def andThen[B, C, D, E, F](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F)] =
     new Flow0[(B, C, D, E, F)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F)], Status) = {
@@ -138,7 +176,21 @@ trait Flow0[A] { thisNode =>
             val (res5, s5) = fun5.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -153,7 +205,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G]): Flow0[(B, C, D, E, F, G)] =
+  def andThen[B, C, D, E, F, G](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G)] =
     new Flow0[(B, C, D, E, F, G)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G)], Status) = {
@@ -168,7 +220,22 @@ trait Flow0[A] { thisNode =>
             val (res6, s6) = fun6.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -184,7 +251,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H]): Flow0[(B, C, D, E, F, G, H)] =
+  def andThen[B, C, D, E, F, G, H](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H)] =
     new Flow0[(B, C, D, E, F, G, H)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H)], Status) = {
@@ -200,7 +267,23 @@ trait Flow0[A] { thisNode =>
             val (res7, s7) = fun7.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -217,7 +300,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I]): Flow0[(B, C, D, E, F, G, H, I)] =
+  def andThen[B, C, D, E, F, G, H, I](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I)] =
     new Flow0[(B, C, D, E, F, G, H, I)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I)], Status) = {
@@ -234,7 +317,24 @@ trait Flow0[A] { thisNode =>
             val (res8, s8) = fun8.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -252,7 +352,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J]): Flow0[(B, C, D, E, F, G, H, I, J)] =
+  def andThen[B, C, D, E, F, G, H, I, J](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J)] =
     new Flow0[(B, C, D, E, F, G, H, I, J)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J)], Status) = {
@@ -270,7 +370,25 @@ trait Flow0[A] { thisNode =>
             val (res9, s9) = fun9.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -289,7 +407,7 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K]): Flow0[(B, C, D, E, F, G, H, I, J, K)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K)], Status) = {
@@ -308,7 +426,26 @@ trait Flow0[A] { thisNode =>
             val (res10, s10) = fun10.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -328,7 +465,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L]): Flow0[(B, C, D, E, F, G, H, I, J, K, L)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K],
+                                               fun11: Flow1[A, L])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L)], Status) = {
@@ -348,7 +486,27 @@ trait Flow0[A] { thisNode =>
             val (res11, s11) = fun11.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -369,7 +527,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K],
+                                                  fun11: Flow1[A, L], fun12: Flow1[A, M])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M)], Status) = {
@@ -390,7 +549,28 @@ trait Flow0[A] { thisNode =>
             val (res12, s12) = fun12.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -412,7 +592,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K],
+                                                     fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N)], Status) = {
@@ -434,7 +615,29 @@ trait Flow0[A] { thisNode =>
             val (res13, s13) = fun13.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -457,7 +660,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K],
+                                                        fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O)], Status) = {
@@ -480,7 +684,30 @@ trait Flow0[A] { thisNode =>
             val (res14, s14) = fun14.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -504,7 +731,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K],
+                                                           fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)], Status) = {
@@ -528,7 +756,31 @@ trait Flow0[A] { thisNode =>
             val (res15, s15) = fun15.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -553,7 +805,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J],
+                                                              fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)], Status) = {
@@ -578,7 +831,32 @@ trait Flow0[A] { thisNode =>
             val (res16, s16) = fun16.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -604,7 +882,8 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J],
+                                                                 fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)], Status) = {
@@ -630,7 +909,33 @@ trait Flow0[A] { thisNode =>
             val (res17, s17) = fun17.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -657,7 +962,9 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R], fun18: Flow1[A, S]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J],
+                                                                    fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R],
+                                                                    fun18: Flow1[A, S])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)], Status) = {
@@ -684,7 +991,34 @@ trait Flow0[A] { thisNode =>
             val (res18, s18) = fun18.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -712,7 +1046,9 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R], fun18: Flow1[A, S], fun19: Flow1[A, T]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J],
+                                                                       fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R],
+                                                                       fun18: Flow1[A, S], fun19: Flow1[A, T])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)], Status) = {
@@ -740,7 +1076,35 @@ trait Flow0[A] { thisNode =>
             val (res19, s19) = fun19.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -769,7 +1133,9 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R], fun18: Flow1[A, S], fun19: Flow1[A, T], fun20: Flow1[A, U]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J],
+                                                                          fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R],
+                                                                          fun18: Flow1[A, S], fun19: Flow1[A, T], fun20: Flow1[A, U])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)], Status) = {
@@ -798,7 +1164,36 @@ trait Flow0[A] { thisNode =>
             val (res20, s20) = fun20.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture;
+                r20 <- s20.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19 || !r20)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -828,7 +1223,9 @@ trait Flow0[A] { thisNode =>
       }
     }
 
-  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I], fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q], fun17: Flow1[A, R], fun18: Flow1[A, S], fun19: Flow1[A, T], fun20: Flow1[A, U], fun21: Flow1[A, V]): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
+  def andThen[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](fun1: Flow1[A, B], fun2: Flow1[A, C], fun3: Flow1[A, D], fun4: Flow1[A, E], fun5: Flow1[A, F], fun6: Flow1[A, G], fun7: Flow1[A, H], fun8: Flow1[A, I],
+                                                                             fun9: Flow1[A, J], fun10: Flow1[A, K], fun11: Flow1[A, L], fun12: Flow1[A, M], fun13: Flow1[A, N], fun14: Flow1[A, O], fun15: Flow1[A, P], fun16: Flow1[A, Q],
+                                                                             fun17: Flow1[A, R], fun18: Flow1[A, S], fun19: Flow1[A, T], fun20: Flow1[A, U], fun21: Flow1[A, V])(implicit execCtx: ExecutionContext): Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
     new Flow0[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] {
       def testNames: Set[String] = thisNode.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames ++ fun21.testNames
       override def run(suite: Suite, testName: Option[String], args: Args): (Option[(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)], Status) = {
@@ -858,7 +1255,37 @@ trait Flow0[A] { thisNode =>
             val (res21, s21) = fun21.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined && res21.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get, res21.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds && s21.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture;
+                r20 <- s20.toFuture;
+                r21 <- s21.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19 || !r20 || !r21)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1017,7 +1444,7 @@ trait Flow1[A, B] { self =>
     }
   }
 
-  def andThen[C, D](fun1: Flow1[B, C], fun2: Flow1[B, D]): Flow1[A, (C, D)] =
+  def andThen[C, D](fun1: Flow1[B, C], fun2: Flow1[B, D])(implicit execCtx: ExecutionContext): Flow1[A, (C, D)] =
     new Flow1[A, (C, D)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1033,7 +1460,18 @@ trait Flow1[A, B] { self =>
             val (res2, s2) = fun2.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined) Some((res1.get, res2.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture
+              ) {
+                if (!r1 || !r2)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1046,7 +1484,7 @@ trait Flow1[A, B] { self =>
     }
 
 
-  def andThen[C, D, E](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E]): Flow1[A, (C, D, E)] =
+  def andThen[C, D, E](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E)] =
     new Flow1[A, (C, D, E)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1064,7 +1502,19 @@ trait Flow1[A, B] { self =>
             val (res3, s3) = fun3.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined) Some((res1.get, res2.get, res3.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture
+              ) {
+                if (!r1 || !r2 || !r3)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1077,7 +1527,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F]): Flow1[A, (C, D, E, F)] =
+  def andThen[C, D, E, F](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F)] =
     new Flow1[A, (C, D, E, F)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1097,7 +1547,20 @@ trait Flow1[A, B] { self =>
             val (res4, s4) = fun4.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined) Some((res1.get, res2.get, res3.get, res4.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1111,7 +1574,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G]): Flow1[A, (C, D, E, F, G)] =
+  def andThen[C, D, E, F, G](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G)] =
     new Flow1[A, (C, D, E, F, G)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1133,7 +1596,21 @@ trait Flow1[A, B] { self =>
             val (res5, s5) = fun5.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1148,7 +1625,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H]): Flow1[A, (C, D, E, F, G, H)] =
+  def andThen[C, D, E, F, G, H](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H)] =
     new Flow1[A, (C, D, E, F, G, H)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1172,7 +1649,22 @@ trait Flow1[A, B] { self =>
             val (res6, s6) = fun6.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1188,7 +1680,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I]): Flow1[A, (C, D, E, F, G, H, I)] =
+  def andThen[C, D, E, F, G, H, I](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I)] =
     new Flow1[A, (C, D, E, F, G, H, I)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1214,7 +1706,23 @@ trait Flow1[A, B] { self =>
             val (res7, s7) = fun7.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1231,7 +1739,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J]): Flow1[A, (C, D, E, F, G, H, I, J)] =
+  def andThen[C, D, E, F, G, H, I, J](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J)] =
     new Flow1[A, (C, D, E, F, G, H, I, J)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1259,7 +1767,24 @@ trait Flow1[A, B] { self =>
             val (res8, s8) = fun8.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1277,7 +1802,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K]): Flow1[A, (C, D, E, F, G, H, I, J, K)] =
+  def andThen[C, D, E, F, G, H, I, J, K](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1307,7 +1832,25 @@ trait Flow1[A, B] { self =>
             val (res9, s9) = fun9.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1326,7 +1869,7 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L]): Flow1[A, (C, D, E, F, G, H, I, J, K, L)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1358,7 +1901,26 @@ trait Flow1[A, B] { self =>
             val (res10, s10) = fun10.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1378,7 +1940,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L],
+                                               fun11: Flow1[B, M])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1412,7 +1975,27 @@ trait Flow1[A, B] { self =>
             val (res11, s11) = fun11.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1433,7 +2016,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L],
+                                                  fun11: Flow1[B, M], fun12: Flow1[B, N])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1469,7 +2053,28 @@ trait Flow1[A, B] { self =>
             val (res12, s12) = fun12.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1491,7 +2096,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L],
+                                                     fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1529,7 +2135,29 @@ trait Flow1[A, B] { self =>
             val (res13, s13) = fun13.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1552,7 +2180,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                        fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1592,7 +2221,30 @@ trait Flow1[A, B] { self =>
             val (res14, s14) = fun14.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1616,7 +2268,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                           fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1658,7 +2311,31 @@ trait Flow1[A, B] { self =>
             val (res15, s15) = fun15.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1683,7 +2360,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                              fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1727,7 +2405,32 @@ trait Flow1[A, B] { self =>
             val (res16, s16) = fun16.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1753,7 +2456,8 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                                 fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1799,7 +2503,33 @@ trait Flow1[A, B] { self =>
             val (res17, s17) = fun17.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1826,7 +2556,9 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                                    fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S],
+                                                                    fun18: Flow1[B, T])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1874,7 +2606,34 @@ trait Flow1[A, B] { self =>
             val (res18, s18) = fun18.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1902,7 +2661,9 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K],
+                                                                       fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S],
+                                                                       fun18: Flow1[B, T], fun19: Flow1[B, U])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -1952,7 +2713,35 @@ trait Flow1[A, B] { self =>
             val (res19, s19) = fun19.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -1981,7 +2770,9 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J],
+                                                                          fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R],
+                                                                          fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -2033,7 +2824,36 @@ trait Flow1[A, B] { self =>
             val (res20, s20) = fun20.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture;
+                r20 <- s20.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19 || !r20)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -2063,7 +2883,9 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J],
+                                                                             fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R],
+                                                                             fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames ++ fun21.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -2117,7 +2939,37 @@ trait Flow1[A, B] { self =>
             val (res21, s21) = fun21.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined && res21.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get, res21.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds && s21.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture;
+                r20 <- s20.toFuture;
+                r21 <- s21.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19 || !r20 || !r21)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
@@ -2148,7 +3000,9 @@ trait Flow1[A, B] { self =>
       }
     }
 
-  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J], fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R], fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W], fun22: Flow1[B, X]): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)] =
+  def andThen[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X](fun1: Flow1[B, C], fun2: Flow1[B, D], fun3: Flow1[B, E], fun4: Flow1[B, F], fun5: Flow1[B, G], fun6: Flow1[B, H], fun7: Flow1[B, I], fun8: Flow1[B, J],
+                                                                                fun9: Flow1[B, K], fun10: Flow1[B, L], fun11: Flow1[B, M], fun12: Flow1[B, N], fun13: Flow1[B, O], fun14: Flow1[B, P], fun15: Flow1[B, Q], fun16: Flow1[B, R],
+                                                                                fun17: Flow1[B, S], fun18: Flow1[B, T], fun19: Flow1[B, U], fun20: Flow1[B, V], fun21: Flow1[B, W], fun22: Flow1[B, X])(implicit execCtx: ExecutionContext): Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)] =
     new Flow1[A, (C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)] {
       def testNames: Set[String] = self.testNames ++ fun1.testNames ++ fun2.testNames ++ fun3.testNames ++ fun4.testNames ++ fun5.testNames ++ fun6.testNames ++ fun7.testNames ++ fun8.testNames ++ fun9.testNames ++ fun10.testNames ++ fun11.testNames ++ fun12.testNames ++ fun13.testNames ++ fun14.testNames ++ fun15.testNames ++ fun16.testNames ++ fun17.testNames ++ fun18.testNames ++ fun19.testNames ++ fun20.testNames ++ fun21.testNames ++ fun22.testNames
       override def cancel(suite: Suite, args: Args): Unit = {
@@ -2204,7 +3058,38 @@ trait Flow1[A, B] { self =>
             val (res22, s22) = fun22.run(suite, testName, args, res0)
 
             val retV = if (res1.isDefined && res2.isDefined && res3.isDefined && res4.isDefined && res5.isDefined && res6.isDefined && res7.isDefined && res8.isDefined && res9.isDefined && res10.isDefined && res11.isDefined && res12.isDefined && res13.isDefined && res14.isDefined && res15.isDefined && res16.isDefined && res17.isDefined && res18.isDefined && res19.isDefined && res20.isDefined && res21.isDefined && res22.isDefined) Some((res1.get, res2.get, res3.get, res4.get, res5.get, res6.get, res7.get, res8.get, res9.get, res10.get, res11.get, res12.get, res13.get, res14.get, res15.get, res16.get, res17.get, res18.get, res19.get, res20.get, res21.get, res22.get)) else None
-            val retS = if (s1.succeeds && s2.succeeds && s3.succeeds && s4.succeeds && s5.succeeds && s6.succeeds && s7.succeeds && s8.succeeds && s9.succeeds && s10.succeeds && s11.succeeds && s12.succeeds && s13.succeeds && s14.succeeds && s15.succeeds && s16.succeeds && s17.succeeds && s18.succeeds && s19.succeeds && s20.succeeds && s21.succeeds && s22.succeeds) SucceededStatus else FailedStatus
+            val retS = {
+              val cStatus = new ScalaTestStatefulStatus
+              for (
+                r1 <- s1.toFuture;
+                r2 <- s2.toFuture;
+                r3 <- s3.toFuture;
+                r4 <- s4.toFuture;
+                r5 <- s5.toFuture;
+                r6 <- s6.toFuture;
+                r7 <- s7.toFuture;
+                r8 <- s8.toFuture;
+                r9 <- s9.toFuture;
+                r10 <- s10.toFuture;
+                r11 <- s11.toFuture;
+                r12 <- s12.toFuture;
+                r13 <- s13.toFuture;
+                r14 <- s14.toFuture;
+                r15 <- s15.toFuture;
+                r16 <- s16.toFuture;
+                r17 <- s17.toFuture;
+                r18 <- s18.toFuture;
+                r19 <- s19.toFuture;
+                r20 <- s20.toFuture;
+                r21 <- s21.toFuture;
+                r22 <- s22.toFuture
+              ) {
+                if (!r1 || !r2 || !r3 || !r4 || !r5 || !r6 || !r7 || !r8 || !r9 || !r10 || !r11 || !r12 || !r13 || !r14 || !r15 || !r16 || !r17 || !r18 || !r19 || !r20 || !r21 || !r22)
+                  cStatus.setFailed()
+                cStatus.setCompleted()
+              }
+              cStatus
+            }
 
             (retV, retS)
 
