@@ -59,6 +59,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
     presentFilePathname,
+    presentJson,
     configSet
     ) = {
     if (reporterArgs.length == 1 && reporterArgs(0).startsWith("-o")) {
@@ -76,13 +77,14 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
         configSet.contains(PresentReminderWithFullStackTraces),
         configSet.contains(PresentReminderWithoutCanceledTests),
         configSet.contains(PresentFilePathname),
+        configSet.contains(PresentJson),
         configSet
       )
     }
     else if (reporterArgs.length > 1)
       throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
     else
-      (false, !sbtNoFormat, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+      (false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
   }
 
   val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
@@ -164,7 +166,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, None)
+        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, None)
 
     for {
       taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
@@ -201,7 +203,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
     new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, None)
+      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, None)
   }
 
 }
