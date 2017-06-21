@@ -15,7 +15,7 @@
 */
 package org.scalactic.anyvals
 
-import reflect.macros.whitebox.Context
+import reflect.macros.Context
 import java.util.regex.Pattern
 // SKIP-SCALATESTJS-START
 import java.util.regex.PatternSyntaxException
