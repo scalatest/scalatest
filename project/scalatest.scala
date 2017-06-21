@@ -196,7 +196,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.16"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.17"
     )
 
   def scalatestTestOptions =
@@ -642,6 +642,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+      libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       //jsDependencies += RuntimeDOM % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,

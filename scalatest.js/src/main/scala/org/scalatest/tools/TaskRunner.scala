@@ -55,6 +55,7 @@ final class TaskRunner(task: TaskDef,
                        presentReminderWithFullStackTraces: Boolean,
                        presentReminderWithoutCanceledTests: Boolean,
                        presentFilePathname: Boolean,
+                       presentJson: Boolean,
                        notifyServer: Option[String => Unit]) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
@@ -90,6 +91,7 @@ println("GOT TO THIS RECOVER CALL")
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
       presentFilePathname,
+      presentJson,
       notifyServer
     )
 
@@ -189,6 +191,7 @@ println("GOT TO THIS RECOVER CALL")
                                     presentReminderWithFullStackTraces: Boolean,
                                     presentReminderWithoutCanceledTests: Boolean,
                                     presentFilePathname: Boolean,
+                                    presentJson: Boolean,
                                     notifyServer: Option[String => Unit]
                                     ) extends StringReporter(
     presentAllDurations,
@@ -200,12 +203,19 @@ println("GOT TO THIS RECOVER CALL")
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
-    presentFilePathname
+    presentFilePathname,
+    presentJson
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
+      }
+    }
+
+    protected def printNoColor(text: String): Unit = {
+      loggers.foreach { logger =>
+        logger.info(text)
       }
     }
 
@@ -219,19 +229,22 @@ println("GOT TO THIS RECOVER CALL")
       }*/
       notifyServer.foreach(send => send(event.getClass.getName))
 
-      fragmentsForEvent(
-        event,
-        presentUnformatted,
-        presentAllDurations,
-        presentShortStackTraces,
-        presentFullStackTraces,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests,
-        presentFilePathname,
-        reminderEventsBuf
-      ) foreach printPossiblyInColor
+      if (presentJson)
+        printNoColor(event.toJson)
+      else
+        fragmentsForEvent(
+          event,
+          presentUnformatted,
+          presentAllDurations,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests,
+          presentFilePathname,
+          reminderEventsBuf
+        ) foreach printPossiblyInColor
     }
 
     def dispose() = ()
