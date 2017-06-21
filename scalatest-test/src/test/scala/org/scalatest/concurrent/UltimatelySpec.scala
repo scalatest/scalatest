@@ -22,8 +22,11 @@ import time.{Millisecond, Span, Millis}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+// SKIP-SCALATESTJS-START
 import SharedHelpers.serializeRoundtrip
+// SKIP-SCALATESTJS-END
 import scala.concurrent.Future
+
 
 class UltimatelySpec extends AsyncFunSpec with Matchers with OptionValues {
 
@@ -256,7 +259,8 @@ class UltimatelySpec extends AsyncFunSpec with Matchers with OptionValues {
       }
     }
 
-    // TODO: This is failing and I'm not sure why. Figure it out.
+// SKIP-SCALATESTJS-START
+    // TODO: This is failing (on the JVM) and I'm not sure why. Figure it out.
     ignore("should blow up with a TFE that is serializable") {
       recoverToExceptionIf[TestFailedException] {
         ultimately {
@@ -267,6 +271,7 @@ class UltimatelySpec extends AsyncFunSpec with Matchers with OptionValues {
         succeed
       }
     }
+// SKIP-SCALATESTJS-END
   }
 }
 
