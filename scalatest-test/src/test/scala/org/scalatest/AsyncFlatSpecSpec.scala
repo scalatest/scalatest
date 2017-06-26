@@ -824,7 +824,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 8)
       val tf = rep.testFailedEventsReceived
@@ -876,7 +878,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -938,7 +942,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 8)
       val tf = rep.testFailedEventsReceived
@@ -990,7 +996,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1051,7 +1059,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 8)
       val tf = rep.testFailedEventsReceived
@@ -1103,7 +1113,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1164,7 +1176,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1218,7 +1232,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1257,7 +1273,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1291,7 +1309,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1331,7 +1351,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1365,7 +1387,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1404,7 +1428,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
@@ -1438,7 +1464,9 @@ class AsyncFlatSpecSpec extends FunSpec {
       }
       val rep = new EventRecordingReporter
       val status = a.run(None, Args(rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 0)
       val tf = rep.testFailedEventsReceived
