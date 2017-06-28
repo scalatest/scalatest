@@ -132,12 +132,11 @@ private[scalatest] object ConcurrentDocumenter {
 //
 private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAwareness {
 
-  @volatile private var messages = List[(String, Option[Any], RecordedMessageEventFun, Option[Location])]()
+  private var messages = List.empty[(String, Option[Any], RecordedMessageEventFun, Option[Location])]
 
   // Returns them in order recorded
-  private def recordedMessages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] = synchronized {
-    messages.reverse
-  }
+  private def recordedMessages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] =
+    synchronized { messages.reverse }
 
   def apply(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]): Unit = {
     requireNonNull(message, payload)
@@ -147,10 +146,8 @@ private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAware
   }
 
   def recordedEvents(testWasPending: Boolean, testWasCanceled: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
-    synchronized {
-      Vector.empty ++ recordedMessages.map { case (message, payload, eventFun, location) =>
-        eventFun(message, payload, true, testWasPending, testWasCanceled, location)
-      }
+    Vector.empty ++ recordedMessages.map { case (message, payload, eventFun, location) =>
+      eventFun(message, payload, true, testWasPending, testWasCanceled, location)
     }
   }
 }
