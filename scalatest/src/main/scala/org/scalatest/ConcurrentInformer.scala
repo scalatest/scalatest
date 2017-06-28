@@ -132,30 +132,25 @@ private[scalatest] object ConcurrentDocumenter {
 //
 private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAwareness {
 
-  private var messages = List[(String, Option[Any], RecordedMessageEventFun, Option[Location])]()
-
-  // Should only be called by the thread that constructed this
-  // ConcurrentInformer, because don't want to worry about synchronization here. Just send stuff from
-  // other threads whenever they come in. So only call record after first checking isConstructingThread
-  private def record(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]): Unit = {
-    require(isConstructingThread)
-    messages ::= (message, payload, eventFun, location)
-  }
+  @volatile private var messages = List[(String, Option[Any], RecordedMessageEventFun, Option[Location])]()
 
   // Returns them in order recorded
-  private def recordedMessages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] = messages.reverse
+  private def recordedMessages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] = synchronized {
+    messages.reverse
+  }
 
   def apply(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]): Unit = {
     requireNonNull(message, payload)
-    if (isConstructingThread)
-      record(message, payload, eventFun, location)
-    else
-      dispatch(eventFun(message, payload, false, false, false, location)) // Fire the info provided event using the passed function
+    synchronized {
+      messages ::= (message, payload, eventFun, location)
+    }
   }
 
   def recordedEvents(testWasPending: Boolean, testWasCanceled: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
-    Vector.empty ++ recordedMessages.map { case (message, payload, eventFun, location) =>
-      eventFun(message, payload, true, testWasPending, testWasCanceled, location)
+    synchronized {
+      Vector.empty ++ recordedMessages.map { case (message, payload, eventFun, location) =>
+        eventFun(message, payload, true, testWasPending, testWasCanceled, location)
+      }
     }
   }
 }
