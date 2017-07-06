@@ -188,7 +188,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.18"
+      "org.scala-js" %% "scalajs-test-interface" % "1.0.0-M1"
     )
 
   def scalatestTestOptions =
@@ -397,11 +397,11 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
       //jsDependencies += RuntimeDOM % "test",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test",
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -530,7 +530,7 @@ object ScalatestBuild extends Build {
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
+      libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -609,12 +609,12 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+      libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test",
       //jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
