@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.3"
 
-  val scalacheckVersion = "1.13.4"
+  val scalacheckVersion = "1.13.5"
 
   val githubTag = "release-3.0.3" // for scaladoc source urls
 
@@ -150,8 +150,8 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
-          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
           scalacheckDependency("optional")
         )
       case _ =>
@@ -188,7 +188,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.16"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.18"
     )
 
   def scalatestTestOptions =
