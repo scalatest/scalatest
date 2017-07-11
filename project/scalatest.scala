@@ -186,9 +186,12 @@ object ScalatestBuild extends Build {
       "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
+  val scalaJSVersion =
+    Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.18")
+
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "1.0.0-M1"
+      "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
   def scalatestTestOptions =
