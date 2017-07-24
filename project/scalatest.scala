@@ -8,6 +8,8 @@ import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
+import scalanative.sbtplugin.ScalaNativePlugin
+
 object ScalatestBuild extends Build {
 
   // To run gentests
@@ -23,7 +25,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.1"
 
-  val scalacheckVersion = "1.13.4"
+  val scalacheckVersion = "1.13.5"
 
   val githubTag = "release-3.0.1" // for scaladoc source urls
 
@@ -199,6 +201,11 @@ object ScalatestBuild extends Build {
       "org.scala-js" %% "scalajs-test-interface" % "0.6.17"
     )
 
+  def scalatestNativeLibraryDependencies =
+    Seq(
+      "org.scala-native" % "test-interface_native0.3_2.11" % "0.3.1"
+    )
+
   def scalatestTestOptions =
     Seq(Tests.Argument(TestFrameworks.ScalaTest,
       "-l", "org.scalatest.tags.Slow",
@@ -308,6 +315,23 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     ).enablePlugins(ScalaJSPlugin)
 
+  lazy val scalacticMacroNative = Project("scalacticMacroNative", file("scalactic-macro.native"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Macro.native",
+      organization := "org.scalactic",
+      sourceGenerators in Compile += {
+        Def.task{
+          GenScalacticJS.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+            ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+            GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      // Disable publishing macros directly, included in scalactic main jar
+      publish := {},
+      publishLocal := {}
+    ).enablePlugins(ScalaNativePlugin)
+
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
@@ -389,6 +413,46 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalacticNative = Project("scalacticNative", file("scalactic.native"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic.native",
+      organization := "org.scalactic",
+      moduleName := "scalactic",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenScalacticJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+            ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalacticJS.genResource((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalactic",
+      "org.scalactic.anyvals",
+      "org.scalactic.exceptions",
+      "org.scalactic.source"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "Scalactic",
+      "Bundle-Description" -> "Scalactic.js is an open-source library for Scala-js projects.",
+      "Bundle-DocURL" -> "http://www.scalactic.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
@@ -658,6 +722,87 @@ object ScalatestBuild extends Build {
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)*/
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestNative = Project("scalatestNative", file("scalatest.native"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest",
+      organization := "org.scalatest",
+      moduleName := "scalatest",
+      initialCommands in console := """|import org.scalatest._
+                                       |import org.scalactic._
+                                       |import Matchers._""".stripMargin,
+      libraryDependencies ++= scalatestNativeLibraryDependencies,
+      libraryDependencies += "org.scalacheck" % "scalacheck_native0.3_2.11" % scalacheckVersion % "optional",
+      //jsDependencies += RuntimeDOM % "test",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestJS.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
+
+          GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+            GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+            GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
+            ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+            ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      genFactoriesTask,
+      //genSafeStylesTask,
+      sourceGenerators in Compile += Def.task {
+        genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      /*sourceGenerators in Compile += Def.task {
+        genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,*/
+      /*sourceGenerators in Compile += Def.task {
+        genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,*/
+      scalatestJSDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest",
+      "org.scalatest.compatible",
+      "org.scalatest.concurrent",
+      "org.scalatest.check",
+      "org.scalatest.enablers",
+      "org.scalatest.events",
+      "org.scalatest.exceptions",
+      "org.scalatest.fixture",
+      "org.scalatest.matchers",
+      "org.scalatest.path",
+      "org.scalatest.prop",
+      "org.scalatest.tags",
+      "org.scalatest.tagobjects",
+      "org.scalatest.time",
+      "org.scalatest.tools",
+      "org.scalatest.verb",
+      "org.scalatest.words"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc.",
+      "Main-Class" -> "org.scalatest.tools.Runner"
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative).enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestApp = Project("scalatestApp", file("."))
     .settings(sharedSettings: _*)
