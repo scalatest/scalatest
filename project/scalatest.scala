@@ -6,9 +6,10 @@ import scala.io.Source
 import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-
 import scalanative.sbtplugin.ScalaNativePlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.
+  autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}
+import sbtcrossproject.CrossPlugin.autoImport._
 
 object ScalatestBuild extends Build {
 
@@ -199,11 +200,6 @@ object ScalatestBuild extends Build {
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % "0.6.17"
-    )
-
-  def scalatestNativeLibraryDependencies =
-    Seq(
-      "org.scala-native" % "test-interface_native0.3_2.11" % "0.3.1"
     )
 
   def scalatestTestOptions =
@@ -732,8 +728,8 @@ object ScalatestBuild extends Build {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies ++= scalatestNativeLibraryDependencies,
-      libraryDependencies += "org.scalacheck" % "scalacheck_native0.3_2.11" % scalacheckVersion % "optional",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.1",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
