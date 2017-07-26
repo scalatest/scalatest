@@ -36,11 +36,11 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
 private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
 
-  private final val queue = new java.util.concurrent.LinkedBlockingQueue[T]
+  private final val queue = new scala.collection.mutable.ListBuffer[T]
 
-  def put(ele: T): Unit = queue.put(ele)
+  def put(ele: T): Unit = queue += ele
 
-  def take(): T = queue.take
+  def take(): T = queue.remove(0)
 
   def size: Int = queue.size
 }
@@ -73,43 +73,43 @@ private[scalatest] object NameTransformer {
 }
 
 private[scalatest] trait TimerTask extends Runnable {
-  var timerTaskRef: Option[java.util.TimerTask] = None
+  // var timerTaskRef: Option[java.util.TimerTask] = None
 
   def run()
 
   def cancel(): Unit = {
-    timerTaskRef.foreach(_.cancel())
+    // timerTaskRef.foreach(_.cancel())
   }
 }
 
 private[scalatest] class Timer {
 
-  val timer = new java.util.Timer
+  // val timer = new java.util.Timer
 
   def schedule(task: TimerTask, delay: Long): Unit = {
-    val javaTimerTask = new java.util.TimerTask {
-      def run(): Unit = {
-        task.run()
-      }
-    }
-
-    task.timerTaskRef = Some(javaTimerTask)
-    timer.schedule(javaTimerTask, delay)
+    // val javaTimerTask = new java.util.TimerTask {
+    //   def run(): Unit = {
+    //     task.run()
+    //   }
+    // }
+    //
+    // task.timerTaskRef = Some(javaTimerTask)
+    // timer.schedule(javaTimerTask, delay)
   }
 
   def schedule(task: TimerTask, delay: Long, period: Long): Unit = {
-    val javaTimerTask = new java.util.TimerTask {
-      def run(): Unit = {
-        task.run()
-      }
-    }
-
-    task.timerTaskRef = Some(javaTimerTask)
-    timer.schedule(javaTimerTask, delay, period)
+    // val javaTimerTask = new java.util.TimerTask {
+    //   def run(): Unit = {
+    //     task.run()
+    //   }
+    // }
+    //
+    // task.timerTaskRef = Some(javaTimerTask)
+    // timer.schedule(javaTimerTask, delay, period)
   }
 
   def cancel(): Unit = {
-    timer.cancel()
+    // timer.cancel()
   }
 
 }

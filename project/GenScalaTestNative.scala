@@ -234,111 +234,115 @@ object GenScalaTestNative {
     )
   }
 
+  def asyncs(sourceDirName: String): List[String] = {
+    new File(sourceDirName).listFiles.toList.map(_.getName).filter(_.toLowerCase.contains("async"))
+  }
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
     //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
-    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
-      List(
-        "BigSuiteSuite.scala",
-        "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
-        "DeprecatedCatchReporterProp.scala",   // skipped because heavily depends on java reflection
-        "ClassTaggingProp.scala",    // skipped because annotation not supported
-        "DeprecatedClassTaggingProp.scala",    // skipped because annotation not supported
-        "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
-        "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
-        "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
-        "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
-        "EntrySpec.scala",    // skipped because Entry extends java.util.Map
-        "FunSuiteSuite.scala",          // skipped because depends on java reflection
-        "InheritedTagProp.scala",         // skipped because depends on java reflection
-        "OldDocSpec.scala",             // Do we still need this?
-        "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
-        "PropertyFunSuite.scala",   // skipped because depends on java reflection
-        "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
-        "ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
-        "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
-        "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
-        "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
-        "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
-        "RefSpecSpec.scala",          // skipped because depends on java reflections.
-        "SpecSpec.scala",          // skipped because depends on java reflections.
-        "StatusProp.scala",        // skipped because uses VirtualMachineError
-        "DeprecatedStatusProp.scala",        // skipped because uses VirtualMachineError
-        "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
-        "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
-        "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
-        "SuiteSuite.scala",          // skipped because it depends on java reflection
-        "MatchersSerializableSpec.scala"   // skipped because testing java serialization
-      )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-      List(
-        "WaitersSpec.scala",    // skipped because Waiters not supported.
-        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
-        "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
-        "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
-        "ConductorSuite.scala",   // skipped because Conductors not supported.
-        "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
-        "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
-        "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
-        "EventuallySpec.scala",   // skipped because Eventually not supported.
-        "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
-        "DeprecatedIntegrationPatienceSpec.scala",
-        "JavaFuturesSpec.scala",      // skipped because depends on java futures
-        "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
-        "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-        "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
-      )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
-      List(
-        "TestLocationJUnit3Suite.scala",
-        "TestLocationJUnitSuite.scala",
-        "TestLocationTestNGSuite.scala",
-        "TestLocationMethodJUnit3Suite.scala",
-        "TestLocationMethodJUnitSuite.scala",
-        "TestLocationMethodTestNGSuite.scala",
-        "LocationMethodSuiteProp.scala"
-      )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
+    //   List(
+    //     "BigSuiteSuite.scala",
+    //     "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
+    //     "DeprecatedCatchReporterProp.scala",   // skipped because heavily depends on java reflection
+    //     "ClassTaggingProp.scala",    // skipped because annotation not supported
+    //     "DeprecatedClassTaggingProp.scala",    // skipped because annotation not supported
+    //     "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
+    //     "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
+    //     "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
+    //     "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
+    //     "EntrySpec.scala",    // skipped because Entry extends java.util.Map
+    //     "FunSuiteSuite.scala",          // skipped because depends on java reflection
+    //     "InheritedTagProp.scala",         // skipped because depends on java reflection
+    //     "OldDocSpec.scala",             // Do we still need this?
+    //     "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
+    //     "PropertyFunSuite.scala",   // skipped because depends on java reflection
+    //     "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
+    //     "ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
+    //     "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
+    //     "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
+    //     "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
+    //     "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
+    //     "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
+    //     "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+    //     "RefSpecSpec.scala",          // skipped because depends on java reflections.
+    //     "SpecSpec.scala",          // skipped because depends on java reflections.
+    //     "StatusProp.scala",        // skipped because uses VirtualMachineError
+    //     "DeprecatedStatusProp.scala",        // skipped because uses VirtualMachineError
+    //     "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
+    //     "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
+    //     "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
+    //     "SuiteSuite.scala",          // skipped because it depends on java reflection
+    //     "MatchersSerializableSpec.scala"   // skipped because testing java serialization
+    //   )) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+    //   List(
+    //     "WaitersSpec.scala",    // skipped because Waiters not supported.
+    //     "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
+    //     "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
+    //     "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
+    //     "ConductorSuite.scala",   // skipped because Conductors not supported.
+    //     "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
+    //     "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
+    //     "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
+    //     "EventuallySpec.scala",   // skipped because Eventually not supported.
+    //     "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
+    //     "DeprecatedIntegrationPatienceSpec.scala",
+    //     "JavaFuturesSpec.scala",      // skipped because depends on java futures
+    //     "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
+    //     "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
+    //     "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
+    //   )) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+    //   List(
+    //     "TestLocationJUnit3Suite.scala",
+    //     "TestLocationJUnitSuite.scala",
+    //     "TestLocationTestNGSuite.scala",
+    //     "TestLocationMethodJUnit3Suite.scala",
+    //     "TestLocationMethodJUnitSuite.scala",
+    //     "TestLocationMethodTestNGSuite.scala",
+    //     "LocationMethodSuiteProp.scala"
+    //   )) ++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
-        "SuiteSpec.scala"    // skipped because depends on java reflections
-      )) ++
+        "SuiteSpec.scala"    // skipped because depends on java reflections,
+      ) ++ asyncs("scalatest-test/src/test/scala/org/scalatest/fixture")) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-      List(
-        "DashboardReporterSpec.scala",
-        "DiscoverySuiteSuite.scala",
-        "FilterReporterSpec.scala",
-        "FrameworkSuite.scala",
-        "HtmlReporterSpec.scala",
-        "JUnitXmlReporterSuite.scala",
-        "MemoryReporterSuite.scala",
-        "RunnerSpec.scala",
-        "SbtCommandParserSpec.scala",
-        "ScalaTestAntTaskSpec.scala",
-        "ScalaTestFrameworkSuite.scala",
-        "ScalaTestRunnerSuite.scala",
-        "SomeApiClass.scala",
-        "SomeApiClassRunner.scala",
-        "SomeApiSubClass.scala",
-        "StringReporterAlertSpec.scala",
-        "StringReporterSuite.scala",
-        "StringReporterSummarySpec.scala",
-        "SuiteDiscoveryHelperSuite.scala",
-        "XmlSocketReporterSpec.scala"
-      )
-    )
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) //++
+    // copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    //   List(
+    //     "DashboardReporterSpec.scala",
+    //     "DiscoverySuiteSuite.scala",
+    //     "FilterReporterSpec.scala",
+    //     "FrameworkSuite.scala",
+    //     "HtmlReporterSpec.scala",
+    //     "JUnitXmlReporterSuite.scala",
+    //     "MemoryReporterSuite.scala",
+    //     "RunnerSpec.scala",
+    //     "SbtCommandParserSpec.scala",
+    //     "ScalaTestAntTaskSpec.scala",
+    //     "ScalaTestFrameworkSuite.scala",
+    //     "ScalaTestRunnerSuite.scala",
+    //     "SomeApiClass.scala",
+    //     "SomeApiClassRunner.scala",
+    //     "SomeApiSubClass.scala",
+    //     "StringReporterAlertSpec.scala",
+    //     "StringReporterSuite.scala",
+    //     "StringReporterSummarySpec.scala",
+    //     "SuiteDiscoveryHelperSuite.scala",
+    //     "XmlSocketReporterSpec.scala"
+    //   )
+    // )
   }
 
 }

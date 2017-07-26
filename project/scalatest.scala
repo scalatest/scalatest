@@ -11,6 +11,10 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.
   autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}
 import sbtcrossproject.CrossPlugin.autoImport._
 
+import scalanative.tools
+import scalanative.optimizer.{inject, pass}
+import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
+
 object ScalatestBuild extends Build {
 
   // To run gentests
@@ -847,6 +851,21 @@ object ScalatestBuild extends Build {
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
+      nativeOptimizerDriver in NativeTest := {
+        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
+        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
+      },
+      nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
+        override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
+          println(s"start $batchId")
+        }
+        override def onPass(batchId: Int, passId: Int, pass: scala.scalanative.optimizer.Pass, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
+          println(s"$batchId ${pass.getClass.getSimpleName}")
+        }
+        override def onComplete(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
+          println(s"end $batchId")
+        }
+      },
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
