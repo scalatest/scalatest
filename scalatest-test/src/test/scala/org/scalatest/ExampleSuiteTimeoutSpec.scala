@@ -31,7 +31,7 @@ protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with Parallel
     it ("do thing 2b") { SleepHelper.sleep(1300) }
   }
 
-  //SCALATESTJS-ONLY override def newInstance = new ExampleSuiteTimeoutSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new ExampleSuiteTimeoutSpec
 }
 
 @DoNotDiscover
@@ -48,5 +48,5 @@ protected[scalatest] class ExampleSuiteTimeoutSpec2 extends FunSpec with Paralle
     it ("content 2c") {}
   }
 
-  //SCALATESTJS-ONLY override def newInstance = new ExampleSuiteTimeoutSpec2
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new ExampleSuiteTimeoutSpec2
 }

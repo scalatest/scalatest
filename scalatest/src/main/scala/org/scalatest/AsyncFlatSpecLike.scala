@@ -45,7 +45,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS,NATIVE-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
@@ -1636,23 +1636,23 @@ import resultOfStringPassedToVerb.verb
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 

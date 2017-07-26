@@ -53,9 +53,9 @@ class SequentialNestedSuiteExecutionSpec extends FunSpec {
         val par = new ParSubSuite
         val seq = new SeqSubSuite
         val parStatus = par.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         parStatus.waitUntilCompleted()
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         assert(par.distributorWasDefined)
         assert(par.distributorWasPropagated)
         val seqStatus = seq.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))

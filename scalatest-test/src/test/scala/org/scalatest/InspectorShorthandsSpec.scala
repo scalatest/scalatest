@@ -44,7 +44,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[Int]) => set.toArray), 
       ((set: Set[Int]) => set.toIndexedSeq), 
       ((set: Set[Int]) => Vector(set.toSeq: _*)),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[Int]) => set.par), 
       ((set: Set[Int]) => set.toList.par), 
       ((set: Set[Int]) => set.toSeq.par), 
@@ -53,7 +53,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[Int]) => { val l = new collection.mutable.ListBuffer() ++= set; l }.par),
       ((set: Set[Int]) => collection.mutable.Seq(set.toSeq: _*).par),
       ((set: Set[Int]) => collection.mutable.IndexedSeq(set.toSeq: _*).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[Int]) => collection.mutable.Set(set.toSeq: _*)),
       ((set: Set[Int]) => { val l = new collection.mutable.ListBuffer() ++= set; l }), 
       ((set: Set[Int]) => collection.mutable.Seq(set.toSeq: _*)), 
@@ -69,7 +69,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[String]) => set.toArray[String]), 
       ((set: Set[String]) => set.toIndexedSeq), 
       ((set: Set[String]) => Vector(set.toSeq: _*)),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[String]) => set.par), 
       ((set: Set[String]) => set.toList.par), 
       ((set: Set[String]) => set.toSeq.par), 
@@ -78,7 +78,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[String]) => { val l = new collection.mutable.ListBuffer() ++= set; l }.par),
       ((set: Set[String]) => collection.mutable.Seq(set.toSeq: _*).par),
       ((set: Set[String]) => collection.mutable.IndexedSeq(set.toSeq: _*).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[String]) => collection.mutable.Set(set.toSeq: _*)),
       ((set: Set[String]) => { val l = new collection.mutable.ListBuffer() ++= set; l }), 
       ((set: Set[String]) => collection.mutable.Seq(set.toSeq: _*)), 
@@ -94,7 +94,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[Set[String]]) => set.toArray[GenTraversable[String]]), 
       ((set: Set[Set[String]]) => set.toIndexedSeq), 
       ((set: Set[Set[String]]) => Vector(set.toSeq: _*)),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[Set[String]]) => set.par), 
       ((set: Set[Set[String]]) => set.toList.par), 
       ((set: Set[Set[String]]) => set.toSeq.par), 
@@ -103,7 +103,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[Set[String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }.par),
       ((set: Set[Set[String]]) => collection.mutable.Seq(set.toSeq: _*).par),
       ((set: Set[Set[String]]) => collection.mutable.IndexedSeq(set.toSeq: _*).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[Set[String]]) => collection.mutable.Set(set.toSeq: _*)),
       ((set: Set[Set[String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }), 
       ((set: Set[Set[String]]) => collection.mutable.Seq(set.toSeq: _*)), 
@@ -119,7 +119,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[GenSeq[String]]) => set.toArray[GenSeq[String]]), 
       ((set: Set[GenSeq[String]]) => set.toIndexedSeq), 
       ((set: Set[GenSeq[String]]) => Vector(set.toSeq: _*)),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[GenSeq[String]]) => set.par), 
       ((set: Set[GenSeq[String]]) => set.toList.par), 
       ((set: Set[GenSeq[String]]) => set.toSeq.par), 
@@ -128,7 +128,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[GenSeq[String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }.par),
       ((set: Set[GenSeq[String]]) => collection.mutable.Seq(set.toSeq: _*).par),
       ((set: Set[GenSeq[String]]) => collection.mutable.IndexedSeq(set.toSeq: _*).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[GenSeq[String]]) => collection.mutable.Set(set.toSeq: _*)),
       ((set: Set[GenSeq[String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }), 
       ((set: Set[GenSeq[String]]) => collection.mutable.Seq(set.toSeq: _*)), 
@@ -144,7 +144,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[GenMap[String, String]]) => set.toArray[GenMap[String, String]]), 
       ((set: Set[GenMap[String, String]]) => set.toIndexedSeq), 
       ((set: Set[GenMap[String, String]]) => Vector(set.toSeq: _*)),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[GenMap[String, String]]) => set.par), 
       ((set: Set[GenMap[String, String]]) => set.toList.par), 
       ((set: Set[GenMap[String, String]]) => set.toSeq.par), 
@@ -153,7 +153,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       ((set: Set[GenMap[String, String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }.par),
       ((set: Set[GenMap[String, String]]) => collection.mutable.Seq(set.toSeq: _*).par),
       ((set: Set[GenMap[String, String]]) => collection.mutable.IndexedSeq(set.toSeq: _*).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[GenMap[String, String]]) => collection.mutable.Set(set.toSeq: _*)),
       ((set: Set[GenMap[String, String]]) => { val l = new collection.mutable.ListBuffer() ++= set; l }), 
       ((set: Set[GenMap[String, String]]) => collection.mutable.Seq(set.toSeq: _*)), 
@@ -651,7 +651,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should allow be symbol to work with arbitrary objects") {
       case class Person(name: String, happy: Boolean)
       all (List(Person("Fred", true), Person("Sally", true)) ) should be ('happy)
@@ -725,7 +725,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     class EmptyBePropertyMatcher extends BePropertyMatcher[String] {
       def apply(left: String) = BePropertyMatchResult(left.isEmpty, "empty")
@@ -778,7 +778,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should throw TestFailedException with correct stack depth and message when 'be a symbol' failed") {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
@@ -848,7 +848,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should throw TestFailedException with correct stack depth and message when 'be a property' failed") {
       forAll(nullableExamples) { colFun => 
@@ -896,7 +896,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should throw TestFailedException with correct stack depth and message when 'be an symbol' failed") {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
@@ -965,7 +965,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should throw TestFailedException with correct stack depth and message when 'be an property' failed") {
       forAll(nullableExamples) { colFun => 
@@ -1529,7 +1529,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should throw TestFailedException with correct stack depth and message when 'traversable be symbol' failed") {
       forAll(traversableExamples) { colFun => 
         val col = colFun(Set(Set(), Set("boom!"), Set()))
@@ -1575,7 +1575,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should throw TestFailedException with correct stack depth and message when 'seq have length' failed") {
       forAll(seqExamples) { colFun => 
@@ -3585,7 +3585,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("when used with java.util.Collection") {
       import collection.JavaConverters._
       it("should do nothing if succeeds") {
@@ -3638,7 +3638,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     describe("when used with Strings") {
       it("should do nothing if succeeds") {
         all ("123") should be < '4'
@@ -3662,7 +3662,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("when used with java.util.Map") {
       import collection.JavaConverters._
       it("should do nothing if succeeds") {
@@ -3689,6 +3689,6 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.scalatest
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 import org.testng.annotations.{Test => TestNG }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 import org.scalactic._
 
@@ -29,13 +29,13 @@ class TestDataProp extends AllSuiteProp {
 
   type FixtureServices = TestDataFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleTestDataSpec
   def fixtureSpec = new ExampleTestDataFixtureSpec
   def junit3Suite = new ExampleTestDataJUnit3Suite
   def junitSuite = new ExampleTestDataJUnitSuite
   def testngSuite = new ExampleTestDataTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new ExampleTestDataFunSuite
   def fixtureFunSuite = new ExampleTestDataFixtureFunSuite
   def funSpec = new ExampleTestDataFunSpec
@@ -76,7 +76,7 @@ trait TestDataFixtureServices {
 
 object TestDataTag extends Tag("org.scalatest.tags.TestDataTag")
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class ExampleTestDataSpec extends RefSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
@@ -173,7 +173,7 @@ class ExampleTestDataTestNGSuite extends TestNGSuite with TestDataFixtureService
   @Ignore
   def testMethod1(): Unit = {}
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleTestDataFunSuite extends FunSuite with TestDataFixtureServices {
@@ -182,10 +182,10 @@ protected[scalatest] class ExampleTestDataFunSuite extends FunSuite with TestDat
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -203,10 +203,10 @@ protected[scalatest] class ExampleTestDataFixtureFunSuite extends fixture.FunSui
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -224,10 +224,10 @@ protected[scalatest] class ExampleTestDataFunSpec extends FunSpec with TestDataF
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -249,10 +249,10 @@ protected[scalatest] class ExampleTestDataFixtureFunSpec extends fixture.FunSpec
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -274,10 +274,10 @@ protected[scalatest] class ExampleTestDataFeatureSpec extends FeatureSpec with T
     val name = "Feature: Feature 1 Scenario: Scenario 1"
     val scopes = Vector("Feature: Feature 1")
     val text = "Scenario: Scenario 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -297,10 +297,10 @@ protected[scalatest] class ExampleTestDataFixtureFeatureSpec extends fixture.Fea
     val name = "Feature: Feature 1 Scenario: Scenario 1"
     val scopes = Vector("Feature: Feature 1")
     val text = "Scenario: Scenario 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -320,10 +320,10 @@ protected[scalatest] class ExampleTestDataFlatSpec extends FlatSpec with TestDat
     val name = "Scope 1 should test 1"
     val scopes = Vector("Scope 1")
     val text = "should test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -341,10 +341,10 @@ protected[scalatest] class ExampleTestDataFixtureFlatSpec extends fixture.FlatSp
     val name = "Scope 1 should test 1"
     val scopes = Vector("Scope 1")
     val text = "should test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -362,10 +362,10 @@ protected[scalatest] class ExampleTestDataFreeSpec extends FreeSpec with TestDat
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -387,10 +387,10 @@ protected[scalatest] class ExampleTestDataFixtureFreeSpec extends fixture.FreeSp
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -412,10 +412,10 @@ protected[scalatest] class ExampleTestDataPropSpec extends PropSpec with TestDat
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -433,10 +433,10 @@ protected[scalatest] class ExampleTestDataFixturePropSpec extends fixture.PropSp
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -454,10 +454,10 @@ protected[scalatest] class ExampleTestDataWordSpec extends WordSpec with TestDat
     val name = "Scope 1 should Scope 2 should test 1"
     val scopes = Vector("Scope 1 should", "Scope 2 should")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -479,10 +479,10 @@ protected[scalatest] class ExampleTestDataFixtureWordSpec extends fixture.WordSp
     val name = "Scope 1 should Scope 2 should test 1"
     val scopes = Vector("Scope 1 should", "Scope 2 should")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   var testData: TestData = null
@@ -504,10 +504,10 @@ protected[scalatest] class ExampleTestDataPathFreeSpec extends path.FreeSpec wit
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))
@@ -526,10 +526,10 @@ protected[scalatest] class ExampleTestDataPathFunSpec extends path.FunSpec with 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
     val pos = Some(source.Position.here)
   }
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))

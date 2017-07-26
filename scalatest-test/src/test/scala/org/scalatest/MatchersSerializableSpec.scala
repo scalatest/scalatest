@@ -49,7 +49,7 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("'a should be a 'file' should produce Serializable TestFailedException") {
       val e = intercept[TestFailedException] {
         class NotFileMock extends Serializable {
@@ -75,7 +75,7 @@ class MatchersSerializableSpec extends FunSpec {
       }
       serializeRoundtrip(e)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("'a should be a BePropertyMatcher' should produce Serializable TestFailedException") {
 

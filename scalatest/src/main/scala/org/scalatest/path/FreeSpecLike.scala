@@ -45,16 +45,16 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS,NATIVE-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   override def newInstance: FreeSpecLike = this.getClass.newInstance.asInstanceOf[FreeSpecLike]
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY override def newInstance: FreeSpecLike
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: FreeSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
@@ -118,12 +118,12 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     handleTest(thisSuite, specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
@@ -147,12 +147,12 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     handleIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
@@ -264,10 +264,10 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      */
     def -(fun: => Unit): Unit = {
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 5
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
 
       try {
         handleNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(pos))

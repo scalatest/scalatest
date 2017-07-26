@@ -4,4 +4,4 @@ gentests/
 scalatest.js/target/
 *.swp
 .idea/
-
+.DS_Store

@@ -159,11 +159,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Array(1, 2) had size 2, and Array(1, 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         Array(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.immutable.Set") {
@@ -292,11 +292,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         Set(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.Set") {
@@ -438,11 +438,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.Set(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.Set") {
@@ -573,11 +573,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         set.par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.immutable.HashSet") {
@@ -708,11 +708,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         HashSet(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.HashSet") {
@@ -854,11 +854,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.HashSet(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.List") {
@@ -986,14 +986,14 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "List(1, 2) had size 2, and List(1, 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         List(1, 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("on java.util.List") {
 
       val javaList: java.util.List[Int] = new java.util.ArrayList
@@ -1123,7 +1123,7 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "[1, 2] had size 2, and [1, 2] had size 2")
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("on scala.collection.immutable.Map") {
 
@@ -1251,11 +1251,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) had size 2, and Map(\"one\" -> 1, \"two\" -> 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         Map("one" -> 1, "two" -> 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.Map") {
@@ -1396,11 +1396,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " had size 2, and " + decorateToStringValue(prettifier, map3) + " had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.Map("one" -> 1, "two" -> 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.Map") {
@@ -1531,11 +1531,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) had size 2, and Map(\"one\" -> 1, \"two\" -> 2) had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         map.par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.immutable.HashMap") {
@@ -1676,11 +1676,11 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage endsWith ") had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         HashMap("one" -> 1, "two" -> 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.HashMap") {
@@ -1821,14 +1821,14 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " had size 2, and " + decorateToStringValue(prettifier, map3) + " had size 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.HashMap("one" -> 1, "two" -> 2).par should have size (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("on java.util.Set") {
 
       val javaSet: java.util.Set[Int] = new java.util.HashSet
@@ -2111,7 +2111,7 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
           equal ("{\"two\"=2, \"one\"=1} had size 2, and {\"two\"=2, \"one\"=1} had size 2"))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     // I repeat these with copy and paste, becuase I need to test that each static structural type works, and
     // that makes it hard to pass them to a common "behaves like" method

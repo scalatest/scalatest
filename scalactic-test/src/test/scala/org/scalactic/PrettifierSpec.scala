@@ -20,9 +20,9 @@ import SharedHelpers.{javaList, javaSortedMap}
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.xml.NodeSeq
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class PrettifierSpec extends FunSpec with Matchers {
   describe("A Prettifier") {
@@ -168,7 +168,7 @@ class PrettifierSpec extends FunSpec with Matchers {
     it("should pretty print nested Many(String)") {
       Prettifier.basic(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(1, 2, 3), Many(7, 8, 9))")
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should pretty print Java List") {
       Prettifier.basic(javaList(1, 2, 3)) should be ("[1, 2, 3]")
     }
@@ -187,7 +187,7 @@ class PrettifierSpec extends FunSpec with Matchers {
     it("should pretty print nested string Java Map") {
       Prettifier.basic(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{akey={1=one, 2=two, 3=three}}")
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("the default Prettifier") {
@@ -305,7 +305,7 @@ class PrettifierSpec extends FunSpec with Matchers {
     it("should pretty print nested Many(String)") {
       Prettifier.default(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(\"1\", \"2\", \"3\"), Many(\"7\", \"8\", \"9\"))")
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should pretty print Java List") {
       Prettifier.default(javaList(1, 2, 3)) should be ("[1, 2, 3]")
     }
@@ -340,7 +340,7 @@ class PrettifierSpec extends FunSpec with Matchers {
       val ab: NodeSeq = <a/><b/>;
       Prettifier.default(ab) should be ("<a/><b/>")
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should handle runaway recursion gracefully, if not necessarily quickly") {
       /*
         You'd think no one would do this, but:

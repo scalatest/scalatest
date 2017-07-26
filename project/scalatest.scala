@@ -259,6 +259,32 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.enablers",
       "-oDIF"))
 
+  def scalatestTestNativeOptions =
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.algebra",
+      "-m", "org.scalactic.enablers",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.testng",
+      "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.mock",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.selenium",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-oDIF"))
+
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
     .settings(
@@ -277,6 +303,18 @@ object ScalatestBuild extends Build {
         }.taskValue
       }
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
+
+    lazy val commonTestNative = Project("commonTestNative", file("common-test.native"))
+      .settings(sharedSettings: _*)
+      .settings(
+        projectTitle := "Common test classes used by scalactic.native and scalatest.native",
+        libraryDependencies += scalacheckDependency("optional"),
+        sourceGenerators in Compile += {
+          Def.task{
+            GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+          }.taskValue
+        }
+      ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
@@ -318,7 +356,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       sourceGenerators in Compile += {
         Def.task{
-          GenScalacticJS.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenScalacticNative.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
             ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
             GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
         }.taskValue
@@ -418,7 +456,7 @@ object ScalatestBuild extends Build {
       moduleName := "scalactic",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalacticJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenScalacticNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
             ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       },
@@ -733,11 +771,11 @@ object ScalatestBuild extends Build {
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalaTestJS.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestNative.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
 
-          GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenScalaTestNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
             GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-            GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
+            GenScalaTestNative.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
             ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
             ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
@@ -799,6 +837,30 @@ object ScalatestBuild extends Build {
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestTestNative = Project("scalatestTestNative", file("scalatest-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      organization := "org.scalatest",
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+      // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
+      fork in test := false,
+      testOptions in Test := scalatestTestNativeOptions,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }/*,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)*/
+    ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestApp = Project("scalatestApp", file("."))
     .settings(sharedSettings: _*)

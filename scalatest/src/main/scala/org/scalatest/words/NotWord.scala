@@ -23,9 +23,9 @@ import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import TripleEqualsSupport.TripleEqualsInvocation
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.FailureMessages
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
@@ -423,7 +423,7 @@ final class NotWord {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -447,7 +447,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(symbol)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax, where <code>tempFile</code>, for example, refers to a <code>java.io.File</code>
@@ -473,7 +473,7 @@ final class NotWord {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -497,7 +497,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax, where <code>notSoSecretFile</code>, for example, refers to a <code>java.io.File</code>
@@ -547,7 +547,7 @@ final class NotWord {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -571,7 +571,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAnWordApplication)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax: 

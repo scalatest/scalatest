@@ -43,11 +43,11 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector.from(Vector.empty[String]) shouldBe None
     NonEmptyVector.from(Vector("1")) shouldBe Some(NonEmptyVector("1"))
     NonEmptyVector.from(Vector(1, 2, 3)) shouldBe Some(NonEmptyVector(1, 2, 3))
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     NonEmptyVector.from(Vector.empty[String].par) shouldBe None
     NonEmptyVector.from(Vector("1").par) shouldBe Some(NonEmptyVector("1"))
     NonEmptyVector.from(Vector(1, 2, 3).par) shouldBe Some(NonEmptyVector(1, 2, 3))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptyVector("hi", null, "ho")
@@ -435,9 +435,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).toIterator.flatten.toStream shouldBe Vector(1, 2, 3, 1, 2, 3).toIterator.toStream
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).par.flatten shouldBe Vector(1, 2, 3, 1, 2, 3).par
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptyVector(1).fold(0)(_ + _) shouldBe 1

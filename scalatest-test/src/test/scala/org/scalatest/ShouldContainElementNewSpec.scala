@@ -127,7 +127,7 @@ class ShouldContainElementNewSpec extends FunSpec with Explicitly {
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should use an Equality of the element type of the left-hand \"holder\" on a Java Collection") {
 
       val javaSet: java.util.Set[Int] = new java.util.HashSet
@@ -161,7 +161,7 @@ class ShouldContainElementNewSpec extends FunSpec with Explicitly {
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 

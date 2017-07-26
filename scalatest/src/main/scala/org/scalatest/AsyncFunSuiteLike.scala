@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS,NATIVE-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 

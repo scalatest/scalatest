@@ -15,11 +15,11 @@
  */
 package org.scalatest.tools
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import java.io.OutputStreamWriter
 import java.io.OutputStream
 import java.io.PrintWriter
@@ -101,7 +101,7 @@ private[scalatest] abstract class PrintReporter(
       presentJson
     )
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
   * Construct a <code>PrintReporter</code> with passed
   * <code>String</code> file name. Information about events reported to instances of this
@@ -141,7 +141,7 @@ private[scalatest] abstract class PrintReporter(
       presentJson
     )
 
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   protected def printPossiblyInColor(fragment: Fragment): Unit = {
     pw.println(fragment.toPossiblyColoredText(presentInColor))

@@ -304,7 +304,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
@@ -424,6 +424,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
     assert(!a.afterAllCalled)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }
 

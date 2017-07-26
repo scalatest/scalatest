@@ -43,11 +43,11 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList.from(List.empty[String]) shouldBe None
     NonEmptyList.from(List("1")) shouldBe Some(NonEmptyList("1"))
     NonEmptyList.from(List(1, 2, 3)) shouldBe Some(NonEmptyList(1, 2, 3))
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     NonEmptyList.from(List.empty[String].par) shouldBe None
     NonEmptyList.from(List("1").par) shouldBe Some(NonEmptyList("1"))
     NonEmptyList.from(List(1, 2, 3).par) shouldBe Some(NonEmptyList(1, 2, 3))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptyList("hi", null, "ho")
@@ -462,9 +462,9 @@ class NonEmptyListSpec extends UnitSpec {
     Vector(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptyList(1).fold(0)(_ + _) shouldBe 1

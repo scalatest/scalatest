@@ -23,9 +23,9 @@ import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.UnquotedString
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.enablers.Definition
 import org.scalatest.enablers.Emptiness
 import org.scalatest.enablers.Readability
@@ -238,7 +238,7 @@ final class BeWord {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -252,7 +252,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true, prettifier, pos)
       override def toString: String = "be a " + prettifier(right)
     }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax, where <code>fileMock</code> is, for example, of type <code>File</code> and
@@ -291,7 +291,7 @@ final class BeWord {
       override def toString: String = "be a " + Prettifier.default(aMatcher)
     }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -305,7 +305,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false, prettifier, pos)
       override def toString: String = "be an " + Prettifier.default(right)
     }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax, where <code>keyEvent</code> is, for example, of type <code>KeyEvent</code> and
@@ -449,7 +449,7 @@ final class BeWord {
     }
    */
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This method enables the following syntax: 
    *
@@ -463,7 +463,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false, prettifier, pos)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and

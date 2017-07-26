@@ -20,9 +20,9 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import OptionValues._
 import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
@@ -296,9 +296,9 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFiniteFloat) =>
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
         pzfloat.floor.toFloat shouldEqual pzfloat.toFloat.floor
       }
@@ -311,7 +311,7 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -323,7 +323,7 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
         rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pzfloat: PosZFiniteFloat) =>

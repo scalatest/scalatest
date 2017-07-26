@@ -542,7 +542,7 @@ $endif$
    */
   final class AndBeWord {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -552,7 +552,7 @@ $endif$
      * </pre>
      */
     def a(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.a(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -574,7 +574,7 @@ $endif$
      */
     def a[U](aMatcher: AMatcher[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = and(MatcherWords.be.a(aMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -584,7 +584,7 @@ $endif$
      * </pre>
      */
     def an(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.an(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -1018,7 +1018,7 @@ $endif$
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1028,7 +1028,7 @@ $endif$
      * </pre>
      */
     def be(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
@@ -1050,7 +1050,7 @@ $endif$
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(bePropertyMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1060,7 +1060,7 @@ $endif$
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAWordApplication))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
@@ -1082,7 +1082,7 @@ $endif$
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAWordApplication))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1092,7 +1092,7 @@ $endif$
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAnWordApplication))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -1836,7 +1836,7 @@ $endif$
    */
   final class OrBeWord {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1846,7 +1846,7 @@ $endif$
      * </pre>
      */
     def a(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = or(MatcherWords.be.a(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1868,7 +1868,7 @@ $endif$
      */
     def a[U](aMatcher: AMatcher[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = or(MatcherWords.be.a(aMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1878,7 +1878,7 @@ $endif$
      * </pre>
      */
     def an(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = or(MatcherWords.be.an(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2312,7 +2312,7 @@ $endif$
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2322,7 +2322,7 @@ $endif$
      * </pre>
      */
     def be(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
@@ -2344,7 +2344,7 @@ $endif$
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(bePropertyMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2354,7 +2354,7 @@ $endif$
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAWordApplication))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
@@ -2376,7 +2376,7 @@ $endif$
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAWordApplication))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2386,7 +2386,7 @@ $endif$
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAnWordApplication))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -3035,9 +3035,9 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def transform(content: String): String = {
     var skipMode = false
     content.split("\n").map { line =>
-      if (line.trim == "// SKIP-SCALATESTJS-START")
+      if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START")
         skipMode = true
-      else if (line.trim == "// SKIP-SCALATESTJS-END")
+      else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END")
         skipMode = false
       else if (!skipMode)
         line

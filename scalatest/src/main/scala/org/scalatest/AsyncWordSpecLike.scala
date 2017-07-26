@@ -42,7 +42,7 @@ MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS,NATIVE-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
@@ -660,10 +660,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def afterWord(text: String) = new AfterWord(text)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   private[scalatest] val stackDepth = 3
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth: Int = 10
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY private[scalatest] val stackDepth: Int = 10
 
   /**
    * Class that supports shorthand scope registration via the instance referenced from <code>WordSpecLike</code>'s <code>it</code> field.

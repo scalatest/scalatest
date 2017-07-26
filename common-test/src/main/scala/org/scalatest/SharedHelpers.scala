@@ -993,9 +993,9 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   //##################################
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def javaMapEntry[K, V](key: K, value: V): java.util.Map.Entry[K, V] = org.scalatest.Entry(key, value)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def indexElementEqual[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): Array[String] =
     indexElementForJavaIterator[K, V](itr, xs, (e: java.util.Map.Entry[K, V]) => e.getKey == right.getKey && e.getValue == right.getValue)
@@ -1190,7 +1190,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
       ""
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   private def succeededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).toList.map(_._1)
@@ -1201,7 +1201,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     else
       ""
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private def failEarlySucceededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
     xs match {
@@ -1235,7 +1235,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
       ""
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   private def failEarlySucceededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean, maxSucceed: Int): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
@@ -1246,7 +1246,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     else
       ""
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def succeededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String =
     succeededIndexes(xs, (e: T) => value)
@@ -1260,13 +1260,13 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def succeededIndexesNotEqual[T](xs: GenTraversable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e != value)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def succeededIndexesEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey == value.getKey && e.getValue == value.getValue)
 
   def succeededIndexesNotEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey != value.getKey || e.getValue != value.getValue)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def succeededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e <= value)
@@ -1544,7 +1544,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   //################################################
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def failEarlySucceededIndexesEqualBoolean[T](xs: java.util.Collection[T], value: Boolean, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: T) => value, maxSucceed)
 
@@ -1611,7 +1611,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def failEarlySucceededIndexesNotInclude(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
 
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   //################################################
 
@@ -1832,7 +1832,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     sortedMap
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def serializeRoundtrip[A](a: A): A = {
     val baos = new java.io.ByteArrayOutputStream
     val oos = new java.io.ObjectOutputStream(baos)
@@ -1841,7 +1841,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
     ois.readObject.asInstanceOf[A]
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int): Unit = {
     assert(exception.message === Some(message))

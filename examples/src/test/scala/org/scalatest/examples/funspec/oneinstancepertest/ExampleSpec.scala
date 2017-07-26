@@ -38,5 +38,5 @@ class ExampleSpec extends FunSpec with OneInstancePerTest {
     } 
   }
 
-  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
+  //SCALATESTJS,NATIVE-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }

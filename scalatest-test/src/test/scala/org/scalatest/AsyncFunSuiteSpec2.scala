@@ -216,7 +216,7 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -354,7 +354,7 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
         assert(!rep.testSucceededEventsReceived.isEmpty)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
@@ -385,9 +385,9 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -426,9 +426,9 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -659,9 +659,9 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val markupList = reporter.markupProvidedEventsReceived
 
@@ -729,9 +729,9 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
     it("should allow other execution context to be used") {
       class TestSpec extends AsyncFunSuite {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
         test("test A") {

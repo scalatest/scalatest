@@ -419,7 +419,7 @@ class ShouldMatcherSpec extends FunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   describe("The be theSameInstanceAs syntax") {
 
     val string = "Hi"
@@ -449,7 +449,7 @@ class ShouldMatcherSpec extends FunSpec {
       assert(true) // TODO: test the failure message
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   describe("The floating point numbers when compared with equals") {
     it("should do nothing if the floating point number is exactly equal to the specified value") {

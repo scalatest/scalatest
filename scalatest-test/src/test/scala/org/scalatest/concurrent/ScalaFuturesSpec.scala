@@ -125,7 +125,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
@@ -137,7 +137,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           vmeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture: FutureOfScala[String] = {
@@ -255,7 +255,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
@@ -267,7 +267,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           vmeFuture.futureValue
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
@@ -482,7 +482,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
@@ -496,7 +496,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           }
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       // Same thing here and in 2.0 need to add a test for TestCanceledException
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {

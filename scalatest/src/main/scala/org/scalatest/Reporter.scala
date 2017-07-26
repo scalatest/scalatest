@@ -146,9 +146,9 @@ private[scalatest] object Reporter {
   // bug.
   def propagateDispose(reporter: Reporter): Unit = {
     reporter match {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       case dispatchReporter: DispatchReporter => dispatchReporter.dispatchDisposeAndWaitUntilDone()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       case resourcefulReporter: ResourcefulReporter => resourcefulReporter.dispose()
       case _ =>
     }

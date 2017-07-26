@@ -17,9 +17,9 @@ package org.scalatest
 
 import org.scalatest.events.Event
 import org.scalatest.prop.Tables
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait InfoExpectedResults extends EventHelpers {
   def assertBeforeAfterInfo(events: List[Event])
@@ -27,10 +27,10 @@ trait InfoExpectedResults extends EventHelpers {
 
 object ParallelTestExecutionInfoExamples extends Tables {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def infoSpec = new ExampleParallelTestExecutionInfoSpec()
   def infoFixtureSpec = new ExampleParallelTestExecutionInfoFixtureSpec()
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def infoFunSuite = new ExampleParallelTestExecutionInfoFunSuite()
   def infoFixtureFunSuite = new ExampleParallelTestExecutionInfoFixtureFunSuite()
   def infoFunSpec = new ExampleParallelTestExecutionInfoFunSpec()
@@ -49,10 +49,10 @@ object ParallelTestExecutionInfoExamples extends Tables {
   def infoExamples =
     Table(
       "suite1",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       infoSpec, 
       infoFixtureSpec,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       infoFunSuite, 
       infoFixtureFunSuite, 
       infoFunSpec, 
@@ -70,7 +70,7 @@ object ParallelTestExecutionInfoExamples extends Tables {
     )
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends RefSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before {}  // how to fire info here?
@@ -108,7 +108,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureSpec extends f
     checkTestSucceeded(events(5), "test 3")
   }
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
@@ -133,7 +133,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunS
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFunSuite
 }
 
 @DoNotDiscover
@@ -159,7 +159,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSuite exten
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFunSuite
 }
 
 @DoNotDiscover
@@ -198,7 +198,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSpec extends FunSp
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFunSpec
 }
 
 @DoNotDiscover
@@ -237,7 +237,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extend
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFunSpec
 }
 
 @DoNotDiscover
@@ -276,7 +276,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends F
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Feature: Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFeatureSpec
 }
 
 @DoNotDiscover
@@ -315,7 +315,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec ex
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Feature: Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFeatureSpec
 }
 
 @DoNotDiscover
@@ -353,7 +353,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFlatSpec extends Flat
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFlatSpec
 }
 
 @DoNotDiscover
@@ -391,7 +391,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFlatSpec exten
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFlatSpec
 }
 
 @DoNotDiscover
@@ -431,7 +431,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFreeSpec extends Free
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFreeSpec
 }
 
 @DoNotDiscover
@@ -471,7 +471,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec exten
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureFreeSpec
 }
 
 @DoNotDiscover
@@ -497,7 +497,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends Prop
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoPropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoPropSpec
 }
 
 @DoNotDiscover
@@ -523,7 +523,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixturePropSpec exten
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixturePropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixturePropSpec
 }
 
 @DoNotDiscover
@@ -563,7 +563,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoWordSpec extends Word
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoWordSpec
 }
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionInfoFixtureWordSpec extends fixture.WordSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
@@ -602,5 +602,5 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureWordSpec exten
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoFixtureWordSpec
 }

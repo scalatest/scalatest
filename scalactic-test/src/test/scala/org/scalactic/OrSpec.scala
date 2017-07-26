@@ -19,9 +19,9 @@ import org.scalatest._
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import SharedHelpers.serializeRoundtrip
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
@@ -532,13 +532,13 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good[Int].orBad("howdy").fold(_ + 1, _.length) shouldBe 5
 
   }
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it can "be serialized correctly" in {
     serializeRoundtrip(Or.from(Success(12)) shouldBe Good(12))
     val ex = new Exception("oops")
     serializeRoundtrip(Or.from(Failure(ex)) shouldBe Bad(ex))
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   "A Good" can "be widened to an Or type via .asOr" in {
     Good(1).asOr shouldBe Good(1)
     /*
@@ -557,11 +557,11 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Good(6)
   }
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it can "be serialized correctly" in {
     serializeRoundtrip(Good(1)) shouldBe Good(1)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   "A Bad" can "be widened to an Or type via .asOr" in {
     Bad("oops").asOr shouldBe Bad("oops")
     /*
@@ -584,11 +584,11 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Bad("no evens")
   }
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it can "be serialized correctly" in {
     serializeRoundtrip(Bad("oops")) shouldBe Bad("oops")
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   "The Or companion" should "offer a concise type lambda syntax" in {
     trait Functor[Context[_]] {
       def map[A, B](ca: Context[A])(f: A => B): Context[B]

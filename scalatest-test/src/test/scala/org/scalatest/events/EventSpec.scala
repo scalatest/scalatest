@@ -98,6 +98,7 @@ class EventSpec extends FunSpec with Checkers {
   }
 */
 
+// SKIP-SCALATESTNATIVE-START
   import io.circe._
   import io.circe.parser._
 
@@ -370,7 +371,7 @@ class EventSpec extends FunSpec with Checkers {
       assert(canceledEvents.length === 1)
       assert(canceledEvents(0).rerunner === Some(suite.getClass.getName))
     }
-    
+
     it("should carry top level suite class name as its rerunner when it is fired from nested suites") {
       val rep = new EventRecordingReporter
       val suite = new ExampleCancelInNestedSuite
@@ -1169,4 +1170,5 @@ class EventSpec extends FunSpec with Checkers {
       }
     }
   }
+// SKIP-SCALATESTNATIVE-END
 }

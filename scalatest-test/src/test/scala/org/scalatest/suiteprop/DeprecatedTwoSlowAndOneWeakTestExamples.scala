@@ -16,9 +16,9 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedTwoSlowAndOneWeakTestExamples extends SuiteExamples {
 
@@ -52,7 +52,7 @@ class DeprecatedTwoSlowAndOneWeakTestExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class SpecExample extends RefSpec with Services {
     @SlowAsMolasses @WeakAsAKitten def `test first`: Unit = {}
     @SlowAsMolasses def `test second`: Unit = {}
@@ -64,7 +64,7 @@ class DeprecatedTwoSlowAndOneWeakTestExamples extends SuiteExamples {
     @SlowAsMolasses def `test second`(s: String): Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   class FunSuiteExample extends FunSuite with Services {
     test("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
@@ -454,10 +454,10 @@ class DeprecatedTwoSlowAndOneWeakTestExamples extends SuiteExamples {
     property("second test", mytags.SlowAsMolasses) { s => }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   lazy val spec = new SpecExample
   lazy val fixtureSpec = new FixtureSpecExample
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample

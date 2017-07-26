@@ -206,11 +206,11 @@ class DirectAssertionsSpec extends FunSpec {
       val trappedString = org.scalatest.Assertions.trap { "12" }
       org.scalatest.Assertions.assert(trappedString == NormalResult("12"))
       org.scalatest.Assertions.assert(trappedString.toString == Resources.resultWas("\"12\""))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       intercept[OutOfMemoryError] {
         org.scalatest.Assertions.trap { throw new OutOfMemoryError }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 

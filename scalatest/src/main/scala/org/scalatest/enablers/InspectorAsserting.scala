@@ -629,9 +629,9 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
   private[scalatest] final def isMap(xs: Any): Boolean =
     xs match {
       case _: collection.GenMap[_, _] => true
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       case _: java.util.Map[_, _] => true
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       case _ => false
     }
 
@@ -792,16 +792,16 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
         indexes.mkString(", ")
 
     val (xsIsMap, elements) = xs match {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY case _: collection.GenMap[_, _] =>
+        // SKIP-SCALATESTJS,NATIVE-END
+        //SCALATESTJS,NATIVE-ONLY case _: collection.GenMap[_, _] =>
         val elements = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
-            // SKIP-SCALATESTJS-START
+            // SKIP-SCALATESTJS,NATIVE-START
             case entry: java.util.Map.Entry[_, _] => entry.getKey
-            // SKIP-SCALATESTJS-END
+            // SKIP-SCALATESTJS,NATIVE-END
             case _ => index
           }
         }

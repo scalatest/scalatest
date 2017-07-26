@@ -17,9 +17,9 @@ package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException, ModifiableMessage}
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnitTestFailedError
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}
 import SharedHelpers.EventRecordingReporter
@@ -36,9 +36,9 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
     Table(
       "exception",
       new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       new JUnitTestFailedError("message", 3),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)

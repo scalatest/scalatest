@@ -20,9 +20,9 @@ import org.scalactic.source
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.time.Second
 import org.scalatest.time.Span
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnitTestFailedError
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
 
@@ -74,9 +74,9 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
     Table(
       "exception",
       new TestFailedException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       new JUnitTestFailedError(Some("message"), None, Left(source.Position.here), None),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Left(source.Position.here), None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Left(source.Position.here), None, "undecMsg", List.empty, Option(List.empty), List.empty),
@@ -90,9 +90,9 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
     Table(
       "exception",
       new TestFailedException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       new JUnitTestFailedError(Some("message"), None, Right(3), None),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Right((_: StackDepthException) => 3), None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Right((_: StackDepthException) => 3), None, "undecMsg", List.empty, Option(List.empty), List.empty),

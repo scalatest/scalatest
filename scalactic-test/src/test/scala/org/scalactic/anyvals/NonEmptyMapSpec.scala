@@ -43,11 +43,11 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap.from(Map.empty[Int, String]) shouldBe None
     NonEmptyMap.from(Map(1 -> "one")) shouldBe Some(NonEmptyMap(1 -> "one"))
     NonEmptyMap.from(Map(1 -> "one", 2 -> "two", 3 -> "three")) shouldBe Some(NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     NonEmptyMap.from(Map.empty[Int, String].par) shouldBe None
     NonEmptyMap.from(Map(1 -> "one").par) shouldBe Some(NonEmptyMap(1 -> "one"))
     NonEmptyMap.from(Map(1 -> "one", 2 -> "two", 3 -> "three").par) shouldBe Some(NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it can "be deconstructed with NonEmptyMap" in {
     NonEmptyMap(1 -> "one") match {

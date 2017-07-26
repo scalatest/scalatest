@@ -283,7 +283,7 @@ class ShouldEqualEqualitySpec extends FunSpec {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java Collection") {
 
       val javaSet123: java.util.Set[Int] = new java.util.HashSet
@@ -415,7 +415,7 @@ class ShouldEqualEqualitySpec extends FunSpec {
         javaMap123 shouldEqual javaMap124
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("for Seq") {
       it("with default equality") {
@@ -517,7 +517,7 @@ class ShouldEqualEqualitySpec extends FunSpec {
       Array(1, 2, 3) should equal (Array(1, 2, 4))
       Array(1, 2, 3) shouldEqual Array(1, 2, 4)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java List") {
 
       val javaList123: java.util.List[Int] = new java.util.ArrayList
@@ -580,7 +580,7 @@ class ShouldEqualEqualitySpec extends FunSpec {
         javaList123 shouldEqual javaList124
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 

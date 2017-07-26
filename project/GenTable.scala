@@ -1326,13 +1326,13 @@ $columnsOfTwos$
   def transform(content: String): String = {
     var skipMode = false
     content.split("\n").map { line =>
-      if (line.trim == "// SKIP-SCALATESTJS-START")
+      if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START")
         skipMode = true
-      else if (line.trim == "// SKIP-SCALATESTJS-END")
+      else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END")
         skipMode = false
       else if (!skipMode) {
-        if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-          line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
+        if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+          line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 19)
         else
           line
       }
@@ -1546,10 +1546,10 @@ $columnsOfTwos$
                                  |      case ex: Throwable =>
                                  |        val ($alphaName$) = heading
                                  |
-                                 |        // SKIP-SCALATESTJS-START
+                                 |        // SKIP-SCALATESTJS,NATIVE-START
                                  |        val stackDepth = 2
-                                 |        // SKIP-SCALATESTJS-END
-                                 |        //SCALATESTJS-ONLY val stackDepth = 1
+                                 |        // SKIP-SCALATESTJS,NATIVE-END
+                                 |        //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |        indicateFailure(
                                  |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
@@ -1595,10 +1595,10 @@ $columnsOfTwos$
                                  |            case ex: Throwable =>
                                  |              val ($alphaName$) = heading
                                  |
-                                 |              // SKIP-SCALATESTJS-START
+                                 |              // SKIP-SCALATESTJS,NATIVE-START
                                  |              val stackDepth = 2
-                                 |              // SKIP-SCALATESTJS-END
-                                 |              //SCALATESTJS-ONLY val stackDepth = 1
+                                 |              // SKIP-SCALATESTJS,NATIVE-END
+                                 |              //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |              indicateFailure(
                                  |                (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
@@ -1632,10 +1632,10 @@ $columnsOfTwos$
                                  |          case ex: Throwable =>
                                  |            val ($alphaName$) = heading
                                  |
-                                 |            // SKIP-SCALATESTJS-START
+                                 |            // SKIP-SCALATESTJS,NATIVE-START
                                  |            val stackDepth = 2
-                                 |            // SKIP-SCALATESTJS-END
-                                 |            //SCALATESTJS-ONLY val stackDepth = 1
+                                 |            // SKIP-SCALATESTJS,NATIVE-END
+                                 |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |            indicateFailure(
                                  |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +

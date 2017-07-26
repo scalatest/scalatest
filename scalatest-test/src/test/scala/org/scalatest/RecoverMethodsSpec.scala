@@ -62,7 +62,7 @@ class RecoverMethodsSpec extends FunSpec with RecoverMethods with ScalaFutures {
         recoverToExceptionIf[MyTrait] {
           Future { throw new AnotherException }
         }
-      // Make sure the result type is the type passed in, so I can 
+      // Make sure the result type is the type passed in, so I can
       // not cast and still invoke any method on it I want
       val futureInt = futureCaught map { caught => caught.someRandomMethod }
       assert(futureInt.futureValue == 42)
