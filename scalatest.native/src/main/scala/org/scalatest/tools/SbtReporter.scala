@@ -37,9 +37,11 @@ private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerpri
   }
 
   private def getOptionalThrowable(throwable: Option[Throwable]): OptionalThrowable =
-    throwable match {
-      case Some(t) => new OptionalThrowable(t)
-      case None => new OptionalThrowable
+    if (throwable.isDefined) {
+      // throwing the original throwable causes the program to crash
+      new OptionalThrowable(new Throwable(""))
+    } else {
+      new OptionalThrowable()
     }
 
   override def apply(event: Event) {
