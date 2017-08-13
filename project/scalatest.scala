@@ -537,6 +537,28 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
+  lazy val scalacticTestNative = Project("scalacticTestNative", file("scalactic-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test.native",
+      organization := "org.scalactic",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+      testOptions in Test ++=
+        Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
+      nativeOptimizerDriver in NativeTest := {
+        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
+        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
+      },
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
    .settings(scalatestDocSettings: _*)
@@ -1016,6 +1038,70 @@ object ScalatestBuild extends Build {
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").aggregate(scalacticJS, scalatestJS, scalacticTestJS, scalatestTestJS).enablePlugins(ScalaJSPlugin)
+
+    lazy val scalatestAppNative = Project("scalatestAppNative", file("scalatest-app.native"))
+      .settings(sharedSettings: _*)
+      .settings(
+        projectTitle := "ScalaTest App",
+        name := "scalatest-app",
+        organization := "org.scalatest",
+        moduleName := "scalatest-app",
+        libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.1",
+        // include the scalactic classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
+        // include the scalactic sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
+        // include the scalatest classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
+        // include the scalatest sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
+        sourceGenerators in Compile += {
+          // Little trick to get rid of bnd error when publish.
+          Def.task{
+            (new File(crossTarget.value, "classes")).mkdirs()
+            Seq.empty[File]
+          }.taskValue
+        }
+      ).settings(osgiSettings: _*).settings(
+        OsgiKeys.exportPackage := Seq(
+          "org.scalatest",
+          "org.scalatest.compatible",
+          "org.scalatest.concurrent",
+          "org.scalatest.enablers",
+          "org.scalatest.events",
+          "org.scalatest.exceptions",
+          "org.scalatest.fixture",
+          "org.scalatest.matchers",
+          "org.scalatest.path",
+          "org.scalatest.prop",
+          "org.scalatest.tags",
+          "org.scalatest.tagobjects",
+          "org.scalatest.time",
+          "org.scalatest.tools",
+          "org.scalatest.verb",
+          "org.scalatest.words",
+          "org.scalactic",
+          "org.scalactic.anyvals",
+          "org.scalactic.exceptions",
+          "org.scalactic.source"
+        ),
+        OsgiKeys.importPackage := Seq(
+          "org.scalatest.*",
+          "org.scalactic.*",
+          "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+          "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+          "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+          "*;resolution:=optional"
+        ),
+        OsgiKeys.additionalHeaders:= Map(
+          "Bundle-Name" -> "ScalaTest",
+          "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+          "Bundle-DocURL" -> "http://www.scalatest.org/",
+          "Bundle-Vendor" -> "Artima, Inc.",
+          "Main-Class" -> "org.scalatest.tools.Runner"
+        )
+      ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").aggregate(scalacticNative, scalatestNative, scalacticTestNative, scalatestTestNative).enablePlugins(ScalaNativePlugin)
 
   def gentestsLibraryDependencies =
     Seq(
