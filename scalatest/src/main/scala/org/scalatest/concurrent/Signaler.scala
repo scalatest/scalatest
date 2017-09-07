@@ -39,7 +39,7 @@ trait Signaler {
 }
 
 /**
- * Companion object that provides a factory method for a <code>Singlaer</code> defined
+ * Companion object that provides a factory method for a <code>Signaler</code> defined
  * in terms of a function from a function of type <code>Thread</code> to </code>Unit</code>.
  */
 object Signaler {
