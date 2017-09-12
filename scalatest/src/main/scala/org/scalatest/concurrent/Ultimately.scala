@@ -25,6 +25,7 @@ import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
 import scala.concurrent.{Future, Promise, ExecutionContext}
 import scala.util.{Success, Failure}
+import java.util.concurrent.{ Executors, TimeUnit, ThreadFactory }
 
 /**
  * Trait that provides the <code>ultimately</code> construct, which periodically retries executing
@@ -280,6 +281,20 @@ import scala.util.{Success, Failure}
  */
 trait Ultimately extends PatienceConfiguration {
 
+
+  private[this] lazy val scheduler = {
+    val threadFactory = new ThreadFactory {
+      val inner = Executors.defaultThreadFactory()
+      def newThread(runnable: Runnable) = {
+        val thread = inner.newThread(runnable)
+        thread.setDaemon(true)
+        thread
+      }
+    }
+
+    Executors.newSingleThreadScheduledExecutor(threadFactory)
+  }
+
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
    * amount of time has passed, sleeping a configured interval between attempts.
@@ -427,7 +442,7 @@ trait Ultimately extends PatienceConfiguration {
             val promise = Promise[T]
 
             val task =
-              new TimerTask {
+              new Runnable {
                 override def run(): Unit = {
                   val newFut = tryTryAgain(attempt + 1)
                   newFut onComplete {
@@ -437,8 +452,7 @@ trait Ultimately extends PatienceConfiguration {
                 }
               }
 
-            val timer = new Timer
-            timer.schedule(task, chillTime)
+            scheduler.schedule(task, chillTime, TimeUnit.MILLISECONDS)
             promise.future
           }
           else { // Timed out so return a failed Future
