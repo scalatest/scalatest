@@ -282,18 +282,6 @@ import java.util.concurrent.{ Executors, TimeUnit, ThreadFactory }
 trait Ultimately extends PatienceConfiguration {
 
 
-  private[this] lazy val scheduler = {
-    val threadFactory = new ThreadFactory {
-      val inner = Executors.defaultThreadFactory()
-      def newThread(runnable: Runnable) = {
-        val thread = inner.newThread(runnable)
-        thread.setDaemon(true)
-        thread
-      }
-    }
-
-    Executors.newSingleThreadScheduledExecutor(threadFactory)
-  }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -452,7 +440,7 @@ trait Ultimately extends PatienceConfiguration {
                 }
               }
 
-            scheduler.schedule(task, chillTime, TimeUnit.MILLISECONDS)
+            Ultimately.scheduler.schedule(task, chillTime, TimeUnit.MILLISECONDS)
             promise.future
           }
           else { // Timed out so return a failed Future
@@ -515,4 +503,17 @@ trait Ultimately extends PatienceConfiguration {
  *   ...
  * </pre>
  */
-object Ultimately extends Ultimately
+object Ultimately extends Ultimately {
+  private lazy val scheduler = {
+    val threadFactory = new ThreadFactory {
+      val inner = Executors.defaultThreadFactory()
+      def newThread(runnable: Runnable) = {
+        val thread = inner.newThread(runnable)
+        thread.setDaemon(true)
+        thread
+      }
+    }
+
+    Executors.newSingleThreadScheduledExecutor(threadFactory)
+  }
+}
