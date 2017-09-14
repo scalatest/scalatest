@@ -201,7 +201,7 @@ class UltimatelySpec extends AsyncFunSpec with Matchers with OptionValues {
           } 
         } 
       } map { _ =>
-        (System.currentTimeMillis - startTime.get).toInt should be >= (1388)
+        (System.currentTimeMillis - startTime.get).toInt should be >= (1388 - 10) // - 10 to give it a little wiggle room
       }
     }
     

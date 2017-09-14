@@ -5,4 +5,5 @@
 -XX:+CMSClassUnloadingEnabled 
 -XX:+UseConcMarkSweepGC 
 -XX:+CMSIncrementalMode 
--XX:NewRatio=8 -XX:MaxPermSize=512M
+-XX:NewRatio=8
+-XX:MaxPermSize=512M
