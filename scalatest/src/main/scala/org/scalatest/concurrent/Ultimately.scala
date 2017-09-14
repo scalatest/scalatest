@@ -26,6 +26,7 @@ import org.scalatest.exceptions.StackDepthException
 import scala.concurrent.{Future, Promise, ExecutionContext}
 import scala.util.{Success, Failure}
 import java.util.concurrent.{ Executors, TimeUnit, ThreadFactory }
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * Trait that provides the <code>ultimately</code> construct, which periodically retries executing
@@ -504,7 +505,7 @@ trait Ultimately extends PatienceConfiguration {
  * </pre>
  */
 object Ultimately extends Ultimately {
-  private lazy val scheduler = {
+  private lazy val scheduler: ScheduledExecutorService = {
     val threadFactory = new ThreadFactory {
       val inner = Executors.defaultThreadFactory()
       def newThread(runnable: Runnable) = {
