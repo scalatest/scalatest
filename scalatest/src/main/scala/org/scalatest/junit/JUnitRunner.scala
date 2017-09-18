@@ -165,6 +165,6 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
   override def filter(filter: org.junit.runner.manipulation.Filter): Unit = {
     description = createDescription(suiteToRun, Some(filter))
     if (description.testCount() == 0)
-      throw NoTestsRemainException
+      throw new NoTestsRemainException
   }
 }
