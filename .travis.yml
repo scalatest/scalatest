@@ -1,10 +1,15 @@
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+
 language: scala
 scala:
   - 2.11.8
   - 2.10.6
   - 2.12.0
 jdk:
-  - oraclejdk7
+  - openjdk7
   - openjdk6
   - oraclejdk8
 
