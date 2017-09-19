@@ -773,7 +773,7 @@ object ScalatestBuild extends Build {
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
       "org.testng" % "testng" % "6.8.7" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
