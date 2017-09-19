@@ -51,9 +51,9 @@ env:
 
 matrix:
   exclude:
-    - scala: "2.12.0"
-      jdk: oraclejdk7
-    - scala: "2.12.0"
+    - scala: 2.12.0
+      jdk: openjdk7
+    - scala: 2.12.0
       jdk: openjdk6
 
 branches:
