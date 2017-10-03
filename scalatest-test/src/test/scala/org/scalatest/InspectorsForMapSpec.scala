@@ -31,10 +31,6 @@ class InspectorsForMapSpec extends FunSpec with Inspectors with TableDrivenPrope
   def examples =
     Table[Map[Int, String] => collection.GenMap[Int, String]](
       ("Fun"),
-      // SKIP-SCALATESTJS-START
-      ((map: Map[Int, String]) => map.par),
-      ((map: Map[Int, String]) => (mutable.Map.empty ++ map).par),
-      // SKIP-SCALATESTJS-END
       ((map: Map[Int, String]) => map),
       ((map: Map[Int, String]) => mutable.Map.empty ++ map)
     )

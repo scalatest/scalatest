@@ -18,12 +18,16 @@ package org.scalatest.concurrent
 import org.scalatest._
 import time._
 import java.util.concurrent.{Future => FutureOfJava}
+
 import org.scalatest.FunSpec
 import org.scalatest.OptionValues
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException}
 import java.util.concurrent.TimeUnit
+
 import org.scalactic.source
 import org.scalatest.SharedHelpers.thisLineNumber
+
+import scala.compat.Platform.EOL
 
 class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures with SeveredStackTraces {
 
@@ -71,7 +75,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           canceledFuture.isReadyWithin(Span(1, Second))
         }
         caught.message.value should be (Resources.futureWasCanceled)
-        withClue(caught.getStackTraceString) {
+        withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
@@ -186,7 +190,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           canceledFuture.futureValue
         }
         caught.message.value should be (Resources.futureWasCanceled)
-        withClue(caught.getStackTraceString) {
+        withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
@@ -447,7 +451,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           }
         }
         caught.message.value should be (Resources.futureWasCanceled)
-        withClue(caught.getStackTraceString) {
+        withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")

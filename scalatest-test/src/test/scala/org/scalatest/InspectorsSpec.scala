@@ -41,16 +41,6 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       ((set: Set[Int]) => set.toArray), 
       ((set: Set[Int]) => set.toIndexedSeq), 
       ((set: Set[Int]) => Vector.empty ++ set),
-      // SKIP-SCALATESTJS-START
-      ((set: Set[Int]) => set.par), 
-      ((set: Set[Int]) => set.toList.par), 
-      ((set: Set[Int]) => set.toSeq.par), 
-      ((set: Set[Int]) => set.toIndexedSeq.par),
-      ((set: Set[Int]) => (mutable.Set.empty ++ set).par),
-      ((set: Set[Int]) => (new mutable.ListBuffer() ++ set).par),
-      ((set: Set[Int]) => (mutable.Seq.empty ++ set).par),
-      ((set: Set[Int]) => (mutable.IndexedSeq.empty ++ set).par),
-      // SKIP-SCALATESTJS-END
       ((set: Set[Int]) => mutable.Set.empty ++ set), 
       ((set: Set[Int]) => new mutable.ListBuffer() ++ set), 
       ((set: Set[Int]) => mutable.Seq.empty ++ set), 
