@@ -295,11 +295,6 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         assert(caught3.getMessage === "Array(1, 2) had length 2, and Array(1, 2) had length 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Array(1, 2).par should have length (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.List") {
@@ -425,11 +420,6 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         assert(caught3.getMessage === "List(1, 2) had length 2, and List(1, 2) had length 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        List(1, 2).par should have length (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     // SKIP-SCALATESTJS-START

@@ -161,11 +161,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Array(1, 2) contained element 2, and Array(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Array(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.Set ") {
@@ -291,11 +286,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Set(1, 2) contained element 2, and Set(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Set(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.Set ") {
@@ -432,11 +422,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === set3 + " contained element 2, and " + set3 + " contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.Set(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.Set ") {
@@ -564,11 +549,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Set(1, 2) contained element 2, and Set(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        set.par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.HashSet ") {
@@ -696,11 +676,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Set(1, 2) contained element 2, and Set(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        HashSet(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.HashSet ") {
@@ -837,11 +812,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === set3 + " contained element 2, and " + set3 + " contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.HashSet(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on List") {
@@ -974,11 +944,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "List(1, 2) contained element 2, and List(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        List(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on Vector") {
@@ -1111,11 +1076,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Vector(1, 2) contained element 2, and Vector(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Vector(1, 2).par should contain (2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     // SKIP-SCALATESTJS-START
@@ -1384,11 +1344,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Map("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.Map ") {
@@ -1539,11 +1494,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2), and " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.Map("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.Map ") {
@@ -1683,11 +1633,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        map.par should contain ("two" -> 2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.HashMap ") {
@@ -1862,11 +1807,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught1.getMessage.endsWith(") contained element (two,2)"))
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        HashMap("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.HashMap ") {
@@ -2017,11 +1957,6 @@ class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormall
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2), and " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.HashMap("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     // SKIP-SCALATESTJS-START

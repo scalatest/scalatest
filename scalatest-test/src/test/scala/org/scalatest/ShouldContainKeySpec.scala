@@ -220,11 +220,6 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\", and Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        Map("one" -> 1, "two" -> 2).par should contain key ("two")
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.Map") {
@@ -374,11 +369,6 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.Map("one" -> 1, "two" -> 2).par should contain key ("two")
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.Map") {
@@ -517,11 +507,6 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\", and Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        map.par should contain key ("two")
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.HashMap") {
@@ -677,11 +662,6 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.HashMap") {
@@ -831,11 +811,6 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS-START
-      it("should work on parallel form") {
-        mutable.HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
-      }
-      // SKIP-SCALATESTJS-END
     }
 
     // SKIP-SCALATESTJS-START
