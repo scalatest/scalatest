@@ -28,7 +28,7 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 6, 7 or 8
-*   [SBT 0.13.2](http://www.scala-sbt.org/0.13.2/docs/Getting-Started/Setup.html)
+*   [SBT 0.13](http://www.scala-sbt.org/0.13/docs/Setup.html)
 
 for JDK 6 or 7, use the following options in your SBT launch file:
 
@@ -118,8 +118,8 @@ With Sonatype credentials and GPG file in place, you can now publish to Sonatype
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.10.6 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt ++2.11.11 clean publishSigned "project scalatestAppJS" clean publishSigned ++2.10.6 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12, and make sure you're on Java 8) to Sonatype, use the following command:
 
-  `$ sbt ++2.12.0 clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned`
