@@ -1616,9 +1616,9 @@ used for test events like succeeded/failed, etc.
     IndentedText(formattedText, decodedTestText, level)
   }
   
-  def getEscapedIndentedTextForTest(testText: String, level: Int, includeIcon: Boolean) = {
+  def getEscapedIndentedTextForTest(testText: String, level: Int, includeIcon: Boolean): IndentedText = {
     val decodedTestText = NameTransformer.decode(testText)
-    val escapedTestText = 
+    val escapedTestText =
       if (decodedTestText.startsWith("test: "))
         decodedTestText.drop(6)
       else
