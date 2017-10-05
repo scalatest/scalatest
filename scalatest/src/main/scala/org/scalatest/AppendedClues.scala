@@ -158,7 +158,7 @@ trait AppendedClues {
         }
       }
       catch {
-        case e: ModifiableMessage[_] =>
+        case e: ModifiableMessage[_] with Throwable =>
           if (clue.toString != "")
             throw e.modifyMessage(append)
           else
