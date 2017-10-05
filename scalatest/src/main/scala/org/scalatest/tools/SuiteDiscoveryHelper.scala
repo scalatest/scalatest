@@ -170,7 +170,7 @@ private[scalatest] object SuiteDiscoveryHelper {
       None
   }
 
-  private val emptyClassArray = new Array[java.lang.Class[T] forSome { type T }](0)
+  private val emptyClassArray = new Array[java.lang.Class[_]](0)
 
   private[scalatest] def isAccessibleSuite(clazz: java.lang.Class[_]): Boolean = {
       try {

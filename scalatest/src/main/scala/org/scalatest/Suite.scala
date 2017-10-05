@@ -1417,7 +1417,7 @@ private[scalatest] object Suite {
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
     
     try {
-      val constructor = clazz.getConstructor(new Array[java.lang.Class[T] forSome { type T }](0): _*)
+      val constructor = clazz.getConstructor(new Array[java.lang.Class[_]](0): _*)
 
       Modifier.isPublic(constructor.getModifiers)
     }

@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue
  */
 private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorService) extends Distributor {
 
-  private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
+  private val futureQueue = new LinkedBlockingQueue[Future[_]]
 
   def apply(suite: Suite, tracker: Tracker): Unit = {
     apply(suite, args.copy(tracker = tracker))
