@@ -59,6 +59,8 @@ trait Readability[-T] {
  */
 object Readability {
 
+  import scala.reflect.Selectable.reflectiveSelectable
+
   /**
    * Enable <code>Readability</code> implementation for <code>java.io.File</code>.
    *
@@ -80,7 +82,7 @@ object Readability {
    */
   implicit def readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
     new Readability[T] {
-      def isReadable(obj: T): Boolean = obj.isReadable
+      def isReadable(obj: T): Boolean = obj.isReadable()
     }
 
   /**

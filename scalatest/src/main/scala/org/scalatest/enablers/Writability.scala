@@ -58,6 +58,8 @@ trait Writability[-T] {
  */
 object Writability {
 
+  import scala.reflect.Selectable.reflectiveSelectable
+
   /**
    * Enable <code>Writability</code> implementation for <code>java.io.File</code>.
    *
@@ -79,7 +81,7 @@ object Writability {
    */
   implicit def writabilityOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
     new Writability[T] {
-      def isWritable(obj: T): Boolean = obj.isWritable
+      def isWritable(obj: T): Boolean = obj.isWritable()
     }
 
   /**

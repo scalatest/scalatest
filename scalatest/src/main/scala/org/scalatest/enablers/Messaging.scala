@@ -59,6 +59,8 @@ trait Messaging[T] {
  */
 object Messaging {
 
+  import scala.reflect.Selectable.reflectiveSelectable
+
   /**
    * Enable <code>Messaging</code> implementation for <code>java.lang.Throwable</code>
    *
@@ -80,7 +82,7 @@ object Messaging {
    */
   implicit def messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = 
     new Messaging[T] {
-      def messageOf(obj: T): String = obj.message
+      def messageOf(obj: T): String = obj.message()
     }
 
   /**
@@ -102,7 +104,7 @@ object Messaging {
    */
   implicit def messagingNatureOfAnyRefWithGetMessageMethod[T <: AnyRef { def getMessage(): String}]: Messaging[T] = 
     new Messaging[T] {
-      def messageOf(obj: T): String = obj.getMessage
+      def messageOf(obj: T): String = obj.getMessage()
     }
 
   /**

@@ -53,6 +53,7 @@ trait Definition[-T] {
 object Definition {
 
   import scala.language.higherKinds
+  import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Provides <code>Definition</code> implementation for <code>scala.Option</code>
@@ -76,7 +77,7 @@ object Definition {
    */
   implicit def definitionOfAnyRefWithIsDefinedMethod[T <: AnyRef { def isDefined(): Boolean}]: Definition[T] = 
     new Definition[T] {
-      def isDefined(obj: T): Boolean = obj.isDefined
+      def isDefined(obj: T): Boolean = obj.isDefined()
     }
 
   /**

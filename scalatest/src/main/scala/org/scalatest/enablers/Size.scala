@@ -119,6 +119,8 @@ trait Size[T] {
  */
 object Size {
 
+  import scala.reflect.Selectable.reflectiveSelectable
+
   /**
    * Enable <code>Size</code> implementation for <code>java.util.Collection</code>
    *
@@ -183,7 +185,7 @@ object Size {
    */
   implicit def sizeOfAnyRefWithSizeMethodForInt[T <: AnyRef { def size(): Int}]: Size[T] = 
     new Size[T] {
-      def sizeOf(obj: T): Long = obj.size
+      def sizeOf(obj: T): Long = obj.size()
     }
 
   /**
@@ -205,7 +207,7 @@ object Size {
    */
   implicit def sizeOfAnyRefWithGetSizeMethodForInt[T <: AnyRef { def getSize(): Int}]: Size[T] = 
     new Size[T] {
-      def sizeOf(obj: T): Long = obj.getSize
+      def sizeOf(obj: T): Long = obj.getSize()
     }
 
   /**
@@ -227,7 +229,7 @@ object Size {
    */
   implicit def sizeOfAnyRefWithSizeMethodForLong[T <: AnyRef { def size(): Long}]: Size[T] = 
     new Size[T] {
-      def sizeOf(obj: T): Long = obj.size
+      def sizeOf(obj: T): Long = obj.size()
     }
 
   /**
@@ -249,7 +251,7 @@ object Size {
    */
   implicit def sizeOfAnyRefWithGetSizeMethodForLong[T <: AnyRef { def getSize(): Long}]: Size[T] = 
     new Size[T] {
-      def sizeOf(obj: T): Long = obj.getSize
+      def sizeOf(obj: T): Long = obj.getSize()
     }
 
   /**

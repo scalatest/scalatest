@@ -65,6 +65,7 @@ trait Emptiness[-T] {
 object Emptiness {
 
   import scala.language.higherKinds
+  import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Emptiness</code> implementation for <code>scala.collection.GenTraversable</code>
@@ -146,7 +147,7 @@ object Emptiness {
    */
   implicit def emptinessOfAnyRefWithIsEmptyMethod[T <: AnyRef { def isEmpty(): Boolean}]: Emptiness[T] = 
     new Emptiness[T] {
-      def isEmpty(obj: T): Boolean = obj.isEmpty
+      def isEmpty(obj: T): Boolean = obj.isEmpty()
     }
   
   /**
