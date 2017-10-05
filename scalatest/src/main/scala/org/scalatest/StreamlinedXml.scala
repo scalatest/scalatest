@@ -136,17 +136,17 @@ trait StreamlinedXml {
       node match {
         case Text(text) if (text.trim.isEmpty) => Nil
         case Text(text) => List(Text(text.trim))
-        case Elem(pre, lab, md, scp, children @ _*) =>
-          Elem(pre, lab, md, scp, false, (children.flatMap(trimTextZappingEmpty)):_*)
+        case e: Elem=>
+          Elem(e.prefix, e.label, e.attributes, e.scope, false, (e.child.flatMap(trimTextZappingEmpty)):_*)
         case _ => List(node)
       }
 
     new Uniformity[T] {
       def normalized(nodeSeq: T): T =
         nodeSeq match {
-          case Elem(pre, lab, md, scp, children @ _*) =>
+          case e: Elem =>
             val mergedTextNodes = // Merge adjacent text nodes
-              children.foldLeft(Nil: List[Node]) { (acc, ele) =>
+              e.child.foldLeft(Nil: List[Node]) { (acc, ele) =>
                 ele match {
                   case eleTxt: Text =>
                     acc.headOption match {
@@ -157,7 +157,7 @@ trait StreamlinedXml {
                   case _ => ele :: acc
                 }
               }
-            Elem(pre, lab, md, scp, false, (mergedTextNodes.flatMap(trimTextZappingEmpty)):_*).asInstanceOf[T]
+            Elem(e.prefix, e.label, e.attributes, e.scope, false, (mergedTextNodes.flatMap(trimTextZappingEmpty)):_*).asInstanceOf[T]
           case _ => nodeSeq
         }
 
