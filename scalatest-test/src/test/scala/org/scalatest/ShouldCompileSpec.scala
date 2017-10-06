@@ -52,6 +52,7 @@ class ShouldCompileSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+
     }
 
     describe("when work with triple quotes string literal with stripMargin") {
