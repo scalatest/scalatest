@@ -188,7 +188,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.18"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.20"
     )
 
   def scalatestTestOptions =
