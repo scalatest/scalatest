@@ -552,6 +552,7 @@ object ScalatestBuild extends Build {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
         orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
       },
+      nativeLinkStubs in NativeTest := true,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
