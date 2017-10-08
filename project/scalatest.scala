@@ -177,6 +177,20 @@ object ScalatestBuild extends Build {
     }
   }
 
+  lazy val nativeCrossBuildLibraryDependencies = Def.setting {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      // if scala 2.11+ is used, add dependency on scala-xml module
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        Seq(
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
+          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+          "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional"
+        )
+      case _ =>
+        Seq("org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional")
+    }
+  }
+
   def scalaLibraries(theScalaVersion: String) =
     Seq(
       "org.scala-lang" % "scala-compiler" % theScalaVersion % "provided",
@@ -317,7 +331,7 @@ object ScalatestBuild extends Build {
       .settings(sharedSettings: _*)
       .settings(
         projectTitle := "Common test classes used by scalactic.native and scalatest.native",
-        libraryDependencies += scalacheckDependency("optional").value,
+        libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
         sourceGenerators in Compile += {
           Def.task{
             GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -875,7 +889,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
+      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "test",
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
