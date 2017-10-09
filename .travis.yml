@@ -8,7 +8,18 @@ jdk:
   - openjdk6
   - oraclejdk8
 
-sudo: false
+# Disable new container infra temporary, until oraclejdk8 version is updated to latest version of jdk8
+# Current 8u31 is having problem and cause a test failure under Scala 2.12 builds.
+# We should enable this back after https://github.com/travis-ci/travis-ci/issues/3259 is closed.
+#sudo: false
+sudo: required
+dist: trusty
+
+before_install:
+  - cat /etc/hosts # optionally check the content *before*
+  - sudo hostname "$(hostname | cut -c1-63)"
+  - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
+  - cat /etc/hosts # optionally check the content *after*
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
