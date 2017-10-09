@@ -4592,7 +4592,7 @@ trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
    * webDriver.setJavascriptEnabled(false)
    * </pre>
    */
-  implicit val webDriver = new HtmlUnitDriver()
+  implicit val webDriver: HtmlUnitDriver = new HtmlUnitDriver()
 
   webDriver.setJavascriptEnabled(true)
 
