@@ -31,7 +31,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.ParallelTestExecution
 import org.scalatest.ScreenshotOnFailure
-import org.scalatest.SharedHelpers.SilentReporter
+import org.scalatest.SharedHelpers.{SilentReporter, thisLineNumber}
 import org.scalatest.Suite
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.tagobjects.Slow
@@ -39,7 +39,6 @@ import org.scalatest.time.Seconds
 import org.scalatest.time.Span
 import org.scalatest.time.SpanSugar
 import scala.reflect.ClassTag
-
 
 trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
   def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int): Unit = {
@@ -2029,17 +2028,6 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       }
       """ should compile
     }
-  }
-  
-  def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNumber"))
-      st(2).getLineNumber
-    else if (!st(3).getMethodName.contains("thisLineNumber"))
-      st(3).getLineNumber
-    else
-      st(4).getLineNumber
   }
 }
 // class ParallelWebBrowserSpec extends WebBrowserSpec with ParallelTestExecution
