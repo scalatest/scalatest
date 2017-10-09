@@ -24,6 +24,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.StackDepthException
 import org.scalactic.source
+import scala.compat.Platform.EOL
 
 class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
 
@@ -74,7 +75,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             canceledFuture.isReadyWithin(Span(1, Millisecond))
           }
           caught.message.value should be(Resources.futureWasCanceled)
-          withClue(caught.getStackTraceString) {
+          withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           }
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
@@ -153,7 +154,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             canceledFuture.futureValue
           }
           caught.message.value should be(Resources.futureWasCanceled)
-          withClue(caught.getStackTraceString) {
+          withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           }
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
@@ -287,7 +288,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             }
           }
           caught.message.value should be(Resources.futureWasCanceled)
-          withClue(caught.getStackTraceString) {
+          withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
           }
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
