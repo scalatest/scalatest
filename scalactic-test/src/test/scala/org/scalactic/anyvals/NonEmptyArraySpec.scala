@@ -49,11 +49,12 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray.from(Array(1, 2, 3).par).get shouldBe NonEmptyArray(1, 2, 3)
     // SKIP-SCALATESTJS-END
   }
-  it can "be constructed with null elements" in {
-    noException should be thrownBy NonEmptyArray("hi", null, "ho")
-    noException should be thrownBy NonEmptyArray(null)
-    noException should be thrownBy NonEmptyArray("ho", null)
-  }
+  // This does not compile with scala 2.10
+  /*it can "be constructed with null elements" in {
+    noException should be thrownBy NonEmptyArray[String]("hi", null, "ho")
+    noException should be thrownBy NonEmptyArray[String](null)
+    noException should be thrownBy NonEmptyArray[String]("ho", null)
+  }*/
   it can "be deconstructed with NonEmptyArray" in {
     NonEmptyArray(1) match {
       case NonEmptyArray(x) => x shouldEqual 1
@@ -1493,7 +1494,13 @@ class NonEmptyArraySpec extends UnitSpec {
   }
   it should "have an updated method" in {
     NonEmptyArray(1).updated(0, 2) shouldBe NonEmptyArray(2)
-    an [IndexOutOfBoundsException] should be thrownBy { NonEmptyArray(1).updated(1, 2) }
+    def willThrowIndexOutOfBoundsException(): Unit = {
+      NonEmptyArray(1).updated(1, 2)
+      Unit
+    }
+    an [IndexOutOfBoundsException] should be thrownBy {
+      willThrowIndexOutOfBoundsException()
+    }
     NonEmptyArray(1, 1, 1).updated(1, 2) shouldBe NonEmptyArray(1, 2, 1)
     NonEmptyArray(1, 1, 1).updated(2, 2) shouldBe NonEmptyArray(1, 1, 2)
     NonEmptyArray(1, 1, 1).updated(0, 2) shouldBe NonEmptyArray(2, 1, 1)
