@@ -119,7 +119,7 @@ trait Size[T] {
  */
 object Size {
 
-  import scala.reflect.Selectable.reflectiveSelectable
+  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Size</code> implementation for <code>java.util.Collection</code>
