@@ -118,7 +118,7 @@ trait Length[T] {
  */
 object Length {
 
-  import scala.reflect.Selectable.reflectiveSelectable
+  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Length</code> implementation for <code>java.util.List</code>

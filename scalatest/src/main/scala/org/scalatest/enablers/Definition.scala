@@ -53,7 +53,7 @@ trait Definition[-T] {
 object Definition {
 
   import scala.language.higherKinds
-  import scala.reflect.Selectable.reflectiveSelectable
+  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Provides <code>Definition</code> implementation for <code>scala.Option</code>
