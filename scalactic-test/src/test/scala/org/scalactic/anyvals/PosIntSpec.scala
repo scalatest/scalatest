@@ -333,7 +333,11 @@ class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
     }
 
     it("should offer 'to' and 'until' methods that are consistent with Int") {
-      forAll { (pint: PosInt, end: Int, step: Int) =>
+      forAll { (pint: PosInt, end: Int, generatedStep: PosInt) =>
+        // We need to make sure the range produced's size is less than or equal to Int.MaxValue,
+        // so the following code avoid produce range the goes overflow of int values.
+        val step: Int = if (end < 0) -generatedStep.value else generatedStep.value
+
         Try(pint.to(end)) shouldEqual Try(pint.toInt.to(end))
         Try(pint.to(end, step)) shouldEqual Try(pint.toInt.to(end, step))
         Try(pint.until(end)) shouldEqual Try(pint.toInt.until(end))
