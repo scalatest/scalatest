@@ -24,6 +24,12 @@ object ScalatestBuild extends Build {
   val releaseVersion = "3.0.1"
 
   val scalacheckVersion = "1.13.5"
+  val easyMockVersion = "3.2"
+  val jmockVersion = "2.8.3"
+  val mockitoVersion = "1.10.19"
+  val testngVersion = "6.7"
+  val junitVersion = "4.12"
+  val pegdownVersion = "1.4.2"
 
   val githubTag = "release-3.0.1" // for scaladoc source urls
 
@@ -174,16 +180,16 @@ object ScalatestBuild extends Build {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % "3.2" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
-      "org.mockito" % "mockito-all" % "1.10.19" % "optional",
-      "org.testng" % "testng" % "6.7" % "optional",
+      "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
+      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
+      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
+      "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
+      "junit" % "junit" % junitVersion % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
   def crossBuildTestLibraryDependencies(theScalaVersion: String) =
@@ -809,11 +815,11 @@ object ScalatestBuild extends Build {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
+      "junit" % "junit" % junitVersion % "optional",
+      "org.testng" % "testng" % testngVersion % "optional",
+      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
@@ -869,6 +875,7 @@ object ScalatestBuild extends Build {
     .settings(
       genRegularTask5,
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
       sourceGenerators in Test += Def.task {
         genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
