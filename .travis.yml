@@ -7,12 +7,13 @@ addons:
   apt:
     packages:
       - openjdk-6-jdk
-      
+
 jdk:
   - openjdk6
   - oraclejdk8
 
-sudo: false
+dist: trusty
+sudo: required
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
