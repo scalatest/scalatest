@@ -843,10 +843,18 @@ trait GenInspectorsShorthandsBase {
       !(colText.contains("javaWeakHashMap") && condition == "'java map should have length' failed") &&
       !(colText.contains("javaWeakHashMap") && condition == "'java map should not have length' failed")
 
+  def filterScala213ParColLength(colText: String, traversableCheckTypes: List[(String, String, String, String, String, Any, (String, String, String) => LeftRightMessageTemplate)], scalaVersion: String): List[(String, String, String, String, String, Any, (String, String, String) => LeftRightMessageTemplate)] =
+    if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+      traversableCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+        assertText contains "have length"
+      }
+    else
+      traversableCheckTypes
+
   def filterArraySymbol(colText: String, condition: String): Boolean =
     !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
 
-  def genInspectorShorthandsForAllSpecFile(targetDir: File) {
+  def genInspectorShorthandsForAllSpecFile(targetDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -972,7 +980,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             (colText, condition, allColText + assertText, "String", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
@@ -993,7 +1008,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
@@ -1044,7 +1059,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAllSucceededSpec"
@@ -1074,7 +1090,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -1087,7 +1104,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForAtLeastSpecFile(targetDir: File) {
+  def genInspectorShorthandsForAtLeastSpecFile(targetDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1108,7 +1125,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtLeastSucceededSpec"
@@ -1192,14 +1210,14 @@ trait GenInspectorsShorthandsBase {
           val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, "Int", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
         }
-      }) ++
+      }) ++ 
         (nullStringCol flatMap { case (colText, xsText) =>
           nullStringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
             val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
           }
-        }) ++
+        }) ++ 
         (propertyCheckCol flatMap { case (colText, xsText) =>
           propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
@@ -1208,7 +1226,14 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
             val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
@@ -1237,7 +1262,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val errorAssertFun = getTraversableFun(errorFun, right)
             val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
@@ -1314,7 +1339,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -1327,7 +1353,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForEverySpecFile(targetMatchersDir: File) {
+  def genInspectorShorthandsForEverySpecFile(targetMatchersDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1348,7 +1374,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForEverySucceededSpec"
@@ -1449,7 +1476,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
             val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
             (colText, condition, everyColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
@@ -1478,7 +1512,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val errorAssertFun = getTraversableFun(errorFun, right)
             val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
@@ -1555,7 +1589,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -1568,7 +1603,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForExactlySpecFile(targetMatchersDir: File) {
+  def genInspectorShorthandsForExactlySpecFile(targetMatchersDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1589,7 +1624,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForExactlySucceededSpec"
@@ -1690,7 +1726,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
             val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
             (colText, condition, exactly3ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
@@ -1719,7 +1762,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val errorAssertFun = getTraversableFun(errorFun, right)
             val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
@@ -1796,7 +1839,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -1809,7 +1853,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForNoSpecFile(targetMatchersDir: File) {
+  def genInspectorShorthandsForNoSpecFile(targetMatchersDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1830,7 +1874,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForNoSucceededSpec"
@@ -1930,7 +1975,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
             val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
             (colText, condition, noColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
@@ -1959,7 +2011,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val errorAssertFun = getTraversableFun(errorFun, right)
             val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
@@ -2036,7 +2088,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -2049,7 +2102,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForBetweenSpecFile(targetMatchersDir: File) {
+  def genInspectorShorthandsForBetweenSpecFile(targetMatchersDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -2070,7 +2123,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForBetweenSucceededSpec"
@@ -2172,7 +2226,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
             val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
             (colText, condition, betweenColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
@@ -2201,7 +2262,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val errorAssertFun = getTraversableFun(errorFun, right)
             val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
@@ -2278,7 +2339,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -2291,7 +2353,7 @@ trait GenInspectorsShorthandsBase {
     }
   }
 
-  def genInspectorShorthandsForAtMostSpecFile(targetMatchersDir: File) {
+  def genInspectorShorthandsForAtMostSpecFile(targetMatchersDir: File, scalaVersion: String) {
     val int123Col = genCol("1, 2, 3, 4, 5", "\"Array(1, 2, 3, 4, 5)\"")
 
     val succeedTests =
@@ -2312,7 +2374,8 @@ trait GenInspectorsShorthandsBase {
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
           "collection.GenMap",
-          "org.scalatest.refspec.RefSpec"
+          "org.scalatest.refspec.RefSpec",
+          "org.scalatest.CompatParColls.Converters._"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtMostSucceededSpec"
@@ -2440,7 +2503,14 @@ trait GenInspectorsShorthandsBase {
           }
         }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
-          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val filteredLengthSizeCheckTypes =
+            if (scalaVersion.startsWith("2.13") && colText.contains(".par"))
+              lengthSizeCheckTypes.filterNot { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+                assertText contains "have length"
+              }
+            else
+              lengthSizeCheckTypes
+          filteredLengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val passedCount = 2
             (colText, condition, atMostColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
           }
@@ -2465,7 +2535,7 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
-          traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+          filterScala213ParColLength(colText, traversableCheckTypes, scalaVersion) map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             val passedCount = 2
             (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
@@ -2531,7 +2601,8 @@ trait GenInspectorsShorthandsBase {
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
             "collection.GenMap",
-            "org.scalatest.refspec.RefSpec"
+            "org.scalatest.refspec.RefSpec",
+            "org.scalatest.CompatParColls.Converters._"
           ),
           classTemplate = new ClassTemplate {
             val name = className
@@ -2558,18 +2629,18 @@ trait GenInspectorsShorthandsBase {
 object GenInspectorsShorthands1 extends GenInspectorsShorthandsBase {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
-    genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"))
-    genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"))
-    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"))
-    genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"))
+    genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"), scalaVersion)
+    genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"), scalaVersion)
+    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"), scalaVersion)
+    genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"), scalaVersion)
   }
 }
 
 object GenInspectorsShorthands2 extends GenInspectorsShorthandsBase {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
-    genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"))
-    genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"))
-    genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"))
+    genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"), scalaVersion)
+    genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"), scalaVersion)
+    genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"), scalaVersion)
   }
 }
