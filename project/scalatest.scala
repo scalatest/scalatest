@@ -185,7 +185,7 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
-  def crossBuildTestLibraryDependencies(theScalaVersion: String) =
+  def crossBuildTestLibraryDependencies(theScalaVersion: String) = {
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
@@ -194,6 +194,7 @@ object ScalatestBuild extends Build {
       case other =>
         Seq.empty
     }
+  }
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
@@ -797,11 +798,11 @@ object ScalatestBuild extends Build {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
-    scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
+    libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
