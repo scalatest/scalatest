@@ -87,7 +87,13 @@ object GenExamplesJS {
         "cpuall",
         "diskall",
         "slowall",
-        "networkall"
+        "networkall",
+        "noargasynctest",
+        "beforeandafterall",
+        "loanfixture",
+        "noargtest",
+        "oneargtest",
+        "beforeandafterallconfigmap"
       )
     )
   }
