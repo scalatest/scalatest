@@ -19,6 +19,8 @@ import org.scalatest.AsyncFunSpec
 import org.scalatest.concurrent.AsyncTimeLimitedTests
 import org.scalatest.time.SpanSugar._
 
+import scala.concurrent.Future
+
 class ExampleSpec extends AsyncFunSpec with AsyncTimeLimitedTests {
 
   // Note: You may need to either write 200.millis or (200 millis), or
@@ -28,12 +30,32 @@ class ExampleSpec extends AsyncFunSpec with AsyncTimeLimitedTests {
 
   describe("An asynchronous time-limited test") {
     it("should succeed if it completes within the time limit") {
-      Thread.sleep(100)
-      succeed
+      Future {
+        // Your code should run here, the following is just an example
+        // code of filling a buffer and assert its content that should
+        // not take more than 200 millis
+        val buffer = new StringBuilder
+        buffer.append("test")
+        assert(buffer.toString == "test")
+      }
     }
     it("should fail if it is taking too darn long") {
-      Thread.sleep(300)
-      succeed
+      Future {
+        // Your code should run here, the following is just an example
+        // code of filling buffer in loop that will take more than 200 millis
+        val startTime = scala.compat.Platform.currentTime
+        var stop = false
+        val buffer = new StringBuilder
+        while (!stop) {
+          for (i <- 1 to 100)
+            buffer.append(i.toString)
+          if ((scala.compat.Platform.currentTime - startTime) > 200)
+            stop = true
+          else
+            buffer.clear()
+        }
+        assert(buffer.length == 5050)
+      }
     }
   }
 }
