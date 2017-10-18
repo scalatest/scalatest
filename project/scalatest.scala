@@ -19,11 +19,11 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.8"
+  val buildScalaVersion = "2.11.11"
 
   val releaseVersion = "3.0.1"
 
-  val scalacheckVersion = "1.13.4"
+  val scalacheckVersion = "1.13.5"
 
   val githubTag = "release-3.0.1" // for scaladoc source urls
 
@@ -157,8 +157,8 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
-          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
           scalacheckDependency("optional")
         )
       case _ =>
@@ -186,7 +186,17 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
-  def scalatestTestLibraryDependencies =
+  def crossBuildTestLibraryDependencies(theScalaVersion: String) =
+    CrossVersion.partialVersion(theScalaVersion) match {
+      // if scala 2.13+ is used, add dependency on scala-parallel-collections module
+      case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+        Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
+
+      case other =>
+        Seq.empty
+    }
+
+  def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
@@ -196,7 +206,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.17"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.20"
     )
 
   def scalatestTestOptions =
@@ -260,7 +270,8 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional")
+      libraryDependencies += scalacheckDependency("optional"),
+      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -268,6 +279,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
+      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -535,7 +547,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies ++= scalatestTestLibraryDependencies,
+      libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,

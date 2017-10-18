@@ -525,7 +525,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
@@ -539,7 +539,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
@@ -1671,7 +1671,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
@@ -1685,7 +1685,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
@@ -2777,7 +2777,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
@@ -2791,7 +2791,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
@@ -3923,7 +3923,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
@@ -3937,7 +3937,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
