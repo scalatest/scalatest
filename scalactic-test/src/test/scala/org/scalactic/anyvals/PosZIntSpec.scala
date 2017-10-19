@@ -34,11 +34,6 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
 
   implicit val arbPosZInt: Arbitrary[PosZInt] = Arbitrary(posZIntGen)
 
-  val posIntGen: Gen[PosInt] =
-    for {i <- choose(0, Int.MaxValue)} yield PosInt.from(i).get
-
-  implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
-
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
       case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
@@ -544,15 +539,21 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
 
     it("should offer 'to' and 'until' methods that are consistent with Int") {
-      forAll { (pzint: PosZInt, end: Int, generatedStep: PosInt) =>
-        // We need to make sure the range produced's size is less than or equal to Int.MaxValue,
-        // so the following code avoid produce range the goes overflow of int values.
-        val step: Int = if (end < 0) -generatedStep.value else generatedStep.value
+      forAll { (pzint: PosZInt, end: Int, step: Int) =>
+        // The reason we need this is that in Scala 2.10, the equals check (used by shouldEqual below) will call range.length
+        // and it'll cause IllegalArgumentException to be thrown when we do the Try(x) shouldEqual Try(y) assertion below,
+        // while starting from scala 2.11 the equals call implementation does not call .length.
+        // To make the behavior consistent for all scala versions, we explicitly call .length for all returned Range, and
+        // shall it throws IllegalArgumentException, it will be wrapped as Failure for the Try.
+        def ensuringValid(range: Range): Range = {
+          range.length  // IllegalArgumentException will be thrown if it is an invalid range, this will turn the Success to Failure for Try
+          range
+        }
 
-        Try(pzint.to(end)) shouldEqual Try(pzint.toInt.to(end))
-        Try(pzint.to(end, step)) shouldEqual Try(pzint.toInt.to(end, step))
-        Try(pzint.until(end)) shouldEqual Try(pzint.toInt.until(end))
-        Try(pzint.until(end, step)) shouldEqual Try(pzint.toInt.until(end, step))
+        Try(ensuringValid(pzint.to(end))) shouldEqual Try(ensuringValid(pzint.toInt.to(end)))
+        Try(ensuringValid(pzint.to(end, step))) shouldEqual Try(ensuringValid(pzint.toInt.to(end, step)))
+        Try(ensuringValid(pzint.until(end))) shouldEqual Try(ensuringValid(pzint.toInt.until(end)))
+        Try(ensuringValid(pzint.until(end, step))) shouldEqual Try(ensuringValid(pzint.toInt.until(end, step)))
       }
     }
 
