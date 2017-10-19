@@ -2525,9 +2525,10 @@ $okayExpressions$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genPropertyChecks(targetDir: File) {
+  def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "GeneratorDrivenPropertyChecks.scala")))
+    val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -2582,8 +2583,11 @@ $okayExpressions$
       }
       bw.write("}\n")
       bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
@@ -2694,7 +2698,7 @@ $okayExpressions$
     genTest(testDir, version, scalaVersion)
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     genPropertyChecks(dir)
   }
   

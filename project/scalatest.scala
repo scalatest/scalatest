@@ -347,8 +347,8 @@ object ScalatestBuild extends Build {
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile += {
         Def.task{
-          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -484,32 +484,18 @@ object ScalatestBuild extends Build {
      genFactoriesTask,
      genCompatibleClassesTask,
      //genSafeStylesTask,
-     sourceGenerators in Compile += Def.task {
-       genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     sourceGenerators in Compile += Def.task {
-       genFiles("gentables", "GenTable.scala")(GenTable.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     sourceGenerators in Compile += Def.task {
-       genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     sourceGenerators in Compile += Def.task {
-       genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     sourceGenerators in Compile += Def.task {
-       genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     sourceGenerators in Compile += Def.task {
-       genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,
-     /*sourceGenerators in Compile += Def.task {
-       genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-     }.taskValue,*/
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
-         ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-         ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+         GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+         GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value) ++
+         GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++
+         GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
        }.taskValue
      },
      docTaskSetting
@@ -1063,10 +1049,9 @@ object ScalatestBuild extends Build {
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
-    val jdir = outDir / "java" / name
     val genSource = basedir / "project" / generatorSource
 
-    def results = (tdir ** "*.scala").get ++ (jdir ** "*.java").get
+    def results = (tdir ** "*.scala").get
     if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
       tdir.mkdirs()
       gen(tdir, theVersion, theScalaVersion)
