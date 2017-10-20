@@ -24,6 +24,12 @@ object ScalatestBuild extends Build {
   val releaseVersion = "3.0.4"
 
   val scalacheckVersion = "1.13.5"
+  val easyMockVersion = "3.2"
+  val jmockVersion = "2.8.3"
+  val mockitoVersion = "1.10.19"
+  val testngVersion = "6.7"
+  val junitVersion = "4.12"
+  val pegdownVersion = "1.4.2"
 
   val githubTag = "release-3.0.3" // for scaladoc source urls
 
@@ -167,19 +173,19 @@ object ScalatestBuild extends Build {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % "3.2" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
-      "org.mockito" % "mockito-all" % "1.10.19" % "optional",
-      "org.testng" % "testng" % "6.7" % "optional",
+      "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
+      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
+      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
+      "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
+      "junit" % "junit" % junitVersion % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
-  def crossBuildTestLibraryDependencies(theScalaVersion: String) =
+  def crossBuildTestLibraryDependencies(theScalaVersion: String) = {
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
@@ -188,6 +194,7 @@ object ScalatestBuild extends Build {
       case other =>
         Seq.empty
     }
+  }
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
@@ -782,20 +789,20 @@ object ScalatestBuild extends Build {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
+      "junit" % "junit" % junitVersion % "optional",
+      "org.testng" % "testng" % testngVersion % "optional",
+      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
-    scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
+    libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
@@ -838,6 +845,7 @@ object ScalatestBuild extends Build {
     .settings(
       genRegularTask5,
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)
@@ -978,13 +986,13 @@ object ScalatestBuild extends Build {
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("compile")
+      libraryDependencies += scalacheckDependency("test")
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("compile"),
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       sourceGenerators in Test += {
         Def.task {
           GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
