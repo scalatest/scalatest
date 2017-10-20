@@ -394,7 +394,7 @@ private[scalatest] object CompileMacro {
       try {
         val tree = c.parse("{ " + code + " }")
         if (!containsAnyValNullStatement(c)(List(tree))) {
-          c.typecheck(tree)
+          c.typeCheck(tree)
           // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
           reify {
