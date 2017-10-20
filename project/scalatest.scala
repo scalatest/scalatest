@@ -912,36 +912,44 @@ object ScalatestBuild extends Build {
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test += Def.task {
-        genFiles("genmatchers1", "GenMustMatchersTests.scala")(GenMustMatchersTests1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenMustMatchersTests1.genTest((sourceManaged in Test).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests2 = Project("genMustMatchersTests2", file("gentests/MustMatchers2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test += Def.task {
-        genFiles("genmatchers2", "GenMustMatchersTests.scala")(GenMustMatchersTests2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenMustMatchersTests2.genTest((sourceManaged in Test).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests3 = Project("genMustMatchersTests3", file("gentests/MustMatchers3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test += Def.task {
-        genFiles("genmatchers3", "GenMustMatchersTests.scala")(GenMustMatchersTests3.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenMustMatchersTests3.genTest((sourceManaged in Test).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests4 = Project("genMustMatchersTests4", file("gentests/MustMatchers4"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test += Def.task {
-        genFiles("genmatchers4", "GenMustMatchersTests.scala")(GenMustMatchersTests4.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenMustMatchersTests4.genTest((sourceManaged in Test).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
