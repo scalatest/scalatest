@@ -836,28 +836,36 @@ object ScalatestBuild extends Build {
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask1,
-      sourceGenerators in Test += Def.task {
-        genFiles("genregular1", "GenRegular1.scala")(GenRegularTests1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests1.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests2 = Project("genRegularTests2", file("gentests/GenRegular2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask2,
-      sourceGenerators in Test += Def.task {
-        genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests2.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests3 = Project("genRegularTests3", file("gentests/GenRegular3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask3,
-      sourceGenerators in Test += Def.task {
-        genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests3.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  val javaSourceManaged: SettingKey[java.io.File] = sbt.SettingKey[java.io.File]("javaSourceManaged")
 
   lazy val genRegularTests4 = Project("genRegularTests4", file("gentests/GenRegular4"))
     .settings(gentestsSharedSettings: _*)
@@ -865,9 +873,18 @@ object ScalatestBuild extends Build {
       genRegularTask4,
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      sourceGenerators in Test += Def.task {
-        genFiles("genregular4", "GenRegularTests1.scala")(GenRegularTests4.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      javaSourceManaged <<= target(t => t / "java"),
+      managedSourceDirectories in Test <+= javaSourceManaged,
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests4.genJava((javaSourceManaged in Compile).value)
+        }.taskValue
+      },
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests4.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests5 = Project("genRegularTests5", file("gentests/GenRegular5"))
@@ -877,9 +894,18 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      sourceGenerators in Test += Def.task {
-        genFiles("genregular5", "GenRegularTests5.scala")(GenRegularTests5.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
-      }.taskValue
+      javaSourceManaged <<= target(t => t / "java"),
+      managedSourceDirectories in Test <+= javaSourceManaged,
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests5.genJava((javaSourceManaged in Compile).value)
+        }.taskValue
+      },
+      sourceGenerators in Test += {
+        Def.task{
+          GenRegularTests5.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests1 = Project("genMustMatchersTests1", file("gentests/MustMatchers1"))
