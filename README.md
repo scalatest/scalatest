@@ -69,7 +69,7 @@ You can also run different groups generated tests separately:
 
 What it does is simply switch to gentests project and run test.
 
-### Building Exmaples
+### Building Examples
 
 You can build examples project using this command: 
 
