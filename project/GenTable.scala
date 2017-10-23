@@ -2388,9 +2388,10 @@ $columnsOfTwos$
     }
   }
  
-  def genTableSuite(targetDir: File) {
+  def genTableSuite(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableSuite.scala")))
+    val targetFile = new File(targetDir, "TableSuite.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -2429,15 +2430,18 @@ $columnsOfTwos$
       }
 
       bw.write("}\n")
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
 
-  def genAsyncTableSuite(targetDir: File) {
+  def genAsyncTableSuite(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "AsyncTableSuite.scala")))
+    val targetFile = new File(targetDir, "AsyncTableSuite.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
 
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -2476,8 +2480,11 @@ $columnsOfTwos$
       }
 
       bw.write("}\n")
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
@@ -2511,17 +2518,17 @@ $columnsOfTwos$
     genTableAsserting(enablersDir, false)
   }
 
-  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, true)
-    genPropertyChecks(dir)
-    genTables(dir)
+    genTableForNs(dir, true) ++
+    genPropertyChecks(dir) ++
+    genTables(dir) ++
     genTableAsserting(dir, true)
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableSuite(dir)
+    genTableSuite(dir) ++
     genAsyncTableSuite(dir)
   }
 }

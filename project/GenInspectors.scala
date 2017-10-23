@@ -3146,7 +3146,7 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
-  def genForAllSpecFile(targetDir: File) {
+  def genForAllSpecFile(targetDir: File): File = {
     val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
     genFile(
       forAllSpecFile,
@@ -3175,7 +3175,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForAllSpecFile(targetDir: File) {
+  def genAsyncForAllSpecFile(targetDir: File): File = {
     val forAllSpecFile = new File(targetDir, "AsyncForAllInspectorsSpec.scala")
     genFile(
       forAllSpecFile,
@@ -3205,7 +3205,7 @@ object GenInspectors {
     )
   }
 
-  def genForAtLeastSpecFile(targetDir: File) {
+  def genForAtLeastSpecFile(targetDir: File): File =  {
     val forAtLeastSpecFile = new File(targetDir, "ForAtLeastInspectorsSpec.scala")
     genFile(
       forAtLeastSpecFile,
@@ -3234,7 +3234,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForAtLeastSpecFile(targetDir: File) {
+  def genAsyncForAtLeastSpecFile(targetDir: File): File = {
     val forAtLeastSpecFile = new File(targetDir, "AsyncForAtLeastInspectorsSpec.scala")
     genFile(
       forAtLeastSpecFile,
@@ -3264,7 +3264,7 @@ object GenInspectors {
     )
   }
 
-  def genForAtMostSpecFile(targetDir: File) {
+  def genForAtMostSpecFile(targetDir: File): File = {
     val forAtMostSpecFile = new File(targetDir, "ForAtMostInspectorsSpec.scala")
     genFile(
       forAtMostSpecFile,
@@ -3293,7 +3293,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForAtMostSpecFile(targetDir: File) {
+  def genAsyncForAtMostSpecFile(targetDir: File): File = {
     val forAtMostSpecFile = new File(targetDir, "AsyncForAtMostInspectorsSpec.scala")
     genFile(
       forAtMostSpecFile,
@@ -3323,7 +3323,7 @@ object GenInspectors {
     )
   }
 
-  def genForExactlySpecFile(targetDir: File) {
+  def genForExactlySpecFile(targetDir: File): File = {
     val forExactlySpecFile = new File(targetDir, "ForExactlyInspectorsSpec.scala")
     genFile(
       forExactlySpecFile,
@@ -3352,7 +3352,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForExactlySpecFile(targetDir: File) {
+  def genAsyncForExactlySpecFile(targetDir: File): File = {
     val forExactlySpecFile = new File(targetDir, "AsyncForExactlyInspectorsSpec.scala")
     genFile(
       forExactlySpecFile,
@@ -3382,7 +3382,7 @@ object GenInspectors {
     )
   }
 
-  def genForNoSpecFile(targetDir: File) {
+  def genForNoSpecFile(targetDir: File): File = {
     val forNoSpecFile = new File(targetDir, "ForNoInspectorsSpec.scala")
     genFile(
       forNoSpecFile,
@@ -3411,7 +3411,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForNoSpecFile(targetDir: File) {
+  def genAsyncForNoSpecFile(targetDir: File): File = {
     val forNoSpecFile = new File(targetDir, "AsyncForNoInspectorsSpec.scala")
     genFile(
       forNoSpecFile,
@@ -3441,7 +3441,7 @@ object GenInspectors {
     )
   }
 
-  def genForBetweenSpecFile(targetDir: File) {
+  def genForBetweenSpecFile(targetDir: File): File = {
     val forBetweenSpecFile = new File(targetDir, "ForBetweenInspectorsSpec.scala")
     genFile(
       forBetweenSpecFile,
@@ -3470,7 +3470,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForBetweenSpecFile(targetDir: File) {
+  def genAsyncForBetweenSpecFile(targetDir: File): File = {
     val forBetweenSpecFile = new File(targetDir, "AsyncForBetweenInspectorsSpec.scala")
     genFile(
       forBetweenSpecFile,
@@ -3500,7 +3500,7 @@ object GenInspectors {
     )
   }
 
-  def genForEverySpecFile(targetDir: File) {
+  def genForEverySpecFile(targetDir: File): File = {
     val forEverySpecFile = new File(targetDir, "ForEveryInspectorsSpec.scala")
     genFile(
       forEverySpecFile,
@@ -3529,7 +3529,7 @@ object GenInspectors {
     )
   }
 
-  def genAsyncForEverySpecFile(targetDir: File) {
+  def genAsyncForEverySpecFile(targetDir: File): File = {
     val forEverySpecFile = new File(targetDir, "AsyncForEveryInspectorsSpec.scala")
     genFile(
       forEverySpecFile,
@@ -3559,7 +3559,7 @@ object GenInspectors {
     )
   }
   
-  def genNestedInspectorsSpecFile(targetDir: File) {
+  def genNestedInspectorsSpecFile(targetDir: File): File = {
     val nestedInspectorsSpecFile = new File(targetDir, "NestedInspectorsSpec.scala")
     genFile(
       nestedInspectorsSpecFile, 
@@ -3672,22 +3672,24 @@ object GenInspectors {
     targetDir
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
-    genForAllSpecFile(targetDir(targetBaseDir, "forall"))
-    genAsyncForAllSpecFile(targetDir(targetBaseDir, "forall"))
-    genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
-    genAsyncForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
-    genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
-    genAsyncForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
-    genForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
-    genAsyncForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
-    genForNoSpecFile(targetDir(targetBaseDir, "forno"))
-    genAsyncForNoSpecFile(targetDir(targetBaseDir, "forno"))
-    genForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
-    genAsyncForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
-    genForEverySpecFile(targetDir(targetBaseDir, "forevery"))
-    genAsyncForEverySpecFile(targetDir(targetBaseDir, "forevery"))
-    genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] =  {
+    Seq(
+      genForAllSpecFile(targetDir(targetBaseDir, "forall")),
+      genAsyncForAllSpecFile(targetDir(targetBaseDir, "forall")),
+      genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast")),
+      genAsyncForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast")),
+      genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost")),
+      genAsyncForAtMostSpecFile(targetDir(targetBaseDir, "foratmost")),
+      genForExactlySpecFile(targetDir(targetBaseDir, "forexactly")),
+      genAsyncForExactlySpecFile(targetDir(targetBaseDir, "forexactly")),
+      genForNoSpecFile(targetDir(targetBaseDir, "forno")),
+      genAsyncForNoSpecFile(targetDir(targetBaseDir, "forno")),
+      genForBetweenSpecFile(targetDir(targetBaseDir, "forbetween")),
+      genAsyncForBetweenSpecFile(targetDir(targetBaseDir, "forbetween")),
+      genForEverySpecFile(targetDir(targetBaseDir, "forevery")),
+      genAsyncForEverySpecFile(targetDir(targetBaseDir, "forevery")),
+      genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
+    )
   }
   
   def main(args: Array[String]) {

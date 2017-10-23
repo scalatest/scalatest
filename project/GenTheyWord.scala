@@ -6,10 +6,11 @@ import scala.io.Source
 
 object GenTheyWord {
   
-  def generateFile(srcFileDir: String, srcClassName: String, targetFileDir: String, targetClassName: String) {
+  def generateFile(srcFileDir: String, srcClassName: String, targetFileDir: String, targetClassName: String): File = {
     val targetDir = new File(targetFileDir)
     targetDir.mkdirs()
-    val writer = new BufferedWriter(new FileWriter(new File(targetFileDir, targetClassName + ".scala")))
+    val targetFile = new File(targetFileDir, targetClassName + ".scala")
+    val writer = new BufferedWriter(new FileWriter(targetFile))
     try {
       val itLines = Source.fromFile(new File(srcFileDir, srcClassName + ".scala")).getLines().toList // for 2.8
       for (itLine <- itLines) {
@@ -25,8 +26,10 @@ object GenTheyWord {
         writer.write(theyLine)
         writer.newLine() // add for 2.8
       }
+      targetFile
     }
     finally {
+      writer.flush()
       writer.close()
     }
   }
@@ -34,30 +37,32 @@ object GenTheyWord {
   def main(args: Array[String]) {
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
-    generateFile("scalatest-test/src/test/scala/org/scalatest",
-                 "FunSpecSuite", 
-                 dir.getAbsolutePath, 
-                 "FunSpecSuiteUsingThey")
-    generateFile("scalatest-test/src/test/scala/org/scalatest",
-                 "FunSpecSpec", 
-                 dir.getAbsolutePath, 
-                 "FunSpecSpecUsingThey")
-    generateFile("scalatest-test/src/test/scala/org/scalatest",
-                 "FlatSpecSpec", 
-                 dir.getAbsolutePath, 
-                 "FlatSpecSpecUsingThey")
-    generateFile("scalatest-test/src/test/scala/org/scalatest/path",
-                 "FunSpecSpec", 
-                 dir.getAbsolutePath, 
-                 "PathFunSpecSpecUsingThey")
-    generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
-                 "FunSpecSpec", 
-                 dir.getAbsolutePath, 
-                 "FixtureFunSpecSpecUsingThey")
-    generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
-                 "FlatSpecSpec",
-                 dir.getAbsolutePath,
-                 "FixtureFlatSpecSpecUsingThey")
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    Seq(
+      generateFile("scalatest-test/src/test/scala/org/scalatest",
+                   "FunSpecSuite",
+                   dir.getAbsolutePath,
+                   "FunSpecSuiteUsingThey"),
+      generateFile("scalatest-test/src/test/scala/org/scalatest",
+                   "FunSpecSpec",
+                   dir.getAbsolutePath,
+                   "FunSpecSpecUsingThey"),
+      generateFile("scalatest-test/src/test/scala/org/scalatest",
+                   "FlatSpecSpec",
+                   dir.getAbsolutePath,
+                   "FlatSpecSpecUsingThey"),
+      generateFile("scalatest-test/src/test/scala/org/scalatest/path",
+                   "FunSpecSpec",
+                   (new File(dir, "path")).getAbsolutePath,
+                   "PathFunSpecSpecUsingThey"),
+      generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
+                   "FunSpecSpec",
+                   (new File(dir, "fixture")).getAbsolutePath,
+                   "FixtureFunSpecSpecUsingThey"),
+      generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
+                   "FlatSpecSpec",
+                   (new File(dir, "fixture")).getAbsolutePath,
+                   "FixtureFlatSpecSpecUsingThey")
+    )
   }
 }
