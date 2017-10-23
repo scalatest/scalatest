@@ -1910,9 +1910,10 @@ $columnsOfIndexes$
     }
   }
  
-  def genTableSuite(targetDir: File) {
+  def genTableSuite(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableSuite.scala")))
+    val targetFile = new File(targetDir, "TableSuite.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -1951,8 +1952,10 @@ $columnsOfIndexes$
       }
 
       bw.write("}\n")
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
@@ -1994,7 +1997,7 @@ $columnsOfIndexes$
     genTableAsserting(dir, true)
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
     genTableSuite(dir)
   }
