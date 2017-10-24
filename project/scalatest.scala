@@ -19,7 +19,7 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.11"
+  val buildScalaVersion = "2.12.4"
 
   val releaseVersion = "3.0.4"
 
@@ -67,24 +67,35 @@ object ScalatestBuild extends Build {
       case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
 
-  def getJavaHome: Option[File] =
-    envVar("JAVA_HOME") match {
-      case Some(javaHome) => Some(file(javaHome))
-      case None =>
-        val javaHome = new File(System.getProperty("java.home"))
-        val javaHomeBin = new File(javaHome, "bin")
-        val javac = new File(javaHomeBin, "javac")
-        val javacExe = new File(javaHomeBin, "javac.exe")
-        if (javac.exists || javacExe.exists)
-          Some(file(javaHome.getAbsolutePath))
-        else {
-          println("WARNING: No JAVA_HOME detected, javac on PATH will be used.  Set JAVA_HOME enviroment variable to a JDK to remove this warning.")
-          None
-        }
+  def getJavaHome(scalaMajorVersion: String): Option[File] = {
+    scalaMajorVersion match {
+      case "2.10" | "2.11" =>  // force to use Java 6
+        if (!System.getProperty("java.version").startsWith("1.6"))
+          throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
+
+      case _ =>
     }
 
+    val javaHome = new File(System.getProperty("java.home"))
+    val javaHomeBin = new File(javaHome, "bin")
+    val javac = new File(javaHomeBin, "javac")
+    val javacExe = new File(javaHomeBin, "javac.exe")
+    if (javac.exists || javacExe.exists)
+      Some(file(javaHome.getAbsolutePath))
+    else {
+      val javaHomeParentBin = new File(javaHome.getParent, "bin")
+      val parentJavac = new File(javaHomeParentBin, "javac")
+      val parentJavacExe = new File(javaHomeParentBin, "javac.exe")
+      if (parentJavac.exists || parentJavacExe.exists)
+        Some(file(javaHome.getParentFile.getAbsolutePath))
+      else
+        println("WARNING: javac from java.home not found, javac on PATH will be used.  Try to use JDK instead of JRE to launch SBT to remove this warning.")
+      None
+    }
+  }
+
   def sharedSettings: Seq[Setting[_]] = Seq(
-    javaHome := getJavaHome,
+    javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := buildScalaVersion,
     crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
     version := releaseVersion,
@@ -797,7 +808,8 @@ object ScalatestBuild extends Build {
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
-    javaHome := getJavaHome,
+    javaHome := getJavaHome(scalaBinaryVersion.value),
+    scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
