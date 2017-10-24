@@ -819,7 +819,8 @@ object ScalatestBuild extends Build {
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
+      "io.circe" %% "circe-parser" % "0.7.1" % "test"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
@@ -878,7 +879,7 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
       sourceGenerators in Test += Def.task {
-        genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+        genFiles("genregular5", "GenRegularTests5.scala")(GenRegularTests5.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 

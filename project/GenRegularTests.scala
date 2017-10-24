@@ -127,6 +127,13 @@ object GenRegularTests5 extends GenRegularTestsBase {
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/suiteprop/SuiteExamples.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/EasySuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/ExpectationHavePropertyMatchers.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/EventHelpers.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/AllSuiteProp.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/FunctionSuiteProp.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationFunctionServices.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationJUnit3Suite.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationJUnitSuite.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationTestNGSuite.scala")
 
     super.genTest(targetBaseDir, version, scalaVersion)
   }
