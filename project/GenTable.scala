@@ -1989,11 +1989,11 @@ $columnsOfIndexes$
     genTableAsserting(enablersDir, false)
   }
 
-  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, true)
-    genPropertyChecks(dir)
-    genTables(dir)
+    genTableForNs(dir, true) ++
+    genPropertyChecks(dir) ++
+    genTables(dir) ++
     genTableAsserting(dir, true)
   }
   
