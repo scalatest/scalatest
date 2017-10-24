@@ -854,7 +854,7 @@ trait GenInspectorsShorthandsBase {
   def filterArraySymbol(colText: String, condition: String): Boolean =
     !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
 
-  def genInspectorShorthandsForAllSpecFile(targetDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForAllSpecFile(targetDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1047,64 +1047,70 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    genFile(
-      new File(targetDir, "InspectorShorthandsForAllSucceededSpec.scala"),
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.all"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForAllSucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
-      )
-    )
-
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForAllFailedSpec" + i
-      val inspectorShorthandsForAllFailedSpecFile = new File(targetDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForAllErrorTemplateWithCause(colText, condition, assertText, inspectorShorthandsForAllFailedSpecFile.getName,
-          colType, errorFun, errorValue, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForAllFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.all"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          new File(targetDir, "InspectorShorthandsForAllSucceededSpec.scala"),
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.all"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForAllSucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
         )
       )
-    }
+
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForAllFailedSpec" + i
+        val inspectorShorthandsForAllFailedSpecFile = new File(targetDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForAllErrorTemplateWithCause(colText, condition, assertText, inspectorShorthandsForAllFailedSpecFile.getName,
+            colType, errorFun, errorValue, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForAllFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.all"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
+        )
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForAtLeastSpecFile(targetDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForAtLeastSpecFile(targetDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1113,29 +1119,32 @@ trait GenInspectorsShorthandsBase {
       })
 
     val inspectorShorthandsForAtLeastSucceededSpecFile = new File(targetDir, "InspectorShorthandsForAtLeastSucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForAtLeastSucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.atLeast"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForAtLeastSucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          inspectorShorthandsForAtLeastSucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.atLeast"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForAtLeastSucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -1320,40 +1329,43 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForAtLeastFailedSpec" + i
-      val inspectorShorthandsForAtLeastFailedSpecFile = new File(targetDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue,  passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForAtLeastErrorTemplate(colText, condition, assertText, inspectorShorthandsForAtLeastFailedSpecFile.getName,
-          colType, errorFun, errorValue, 3, 3, passedCount, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForAtLeastFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.atLeast"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForAtLeastFailedSpec" + i
+        val inspectorShorthandsForAtLeastFailedSpecFile = new File(targetDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue,  passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForAtLeastErrorTemplate(colText, condition, assertText, inspectorShorthandsForAtLeastFailedSpecFile.getName,
+            colType, errorFun, errorValue, 3, 3, passedCount, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForAtLeastFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.atLeast"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForEverySpecFile(targetMatchersDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForEverySpecFile(targetMatchersDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1362,29 +1374,32 @@ trait GenInspectorsShorthandsBase {
       }
 
     val inspectorShorthandsForEverySucceededSpecFile = new File(targetMatchersDir, "InspectorShorthandsForEverySucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForEverySucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.every"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForEverySucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          inspectorShorthandsForEverySucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.every"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForEverySucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -1570,40 +1585,43 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForEveryFailedSpec" + i
-      val inspectorShorthandsForEveryFailedSpecFile = new File(targetMatchersDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForEveryErrorTemplate(colText, condition, assertText, inspectorShorthandsForEveryFailedSpecFile.getName,
-          colType, errorFun, errorValue, 3, passedCount, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForEveryFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.every"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForEveryFailedSpec" + i
+        val inspectorShorthandsForEveryFailedSpecFile = new File(targetMatchersDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForEveryErrorTemplate(colText, condition, assertText, inspectorShorthandsForEveryFailedSpecFile.getName,
+            colType, errorFun, errorValue, 3, passedCount, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForEveryFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.every"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForExactlySpecFile(targetMatchersDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForExactlySpecFile(targetMatchersDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1612,29 +1630,32 @@ trait GenInspectorsShorthandsBase {
       })
 
     val inspectorShorthandsForExactlySucceededSpecFile = new File(targetMatchersDir, "InspectorShorthandsForExactlySucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForExactlySucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.exactly"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForExactlySucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles =
+      Seq(
+        genFile(
+          inspectorShorthandsForExactlySucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.exactly"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForExactlySucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -1820,40 +1841,43 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForExactlyFailedSpec" + i
-      val inspectorShorthandsForExactlyFailedSpecFile = new File(targetMatchersDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForExactlyErrorTemplate(colText, condition, assertText, inspectorShorthandsForExactlyFailedSpecFile.getName,
-          colType, okFun, errorFun, errorValue, 3, 3, passedCount, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForExactlyFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.exactly"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForExactlyFailedSpec" + i
+        val inspectorShorthandsForExactlyFailedSpecFile = new File(targetMatchersDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForExactlyErrorTemplate(colText, condition, assertText, inspectorShorthandsForExactlyFailedSpecFile.getName,
+            colType, okFun, errorFun, errorValue, 3, 3, passedCount, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForExactlyFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.exactly"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForNoSpecFile(targetMatchersDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForNoSpecFile(targetMatchersDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -1862,29 +1886,32 @@ trait GenInspectorsShorthandsBase {
       }
 
     val inspectorShorthandsForNoSucceededSpecFile = new File(targetMatchersDir, "InspectorShorthandsForNoSucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForNoSucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.no"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForNoSucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          inspectorShorthandsForNoSucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.no"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForNoSucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -2069,40 +2096,43 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForNoFailedSpec" + i
-      val inspectorShorthandsForNoFailedSpecFile = new File(targetMatchersDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForNoErrorTemplate(colText, condition, assertText, inspectorShorthandsForNoFailedSpecFile.getName,
-          colType, okFun, errorFun, errorValue, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForNoFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.no"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForNoFailedSpec" + i
+        val inspectorShorthandsForNoFailedSpecFile = new File(targetMatchersDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForNoErrorTemplate(colText, condition, assertText, inspectorShorthandsForNoFailedSpecFile.getName,
+            colType, okFun, errorFun, errorValue, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForNoFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.no"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForBetweenSpecFile(targetMatchersDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForBetweenSpecFile(targetMatchersDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
@@ -2111,29 +2141,32 @@ trait GenInspectorsShorthandsBase {
       }
 
     val inspectorShorthandsForBetweenSucceededSpecFile = new File(targetMatchersDir, "InspectorShorthandsForBetweenSucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForBetweenSucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.between"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForBetweenSucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          inspectorShorthandsForBetweenSucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.between"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForBetweenSucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -2320,40 +2353,43 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForBetweenFailedSpec" + i
-      val inspectorShorthandsForBetweenFailedSpecFile = new File(targetMatchersDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForBetweenErrorTemplate(colText, condition, assertText, inspectorShorthandsForBetweenFailedSpecFile.getName,
-          colType, okFun, errorFun, errorValue, 7, 8, 3, passedCount, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForBetweenFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.between"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForBetweenFailedSpec" + i
+        val inspectorShorthandsForBetweenFailedSpecFile = new File(targetMatchersDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForBetweenErrorTemplate(colText, condition, assertText, inspectorShorthandsForBetweenFailedSpecFile.getName,
+            colType, okFun, errorFun, errorValue, 7, 8, 3, passedCount, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForBetweenFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.between"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
-  def genInspectorShorthandsForAtMostSpecFile(targetMatchersDir: File, scalaVersion: String) {
+  def genInspectorShorthandsForAtMostSpecFile(targetMatchersDir: File, scalaVersion: String): Seq[File] = {
     val int123Col = genCol("1, 2, 3, 4, 5", "\"Array(1, 2, 3, 4, 5)\"")
 
     val succeedTests =
@@ -2362,29 +2398,32 @@ trait GenInspectorsShorthandsBase {
       })
 
     val inspectorShorthandsForAtMostSucceededSpecFile = new File(targetMatchersDir, "InspectorShorthandsForAtMostSucceededSpec.scala")
-    genFile(
-      inspectorShorthandsForAtMostSucceededSpecFile,
-      new SingleClassFile(
-        packageName = Some("org.scalatest.inspectors.atMost"),
-        importList = List(
-          "org.scalatest._",
-          "org.scalactic.Every",
-          "SharedHelpers._",
-          "FailureMessages.decorateToStringValue",
-          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-          "collection.GenTraversable",
-          "collection.GenMap",
-          "org.scalatest.refspec.RefSpec",
-          "org.scalatest.CompatParColls.Converters._"
-        ),
-        classTemplate = new ClassTemplate {
-          val name = "InspectorShorthandsForAtMostSucceededSpec"
-          override val extendName = Some("RefSpec")
-          override val withList = List("Matchers")
-          override val children = succeedTests
-        }
+    val succeedFiles: Seq[File] =
+      Seq(
+        genFile(
+          inspectorShorthandsForAtMostSucceededSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.atMost"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = "InspectorShorthandsForAtMostSucceededSpec"
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = succeedTests
+            }
+          )
+        )
       )
-    )
 
     val int123Types =
       List(
@@ -2581,64 +2620,66 @@ trait GenInspectorsShorthandsBase {
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
-
-    failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
-      val className = "InspectorShorthandsForAtMostFailedSpec" + i
-      val inspectorShorthandsForAtMostFailedSpecFile = new File(targetMatchersDir, className + ".scala")
-      val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
-        new InspectorShorthandsForAtMostErrorTemplate(colText, condition, assertText, inspectorShorthandsForAtMostFailedSpecFile.getName,
-          colType, okFun, errorFun, errorValue, 1, passedCount, causeErrMsg, xsText, useIndex)
-      }
-      genFile(
-        inspectorShorthandsForAtMostFailedSpecFile,
-        new SingleClassFile(
-          packageName = Some("org.scalatest.inspectors.atMost"),
-          importList = List(
-            "org.scalatest._",
-            "org.scalactic.Every",
-            "SharedHelpers._",
-            "FailureMessages.decorateToStringValue",
-            "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
-            "collection.GenTraversable",
-            "collection.GenMap",
-            "org.scalatest.refspec.RefSpec",
-            "org.scalatest.CompatParColls.Converters._"
-          ),
-          classTemplate = new ClassTemplate {
-            val name = className
-            override val extendName = Some("RefSpec")
-            override val withList = List("Matchers")
-            override val children = new InspectorShorthandsHelpersTemplate :: failedTests
-          }
+    val failedFiles: Seq[File] =
+      failedTestConfigs.grouped(500).toList.zipWithIndex map { case (configs, i) =>
+        val className = "InspectorShorthandsForAtMostFailedSpec" + i
+        val inspectorShorthandsForAtMostFailedSpecFile = new File(targetMatchersDir, className + ".scala")
+        val failedTests = configs map { case (colText, condition, assertText, colType, okFun, errorFun, errorValue, passedCount, causeErrMsg, xsText, useIndex) =>
+          new InspectorShorthandsForAtMostErrorTemplate(colText, condition, assertText, inspectorShorthandsForAtMostFailedSpecFile.getName,
+            colType, okFun, errorFun, errorValue, 1, passedCount, causeErrMsg, xsText, useIndex)
+        }
+        genFile(
+          inspectorShorthandsForAtMostFailedSpecFile,
+          new SingleClassFile(
+            packageName = Some("org.scalatest.inspectors.atMost"),
+            importList = List(
+              "org.scalatest._",
+              "org.scalactic.Every",
+              "SharedHelpers._",
+              "FailureMessages.decorateToStringValue",
+              "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
+              "collection.GenTraversable",
+              "collection.GenMap",
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._"
+            ),
+            classTemplate = new ClassTemplate {
+              val name = className
+              override val extendName = Some("RefSpec")
+              override val withList = List("Matchers")
+              override val children = new InspectorShorthandsHelpersTemplate :: failedTests
+            }
+          )
         )
-      )
-    }
+      }
+
+    succeedFiles ++ failedFiles
   }
 
   def targetDir(targetBaseDir: File, packageName: String): File = {
-    val targetDir = new File(targetBaseDir, "org/scalatest/inspectors-shorthands/" + packageName)
+    val targetDir = new File(targetBaseDir, "org/scalatest/inspectors/" + packageName)
     if (!targetDir.exists)
       targetDir.mkdirs()
     targetDir
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String)
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File]
 
 }
 
 object GenInspectorsShorthands1 extends GenInspectorsShorthandsBase {
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
-    genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"), scalaVersion)
-    genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"), scalaVersion)
-    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"), scalaVersion)
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
+    genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"), scalaVersion) ++
+    genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"), scalaVersion) ++
+    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"), scalaVersion) ++
     genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"), scalaVersion)
   }
 }
 
 object GenInspectorsShorthands2 extends GenInspectorsShorthandsBase {
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"), scalaVersion)
     genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"), scalaVersion)
     genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"), scalaVersion)

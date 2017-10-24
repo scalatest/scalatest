@@ -1163,9 +1163,10 @@ $columnsOfIndexes$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genTableForNs(targetDir: File, scalaJS: Boolean) {
+  def genTableForNs(targetDir: File, scalaJS: Boolean): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableFor1.scala")))
+    val targetFile = new File(targetDir, "TableFor1.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -1208,15 +1209,18 @@ $columnsOfIndexes$
         else
           bw.write(st.toString)
       }
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
 
-  def genPropertyChecks(targetDir: File) {
+  def genPropertyChecks(targetDir: File): Seq[File] = {
     val filename = "TableDrivenPropertyChecks.scala"
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, filename)))
+    val targetFile = new File(targetDir, filename)
+    val bw = new BufferedWriter(new FileWriter(targetFile))
 
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -1267,15 +1271,19 @@ $columnsOfIndexes$
 
       bw.write("}\n")
       bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
 
-  def genTables(targetDir: File) {
+  def genTables(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "Tables.scala")))
+    val targetFile = new File(targetDir, "Tables.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
 
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -1298,13 +1306,16 @@ $columnsOfIndexes$
       bw.write("  }\n")
       bw.write("}\n")
       bw.write(tablesCompanionObjectVerbatimString)
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
 
-  def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
+  def genTableAsserting(targetDir: File, scalaJS: Boolean): Seq[File] = {
 
     val doForAllMethodTemplate: String =
       """/**
@@ -1872,7 +1883,8 @@ $columnsOfIndexes$
          |
       """.stripMargin
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableAsserting.scala")))
+    val targetFile = new File(targetDir, "TableAsserting.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
 
     try {
       val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
@@ -1889,6 +1901,8 @@ $columnsOfIndexes$
       st.setAttribute("existsMethods", existsMethods)
       st.setAttribute("existsMethodImpls", existsMethodImpls)
       bw.write(st.toString)
+
+      Seq(targetFile)
     }
     finally {
       bw.flush()
@@ -1896,9 +1910,10 @@ $columnsOfIndexes$
     }
   }
  
-  def genTableSuite(targetDir: File) {
+  def genTableSuite(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableSuite.scala")))
+    val targetFile = new File(targetDir, "TableSuite.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -1937,8 +1952,10 @@ $columnsOfIndexes$
       }
 
       bw.write("}\n")
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
@@ -1957,23 +1974,30 @@ $columnsOfIndexes$
     genTest(testDir, version, scalaVersion)
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, false)
-    genPropertyChecks(dir)
-    genTables(dir)
-    genTableAsserting(dir, false)
+
+    val propDir = new File(dir, "prop")
+    propDir.mkdirs()
+
+    val enablersDir = new File(dir, "enablers")
+    enablersDir.mkdirs()
+
+    genTableForNs(propDir, false) ++
+    genPropertyChecks(propDir) ++
+    genTables(propDir) ++
+    genTableAsserting(enablersDir, false)
   }
 
-  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, true)
-    genPropertyChecks(dir)
-    genTables(dir)
+    genTableForNs(dir, true) ++
+    genPropertyChecks(dir) ++
+    genTables(dir) ++
     genTableAsserting(dir, true)
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
     genTableSuite(dir)
   }

@@ -39,7 +39,7 @@ trait GenMustMatchersTestsBase {
     temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
-  def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean) {
+  def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
 
     val scalaJSSkipList =
       List(
@@ -88,13 +88,14 @@ trait GenMustMatchersTestsBase {
         }
       }
       finally {
+        writer.flush()
         writer.close()
         println("Generated " + mustFile.getAbsolutePath)
       }
     }
 
     // For those under org.scalatest
-    for (shouldFile <- sourceBaseDir.listFiles) {
+    sourceBaseDir.listFiles flatMap { shouldFile =>
       if (includeFile(shouldFile)) {
         val shouldFileName = shouldFile.getName
 
@@ -103,12 +104,17 @@ trait GenMustMatchersTestsBase {
 
           val mustFile = new File(targetBaseDir, mustFileName)
           transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+          Seq(mustFile)
         }
+        else
+          Seq.empty[File]
       }
+      else
+        Seq.empty[File]
     }
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     genTestImpl(targetBaseDir, version, scalaVersion, false)
   }
 

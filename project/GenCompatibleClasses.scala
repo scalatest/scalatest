@@ -2,7 +2,7 @@ import java.io.{FileWriter, BufferedWriter, File}
 
 object GenCompatibleClasses {
 
-  def genMain(targetDir: File, version: String, scalaVersion: String) {
+  def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
     val listCellRendererClass = Class.forName("javax.swing.ListCellRenderer")
     val isJava7 = listCellRendererClass.getTypeParameters.length > 0
@@ -13,23 +13,25 @@ object GenCompatibleClasses {
         "EventHolderDefaultListModel" -> "private[tools] class EventHolderDefaultListModel extends DefaultListModel"
       )
 
-    java6Classes.foreach { case (name, cls) =>
-      val file = new File(targetDir, name + ".scala")
-      val bw = new BufferedWriter(new FileWriter(file))
-      try {
-        bw.write("package org.scalatest.tools\n")
-        bw.write("import javax.swing._\n")
-        if (isJava7)
-          bw.write(cls + "[EventHolder]")
-        else
-          bw.write(cls)
+    val java6ClassesFiles =
+      java6Classes.map { case (name, cls) =>
+        val file = new File(targetDir, name + ".scala")
+        val bw = new BufferedWriter(new FileWriter(file))
+        try {
+          bw.write("package org.scalatest.tools\n")
+          bw.write("import javax.swing._\n")
+          if (isJava7)
+            bw.write(cls + "[EventHolder]")
+          else
+            bw.write(cls)
+        }
+        finally {
+          bw.flush()
+          bw.close()
+        }
+        println("Generated " + file.getAbsolutePath)
+        file
       }
-      finally {
-        bw.flush()
-        bw.close()
-      }
-      println("Generated " + file.getAbsolutePath)
-    }
 
     val file = new File(targetDir, "EventHolderListCellRenderer.scala")
     val bw = new BufferedWriter(new FileWriter(file))
@@ -63,6 +65,8 @@ object GenCompatibleClasses {
       bw.flush()
       bw.close()
     }
+
+    java6ClassesFiles.toSeq ++ Seq(file)
   }
 
   def main(args: Array[String]) {
