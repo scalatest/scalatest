@@ -3018,9 +3018,9 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     }
   }
 
-  def genMainJS(dir: File, version: String, scalaVersion: String): Unit = {
+  def genMainJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, true)
     }
   }

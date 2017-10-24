@@ -159,7 +159,7 @@ object GenMatchers {
     genMainImpl(targetDir, version, scalaVersion, false)
   }
 
-  def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String) {
+  def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     genMainImpl(targetDir, version, scalaVersion, true)
   }
 }
