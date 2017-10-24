@@ -32,14 +32,14 @@ object GenSorted {
     translate(line, mapping.toIterator)
   }
   
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
-    val sortedDir = new File(targetBaseDir, "sortedTests")
-    sortedDir.mkdirs()
+
+    targetBaseDir.mkdirs()
     
-    def generateFile(sourceFileName: String, generatedFileName: String, mapping: (String, String)*) {
-      val generatedFile = new File(sortedDir, generatedFileName)
+    def generateFile(sourceFileName: String, generatedFileName: String, mapping: (String, String)*): File = {
+      val generatedFile = new File(targetBaseDir, generatedFileName)
       val writer = new BufferedWriter(new FileWriter(generatedFile))
       try {
         val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
@@ -48,8 +48,10 @@ object GenSorted {
           writer.write(generatedLine.toString)
           writer.newLine() // add for 2.8
         }
+        generatedFile
       }
       finally {
+        writer.flush()
         writer.close()
         println("Generated " + generatedFile.getAbsolutePath)
       }
@@ -81,14 +83,16 @@ object GenSorted {
         "ShouldBeSortedLogicalAndSpec" -> "ShouldBeSortedLogicalAndForJavaColSpec",
         "ShouldBeSortedLogicalOrSpec" -> "ShouldBeSortedLogicalOrForJavaColSpec"
       )
-    
-    generateFile("ShouldBeSortedSpec.scala", "ShouldBeSortedForArraySpec.scala", arrayMapping: _*)
-    generateFile("ShouldBeSortedLogicalAndSpec.scala", "ShouldBeSortedLogicalAndForArraySpec.scala", arrayMapping: _*)
-    generateFile("ShouldBeSortedLogicalOrSpec.scala", "ShouldBeSortedLogicalOrForArraySpec.scala", arrayMapping: _*)
-    
-    generateFile("ShouldBeSortedSpec.scala", "ShouldBeSortedForJavaColSpec.scala", javaListMapping: _*)
-    generateFile("ShouldBeSortedLogicalAndSpec.scala", "ShouldBeSortedLogicalAndForJavaColSpec.scala", javaListMapping: _*)
-    generateFile("ShouldBeSortedLogicalOrSpec.scala", "ShouldBeSortedLogicalOrForJavaColSpec.scala", javaListMapping: _*)
+
+    Seq(
+      generateFile("ShouldBeSortedSpec.scala", "ShouldBeSortedForArraySpec.scala", arrayMapping: _*),
+      generateFile("ShouldBeSortedLogicalAndSpec.scala", "ShouldBeSortedLogicalAndForArraySpec.scala", arrayMapping: _*),
+      generateFile("ShouldBeSortedLogicalOrSpec.scala", "ShouldBeSortedLogicalOrForArraySpec.scala", arrayMapping: _*),
+
+      generateFile("ShouldBeSortedSpec.scala", "ShouldBeSortedForJavaColSpec.scala", javaListMapping: _*),
+      generateFile("ShouldBeSortedLogicalAndSpec.scala", "ShouldBeSortedLogicalAndForJavaColSpec.scala", javaListMapping: _*),
+      generateFile("ShouldBeSortedLogicalOrSpec.scala", "ShouldBeSortedLogicalOrForJavaColSpec.scala", javaListMapping: _*)
+    )
   }
   
   def main(args: Array[String]) {
