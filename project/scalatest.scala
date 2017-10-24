@@ -826,6 +826,7 @@ object ScalatestBuild extends Build {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
+    scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
