@@ -54,7 +54,7 @@ matrix:
   exclude:
     - scala: "2.13.0-M2"
       jdk: openjdk6
-    - scala: "2.12.3"
+    - scala: "2.12.4"
       jdk: openjdk6
     - scala: "2.11.11"
       jdk: oraclejdk8
