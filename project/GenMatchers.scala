@@ -20,6 +20,8 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenMatchers {
 
+  val generatorSource = new File("GenMatchers.scala")
+
   def translateShouldToMust(shouldLine: String): String = {
     shouldLine
       .replaceAll("Trait <a href=\"MustMatchers.html\"><code>MustMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>MustMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
@@ -88,43 +90,45 @@ object GenMatchers {
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
-    val outputWriter = new BufferedWriter(new FileWriter(outputFile))
-    try {
-      val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
-      var skipMode = false
-      for (line <- lines) {
-        val mustLine: String =
-          if (scalaJS) {
-            if (line.trim == "// SKIP-SCALATESTJS-START") {
-              skipMode = true
-              ""
-            }
-            else if (line.trim == "// SKIP-SCALATESTJS-END") {
-              skipMode = false
-              ""
-            }
-            else if (!skipMode) {
-              if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                translateFun(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+    if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
+      val outputWriter = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
+        var skipMode = false
+        for (line <- lines) {
+          val mustLine: String =
+            if (scalaJS) {
+              if (line.trim == "// SKIP-SCALATESTJS-START") {
+                skipMode = true
+                ""
+              }
+              else if (line.trim == "// SKIP-SCALATESTJS-END") {
+                skipMode = false
+                ""
+              }
+              else if (!skipMode) {
+                if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+                  translateFun(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+                else
+                  translateFun(line)
+              }
               else
-                translateFun(line)
+                ""
             }
             else
-              ""
-          }
-          else
-            translateFun(line)
+              translateFun(line)
 
-        outputWriter.write(mustLine)
-        outputWriter.newLine()
+          outputWriter.write(mustLine)
+          outputWriter.newLine()
+        }
       }
-      outputFile
+      finally {
+        outputWriter.flush()
+        outputWriter.close()
+        println("Generated " + outputFile.getAbsolutePath)
+      }
     }
-    finally {
-      outputWriter.flush()
-      outputWriter.close()
-      println("Generated " + outputFile.getAbsolutePath)
-    }
+    outputFile
   }
 
   def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
