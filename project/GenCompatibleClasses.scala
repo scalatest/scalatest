@@ -2,6 +2,8 @@ import java.io.{FileWriter, BufferedWriter, File}
 
 object GenCompatibleClasses {
 
+  val generatorSource = new File("GenCompatibleClasses.scala")
+
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
     val listCellRendererClass = Class.forName("javax.swing.ListCellRenderer")
@@ -16,54 +18,58 @@ object GenCompatibleClasses {
     val java6ClassesFiles =
       java6Classes.map { case (name, cls) =>
         val file = new File(targetDir, name + ".scala")
-        val bw = new BufferedWriter(new FileWriter(file))
-        try {
-          bw.write("package org.scalatest.tools\n")
-          bw.write("import javax.swing._\n")
-          if (isJava7)
-            bw.write(cls + "[EventHolder]")
-          else
-            bw.write(cls)
+        if (!file.exists || generatorSource.lastModified > file.lastModified) {
+          val bw = new BufferedWriter(new FileWriter(file))
+          try {
+            bw.write("package org.scalatest.tools\n")
+            bw.write("import javax.swing._\n")
+            if (isJava7)
+              bw.write(cls + "[EventHolder]")
+            else
+              bw.write(cls)
+          }
+          finally {
+            bw.flush()
+            bw.close()
+          }
+          println("Generated " + file.getAbsolutePath)
         }
-        finally {
-          bw.flush()
-          bw.close()
-        }
-        println("Generated " + file.getAbsolutePath)
         file
       }
 
     val file = new File(targetDir, "EventHolderListCellRenderer.scala")
-    val bw = new BufferedWriter(new FileWriter(file))
+    if (!file.exists || generatorSource.lastModified > file.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(file))
 
-    try {
-      bw.write("package org.scalatest.tools\n")
-      bw.write("import java.awt.Component\n")
-      bw.write("import javax.swing._\n")
-      if (isJava7) { // workaround from http://www.scala-lang.org/old/node/10687
-        bw.write("private[tools] trait EventHolderListCellRenderer extends ListCellRenderer[EventHolder] {\n")
-        bw.write("  private val defaultRenderer: ListCellRenderer[EventHolder] = (new DefaultListCellRenderer()).asInstanceOf[ListCellRenderer[EventHolder]]\n")
-        bw.write("  protected def decorate(renderer: JLabel, value: Object, isSelected: Boolean): Component\n")
-        bw.write("  def getListCellRendererComponent(list: JList[_ <: EventHolder], value: EventHolder, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {\n")
-        bw.write("    val renderer: JLabel = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).asInstanceOf[JLabel]\n")
-        bw.write("    decorate(renderer, value, isSelected)\n")
-        bw.write("  }")
-        bw.write("}\n")
+      try {
+        bw.write("package org.scalatest.tools\n")
+        bw.write("import java.awt.Component\n")
+        bw.write("import javax.swing._\n")
+        if (isJava7) { // workaround from http://www.scala-lang.org/old/node/10687
+          bw.write("private[tools] trait EventHolderListCellRenderer extends ListCellRenderer[EventHolder] {\n")
+          bw.write("  private val defaultRenderer: ListCellRenderer[EventHolder] = (new DefaultListCellRenderer()).asInstanceOf[ListCellRenderer[EventHolder]]\n")
+          bw.write("  protected def decorate(renderer: JLabel, value: Object, isSelected: Boolean): Component\n")
+          bw.write("  def getListCellRendererComponent(list: JList[_ <: EventHolder], value: EventHolder, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {\n")
+          bw.write("    val renderer: JLabel = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).asInstanceOf[JLabel]\n")
+          bw.write("    decorate(renderer, value, isSelected)\n")
+          bw.write("  }")
+          bw.write("}\n")
+        }
+        else {
+          bw.write("private[tools] trait EventHolderListCellRenderer extends ListCellRenderer {\n")
+          bw.write("  private val defaultRenderer: DefaultListCellRenderer = new DefaultListCellRenderer()\n")
+          bw.write("  protected def decorate(renderer: JLabel, value: Object, isSelected: Boolean): Component\n")
+          bw.write("  def getListCellRendererComponent(list: JList, value: Object, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {\n")
+          bw.write("    val renderer: JLabel = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).asInstanceOf[JLabel]\n")
+          bw.write("    decorate(renderer, value, isSelected)\n")
+          bw.write("  }")
+          bw.write("}\n")
+        }
       }
-      else {
-        bw.write("private[tools] trait EventHolderListCellRenderer extends ListCellRenderer {\n")
-        bw.write("  private val defaultRenderer: DefaultListCellRenderer = new DefaultListCellRenderer()\n")
-        bw.write("  protected def decorate(renderer: JLabel, value: Object, isSelected: Boolean): Component\n")
-        bw.write("  def getListCellRendererComponent(list: JList, value: Object, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {\n")
-        bw.write("    val renderer: JLabel = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).asInstanceOf[JLabel]\n")
-        bw.write("    decorate(renderer, value, isSelected)\n")
-        bw.write("  }")
-        bw.write("}\n")
+      finally {
+        bw.flush()
+        bw.close()
       }
-    }
-    finally {
-      bw.flush()
-      bw.close()
     }
 
     java6ClassesFiles.toSeq ++ Seq(file)

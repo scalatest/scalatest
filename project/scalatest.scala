@@ -1093,6 +1093,13 @@ object ScalatestBuild extends Build {
     results
   }
 
+  /*def genFiles(generatorSource: File, generatedFile: File)(genFun: => Seq[File]): Seq[File] = {
+    if (generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified)
+      genFun()
+    else
+      Seq.empty[File]
+  }*/
+
   def genJavaFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "java" / name
     val genSource = basedir / "project" / generatorSource

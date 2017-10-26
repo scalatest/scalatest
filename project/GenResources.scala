@@ -20,6 +20,8 @@ import scala.util.parsing.combinator.JavaTokenParsers
 
 trait GenResources {
 
+  val generatorSource = new File("GenResources.scala")
+
   def packageName: String
 
   def resourcesTemplate(methods: String): String
@@ -65,14 +67,16 @@ trait GenResources {
       }.mkString("\n\n")
 
     val resourcesFile = new File(targetDir, "Resources.scala")
-    val resourcesWriter = new BufferedWriter(new FileWriter(resourcesFile))
-    try {
-      resourcesWriter.write(resourcesTemplate(resourcesMethods))
-    }
-    finally {
-      resourcesWriter.flush()
-      resourcesWriter.close()
-      println("Generated " + resourcesFile.getAbsolutePath)
+    if (!resourcesFile.exists || generatorSource.lastModified > resourcesFile.lastModified) {
+      val resourcesWriter = new BufferedWriter(new FileWriter(resourcesFile))
+      try {
+        resourcesWriter.write(resourcesTemplate(resourcesMethods))
+      }
+      finally {
+        resourcesWriter.flush()
+        resourcesWriter.close()
+        println("Generated " + resourcesFile.getAbsolutePath)
+      }
     }
 
     Vector(resourcesFile)
@@ -93,14 +97,16 @@ trait GenResources {
       }.mkString("\n\n")
 
     val failureMessagesFile = new File(targetDir, "FailureMessages.scala")
-    val failureMessagesWriter = new BufferedWriter(new FileWriter(failureMessagesFile))
-    try {
-      failureMessagesWriter.write(failureMessagesTemplate(failureMessagesMethods))
-    }
-    finally {
-      failureMessagesWriter.flush()
-      failureMessagesWriter.close()
-      println("Generated " + failureMessagesFile.getAbsolutePath)
+    if (!failureMessagesFile.exists || generatorSource.lastModified > failureMessagesFile.lastModified) {
+      val failureMessagesWriter = new BufferedWriter(new FileWriter(failureMessagesFile))
+      try {
+        failureMessagesWriter.write(failureMessagesTemplate(failureMessagesMethods))
+      }
+      finally {
+        failureMessagesWriter.flush()
+        failureMessagesWriter.close()
+        println("Generated " + failureMessagesFile.getAbsolutePath)
+      }
     }
 
     Vector(failureMessagesFile)

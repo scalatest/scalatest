@@ -22,6 +22,8 @@ import scala.collection.JavaConversions._
 
 object GenTable {
 
+  val generatorSource = new File("GenTable.scala")
+
 val scaladocForTableFor1VerbatimString = """
 /**
  * A table with 1 column.
@@ -1166,153 +1168,164 @@ $columnsOfIndexes$
   def genTableForNs(targetDir: File, scalaJS: Boolean): Seq[File] = {
 
     val targetFile = new File(targetDir, "TableFor1.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
- 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      val imports = new org.antlr.stringtemplate.StringTemplate(importsForTableForNTemplate)
-      bw.write(imports.toString)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(
-          (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate
-        )
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
-        val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
-        val strings = List.fill(i)("String").mkString(", ")
-        val argsNamedArgSeq =
-          for (argsIdx <- 0 until i) yield
-            "\"" + "arg" + argsIdx + "\""
-        val argsNamedArg = argsNamedArgSeq.mkString(",")                                  
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val rawRows =                              
-          for (idx <- 0 to 9) yield                
-            List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("alphaName", alphaName)
-        st.setAttribute("strings", strings)
-        st.setAttribute("argsNamedArg", argsNamedArg)
-        st.setAttribute("namesAndValues", namesAndValues)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        if (scalaJS)
-          bw.write(transform(st.toString))
-        else
-          bw.write(st.toString)
+
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
+        bw.write(st.toString)
+        val imports = new org.antlr.stringtemplate.StringTemplate(importsForTableForNTemplate)
+        bw.write(imports.toString)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(
+            (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate
+          )
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+          val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+          val strings = List.fill(i)("String").mkString(", ")
+          val argsNamedArgSeq =
+            for (argsIdx <- 0 until i) yield
+              "\"" + "arg" + argsIdx + "\""
+          val argsNamedArg = argsNamedArgSeq.mkString(",")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+          val rawRows =
+            for (idx <- 0 to 9) yield
+              List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+          val columnsOfIndexes = rawRows.mkString(",\n")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("alphaName", alphaName)
+          st.setAttribute("strings", strings)
+          st.setAttribute("argsNamedArg", argsNamedArg)
+          st.setAttribute("namesAndValues", namesAndValues)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+          if (scalaJS)
+            bw.write(transform(st.toString))
+          else
+            bw.write(st.toString)
+        }
       }
-      Seq(targetFile)
+      finally {
+        bw.flush()
+        bw.close()
+      }
     }
-    finally {
-      bw.flush()
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
   def genPropertyChecks(targetDir: File): Seq[File] = {
     val filename = "TableDrivenPropertyChecks.scala"
     val targetFile = new File(targetDir, filename)
-    val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(propertyCheckPreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
+        bw.write(propertyCheckPreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
+
+        for (i <- 1 to 22) {
+          val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
+          val st = new org.antlr.stringtemplate.StringTemplate(template)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
+
+        for (i <- 1 to 22) {
+          val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
+          val st = new org.antlr.stringtemplate.StringTemplate(template)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
+
+        bw.write("}\n")
+        bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
       }
-
-      for (i <- 1 to 22) {
-        val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
-        val st = new org.antlr.stringtemplate.StringTemplate(template)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
+      finally {
+        bw.flush()
+        bw.close()
       }
-
-      for (i <- 1 to 22) {
-        val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
-        val st = new org.antlr.stringtemplate.StringTemplate(template)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
-      }
-
-      bw.write("}\n")
-      bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
-
-      Seq(targetFile)
     }
-    finally {
-      bw.flush()
-      bw.close()
-    }
+
+    Seq(targetFile)
+
   }
 
   def genTables(targetDir: File): Seq[File] = {
 
     val targetFile = new File(targetDir, "Tables.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(tableObjectPreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(tableObjectApplyTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
+        bw.write(tableObjectPreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(tableObjectApplyTemplate)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          bw.write(st.toString)
+        }
+
+        bw.write("  }\n")
+        bw.write("}\n")
+        bw.write(tablesCompanionObjectVerbatimString)
       }
-
-      bw.write("  }\n")
-      bw.write("}\n")
-      bw.write(tablesCompanionObjectVerbatimString)
-
-      Seq(targetFile)
+      finally {
+        bw.flush()
+        bw.close()
+      }
     }
-    finally {
-      bw.flush()
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Seq[File] = {
@@ -1884,30 +1897,33 @@ $columnsOfIndexes$
       """.stripMargin
 
     val targetFile = new File(targetDir, "TableAsserting.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
 
-    try {
-      val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
-      val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
-      val forEveryMethods = (for (i <- 1 to 22) yield doForEveryMethod(i)).mkString("\n\n")
-      val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i)).mkString("\n\n")
-      val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
-      val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i)).mkString("\n\n")
-      val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
-      st.setAttribute("forAllMethods", forAllMethods)
-      st.setAttribute("forAllMethodImpls", forAllMethodImpls)
-      st.setAttribute("forEveryMethods", forEveryMethods)
-      st.setAttribute("forEveryMethodImpls", forEveryMethodImpls)
-      st.setAttribute("existsMethods", existsMethods)
-      st.setAttribute("existsMethodImpls", existsMethodImpls)
-      bw.write(st.toString)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
 
-      Seq(targetFile)
+      try {
+        val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
+        val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
+        val forEveryMethods = (for (i <- 1 to 22) yield doForEveryMethod(i)).mkString("\n\n")
+        val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i)).mkString("\n\n")
+        val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
+        val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i)).mkString("\n\n")
+        val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
+        st.setAttribute("forAllMethods", forAllMethods)
+        st.setAttribute("forAllMethodImpls", forAllMethodImpls)
+        st.setAttribute("forEveryMethods", forEveryMethods)
+        st.setAttribute("forEveryMethodImpls", forEveryMethodImpls)
+        st.setAttribute("existsMethods", existsMethods)
+        st.setAttribute("existsMethodImpls", existsMethodImpls)
+        bw.write(st.toString)
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
     }
-    finally {
-      bw.flush()
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
  
   def genTableSuite(targetDir: File): Seq[File] = {
