@@ -3011,16 +3011,16 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 */
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, false)
     }
   }
 
-  def genMainJS(dir: File, version: String, scalaVersion: String): Unit = {
+  def genMainJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, true)
     }
   }
@@ -3046,7 +3046,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     }.mkString("\n")
   }
 
-  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean) {
+  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean): File = {
 
     def setCommonOnes(arity: Int, st: org.antlr.stringtemplate.StringTemplate) {
       if (arity == 1)
@@ -3060,7 +3060,8 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
       st.setAttribute("commaSeparatedTCNs", commaSeparatedTCNs);
     }
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "MatcherFactory" + arity + ".scala")))
+    val targetFile = new File(targetDir, "MatcherFactory" + arity + ".scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
 
@@ -3118,6 +3119,8 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
       else {
         bw.write("}\n")
       }
+
+      targetFile
     }
     finally {
       bw.close()

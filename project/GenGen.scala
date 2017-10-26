@@ -2525,9 +2525,10 @@ $okayExpressions$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genPropertyChecks(targetDir: File) {
+  def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "GeneratorDrivenPropertyChecks.scala")))
+    val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -2582,14 +2583,17 @@ $okayExpressions$
       }
       bw.write("}\n")
       bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
 
   // Invitation style indicates how GeneratorDrivenPropertyChecks is imported
-  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean) {
+  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean): Seq[File] = {
 
     targetDir.mkdirs()
     
@@ -2602,7 +2606,8 @@ $okayExpressions$
     val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite" 
     val fileName = suiteClassName + ".scala" 
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, fileName)))
+    val targetFile = new File(targetDir, fileName)
+    val bw = new BufferedWriter(new FileWriter(targetFile))
  
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
@@ -2675,8 +2680,11 @@ $okayExpressions$
       }
 
       bw.write("}\n")
+
+      Seq(targetFile)
     }
     finally {
+      bw.flush()
       bw.close()
     }
   }
@@ -2694,16 +2702,16 @@ $okayExpressions$
     genTest(testDir, version, scalaVersion)
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     genPropertyChecks(dir)
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
-    genGeneratorDrivenSuite(dir, true, false, false)
-    genGeneratorDrivenSuite(dir, false, false, false)
-    genGeneratorDrivenSuite(dir, true, true, false)
-    genGeneratorDrivenSuite(dir, false, true, false)
-    genGeneratorDrivenSuite(dir, true, true, true)
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    genGeneratorDrivenSuite(dir, true, false, false) ++
+    genGeneratorDrivenSuite(dir, false, false, false) ++
+    genGeneratorDrivenSuite(dir, true, true, false) ++
+    genGeneratorDrivenSuite(dir, false, true, false) ++
+    genGeneratorDrivenSuite(dir, true, true, true) ++
     genGeneratorDrivenSuite(dir, false, true, true)
   }
 }

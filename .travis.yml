@@ -1,13 +1,19 @@
 language: scala
 scala:
-  - 2.11.8
   - 2.10.6
-  - 2.12.0
+  - 2.11.11
+  - 2.12.4
+  - 2.13.0-M2
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+
 jdk:
-  - oraclejdk7
   - openjdk6
   - oraclejdk8
 
+dist: trusty
 sudo: false
 
 env:
@@ -46,10 +52,14 @@ env:
 
 matrix:
   exclude:
-    - scala: "2.12.0"
-      jdk: oraclejdk7
-    - scala: "2.12.0"
+    - scala: "2.13.0-M2"
       jdk: openjdk6
+    - scala: "2.12.4"
+      jdk: openjdk6
+    - scala: "2.11.11"
+      jdk: oraclejdk8
+    - scala: "2.10.6"
+      jdk: oraclejdk8
 
 branches:
   only:
