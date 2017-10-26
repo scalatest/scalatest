@@ -44,12 +44,14 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
-To run generated all tests, you'll need to increase maximum heap size to -Xmx5000M, and use this command instead:
+To run generated all tests, you'll need to increase maximum heap size to at least -Xmx5000M, and use this command instead:
 
-  `$ sbt gentests/test`
+    $ rm -rf gentests
+    $ sbt gentests/test
   
 You can also run different groups generated tests separately: 
-  
+    
+    $ rm -rf gentests
     $ sbt genMustMatchersTests1/test
     $ sbt genMustMatchersTests2/test
     $ sbt genMustMatchersTests3/test
@@ -65,7 +67,6 @@ You can also run different groups generated tests separately:
     $ sbt genSortedTests/test
     $ sbt genLoneElementTests/test
     $ sbt genEmptyTests/test
-    $ sbt genSafeStyleTests/test
 
 What it does is simply switch to gentests project and run test.
 
