@@ -2408,51 +2408,54 @@ $columnsOfTwos$
   def genTableSuite(targetDir: File): Seq[File] = {
 
     val targetFile = new File(targetDir, "TableSuite.scala")
-    val bw = new BufferedWriter(new FileWriter(targetFile))
- 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(tableSuitePreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      // for (i <- 1 to 22) {
-      for (i <- 1 to 20) { // TODO: To avoid 2.9.0 compiler bug at arities 21 and 22
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
 
-        val st = new org.antlr.stringtemplate.StringTemplate(tableSuiteTemplate)
-        val rowOfMinusOnes = List.fill(i)(" -1").mkString(", ")
-        val rowOfOnes = List.fill(i)("  1").mkString(", ")
-        val rowOfTwos = List.fill(i)("  2").mkString(", ")
-        val listOfIs = List.fill(i)("i").mkString(", ")
-        val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
-        val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
-        val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =
-          for (idx <- 0 to 9) yield                
-            List.fill(i)("  " + idx).mkString("        (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val names = alpha.take(i).mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        st.setAttribute("n", i)
-        st.setAttribute("columnsOfOnes", columnsOfOnes)
-        st.setAttribute("columnOfMinusOnes", columnOfMinusOnes)
-        st.setAttribute("columnsOfTwos", columnsOfTwos)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("names", names)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("listOfIs", listOfIs)
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
-      }
+        bw.write(tableSuitePreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        // for (i <- 1 to 22) {
+        for (i <- 1 to 20) { // TODO: To avoid 2.9.0 compiler bug at arities 21 and 22
 
-      bw.write("}\n")
-      Seq(targetFile)
+          val st = new org.antlr.stringtemplate.StringTemplate(tableSuiteTemplate)
+          val rowOfMinusOnes = List.fill(i)(" -1").mkString(", ")
+          val rowOfOnes = List.fill(i)("  1").mkString(", ")
+          val rowOfTwos = List.fill(i)("  2").mkString(", ")
+          val listOfIs = List.fill(i)("i").mkString(", ")
+          val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
+          val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
+          val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
+          val rawRows =
+            for (idx <- 0 to 9) yield
+              List.fill(i)("  " + idx).mkString("        (", ", ", ")")
+          val columnsOfIndexes = rawRows.mkString(",\n")
+          val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+          val names = alpha.take(i).mkString(", ")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          st.setAttribute("n", i)
+          st.setAttribute("columnsOfOnes", columnsOfOnes)
+          st.setAttribute("columnOfMinusOnes", columnOfMinusOnes)
+          st.setAttribute("columnsOfTwos", columnsOfTwos)
+          st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("names", names)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("listOfIs", listOfIs)
+          bw.write(st.toString)
+        }
+
+        bw.write("}\n")
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
     }
-    finally {
-      bw.flush()
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
   def genAsyncTableSuite(targetDir: File): Seq[File] = {

@@ -61,7 +61,10 @@ object GenScalaTestJS {
     files.map { sourceFileName =>
       val sourceFile = new File(sourceDir, sourceFileName)
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -71,7 +74,10 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && f.getName.startsWith(startsWith) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -81,7 +87,10 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -91,7 +100,8 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      IO.copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        IO.copyFile(sourceFile, destFile)
       destFile
     }
   }
