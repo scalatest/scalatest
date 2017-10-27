@@ -15,7 +15,9 @@
 */
 
 import io.Source
-import java.io.{File, FileWriter, BufferedWriter}
+import java.io.{BufferedWriter, File, FileWriter}
+
+import GenCompatibleClasses.generatorSource
 
 object GenScalacticJS {
 
@@ -69,7 +71,11 @@ object GenScalacticJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
+        copyFile(sourceFile, destFile)
+      }
+
+      destFile
     }
   }
 
@@ -89,7 +95,9 @@ object GenScalacticJS {
     val destResourceDir = new File(targetDir, "org/scalactic")
     destResourceDir.mkdirs()
     val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
-    copyFile(sourceResourceFile, destResourceFile)
+    if (!destResourceFile.exists || sourceResourceFile.lastModified > destResourceFile.lastModified)
+      copyFile(sourceResourceFile, destResourceFile)
+
     List(destResourceFile)
   }
 
