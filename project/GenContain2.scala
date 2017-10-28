@@ -20,6 +20,8 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenContain2 extends GenContainBase {
 
+  val generatorSource = new File("GenContain2.scala")
+
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
 
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
@@ -29,21 +31,23 @@ object GenContain2 extends GenContainBase {
     def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*): File = {
       val generatedFileName = sourceFileName.replaceAll("List", typeName)
       val generatedFile = new File(targetBaseDir, generatedFileName)
-      val writer = new BufferedWriter(new FileWriter(generatedFile))
-      try {
-        val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
-        for (line <- lines) {
-          val generatedLine = translateLine(line, mapping.toList: _*)
-          writer.write(generatedLine.toString)
-          writer.newLine() // add for 2.8
+      if (!generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(generatedFile))
+        try {
+          val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
+          for (line <- lines) {
+            val generatedLine = translateLine(line, mapping.toList: _*)
+            writer.write(generatedLine.toString)
+            writer.newLine() // add for 2.8
+          }
         }
-        generatedFile
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + generatedFile.getAbsolutePath)
+        }
       }
-      finally {
-        writer.flush()
-        writer.close()
-        println("Generated " + generatedFile.getAbsolutePath)
-      }
+      generatedFile
     }
 
     Seq(

@@ -5,33 +5,38 @@ import java.io.FileWriter
 import scala.io.Source
 
 object GenTheyWord {
+
+  val generatorSource = new File("GenTheyWord.scala")
   
   def generateFile(srcFileDir: String, srcClassName: String, targetFileDir: String, targetClassName: String): File = {
     val targetDir = new File(targetFileDir)
     targetDir.mkdirs()
     val targetFile = new File(targetFileDir, targetClassName + ".scala")
-    val writer = new BufferedWriter(new FileWriter(targetFile))
-    try {
-      val itLines = Source.fromFile(new File(srcFileDir, srcClassName + ".scala")).getLines().toList // for 2.8
-      for (itLine <- itLines) {
-        //.replaceAll("\"An it clause", "\"A they clause")
-        //.replaceAll("an it clause", "a they clause")
-        val theyLine = itLine.replaceAll("\\sit\\(", " they\\(")
-                             .replaceAll("\\sit\\s", " they ")
-                             .replaceAll("\"it\\s", "\"they ")
-                             .replaceAll("they or they clause.\"", "it or they clause.\"")
-                             .replaceAll("\"An they clause", "\"A they clause")
-                             .replaceAll("an they or a they clause.\"", "an it or a they clause.\"")
-                             .replaceAll(srcClassName, targetClassName)
-        writer.write(theyLine)
-        writer.newLine() // add for 2.8
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val writer = new BufferedWriter(new FileWriter(targetFile))
+      try {
+        val itLines = Source.fromFile(new File(srcFileDir, srcClassName + ".scala")).getLines().toList // for 2.8
+        for (itLine <- itLines) {
+          //.replaceAll("\"An it clause", "\"A they clause")
+          //.replaceAll("an it clause", "a they clause")
+          val theyLine = itLine.replaceAll("\\sit\\(", " they\\(")
+            .replaceAll("\\sit\\s", " they ")
+            .replaceAll("\"it\\s", "\"they ")
+            .replaceAll("they or they clause.\"", "it or they clause.\"")
+            .replaceAll("\"An they clause", "\"A they clause")
+            .replaceAll("an they or a they clause.\"", "an it or a they clause.\"")
+            .replaceAll(srcClassName, targetClassName)
+          writer.write(theyLine)
+          writer.newLine() // add for 2.8
+        }
+        targetFile
       }
-      targetFile
+      finally {
+        writer.flush()
+        writer.close()
+      }
     }
-    finally {
-      writer.flush()
-      writer.close()
-    }
+    targetFile
   }
   
   def main(args: Array[String]) {
