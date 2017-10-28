@@ -19,6 +19,8 @@ import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenSorted {
+
+  val generatorSource = new File("GenSorted.scala")
   
   def translateLine(line: String, mapping: (String, String)*): String = {
     @tailrec
@@ -40,21 +42,23 @@ object GenSorted {
     
     def generateFile(sourceFileName: String, generatedFileName: String, mapping: (String, String)*): File = {
       val generatedFile = new File(targetBaseDir, generatedFileName)
-      val writer = new BufferedWriter(new FileWriter(generatedFile))
-      try {
-        val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
-        for (line <- lines) {
-          val generatedLine = translateLine(line, mapping.toList: _*)
-          writer.write(generatedLine.toString)
-          writer.newLine() // add for 2.8
+      if (!generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(generatedFile))
+        try {
+          val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
+          for (line <- lines) {
+            val generatedLine = translateLine(line, mapping.toList: _*)
+            writer.write(generatedLine.toString)
+            writer.newLine() // add for 2.8
+          }
         }
-        generatedFile
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + generatedFile.getAbsolutePath)
+        }
       }
-      finally {
-        writer.flush()
-        writer.close()
-        println("Generated " + generatedFile.getAbsolutePath)
-      }
+      generatedFile
     }
     
     val arrayMapping = 

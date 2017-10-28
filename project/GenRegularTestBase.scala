@@ -25,20 +25,22 @@ trait GenRegularTestsBase {
   val name: String
 
   def copyFile(inputFile: File, outputFile: File): File = {
-    val writer = new BufferedWriter(new FileWriter(outputFile))
-    try {
-      val inputLines = Source.fromFile(inputFile).getLines().toList // for 2.8
-      for (line <- inputLines) {
-        writer.write(line.toString)
-        writer.newLine() // add for 2.8
+    if (!outputFile.exists || inputFile.lastModified > outputFile.lastModified) {
+      val writer = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val inputLines = Source.fromFile(inputFile).getLines().toList // for 2.8
+        for (line <- inputLines) {
+          writer.write(line.toString)
+          writer.newLine() // add for 2.8
+        }
       }
-      outputFile
+      finally {
+        writer.flush()
+        writer.close()
+        println("Generated " + outputFile.getAbsolutePath)
+      }
     }
-    finally {
-      writer.flush()
-      writer.close()
-      println("Generated " + outputFile.getAbsolutePath)
-    }
+    outputFile
   }
 
   def copyFile(targetBaseDir: File, filePath: String): File = {
@@ -72,8 +74,11 @@ trait GenRegularTestsBase {
     sourceFiles.flatMap { sourceFile =>
       val sourceFileName = sourceFile.getName
       if (sourceFileName.endsWith(".java")) {
+        val sourceFile = new File(dir, sourceFileName)
         val outputFile = new File(targetDir, sourceFileName)
-        Seq(copyFile(new File(dir, sourceFileName), outputFile))
+        if (!outputFile.exists || sourceFile.lastModified > outputFile.lastModified)
+          copyFile(sourceFile, outputFile)
+        Seq(outputFile)
       }
       else
         Seq.empty[File]
