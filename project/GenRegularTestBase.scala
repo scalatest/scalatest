@@ -24,22 +24,26 @@ trait GenRegularTestsBase {
   val baseDirPath: String
   val name: String
 
-  def copyFile(inputFile: File, outputFile: File) {
-    val writer = new BufferedWriter(new FileWriter(outputFile))
-    try {
-      val inputLines = Source.fromFile(inputFile).getLines().toList // for 2.8
-      for (line <- inputLines) {
-        writer.write(line.toString)
-        writer.newLine() // add for 2.8
+  def copyFile(inputFile: File, outputFile: File): File = {
+    if (!outputFile.exists || inputFile.lastModified > outputFile.lastModified) {
+      val writer = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val inputLines = Source.fromFile(inputFile).getLines().toList // for 2.8
+        for (line <- inputLines) {
+          writer.write(line.toString)
+          writer.newLine() // add for 2.8
+        }
+      }
+      finally {
+        writer.flush()
+        writer.close()
+        println("Generated " + outputFile.getAbsolutePath)
       }
     }
-    finally {
-      writer.close()
-      println("Generated " + outputFile.getAbsolutePath)
-    }
+    outputFile
   }
 
-  def copyFile(targetBaseDir: File, filePath: String): Unit = {
+  def copyFile(targetBaseDir: File, filePath: String): File = {
     val source = new File(filePath)
     val targetDir = new File(targetBaseDir, source.getPath.substring("scalatest-test/src/test/scala/".length, source.getPath.lastIndexOf("/")))
     targetDir.mkdirs()
@@ -47,41 +51,50 @@ trait GenRegularTestsBase {
     copyFile(source, target)
   }
 
-  def processDir(dir: File, targetDir: File): Unit = {
+  def processDir(dir: File, targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    for (sourceFile <- dir.listFiles) {
+    val (sourceFiles, subDirs) = dir.listFiles.partition(_.isFile)
+    sourceFiles.flatMap { sourceFile =>
       val sourceFileName = sourceFile.getName
-      if (includeFile(sourceFile)) {
+      if (sourceFileName.endsWith(".scala") && includeFile(sourceFile)) {
         val outputFile = new File(targetDir, sourceFileName)
-        copyFile(new File(dir, sourceFileName), outputFile)
+        Seq(copyFile(new File(dir, sourceFileName), outputFile))
       }
-      else if (sourceFile.isDirectory)
-        processDir(sourceFile, new File(targetDir, sourceFileName))
+      else
+        Seq.empty[File]
+    } ++
+    subDirs.flatMap { subDir =>
+      processDir(subDir, new File(targetDir, subDir.getName))
     }
   }
 
-  def processJavaDir(dir: File, targetDir: File): Unit = {
+  def processJavaDir(dir: File, targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    for (sourceFile <- dir.listFiles) {
+    val (sourceFiles, subDirs) = dir.listFiles.partition(_.isFile)
+    sourceFiles.flatMap { sourceFile =>
       val sourceFileName = sourceFile.getName
-      if (sourceFile.isFile) {
+      if (sourceFileName.endsWith(".java")) {
+        val sourceFile = new File(dir, sourceFileName)
         val outputFile = new File(targetDir, sourceFileName)
-        copyFile(new File(dir, sourceFileName), outputFile)
+        if (!outputFile.exists || sourceFile.lastModified > outputFile.lastModified)
+          copyFile(sourceFile, outputFile)
+        Seq(outputFile)
       }
-      else if (sourceFile.isDirectory)
-        processJavaDir(sourceFile, new File(targetDir, sourceFileName))
+      else
+        Seq.empty[File]
+    } ++
+    subDirs.flatMap { subDir =>
+      processJavaDir(subDir, new File(targetDir, subDir.getName))
     }
   }
 
-  def copyJavaDir(targetBaseDir: File): Unit = {
-    val testDir = targetBaseDir.getParentFile.getParentFile
-    val javaDir = new File(testDir, "java")
-    processJavaDir(new File("scalatest-test/src/test/java"), new File(javaDir, name))
+  def copyJavaDir(targetBaseDir: File): Seq[File] = {
+    processJavaDir(new File("scalatest-test/src/test/java"), targetBaseDir)
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     val sourceBaseDir = new File(baseDirPath)
-    val regularDir = new File(targetBaseDir, name + "/org/scalatest/")
+    val regularDir = new File(targetBaseDir, "/org/scalatest/")
 
     processDir(sourceBaseDir, regularDir)
   }

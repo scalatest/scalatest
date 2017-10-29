@@ -25,6 +25,9 @@ import Integer.MIN_VALUE
 import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
 import org.scalatest.exceptions.TestFailedException
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
 
 class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
