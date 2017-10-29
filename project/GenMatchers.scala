@@ -108,7 +108,7 @@ object GenMatchers {
               }
               else if (!skipMode) {
                 if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
-                  translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 19))
+                  translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
                 else
                   translateFun(line)
               }

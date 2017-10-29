@@ -74,7 +74,7 @@ trait GenMustMatchersTestsBase {
                 }
                 else if (!skipMode) {
                   if (shouldLine.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
-                    translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 19))
+                    translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
                   else
                     translateShouldToMustInTests(shouldLine)
                 }

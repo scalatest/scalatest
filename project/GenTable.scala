@@ -2404,7 +2404,7 @@ $columnsOfTwos$
 
     Seq(targetFile)
   }
-
+ 
   def genTableSuite(targetDir: File): Seq[File] = {
 
     val targetFile = new File(targetDir, "TableSuite.scala")

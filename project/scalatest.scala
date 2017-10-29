@@ -78,13 +78,13 @@ object ScalatestBuild extends Build {
     }
 
   def getJavaHome(scalaMajorVersion: String): Option[File] = {
-    /*scalaMajorVersion match {
+    scalaMajorVersion match {
       case "2.10" | "2.11" =>  // force to use Java 6
         if (!System.getProperty("java.version").startsWith("1.6"))
           throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
 
       case _ =>
-    }*/
+    }
 
     val javaHome = new File(System.getProperty("java.home"))
     val javaHomeBin = new File(javaHome, "bin")
@@ -185,9 +185,9 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
-          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
-          scalacheckDependency("optional").value
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
+          scalacheckDependency("optional")
         )
       case _ =>
         Seq(scalacheckDependency("optional").value)
@@ -340,7 +340,7 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional").value,
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
@@ -348,7 +348,7 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
-      libraryDependencies += scalacheckDependency("optional").value,
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
@@ -1419,7 +1419,7 @@ object ScalatestBuild extends Build {
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("test").value
+      libraryDependencies += scalacheckDependency("test")
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
