@@ -136,7 +136,7 @@ trait Checkpoints {
         case e: TestRegistrationClosedException => throw e
         case e: NotAllowedException => throw e
         case e: DuplicateTestNameException => throw e
-        case e: StackDepth  => failures.add(e)
+        case e: StackDepth with Throwable => failures.add(e)
         case e: Throwable => throw e
       }
     }

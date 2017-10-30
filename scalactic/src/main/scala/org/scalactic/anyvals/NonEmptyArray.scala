@@ -1666,7 +1666,7 @@ object NonEmptyArray {
 
   implicit def nonEmptyArrayToIterable[E](nonEmptyArray: NonEmptyArray[E]): Iterable[E] = nonEmptyArray.toIterable
 
-  implicit def nonEmptyArrayToPartialFunction[E](nonEmptyArray: NonEmptyArray[E]) =
+  implicit def nonEmptyArrayToPartialFunction[E](nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] =
     new PartialFunction[Int, E] {
       def apply(idx: Int): E = nonEmptyArray(idx)
       def isDefinedAt(idx: Int): Boolean = nonEmptyArray.isDefinedAt(idx)

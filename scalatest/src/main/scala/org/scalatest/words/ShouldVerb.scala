@@ -191,7 +191,7 @@ trait ShouldVerb {
      * </p>
      */
     def should(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
-      fun(leftSideString, "should", pos, right _)
+      fun(leftSideString, "should", pos, () => right)
     }
 
     /**

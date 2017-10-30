@@ -166,7 +166,7 @@ trait CanVerb {
      * </p>
      */
     def can(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
-      fun(leftSideString, "can", pos, right _)
+      fun(leftSideString, "can", pos, () => right)
     }
 
     /**

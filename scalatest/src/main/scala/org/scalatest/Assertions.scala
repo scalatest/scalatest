@@ -1171,7 +1171,7 @@ trait Assertions extends TripleEquals  {
       }
     }
     catch {
-      case e: org.scalatest.exceptions.ModifiableMessage[_] =>
+      case e: org.scalatest.exceptions.ModifiableMessage[_] with Throwable =>
         if (clue != "")
           throw e.modifyMessage(prepend)
         else
