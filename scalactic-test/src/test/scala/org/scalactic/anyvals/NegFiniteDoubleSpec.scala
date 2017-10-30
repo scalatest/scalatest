@@ -170,9 +170,6 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
     it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
       "NegFiniteDouble(-1.0).isNegInfinity" shouldNot compile
     }
-    it("should not offer a isPosInfinity method") {
-      "NegFiniteDouble(-1.0f).isPosInfinity" shouldNot compile
-    }
     it("should be sortable") {
       val xs = List(NegFiniteDouble(-2.2), NegFiniteDouble(-4.4), NegFiniteDouble(-1.1),
         NegFiniteDouble(-3.3))
