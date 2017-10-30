@@ -595,7 +595,7 @@ object ScalatestBuild extends Build {
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
+        orig.withPasses(pass.DeadBlockElimination +: orig.passes)
       },
       nativeLinkStubs in NativeTest := true,
       sourceGenerators in Test += {
@@ -909,7 +909,7 @@ object ScalatestBuild extends Build {
       fork in test := false,
       nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
+        orig.withPasses(pass.DeadBlockElimination +: orig.passes)
       },
       nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
         override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
