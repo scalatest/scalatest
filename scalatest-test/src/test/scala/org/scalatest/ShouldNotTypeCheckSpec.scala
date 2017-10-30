@@ -55,6 +55,22 @@ class ShouldNotTypeCheckSpec extends FunSpec {
       it("should do nothing when used with 'val i: Int = null") {
         "val i: Int = null" shouldNot typeCheck
       }
+
+      it("should work correctly with the implicit view is in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          "arrayList.asScala" shouldNot typeCheck
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
     }
 
     describe("when work with triple quotes string literal with stripMargin") {
@@ -93,6 +109,24 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         """
           |val i: Int = null
           |""".stripMargin shouldNot typeCheck
+      }
+
+      it("should work correctly with the implicit view is in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          """
+            |arrayList.asScala
+            |""".stripMargin shouldNot typeCheck
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone(lineSeparator + "arrayList.asScala" + lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
   }

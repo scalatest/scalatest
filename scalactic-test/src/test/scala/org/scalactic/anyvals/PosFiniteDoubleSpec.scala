@@ -172,9 +172,6 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
     it("should not ffer a isPosInfinity method") {
       "PosFiniteDouble(1.0).isPosInfinity" shouldNot compile
     }
-    it("should not offer a isNegInfinity method") {
-      "PosFiniteDouble(1.0).isNegInfinity" shouldNot compile
-    }
 
     it("should be sortable") {
       val xs = List(PosFiniteDouble(2.2), PosFiniteDouble(4.4), PosFiniteDouble(1.1),
