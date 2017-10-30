@@ -176,9 +176,8 @@ object ScalatestBuild extends Build {
     scalacticDocScalacOptionsSetting
   )
 
-  def scalacheckDependency(config: String) = Def.setting {
-    "org.scalacheck" %%% "scalacheck" % scalacheckVersion % config
-  }
+  def scalacheckDependency(config: String) =
+    "org.scalacheck" %% "scalacheck" % scalacheckVersion % config
 
   lazy val crossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -190,7 +189,7 @@ object ScalatestBuild extends Build {
           scalacheckDependency("optional")
         )
       case _ =>
-        Seq(scalacheckDependency("optional").value)
+        Seq(scalacheckDependency("optional"))
     }
   }
 
@@ -551,7 +550,7 @@ object ScalatestBuild extends Build {
           "-oDIF",
           "-W", "120", "60")),
       logBuffered in Test := false,
-      libraryDependencies += scalacheckDependency("test").value,
+      libraryDependencies += scalacheckDependency("test"),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
