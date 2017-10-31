@@ -180,9 +180,6 @@ class NegZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
     it("should not offer a PositiveInfinity factory method") {
       "NegZFiniteFloat.PositiveInfinity" shouldNot compile
     }
-    it("should not offer a isNegInfinity method") {
-      "NegZFiniteFloat(-1.0f).isNegInfinity" shouldNot compile
-    }
     it("should not offer a isPosInfinity method") {
       "NegZFiniteFloat(-1.0f).isPosInfinity" shouldNot compile
     }

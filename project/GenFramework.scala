@@ -434,11 +434,12 @@ object Generator {
   def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T = 
     getNextNot(col.toIterator, predicate)
   
-  def genFile(targetFile: File, template: ScalaFileTemplate) = {
+  def genFile(targetFile: File, template: ScalaFileTemplate): File = {
     val content = template.toString
     val writer = new BufferedWriter(new FileWriter(targetFile))
     try {
       writer.write(content)
+      targetFile
     }
     finally {
       writer.flush()

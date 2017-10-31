@@ -23,6 +23,9 @@ import Prop._
 import org.scalactic.Prettifier
 import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
 
 class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 

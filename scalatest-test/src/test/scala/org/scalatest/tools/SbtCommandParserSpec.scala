@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.scalatest.tools
+/*package org.scalatest.tools
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
@@ -45,5 +45,5 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
       canParsePhrase("""st --""")
     }
   }
-}
+}*/
 

@@ -340,10 +340,20 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
 
     it("should offer 'to' and 'until' methods that are consistent with Int") {
       forAll { (nzint: NonZeroInt, end: Int, step: Int) =>
-        Try(nzint.to(end)) shouldEqual Try(nzint.toInt.to(end))
-        Try(nzint.to(end, step)) shouldEqual Try(nzint.toInt.to(end, step))
-        Try(nzint.until(end)) shouldEqual Try(nzint.toInt.until(end))
-        Try(nzint.until(end, step)) shouldEqual Try(nzint.toInt.until(end, step))
+        // The reason we need this is that in Scala 2.10, the equals check (used by shouldEqual below) will call range.length
+        // and it'll cause IllegalArgumentException to be thrown when we do the Try(x) shouldEqual Try(y) assertion below,
+        // while starting from scala 2.11 the equals call implementation does not call .length.
+        // To make the behavior consistent for all scala versions, we explicitly call .length for all returned Range, and
+        // shall it throws IllegalArgumentException, it will be wrapped as Failure for the Try.
+        def ensuringValid(range: Range): Range = {
+          range.length  // IllegalArgumentException will be thrown if it is an invalid range, this will turn the Success to Failure for Try
+          range
+        }
+
+        Try(ensuringValid(nzint.to(end))) shouldEqual Try(ensuringValid(nzint.toInt.to(end)))
+        Try(ensuringValid(nzint.to(end, step))) shouldEqual Try(ensuringValid(nzint.toInt.to(end, step)))
+        Try(ensuringValid(nzint.until(end))) shouldEqual Try(ensuringValid(nzint.toInt.until(end)))
+        Try(ensuringValid(nzint.until(end, step))) shouldEqual Try(ensuringValid(nzint.toInt.until(end, step)))
       }
     }
 
