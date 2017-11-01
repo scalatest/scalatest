@@ -47,13 +47,14 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb[Future[PendingStatement]] with MustVerb[Future[PendingStatement]] with CanVerb[Future[PendingStatement]] with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToOutcome(testFun: () => Future[PendingStatement]): () => AsyncOutcome =
     () => {
-      PastOutcome(
-        try { testFun; Succeeded }
-        catch {
+      new InternalFutureOutcome(
+        testFun().map { r =>
+          Succeeded
+        } recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
@@ -145,7 +146,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
@@ -296,7 +297,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
     }
 
@@ -407,7 +408,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
     }
 
@@ -710,7 +711,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _, pos)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
@@ -806,7 +807,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _, pos)
     }
 
@@ -1011,7 +1012,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
     }
 
@@ -1122,7 +1123,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    def is(testFun: => Future[PendingStatement])(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
     }
 
@@ -1380,7 +1381,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * @author Bill Venners
    */
-  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
+  protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[_]) {
 
     import resultOfStringPassedToVerb.rest
 import resultOfStringPassedToVerb.verb
@@ -1435,7 +1436,7 @@ import resultOfStringPassedToVerb.verb
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
-  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
+  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb[_]): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
 
   /**
@@ -1477,7 +1478,7 @@ import resultOfStringPassedToVerb.verb
    *
    * @author Bill Venners
    */
-  protected final class InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
+  protected final class InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation[Future[PendingStatement]]) {
 
     import resultOfTaggedAsInvocation.verb
     import resultOfTaggedAsInvocation.rest
@@ -1533,7 +1534,7 @@ import resultOfStringPassedToVerb.verb
    * <code>InAndIgnoreMethodsAfterTaggedAs</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
-  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
+  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation[Future[PendingStatement]]): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
 
   /**
@@ -1558,23 +1559,48 @@ import resultOfStringPassedToVerb.verb
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
-    new StringVerbStringInvocation {
-      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
+  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation[PendingStatement] =
+    new StringVerbStringInvocation[PendingStatement] {
+      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb[PendingStatement] = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
-        new ResultOfStringPassedToVerb(verb, rest) {
+        new ResultOfStringPassedToVerb[PendingStatement](verb, rest) {
 
           def is(testFun: => PendingStatement): Unit = {
+            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), () => Future.successful(testFun), pos)
+          }
+          // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
+          // to say is (fixture => pending), rather just say is (pending)
+          def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+            val tagList = firstTestTag :: otherTestTags.toList
+            new ResultOfTaggedAsInvocation[PendingStatement](verb, rest, tagList) {
+              // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
+              //                                               ^
+              def is(testFun: => PendingStatement): Unit = {
+                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, () => Future.successful(testFun), pos)
+              }
+            }
+          }
+        }
+      }
+    }
+
+  protected implicit val asyncShorthandTestRegistrationFunction: StringVerbStringInvocation[Future[PendingStatement]] =
+    new StringVerbStringInvocation[Future[PendingStatement]] {
+      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb[Future[PendingStatement]] = {
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
+        new ResultOfStringPassedToVerb[Future[PendingStatement]](verb, rest) {
+
+          def is(testFun: => Future[PendingStatement]): Unit = {
             registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _, pos)
           }
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
-            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+            new ResultOfTaggedAsInvocation[Future[PendingStatement]](verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is(testFun: => PendingStatement): Unit = {
+              def is(testFun: => Future[PendingStatement]): Unit = {
                 registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
               }
             }
@@ -1646,7 +1672,7 @@ import resultOfStringPassedToVerb.verb
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[PendingStatement], pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3

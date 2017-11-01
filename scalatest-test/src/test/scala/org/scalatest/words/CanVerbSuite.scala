@@ -36,7 +36,7 @@ class CanVerbSuite extends FunSuite {
     assert(rep.testSucceededEventsReceived.tail.head.testName === "A thingy can do that thing")
   }
   test("can use can in a FlatSpec that mixes in CanVerb") {
-    class MySpec extends FlatSpec with CanVerb {
+    class MySpec extends FlatSpec with CanVerb[PendingStatement] {
       "A thingy" can "do this thing" in {}
       it can "do that thing" in {}
     }
@@ -49,7 +49,7 @@ class CanVerbSuite extends FunSuite {
     assert(rep.testSucceededEventsReceived.tail.head.testName === "A thingy can do that thing")
   }
   test("can use 'can behave like' in a FlatSpec that mixes in CanVerb") {
-    class MySpec extends FlatSpec with CanVerb {
+    class MySpec extends FlatSpec with CanVerb[PendingStatement] {
       "A thingy" can "do this thing" in {}
       it can "do that thing" in {}
     }

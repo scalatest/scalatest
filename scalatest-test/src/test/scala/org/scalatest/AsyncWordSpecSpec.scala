@@ -1097,6 +1097,34 @@ class AsyncWordSpecSpec extends FunSpec {
       assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
+    it("should allow is pendingUntilFixed to be used after is") {
+      val a = new AsyncWordSpec {
+
+        "should do this" is pendingUntilFixed {
+          fail("i meant to do that")
+        }
+
+        "should do that" is pendingUntilFixed {
+          Future {
+            fail("i meant to do that")
+            succeed
+          }
+        }
+
+        "should do thos" in {
+          assert(2 + 2 === 4)
+        }
+        "should do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 3)
+    }
+
   }
 
 }

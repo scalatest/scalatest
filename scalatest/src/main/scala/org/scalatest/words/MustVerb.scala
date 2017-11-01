@@ -99,7 +99,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-trait MustVerb {
+trait MustVerb[RESULT] {
 
   /**
    * This class supports the syntax of <code>FlatSpec</code>, <code>WordSpec</code>, <code>fixture.FlatSpec</code>,
@@ -138,7 +138,7 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+    def must(right: String)(implicit svsi: StringVerbStringInvocation[RESULT]): ResultOfStringPassedToVerb[RESULT] = {
       svsi(leftSideString, "must", right, pos)
     }
 

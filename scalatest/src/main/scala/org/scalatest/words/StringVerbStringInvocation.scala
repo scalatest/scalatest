@@ -36,7 +36,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-abstract class StringVerbStringInvocation {
+abstract class StringVerbStringInvocation[RESULT] {
 
   /**
    * Registers a subject description in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
@@ -52,6 +52,6 @@ abstract class StringVerbStringInvocation {
    * </pre>
    *
    */
-  def apply(subject: String, verb: String, predicate: String, pos: source.Position): ResultOfStringPassedToVerb
+  def apply(subject: String, verb: String, predicate: String, pos: source.Position): ResultOfStringPassedToVerb[RESULT]
 }
 
