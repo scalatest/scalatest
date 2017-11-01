@@ -169,8 +169,11 @@ trait MockitoSugar {
    * <pre class="stHighlight">
    * val mockCollaborator = mock[Collaborator](answer({ _ => None }))
    * </pre>
+   *  TODO: change to (invocation: InvocationOnMock) => f(invocation) when drop Scala-2.10 and Scala-2.11 support.
    */
-  def answer[T](f: InvocationOnMock => T): Answer[T] = (invocation: InvocationOnMock) => f(invocation)
+  def answer[T](f: InvocationOnMock => T): Answer[T] = new Answer[T] {
+    override def answer(invocation: InvocationOnMock): T = f(invocation)
+  }
 }
 
 /**
