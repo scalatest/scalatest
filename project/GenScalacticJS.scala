@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-import io.Source
+import scala.io.Source
 import java.io.{BufferedWriter, File, FileWriter}
 
 import GenCompatibleClasses.generatorSource
