@@ -124,8 +124,8 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
                 case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, _ => 8))
                 case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, _ => 8))
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
-                  if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
-                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 6))
+                  if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 9))
                   else
                     throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 8))
                 case other: Throwable => throw other

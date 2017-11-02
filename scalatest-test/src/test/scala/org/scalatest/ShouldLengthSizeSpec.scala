@@ -22,6 +22,9 @@ import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
 import Matchers._
 import org.scalactic.Prettifier
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
 
 class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
