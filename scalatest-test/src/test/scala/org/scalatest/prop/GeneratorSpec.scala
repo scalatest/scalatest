@@ -172,9 +172,9 @@ class GeneratorSpec extends FunSpec with Matchers {
       count shouldEqual maxDiscarded
 
       {
-        val expectedTestDiscarded = 11
-        val minSuccessful = PosInt(10)
-        implicit val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = PosZDouble(1.1))
+        val expectedTestDiscarded = 49
+        val maxDiscardedFactor = PosZDouble.ensuringValid(PropertyCheckConfiguration.calculateMaxDiscardedFactor(10, expectedTestDiscarded))
+        implicit val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = maxDiscardedFactor)
         info(s"What is this one: ${generatorDrivenConfig.maxDiscardedFactor}")
         count = 0
         a [TestFailedException] should be thrownBy {

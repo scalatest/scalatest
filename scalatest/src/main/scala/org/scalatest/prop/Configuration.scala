@@ -36,9 +36,9 @@ trait Configuration {
 
   object PropertyCheckConfiguration {
     private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
-      ((maxDiscarded + 1): Double) / (minSuccessful: Double)
+      (maxDiscarded.toDouble + 1.0) / minSuccessful.toDouble
     private[scalatest] def calculateMaxDiscarded(maxDiscardedRatio: Double, minSuccessful: Int): Double =
-      (maxDiscardedRatio * minSuccessful) - 1
+      (maxDiscardedRatio * minSuccessful.toDouble) - 1.0
   }
 
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
