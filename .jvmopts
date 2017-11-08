@@ -1,7 +1,7 @@
 -server 
 -Xms512M 
--Xmx4000M 
--Xss1M 
+-Xmx6000M 
+-Xss10M 
 -XX:+CMSClassUnloadingEnabled 
 -XX:+UseConcMarkSweepGC 
 -XX:+CMSIncrementalMode 
