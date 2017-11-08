@@ -51,27 +51,31 @@ trait Generator[T] { thisGeneratorOfT =>
       }
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
-  def flatMap[U](f: T => Generator[U]): Generator[U] =
-    new Generator[U] { thisGeneratorOfU =>
+  def flatMap[U](f: T => Generator[U]): Generator[U] = {
+    new Generator[U] {
+      thisGeneratorOfU =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
         val listOfGenOfU: List[Generator[U]] = listOfT.map(f)
-        val (listOfListOfU, nextNextRnd): (List[List[U]], Randomizer) = {
+        val (listOfU, nextNextRnd): (List[U], Randomizer) = {
           @tailrec
-          def loop(remainingGenOfU: List[Generator[U]], nRnd: Randomizer, acc: List[List[U]]): (List[List[U]], Randomizer) = {
-            remainingGenOfU match {
-              case head :: tail =>
-                val (listOfU, nnRnd) = head.initEdges(maxLength, nRnd)
-                loop(tail, nnRnd, listOfU :: acc)
-              case _ => (acc, nRnd)
-            }
+          def loop(remainingGenOfU: List[Generator[U]], nRnd: Randomizer, acc: Set[U]): (List[U], Randomizer) = {
+            if (acc.size == maxLength.value)
+              (acc.toList, nRnd)
+            else
+              remainingGenOfU match {
+                case head :: tail =>
+                  val (listOfU, nnRnd) = head.initEdges(maxLength, nRnd)
+                  loop(tail, nnRnd, acc ++ listOfU)
+                case _ => (acc.toList, nRnd)
+              }
           }
-          loop(listOfGenOfU, nextRnd, Nil)
+
+          loop(listOfGenOfU, nextRnd, Set.empty)
         }
-        val listOfU: List[U] = listOfListOfU.flatten
-        val distinctEdges: List[U] = listOfU.distinct
-        (distinctEdges.take(maxLength), nextNextRnd)
+        (listOfU, nextNextRnd)
       }
+
       def next(szp: SizeParam, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
         edges match {
           case head :: tail =>
@@ -83,6 +87,7 @@ trait Generator[T] { thisGeneratorOfT =>
             (u, Nil, nextNextRandomizer)
         }
       }
+
       override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = {
         val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
         var currentRnd = rnd1 // Local var, one thread; TODO: Do this with a tailrec loop
@@ -92,10 +97,13 @@ trait Generator[T] { thisGeneratorOfT =>
           currentRnd = nextRnd
           canonicals
         }
+
         (cansOfT.flatMap(getCanonicals), currentRnd)
       }
+
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
+  }
   def withFilter(f: T => Boolean): Generator[T] = filter(f)
   def filter(f: T => Boolean): Generator[T] =
     new Generator[T] { thisFilteredGeneratorOfT =>
