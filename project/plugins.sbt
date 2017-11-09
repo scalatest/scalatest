@@ -4,4 +4,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.7.0")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.20")
 
-addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.1.14")
+addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.1.18")
