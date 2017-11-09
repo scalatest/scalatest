@@ -21,110 +21,110 @@ import scala.util.Success
 import scala.xml
 
 /**
-  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
-  * where &ldquo;pretty&rdquo; is in the eye of the implementer.
-  *
-  * <p>
-  * Scala's `Any` type declares a `toString` that will convert any object to a `String`
-  * representation. This `String` representation is primarily intended for programmers, and is usually sufficient.
-  * However, sometimes it can be helpful to provide an alternative implementation of `toString` for certain types.
-  * For example, the `toString` implementation on `String` prints out the value of the `String`:
-  * </p>
-  *
-  * <pre class="stREPL">
-  * scala&gt; "1".toString
-  * res0: String = 1
-  * </pre>
-  *
-  * <p>
-  * If the error message that resulted from comparing `Int` 1 with `String` `"1"`
-  * in a ScalaTest assertion used `toString`, therefore, the error message would be:
-  * </p>
-  *
-  * <pre>
-  * 1 did not equal 1
-  * </pre>
-  *
-  * <p>
-  * To make it quicker to figure out why the assertion failed, ScalaTest ''prettifies'' the objects involved in
-  * the error message. The default `Prettifier` will place double quotes on either side of a `String`s
-  * `toString` result:
-  * </p>
-  *
-  * <pre class="stREPL">
-  * scala&gt; import org.scalactic._
-  * import org.scalactic._
-  *
-  * scala&gt; Prettifier.default("1")
-  * res1: String = "1"
-  * </pre>
-  *
-  * <p>
-  * Thus the error message resulting from comparing `Int` 1 with `String` `"1"`,
-  * in a ScalaTest assertion is:
-  * </p>
-  *
-  * <pre>
-  * 1 did not equal "1"
-  * </pre>
-  *
-  * <p>
-  * If you wish to prettify an object in production code, for example, to issue a profoundly clear debug message, you can use
-  * `PrettyMethods` and invoke `pretty`. Here's an example:
-  * </p>
-  *
-  * <pre class="stREPL">
-  * scala&gt; import PrettyMethods._
-  * import PrettyMethods._
-  *
-  * scala&gt; 1.pretty
-  * res2: String = 1
-  *
-  * scala&gt; "1".pretty
-  * res3: String = "1"
-  * </pre>
-  *
-  * <p>
-  * For example, the default `Prettifier`, <a href="Prettifier$.html">`Prettifier.default`</a>, transforms:
-  * </p>
-  *
-  * <ul>
-  * <li>`Null` to: `null`</li>
-  * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
-  * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
-  * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
-  * <li>`Array` to: `Array("1", "2", "3")`</li>
-  * <li>`scala.Some` to: `Some("3")`</li>
-  * <li>`scala.util.Left` to: `Left("3")`</li>
-  * <li>`scala.util.Right` to: `Right("3")`</li>
-  * <li>`scala.util.Success` to: `Success("3")`</li>
-  * <li>`org.scalactic.Good` to: `Good("3")`</li>
-  * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
-  * <li>`org.scalactic.One` to: `One("3")`</li>
-  * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
-  * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
-  * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
-  * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
-  * </ul>
-  *
-  * <p>
-  * For anything else, the default `Prettifier` returns the result of invoking `toString`.
-  * </p>
-  *
-  * <p>
-  * Note: `Prettifier` is not parameterized (''i.e.'', `Prettifier[T]`, where `T` is the type
-  * to prettify) because assertions (including matcher expressions) in ScalaTest would then need to look up `Prettifier`s implicitly by type. This would slow
-  * compilation even though most (let's guess 99.9%) of the time in practice assertions do not fail, and thus 99.9% of the time no error messages need to be generated.
-  * If no error messages are needed 99.9% of the time, no prettification is needed 99.9% of the time, so the slow down in compile time for the implicit
-  * look ups is unlikely to be worth the benefit. Only a few types in practice usually need prettification for testing error message purposes, and those will be covered
-  * by the default `Prettifier`. A future version of ScalaTest will provide a simple mechanism to replace the default `Prettifier` with a
-  * custom one when a test actually fails.
-  * </p>
-  */
+ * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
+ * where &ldquo;pretty&rdquo; is in the eye of the implementer.
+ *
+ * <p>
+ * Scala's `Any` type declares a `toString` that will convert any object to a `String`
+ * representation. This `String` representation is primarily intended for programmers, and is usually sufficient.
+ * However, sometimes it can be helpful to provide an alternative implementation of `toString` for certain types.
+ * For example, the `toString` implementation on `String` prints out the value of the `String`:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; "1".toString
+ * res0: String = 1
+ * </pre>
+ *
+ * <p>
+ * If the error message that resulted from comparing `Int` 1 with `String` `"1"`
+ * in a ScalaTest assertion used `toString`, therefore, the error message would be:
+ * </p>
+ *
+ * <pre>
+ * 1 did not equal 1
+ * </pre>
+ *
+ * <p>
+ * To make it quicker to figure out why the assertion failed, ScalaTest ''prettifies'' the objects involved in
+ * the error message. The default `Prettifier` will place double quotes on either side of a `String`s
+ * `toString` result:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalactic._
+ * import org.scalactic._
+ *
+ * scala&gt; Prettifier.default("1")
+ * res1: String = "1"
+ * </pre>
+ *
+ * <p>
+ * Thus the error message resulting from comparing `Int` 1 with `String` `"1"`,
+ * in a ScalaTest assertion is:
+ * </p>
+ *
+ * <pre>
+ * 1 did not equal "1"
+ * </pre>
+ *
+ * <p>
+ * If you wish to prettify an object in production code, for example, to issue a profoundly clear debug message, you can use
+ * `PrettyMethods` and invoke `pretty`. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import PrettyMethods._
+ * import PrettyMethods._
+ *
+ * scala&gt; 1.pretty
+ * res2: String = 1
+ *
+ * scala&gt; "1".pretty
+ * res3: String = "1"
+ * </pre>
+ *
+ * <p>
+ * For example, the default `Prettifier`, <a href="Prettifier$.html">`Prettifier.default`</a>, transforms:
+ * </p>
+ *
+ * <ul>
+ * <li>`Null` to: `null`</li>
+ * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+ * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+ * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+ * <li>`Array` to: `Array("1", "2", "3")`</li>
+ * <li>`scala.Some` to: `Some("3")`</li>
+ * <li>`scala.util.Left` to: `Left("3")`</li>
+ * <li>`scala.util.Right` to: `Right("3")`</li>
+ * <li>`scala.util.Success` to: `Success("3")`</li>
+ * <li>`org.scalactic.Good` to: `Good("3")`</li>
+ * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
+ * <li>`org.scalactic.One` to: `One("3")`</li>
+ * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
+ * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+ * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
+ * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
+ * </ul>
+ *
+ * <p>
+ * For anything else, the default `Prettifier` returns the result of invoking `toString`.
+ * </p>
+ *
+ * <p>
+ * Note: `Prettifier` is not parameterized (''i.e.'', `Prettifier[T]`, where `T` is the type
+ * to prettify) because assertions (including matcher expressions) in ScalaTest would then need to look up `Prettifier`s implicitly by type. This would slow
+ * compilation even though most (let's guess 99.9%) of the time in practice assertions do not fail, and thus 99.9% of the time no error messages need to be generated.
+ * If no error messages are needed 99.9% of the time, no prettification is needed 99.9% of the time, so the slow down in compile time for the implicit
+ * look ups is unlikely to be worth the benefit. Only a few types in practice usually need prettification for testing error message purposes, and those will be covered
+ * by the default `Prettifier`. A future version of ScalaTest will provide a simple mechanism to replace the default `Prettifier` with a
+ * custom one when a test actually fails.
+ * </p>
+ */
 trait Prettifier extends Serializable { // I removed the extends (Any => String), now that we are making this implicit.
   /**
-    * Prettifies the passed object.
-    */
+   * Prettifies the passed object.
+   */
   def apply(o: Any): String
 }
 
@@ -134,77 +134,77 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
 object Prettifier {
 
   /**
-    * Constract a new `Prettifier` from a given partial function.
-    *
-    * @param fun a partial function with which to implement the apply method of the returned `Prettifier`.
-    */
+   * Constract a new `Prettifier` from a given partial function.
+   *
+   * @param fun a partial function with which to implement the apply method of the returned `Prettifier`.
+   */
   def apply(fun: PartialFunction[Any, String]): Prettifier =
     new Prettifier {
       def apply(o: Any): String = fun(o)
     }
 
   /**
-    * A default `Prettifier`.
-    *
-    * <p>
-    * This default `Prettifier` is used in ScalaTest to clarify error messages.
-    * </p>
-    *
-    * <p>
-    * It transforms:
-    * </p>
-    *
-    * <ul>
-    * <li>`Null` to: `null`</li>
-    * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
-    * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
-    * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
-    * <li>`Array` to: `Array("1", "2", "3")`</li>
-    * <li>`scala.Some` to: `Some("3")`</li>
-    * <li>`scala.util.Left` to: `Left("3")`</li>
-    * <li>`scala.util.Right` to: `Right("3")`</li>
-    * <li>`scala.util.Success` to: `Success("3")`</li>
-    * <li>`org.scalactic.Good` to: `Good("3")`</li>
-    * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
-    * <li>`org.scalactic.One` to: `One("3")`</li>
-    * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
-    * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
-    * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
-    * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
-    * </ul>
-    *
-    *
-    * <p>
-    * For anything else, it returns the result of invoking `toString`.
-    * </p>
-    */
+   * A default `Prettifier`.
+   *
+   * <p>
+   * This default `Prettifier` is used in ScalaTest to clarify error messages.
+   * </p>
+   *
+   * <p>
+   * It transforms:
+   * </p>
+   *
+   * <ul>
+   * <li>`Null` to: `null`</li>
+   * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+   * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+   * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+   * <li>`Array` to: `Array("1", "2", "3")`</li>
+   * <li>`scala.Some` to: `Some("3")`</li>
+   * <li>`scala.util.Left` to: `Left("3")`</li>
+   * <li>`scala.util.Right` to: `Right("3")`</li>
+   * <li>`scala.util.Success` to: `Success("3")`</li>
+   * <li>`org.scalactic.Good` to: `Good("3")`</li>
+   * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
+   * <li>`org.scalactic.One` to: `One("3")`</li>
+   * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
+   * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+   * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
+   * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
+   * </ul>
+   *
+   *
+   * <p>
+   * For anything else, it returns the result of invoking `toString`.
+   * </p>
+   */
   implicit val default: Prettifier =
     new DefaultPrettifier
 
   /**
-    * A basic `Prettifier`.
-    *
-    * <p>
-    * This was the default `Prettifier` used in ScalaTest 2.0 release.
-    * </p>
-    *
-    * <p>
-    * It transforms:
-    * </p>
-    *
-    * <ul>
-    * <li>`Null` to: `null`</li>
-    * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
-    * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
-    * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
-    * <li>`Array` to: `Array("1", "2", "3")`</li>
-    * <li>`scala.util.Some` to: `Some("3")`</li>
-    * </ul>
-    *
-    * <p>
-    * For anything else, it returns the result of invoking `toString`.
-    * </p>
-    */
+   * A basic `Prettifier`.
+   *
+   * <p>
+   * This was the default `Prettifier` used in ScalaTest 2.0 release.
+   * </p>
+   *
+   * <p>
+   * It transforms:
+   * </p>
+   *
+   * <ul>
+   * <li>`Null` to: `null`</li>
+   * <li>`Unit` to: `&lt;() the Unit value&gt;`</li>
+   * <li>`String` to: `"string"` (the `toString` result surrounded by double quotes)</li>
+   * <li>`Char` to: `'c'` (the `toString` result surrounded by single quotes)</li>
+   * <li>`Array` to: `Array("1", "2", "3")`</li>
+   * <li>`scala.util.Some` to: `Some("3")`</li>
+   * </ul>
+   *
+   * <p>
+   * For anything else, it returns the result of invoking `toString`.
+   * </p>
+   */
   val basic = new BasicPrettifier
 
   private[org] def diffStrings(s: String, t: String): Tuple2[String, String] = {
@@ -267,8 +267,8 @@ object Prettifier {
 }
 
 /**
-  * Default `Prettifier`.
-  */
+ * Default `Prettifier`.
+ */
 class DefaultPrettifier extends Prettifier {
 
   def apply(o: Any): String = {
