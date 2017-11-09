@@ -159,9 +159,6 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegDouble.ensuringValid(Double.NegativeInfinity).isNegInfinity shouldBe true
       NegDouble(-1.0).isNegInfinity shouldBe false
     }
-    it("should not offer a isPosInfinity method") {
-      "NegDouble(-1.0f).isPosInfinity" shouldNot compile
-    }
     it("should be sortable") {
       val xs = List(NegDouble(-2.2), NegDouble(-4.4), NegDouble(-1.1),
         NegDouble(-3.3))

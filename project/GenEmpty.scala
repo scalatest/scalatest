@@ -19,6 +19,8 @@ import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenEmpty {
+
+  val generatorSource = new File("GenEmpty.scala")
   
   def translateLine(line: String, mapping: (String, String)*): String = {
     @tailrec
@@ -32,28 +34,32 @@ object GenEmpty {
     translate(line, mapping.toIterator)
   }
   
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
-    val targetDir = new File(targetBaseDir, "emptyTests")
-    targetDir.mkdirs()
+
+    targetBaseDir.mkdirs()
     
-    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*) {
+    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*): File = {
       val generatedFileName = sourceFileName.replaceAll("List", typeName)
-      val generatedFile = new File(targetDir, generatedFileName)
-      val writer = new BufferedWriter(new FileWriter(generatedFile))
-      try {
-        val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
-        for (line <- lines) {
-          val generatedLine = translateLine(line, mapping.toList: _*)
-          writer.write(generatedLine.toString)
-          writer.newLine() // add for 2.8
+      val generatedFile = new File(targetBaseDir, generatedFileName)
+      if (!generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(generatedFile))
+        try {
+          val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
+          for (line <- lines) {
+            val generatedLine = translateLine(line, mapping.toList: _*)
+            writer.write(generatedLine.toString)
+            writer.newLine() // add for 2.8
+          }
+        }
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + generatedFile.getAbsolutePath)
         }
       }
-      finally {
-        writer.close()
-        println("Generated " + generatedFile.getAbsolutePath)
-      }
+      generatedFile
     }
     
     val arrayMapping = 
@@ -117,34 +123,36 @@ object GenEmpty {
         "List" -> "javaMap", 
         "//ADDITIONAL//" -> "import SharedHelpers.javaMap"
       )
-      
-    generateFile("ListShouldBeEmptySpec.scala", "Array", arrayMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Array", arrayMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Array", arrayMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "Set", setMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Set", setMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Set", setMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "String", stringMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "String", stringMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "String", stringMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "Option", optionMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Option", optionMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Option", optionMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "Map", mapMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Map", mapMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Map", mapMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "JavaCol", javaColMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
-    
-    generateFile("ListShouldBeEmptySpec.scala", "JavaMap", javaMapMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
-    generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+
+    Seq(
+      generateFile("ListShouldBeEmptySpec.scala", "Array", arrayMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Array", arrayMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Array", arrayMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "Set", setMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Set", setMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Set", setMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "String", stringMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "String", stringMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "String", stringMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "Option", optionMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Option", optionMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Option", optionMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "Map", mapMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "Map", mapMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "Map", mapMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "JavaCol", javaColMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "JavaCol", javaColMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "JavaCol", javaColMapping: _*),
+
+      generateFile("ListShouldBeEmptySpec.scala", "JavaMap", javaMapMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*),
+      generateFile("ListShouldBeEmptyLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    )
   }
   
   def main(args: Array[String]) {

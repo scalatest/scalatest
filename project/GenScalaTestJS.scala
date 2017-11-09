@@ -61,7 +61,10 @@ object GenScalaTestJS {
     files.map { sourceFileName =>
       val sourceFile = new File(sourceDir, sourceFileName)
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -71,7 +74,10 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && f.getName.startsWith(startsWith) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -81,7 +87,10 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -91,7 +100,8 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      IO.copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        IO.copyFile(sourceFile, destFile)
       destFile
     }
   }
@@ -217,7 +227,8 @@ object GenScalaTestJS {
         "ThreadInterruptor.scala",          // skipped because no interrupt in js.
         "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "TimeoutTask.scala"            // skipped because timeout is not supported.,
+        "TimeoutTask.scala",            // skipped because timeout is not supported.,
+        "Ultimately.scala"              // skipped because js is single thread and does not share memory.
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
@@ -286,7 +297,8 @@ object GenScalaTestJS {
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-        "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
+        "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
+        "UltimatelySpec.scala"   // skipped because Eventually not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++

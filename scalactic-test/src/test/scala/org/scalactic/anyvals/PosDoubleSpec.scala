@@ -161,9 +161,6 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       PosDouble.ensuringValid(Double.PositiveInfinity).isPosInfinity shouldBe true
       PosDouble(1.0).isPosInfinity shouldBe false
     }
-    it("should not offer a isNegInfinity method") {
-      "PosDouble(1.0).isNegInfinity" shouldNot compile
-    }
 
     it("should be sortable") {
       val xs = List(PosDouble(2.2), PosDouble(4.4), PosDouble(1.1),

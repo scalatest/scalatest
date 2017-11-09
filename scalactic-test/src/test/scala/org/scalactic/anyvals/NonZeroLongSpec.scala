@@ -214,9 +214,11 @@ class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         "takesNonZeroLong(0L)" shouldNot compile
       }
 
-      it("should not compile when -8 is passed in") {
-        "takesNonZeroLong(-8)" shouldNot compile
-        "takesNonZeroLong(-8L)" shouldNot compile
+      it("should compile when -8 is passed in") {
+        "takesNonZeroLong(-8)" should compile
+        takesNonZeroLong(-8) shouldEqual -8L
+        "takesNonZeroLong(-8L)" should compile
+        takesNonZeroLong(-8L) shouldEqual -8L
       }
 
       it("should not compile when x is passed in") {

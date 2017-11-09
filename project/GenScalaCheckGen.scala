@@ -21,6 +21,8 @@ import scala.collection.JavaConversions._
 
 object GenScalaCheckGen {
 
+  val generatorSource = new File("GenScalaCheckGen.scala")
+
   val copyrightTemplate = """/*
  * Copyright 2001-$year$ Artima, Inc.
  *
@@ -3373,71 +3375,78 @@ $okayExpressions$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genPropertyChecks(targetDir: File) {
+  def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "ScalaCheckDrivenPropertyChecks.scala")))
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(propertyCheckPreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 6) {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val argType = alpha.take(i).map(c => c + ": " + c.toUpper).mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        val arbShrinks = alpha.take(i).toUpperCase.map(
-          c => "      arb" + c + ": Arbitrary[" + c + "], shr" + c + ": Shrink[" + c + "]"
-        ).mkString(",\n")
-        val shrinks = alpha.take(i).toUpperCase.map(
-          c => "      shr" + c + ": Shrink[" + c + "]"
-        ).mkString(",\n")
-        val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
-        val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val genArgsAndTypes = alpha.take(i).toUpperCase.map(c => "gen" + c + ": Gen[" + c + "]").mkString(", ")
-        val genArgs = alpha.take(i).toUpperCase.map(c => "gen" + c).mkString(", ")
-        val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
-        val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
-        val argNameNames = alpha.take(i).toUpperCase.map("name" + _).mkString(", ")
-        val argNameNamesAndTypes = alpha.take(i).toUpperCase.map("name" + _ + ": String").mkString(", ")
-        val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
-        val nameAndGenArgsAndTypes = alpha.take(i).toUpperCase.map(c => "genAndName" + c + ": (Gen[" + c + "], String)").mkString(", ")
-        val tupleBusters = alpha.take(i).toUpperCase.map(c => "      val (gen" + c + ", name" + c + ") = genAndName" + c).mkString("\n")
-        st.setAttribute("n", i)
-        st.setAttribute("argType", argType)
-        st.setAttribute("arbShrinks", arbShrinks)
-        st.setAttribute("shrinks", shrinks)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("sumOfArgLengths", sumOfArgLengths)
-        st.setAttribute("namesAndTypes", namesAndTypes)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("genArgs", genArgs)
-        st.setAttribute("genArgsAndTypes", genArgsAndTypes)
-        st.setAttribute("famousArgs", famousArgs)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("tupleBusters", tupleBusters)
-        st.setAttribute("nameGenTuples", nameGenTuples)
-        st.setAttribute("nameAndGenArgsAndTypes", nameAndGenArgsAndTypes)
-        st.setAttribute("argNameNames", argNameNames)
-        st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
+    val targetFile = new File(targetDir, "ScalaCheckDrivenPropertyChecks.scala")
+
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
+        bw.write(propertyCheckPreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 6) {
+          val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val argType = alpha.take(i).map(c => c + ": " + c.toUpper).mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          val arbShrinks = alpha.take(i).toUpperCase.map(
+            c => "      arb" + c + ": Arbitrary[" + c + "], shr" + c + ": Shrink[" + c + "]"
+          ).mkString(",\n")
+          val shrinks = alpha.take(i).toUpperCase.map(
+            c => "      shr" + c + ": Shrink[" + c + "]"
+          ).mkString(",\n")
+          val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
+          val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          val genArgsAndTypes = alpha.take(i).toUpperCase.map(c => "gen" + c + ": Gen[" + c + "]").mkString(", ")
+          val genArgs = alpha.take(i).toUpperCase.map(c => "gen" + c).mkString(", ")
+          val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
+          val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
+          val argNameNames = alpha.take(i).toUpperCase.map("name" + _).mkString(", ")
+          val argNameNamesAndTypes = alpha.take(i).toUpperCase.map("name" + _ + ": String").mkString(", ")
+          val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
+          val nameAndGenArgsAndTypes = alpha.take(i).toUpperCase.map(c => "genAndName" + c + ": (Gen[" + c + "], String)").mkString(", ")
+          val tupleBusters = alpha.take(i).toUpperCase.map(c => "      val (gen" + c + ", name" + c + ") = genAndName" + c).mkString("\n")
+          st.setAttribute("n", i)
+          st.setAttribute("argType", argType)
+          st.setAttribute("arbShrinks", arbShrinks)
+          st.setAttribute("shrinks", shrinks)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("sumOfArgLengths", sumOfArgLengths)
+          st.setAttribute("namesAndTypes", namesAndTypes)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("genArgs", genArgs)
+          st.setAttribute("genArgsAndTypes", genArgsAndTypes)
+          st.setAttribute("famousArgs", famousArgs)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("tupleBusters", tupleBusters)
+          st.setAttribute("nameGenTuples", nameGenTuples)
+          st.setAttribute("nameAndGenArgsAndTypes", nameAndGenArgsAndTypes)
+          st.setAttribute("argNameNames", argNameNames)
+          st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
+          bw.write(st.toString)
+        }
+        bw.write("}\n")
+        bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
       }
-      bw.write("}\n")
-      bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
+      finally {
+        bw.close()
+      }
     }
-    finally {
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
   // Invitation style indicates how GeneratorDrivenPropertyChecks is imported
-  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean, generatorSuiteTemplate: String, checkMethod: String) {
+  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean, generatorSuiteTemplate: String, checkMethod: String): File = {
 
     targetDir.mkdirs()
 
@@ -3450,85 +3459,91 @@ $okayExpressions$
     val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite"
     val fileName = checkMethod.capitalize + suiteClassName + ".scala"
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, fileName)))
+    val targetFile = new File(targetDir, fileName)
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(generatorSuitePreamble)
-      if (doItForCheckers) {
-        bw.write("import org.scalacheck.Prop.{Exception => _, _}\n")
-      }
-      if (!mixinInvitationStyle)
-        bw.write("import " + traitOrObjectName + "._\n")
-      if (checkMethod == "expect")
-        bw.write("import org.scalatest.Expectations._\n")
-      bw.write("\n")
-      bw.write(
-        "class " + checkMethod.capitalize + suiteClassName + " extends FunSpec " +
-          (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
-      bw.write(generatorSuitePostamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 6) {
-        val st =
-          if (doItForCheckers)
-            new org.antlr.stringtemplate.StringTemplate(checkersSuiteTemplate)
-          else
-            new org.antlr.stringtemplate.StringTemplate(generatorSuiteTemplate)
-        val rowOfOnes = List.fill(i)("  1").mkString(", ")
-        val rowOfTwos = List.fill(i)("  2").mkString(", ")
-        val listOfIs = List.fill(i)("i").mkString(", ")
-        val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
-        val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =
-          for (idx <- 0 to 9) yield
-            List.fill(i)("  " + idx).mkString("        (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
-        //val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val names = alpha.take(i).mkString(", ")
-        val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
-        val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
-        val sevenElevenArgs = List.fill(i)("sevenEleven").mkString(", ")
-        val fiveFiveArgs = List.fill(i)("fiveFive").mkString(", ")
-        val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
-        val fiveFiveNameGenTuples = alpha.take(i).map("(fiveFive, \"" + _ + "\")").mkString(", ")
-        val sevenElevenNameGenTuples = alpha.take(i).map("(sevenEleven, \"" + _ + "\")").mkString(", ")
-        val lengthAssertions = alpha.take(i).map("      " + checkMethod + "(" + _ + ".length <= 5)").mkString("\n")
-        val okayAssertions = alpha.take(i).map("        " + checkMethod + "(" + _ + " === (\"OKAY\"))").mkString("\n")
-        val lengthExpressions = alpha.take(i).map("      " + _ + ".length <= 5").mkString("\n")
-        val okayExpressions = alpha.take(i).map("        " + _ + " == (\"OKAY\")").mkString("\n")
-        st.setAttribute("n", i)
-        st.setAttribute("columnsOfOnes", columnsOfOnes)
-        st.setAttribute("columnsOfTwos", columnsOfTwos)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("names", names)
-        st.setAttribute("namesAndTypes", namesAndTypes)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("sumOfArgLengths", sumOfArgLengths)
-        st.setAttribute("listOfIs", listOfIs)
-        st.setAttribute("famousArgs", famousArgs)
-        st.setAttribute("sevenElevenArgs", sevenElevenArgs)
-        st.setAttribute("fiveFiveArgs", fiveFiveArgs)
-        st.setAttribute("nameGenTuples", nameGenTuples)
-        st.setAttribute("fiveFiveNameGenTuples", fiveFiveNameGenTuples)
-        st.setAttribute("sevenElevenNameGenTuples", sevenElevenNameGenTuples)
-        st.setAttribute("lengthAssertions", lengthAssertions)
-        st.setAttribute("okayAssertions", okayAssertions)
-        st.setAttribute("lengthExpressions", lengthExpressions)
-        st.setAttribute("okayExpressions", okayExpressions)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
-      }
+        bw.write(generatorSuitePreamble)
+        if (doItForCheckers) {
+          bw.write("import org.scalacheck.Prop.{Exception => _, _}\n")
+        }
+        if (!mixinInvitationStyle)
+          bw.write("import " + traitOrObjectName + "._\n")
+        if (checkMethod == "expect")
+          bw.write("import org.scalatest.Expectations._\n")
+        bw.write("\n")
+        bw.write(
+          "class " + checkMethod.capitalize + suiteClassName + " extends FunSpec " +
+            (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
+        bw.write(generatorSuitePostamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 6) {
+          val st =
+            if (doItForCheckers)
+              new org.antlr.stringtemplate.StringTemplate(checkersSuiteTemplate)
+            else
+              new org.antlr.stringtemplate.StringTemplate(generatorSuiteTemplate)
+          val rowOfOnes = List.fill(i)("  1").mkString(", ")
+          val rowOfTwos = List.fill(i)("  2").mkString(", ")
+          val listOfIs = List.fill(i)("i").mkString(", ")
+          val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
+          val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
+          val rawRows =
+            for (idx <- 0 to 9) yield
+              List.fill(i)("  " + idx).mkString("        (", ", ", ")")
+          val columnsOfIndexes = rawRows.mkString(",\n")
+          val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
+          //val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+          val names = alpha.take(i).mkString(", ")
+          val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
+          val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
+          val sevenElevenArgs = List.fill(i)("sevenEleven").mkString(", ")
+          val fiveFiveArgs = List.fill(i)("fiveFive").mkString(", ")
+          val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
+          val fiveFiveNameGenTuples = alpha.take(i).map("(fiveFive, \"" + _ + "\")").mkString(", ")
+          val sevenElevenNameGenTuples = alpha.take(i).map("(sevenEleven, \"" + _ + "\")").mkString(", ")
+          val lengthAssertions = alpha.take(i).map("      " + checkMethod + "(" + _ + ".length <= 5)").mkString("\n")
+          val okayAssertions = alpha.take(i).map("        " + checkMethod + "(" + _ + " === (\"OKAY\"))").mkString("\n")
+          val lengthExpressions = alpha.take(i).map("      " + _ + ".length <= 5").mkString("\n")
+          val okayExpressions = alpha.take(i).map("        " + _ + " == (\"OKAY\")").mkString("\n")
+          st.setAttribute("n", i)
+          st.setAttribute("columnsOfOnes", columnsOfOnes)
+          st.setAttribute("columnsOfTwos", columnsOfTwos)
+          st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("names", names)
+          st.setAttribute("namesAndTypes", namesAndTypes)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("sumOfArgLengths", sumOfArgLengths)
+          st.setAttribute("listOfIs", listOfIs)
+          st.setAttribute("famousArgs", famousArgs)
+          st.setAttribute("sevenElevenArgs", sevenElevenArgs)
+          st.setAttribute("fiveFiveArgs", fiveFiveArgs)
+          st.setAttribute("nameGenTuples", nameGenTuples)
+          st.setAttribute("fiveFiveNameGenTuples", fiveFiveNameGenTuples)
+          st.setAttribute("sevenElevenNameGenTuples", sevenElevenNameGenTuples)
+          st.setAttribute("lengthAssertions", lengthAssertions)
+          st.setAttribute("okayAssertions", okayAssertions)
+          st.setAttribute("lengthExpressions", lengthExpressions)
+          st.setAttribute("okayExpressions", okayExpressions)
+          bw.write(st.toString)
+        }
 
-      bw.write("}\n")
+        bw.write("}\n")
+      }
+      finally {
+        bw.close()
+      }
     }
-    finally {
-      bw.close()
-    }
+
+    targetFile
   }
 
   def main(args: Array[String]) {
@@ -3544,24 +3559,25 @@ $okayExpressions$
     genTest(testDir, version, scalaVersion)
   }
 
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     genPropertyChecks(dir)
   }
 
-  def genTest(dir: File, version: String, scalaVersion: String) {
-    genGeneratorDrivenSuite(dir, true, false, false, generatorSuiteAssertTemplate, "assert")
-    genGeneratorDrivenSuite(dir, false, false, false, generatorSuiteAssertTemplate, "assert")
-    genGeneratorDrivenSuite(dir, true, true, false, generatorSuiteAssertTemplate, "assert")
-    genGeneratorDrivenSuite(dir, false, true, false, generatorSuiteAssertTemplate, "assert")
-    genGeneratorDrivenSuite(dir, true, true, true, generatorSuiteAssertTemplate, "assert")
-    genGeneratorDrivenSuite(dir, false, true, true, generatorSuiteAssertTemplate, "assert")
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    Seq(
+      genGeneratorDrivenSuite(dir, true, false, false, generatorSuiteAssertTemplate, "assert"),
+      genGeneratorDrivenSuite(dir, false, false, false, generatorSuiteAssertTemplate, "assert"),
+      genGeneratorDrivenSuite(dir, true, true, false, generatorSuiteAssertTemplate, "assert"),
+      genGeneratorDrivenSuite(dir, false, true, false, generatorSuiteAssertTemplate, "assert"),
+      genGeneratorDrivenSuite(dir, true, true, true, generatorSuiteAssertTemplate, "assert"),
+      genGeneratorDrivenSuite(dir, false, true, true, generatorSuiteAssertTemplate, "assert"),
 
-    genGeneratorDrivenSuite(dir, true, false, false, generatorSuiteExpectTemplate, "expect")
-    genGeneratorDrivenSuite(dir, false, false, false, generatorSuiteExpectTemplate, "expect")
-    genGeneratorDrivenSuite(dir, true, true, false, generatorSuiteExpectTemplate, "expect")
-    genGeneratorDrivenSuite(dir, false, true, false, generatorSuiteExpectTemplate, "expect")
-    genGeneratorDrivenSuite(dir, true, true, true, generatorSuiteExpectTemplate, "expect")
-    genGeneratorDrivenSuite(dir, false, true, true, generatorSuiteExpectTemplate, "expect")
-
+      genGeneratorDrivenSuite(dir, true, false, false, generatorSuiteExpectTemplate, "expect"),
+      genGeneratorDrivenSuite(dir, false, false, false, generatorSuiteExpectTemplate, "expect"),
+      genGeneratorDrivenSuite(dir, true, true, false, generatorSuiteExpectTemplate, "expect"),
+      genGeneratorDrivenSuite(dir, false, true, false, generatorSuiteExpectTemplate, "expect"),
+      genGeneratorDrivenSuite(dir, true, true, true, generatorSuiteExpectTemplate, "expect"),
+      genGeneratorDrivenSuite(dir, false, true, true, generatorSuiteExpectTemplate, "expect")
+    )
   }
 }
