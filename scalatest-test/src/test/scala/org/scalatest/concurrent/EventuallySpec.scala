@@ -229,6 +229,19 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
       }
       serializeRoundtrip(e)
     }
+
+    it ("should execute only once and blow up with a TFE when asked to escape early") {
+      var count = 0
+      val caught = the[TestFailedException] thrownBy {
+        eventually {
+          count = count + 1
+          escape("escaped early")
+          1 should equal (2)
+        }
+      }
+      count should equal (1)
+      caught.getMessage should be ("escaped early")
+    }
   }
 }
 
