@@ -221,7 +221,7 @@ private[scalatest] object CompileMacro {
             messageExpr.splice,
             messageExpr.splice,
             Vector.empty,
-            Vector.empty,
+            Vector.empty
           )(prettifier.splice)
           //throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
         }
