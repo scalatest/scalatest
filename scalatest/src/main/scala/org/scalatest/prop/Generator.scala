@@ -455,7 +455,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
             if (sqrt < 1.0) 0.0 :: acc
             else {
               val whole: Double = sqrt.floor
-              val negWhole: Double = math.rint(-whole)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: Double = -whole  //math.rint(-whole)
               val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
               shrinkLoop(first, first :: second :: acc)
             }
