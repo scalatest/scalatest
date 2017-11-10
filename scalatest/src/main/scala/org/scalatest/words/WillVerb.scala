@@ -191,7 +191,7 @@ private[scalatest] trait WillVerb {
      * </p>
      */
     def will(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
-      fun(leftSideString, "will", pos, right _)
+      fun(leftSideString, "will", pos, () => right)
     }
 
     /**

@@ -52,7 +52,7 @@ trait DeprecatedPrettyMethods {
    * use a different <code>Prettifier</code>.
    * </p>
    */
-  implicit val prettifierConfig = PrettifierConfig(Prettifier.default)
+  implicit val prettifierConfig: PrettifierConfig = PrettifierConfig(Prettifier.default)
 
   /**
    * Implicit class that adds a <code>pretty</code> method to any object.

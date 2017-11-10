@@ -721,7 +721,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -766,7 +766,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -812,7 +812,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -859,7 +859,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -907,7 +907,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -956,7 +956,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          !unmetCondition ==> (
+          propBoolean(!unmetCondition) ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -1002,7 +1002,7 @@ $arbShrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        !unmetCondition ==> (
+        propBoolean(!unmetCondition) ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1045,7 +1045,7 @@ $arbShrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        !unmetCondition ==> (
+        propBoolean(!unmetCondition) ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1095,7 +1095,7 @@ $shrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        !unmetCondition ==> (
+        propBoolean(!unmetCondition) ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1148,7 +1148,7 @@ $tupleBusters$
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        !unmetCondition ==> (
+        propBoolean(!unmetCondition) ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
