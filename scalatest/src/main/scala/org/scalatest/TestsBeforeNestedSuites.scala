@@ -19,7 +19,7 @@ import Suite.wrapReporterIfNecessary
 import org.scalactic.Requirements.requireNonNull
 import org.scalatest.events.{InfoProvided, NameInfo}
 
-trait TestsBeforeNestedSuite extends Suite { thisSuite: Suite =>
+trait TestsBeforeNestedSuites extends Suite { thisSuite: Suite =>
 
   /**
    * Override to run test first before nested suite(s).
