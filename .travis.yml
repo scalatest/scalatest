@@ -64,6 +64,8 @@ matrix:
 branches:
   only:
     - 3.0.x
+    - 3.1.x
+    - 3.2.x
 
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
