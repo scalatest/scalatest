@@ -26,7 +26,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.generic.FilterMonadic
-import scala.collection.parallel.ParSeq
+//import scala.collection.parallel.ParSeq
 import scala.util.matching.Regex
 import scala.language.higherKinds
 import scala.util.{Try, Success, Failure}
@@ -1673,8 +1673,8 @@ final class NumericString private (val value: String) extends AnyVal {
    *
    *  @return  a parallel implementation of this collection
    */
-  def par: ParSeq[Char] =
-    value.par
+  /*def par: ParSeq[Char] =
+    value.par*/
   // SKIP-SCALATESTJS-END
 
   /** Partitions this `NumericString` in two strings according to a predicate.
