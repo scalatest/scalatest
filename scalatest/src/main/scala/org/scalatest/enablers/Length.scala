@@ -118,6 +118,8 @@ trait Length[T] {
  */
 object Length {
 
+  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
+
   /**
    * Enable <code>Length</code> implementation for <code>java.util.List</code>
    *
@@ -171,7 +173,7 @@ object Length {
    */
   implicit def lengthOfAnyRefWithLengthMethodForInt[T <: AnyRef { def length(): Int}]: Length[T] = 
     new Length[T] {
-      def lengthOf(obj: T): Long = obj.length
+      def lengthOf(obj: T): Long = obj.length()
     }
 
   /**
@@ -193,7 +195,7 @@ object Length {
    */
   implicit def lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
     new Length[T] {
-      def lengthOf(obj: T): Long = obj.getLength
+      def lengthOf(obj: T): Long = obj.getLength()
     }
 
   /**
@@ -215,7 +217,7 @@ object Length {
    */
   implicit def lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = 
     new Length[T] {
-      def lengthOf(obj: T): Long = obj.length
+      def lengthOf(obj: T): Long = obj.length()
     }
 
   /**
@@ -237,7 +239,7 @@ object Length {
    */
   implicit def lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
     new Length[T] {
-      def lengthOf(obj: T): Long = obj.getLength
+      def lengthOf(obj: T): Long = obj.getLength()
     }
 
   /**

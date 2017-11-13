@@ -275,7 +275,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
     /**
@@ -297,7 +297,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos)
     }
 
     /**
@@ -319,7 +319,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -387,7 +387,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
     /**
@@ -408,7 +408,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos)
     }
 
     /**
@@ -429,7 +429,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
     /**
@@ -681,7 +681,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos)
     }
 
     /**
@@ -711,7 +711,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _, pos)
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => testFun, pos)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -778,7 +778,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos)
     }
 
     /**
@@ -807,7 +807,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _, pos)
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => testFun, pos)
     }
 
     /**
@@ -990,7 +990,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
     /**
@@ -1012,7 +1012,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _, pos)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos)
     }
 
     /**
@@ -1034,7 +1034,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -1102,7 +1102,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
     /**
@@ -1123,7 +1123,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _, pos)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos)
     }
 
     /**
@@ -1144,7 +1144,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
     /**
@@ -1403,7 +1403,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
 
     /**
@@ -1424,7 +1424,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
   }
 
@@ -1501,7 +1501,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _, pos)
+      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
 
     /**
@@ -1524,7 +1524,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
   }
 
@@ -1565,7 +1565,7 @@ import resultOfStringPassedToVerb.verb
         new ResultOfStringPassedToVerb(verb, rest) {
 
           def is(testFun: => PendingStatement): Unit = {
-            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _, pos)
+            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), () => testFun, pos)
           }
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
@@ -1575,7 +1575,7 @@ import resultOfStringPassedToVerb.verb
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
               def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _, pos)
+                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, () => testFun, pos)
               }
             }
           }

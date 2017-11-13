@@ -475,7 +475,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
       }
     }
 
-    private val emptyClassArray = new Array[java.lang.Class[T] forSome {type T}](0)
+    private val emptyClassArray = new Array[java.lang.Class[_]](0)
     
     private class SbtReporter(eventHandler: EventHandler, report: Option[Reporter]) extends Reporter {
       
