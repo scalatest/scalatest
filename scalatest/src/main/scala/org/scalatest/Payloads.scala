@@ -75,7 +75,7 @@ trait Payloads {
       }
     }
     catch {
-      case e: org.scalatest.exceptions.ModifiablePayload[_] =>
+      case e: org.scalatest.exceptions.ModifiablePayload[_] with Throwable =>
         if (payload != null)
           throw e.modifyPayload((currentPayload: Option[Any]) => Some(payload))
         else

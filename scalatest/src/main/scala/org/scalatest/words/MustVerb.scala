@@ -188,7 +188,7 @@ trait MustVerb {
      * </p>
      */
     def must(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
-      fun(leftSideString, "must", pos, right _)
+      fun(leftSideString, "must", pos, () => right)
     }
 
     /**
