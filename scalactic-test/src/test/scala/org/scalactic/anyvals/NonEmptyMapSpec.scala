@@ -22,6 +22,10 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
+
 class NonEmptyMapSpec extends UnitSpec {
   "A NonEmptyMap" can "be constructed with one element" in {
     val onesie = NonEmptyMap(3 -> "three")
@@ -695,6 +699,7 @@ class NonEmptyMapSpec extends UnitSpec {
       def toDouble(x: (Int, Int)): Double = x._1.toDouble
 
       def compare(x: (Int, Int), y: (Int, Int)): Int = x._1 compare y._1
+      def parseString(str: String): Option[(Int, Int)] = ???  // For scala 2.13, for testing purpose we do not need to implement it here.
     }
 
     NonEmptyMap(1 -> 1).sum shouldBe 1 -> 1
