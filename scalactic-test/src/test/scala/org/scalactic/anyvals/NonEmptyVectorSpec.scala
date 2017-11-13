@@ -22,6 +22,10 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
+
 class NonEmptyVectorSpec extends UnitSpec {
   "A NonEmptyVector" can "be constructed with one element" in {
     val onesie = NonEmptyVector(3)
