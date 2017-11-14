@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import scala.xml.{Node, Text, NodeSeq}
+import scala.xml.{Node, Text, NodeSeq, PCData}
 
 class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with StreamlinedXmlNormMethods {
 
@@ -43,6 +43,8 @@ class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with Streamlin
           </day>
         </summer>.norm shouldBe true
       <div>{Text("My name is ")}{Text("Harry")}</div>.norm shouldBe <div>My name is Harry</div>
+      (<summer><day>{Text("Hello ")}{Text("Dude!")}</day></summer>).norm shouldBe <summer><day>Hello Dude!</day></summer>
+      (<div>My name is {PCData("Harry")}</div>).norm shouldBe <div>My name is Harry</div>
     }
   }
 
@@ -72,6 +74,8 @@ class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with Streamlin
         </summer>.norm: Node) shouldBe true
       (Text("   "): Node).norm shouldBe Text("   ")
       (<div>{Text("My name is ")}{Text("Harry")}</div>: Node).norm shouldBe <div>My name is Harry</div>
+      (<summer><day>{Text("Hello ")}{Text("Dude!")}</day></summer>: Node).norm shouldBe <summer><day>Hello Dude!</day></summer>
+      (<div>My name is {PCData("Harry")}</div>: Node).norm shouldBe <div>My name is Harry</div>
     }
   }
 
@@ -101,6 +105,28 @@ class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with Streamlin
         </summer>.norm: NodeSeq) shouldBe true
       (Text("   "): NodeSeq).norm shouldBe Text("   ")
       (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq).norm shouldBe <div>My name is Harry</div>
+      (<summer><day>{Text("Hello ")}{Text("Dude!")}</day></summer>: Node).norm shouldBe <summer><day>Hello Dude!</day></summer>
+      (<div>My name is {PCData("Harry")}</div>: NodeSeq).norm shouldBe <div>My name is Harry</div>
+    }
+
+     it("should keep the order of the nodes while merging adjacent Text") {
+      (<seasons>
+        <spring>
+          <day>One</day>
+          <day>Tow</day>
+        </spring>
+        <summer>
+          <day>Three</day>
+        </summer>
+        <fall>
+          <day>Four</day>
+        </fall>
+        <winter>
+          <day>Five</day>
+          <day>Six</day>
+          <day>Seven</day>
+        </winter>
+      </seasons>: NodeSeq).norm shouldBe <seasons><spring><day>One</day><day>Tow</day></spring><summer><day>Three</day></summer><fall><day>Four</day></fall><winter><day>Five</day><day>Six</day><day>Seven</day></winter></seasons>
     }
   }
 }
