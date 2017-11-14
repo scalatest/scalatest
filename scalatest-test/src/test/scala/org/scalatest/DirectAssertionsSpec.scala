@@ -888,7 +888,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
@@ -904,7 +904,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
@@ -2331,7 +2331,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
@@ -2347,7 +2347,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
@@ -3767,7 +3767,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
@@ -3783,7 +3783,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
@@ -5210,7 +5210,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
@@ -5226,7 +5226,7 @@ class DirectAssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       else
         org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
