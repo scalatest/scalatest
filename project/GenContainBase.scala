@@ -175,7 +175,7 @@ class GenContainBase {
     List(
       "ListShould" -> "JavaColShould",
       "List\\[String\\]" -> "java.util.List[String]",
-      "def areEqual\\(a: java.util.List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "def areEqual(a: java.util.List[String], b: Any): Boolean = a.asScala.map(_.toUpperCase) == b",
+      "def areEqual\\(a: java.util.List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "import scala.collection.JavaConverters._; def areEqual(a: java.util.List[String], b: Any): Boolean = a.asScala.map(_.toUpperCase) == b",
       "List\\[Int\\]" -> "java.util.List[Int]",
       "List\\(" -> "javaList(",
       "listsNil" -> "listsJavaCol",
@@ -488,7 +488,7 @@ class GenContainBase {
       "new Equality\\[String\\]" -> "new Equality[java.util.Map.Entry[String, String]]",
       "//ADDITIONAL//" -> (javaMapLowerCased + "\n" + javaMapTrimmed + "\n" + "import org.scalatest.Entry" + "\n" + "import scala.collection.JavaConverters._"),
       "def areEqual\\(a: String, b: Any\\): Boolean = a.toUpperCase == b" -> javaMapUpperCasedAreEqual,
-      "def areEqual\\(a: List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "def areEqual(a: java.util.Map[String, String], b: Any): Boolean = a.asScala.map(e => upperCase(e)) == b",
+      "def areEqual\\(a: List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "import scala.collection.JavaConverters._; def areEqual(a: java.util.Map[String, String], b: Any): Boolean = a.asScala.map(e => upperCase(e)) == b",
       "def areEqual\\(a: String, b: Any\\)" -> "def areEqual(a: java.util.Map.Entry[String, String], b: Any)",
       "case s: String => a.toUpperCase == s.toUpperCase" -> "case java.util.Map.Entry[_, _] => toUpperCase(a) == toUpperCase(s)",
       "case _ => a.toUpperCase == b" -> "case _ => (a.getKey.toUpperCase, a.getValue.toUpperCase) == b",
