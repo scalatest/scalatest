@@ -969,8 +969,17 @@ import java.net.{ServerSocket, InetAddress}
         case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
         case _ => (false, 60000L, 60000L)
       }
-    
-    Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    // We need to use the following code to set Runner object instance for different Runner using different class loader.
+    import scala.reflect.runtime._
+
+    val runtimeMirror = universe.runtimeMirror(testClassLoader)
+
+    val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+    val obj = runtimeMirror.reflectModule(module)
+    val runnerInstance = obj.instance.asInstanceOf[Runner.type]
+
+    runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 

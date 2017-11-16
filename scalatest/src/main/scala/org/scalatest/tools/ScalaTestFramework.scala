@@ -201,7 +201,16 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
           
-          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+          // We need to use the following code to set Runner object instance for different Runner using different class loader.
+          import scala.reflect.runtime._
+
+          val runtimeMirror = universe.runtimeMirror(testLoader)
+
+          val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+          val obj = runtimeMirror.reflectModule(module)
+          val runnerInstance = obj.instance.asInstanceOf[Runner.type]
+
+          runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
