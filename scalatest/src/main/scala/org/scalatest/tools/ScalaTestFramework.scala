@@ -207,8 +207,8 @@ class ScalaTestFramework extends SbtFramework {
           }
           
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
-          Runner.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
-          Runner.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
+          Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+          Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
           parseLongArgument(seedArgs, "-S") match {
             case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))

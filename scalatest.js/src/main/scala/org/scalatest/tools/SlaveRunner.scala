@@ -21,7 +21,8 @@ import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => Sbt
 import ArgsParser._
 
 import scala.compat.Platform
-import org.scalatest.prop.Randomizer
+import org.scalatest.prop.{Randomizer, Configuration}
+import org.scalactic.anyvals.PosZInt
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
 
@@ -82,8 +83,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
   val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
 
-  Runner.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
-  Runner.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
+  Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+  Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
   parseLongArgument(seeds, "-S") match {
     case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))

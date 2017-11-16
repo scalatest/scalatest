@@ -42,7 +42,6 @@ import org.scalactic.Requirements._
 import org.scalatest.prop.Randomizer
 import org.scalactic.anyvals.PosZInt
 import org.scalatest.prop.Configuration
-import java.util.concurrent.atomic.AtomicReference
 
 /*
 Command line args:
@@ -749,9 +748,6 @@ object Runner {
   
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
-  private[scalatest] val minSize: AtomicReference[PosZInt] = new AtomicReference(PosZInt(0))
-  private[scalatest] val sizeRange: AtomicReference[PosZInt] = new AtomicReference(PosZInt(100))
-
   private final val DefaultNumFilesToArchive = 2
   
   //                     TO
@@ -920,8 +916,8 @@ object Runner {
 
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
-    minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
-    sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
+    Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
     seedList match {
       case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
