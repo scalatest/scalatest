@@ -123,7 +123,7 @@ private[tools] object ArgsParser {
   // with the 'S' option, SuiteSortingReporter will be enabled.
   //
   private[scalatest] def parseConcurrentConfig(concurrentList: List[String]): ConcurrentConfig = {
-    val threadOpt = concurrentList.find(s => s.matches("-P\\d+") || s.matches("-PS\\d+"))
+    val threadOpt = concurrentList.find(s => s.matches("-P\\d+") || s.matches("-PS\\d+") || s.matches("-P-\\d+") || s.matches("-PS-\\d+"))
     val numThreads = threadOpt match {
       case Some(arg) =>
         if (arg.startsWith("-PS"))

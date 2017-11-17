@@ -1772,6 +1772,10 @@ class ArgsParserSpec extends FunSpec {
     assert(singleDashPThreadNum.numThreads === 10)
     assert(singleDashPThreadNum.enableSuiteSortingReporter === false)
 
+    val singleDashPNegativeThreadNum = ArgsParser.parseConcurrentConfig(List("-P-10"))
+    assert(singleDashPNegativeThreadNum.numThreads === -10)
+    assert(singleDashPNegativeThreadNum.enableSuiteSortingReporter === false)
+
     val multiDashPThreadNum = ArgsParser.parseConcurrentConfig(List("-P10", "-P5"))
     assert(multiDashPThreadNum.numThreads === 10)
     assert(multiDashPThreadNum.enableSuiteSortingReporter === false)
@@ -1787,6 +1791,10 @@ class ArgsParserSpec extends FunSpec {
     val singleDashPSThreadNum = ArgsParser.parseConcurrentConfig(List("-PS8"))
     assert(singleDashPSThreadNum.numThreads === 8)
     assert(singleDashPSThreadNum.enableSuiteSortingReporter === true)
+
+    val singleDashPSNegativeThreadNum = ArgsParser.parseConcurrentConfig(List("-PS-8"))
+    assert(singleDashPSNegativeThreadNum.numThreads === -8)
+    assert(singleDashPSNegativeThreadNum.enableSuiteSortingReporter === true)
 
     val multipDashPSThreadNum = ArgsParser.parseConcurrentConfig(List("-PS8", "-P10"))
     assert(multipDashPSThreadNum.numThreads === 8)

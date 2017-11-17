@@ -678,7 +678,11 @@ class Framework extends SbtFramework {
       else
         concurrentConfig.numThreads
 
-    val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
+    val execSvc: ExecutorService =
+      if (poolSize > 0)
+        Executors.newFixedThreadPool(poolSize, threadFactory)
+      else
+        Executors.newCachedThreadPool(threadFactory)
     
     private def createTask(td: TaskDef): ScalaTestTask = 
       new ScalaTestTask(
