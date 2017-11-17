@@ -15,7 +15,9 @@
 */
 
 import io.Source
-import java.io.{File, FileWriter, BufferedWriter}
+import java.io.{BufferedWriter, File, FileWriter}
+
+import GenCompatibleClasses.generatorSource
 
 object GenScalacticJS {
 
@@ -69,7 +71,11 @@ object GenScalacticJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
+        copyFile(sourceFile, destFile)
+      }
+
+      destFile
     }
   }
 
@@ -86,10 +92,12 @@ object GenScalacticJS {
 
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val sourceResourceFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
-    val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
+    val destResourceDir = new File(targetDir, "org/scalactic")
     destResourceDir.mkdirs()
     val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
-    copyFile(sourceResourceFile, destResourceFile)
+    if (!destResourceFile.exists || sourceResourceFile.lastModified > destResourceFile.lastModified)
+      copyFile(sourceResourceFile, destResourceFile)
+
     List(destResourceFile)
   }
 
@@ -98,7 +106,7 @@ object GenScalacticJS {
       List(
         "TripleEqualsSpec.for210"
       )) ++
-    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
-    List.empty
+    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }

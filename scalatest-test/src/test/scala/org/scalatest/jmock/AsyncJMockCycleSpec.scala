@@ -17,7 +17,7 @@ package org.scalatest.jmock
 
 import org.scalatest._
 import SharedHelpers._
-import org.jmock.Expectations.{equal => thatEquals}
+import org.jmock.AbstractExpectations.{equal => thatEquals}
 import org.scalatest.fixture
 
 

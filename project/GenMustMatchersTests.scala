@@ -39,7 +39,7 @@ trait GenMustMatchersTestsBase {
     temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
-  def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean) {
+  def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
 
     val scalaJSSkipList =
       List(
@@ -56,45 +56,48 @@ trait GenMustMatchersTestsBase {
     matchersDir.mkdirs()
 
     def transformFile(shouldFile: File, mustFile: File) {
-      val writer = new BufferedWriter(new FileWriter(mustFile))
-      try {
-        val shouldLines = Source.fromFile(shouldFile).getLines().toList // for 2.8
-        var skipMode = false
-        for (shouldLine <- shouldLines) {
-          val mustLine: String =
-            if (scalaJS) {
-              if (shouldLine.trim == "// SKIP-SCALATESTJS-START") {
-                skipMode = true
-                ""
-              }
-              else if (shouldLine.trim == "// SKIP-SCALATESTJS-END") {
-                skipMode = false
-                ""
-              }
-              else if (!skipMode) {
-                if (shouldLine.trim.startsWith("//SCALATESTJS-ONLY "))
-                  translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS-ONLY ") + 19))
+      if (!mustFile.exists || shouldFile.lastModified > mustFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(mustFile))
+        try {
+          val shouldLines = Source.fromFile(shouldFile).getLines().toList // for 2.8
+          var skipMode = false
+          for (shouldLine <- shouldLines) {
+            val mustLine: String =
+              if (scalaJS) {
+                if (shouldLine.trim == "// SKIP-SCALATESTJS-START") {
+                  skipMode = true
+                  ""
+                }
+                else if (shouldLine.trim == "// SKIP-SCALATESTJS-END") {
+                  skipMode = false
+                  ""
+                }
+                else if (!skipMode) {
+                  if (shouldLine.trim.startsWith("//SCALATESTJS-ONLY "))
+                    translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS-ONLY ") + 19))
+                  else
+                    translateShouldToMustInTests(shouldLine)
+                }
                 else
-                  translateShouldToMustInTests(shouldLine)
+                  ""
               }
               else
-                ""
-            }
-            else
-              translateShouldToMustInTests(shouldLine)
+                translateShouldToMustInTests(shouldLine)
 
-          writer.write(mustLine.toString)
-          writer.newLine() // add for 2.8
+            writer.write(mustLine.toString)
+            writer.newLine() // add for 2.8
+          }
         }
-      }
-      finally {
-        writer.close()
-        println("Generated " + mustFile.getAbsolutePath)
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + mustFile.getAbsolutePath)
+        }
       }
     }
 
     // For those under org.scalatest
-    for (shouldFile <- sourceBaseDir.listFiles) {
+    sourceBaseDir.listFiles flatMap { shouldFile =>
       if (includeFile(shouldFile)) {
         val shouldFileName = shouldFile.getName
 
@@ -103,12 +106,17 @@ trait GenMustMatchersTestsBase {
 
           val mustFile = new File(targetBaseDir, mustFileName)
           transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+          Seq(mustFile)
         }
+        else
+          Seq.empty[File]
       }
+      else
+        Seq.empty[File]
     }
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     genTestImpl(targetBaseDir, version, scalaVersion, false)
   }
 

@@ -19,6 +19,8 @@ import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenLoneElement {
+
+  val generatorSource = new File("GenLoneElement.scala")
   
   def translateLine(line: String, mapping: (String, String)*): String = {
     @tailrec
@@ -32,28 +34,32 @@ object GenLoneElement {
     translate(line, mapping.toIterator)
   }
   
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
-    val targetDir = new File(targetBaseDir, "lone")
-    targetDir.mkdirs()
+
+    targetBaseDir.mkdirs()
     
-    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*) {
+    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*): File = {
       val generatedFileName = sourceFileName.replaceAll("List", typeName)
-      val generatedFile = new File(targetDir, generatedFileName)
-      val writer = new BufferedWriter(new FileWriter(generatedFile))
-      try {
-        val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
-        for (line <- lines) {
-          val generatedLine = translateLine(line, mapping.toList: _*)
-          writer.write(generatedLine.toString)
-          writer.newLine() // add for 2.8
+      val generatedFile = new File(targetBaseDir, generatedFileName)
+      if (!generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(generatedFile))
+        try {
+          val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
+          for (line <- lines) {
+            val generatedLine = translateLine(line, mapping.toList: _*)
+            writer.write(generatedLine.toString)
+            writer.newLine() // add for 2.8
+          }
+        }
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + generatedFile.getAbsolutePath)
         }
       }
-      finally {
-        writer.close()
-        println("Generated " + generatedFile.getAbsolutePath)
-      }
+      generatedFile
     }
     
     val arrayMapping = 
@@ -97,12 +103,14 @@ object GenLoneElement {
         "xs.loneElement.getKey\\(1\\)" -> "xs.loneElement.getKey.get(1)",
         "List" -> "JavaMap"
       )
-      
-    generateFile("ListLoneElementSpec.scala", "Array", arrayMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "Set", setMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "Map", mapMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "JavaCol", javaColMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "JavaMap", javaMapMapping: _*)
+
+    Seq(
+      generateFile("ListLoneElementSpec.scala", "Array", arrayMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "Set", setMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "Map", mapMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "JavaCol", javaColMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "JavaMap", javaMapMapping: _*)
+    )
   }
   
   def main(args: Array[String]) {

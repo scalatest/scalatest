@@ -466,7 +466,15 @@ class Framework extends SbtFramework {
               ),
               configSet
             )
-          suiteSortingReporter.registerReporter(suite.suiteId, sbtLogInfoReporter)
+
+          // we need to report for any nested suites as well
+          // fixes https://github.com/scalatest/scalatest/issues/978
+          def registerReporter(suite: Suite): Unit = {
+            suiteSortingReporter.registerReporter(suite.suiteId, sbtLogInfoReporter)
+            suite.nestedSuites.foreach(registerReporter)
+          }
+          registerReporter(suite)
+
         }
 
         runSuite(
@@ -646,6 +654,9 @@ class Framework extends SbtFramework {
         dispatchReporter,
         Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
         System.err)
+
+    if (detectSlowpokes)
+      dispatchReporter.registerSlowpokeReporter(suiteSortingReporter)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 

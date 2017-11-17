@@ -23,6 +23,7 @@ import org.scalacheck.util.Pretty
 import org.scalatest.Assertion
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
+import org.scalatest.Suite.getSimpleNameOfAnObjectsClass
 import org.scalatest.Succeeded
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.StackDepthException
@@ -114,7 +115,7 @@ abstract class UnitCheckerAsserting {
             val stackDepth = 1
             
             indicateFailure(
-              sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              sde => FailureMessages.propertyException(prettifier, UnquotedString(getSimpleNameOfAnObjectsClass(sde))) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
               "  " + FailureMessages.propertyFailed(prettifier, result.succeeded) + "\n" +
               (
@@ -138,7 +139,7 @@ abstract class UnitCheckerAsserting {
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
 
             indicateFailure(
-              sde => FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getSimpleName)) + "\n" +
+              sde => FailureMessages.propertyException(prettifier, UnquotedString(getSimpleNameOfAnObjectsClass(e))) + "\n" +
               "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
               (
                 e match {
@@ -285,7 +286,7 @@ object CheckerAsserting extends UnitCheckerAsserting /*ExpectationCheckerAsserti
         result.discarded + " tests were discarded."
 
     case Test.PropException(args, e, labels) =>
-      FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args, prettifier)
+      FailureMessages.propertyException(prettifier, UnquotedString(getSimpleNameOfAnObjectsClass(e))) + "\n" + prettyLabels(labels) + prettyArgs(args, prettifier)
   }
 
   private[enablers] def prettyLabels(labels: Set[String]) = {
