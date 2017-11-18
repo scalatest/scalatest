@@ -23,7 +23,7 @@ class ResultOfThrownByApplicationSpec extends FunSpec {
   describe("ResultOfThrownByApplication ") {
     
     it("should have pretty toString") {
-      def fun = {}
+      def fun: Unit = {}
       val result = new ResultOfThrownByApplication(fun)
       result.toString should be ("thrownBy { ... }")
     }

@@ -17,12 +17,13 @@ package org.scalatest
 
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
 import FailureMessages.decorateToStringValue
 import enablers.Collecting
 import scala.language.higherKinds
+import enablers.InspectorAsserting
+import org.scalactic._
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -111,7 +112,7 @@ import scala.language.higherKinds
  *     at index 1, 2 was not less than 2 (&lt;console&gt;:20) 
  *   in List(1, 2, 3) (&lt;console&gt;:20) 
  * in List(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
- *      at org.scalatest.InspectorsHelper$.doForAll(Inspectors.scala:146)
+ *      at org.scalatest.InspectorsHelper$.forAll(Inspectors.scala:146)
  *      ...
  * </pre>
  *
@@ -139,7 +140,7 @@ import scala.language.higherKinds
  * org.scalatest.exceptions.TestFailedException: forAll failed, because: 
  *   at index 2, 3 was not less than 3 (&lt;console&gt;:18) 
  * in List(1, 2, 3, 4, 5)
- *      at org.scalatest.InspectorsHelper$.doForAll(Inspectors.scala:146)
+ *      at org.scalatest.InspectorsHelper$.forAll(Inspectors.scala:146)
  *      ...
  *
  * scala&gt; forEvery (xs) { x =&gt; x should be &lt; 3 }
@@ -148,7 +149,7 @@ import scala.language.higherKinds
  *   at index 3, 4 was not less than 3 (&lt;console&gt;:18), 
  *   at index 4, 5 was not less than 3 (&lt;console&gt;:18) 
  * in List(1, 2, 3, 4, 5)
- *      at org.scalatest.InspectorsHelper$.doForEvery(Inspectors.scala:226)
+ *      at org.scalatest.InspectorsHelper$.forEvery(Inspectors.scala:226)
  *      ...
  * </pre>
  *
@@ -162,7 +163,7 @@ import scala.language.higherKinds
  * org.scalatest.exceptions.TestFailedException: 'all' inspection failed, because: 
  *   at index 0, 1 was not greater than 3 
  * in List(1, 2, 3, 4, 5)
- *      at org.scalatest.InspectorsHelper$.doForAll(Inspectors.scala:146)
+ *      at org.scalatest.InspectorsHelper$.forAll(Inspectors.scala:146)
  * </pre>
  *
  * <p>
@@ -201,13 +202,7 @@ import scala.language.higherKinds
  */
 trait Inspectors {
 
-  import InspectorsHelper._
-
-  // SKIP-SCALATESTJS-START
-  val stackDepthAdjustment = 0
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY val stackDepthAdjustment = 1
-
+  
   /**
    * Ensure that all elements in a given collection pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
    * without throwing an exception).
@@ -225,8 +220,8 @@ trait Inspectors {
    * @tparam C the type of collection
    *
    */
-  def forAll[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+  def forAll[E, C[_], ASSERTION](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -248,8 +243,8 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -268,8 +263,8 @@ trait Inspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
-  def forAll(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+  def forAll[ASSERTION](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): Unit = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   /**
@@ -283,8 +278,8 @@ trait Inspectors {
    * @tparam C the type of collection
    *
    */
-  def forAtLeast[E, C[_]](min: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+  def forAtLeast[E, C[_], ASSERTION](min: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -300,8 +295,8 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]]) {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -314,8 +309,8 @@ trait Inspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
-  def forAtLeast(min: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+  def forAtLeast[ASSERTION](min: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
@@ -330,8 +325,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forAtMost[E, C[_]](max: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+  def forAtMost[E, C[_], ASSERTION](max: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -346,8 +341,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -359,8 +354,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forAtMost(max: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+  def forAtMost[ASSERTION](max: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   /**
@@ -373,8 +368,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+  def forExactly[E, C[_], ASSERTION](succeededCount: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -389,8 +384,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -402,22 +397,22 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forExactly(succeededCount: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+  def forExactly[ASSERTION](succeededCount: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   
-  private[scalatest] def forNo[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+  private[scalatest] def forNo[E, C[_], ASSERTION](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
-  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
-  private[scalatest] def forNo(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+  private[scalatest] def forNo[ASSERTION](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   /**
@@ -431,8 +426,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forBetween[E, C[_]](from: Int, upTo: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+  def forBetween[E, C[_], ASSERTION](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -448,8 +443,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -462,8 +457,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forBetween(from: Int, upTo: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+  def forBetween[ASSERTION](from: Int, upTo: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   /**
@@ -482,8 +477,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forEvery[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+  def forEvery[E, C[_], ASSERTION](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   // SKIP-SCALATESTJS-START
@@ -504,8 +499,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
   // SKIP-SCALATESTJS-END
 
@@ -523,8 +518,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forEvery(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+  def forEvery[ASSERTION](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 }
 
@@ -536,341 +531,16 @@ trait Inspectors {
 object Inspectors extends Inspectors
 
 private[scalatest] object InspectorsHelper {
-  
+
   def indentErrorMessages(messages: IndexedSeq[String]) = indentLines(1, messages)
 
-  def isMap(xs: Any): Boolean =
-    xs match {
-      case _: collection.GenMap[_, _] => true
-      // SKIP-SCALATESTJS-START
-      case _: java.util.Map[_, _] => true
-      // SKIP-SCALATESTJS-END
-      case _ => false
-    }
-  
   def shouldPropagate(throwable: Throwable): Boolean = 
     throwable match {
-      case _: exceptions.TestPendingException |
+      case _: exceptions.NotAllowedException |
+           _: exceptions.TestPendingException |
            _: exceptions.TestCanceledException => true
       case _ if Suite.anExceptionThatShouldCauseAnAbort(throwable) => true
       case _ => false
     }
-  
-  def createMessage(messageKey: String, t: Throwable, xsIsMap: Boolean): String =
-    t match {
-      case sde: exceptions.StackDepthException => 
-        sde.failedCodeFileNameAndLineNumberString match {
-          case Some(failedCodeFileNameAndLineNumber) =>
-            if (xsIsMap)
-              Resources.forAssertionsGenMapMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
-            else
-              Resources.forAssertionsGenTraversableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
-          case None =>
-            if (xsIsMap)
-              Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, sde.getMessage)
-            else
-              Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, sde.getMessage)
-        }
-      case _ =>
-        if (xsIsMap)
-          Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
-        else
-          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
-    }
-  
-  def elementLabel(count: Int): String = 
-    if (count > 1) Resources.forAssertionsElements(count.toString) else Resources.forAssertionsElement(count.toString)
-  
-  case class ForResult[T](passedCount: Int = 0, messageAcc: IndexedSeq[String] = IndexedSeq.empty, 
-                                 passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty, failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
-  
-  @tailrec
-  def runFor[T](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => Unit, stopFun: ForResult[_] => Boolean): ForResult[T] = {
-    if (itr.hasNext) {
-      val head = itr.next
-      val newResult = 
-        try {
-          fun(head)
-          result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
-        }
-        catch {
-          case e if !shouldPropagate(e) => 
-            val messageKey = head match {
-              case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
-              case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
-              case _ => index.toString
-            }
-            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
-        }
-      if (stopFun(newResult))
-        newResult
-      else
-        runFor(itr, xsIsMap, index + 1, newResult, fun, stopFun)
-    }
-    else
-      result
-  }
-  
-  def keyOrIndexLabel(xs: Any, passedElements: IndexedSeq[(Int, _)]): String = {
-    def makeAndLabel(indexes: IndexedSeq[Int]): String = 
-      if (indexes.length > 1)
-        indexes.dropRight(1).mkString(", ") + " and " + indexes.last
-      else
-        indexes.mkString(", ")
-      
-    val (xsIsMap, elements) = xs match {
-      // SKIP-SCALATESTJS-START
-      case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY case _: collection.GenMap[_, _] =>
-        val elements = passedElements.map{ case (index, e) =>
-          e match {
-            case tuple2: Tuple2[_, _] => tuple2._1
-            // SKIP-SCALATESTJS-START
-            case entry: java.util.Map.Entry[_, _] => entry.getKey
-            // SKIP-SCALATESTJS-END
-            case _ => index
-          }
-        }
-        (true, elements)
-      case _ => 
-        (false, passedElements.map(_._1))
-    }
 
-    if (elements.length > 1)
-      if (xsIsMap)
-        Resources.forAssertionsKeyAndLabel(elements.dropRight(1).mkString(", "), elements.last.toString)
-      else
-        Resources.forAssertionsIndexAndLabel(elements.dropRight(1).mkString(", "), elements.last.toString)
-    else
-      if (xsIsMap)
-        Resources.forAssertionsKeyLabel(elements.mkString(", "))
-      else
-        Resources.forAssertionsIndexLabel(elements.mkString(", "))
-  }
-  
-  def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
-    val xsIsMap = isMap(original)
-    val result = 
-      runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
-    if (result.failedElements.length > 0) 
-      throw new exceptions.TestFailedException(
-        sde =>
-          Some(
-            if (shorthand)
-              Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-            else
-              Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-          ),
-        Some(result.failedElements(0)._3),
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-  
-  def doForAtLeast[T](min: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    @tailrec
-    def forAtLeastAcc(itr: Iterator[T], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
-      if (itr.hasNext) {
-        val head = itr.next
-        val (newPassedCount, newMessageAcc) = 
-          try {
-            fun(head)
-            (passedCount + 1, messageAcc)
-          }
-          catch {
-            case e if !shouldPropagate(e) => 
-              val xsIsMap = isMap(original)
-              val messageKey = head match {
-                case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
-                case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
-                case _ => index.toString
-              }
-              (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
-          }
-        if (newPassedCount < min)
-          forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
-        else
-          (newPassedCount, newMessageAcc)
-      }
-      else
-        (passedCount, messageAcc)
-    }
-    
-    if (min <= 0)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'min'"))
-    
-    val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[T]], 0, 0, IndexedSeq.empty)
-    if (passedCount < min)
-      throw new exceptions.TestFailedException(
-        sde => 
-          Some(
-            if (shorthand)
-              if (passedCount > 0)
-                Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-            else
-              if (passedCount > 0)
-                Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-          ),
-        None,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-  
-  def doForEvery[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    @tailrec
-    def runAndCollectErrorMessage[T](itr: Iterator[T], messageList: IndexedSeq[String], index: Int)(fun: T => Unit): IndexedSeq[String] = {
-      if (itr.hasNext) {
-        val head = itr.next
-        val newMessageList = 
-          try {
-            fun(head)
-            messageList
-          }
-          catch {
-            case e if !shouldPropagate(e) => 
-              val xsIsMap = isMap(original)
-              val messageKey = head match {
-                case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
-                case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
-                case _ => index.toString
-              }
-              messageList :+ createMessage(messageKey, e, xsIsMap)
-          }
-        
-        runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
-      }
-      else
-        messageList
-    }
-    val messageList = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, 0)(fun)
-    if (messageList.size > 0)
-      throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                Resources.everyShorthandFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
-            ),
-          None,
-          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-        )
-  }
-  
-  def doForExactly[T](succeededCount: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    if (succeededCount <= 0)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
-    
-    val xsIsMap = isMap(original)
-    val result = 
-      runFor(xs.toIterator, xsIsMap, 0, new ForResult[T], fun, _.passedCount > succeededCount)
-    if (result.passedCount != succeededCount)
-      throw new exceptions.TestFailedException(
-        sde => 
-          Some(
-            if (shorthand)
-              if (result.passedCount == 0)
-                Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < succeededCount)
-                  Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-            else
-              if (result.passedCount == 0)
-                Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < succeededCount)
-                  Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-          ),
-        None,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-
-  def doForNo[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    val xsIsMap = isMap(original)
-    val result =
-      runFor(xs.toIterator, xsIsMap, 0, new ForResult[T], fun, _.passedCount != 0)
-    if (result.passedCount != 0)
-      throw new exceptions.TestFailedException(
-        sde =>
-          Some(
-            if (shorthand)
-              Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-            else
-              Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-          ),
-        None,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-
-  def doForBetween[T](from: Int, upTo: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    if (from < 0)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
-    if (upTo <= 0)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'upTo'"))
-    if (upTo <= from)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThan("'upTo'", "'from'"))
-
-    val xsIsMap = isMap(original)
-    val result =
-      runFor(xs.toIterator, xsIsMap, 0, new ForResult[T], fun, _.passedCount > upTo)
-    if (result.passedCount < from || result.passedCount > upTo)
-      throw new exceptions.TestFailedException(
-        sde =>
-          Some(
-            if (shorthand)
-              if (result.passedCount == 0)
-                Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < from)
-                  Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-            else
-              if (result.passedCount == 0)
-                Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < from)
-                  Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-          ),
-        None,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-
-  def doForAtMost[T](max: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    if (max <= 0)
-      throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
-
-    val xsIsMap = isMap(original)
-    val result =
-      runFor(xs.toIterator, xsIsMap, 0, new ForResult[T], fun, _.passedCount > max)
-    if (result.passedCount > max)
-      throw new exceptions.TestFailedException(
-        sde =>
-          Some(
-            if (shorthand)
-              Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-            else
-              Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-          ),
-        None,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
 }

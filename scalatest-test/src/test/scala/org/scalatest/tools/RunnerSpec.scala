@@ -39,7 +39,7 @@ class RunnerSpec extends FunSpec with PrivateMethodTester {
         "foo.tools.FooToolsSuite",
         "foo.events.EventsFooSuite")
 
-    def runDeglob(globs: List[String], expecteds: List[String]) {
+    def runDeglob(globs: List[String], expecteds: List[String]): Unit = {
       val globSuiteParams =
         globs.map(glob => suiteParam.copy(className = glob))
 
@@ -74,7 +74,7 @@ class RunnerSpec extends FunSpec with PrivateMethodTester {
     var tracker = new Tracker(new Ordinal(12))
 
     val reporter = new Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         events += event
       }
     }

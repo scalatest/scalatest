@@ -29,7 +29,7 @@ private[tools] class FilterReporter(reporter: Reporter, configSet: Set[ReporterC
 
   // def reFilter(configSet: EventToPresent.Set32) = new FilterReporter(reporter, configSet)
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
     val report = reporter
     event match {
       case event: DiscoveryStarting => report(event)
@@ -71,6 +71,6 @@ private[tools] class FilterReporter(reporter: Reporter, configSet: Set[ReporterC
     }
   }
 
-  override def dispose() = propagateDispose(reporter)
+  override def dispose(): Unit = propagateDispose(reporter)
 }
 // Have some methods that translate chars & strings to Opts things, and vice versa?

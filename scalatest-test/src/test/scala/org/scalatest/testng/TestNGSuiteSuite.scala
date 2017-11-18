@@ -16,15 +16,15 @@
 package org.scalatest.testng {
 
   import org.scalatest._
-  import org.scalatest.jmock._
-  import testng.testpackage._
-  import org.jmock.Mockery
-  import org.jmock.Expectations
-  import org.hamcrest.core.IsAnything
-  import org.scalatest.events._
-  import org.scalatest.mock.JMockCycle
-  import org.scalatest.mock.JMockCycleFixture
-  import org.scalatest.fixture
+import org.scalatest.jmock._
+import org.scalatest.events._
+import testng.testpackage._
+import org.scalatest.fixture
+import org.scalatest.jmock.JMockCycleFixture
+import org.hamcrest.core.IsAnything
+import org.jmock.Expectations
+import org.jmock.Mockery
+import org.scalatest.jmock.JMockCycle
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
 
@@ -175,25 +175,25 @@ package org.scalatest.testng {
     import org.testng.annotations._
     
     class FailureTestNGSuite extends TestNGSuite {
-      @Test def testThatFails() { throw new Exception("fail") }
+      @Test def testThatFails(): Unit = { throw new Exception("fail") }
     }
     
     class SuccessTestNGSuite extends TestNGSuite {
-      @Test def testThatPasses() {}
+      @Test def testThatPasses(): Unit = {}
     }
     
     class TestNGSuiteWithInvocationCount extends TestNGSuite {
-      @Test(invocationCount = 10) def testThatPassesTenTimes() {}
+      @Test(invocationCount = 10) def testThatPassesTenTimes(): Unit = {}
     }
     
     class SuiteWithSkippedTest extends TestNGSuite {
-      @Test(groups = Array("run")) def dependeeThatFails() { throw new Exception("fail") }
-      @Test(dependsOnGroups = Array("run")) def depender() {}
+      @Test(groups = Array("run")) def dependeeThatFails(): Unit = { throw new Exception("fail") }
+      @Test(dependsOnGroups = Array("run")) def depender(): Unit = {}
     } 
 
     class SuiteWithTwoTests extends TestNGSuite {
-      @Test def testThatPasses() {}
-      @Test def anotherTestThatPasses() {}
+      @Test def testThatPasses(): Unit = {}
+      @Test def anotherTestThatPasses(): Unit = {}
     }      
     
     class SuiteWithBeforeAndAfterAnnotations extends TestNGSuite {

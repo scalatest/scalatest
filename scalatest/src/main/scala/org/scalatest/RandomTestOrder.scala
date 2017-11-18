@@ -19,6 +19,7 @@ import scala.util.Random
 import org.scalatest.events.Event
 import org.scalatest.time.Span
 import org.scalatest.tools.{TestSortingReporter}
+import scala.util.{Success, Failure}
 
 /**
  * Trait that causes tests to be run in pseudo-random order.
@@ -188,9 +189,14 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
         // Random shuffle the deferred suite list, before executing them.
         Random.shuffle(suiteRunQueue.asScala.toList).map { case DeferredSuiteRun(suite, testName, statefulStatus) =>
           val status = suite.run(Some(testName), newArgs.copy(runTestInNewInstance = true))
-          status.whenCompleted { result =>
-            if (!result)
-              statefulStatus.setFailed()
+          status.whenCompleted { tri => 
+            tri match {
+              case Success(result) =>
+                if (!result)
+                  statefulStatus.setFailed()
+              case Failure(ex) =>
+                  statefulStatus.setFailedWith(ex)
+            }
             statefulStatus.setCompleted()
           }
         }
@@ -200,7 +206,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
 
   private[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
     class TestSpecificReporter(testSorter: DistributedTestSorter, testName: String) extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         testSorter.apply(testName, event)
       }
     }

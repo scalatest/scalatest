@@ -15,7 +15,6 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest._
 
 /**
  * A function that takes no parameters (<em>i.e.</em>, a <code>Function0</code> or "no-arg" function) and results in <code>Unit</code>, which when

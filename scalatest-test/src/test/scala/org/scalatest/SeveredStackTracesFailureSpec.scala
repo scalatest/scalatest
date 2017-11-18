@@ -93,10 +93,10 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
     }
 
     it("should be properly severed on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
-      an [IllegalArgumentException] should be thrownBy { if (false) 1 else throw new RuntimeException }
+      an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
     }
   }
-  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {
+  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String): Unit = {
     val stackTraceElement = e.getStackTrace()(e.failedCodeStackDepth)
     val fileName = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement).get
     val lineNumber = stackTraceElement.getLineNumber

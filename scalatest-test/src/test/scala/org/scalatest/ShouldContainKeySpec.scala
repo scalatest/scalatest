@@ -15,15 +15,18 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
-import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
 import Matchers._
+import org.scalactic.Prettifier
+import org.scalatest.prop.Checkers
+import org.scalatest.exceptions.TestFailedException
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
 
 class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  private val prettifier = Prettifier.default
 
   // Checking for a specific size
   describe("The 'contain key (Int)' syntax") {
@@ -272,7 +275,7 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map should contain key ("three")
         }
-        assert(caught1.getMessage === decorateToStringValue(map) + " did not contain key \"three\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain key \"three\"")
       }
 
       it("should throw TestFailedException if contains the specified key when used with not") {
@@ -280,18 +283,18 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should (not contain key ("two"))
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should not (contain key ("two"))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should not contain key ("two")
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression") {
@@ -299,19 +302,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { contain key ("five") and (contain key ("two")) }
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"five\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"five\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain key ("five")) and (contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"five\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"five\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (contain key ("five") and contain key ("two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"five\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"five\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression") {
@@ -319,19 +322,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { contain key ("fifty five") or (contain key ("twenty two")) }
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"fifty five\", and " + decorateToStringValue(map1) + " did not contain key \"twenty two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map1) + " did not contain key \"twenty two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain key ("fifty five")) or (contain key ("twenty two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"fifty five\", and " + decorateToStringValue(map2) + " did not contain key \"twenty two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map2) + " did not contain key \"twenty two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (contain key ("fifty five") or contain key ("twenty two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"fifty five\", and " + decorateToStringValue(map3) + " did not contain key \"twenty two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map3) + " did not contain key \"twenty two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-and expression with not") {
@@ -339,19 +342,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain key ("three") } and not { contain key ("two") }}
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"three\", but " + decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain key ("three")) and (not contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"three\", but " + decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain key ("three") and not contain key ("two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"three\", but " + decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-or expression with not") {
@@ -359,19 +362,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain key ("two") } or not { contain key ("two") }}
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " contained key \"two\", and " + decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained key \"two\", and " + decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain key ("two")) or (not contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " contained key \"two\", and " + decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained key \"two\", and " + decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain key ("two") or not contain key ("two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " contained key \"two\", and " + decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       // SKIP-SCALATESTJS-START
@@ -729,7 +732,7 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map should contain key ("three")
         }
-        assert(caught1.getMessage === decorateToStringValue(map) + " did not contain key \"three\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain key \"three\"")
       }
 
       it("should throw TestFailedException if contains the specified key when used with not") {
@@ -737,19 +740,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should (not contain key ("two"))
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should not (contain key ("two"))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should not contain key ("two")
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression") {
@@ -757,19 +760,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { contain key ("five") and (contain key ("two")) }
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"five\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"five\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain key ("five")) and (contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"five\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"five\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (contain key ("five") and contain key ("two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"five\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"five\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression") {
@@ -777,19 +780,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { contain key ("fifty five") or (contain key ("twenty two")) }
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"fifty five\", and " + decorateToStringValue(map1) + " did not contain key \"twenty two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map1) + " did not contain key \"twenty two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain key ("fifty five")) or (contain key ("twenty two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"fifty five\", and " + decorateToStringValue(map2) + " did not contain key \"twenty two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map2) + " did not contain key \"twenty two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (contain key ("fifty five") or contain key ("twenty two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"fifty five\", and " + decorateToStringValue(map3) + " did not contain key \"twenty two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"fifty five\", and " + decorateToStringValue(prettifier, map3) + " did not contain key \"twenty two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-and expression with not") {
@@ -797,18 +800,18 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain key ("three") } and not { contain key ("two") }}
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " did not contain key \"three\", but " + decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain key ("three")) and (not contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " did not contain key \"three\", but " + decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain key ("three") and not contain key ("two"))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " did not contain key \"three\", but " + decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain key \"three\", but " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-or expression with not") {
@@ -816,19 +819,19 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain key ("two") } or not { contain key ("two") }}
         }
-        assert(caught1.getMessage === decorateToStringValue(map1) + " contained key \"two\", and " + decorateToStringValue(map1) + " contained key \"two\"")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained key \"two\", and " + decorateToStringValue(prettifier, map1) + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain key ("two")) or (not contain key ("two")))
         }
-        assert(caught2.getMessage === decorateToStringValue(map2) + " contained key \"two\", and " + decorateToStringValue(map2) + " contained key \"two\"")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained key \"two\", and " + decorateToStringValue(prettifier, map2) + " contained key \"two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {(
           map3 should (not contain key ("two") or not contain key ("two")))
         }
-        assert(caught3.getMessage === decorateToStringValue(map3) + " contained key \"two\", and " + decorateToStringValue(map3) + " contained key \"two\"")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
       // SKIP-SCALATESTJS-START

@@ -15,15 +15,12 @@
 */
 package org.scalactic.anyvals
 
-import org.scalatest._
-import scala.collection.mutable.WrappedArray
-import OptionValues._
 //import org.scalactic.CheckedEquality._
 
 // Uncomment this test once we get the OddIntMacro
 // defined in an earlier compilation run.
 /* 
-class OddIntSpec extends Spec with Matchers {
+class OddIntSpec extends RefSpec with Matchers {
   object `An OddInt` {
     object `should offer a from factory method that` {
       def `returns Some[OddInt] if the passed Int is odd` {

@@ -16,7 +16,6 @@
 package org.scalatest
 
 import time.Span
-import time.SpanSugar._
 import java.util.concurrent.ConcurrentSkipListSet
 import scala.collection.JavaConverters._
 import java.io.PrintStream

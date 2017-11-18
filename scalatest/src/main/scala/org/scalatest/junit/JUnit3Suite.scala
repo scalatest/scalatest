@@ -15,25 +15,26 @@
  */
 package org.scalatest.junit
 
-import collection.immutable.TreeSet
-import java.lang.reflect.{Method, Modifier}
 import org.scalatest._
-import _root_.junit.framework.TestCase
-import _root_.junit.framework.TestResult
-import _root_.junit.framework.TestSuite
-import _root_.junit.framework.TestListener
-import _root_.junit.framework.Test
-import _root_.junit.framework.AssertionFailedError
-import scala.collection.mutable.HashSet
-import org.scalatest.events.TestStarting
-import org.scalatest.events.TestSucceeded
-import org.scalatest.events.TestFailed
-import org.scalatest.events.MotionToSuppress
-import org.scalactic.Requirements._
-import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
+import org.scalactic.Requirements._
+import Suite.getIndentedTextForTest
 import Suite.wrapReporterIfNecessary
+import _root_.junit.framework.AssertionFailedError
+import _root_.junit.framework.Test
+import _root_.junit.framework.TestCase
+import _root_.junit.framework.TestListener
+import _root_.junit.framework.TestResult
+import _root_.junit.framework.TestSuite
+import collection.immutable.TreeSet
+import java.lang.reflect.{Method, Modifier}
+import org.scalactic.source
+import org.scalatest.events.MotionToSuppress
+import org.scalatest.events.TestFailed
+import org.scalatest.events.TestStarting
+import org.scalatest.events.TestSucceeded
+import scala.collection.mutable.HashSet
 
 /**
  * A <code>Suite</code> that is also a <code>junit.framework.TestCase</code>. 
@@ -54,19 +55,19 @@ import Suite.wrapReporterIfNecessary
  *   var sb: StringBuilder = _
  *   var lb: ListBuffer[String] = _
  *
- *   override def setUp() {
+ *   override def setUp(): Unit = {
  *     sb = new StringBuilder("ScalaTest is ")
  *     lb = new ListBuffer[String]
  *   }
  *
- *   def testEasy() { // Uses JUnit-style assertions
+ *   def testEasy(): Unit = { // Uses JUnit-style assertions
  *     sb.append("easy!")
  *     assertEquals("ScalaTest is easy!", sb.toString)
  *     assertTrue(lb.isEmpty)
  *     lb += "sweet"
  *   }
  *
- *   def testFun() { // Uses ScalaTest assertions
+ *   def testFun(): Unit = { // Uses ScalaTest assertions
  *     sb.append("fun!")
  *     assert(sb.toString === "ScalaTest is fun!")
  *     assert(lb.isEmpty)
@@ -76,53 +77,15 @@ import Suite.wrapReporterIfNecessary
  * 
  * <p>
  * You can use either JUnit's assertions, inherited from <code>TestCase</code>, or ScalaTest's, inherited from <code>AssertionsForJUnit</code>.
- * You can also mix in <code>ShouldMatchersForJUnit</code> or <code>MustMatchersForJUnit</code> if you want to use ScalaTests's matchers DSL.
- * Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * import org.scalatest.junit.JUnit3Suite
- * import org.scalatest.junit.MustMatchersForJUnit
- * import scala.collection.mutable.ListBuffer
- *
- * class BlastFromThePastSuite extends JUnit3Suite with MustMatchersForJUnit {
- *
- *   var stringBuilder: StringBuilder = _
- *   var listBuffer: ListBuffer[String] = _
- *
- *   override def setUp() {
- *     stringBuilder = new StringBuilder("ScalaTest is ")
- *     listBuffer = new ListBuffer[String]
- *   }
- *
- *   def testEasy() {
- *     stringBuilder.append("easy!")
- *     stringBuilder.toString must be ("ScalaTest is easy!")
- *     listBuffer must be ('empty)
- *     listBuffer += "sweet"
- *   }
- *
- *   def testFun() {
- *     stringBuilder.append("fun!")
- *     stringBuilder.toString must be ("ScalaTest is fun!")
- *     listBuffer must be ('empty)
- *   }
- * }
- * </pre>
- * 
- * <p>
- * The reason you would ordinarily want to mix in <code>MustMatchersForJUnit</code> or <code>ShouldMatchersForJUnit</code> rather than <code>MustMatchers</code>
- * or <code>ShouldMatchers</code> is that <code>MustMatchersForJUnit</code> and <code>ShouldMatchersForJUnit</code> throw
- * <code>junit.framework.AssertionFailedError</code>s, which JUnit 3 will report as failures, not errors.
  * </p>
  *
  * <p>
  * When writing JUnit 3 tests in Scala, you should keep in mind that JUnit 3 will not run tests that have a return type other than
- * <code>Unit</code>. Thus it is best to leave off the equals sign before the curly braces of the body of the test, like this:
+ * <code>Unit</code>. Thus it is best to explicitly state the <code>Unit</code> result type, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * def testGoodIdea() { // result type will be Unit
+ * def testGoodIdea(): Unit = { // result type will be Unit
  *   // ...
  * }
  * </pre>
@@ -203,25 +166,6 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
    */
   override def expectedTestCount(filter: Filter) =
     if (filter.tagsToInclude.isDefined) 0 else testNames.size
-
-  /**
-   * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
-   * class, given this class's <code>run</code> method delegates to JUnit to run
-   * its tests.
-   *
-   * <p>
-   * The main purpose of this method implementation is to render a compiler error an attempt
-   * to mix in a trait that overrides <code>withFixture</code>. Because this
-   * trait does not actually use <code>withFixture</code>, the attempt to mix
-   * in behavior would very likely not work.
-   * </p>
-   *
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  override final protected def withFixture(test: NoArgTest): Outcome = {
-     throw new UnsupportedOperationException
-  }
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
@@ -334,6 +278,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty[String]
+      val pos = None
     }
 }
 
@@ -361,13 +306,13 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
   // test.asInstanceOf[TestCase].getName gives you the name of the test method, without any parens
   // Calling test.toSring gives you testError(org.scalatestexamples.junit.JUnit3ExampleSuite)
   // So that's that old JUnit-style test name thing.
-  def startTest(testCase: Test) {
+  def startTest(testCase: Test): Unit = {
     requireNonNull(testCase)
     val suiteName = getSuiteNameForTestCase(testCase)
     report(TestStarting(tracker.nextOrdinal(), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Some(MotionToSuppress), getTopOfMethod(testCase.getClass.getName, testCase.asInstanceOf[TestCase].getName)))
   }
   
-  def addError(testCase: Test, throwable: Throwable) {
+  def addError(testCase: Test, throwable: Throwable): Unit = {
 
     requireNonNull(testCase, throwable)
 
@@ -385,7 +330,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
     failedTestsSet += testCase
   }
 
-  def addFailure(testCase: Test, assertionFailedError: AssertionFailedError) {
+  def addFailure(testCase: Test, assertionFailedError: AssertionFailedError): Unit = {
 
     requireNonNull(testCase, assertionFailedError)
 
@@ -396,7 +341,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
     failedTestsSet += testCase
   }
 
-  def endTest(testCase: Test) {
+  def endTest(testCase: Test): Unit = {
 
     val testHadFailed = failedTestsSet.contains(testCase)
 

@@ -15,9 +15,7 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals._
 import scala.annotation.tailrec
-import org.scalactic.Requirements._
 import Stream.empty
 
 // Wrote this class by looking at the Javadoc of java.util.Random.

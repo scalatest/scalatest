@@ -22,7 +22,7 @@ package org.scalatest.junit {
 
     class MyReporter extends Reporter {
 
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestStarting =>
             testStartingEvents += event

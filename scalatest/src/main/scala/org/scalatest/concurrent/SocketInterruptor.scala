@@ -26,6 +26,7 @@ import java.net.Socket
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 class SocketInterruptor(socket: Socket) extends Interruptor {
 
   /**
@@ -33,7 +34,7 @@ class SocketInterruptor(socket: Socket) extends Interruptor {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     socket.close()
   }
 }

@@ -85,12 +85,12 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
     }
 
     "should use midSentenceFailureMessageArgs to construct midSentenceFailureMessage" in {
-      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty, Prettifier.default)
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
       mr.midSentenceFailureMessage should be ("1 did not equal 2")
     }
 
     "should use midSentenceNegatedFailureMessageArgs to construct midSentenceNegatedFailureMessage" in {
-      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2), Prettifier.default)
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       mr.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
   }

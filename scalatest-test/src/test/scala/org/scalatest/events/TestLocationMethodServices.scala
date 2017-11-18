@@ -60,7 +60,7 @@ trait TestLocationMethodServices {
     }
   }
   
-  def checkFun(event: Event) {
+  def checkFun(event: Event): Unit = {
     event match {
       case testStarting: TestStarting => 
         val expectedStartingPairOpt = expectedStartingList.find { pair => pair.testName == testStarting.testName }
@@ -91,7 +91,7 @@ trait TestLocationMethodServices {
     }
   }
   
-  def allChecked = {
+  def allChecked: Unit = {
     expectedStartingList.foreach { pair => assert(pair.checked, suiteTypeName + ": TestStarting for " + pair.testName + " not fired.") }
     expectedResultList.foreach { pair => assert(pair.checked, suiteTypeName + ": " + pair.clazz.getName() + " event not fired.") }
   }

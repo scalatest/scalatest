@@ -17,11 +17,12 @@ package org.scalatest
 
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS-START
+import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
-import org.junit.Test
-import org.testng.annotations.{Test => TestNGTest}
+import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
+import org.testng.annotations.{Test => TestNGTest}
 // SKIP-SCALATESTJS-END
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import Matchers._
@@ -41,7 +42,7 @@ expired, so now it is only testing that no style traits handle test: prefixes sp
 */
 trait NonTestColonEscapeExamples extends Tables {
   // SKIP-SCALATESTJS-START
-  def spec: Spec
+  def spec: RefSpec
   def fixtureSpec: fixture.Spec
   def junit3Suite: JUnit3Suite
   def junitSuite: JUnitSuite
@@ -96,22 +97,22 @@ trait NonTestColonEscapeExamples extends Tables {
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
 class TestColonEscapeExampleJUnit3Suite extends JUnit3Suite {
-  def `test: A Succeeded Test`() {}
-  def `test: A Failed Test`() { _root_.junit.framework.Assert.assertEquals("fail on purpose", 1, 2) }
+  def `test: A Succeeded Test`(): Unit = {}
+  def `test: A Failed Test`(): Unit = { _root_.junit.framework.Assert.assertEquals("fail on purpose", 1, 2) }
 }
 
 @DoNotDiscover
 class  TestColonEscapeExampleJUnitSuite extends JUnitSuite {
-  @Test def `test: A Succeeded Test`() {}
-  @Test def `test: A Failed Test`() { _root_.org.junit.Assert.assertEquals(1, 2) }
-  @_root_.org.junit.Ignore @Test def `test: An Ignored Test`() {}
+  @Test def `test: A Succeeded Test`(): Unit = {}
+  @Test def `test: A Failed Test`(): Unit = { _root_.org.junit.Assert.assertEquals(1, 2) }
+  @_root_.org.junit.Ignore @Test def `test: An Ignored Test`(): Unit = {}
 }
 
 @DoNotDiscover
 class TestColonEscapeExampleTestNGSuite extends TestNGSuite {
-  @TestNGTest def `test: A Succeeded Test`() { }
-  @TestNGTest(groups = Array("run")) def `test: A Failed Test`() { _root_.org.testng.Assert.assertEquals(1, 2) }
-  @TestNGTest(dependsOnGroups = Array("run")) def `test: An Ignored Test`() {}
+  @TestNGTest def `test: A Succeeded Test`(): Unit = { }
+  @TestNGTest(groups = Array("run")) def `test: A Failed Test`(): Unit = { _root_.org.testng.Assert.assertEquals(1, 2) }
+  @TestNGTest(dependsOnGroups = Array("run")) def `test: An Ignored Test`(): Unit = {}
 }
 // SKIP-SCALATESTJS-END
 
@@ -141,7 +142,7 @@ protected[scalatest] class TestColonEscapeExamplePathFunSpec extends path.FunSpe
 
 class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
-  def assertFormattedText(formatter: Option[Formatter], expected: Option[String]) {
+  def assertFormattedText(formatter: Option[Formatter], expected: Option[String]): Unit = {
     expected match {
       case Some(expected) => 
         formatter match {
@@ -198,19 +199,19 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
 
   // SKIP-SCALATESTJS-START
   def spec = new ExampleSpec()
-  class ExampleSpec extends Spec {
-    def `test: A Succeeded Test` = {}
+  class ExampleSpec extends RefSpec {
+    def `test: A Succeeded Test`: Unit = {}
     def `test: A Failed Test` = { fail }
-    @Ignore def `test: An Ignored Test` = {}
+    @Ignore def `test: An Ignored Test`: Unit = {}
     def `test: A Pending Test` = { pending }
     def `test: A Canceled Test` = { cancel }
   }
   
   def fixtureSpec = new ExampleFixtureSpec
   class ExampleFixtureSpec extends fixture.Spec with StringFixture {
-    def `test: A Succeeded Test` = {}
+    def `test: A Succeeded Test`: Unit = {}
     def `test: A Failed Test` = { fail }
-    @Ignore def `test: An Ignored Test` = {}
+    @Ignore def `test: An Ignored Test`: Unit = {}
     def `test: A Pending Test` = { pending }
     def `test: A Canceled Test` = { cancel }
   }

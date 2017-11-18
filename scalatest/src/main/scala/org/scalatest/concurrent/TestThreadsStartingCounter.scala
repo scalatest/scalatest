@@ -37,19 +37,19 @@ import java.util.concurrent.CountDownLatch
 private[concurrent] class TestThreadsStartingCounter {
   private var count: Int = 0
   private val latch = new CountDownLatch(1)
-  def increment() {
+  def increment(): Unit = {
     synchronized {
       count += 1
     }
     latch.countDown()
   }
-  def decrement() {
+  def decrement(): Unit = {
     synchronized {
       count -= 1
       notifyAll()
     }
   }
-  def waitUntilAllTestThreadsHaveStarted() {
+  def waitUntilAllTestThreadsHaveStarted(): Unit = {
     latch.await()
     synchronized {
       while (count != 0) {

@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 import org.scalatest.events._
 
 /**
@@ -24,7 +23,7 @@ import org.scalatest.events._
  *
  * @author Bill Venners
  */
-private[tools] sealed abstract class EventToPresent
+private[tools] sealed abstract class EventToPresent extends Product with Serializable
 
 private[tools] case object PresentDiscoveryStarting extends EventToPresent
 private[tools] case object PresentDiscoveryCompleted extends EventToPresent

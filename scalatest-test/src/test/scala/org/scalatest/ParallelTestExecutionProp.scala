@@ -15,20 +15,20 @@
  */
 package org.scalatest
 
-import scala.collection.mutable.ListBuffer
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import org.scalatest.tools.SuiteSortingReporter
-import org.scalatest.time.Span
-import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.SuiteStarting
 import org.scalatest.time.Millis
+import org.scalatest.time.Span
+import org.scalatest.tools.SuiteSortingReporter
+import scala.collection.mutable.ListBuffer
 // SKIP-SCALATESTJS-START
 import org.scalatest.concurrent.Eventually._
 // SKIP-SCALATESTJS-END
-import org.scalatest.tools.DistributedTestRunnerSuite
-import SharedHelpers._
 import org.scalatest.Retries._
+import SharedHelpers._
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.tools.DistributedTestRunnerSuite
 
 class ParallelTestExecutionProp extends FunSuite {
 
@@ -46,14 +46,14 @@ class ParallelTestExecutionProp extends FunSuite {
       buf += ((suite, args, status))
       status
     }
-    def executeInOrder() {
+    def executeInOrder(): Unit = {
       for ((suite, args, status) <- buf) {
         suite.run(None, args)
         if (!status.isCompleted)
           status.setCompleted()
       }
     }
-    def executeInReverseOrder() {
+    def executeInReverseOrder(): Unit = {
       for ((suite, args, status) <- buf.reverse) {
         suite.run(None, args)
         if (!status.isCompleted)
@@ -61,7 +61,7 @@ class ParallelTestExecutionProp extends FunSuite {
       }
     }
 
-    def apply(suite: Suite, tracker: Tracker) {
+    def apply(suite: Suite, tracker: Tracker): Unit = {
       throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
     }
   }
@@ -79,21 +79,21 @@ class ParallelTestExecutionProp extends FunSuite {
       }
       
     }
-    def executeInOrder() {
+    def executeInOrder(): Unit = {
       for ((suite, args, status) <- buf) {
         suite.run(None, args)
         if (!status.isCompleted)
           status.setCompleted()
       }
     }
-    def executeInReverseOrder() {
+    def executeInReverseOrder(): Unit = {
       for ((suite, args, status) <- buf.reverse) {
         suite.run(None, args)
         if (!status.isCompleted)
           status.setCompleted()
       }
     }
-    def fireHoldEvent() {
+    def fireHoldEvent(): Unit = {
       for ((suite, args, status) <- buf) {
         suite.suite match {
           case tter: TestTimeoutExpectedResults => 
@@ -104,7 +104,7 @@ class ParallelTestExecutionProp extends FunSuite {
         
       }
     }
-    def apply(suite: Suite, tracker: Tracker) {
+    def apply(suite: Suite, tracker: Tracker): Unit = {
       throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
     }
   }

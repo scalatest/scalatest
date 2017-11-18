@@ -15,15 +15,7 @@
  */
 package org.scalatest
 
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-  MustVerb, StringVerbBlockRegistration}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
+
 
 /**
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -59,7 +51,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -130,7 +122,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * A Stack 
  *   whenever it is empty 
@@ -190,7 +182,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new ComputerRoomRulesSpec execute
+ * scala&gt; org.scalatest.run(new ComputerRoomRulesSpec)
  * <span class="stGreen">ComputerRoomRulesSpec:
  * Achtung! 
  *   Alle touristen und non-technischen lookenpeepers! 
@@ -221,8 +213,9 @@ import Suite.autoTagClassAnnotations
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
+ * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>FreeSpec</code> adds a method
  * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily
@@ -244,7 +237,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -258,7 +251,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -273,7 +266,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * If you wish to temporarily ignore an entire suite of tests, you can annotate the test class with <code>@Ignore</code>, like this:
+ * If you wish to temporarily ignore an entire suite of tests, you can (on the JVM, not Scala.js) annotate the test class with <code>@Ignore</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -292,7 +285,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -308,7 +301,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -320,11 +313,10 @@ import Suite.autoTagClassAnnotations
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all, use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
  *
- *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>FreeSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
@@ -378,7 +370,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -388,7 +380,7 @@ import Suite.autoTagClassAnnotations
  *   + That's all folks! </span>
  * </pre>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>FreeSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -463,7 +455,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/freeSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -505,7 +497,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  *  A mutable Set
  *    + notes are sent immediately</span>
@@ -516,13 +508,20 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
+ *
+ * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
  * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
  * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
@@ -560,7 +559,7 @@ import Suite.autoTagClassAnnotations
  *       "should have size 0" in (pending)
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -574,7 +573,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -644,15 +643,14 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified name, 
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>FreeSpec</code>s like this:
+ * create a matching tag for <code>FreeSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
  * import org.scalatest.Tag
  *
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
@@ -665,21 +663,21 @@ import Suite.autoTagClassAnnotations
  * 
  * import org.scalatest.Tag
  * 
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * 
  * import org.scalatest.FreeSpec
+ * import org.scalatest.tagobjects.Slow
  * 
  * class SetSpec extends FreeSpec {
  * 
  *   "A Set" - {
  *     "when empty" - {
- *       "should have size 0" taggedAs(SlowTest) in {
+ *       "should have size 0" taggedAs(Slow) in {
  *         assert(Set.empty.size === 0)
  *       }
  *       
- *       "should produce NoSuchElementException when head is invoked" taggedAs(SlowTest, DbTest) in {
- *         intercept[NoSuchElementException] {
+ *       "should produce NoSuchElementException when head is invoked" taggedAs(Slow, DbTest) in {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -689,7 +687,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
@@ -705,9 +703,10 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of a <code>FreeSpec</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>FreeSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * tag each test individually at the test site.
  * </p>
  *
  * <a name="sharedFixtures"></a>
@@ -794,11 +793,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *  <ul>
- *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
- *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
- *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
- *  </ul>
+ *  <dl>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</dd>
+ *  </dl>
  *  </td>
  * </tr>
  *
@@ -857,11 +856,12 @@ import Suite.autoTagClassAnnotations
  * 
  * class ExampleSpec extends FreeSpec {
  * 
- *   def fixture = 
- *     new {
- *       val builder = new StringBuilder("ScalaTest is ")
- *       val buffer = new ListBuffer[String]
- *     }
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *
+ *   def fixture = new Fixture
  *   
  *   "Testing" - {
  *     "should be easy" in {
@@ -999,7 +999,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1040,10 +1040,10 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
- * - should succeed
+ * - should succeed</span>
  * <span class="stRed">- should fail *** FAILED ***
  *   2 did not equal 3 (<console>:33)
  *   + Dir snapshot: hello.txt, world.txt </span>
@@ -1157,7 +1157,6 @@ import Suite.autoTagClassAnnotations
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * </pre>
  * <a name="withFixtureOneArgTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
@@ -1288,7 +1287,7 @@ import Suite.autoTagClassAnnotations
  * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some side-effecting mechanism, commonly by
  * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
  * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
- * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
+ * of the test class (on the JVM, not Scala.js) unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
  * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
  * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
  * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
@@ -1318,7 +1317,7 @@ import Suite.autoTagClassAnnotations
  * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * trait Builder extends SuiteMixin { this: Suite =&gt;
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val builder = new StringBuilder
  * 
@@ -1329,7 +1328,7 @@ import Suite.autoTagClassAnnotations
  *   }
  * }
  * 
- * trait Buffer extends SuiteMixin { this: Suite =&gt;
+ * trait Buffer extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val buffer = new ListBuffer[String]
  * 
@@ -1367,7 +1366,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends FreeSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1375,7 +1374,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends FreeSpec with Builder
  * </pre>
  *
  * <p>
@@ -1625,13 +1624,13 @@ import Suite.autoTagClassAnnotations
  *       }
  * 
  *       "should complain on peek" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.peek
  *         }
  *       }
  *
  *       "should complain on pop" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.pop
  *         }
  *       }
@@ -1661,7 +1660,7 @@ import Suite.autoTagClassAnnotations
  *       }
  * 
  *       "should complain on a push" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           fullStack.push(10)
  *         }
  *       }
@@ -1676,7 +1675,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SharedTestExampleSpec execute
+ * scala&gt; org.scalatest.run(new SharedTestExampleSpec)
  * <span class="stGreen">SharedTestExampleSpec:
  * A Stack 
  *   when empty 

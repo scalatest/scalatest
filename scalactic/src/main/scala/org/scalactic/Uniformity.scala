@@ -66,11 +66,10 @@ package org.scalactic
  * Note that by creating a <code>Uniformity</code> rather than just an instance of its supertype, <a href="Normalization.html"><code>Normalization</code></a>,
  * it can be used more generally. For example, <code>Uniformity</code>s allow you to the <code>Explicitly</code> DSL with
  * <a href="TripleEquals.html"><code>TripleEquals</code></a>, whereas <code>Normalization</code>s require
- * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> or
- * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
  * <code>Uniformity</code>s also enable you to use the <code>Explicitly</code> DSL with ScalaTest's <code>should</code> <code>===</code>, <code>equal</code>,
  * and <code>contain</code> matcher syntax, whereas a plain <code>Normalization</code> can only be used with <code>should</code> <code>===</code>, and only
- * under either <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>.
+ * under <code>TypeCheckedTripleEquals</code>.
  * </p>
  * 
  * @tparam A the type whose uniformity is being defined

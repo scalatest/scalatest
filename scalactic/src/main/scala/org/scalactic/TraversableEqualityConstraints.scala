@@ -16,7 +16,7 @@
 package org.scalactic
 
 /**
- * Provides three implicit methods that loosen the equality constraint defined by <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>
+ * Provides three implicit methods that loosen the equality constraint defined by <code>TypeCheckedTripleEquals</code> 
  * for Scala <code>Traversable</code>s to one that more closely matches Scala's approach to <code>Traversable</code> equality.
  *
  * <p>
@@ -35,8 +35,8 @@ package org.scalactic
  * </pre>
  *
  * <p>
- * Such a comparison would not, however, compile if you used <code>===</code> under either <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>,
- * because <code>Vector</code> and <code>ListBuffer</code> are not in a subtype/supertype relationship, nor does an implicit conversion by default exist between them:
+ * Such a comparison would not, however, compile if you used <code>===</code> under <code>TypeCheckedTripleEquals</code>,
+ * because <code>Vector</code> and <code>ListBuffer</code> are not in a subtype/supertype relationship:
  * </p>
  *
  * <pre class="stREPL">
@@ -50,7 +50,7 @@ package org.scalactic
  * &lt;console&gt;:16: error: types scala.collection.immutable.Vector[Int] and
  *   scala.collection.mutable.ListBuffer[Int] do not adhere to the equality constraint selected for
  *   the === and !== operators; the missing implicit parameter is of type
- *   org.scalactic.EqualityConstraint[scala.collection.immutable.Vector[Int],
+ *   org.scalactic.CanEqual[scala.collection.immutable.Vector[Int],
  *   scala.collection.mutable.ListBuffer[Int]]
  *               Vector(1, 2) === ListBuffer(1, 2)
  *                            ^
@@ -71,7 +71,7 @@ package org.scalactic
  * <p>
  * The equality constraints provided by this trait require that left and right sides are both subclasses of either <code>scala.collection.GenSeq</code>,
  * <code>scala.collection.GenSet</code>, or <code>scala.collection.GenMap</code>, and that
- * an <code>EqualityConstraint</code> can be found for the element types for <code>Seq</code> and <code>Set</code>, or the key and value types for <code>Map</code>s. In
+ * an <code>CanEqual</code> can be found for the element types for <code>Seq</code> and <code>Set</code>, or the key and value types for <code>Map</code>s. In
  * the example above, both the <code>Vector</code> and
  * <code>ListBuffer</code> are subclasses of <code>scala.collection.GenSeq</code>, and the regular <code>TypeCheckedTripleEquals</code> provides equality
  * constraints for the element types, both of which are <code>Int</code>. By contrast, this
@@ -87,7 +87,7 @@ package org.scalactic
  * &lt;console&gt;:20: error: types scala.collection.immutable.Vector[Int] and
  *   scala.collection.mutable.ListBuffer[java.util.Date] do not adhere to the equality constraint selected for
  *   the === and !== operators; the missing implicit parameter is of type
- *   org.scalactic.EqualityConstraint[scala.collection.immutable.Vector[Int],
+ *   org.scalactic.CanEqual[scala.collection.immutable.Vector[Int],
  *   scala.collection.mutable.ListBuffer[java.util.Date]]
  *               Vector(1, 2) === ListBuffer(new Date, new Date)
  *                            ^

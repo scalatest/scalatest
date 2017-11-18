@@ -24,10 +24,10 @@ class CatchReporterSpec extends FunSpec {
   it("the CatchReporter should catch exceptions") {
 
     val buggyReporter = new ResourcefulReporter {
-      override def apply(event: Event) {
+      override def apply(event: Event): Unit = {
         throw new RuntimeException
       }
-      override def dispose() {
+      override def dispose(): Unit = {
         throw new RuntimeException
       }
     }

@@ -17,13 +17,16 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.Tables
+// SKIP-SCALATESTJS-START
+import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 trait SuiteExamples extends Tables {
 
   type FixtureServices
 
   // SKIP-SCALATESTJS-START
-  val spec: Spec with FixtureServices
+  val spec: RefSpec with FixtureServices
   val fixtureSpec: fixture.Spec with FixtureServices
   // SKIP-SCALATESTJS-END
 

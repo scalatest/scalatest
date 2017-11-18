@@ -15,36 +15,53 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.SuiteMixin
-import org.scalatest.Suite
-import Timeouts._
-import org.scalatest.exceptions.ModifiableMessage
+import org.scalatest.TestSuiteMixin
+import org.scalatest.TestSuite
+import TimeLimits._
 import org.scalatest.Resources
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
 import org.scalatest.Outcome
 import org.scalatest.Exceptional
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait that when mixed into a suite class establishes a time limit for its tests.
  *
+ * <strong>
+ * Unfortunately this trait experienced a potentially breaking change in 3.0: previously
+ * this trait declared a <code>defaultTestInterruptor</code> <code>val</code> of type
+ * <code>Interruptor</code>, in 3.0 that was renamed to <code>defaultTestSignaler</code>
+ * and given type <code>Signaler</code>. The reason is that the default <code>Interruptor</code>, <code>ThreadInterruptor</code>,
+ * did not make sense on Scala.js&#8212;in fact, the entire notion of interruption did not make
+ * sense on Scala.js. <code>Signaler</code>'s default is <code>DoNotSignal</code>, which is a better
+ * default on Scala.js, and works fine as a default on the JVM.
+ * <code>Timeouts</code> was left the same in 3.0, so existing code using it would
+ * continue to work as before, but after a deprecation period <code>Timeouts</code> will be
+ * supplanted by <code>TimeLimits</code>, which uses <code>Signaler</code>. <code>TimeLimitedTests</code>
+ * now uses <code>TimeLimits</code> instead of <code>Timeouts</code>, so if you overrode the default
+ * <code>Interruptor</code> before, you'll need to change it to the equivalent <code>Signaler</code>.
+ * And if you were depending on the default being a <code>ThreadInterruptor</code>, you'll need to
+ * override <code>defaultTestSignaler</code> and set it to <code>ThreadSignaler</code>.
+ * </strong>
+ *
  * <p>
  * This trait overrides <code>withFixture</code>, wrapping a <code>super.withFixture(test)</code> call
- * in a <code>failAfter</code> invocation, specifying a timeout obtained by invoking <code>timeLimit</code>
- * and an <a href="Interruptor.html"><code>Interruptor</code></a> by invoking <code>defaultTestInterruptor</code>:
+ * in a <code>failAfter</code> invocation, specifying a time limit obtained by invoking <code>timeLimit</code>
+ * and a <a href="Signaler.html"><code>Signaler</code></a> by invoking <code>defaultTestSignaler</code>:
  * </p>
  * 
  * <pre class="stHighlight">
  * failAfter(timeLimit) {
  *   super.withFixture(test)
- * } (defaultTestInterruptor)
+ * } (defaultTestSignaler)
  * </pre>
  *
  * <p>
  * Note that the <code>failAfter</code> method executes the body of the by-name passed to it using the same
  * thread that invoked <code>failAfter</code>. This means that the same thread will run the <code>withFixture</code> method
  * as well as each test, so no extra synchronization is required. A second thread is used to run a timer, and if the timeout
- * expires, that second thread will attempt to interrupt the main test thread via the <code>defaultTestInterruptor</code>.
+ * expires, that second thread will attempt to signal the main test thread via the <code>defaultTestSignaler</code>.
  * </p>
  * 
  * <p>
@@ -84,26 +101,26 @@ import org.scalatest.Exceptional
  * </p>
  * 
  * <p>
- * The <code>failAfter</code> method uses an <code>Interruptor</code> to attempt to interrupt the main test thread if the timeout
- * expires. The default <code>Interruptor</code> returned by the <code>defaultTestInterruptor</code> method is a
- * <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which calls <code>interrupt</code> on the main test thread. If you wish to change this
- * interruption strategy, override <code>defaultTestInterruptor</code> to return a different <code>Interruptor</code>. For example,
- * here's how you'd change the default to <a href="DoNotInterrupt$.html"><code>DoNotInterrupt</code></a>, a very patient interruption strategy that does nothing to
- * interrupt the main test thread:
+ * The <code>failAfter</code> method uses an <code>Signaler</code> to attempt to signal the main test thread if the timeout
+ * expires. The default <code>Signaler</code> returned by the <code>defaultTestSignaler</code> method is a
+ * <a href="DoNotSignal$.html"><code>DoNotSignal</code></a>, which does not signal the main test thread to stop. If you wish to change this
+ * signaling strategy, override <code>defaultTestSignaler</code> to return a different <code>Signaler</code>. For example,
+ * here's how you'd change the default to <a href="ThreadSignaler$.html"><code>ThreadSignaler</code></a>, which will
+ * interrupt the main test thread when time is up:
  * </p>
  * 
  * <pre class="stHighlight">
  * import org.scalatest.FunSpec
- * import org.scalatest.concurrent.TimeLimitedTests
+ * import org.scalatest.concurrent.{ThreadSignaler, TimeLimitedTests}
  * import org.scalatest.time.SpanSugar._
- * 
- * class ExampleSpec extends FunSpec with TimeLimitedTests {
- * 
- *   val timeLimit = 200 millis
- * 
- *   override val defaultTestInterruptor = DoNotInterrupt
- * 
- *   describe("A time-limited test") {
+ *
+ * class ExampleSignalerSpec extends FunSpec with TimeLimitedTests {
+ *
+ * val timeLimit = 200 millis
+ *
+ * override val defaultTestSignaler = ThreadSignaler
+ *
+ * describe("A time-limited test") {
  *     it("should succeed if it completes within the time limit") {
  *       Thread.sleep(100)
  *     }
@@ -122,7 +139,7 @@ import org.scalatest.Exceptional
  * to run.
  * </p>
  */
-trait TimeLimitedTests extends SuiteMixin { this: Suite =>
+trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
 
   /**
    * A stackable implementation of <code>withFixture</code> that wraps a call to <code>super.withFixture</code> in a 
@@ -132,9 +149,10 @@ trait TimeLimitedTests extends SuiteMixin { this: Suite =>
    */
   abstract override def withFixture(test: NoArgTest): Outcome = {
     try {
-      failAfter(timeLimit) {
+      // TODO: should pass in the prettifier also
+      failAfterImpl(timeLimit, defaultTestSignaler, org.scalactic.Prettifier.default, test.pos, test.pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun("TimeLimits.scala", "failAfter", 2))) {
         super.withFixture(test)
-      } (defaultTestInterruptor)
+      }
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 
@@ -151,16 +169,16 @@ trait TimeLimitedTests extends SuiteMixin { this: Suite =>
   def timeLimit: Span
   
   /**
-   * The default <a href="Interruptor.html"><code>Interruptor</code></a> strategy used to interrupt tests that exceed their time limit.
+   * The default <a href="Signaler.html"><code>Signaler</code></a> strategy used to interrupt tests that exceed their time limit.
    * 
    * <p>
-   * This trait's implementation of this method returns <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which invokes <code>interrupt</code>
-   * on the main test thread. Override this method to change the test interruption strategy.
+   * This trait's implementation of this method returns <a href="DoNotSignal$.html"><code>DoNotSignal</code></a>, which does not signal/interrupt
+   * the main test and future thread. Override this method to change the test signaling strategy.
    * </p>
    * 
    * @return a <code>ThreadInterruptor</code>
    */
-  val defaultTestInterruptor: Interruptor = ThreadInterruptor
+  val defaultTestSignaler: Signaler = DoNotSignal
 }
 
 /*

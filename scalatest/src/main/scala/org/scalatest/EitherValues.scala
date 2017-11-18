@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic._
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
 /**
@@ -88,14 +89,14 @@ trait EitherValues {
    *
    * @param either the <code>LeftProjection</code> on which to add the <code>value</code> method
    */
-  implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R]) = new LeftValuable(leftProj)
+  implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
 
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>RightProjection</code>.
    *
    * @param either the <code>RightProjection</code> on which to add the <code>value</code> method
    */
-  implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R]) = new RightValuable(rightProj)
+  implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
@@ -108,7 +109,7 @@ trait EitherValues {
    * @param leftProj A <code>LeftProjection</code> to convert to <code>LeftValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R]) {
+  class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R], pos: source.Position) {
 
     /**
      * Returns the <code>Left</code> value contained in the wrapped <code>LeftProjection</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
@@ -120,7 +121,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), Some(cause), pos)
       }
     }
   }
@@ -136,7 +137,7 @@ trait EitherValues {
    * @param rightProj A <code>RightProjection</code> to convert to <code>RightValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  class RightValuable[L, R](rightProj: Either.RightProjection[L, R]) {
+  class RightValuable[L, R](rightProj: Either.RightProjection[L, R], pos: source.Position) {
 
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
@@ -148,7 +149,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), Some(cause), pos)
       }
     }
   }

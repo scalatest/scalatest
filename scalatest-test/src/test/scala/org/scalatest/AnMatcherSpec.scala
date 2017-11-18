@@ -19,8 +19,11 @@ import SharedHelpers._
 import matchers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import org.scalactic.Prettifier
 
 class AnMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("AnMatcher ") {
     
@@ -206,7 +209,7 @@ class AnMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be an (oddSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was an odd size map"))
+        e.message should be (Some(decorateToStringValue(prettifier, Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -324,7 +327,7 @@ class AnMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be an (oddSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(left) + " was an odd size map"))
+        e.message should be (Some(decorateToStringValue(prettifier, left) + " was an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

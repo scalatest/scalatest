@@ -15,22 +15,22 @@
  */
 package org.scalatest.tools
 
-import org.scalatools.testing.{Framework => SbtFramework, _}
-import SuiteDiscoveryHelper._
-import org.scalatest.Suite.formatterForSuiteStarting
-import org.scalatest.Suite.formatterForSuiteCompleted
-import org.scalatest.Suite.formatterForSuiteAborted
-import org.scalatest.events.SuiteStarting
-import org.scalatest.events.SuiteCompleted
-import org.scalatest.events.SuiteAborted
-import org.scalatest.events.SeeStackDepthException
-import org.scalatest.events.TopOfClass
 import org.scalatest._
-import java.util.concurrent.atomic.AtomicReference
+import ArgsParser._
+import SuiteDiscoveryHelper._
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
-import ArgsParser._
+import java.util.concurrent.atomic.AtomicReference
+import org.scalatest.Suite.formatterForSuiteAborted
+import org.scalatest.Suite.formatterForSuiteCompleted
+import org.scalatest.Suite.formatterForSuiteStarting
+import org.scalatest.events.SeeStackDepthException
+import org.scalatest.events.SuiteAborted
+import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.SuiteStarting
+import org.scalatest.events.TopOfClass
+import org.scalatools.testing.{Framework => SbtFramework, _}
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -121,7 +121,7 @@ class ScalaTestFramework extends SbtFramework {
     val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
-    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
+    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname = new AtomicBoolean(false)
     val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
     val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
@@ -260,11 +260,11 @@ class ScalaTestFramework extends SbtFramework {
     
     private val atomicCount = new AtomicInteger(0)
   
-    def increaseLatch() {
+    def increaseLatch(): Unit = {
       atomicCount.incrementAndGet()
     }
   
-    def decreaseLatch() {
+    def decreaseLatch(): Unit = {
       if (atomicCount.decrementAndGet() == 0) 
         reporter.get match {
           case Some(r) => r.dispatchDisposeAndWaitUntilDone()
@@ -283,7 +283,8 @@ class ScalaTestFramework extends SbtFramework {
           presentReminder.get,
           presentReminderWithShortStackTraces.get,
           presentReminderWithFullStackTraces.get,
-          presentReminderWithoutCanceledTests.get
+          presentReminderWithoutCanceledTests.get,
+          presentFilePathname.get
         )
     }
   }
@@ -306,7 +307,8 @@ class ScalaTestFramework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean
   ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -316,16 +318,17 @@ class ScalaTestFramework extends SbtFramework {
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentFilePathname
   ) {
 
-    protected def printPossiblyInColor(fragment: Fragment) {
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
 
-    def dispose() = ()
+    def dispose(): Unit = ()
   }
 
   /**The test runner for ScalaTest suites. It is compiled in a second step after the rest of sbt.*/
@@ -377,7 +380,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
     private def filterMembersOnly(paths: List[String], testClassName: String): Boolean =
       paths.exists(path => testClassName.startsWith(path) && testClassName.substring(path.length ).lastIndexOf('.') <= 0)
       
-    def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
+    def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]): Unit = {
       try {
         RunConfig.increaseLatch()
         val suiteClass = Class.forName(testClassName, true, testLoader)
@@ -410,13 +413,22 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-              suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
+              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
 
               val formatter = formatterForSuiteCompleted(suite)
 
               val duration = System.currentTimeMillis - suiteStartTime
 
-              report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              // Need to finish all before returning back to sbt.
+              status.succeeds()
+
+              status.unreportedException match {
+                case Some(ue) =>
+                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+
+                case None =>
+                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              }
 
             }
             catch {       
@@ -451,7 +463,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
       
       import org.scalatest.events._
 
-      def fireEvent(tn: String, r: Result, e: Option[Throwable]) = {
+      def fireEvent(tn: String, r: Result, e: Option[Throwable]): Unit = {
         eventHandler.handle(
           new org.scalatools.testing.Event {
             def testName = tn
@@ -462,7 +474,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         )
       }
       
-      override def apply(event: Event) {
+      override def apply(event: Event): Unit = {
         report match {
           case Some(report) => report(event)
           case None =>
@@ -479,7 +491,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         }
       }
       
-      def dispose() {
+      def dispose(): Unit = {
         report match {
           case Some(report: DispatchReporter) => 
             report.dispatchDisposeAndWaitUntilDone()

@@ -16,7 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import SharedHelpers._
 import NoArgSpec.invokedCount
 
 class NoArgSpec extends org.scalatest.FunSpec with Matchers {

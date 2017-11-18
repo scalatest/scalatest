@@ -15,29 +15,16 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.StackDepthExceptionHelper
+import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import scala.collection.Traversable
-import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.TestFailedException
-import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
-import org.scalactic.Tolerance
-import scala.annotation.tailrec
-import org.scalactic.Equality
-import org.scalatest.words.ShouldVerb
-import org.scalatest.matchers.HavePropertyMatcher
-import org.scalatest.matchers.HavePropertyMatchResult
-import org.scalatest.matchers.BePropertyMatcher
-import org.scalatest.matchers.BePropertyMatchResult
-import org.scalatest.matchers.BeMatcher
-import org.scalatest.matchers.Matcher
-import org.scalatest.matchers.MatchResult
-import words.RegexWithGroups
+import org.scalatest.exceptions.StackDepthException
+import org.scalactic._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -147,22 +134,8 @@ private[scalatest] object MatchersHelper {
     builder.toString
   }
 
-  // SKIP-SCALATESTJS-START
-  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 9): Throwable = {
-    val temp = new RuntimeException
-    // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
-    // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
-    // this approach should be better than adding && _.getMethodName == newTestFailedException we used previously.
-    val elements = temp.getStackTrace.drop(2) 
-    // TODO: Perhaps we should add org.scalatest.enablers also here later?
-    // TODO: Probably need a MatchersHelper.scala here also
-    val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && st.getFileName != "MustMatchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
-    optionalCause match {
-      case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
-      case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
-    }
+  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, pos: source.Position): Throwable = {
+    new TestFailedException((_: StackDepthException) => Some(message), optionalCause, pos)
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
@@ -204,7 +177,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, pos: source.Position): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
@@ -228,11 +201,11 @@ private[scalatest] object MatchersHelper {
 
         throw newTestFailedException(
           if (methodNameStartsWithVowel)
-            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
+            FailureMessages.hasNeitherAnOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else
-            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
-          stackDepth
+            FailureMessages.hasNeitherAOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
+          None,
+          pos
         )
 
       case Some(result) =>
@@ -320,4 +293,53 @@ private[scalatest] object MatchersHelper {
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotIncludeRegex, Resources.rawIncludedRegex, Resources.rawIncludedRegexButNotGroupAtIndex,
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
+
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, pos: source.Position): T = {
+    val caught = try {
+      f
+      None
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
+          throw newTestFailedException(s, Some(u), pos)
+        }
+        else {
+          Some(u)
+        }
+      }
+    }
+    caught match {
+      case None =>
+        val message = exceptionExpectedMessageFun(clazz.getName)
+        throw newTestFailedException(message, None, pos)
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+    }
+  }
+
+  def checkNoException(fun: => Any, pos: source.Position): Assertion = {
+    try {
+      fun
+      Succeeded
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
+        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), pos)
+      }
+    }
+  }
+
+  def indicateSuccess(message: => String): Assertion = Succeeded
+
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
+
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+    val message: String = failureMessage
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, pos)
+  }
+
+  def indicateFailure(e: TestFailedException): Assertion =
+    throw e
 }

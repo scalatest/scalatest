@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import exceptions.ModifiableMessage
 import org.scalactic.Requirements._
+import exceptions.ModifiableMessage
 
 /**
  * Trait providing an implicit conversion that allows clues to be placed after a block of code.
@@ -172,7 +172,7 @@ trait AppendedClues {
   /**
    * Implicit conversion that allows clues to be place after a block of code.
    */
-  implicit def convertToClueful[T](fun: => T) = new Clueful(fun)
+  implicit def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
 }
 
 /**

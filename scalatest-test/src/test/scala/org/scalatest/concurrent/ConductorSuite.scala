@@ -17,13 +17,12 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import SharedHelpers._
-import Thread.State._
-import java.util.concurrent.atomic.AtomicBoolean
-import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.SharedHelpers.thisLineNumber
-import time.{Millis, Span}
-import PatienceConfiguration.{Timeout, Interval}
 import time.SpanSugar._
+import PatienceConfiguration.{Timeout, Interval}
+import java.util.concurrent.atomic.AtomicBoolean
+import org.scalatest.SharedHelpers.thisLineNumber
+import org.scalatest.exceptions.NotAllowedException
+import time.{Millis, Span}
 
 class ConductorSuite extends FunSuite with Matchers with Conductors with SeveredStackTraces {
 
@@ -55,7 +54,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
     conductor.conduct
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("name") { 1 should be (1) }
+        conductor.threadNamed("name") { 1 should be (1) }
       }
     caught.getMessage should be ("Cannot invoke the thread method on Conductor after its multi-threaded test has completed.")
     caught.failedCodeFileNameAndLineNumberString match {
@@ -70,7 +69,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
     conductor.conduct
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("name") { 1 should be (1) }
+        conductor.threadNamed("name") { 1 should be (1) }
       }
     caught.getMessage should be ("Cannot invoke the thread method on Conductor after its multi-threaded test has completed.")
     caught.failedCodeFileNameAndLineNumberString match {
@@ -99,10 +98,10 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
           "must have a unique name") {
 
     val conductor = new Conductor
-    conductor.thread("Fiesta del Mar") { 1 should be (1) }
+    conductor.threadNamed("Fiesta del Mar") { 1 should be (1) }
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("Fiesta del Mar") { 2 should be (2) }
+        conductor.threadNamed("Fiesta del Mar") { 2 should be (2) }
       }
     caught.getMessage should be ("Cannot register two threads with the same name. Duplicate name: Fiesta del Mar.")
     caught.failedCodeFileNameAndLineNumberString match {
@@ -224,7 +223,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
   }
 
   class Forevermore {
-    def waitForever() {
+    def waitForever(): Unit = {
       synchronized {
         wait()
       }
@@ -313,7 +312,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
 
   test("ConductorMethods is a stackable trait that delegates test function execution to withFixture(NoArgTest)") {
     var calledSuperWithFixtureNoArgTest = false
-    trait SuperTrait extends SuiteMixin { this: Suite =>
+    trait SuperTrait extends TestSuiteMixin { this: TestSuite =>
       abstract override def withFixture(test: NoArgTest): Outcome = {
         calledSuperWithFixtureNoArgTest = true
         super.withFixture(test)

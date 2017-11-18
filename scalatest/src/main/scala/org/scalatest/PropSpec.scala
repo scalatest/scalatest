@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import Suite.autoTagClassAnnotations
 
 /**
  * A suite of property-based tests.
@@ -54,7 +52,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -68,7 +66,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -87,7 +85,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute "size 0"
+ * scala&gt; org.scalatest.run(new SetSpec, "size 0")
  * <span class="stGreen">SetSpec:
  * - an empty Set should have size 0</span>
  * </pre>
@@ -162,7 +160,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =>
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -173,7 +171,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -186,7 +184,7 @@ import Suite.autoTagClassAnnotations
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
  * </pre>
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>PropSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
@@ -246,7 +244,7 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>PropSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * - an element can be added to an empty mutable Set
  *   + ---------------- 
@@ -266,7 +264,7 @@ import Suite.autoTagClassAnnotations
  *   + And the Set should contain the added element</span>
  * </pre>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>PropSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -354,7 +352,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/propSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -412,7 +410,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  *   + notes are sent immediately</span>
  *   <span class="stYellow">+ alerts are also sent immediately</span>
@@ -422,13 +420,20 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
+ *
+ * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
  * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
  * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
@@ -476,7 +481,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -489,7 +494,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * </pre>
  *
  * <p>
@@ -536,9 +541,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified names,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>PropSpec</code>s like this:
+ * create a matching tag for <code>PropSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -546,17 +551,17 @@ import Suite.autoTagClassAnnotations
  *
  * import org.scalatest.Tag
  *
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>PropSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>PropSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
  * import org.scalatest._
  * import prop._
+ * import tagobjects.Slow
  * import scala.collection.immutable._
  * 
  * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
@@ -569,24 +574,24 @@ import Suite.autoTagClassAnnotations
  *       TreeSet.empty[Int]
  *     )
  * 
- *   property("an empty Set should have size 0", SlowTest) {
+ *   property("an empty Set should have size 0", Slow) {
  *     forAll(examples) { set =&gt;
  *       set.size should be (0)
  *     }
  *   }
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException",
- *       SlowTest, DbTest) {
+ *       Slow, DbTest) {
  * 
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
@@ -688,11 +693,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *  <ul>
- *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
- *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
- *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
- *  </ul>
+ *  <dl>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</dd>
+ *  </dl>
  *  </td>
  * </tr>
  *
@@ -840,7 +845,7 @@ import Suite.autoTagClassAnnotations
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     new EmptySetExamples {
  *       forAll(examples) { set =&gt;
- *         evaluating { set.head } should produce [NoSuchElementException]
+ *         a [NoSuchElementException] should be thrownBy { set.head }
  *       }
  *     }
  *   }

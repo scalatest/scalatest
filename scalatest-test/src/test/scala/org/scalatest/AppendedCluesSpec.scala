@@ -16,6 +16,7 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException, ModifiableMessage}
+
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END
@@ -25,6 +26,8 @@ import SharedHelpers.EventRecordingReporter
 import AppendedClues._
 import TableDrivenPropertyChecks._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException
 
 // TODO: Test with imported AppendedClues
 class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
@@ -32,19 +35,19 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(
       "exception",
-      new TestFailedException("message", 3),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", 3),
       // SKIP-SCALATESTJS-END
-      new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
-      new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
+      new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)
     )
 
 
-  def failWith(e: Throwable) { throw e }
+  def failWith(e: Throwable): Unit = { throw e }
 
-  it should "return the new exception with the clue string appended, separated by a space char if passed a function that does that" in {
+  "The withClue construct" should "return the new exception with the clue string appended, separated by a space char if passed a function that does that" in {
     forAll (examples) { e =>
       val clue = "clue"
       val fun: (Option[String] => Option[String]) =
@@ -56,7 +59,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
     }
   }
 
-  "The withClue construct" should "allow any non-ModifiableMessage exception to pass through" in {
+  it should "allow any non-ModifiableMessage exception to pass through" in {
     val iae = new IllegalArgumentException
     val caught = intercept[IllegalArgumentException] {
       { failWith(iae) } withClue "howdy"
@@ -194,7 +197,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   it should "throw NPE if a null clue object is passed" in {
     forAll (examples) { e =>
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         {
           failWith(e)
         } withClue (null)
@@ -234,7 +237,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
   
   it should "return Failed that contains TestFailedException and with appended clue" in {
-    val failed = Failed(new TestFailedException("message", 3))
+    val failed = Failed(new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here))
     val result = { failed } withClue("a clue")
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]

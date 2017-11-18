@@ -16,6 +16,8 @@
 package org.scalatest.exceptions
 
 import org.scalatest.time.Span
+import org.scalactic.source
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Subclass of <a href="TestFailedException.html"><code>TestFailedException</code></a> representing tests that failed because of a timeout.
@@ -29,7 +31,7 @@ import org.scalatest.time.Span
  *
  * @param messageFun a function that produces an optional detail message for this <code>TestFailedDueToTimeoutException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedDueToTimeoutException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param timeout the timeout that expired
  *
  * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
@@ -39,10 +41,43 @@ import org.scalatest.time.Span
 class TestFailedDueToTimeoutException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   val timeout: Span
-) extends TestFailedException(messageFun, cause, failedCodeStackDepthFun, payload) with TimeoutField {
+) extends TestFailedException(messageFun, cause, posOrStackDepthFun, payload) with TimeoutField {
+
+  /**
+    * Constructs a <code>TestFailedDueToTimeoutException</code> with the given error message function, optional cause, source position and optional payload.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+    * @param pos a source position
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    */
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any],
+    timeout: Span
+  ) = this(messageFun, cause, Left(pos), payload, timeout)
+
+  /**
+    * Constructs a <code>TestFailedDueToTimeoutException</code> with the given error message function, optional cause, stack depth function, optional payload and timeout.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestFailedDueToTimeoutException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedDueToTimeoutException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    * @param timeout the timeout that expired
+    */
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    timeout: Span
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, timeout)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -53,7 +88,7 @@ class TestFailedDueToTimeoutException(
    * the modified optional detail message for the result instance of <code>TestFailedDueToTimeoutException</code>.
    */
   override def modifyMessage(fun: Option[String] => Option[String]): TestFailedDueToTimeoutException = {
-    val mod = new TestFailedDueToTimeoutException(sde => fun(message), cause, failedCodeStackDepthFun, payload, timeout)
+    val mod = new TestFailedDueToTimeoutException((_: StackDepthException) => fun(message), cause, posOrStackDepthFun, payload, timeout)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -68,7 +103,7 @@ class TestFailedDueToTimeoutException(
    */
   override def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedDueToTimeoutException = {
     val currentPayload = payload
-    val mod = new TestFailedDueToTimeoutException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload), timeout)
+    val mod = new TestFailedDueToTimeoutException(messageFun, cause, posOrStackDepthFun, fun(currentPayload), timeout)
     mod.setStackTrace(getStackTrace)
     mod
   }

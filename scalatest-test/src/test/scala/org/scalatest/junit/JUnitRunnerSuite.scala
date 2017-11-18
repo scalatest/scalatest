@@ -54,7 +54,7 @@ package org.scalatest.junit {
     @RunWith(classOf[JUnitRunner])
     class KerblooeySuite extends FunSuite with BeforeAndAfterAll {
 
-      override def beforeAll() {
+      override def beforeAll(): Unit = {
         throw new RuntimeException("kerblooey")
       }
 
@@ -76,12 +76,12 @@ package org.scalatest.junit {
     }
   }
 
-  import org.junit.runner.JUnitCore
   import org.junit.runner.Description
-  import org.junit.runner.notification.Failure
-  import org.junit.runner.notification.RunNotifier
-  import org.scalatest.junit.helpers.EasySuite
-  import org.scalatest.junit.helpers.KerblooeySuite
+import org.junit.runner.JUnitCore
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunNotifier
+import org.scalatest.junit.helpers.EasySuite
+import org.scalatest.junit.helpers.KerblooeySuite
 
   class JUnitRunnerSuite extends FunSuite {
 
@@ -109,7 +109,7 @@ package org.scalatest.junit {
         new RunNotifier {
           var methodInvocationCount = 0
           var passed: Option[Failure] = None
-          override def fireTestFailure(failure: Failure) {
+          override def fireTestFailure(failure: Failure): Unit = {
             methodInvocationCount += 1
             passed = Some(failure)
           }

@@ -17,7 +17,7 @@ package org.scalatest.concurrent
 
 import java.util.TimerTask
 import java.util.Timer
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.Resources
 import org.scalatest.exceptions.StackDepthException
 import java.nio.channels.ClosedByInterruptException
@@ -27,8 +27,24 @@ import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalactic._
 
 /**
+ * <strong>This trait has been deprecated and will be removed in a later version of ScalaTest. Please use trait
+ * <a href="TimeLimits.scala">TimeLimits</a> instead.</strong>
+ *
+ * <p>
+ * <strong>
+ * <code>TimeLimits</code> differs from <code>Timeouts</code> in two ways. First, its behavior is driven by a <a href=""><code>Timed</code></a>
+ * typeclass, so that it can treat <code>Future</code>s (and <a href="FutureOutcome.html"><code>FutureOutcome</code></a>s) differently than
+ * non-<code>Future</code>s. Second, where <code>Timeouts</code> <code>failAfter</code> and <code>cancelAfter</code> take an implicit
+ * <code>Interruptor</code> strategy, the corresponding methods in <code>TimeLimits</code> take an implicit  <code>Signaler</code> strategy. 
+ * Although the <code>Signaler</code> hierarchy corresponds exactly to the <code>Interruptor</code> hierarchy, the default is different.
+ * For <code>Timeouts</code>, the default is <code>ThreadInterruptor</code>; For <code>Signaler</code>, the default is
+ * <code>DoNotSignal</code>.
+ * </strong>
+ * </p>
+ *
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
  * operation passed as a by-name parameter, as well as a way to interrupt it if the operation exceeds its time limit.
  *
@@ -195,6 +211,7 @@ import org.scalatest.exceptions.TestCanceledException
  * @author Chua Chee Seng
  * @author Bill Venners
  */
+@deprecated("Please use org.scalatest.concurrent.TimeLimits instead")
 trait Timeouts {
 
   /**
@@ -241,13 +258,13 @@ trait Timeouts {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor): T = {
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor, pos: source.Position = implicitly[source.Position]): T = {
     timeoutAfter(
       timeout,
       fun,
       interruptor,
       t => new TestFailedDueToTimeoutException(
-        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "failAfter"), None, timeout
+        (_: StackDepthException) => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, pos, None, timeout
       )
     )
   }
@@ -287,8 +304,8 @@ trait Timeouts {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor): T = {
-    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter"), None))
+  def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor, pos: source.Position = implicitly[source.Position]): T = {
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException((sde: StackDepthException) => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, pos, None))
   }
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {

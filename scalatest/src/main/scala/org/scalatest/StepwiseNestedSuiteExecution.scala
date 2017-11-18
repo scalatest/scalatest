@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import Suite.wrapReporterIfNecessary
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import Suite.formatterForSuiteAborted
-import collection.mutable.ListBuffer
-import org.scalatest.events._
 import org.scalactic.Requirements._
+import org.scalatest.events._
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.wrapReporterIfNecessary
+import collection.mutable.ListBuffer
 
 /**
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if

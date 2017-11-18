@@ -18,38 +18,41 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ListShouldBeEmptyLogicalOrSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   //ADDITIONAL//
   
   val fileName: String = "ListShouldBeEmptyLogicalOrSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages.wasNotEqualTo(leftee, rightee)
+    FailureMessages.wasNotEqualTo(prettifier, leftee, rightee)
   }
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
     
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages.didNotEqual(leftee, rightee)
+    FailureMessages.didNotEqual(prettifier, leftee, rightee)
   }
   
   def wasNotEmpty(left: Any): String = 
-    FailureMessages.wasNotEmpty(left)
+    FailureMessages.wasNotEmpty(prettifier, left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages.wasEmpty(left)
+    FailureMessages.wasEmpty(prettifier, left)
     
   def allError(message: String, lineNumber: Int, left: Any): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
     
   val nonEmptyList = List(1, 2, 3)

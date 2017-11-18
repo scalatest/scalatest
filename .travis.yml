@@ -1,12 +1,19 @@
 language: scala
 scala:
-  - 2.11.7
-  - 2.10.5
+  - 2.10.6
+  - 2.11.11
+  - 2.12.4
+  - 2.13.0-M2
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+
 jdk:
-  - oraclejdk7
   - openjdk6
   - oraclejdk8
 
+dist: trusty
 sudo: false
 
 env:
@@ -40,6 +47,19 @@ env:
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
+    - MODE=examples
+    - MODE=examplesJS
+
+matrix:
+  exclude:
+    - scala: "2.13.0-M2"
+      jdk: openjdk6
+    - scala: "2.12.4"
+      jdk: openjdk6
+    - scala: "2.11.11"
+      jdk: oraclejdk8
+    - scala: "2.10.6"
+      jdk: oraclejdk8
 
 branches:
   only:

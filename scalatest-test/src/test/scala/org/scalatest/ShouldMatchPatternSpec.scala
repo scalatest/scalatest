@@ -15,13 +15,14 @@
  */
 package org.scalatest
 
-import OptionValues._
 import org.scalactic.Prettifier
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
 
 class ShouldMatchPatternSpec extends FunSpec with OptionValues {
+
+  private val prettifier = Prettifier.default
 
   case class Person(firstName: String, lastName: String)
 
@@ -34,16 +35,16 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
   def matchedTheGivenPattern(left: Any): String =
     Prettifier.default(left) + " matched the given pattern"
   def equaled(left: Any, right: Any): String =
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
 
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
 
   def wasEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
 
   def wasNotEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
 
   describe("should matchPattern syntax") {
 

@@ -24,7 +24,7 @@ trait ClassTemplate extends Template {
     withList.map("with " + _).mkString(" ")
   
   override def toString = 
-    "class " + name + " " + getExtend + " " + getWith + " {\n" + 
+    "class " + name + " " + getExtend + " " + getWith + " {\nprivate val prettifier = org.scalactic.Prettifier.default\n" +
     childrenContent + 
     "}"
 }
@@ -383,11 +383,12 @@ object Generator {
   def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T = 
     getNextNot(col.toIterator, predicate)
   
-  def genFile(targetFile: File, template: ScalaFileTemplate) = {
+  def genFile(targetFile: File, template: ScalaFileTemplate): File = {
     val content = template.toString
     val writer = new BufferedWriter(new FileWriter(targetFile))
     try {
       writer.write(content)
+      targetFile
     }
     finally {
       writer.flush()

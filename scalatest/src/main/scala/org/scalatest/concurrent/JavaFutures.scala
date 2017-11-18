@@ -15,13 +15,14 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.Span
+import org.scalactic._
 import java.util.concurrent.{TimeUnit, Future => FutureOfJava}
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
-import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
+import org.scalatest.time.Span
 
 /**
  * Provides an implicit conversion from <code>java.util.concurrent.Future[T]</code> to
@@ -77,18 +78,18 @@ trait JavaFutures extends Futures {
       def isCanceled: Boolean = javaFuture.isCancelled // Two ll's in Canceled. The verbosity of Java strikes again!
       // TODO: Catch TimeoutException and wrap that in a TFE with ScalaTest's TimeoutException I think.
       // def awaitAtMost(span: Span): T = javaFuture.get(span.totalNanos, TimeUnit.NANOSECONDS)
-      override private[concurrent] def futureValueImpl(methodName: String)(implicit config: PatienceConfig): T = {
-        val adjustment =
+      override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
+        /*val adjustment =
           if (methodName == "whenReady")
             3
           else
-            0
+            0*/
 
         if (javaFuture.isCanceled)
           throw new TestFailedException(
-            sde => Some(Resources.futureWasCanceled),
+            (_: StackDepthException) => Some(Resources.futureWasCanceled),
             None,
-            getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+            pos
           )
         try {
           javaFuture.get(config.timeout.totalNanos, TimeUnit.NANOSECONDS)
@@ -96,9 +97,9 @@ trait JavaFutures extends Futures {
         catch {
           case e: java.util.concurrent.TimeoutException =>
             throw new TestFailedException(
-              sde => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
+              (_: StackDepthException) => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
               None,
-              getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+              pos
             ) with TimeoutField {
               val timeout: Span = config.timeout
             }
@@ -109,14 +110,14 @@ trait JavaFutures extends Futures {
               throw exToReport
             }
             throw new TestFailedException(
-              sde => Some {
+              (_: StackDepthException) => Some {
                 if (exToReport.getMessage == null)
                   Resources.futureReturnedAnException(exToReport.getClass.getName)
                 else
                   Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
               },
               Some(exToReport),
-              getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+              pos
             )
         }
       }

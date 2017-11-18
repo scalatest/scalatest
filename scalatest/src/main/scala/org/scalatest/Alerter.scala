@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
 /**
  * Trait providing an <code>apply</code> method to which alert messages about a running suite of tests can be reported.
  * 
@@ -39,5 +41,5 @@ trait Alerter {
   /**
    * Send an alert message via an <code>AlertProvided</code> event to the reporter.
    */
-  def apply(message: String, payload: Option[Any] = None): Unit
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit
 }

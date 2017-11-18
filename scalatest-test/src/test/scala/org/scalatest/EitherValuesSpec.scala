@@ -57,5 +57,15 @@ class EitherValuesSpec extends FunSpec {
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
       caught.message.value should be (Resources.eitherRightValueNotDefined)
     }
+
+    it("should allow an immediate application of parens to invoke apply on the type contained in the Left") {
+      val lefty: Either[Map[String, Int], String] = Left(Map("I" -> 1, "II" -> 2))
+      lefty.left.value("II") shouldBe 2
+    }
+
+    it("should allow an immediate application of parens to invoke apply on the type contained in the Right") {
+      val righty: Either[String, Map[String, Int]] = Right(Map("I" -> 1, "II" -> 2))
+      righty.right.value("II") shouldBe 2
+    }
   } 
 }

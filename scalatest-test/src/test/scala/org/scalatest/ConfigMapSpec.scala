@@ -72,7 +72,8 @@ class ConfigMapSpec extends FunSpec {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getRequired[Apple]("apple") === apple)
-      assert(cm.getRequired[Fruit]("apple") === apple)
+      try { assert(cm.getRequired[Fruit]("apple") === apple) }
+      catch { case t: Throwable => fail(t) }
       val caught1 =
         intercept[TestCanceledException] {
           cm.getRequired[Apple]("fruit")
@@ -168,7 +169,8 @@ class ConfigMapSpec extends FunSpec {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getOptional[Apple]("apple") === Some(apple))
-      assert(cm.getOptional[Fruit]("apple") === Some(apple))
+      try { assert(cm.getOptional[Fruit]("apple") === Some(apple)) }
+      catch { case t: Throwable => fail(t) }
       val caught1 =
         intercept[TestCanceledException] {
           cm.getOptional[Apple]("fruit")
@@ -262,7 +264,8 @@ class ConfigMapSpec extends FunSpec {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getWithDefault[Apple]("apple", new Apple) === apple)
-      assert(cm.getWithDefault[Fruit]("apple", new Fruit) === apple)
+      try { assert(cm.getWithDefault[Fruit]("apple", new Fruit) === apple) }
+      catch { case t: Throwable => fail(t) }
       val caught1 =
         intercept[TestCanceledException] {
           cm.getWithDefault[Apple]("fruit", new Apple)

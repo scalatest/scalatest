@@ -18,8 +18,11 @@ package org.scalatest
 import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import Matchers._
+import org.scalactic.Prettifier
 
 class ShouldExistLogicalOrSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
@@ -34,26 +37,26 @@ class ShouldExistLogicalOrSpec extends FunSpec {
   val fileName = "ShouldExistLogicalOrSpec.scala"
   
   def doesNotExist(left: Any): String = 
-    FailureMessages.doesNotExist(left)
+    FailureMessages.doesNotExist(prettifier, left)
     
   def exists(left: Any): String = 
-    FailureMessages.exists(left)
+    FailureMessages.exists(prettifier, left)
     
   def wasEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
   
   def didNotEqual(left: Any, right: Any): String = 
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
     
   describe("The exist syntax when used with File") {

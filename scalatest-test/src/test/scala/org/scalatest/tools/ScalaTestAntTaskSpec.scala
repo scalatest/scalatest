@@ -25,13 +25,13 @@ class ScalaTestAntTaskSpec extends FunSpec {
   it("command line args should get generated for <test> elements") {
     val task = new ScalaTestAntTask
 
-    def addTestName(name: String) {
+    def addTestName(name: String): Unit = {
       val elem = new TestElement
       elem.setName(name)
       task.addConfiguredTest(elem)
     }
 
-    def addTestSubstring(substring: String) {
+    def addTestSubstring(substring: String): Unit = {
       val elem = new TestElement
       elem.setSubstring(substring)
       task.addConfiguredTest(elem)

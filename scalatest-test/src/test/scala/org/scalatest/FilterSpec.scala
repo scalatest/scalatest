@@ -15,8 +15,11 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.TreeSet
 import org.scalactic.exceptions.NullArgumentException
+import scala.collection.immutable.TreeSet
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class FilterSpec extends FunSpec {
   
@@ -80,7 +83,7 @@ class FilterSpec extends FunSpec {
 
     def randomPositiveInt(max: Int) = (Math.random * 10000).toInt % (max + 1)
 
-    def validateIgnoreBehavior(filter: Filter) {
+    def validateIgnoreBehavior(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map("myTestName" -> Set("org.scalatest.Ignore")), suite.suiteId)
       assert(filtered exists (tuple => tuple._1 == "myTestName"), "myTestName was in the tags map, but did not show up in the result of apply") 
       assert(filtered exists (tuple => tuple._1 == "myTestName" && tuple._2 == true), "myTestName was in the result of apply, but was not marked as ignored") 
@@ -110,7 +113,7 @@ class FilterSpec extends FunSpec {
       validateIgnoreBehavior(filter)
     }
     
-    def validateIgnoreBehaviorDynamic(filter: Filter) {
+    def validateIgnoreBehaviorDynamic(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map.empty[String, Set[String]], suite.suiteId)
       assert(filtered exists (tuple => tuple._1 == "myTestName"), "myTestName was in the tags map, but did not show up in the result of apply") 
       assert(filtered exists (tuple => tuple._1 == "myTestName" && tuple._2 == true), "myTestName was in the result of apply, but was not marked as ignored") 
@@ -140,7 +143,7 @@ class FilterSpec extends FunSpec {
       validateIgnoreBehavior(filter)
     }
 
-    def validateIgnoreOtherBehavior(filter: Filter) {
+    def validateIgnoreOtherBehavior(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map("myTestName" -> Set("org.scalatest.Ignore", "Other")), suite.suiteId)
       assert(filtered exists (tuple => tuple._1 == "myTestName"), "myTestName was in the tags map, but did not show up in the result of apply") 
       assert(filtered exists (tuple => tuple._1 == "myTestName" && tuple._2 == true), "myTestName was in the result of apply, but was not marked as ignored") 
@@ -158,7 +161,7 @@ class FilterSpec extends FunSpec {
       validateIgnoreOtherBehavior(filter)
     }
 
-    def validateIgnoreOtherBehaviorDynamic(filter: Filter) {
+    def validateIgnoreOtherBehaviorDynamic(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map.empty[String, Set[String]], suite.suiteId)
       assert(filtered exists (tuple => tuple._1 == "myTestName"), "myTestName was in the tags map, but did not show up in the result of apply") 
       assert(filtered exists (tuple => tuple._1 == "myTestName" && tuple._2 == true), "myTestName was in the result of apply, but was not marked as ignored") 
@@ -176,7 +179,7 @@ class FilterSpec extends FunSpec {
       validateIgnoreOtherBehaviorDynamic(filter)
     }
 
-    def validateNotReportingIgnoresBehavior(filter: Filter) {
+    def validateNotReportingIgnoresBehavior(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map("myTestName" -> Set("org.scalatest.Ignore")), suite.suiteId)
       assert(!(filtered exists (tuple => tuple._1 == "myTestName")), "myTestName's Ignore tag was not in tagsToInclude, but showed up in the result of apply") 
     }
@@ -193,7 +196,7 @@ class FilterSpec extends FunSpec {
       validateNotReportingIgnoresBehavior(filter)
     }
     
-    def validateNotReportingIgnoresBehaviorDynamic(filter: Filter) {
+    def validateNotReportingIgnoresBehaviorDynamic(filter: Filter): Unit = {
       val filtered = filter(Set("myTestName"), Map.empty[String, Set[String]], suite.suiteId)
       assert(!(filtered exists (tuple => tuple._1 == "myTestName")), "myTestName's Ignore tag was not in tagsToInclude, but showed up in the result of apply") 
     }
@@ -597,29 +600,29 @@ class FilterSpec extends FunSpec {
   describe("(when invoke apply on test names with suite annotation)") {
     
     @FastAsLight
-    class TagSuite extends Spec {
-      def `test method 1` = {}
-      def `test method 2` = {}
+    class TagSuite extends RefSpec {
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
       @SlowAsMolasses
-      def `test method 3` = {}
+      def `test method 3`: Unit = {}
       @FastAsLight
-      def `test method 4` = {}
+      def `test method 4`: Unit = {}
     }
     
-    class NoTagSuite extends Spec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
-      def `test method 4` = {}
+    class NoTagSuite extends RefSpec {
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
+      def `test method 4`: Unit = {}
     }
     
-    class InsideTagSuite extends Spec {
-      def `test method 1` = {}
-      def `test method 2` = {}
+    class InsideTagSuite extends RefSpec {
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
       @SlowAsMolasses
-      def `test method 3` = {}
+      def `test method 3`: Unit = {}
       @FastAsLight
-      def `test method 4` = {}
+      def `test method 4`: Unit = {}
     }
     
     val expectedTestTags = Map("test method 1" -> Set("org.scalatest.FastAsLight"), 
@@ -627,7 +630,7 @@ class FilterSpec extends FunSpec {
                                "test method 3" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.FastAsLight"), 
                                "test method 4" -> Set("org.scalatest.FastAsLight"))
     
-    def assertTestTags(testTags: Map[String, Set[String]]) {
+    def assertTestTags(testTags: Map[String, Set[String]]): Unit = {
       assert(testTags.size == expectedTestTags.size)
       expectedTestTags.foreach { entry => 
         val testName = entry._1

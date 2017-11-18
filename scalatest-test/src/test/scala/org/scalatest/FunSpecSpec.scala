@@ -17,27 +17,30 @@ package org.scalatest
 
 import SharedHelpers._
 import org.scalatest.events._
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.NotAllowedException
-import java.lang.annotation.AnnotationFormatError
+import org.scalactic.Prettifier
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic.exceptions.NullArgumentException
 
-class FunSpecSpec extends FunSpec with GivenWhenThen {
+class FunSpecSpec extends FreeSpec with GivenWhenThen {
 
-  describe("A FunSpec") {
+  private val prettifier = Prettifier.default
 
-    it("should return the test names in registration order from testNames") {
+  "A FunSpec" - {
+
+    "should return the test names in registration order from testNames" in {
 
       val a = new FunSpec {
-        it("should test this") {}
-        it("should test that") {}
+        it("should test this") {/* ASSERTION_SUCCEED */}
+        it("should test that") {/* ASSERTION_SUCCEED */}
       }
 
       assertResult(List("should test this", "should test that")) {
@@ -51,8 +54,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       }
 
       val c = new FunSpec {
-        it("should test that") {}
-        it("should test this") {}
+        it("should test that") {/* ASSERTION_SUCCEED */}
+        it("should test this") {/* ASSERTION_SUCCEED */}
       }
 
       assertResult(List("should test that", "should test this")) {
@@ -61,8 +64,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new FunSpec {
         describe("A Tester") {
-          it("should test that") {}
-          it("should test this") {}
+          it("should test that") {/* ASSERTION_SUCCEED */}
+          it("should test this") {/* ASSERTION_SUCCEED */}
         }
       }
 
@@ -72,8 +75,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
 
       val e = new FunSpec {
         describe("A Tester") {
-          it("should test this") {}
-          it("should test that") {}
+          it("should test this") {/* ASSERTION_SUCCEED */}
+          it("should test that") {/* ASSERTION_SUCCEED */}
         }
       }
 
@@ -82,35 +85,35 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       }
     }
 
-    it("should throw DuplicateTestNameException if a duplicate test name registration is attempted") {
+    "should throw DuplicateTestNameException if a duplicate test name registration is attempted" in {
       
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          it("should test this") {}
-          it("should test this") {}
+          it("should test this") {/* ASSERTION_SUCCEED */}
+          it("should test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          it("should test this") {}
-          ignore("should test this") {}
+          it("should test this") {/* ASSERTION_SUCCEED */}
+          ignore("should test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          ignore("should test this") {}
-          ignore("should test this") {}
+          ignore("should test this") {/* ASSERTION_SUCCEED */}
+          ignore("should test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          ignore("should test this") {}
-          it("should test this") {}
+          ignore("should test this") {/* ASSERTION_SUCCEED */}
+          it("should test this") {/* ASSERTION_SUCCEED */}
         }
       }
     }
 
-    it("should invoke withFixture from runTest") {
+    "should invoke withFixture from runTest" in {
       val a = new FunSpec {
         var withFixtureWasInvoked = false
         var testWasInvoked = false
@@ -120,6 +123,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         }
         it("should do something") {
           testWasInvoked = true
+          /* ASSERTION_SUCCEED */
         }
       }
 
@@ -129,14 +133,15 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
     }
-    it("should pass the correct test name in the NoArgTest passed to withFixture") {
+
+    "should pass the correct test name in the NoArgTest passed to withFixture" in {
       val a = new FunSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "should do something"
           super.withFixture(test)
         }
-        it("should do something") {}
+        it("should do something") {/* ASSERTION_SUCCEED */}
       }
 
       import scala.language.reflectiveCalls
@@ -144,14 +149,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
-    it("should pass the correct config map in the NoArgTest passed to withFixture") {
+    "should pass the correct config map in the NoArgTest passed to withFixture" in {
       val a = new FunSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        it("should do something") {}
+        it("should do something") {/* ASSERTION_SUCCEED */}
       }
 
       import scala.language.reflectiveCalls
@@ -159,18 +164,19 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
-    describe("(with info calls)") {
+    "(with info calls)" - {
       class InfoInsideTestSpec extends FunSpec {
         val msg = "hi there, dude"
         val testName = "test name"
         it(testName) {
           info(msg)
+          /* ASSERTION_SUCCEED */
         }
       }
       // In a Spec, any InfoProvided's fired during the test should be cached and sent out together with
       // test completed event. This makes the report look nicer, because the info is tucked under the "specifier'
       // text for that test.
-      it("should, when the info appears in the code of a successful test, report the info in the TestSucceeded") {
+      "should, when the info appears in the code of a successful test, report the info in the TestSucceeded" in {
         val spec = new InfoInsideTestSpec
         val (testStartingIndex, testSucceededIndex) =
           getIndexesForTestInformerEventOrderTests(spec, spec.testName, spec.msg)
@@ -180,20 +186,20 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
-        it(testName) {}
+        it(testName) {/* ASSERTION_SUCCEED */}
       }
-      it("should, when the info appears in the body before a test, report the info before the test") {
+      "should, when the info appears in the body before a test, report the info before the test" in {
         val spec = new InfoBeforeTestSpec
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
           getIndexesForInformerEventOrderTests(spec, spec.testName, spec.msg)
         assert(infoProvidedIndex < testStartingIndex)
         assert(testStartingIndex < testSucceededIndex)
       }
-      it("should, when the info appears in the body after a test, report the info after the test runs") {
+      "should, when the info appears in the body after a test, report the info after the test runs" in {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySpec extends FunSpec {
-          it(testName) {}
+          it(testName) {/* ASSERTION_SUCCEED */}
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -201,14 +207,15 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         assert(testStartingIndex < testSucceededIndex)
         assert(testSucceededIndex < infoProvidedIndex)
       }
-      it("should print to stdout when info is called by a method invoked after the suite has been executed") {
+      "should print to stdout when info is called by a method invoked after the suite has been executed" in {
         class MySpec extends FunSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           it("howdy also") {
             callInfo() // This should work fine
+            /* ASSERTION_SUCCEED */
           }
         }
         val spec = new MySpec
@@ -216,33 +223,34 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         spec.run(None, Args(myRep))
         spec.callInfo() // TODO: Actually test that This prints to stdout
       }
-      it("should send an InfoProvided with an IndentedText formatter with level 1 when called outside a test") {
+      "should send an InfoProvided with an IndentedText formatter with level 1 when called outside a test" in {
         val spec = new InfoBeforeTestSpec
         val indentedText = getIndentedTextFromInfoProvided(spec)
         assert(indentedText === IndentedText("+ " + spec.msg, spec.msg, 0))
       }
-      it("should send an InfoProvided with an IndentedText formatter with level 2 when called within a test") {
+      "should send an InfoProvided with an IndentedText formatter with level 2 when called within a test" in {
         val spec = new InfoInsideTestSpec
         val indentedText = getIndentedTextFromTestInfoProvided(spec)
         assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
       }
     }
 
-    describe("(when a nesting rule has been violated)") {
+    "(when a nesting rule has been violated)" - {
 
-      it("should, if they call a describe from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
             describe("in the wrong place, at the wrong time") {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
@@ -251,52 +259,56 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested it from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
             it("should never run") {
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
             it("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested registerTest with tags from within an registerTest clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested registerTest with tags from within an registerTest clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           registerTest("should blow up") {
             registerTest("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a describe with a nested ignore from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe with a nested ignore from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
@@ -305,45 +317,49 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
             ignore("should never run") {
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           it("should blow up") {
             ignore("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested registerIgnoredTest with tags from within an registerTest clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested registerIgnoredTest with tags from within an registerTest clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           registerTest("should blow up") {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -351,10 +367,10 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         ensureTestFailedEventReceived(spec, "should blow up")
       }
     }
-    it("should run tests registered via the 'it should behave like' syntax") {
+    "should run tests registered via the 'it should behave like' syntax" in {
       trait SharedSpecTests { this: FunSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
-          it("should be that I am shared") {}
+        def nonEmptyStack(s: String)(i: Int): Unit = {
+          it("should be that I am shared") {/* ASSERTION_SUCCEED */}
         }
       }
       class MySpec extends FunSpec with SharedSpecTests {
@@ -371,87 +387,87 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "should be that I am shared")
     }
 
-    it("should throw NullArgumentException if a null test tag is provided") {
+    "should throw NullArgumentException if a null test tag is provided" in {
       // it
       intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", null) {}
+          it("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught = intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", mytags.SlowAsMolasses, null) {}
+          it("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", null) {}
+          ignore("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", mytags.SlowAsMolasses, null) {}
+          ignore("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", null) {}
+          registerTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
     }
     class TestWasCalledSuite extends FunSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
-      it("should run this") { theTestThisCalled = true }
-      it("should run that, maybe") { theTestThatCalled = true }
+      it("should run this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+      it("should run that, maybe") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
     }
 
-    it("should execute all tests when run is called with testName None") {
+    "should execute all tests when run is called with testName None" in {
 
       val b = new TestWasCalledSuite
       b.run(None, Args(SilentReporter))
@@ -459,7 +475,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(b.theTestThatCalled)
     }
 
-    it("should execute one test when run is called with a defined testName") {
+    "should execute one test when run is called with a defined testName" in {
 
       val a = new TestWasCalledSuite
       a.run(Some("should run this"), Args(SilentReporter))
@@ -467,13 +483,13 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(!a.theTestThatCalled)
     }
 
-    it("should report as ignored, and not run, tests marked ignored") {
+    "should report as ignored, and not run, tests marked ignored" in {
 
       val a = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this") { theTestThisCalled = true }
-        it("test that") { theTestThatCalled = true }
+        it("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -487,8 +503,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { theTestThisCalled = true }
-        it("test that") { theTestThatCalled = true }
+        ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repB = new TestIgnoredTrackingReporter
@@ -502,8 +518,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this") { theTestThisCalled = true }
-        ignore("test that") { theTestThatCalled = true }
+        it("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repC = new TestIgnoredTrackingReporter
@@ -519,8 +535,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { theTestThisCalled = true }
-        ignore("test that") { theTestThatCalled = true }
+        ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repD = new TestIgnoredTrackingReporter
@@ -532,14 +548,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(!d.theTestThatCalled)
     }
 
-    it("should ignore a test marked as ignored if run is invoked with that testName") {
+    "should ignore a test marked as ignored if run is invoked with that testName" in {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
       val e = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { theTestThisCalled = true }
-        it("test that") { theTestThatCalled = true }
+        ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -551,14 +567,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(!e.theTestThatCalled)
     }
 
-    it("should run only those tests selected by the tags to include and exclude sets") {
+    "should run only those tests selected by the tags to include and exclude sets" in {
 
       // Nothing is excluded
       val a = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        it("test that") { theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -573,8 +589,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        it("test that") { theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -586,8 +602,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -599,8 +615,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        ignore("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -613,9 +629,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        it("test the other") { theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -630,9 +646,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        it("test the other") { theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -647,9 +663,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        ignore("test the other") { theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -664,9 +680,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        it("test the other") { theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -680,9 +696,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        it("test the other") { theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -696,9 +712,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        it("test the other") { theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -712,9 +728,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        ignore("test the other") { theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -724,14 +740,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(!k.theTestTheOtherCalled)
     }
 
-    it("should run only those registered tests selected by the tags to include and exclude sets") {
+    "should run only those registered tests selected by the tags to include and exclude sets" in {
 
       // Nothing is excluded
       val a = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("test that") { theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -746,8 +762,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("test that") { theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -759,8 +775,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -772,8 +788,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -786,9 +802,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("test the other") { theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -803,9 +819,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -820,9 +836,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerIgnoredTest("test the other") { theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -837,9 +853,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("test the other") { theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -853,9 +869,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("test the other") { theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -869,9 +885,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -885,9 +901,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerIgnoredTest("test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -897,31 +913,31 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(!k.theTestTheOtherCalled)
     }
 
-    it("should return the correct test count from its expectedTestCount method") {
+    "should return the correct test count from its expectedTestCount method" in {
 
       val a = new FunSpec {
-        it("test this") {}
-        it("test that") {}
+        it("test this") {/* ASSERTION_SUCCEED */}
+        it("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
-        ignore("test this") {}
-        it("test that") {}
+        ignore("test this") {/* ASSERTION_SUCCEED */}
+        it("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
-        it("test this", mytags.FastAsLight) {}
-        it("test that") {}
+        it("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
+        it("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        it("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        it("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        it("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -929,9 +945,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        it("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        ignore("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -942,31 +958,31 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(f.expectedTestCount(Filter()) === 10)
     }
 
-    it("should return the correct test count from its expectedTestCount method when register tests with registerTest and registerIgnoredTest") {
+    "should return the correct test count from its expectedTestCount method when register tests with registerTest and registerIgnoredTest" in {
 
       val a = new FunSpec {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") {/* ASSERTION_SUCCEED */}
+        registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") {/* ASSERTION_SUCCEED */}
+        registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
+        registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FunSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        registerTest("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -974,9 +990,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FunSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        registerIgnoredTest("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -987,7 +1003,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(f.expectedTestCount(Filter()) === 10)
     }
     
-    it("should generate a TestPending message when the test body is (pending)") {
+    "should generate a TestPending message when the test body is (pending)" in {
 
       val a = new FunSpec {
 
@@ -1008,8 +1024,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 2)
     }
-    it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
-            "known in JDK 1.5, excluding AssertionError") {
+    "should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
+            "known in JDK 1.5, excluding AssertionError" in {
       val a = new FunSpec {
         it("throws AssertionError") { throw new AssertionError }
         it("throws plain old Error") { throw new Error }
@@ -1021,8 +1037,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(tf.size === 3)
     }
     // SKIP-SCALATESTJS-START
-    it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
-            "AssertionError, causing Suites and Runs to abort.") {
+    "should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
+            "AssertionError, causing Suites and Runs to abort." in {
       val a = new FunSpec {
         it("throws AssertionError") { throw new OutOfMemoryError }
       }
@@ -1075,11 +1091,31 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       }
     }
 */
+    "should support expectations" ignore { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
+      class TestSpec extends FunSpec with Expectations {
+        it("fail scenario") {
+          expect(1 === 2); /* ASSERTION_SUCCEED */
+        }
+        describe("a feature") {
+          it("nested fail scenario") {
+            expect(1 === 2); /* ASSERTION_SUCCEED */
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+    }
   }
   
-  describe("when failure happens") {
+  "when failure happens" - {
     
-    it("should fire TestFailed event with correct stack depth info when test failed") {
+    "should fire TestFailed event with correct stack depth info when test failed" in {
       class TestSpec extends FunSpec {
         it("fail scenario") {
           assert(1 === 2)
@@ -1100,14 +1136,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
     
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           it("a scenario") {
             it("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1133,14 +1169,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("An it clause may not appear inside another it or they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           it("a scenario") {
             ignore("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1166,14 +1202,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           they("a scenario") {
             they("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1199,14 +1235,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("A they clause may not appear inside another it or they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           they("a scenario") {
             ignore("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1232,7 +1268,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
 
-    it("should allow test registration with registerTest and registerIgnoredTest") {
+    "should allow test registration with registerTest and registerIgnoredTest" in {
       class TestSpec extends FunSpec {
         val a = 1
         registerTest("test 1") {
@@ -1274,14 +1310,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           registerTest("a scenario") {
             registerTest("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1307,14 +1343,14 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest" in {
       class TestSpec extends FunSpec {
         var registrationClosedThrown = false
         describe("a feature") {
           registerTest("a scenario") {
             registerIgnoredTest("nested scenario") {
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -1340,7 +1376,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
+    "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           val a = 1
@@ -1351,7 +1387,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1360,10 +1396,10 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
+    "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           val a = 1
@@ -1374,7 +1410,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1383,10 +1419,10 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
+    "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new RuntimeException("on purpose")
@@ -1396,18 +1432,39 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
     }
 
+    "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          it("test 1") {}
+          it("test 1") {}
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
+    }
+
     // SKIP-SCALATESTJS-START
-    it("should propagate AnnotationFormatError when it is thrown inside scope") {
+    "should propagate AnnotationFormatError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new AnnotationFormatError("on purpose")
@@ -1419,7 +1476,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate AWTError when it is thrown inside scope") {
+    "should propagate AWTError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new AWTError("on purpose")
@@ -1431,7 +1488,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate CoderMalfunctionError when it is thrown inside scope") {
+    "should propagate CoderMalfunctionError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new CoderMalfunctionError(new RuntimeException("on purpose"))
@@ -1443,7 +1500,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "java.lang.RuntimeException: on purpose")
     }
 
-    it("should propagate FactoryConfigurationError when it is thrown inside scope") {
+    "should propagate FactoryConfigurationError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new FactoryConfigurationError("on purpose")
@@ -1455,7 +1512,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate LinkageError when it is thrown inside scope") {
+    "should propagate LinkageError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new LinkageError("on purpose")
@@ -1467,7 +1524,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate ThreadDeath when it is thrown inside scope") {
+    "should propagate ThreadDeath when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new ThreadDeath
@@ -1479,7 +1536,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == null)
     }
 
-    it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
+    "should propagate TransformerFactoryConfigurationError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new TransformerFactoryConfigurationError("on purpose")
@@ -1491,7 +1548,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate VirtualMachineError when it is thrown inside scope") {
+    "should propagate VirtualMachineError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
           throw new VirtualMachineError("on purpose") {}

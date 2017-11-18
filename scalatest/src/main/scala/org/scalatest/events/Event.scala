@@ -16,13 +16,12 @@
 package org.scalatest.events
 
 import org.scalatest._
+import org.scalactic.Requirements._
+import java.io.BufferedWriter
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.Date
 import scala.xml.Elem
-import java.io.StringWriter
-import java.io.PrintWriter
-import java.io.BufferedWriter
-import org.scalactic.Requirements._
-
 import exceptions.StackDepthException
 
 /**
@@ -31,7 +30,7 @@ import exceptions.StackDepthException
  *
  * @author Bill Venners
  */
-sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
+sealed abstract class Event extends Ordered[Event] with Product with Serializable {
 
   /**
    * An <code>Ordinal</code> that can be used to place this event in order in the context of
@@ -112,21 +111,28 @@ sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
               <TopOfClass>
                 <className>{ topOfClass.className }</className>
               </TopOfClass>
-            case topOfMethod: TopOfMethod => 
+            case topOfMethod: TopOfMethod =>
               <TopOfMethod>
                 <className>{ topOfMethod.className }</className>
                 <methodId>{ topOfMethod.methodId }</methodId>
               </TopOfMethod>
-            case lineInFile: LineInFile => 
+            case lineInFile: LineInFile =>
               <LineInFile>
                 <lineNumber>{ lineInFile.lineNumber }</lineNumber>
                 <fileName>{ lineInFile.fileName }</fileName>
+                <filePathname>{ filePathnameOption(lineInFile.filePathname) }</filePathname>
               </LineInFile>
-            case SeeStackDepthException => 
-              <SeeStackDepthException />
+            case SeeStackDepthException =>
+                <SeeStackDepthException />
             case _ =>
               ""
-          } 
+          }
+        case None => ""
+      }
+    }
+    def filePathnameOption(filePathnameOpt: Option[String]) = {
+      filePathnameOpt match {
+        case Some(filePathname) => filePathname
         case None => ""
       }
     }
@@ -1932,8 +1938,7 @@ final case class DiscoveryStarting (
    */
   val formatter: Option[Formatter] = None
 
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
+    private [scalatest] def toXml = 
     <DiscoveryStarting>
       <ordinal>
         <runStamp>{ ordinal.runStamp }</runStamp>

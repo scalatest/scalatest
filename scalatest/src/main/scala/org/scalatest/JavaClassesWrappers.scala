@@ -34,6 +34,17 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
   def asScala: GenTraversable[T] = queue.asScala
 }
 
+private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
+
+  private final val queue = new java.util.concurrent.LinkedBlockingQueue[T]
+
+  def put(ele: T): Unit = queue.put(ele)
+
+  def take(): T = queue.take
+
+  def size: Int = queue.size
+}
+
 private[scalatest] class CountDownLatch(count: Int) {
 
   @transient private final val latch = new java.util.concurrent.CountDownLatch(count)
@@ -57,9 +68,13 @@ private[scalatest] trait TimerTask extends Runnable {
 
   def run()
 
-  def cancel(): Unit = timerTaskRef.get match {
-    case Some(javaTimerTask) => javaTimerTask.cancel
-    case None =>
+  def cancel(): Unit = {
+    timerTaskRef.get match {
+      case Some(javaTimerTask) =>
+        javaTimerTask.cancel()
+
+      case None =>
+    }
   }
 
 }
@@ -88,6 +103,8 @@ private[scalatest] class Timer {
     timer.schedule(javaTimerTask, delay, period)
   }
 
-  def cancel(): Unit = timer.cancel
+  def cancel(): Unit = {
+    timer.cancel()
+  }
 
 }

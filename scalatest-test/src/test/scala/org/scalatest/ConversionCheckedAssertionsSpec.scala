@@ -17,10 +17,11 @@ package org.scalatest
 
 import org.scalactic._
 import SharedHelpers.thisLineNumber
-import ConversionCheckedTripleEquals._
 import exceptions.TestFailedException
 
 class ConversionCheckedAssertionsSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   val fileName: String = "ConversionCheckedAssertionsSpec.scala"
 
@@ -34,11 +35,11 @@ class ConversionCheckedAssertionsSpec extends FunSpec {
 
     def didNotEqual(left: Any, right: Any): String = {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-      FailureMessages.didNotEqual(leftee, rightee)
+      FailureMessages.didNotEqual(prettifier, leftee, rightee)
     }
 
     def equaled(left: Any, right: Any): String =
-      FailureMessages.equaled(left, right)
+      FailureMessages.equaled(prettifier, left, right)
 
     def thrice(i: Int) = i * 3
 

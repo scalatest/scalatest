@@ -20,13 +20,16 @@ import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class InOrderOnlyContainMatcherSpec extends FunSpec {
 
+  private val prettifier = Prettifier.default
+
   describe("inOrderOnly ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -154,8 +157,8 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
   
   describe("not inOrderOnly ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

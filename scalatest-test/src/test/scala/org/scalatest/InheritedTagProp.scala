@@ -19,6 +19,7 @@ import org.scalatest.junit.{JUnitSuite, JUnit3Suite}
 import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
+import org.scalatest.refspec.RefSpec
 
 trait InheritedTagFixtureServices
 
@@ -227,7 +228,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagJUnit3Suite extends JUnit3Suite with InheritedTagFixtureServices
   class InheritedTagJUnit3Suite extends BaseTagJUnit3Suite {
-    def testSomething() {}
+    def testSomething(): Unit = {}
   }
   def junit3Suite = new InheritedTagJUnit3Suite
 
@@ -243,7 +244,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagJUnitSuite extends JUnitSuite with InheritedTagFixtureServices
   class InheritedTagJUnitSuite extends BaseTagJUnitSuite {
-    @Test def testSomething() {}
+    @Test def testSomething(): Unit = {}
   }
   def junitSuite = new InheritedTagJUnitSuite
 
@@ -259,7 +260,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagTestNGSuite extends TestNGSuite with FixtureServices
   class InheritedTagTestNGSuite extends BaseTagTestNGSuite {
-    @TestNG def testSomething() {}
+    @TestNG def testSomething(): Unit = {}
   }
   def testngSuite = new InheritedTagTestNGSuite
 
@@ -497,9 +498,9 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Network
   @org.scalatest.tags.Retryable
   @org.scalatest.tags.Slow
-  class BaseTagSpec extends Spec with FixtureServices
+  class BaseTagSpec extends RefSpec with FixtureServices
   class InheritedTagSpec extends BaseTagSpec {
-    def `test something` {}
+    def `test something`: Unit = {}
   }
   def spec = new InheritedTagSpec
 
@@ -515,7 +516,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Slow
   class BaseTagFixtureSpec extends fixture.Spec with StringFixture with FixtureServices
   class InheritedTagFixtureSpec extends BaseTagFixtureSpec {
-    def `test something` {}
+    def `test something`: Unit = {}
   }
   def fixtureSpec = new InheritedTagFixtureSpec
 }

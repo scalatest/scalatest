@@ -33,7 +33,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
   requireNonNull(suiteClassName)
 
   def apply(report: Reporter, stopper: Stopper, filter: Filter,
-            configMap: ConfigMap, distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader) {
+            configMap: ConfigMap, distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader): Unit = {
 
     val tagsToInclude =
       filter.tagsToInclude match {

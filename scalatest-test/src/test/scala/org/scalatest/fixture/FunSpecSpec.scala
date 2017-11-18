@@ -17,31 +17,36 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalactic.Prettifier
 import events.TestFailed
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.events.InfoProvided
-import java.lang.annotation.AnnotationFormatError
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.events.InfoProvided
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FunSpecSpec extends org.scalatest.FunSpec {
+class FunSpecSpec extends org.scalatest.FreeSpec {
 
-  describe("A fixture.FunSpec") {
+  private val prettifier = Prettifier.default
 
-    it("should return the test names in order of registration from testNames") {
+  "A fixture.FunSpec" - {
+
+    "should return the test names in order of registration from testNames" in {
       val a = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         it("should do that") { fixture =>
+          /* ASSERTION_SUCCEED */
         }
         it("should do this") { fixture =>
+          /* ASSERTION_SUCCEED */
         }
       }
 
@@ -62,8 +67,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         it("should do this") { fixture =>
+          /* ASSERTION_SUCCEED */
         }
         it("should do that") { fixture =>
+          /* ASSERTION_SUCCEED */
         }
       }
 
@@ -72,15 +79,17 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       }
     }
 
-    it("should throw DuplicateTestNameException if a duplicate test name registration is attempted") {
+    "should throw DuplicateTestNameException if a duplicate test name registration is attempted" in {
 
       intercept[DuplicateTestNameException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           it("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
           it("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
         }
       }
@@ -89,18 +98,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           it("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
           ignore("test this") { fixture =>
-          }
-        }
-      }
-      intercept[DuplicateTestNameException] {
-        new FunSpec {
-          type FixtureParam = String
-          def withFixture(test: OneArgTest): Outcome = Succeeded
-          ignore("test this") { fixture =>
-          }
-          ignore("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
         }
       }
@@ -109,14 +110,28 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
+          }
+          ignore("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
+          }
+        }
+      }
+      intercept[DuplicateTestNameException] {
+        new FunSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = Succeeded
+          ignore("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
           it("test this") { fixture =>
+            /* ASSERTION_SUCCEED */
           }
         }
       }
     }
 
-    it("should pass in the fixture to every test method") {
+    "should pass in the fixture to every test method" in {
       val a = new FunSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
@@ -134,20 +149,20 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       a.run(None, Args(rep))
       assert(!rep.eventsReceived.exists(_.isInstanceOf[TestFailed]))
     }
-    it("should throw NullArgumentException if a null test tag is provided") {
+    "should throw NullArgumentException if a null test tag is provided" in {
       // it
       intercept[NullArgumentException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          it("hi", null) { fixture => }
+          it("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught = intercept[NullArgumentException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          it("hi", mytags.SlowAsMolasses, null) { fixture => }
+          it("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught.getMessage === "a test tag was null")
@@ -155,7 +170,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -164,14 +179,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          ignore("hi", null) { fixture => }
+          ignore("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          ignore("hi", mytags.SlowAsMolasses, null) { fixture => }
+          ignore("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught2.getMessage === "a test tag was null")
@@ -179,7 +194,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -188,14 +203,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", null) { fixture => }
+          registerTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", mytags.SlowAsMolasses, null) { fixture => }
+          registerTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught3.getMessage === "a test tag was null")
@@ -203,7 +218,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -212,14 +227,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", null) { fixture => }
+          registerIgnoredTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { fixture => }
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught4.getMessage === "a test tag was null")
@@ -227,7 +242,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new FunSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
     }
@@ -237,11 +252,11 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       def withFixture(test: OneArgTest): Outcome = { test("hi") }
       var theTestThisCalled = false
       var theTestThatCalled = false
-      it("should run this") { fixture => theTestThisCalled = true }
-      it("should run that, maybe") { fixture => theTestThatCalled = true }
+      it("should run this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+      it("should run that, maybe") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
     }
 
-    it("should execute all tests when run is called with testName None") {
+    "should execute all tests when run is called with testName None" in {
 
       val b = new TestWasCalledSuite
       b.run(None, Args(SilentReporter))
@@ -249,7 +264,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(b.theTestThatCalled)
     }
 
-    it("should execute one test when run is called with a defined testName") {
+    "should execute one test when run is called with a defined testName" in {
 
       val a = new TestWasCalledSuite
       a.run(Some("should run this"), Args(SilentReporter))
@@ -257,15 +272,15 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!a.theTestThatCalled)
     }
 
-    it("should report as ignored, and not run, tests marked ignored") {
+    "should report as ignored, and not run, tests marked ignored" in {
 
       val a = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this") { fixture => theTestThisCalled = true }
-        it("test that") { fixture => theTestThatCalled = true }
+        it("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -281,8 +296,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { fixture => theTestThisCalled = true }
-        it("test that") { fixture => theTestThatCalled = true }
+        ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repB = new TestIgnoredTrackingReporter
@@ -298,8 +313,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this") { fixture => theTestThisCalled = true }
-        ignore("test that") { fixture => theTestThatCalled = true }
+        it("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repC = new TestIgnoredTrackingReporter
@@ -317,8 +332,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { fixture => theTestThisCalled = true }
-        ignore("test that") { fixture => theTestThatCalled = true }
+        ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repD = new TestIgnoredTrackingReporter
@@ -330,7 +345,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!d.theTestThatCalled)
     }
 
-    it("should ignore a test marked as ignored if run is invoked with that testName") {
+    "should ignore a test marked as ignored if run is invoked with that testName" in {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
       val e = new FunSpec {
@@ -338,8 +353,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this") { fixture => theTestThisCalled = true }
-        it("test that") { fixture => theTestThatCalled = true }
+        ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -351,7 +366,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!e.theTestThatCalled)
     }
 
-    it("should run only those tests selected by the tags to include and exclude sets") {
+    "should run only those tests selected by the tags to include and exclude sets" in {
 
       // Nothing is excluded
       val a = new FunSpec {
@@ -359,8 +374,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        it("test that") { fixture => theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -377,8 +392,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        it("test that") { fixture => theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -392,8 +407,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -407,8 +422,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        ignore("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -423,9 +438,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        it("test the other") { fixture => theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -442,9 +457,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        it("test the other") { fixture => theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -461,9 +476,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        ignore("test the other") { fixture => theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -480,9 +495,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        it("test the other") { fixture => theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -498,9 +513,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        it("test the other") { fixture => theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -516,9 +531,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        it("test the other") { fixture => theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        it("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -534,9 +549,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        ignore("test the other") { fixture => theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        ignore("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -546,7 +561,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!k.theTestTheOtherCalled)
     }
 
-    it("should run only those registered tests selected by the tags to include and exclude sets") {
+    "should run only those registered tests selected by the tags to include and exclude sets" in {
 
       // Nothing is excluded
       val a = new FunSpec {
@@ -554,8 +569,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that") { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -572,8 +587,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that") { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -587,8 +602,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -602,8 +617,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -618,9 +633,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -637,9 +652,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -656,9 +671,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -675,9 +690,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -693,9 +708,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -711,9 +726,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -729,9 +744,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -741,29 +756,29 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!k.theTestTheOtherCalled)
     }
 
-    it("should return the correct test count from its expectedTestCount method") {
+    "should return the correct test count from its expectedTestCount method" in {
 
       val a = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        it("test this") { fixture => }
-        it("test that") { fixture => }
+        it("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        ignore("test this") { fixture => }
-        it("test that") { fixture => }
+        ignore("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        it("test this", mytags.FastAsLight) { fixture => }
-        it("test that") { fixture => }
+        it("test this", mytags.FastAsLight) { fixture => /* ASSERTION_SUCCEED */ }
+        it("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
@@ -771,9 +786,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val d = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        it("test that", mytags.SlowAsMolasses) { fixture => }
-        it("test the other thing") { fixture => }
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        it("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -783,9 +798,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val e = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        it("test that", mytags.SlowAsMolasses) { fixture => }
-        ignore("test the other thing") { fixture => }
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        it("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        ignore("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -796,29 +811,29 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(f.expectedTestCount(Filter()) === 10)
     }
 
-    it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
+    "should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests" in {
 
       val a = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this") { fixture => }
-        registerTest("test that") { fixture => }
+        registerTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerIgnoredTest("test this") { fixture => }
-        registerTest("test that") { fixture => }
+        registerIgnoredTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight) { fixture => }
-        registerTest("test that") { fixture => }
+        registerTest("test this", mytags.FastAsLight) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
@@ -826,9 +841,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val d = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => }
-        registerTest("test the other thing") { fixture => }
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -838,9 +853,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val e = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => }
-        registerIgnoredTest("test the other thing") { fixture => }
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -851,7 +866,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(f.expectedTestCount(Filter()) === 10)
     }
 
-    it("should generate a TestPending message when the test body is (pending)") {
+    "should generate a TestPending message when the test body is (pending)" in {
       val a = new FunSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
@@ -874,8 +889,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 2)
     }
-    it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
-            "known in JDK 1.5, excluding AssertionError") {
+    "should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
+            "known in JDK 1.5, excluding AssertionError" in {
       val a = new FunSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
@@ -892,8 +907,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(tf.size === 3)
     }
     // SKIP-SCALATESTJS-START
-    it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
-            "AssertionError, causing Suites and Runs to abort.") {
+    "should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
+            "AssertionError, causing Suites and Runs to abort." in {
       val a = new FunSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
@@ -961,7 +976,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       }
     }
 */
-    it("should allow both tests that take fixtures and tests that don't") {
+    "should allow both tests that take fixtures and tests that don't" in {
       val a = new FunSpec {
 
         type FixtureParam = String
@@ -970,10 +985,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         }
 
         var takesNoArgsInvoked = false
-        it("take no args") { () => takesNoArgsInvoked = true }
+        it("take no args") { () => takesNoArgsInvoked = true; /* ASSERTION_SUCCEED */ }
 
         var takesAFixtureInvoked = false
-        it("takes a fixture") { s => takesAFixtureInvoked = true }
+        it("takes a fixture") { s => takesAFixtureInvoked = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -983,7 +998,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(a.takesNoArgsInvoked)
       assert(a.takesAFixtureInvoked)
     }
-    it("should work with test functions whose inferred result type is not Unit") {
+    "should work with test functions whose inferred result type is not Unit" in {
       val a = new FunSpec {
 
         type FixtureParam = String
@@ -992,10 +1007,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         }
 
         var takesNoArgsInvoked = false
-        it("should take no args") { () => takesNoArgsInvoked = true; true }
+        it("should take no args") { () => takesNoArgsInvoked = true; true; /* ASSERTION_SUCCEED */ }
 
         var takesAFixtureInvoked = false
-        it("should take a fixture") { s => takesAFixtureInvoked = true; true }
+        it("should take a fixture") { s => takesAFixtureInvoked = true; true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1007,14 +1022,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(a.takesNoArgsInvoked)
       assert(a.takesAFixtureInvoked)
     }
-    it("should work with ignored tests whose inferred result type is not Unit") {
+    "should work with ignored tests whose inferred result type is not Unit" in {
       val a = new FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore("should test this") { () => theTestThisCalled = true; "hi" }
-        ignore("should test that") { fixture => theTestThatCalled = true; 42 }
+        ignore("should test this") { () => theTestThisCalled = true; "hi"; /* ASSERTION_SUCCEED */ }
+        ignore("should test that") { fixture => theTestThatCalled = true; 42; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1027,7 +1042,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!a.theTestThisCalled)
       assert(!a.theTestThatCalled)
     }
-    it("should pass a NoArgTest to withFixture for tests that take no fixture") {
+    "should pass a NoArgTest to withFixture for tests that take no fixture" in {
       class MySpec extends FunSpec {
         type FixtureParam = String
         var aNoArgTestWasPassed = false
@@ -1050,7 +1065,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(s.aNoArgTestWasPassed)
       assert(!s.aOneArgTestWasPassed)
     }
-    it("should not pass a NoArgTest to withFixture for tests that take a Fixture") {
+    "should not pass a NoArgTest to withFixture for tests that take a Fixture" in {
       class MySpec extends FunSpec {
         type FixtureParam = String
         var aNoArgTestWasPassed = false
@@ -1073,8 +1088,8 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(!s.aNoArgTestWasPassed)
       assert(s.aOneArgTestWasPassed)
     }
-    it("should pass a NoArgTest that invokes the no-arg test when the " +
-            "NoArgTest's no-arg apply method is invoked") {
+    "should pass a NoArgTest that invokes the no-arg test when the " +
+            "NoArgTest's no-arg apply method is invoked" in {
 
       class MySpec extends FunSpec {
         type FixtureParam = String
@@ -1085,6 +1100,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         }
         it("something") { () =>
           theNoArgTestWasInvoked = true
+          /* ASSERTION_SUCCEED */
         }
       }
 
@@ -1092,7 +1108,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       s.run(None, Args(SilentReporter))
       assert(s.theNoArgTestWasInvoked)
     }
-    it("should pass the correct test name in the OneArgTest passed to withFixture") {
+    "should pass the correct test name in the OneArgTest passed to withFixture" in {
       val a = new FunSpec {
         type FixtureParam = String
         var correctTestNameWasPassed = false
@@ -1100,7 +1116,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           correctTestNameWasPassed = test.name == "should do something"
           test("hi")
         }
-        it("should do something") { fixture => }
+        it("should do something") { fixture => /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1108,7 +1124,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
-    it("should pass the correct config map in the OneArgTest passed to withFixture") {
+    "should pass the correct config map in the OneArgTest passed to withFixture" in {
       val a = new FunSpec {
         type FixtureParam = String
         var correctConfigMapWasPassed = false
@@ -1116,7 +1132,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           test("hi")
         }
-        it("should do something") { fixture => }
+        it("should do something") { fixture => /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1124,9 +1140,9 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
-    describe("(when a nesting rule has been violated)") {
+    "(when a nesting rule has been violated)" - {
 
-      it("should, if they call a describe from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1134,13 +1150,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           it("should blow up") { fixture =>
             describe("in the wrong place, at the wrong time") {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1151,13 +1168,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested it from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1166,13 +1184,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
             it("should never run") { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1181,13 +1200,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
             it("should never run", mytags.SlowAsMolasses) { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a describe with a nested ignore from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a describe with a nested ignore from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1198,13 +1218,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1213,13 +1234,14 @@ class FunSpecSpec extends org.scalatest.FunSpec {
             ignore("should never run") { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
-      it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
+      "should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test" in {
 
         class MySpec extends FunSpec {
           type FixtureParam = String
@@ -1228,6 +1250,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
             ignore("should never run", mytags.SlowAsMolasses) { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1235,11 +1258,33 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         ensureTestFailedEventReceived(spec, "should blow up")
       }
     }
+    "should support expectations" ignore { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
+      class TestSpec extends FunSpec with Expectations {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        it("fail scenario") { () =>
+          expect(1 === 2); /* ASSERTION_SUCCEED */
+        }
+        describe("a feature") {
+          it("nested fail scenario") { fixture =>
+            expect(1 === 2); /* ASSERTION_SUCCEED */
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+    }
   }
   
-  describe("when failure happens") {
+  "when failure happens" - {
     
-    it("should fire TestFailed event with correct stack depth info when test failed") {
+    "should fire TestFailed event with correct stack depth info when test failed" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
@@ -1262,7 +1307,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
     
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1270,7 +1315,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           it("a scenario") { fixture =>
             it("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1296,7 +1341,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("An it clause may not appear inside another it or they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1304,7 +1349,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           it("a scenario") { fixture =>
             ignore("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1330,7 +1375,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1338,7 +1383,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           they("a scenario") { fixture =>
             they("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1364,7 +1409,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("A they clause may not appear inside another it or they clause."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1372,7 +1417,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           they("a scenario") { fixture =>
             ignore("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1398,7 +1443,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
 
-    it("should allow test registration with registerTest and registerIgnoredTest") {
+    "should allow test registration with registerTest and registerIgnoredTest" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1444,7 +1489,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1452,7 +1497,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           registerTest("a scenario") { fixture =>
             registerTest("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1478,7 +1523,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
+    "should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest" in {
       class TestSpec extends FunSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
@@ -1486,7 +1531,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
           registerTest("a scenario") { fixture =>
             registerIgnoredTest("nested scenario") { fixture =>
               assert(1 === 2)
-            }
+            }; /* ASSERTION_SUCCEED */
           }
         }
         override def withFixture(test: OneArgTest): Outcome = {
@@ -1512,7 +1557,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
+    "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1527,7 +1572,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1536,10 +1581,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
+    "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1554,7 +1599,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1563,10 +1608,10 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
+    "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1580,18 +1625,41 @@ class FunSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
     }
 
+    "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        describe("a feature") {
+          it("test 1") { fixture => }
+          it("test 1") { fixture => }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
+    }
+
     // SKIP-SCALATESTJS-START
-    it("should propagate AnnotationFormatError when it is thrown inside scope") {
+    "should propagate AnnotationFormatError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1607,7 +1675,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate AWTError when it is thrown inside scope") {
+    "should propagate AWTError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1623,7 +1691,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate CoderMalfunctionError when it is thrown inside scope") {
+    "should propagate CoderMalfunctionError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1639,7 +1707,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "java.lang.RuntimeException: on purpose")
     }
 
-    it("should propagate FactoryConfigurationError when it is thrown inside scope") {
+    "should propagate FactoryConfigurationError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1655,7 +1723,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate LinkageError when it is thrown inside scope") {
+    "should propagate LinkageError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1671,7 +1739,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate ThreadDeath when it is thrown inside scope") {
+    "should propagate ThreadDeath when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1687,7 +1755,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == null)
     }
 
-    it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
+    "should propagate TransformerFactoryConfigurationError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String
@@ -1703,7 +1771,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       assert(e.getMessage == "on purpose")
     }
 
-    it("should propagate VirtualMachineError when it is thrown inside scope") {
+    "should propagate VirtualMachineError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
         type FixtureParam = String

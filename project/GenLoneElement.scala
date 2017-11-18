@@ -19,6 +19,8 @@ import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenLoneElement {
+
+  val generatorSource = new File("GenLoneElement.scala")
   
   def translateLine(line: String, mapping: (String, String)*): String = {
     @tailrec
@@ -32,28 +34,32 @@ object GenLoneElement {
     translate(line, mapping.toIterator)
   }
   
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
-    val targetDir = new File(targetBaseDir, "lone")
-    targetDir.mkdirs()
+
+    targetBaseDir.mkdirs()
     
-    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*) {
+    def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*): File = {
       val generatedFileName = sourceFileName.replaceAll("List", typeName)
-      val generatedFile = new File(targetDir, generatedFileName)
-      val writer = new BufferedWriter(new FileWriter(generatedFile))
-      try {
-        val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
-        for (line <- lines) {
-          val generatedLine = translateLine(line, mapping.toList: _*)
-          writer.write(generatedLine.toString)
-          writer.newLine() // add for 2.8
+      val generatedFile = new File(targetBaseDir, generatedFileName)
+      if (!generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified) {
+        val writer = new BufferedWriter(new FileWriter(generatedFile))
+        try {
+          val lines = Source.fromFile(new File(sourceBaseDir, sourceFileName)).getLines().toList // for 2.8
+          for (line <- lines) {
+            val generatedLine = translateLine(line, mapping.toList: _*)
+            writer.write(generatedLine.toString)
+            writer.newLine() // add for 2.8
+          }
+        }
+        finally {
+          writer.flush()
+          writer.close()
+          println("Generated " + generatedFile.getAbsolutePath)
         }
       }
-      finally {
-        writer.close()
-        println("Generated " + generatedFile.getAbsolutePath)
-      }
+      generatedFile
     }
     
     val arrayMapping = 
@@ -63,7 +69,8 @@ object GenLoneElement {
       
     val setMapping = 
       List(
-        "List" -> "Set"
+        "List" -> "Set",
+        "xs.loneElement\\(1\\) === 2" -> "xs.loneElement(1) === true"
       )
       
     val mapMapping = 
@@ -71,7 +78,8 @@ object GenLoneElement {
         "List\\(10\\).loneElement" -> "Map(10 -> 10).loneElement._1", 
         "List\\(8\\).loneElement" -> "Map(8 -> 8).loneElement._1", 
         "List\\(10, 12\\)" -> "Map(10 -> 10, 12 -> 12)", 
-        "List.empty\\[Int\\]" -> "Map.empty[Int, Int]", 
+        "List.empty\\[Int\\]" -> "Map.empty[Int, Int]",
+        "List\\(List\\(1, 2, 3\\)\\)" -> "Map(Map(1 -> 2, 2 -> 3, 3 -> 4) -> 0)",
         "xs.loneElement" -> "xs.loneElement._1", 
         "List" -> "Map"
       )
@@ -79,7 +87,8 @@ object GenLoneElement {
     val javaColMapping = 
       List(
         "ListLoneElementSpec" -> "JavaColLoneElementSpec", 
-        "List" -> "javaList", 
+        "List" -> "javaList",
+        "xs.loneElement\\(1\\)" -> "xs.loneElement.get\\(1\\)",
         "javaList.empty\\[Int\\]" -> "javaList[Int]()" // as List has been replaced with javaList above
       )
       
@@ -88,16 +97,20 @@ object GenLoneElement {
         "List\\(10\\).loneElement" -> "javaMap(Entry(10, 10)).loneElement.getKey", 
         "List\\(8\\).loneElement" -> "javaMap(Entry(8, 8)).loneElement.getKey", 
         "List\\(10, 12\\)" -> "javaMap(Entry(10, 10), Entry(12, 12))", 
-        "List.empty\\[Int\\]" -> "javaMap[Int, Int]()", 
-        "xs.loneElement" -> "xs.loneElement.getKey", 
+        "List.empty\\[Int\\]" -> "javaMap[Int, Int]()",
+        "List\\(List\\(1, 2, 3\\)\\)" -> "javaMap(Entry(javaMap(Entry(1, 2), Entry(2, 3), Entry(3, 4)), 0))",
+        "xs.loneElement" -> "xs.loneElement.getKey",
+        "xs.loneElement.getKey\\(1\\)" -> "xs.loneElement.getKey.get(1)",
         "List" -> "JavaMap"
       )
-      
-    generateFile("ListLoneElementSpec.scala", "Array", arrayMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "Set", setMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "Map", mapMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "JavaCol", javaColMapping: _*)
-    generateFile("ListLoneElementSpec.scala", "JavaMap", javaMapMapping: _*)
+
+    Seq(
+      generateFile("ListLoneElementSpec.scala", "Array", arrayMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "Set", setMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "Map", mapMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "JavaCol", javaColMapping: _*),
+      generateFile("ListLoneElementSpec.scala", "JavaMap", javaMapMapping: _*)
+    )
   }
   
   def main(args: Array[String]) {

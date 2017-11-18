@@ -26,43 +26,45 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   private def neverRuns2(f: => Unit)(a: Int): Boolean = true
   private def neverRuns3[T](f: => Unit)(a: T): Boolean = true
 
+  private val prettifier = Prettifier.default
+
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Prettifier.getObjectsForFailureMessage(left, right)
-    FailureMessages.didNotEqual(leftee, rightee)
+    FailureMessages.didNotEqual(prettifier, leftee, rightee)
   }
 
   def equaled(left: Any, right: Any): String =
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
 
   def wasNotGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThan(left, right)
+    FailureMessages.wasNotGreaterThan(prettifier, left, right)
 
   def wasGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThan(left, right)
+    FailureMessages.wasGreaterThan(prettifier, left, right)
 
   def wasNotGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasNotLessThan(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThan(left, right)
+    FailureMessages.wasNotLessThan(prettifier, left, right)
 
   def wasLessThan(left: Any, right: Any): String =
-    FailureMessages.wasLessThan(left, right)
+    FailureMessages.wasLessThan(prettifier, left, right)
 
   def wasNotLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThanOrEqualTo(left, right)
+    FailureMessages.wasNotLessThanOrEqualTo(prettifier, left, right)
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasLessThanOrEqualTo(left, right)
+    FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
-    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
 
   def commaBut(left: String, right: String): String =
-    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -71,58 +73,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     left + " was true"
 
   def didNotStartWith(left: Any, right: Any): String =
-    FailureMessages.didNotStartWith(left, right)
+    FailureMessages.didNotStartWith(prettifier, left, right)
 
   def startedWith(left: Any, right: Any): String =
-    FailureMessages.startedWith(left, right)
+    FailureMessages.startedWith(prettifier, left, right)
 
   def didNotEndWith(left: Any, right: Any): String =
-    FailureMessages.didNotEndWith(left, right)
+    FailureMessages.didNotEndWith(prettifier, left, right)
 
   def endedWith(left: Any, right: Any): String =
-    FailureMessages.endedWith(left, right)
+    FailureMessages.endedWith(prettifier, left, right)
 
   def didNotContain(left: Any, right: Any): String =
-    FailureMessages.didNotContain(left, right)
+    FailureMessages.didNotContain(prettifier, left, right)
 
   def contained(left: Any, right: Any): String =
-    FailureMessages.contained(left, right)
+    FailureMessages.contained(prettifier, left, right)
 
   def didNotContainKey(left: Any, right: Any): String =
-    FailureMessages.didNotContainKey(left, right)
+    FailureMessages.didNotContainKey(prettifier, left, right)
 
   def containedKey(left: Any, right: Any): String =
-    FailureMessages.containedKey(left, right)
+    FailureMessages.containedKey(prettifier, left, right)
 
   def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    FailureMessages.wasNotTheSameInstanceAs(left, right)
+    FailureMessages.wasNotTheSameInstanceAs(prettifier, left, right)
 
   def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    FailureMessages.wasTheSameInstanceAs(left, right)
+    FailureMessages.wasTheSameInstanceAs(prettifier, left, right)
 
   def wasNotEmpty(left: Any): String =
-    FailureMessages.wasNotEmpty(left)
+    FailureMessages.wasNotEmpty(prettifier, left)
 
   def wasEmpty(left: Any): String =
-    FailureMessages.wasEmpty(left)
+    FailureMessages.wasEmpty(prettifier, left)
 
   def wasNotInstanceOf(left: Any, className: String): String =
-    FailureMessages.wasNotInstanceOf(left, UnquotedString(className))
+    FailureMessages.wasNotInstanceOf(prettifier, left, UnquotedString(className))
 
   def wasInstanceOf(left: Any, className: String): String =
-    FailureMessages.wasInstanceOf(left, UnquotedString(className))
+    FailureMessages.wasInstanceOf(prettifier, left, UnquotedString(className))
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadLengthInsteadOfExpectedLength(left, actual, expected)
+    FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
-    FailureMessages.hadLength(left, actual)
+    FailureMessages.hadLength(prettifier, left, actual)
 
   def hadSizeInsteadOfExpectedSize(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadSizeInsteadOfExpectedSize(left, actual, expected)
+    FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
-    FailureMessages.hadSize(left, actual)
+    FailureMessages.hadSize(prettifier, left, actual)
 
   class Stateful {
     var state = false
@@ -523,7 +525,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      else
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -534,7 +539,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      else
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1663,7 +1671,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      else
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -1674,7 +1685,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      else
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2763,7 +2777,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      else
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -2774,7 +2791,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      else
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -3903,7 +3923,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      else
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -3914,7 +3937,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      else
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {

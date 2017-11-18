@@ -61,7 +61,23 @@ object GenScalaTestJS {
     files.map { sourceFileName =>
       val sourceFile = new File(sourceDir, sourceFileName)
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
+  def copyStartsWithFiles(sourceDirName: String, packageDirName: String, startsWith: String, targetDir: File): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && f.getName.startsWith(startsWith) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -71,7 +87,10 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
     }
   }
 
@@ -81,7 +100,8 @@ object GenScalaTestJS {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      IO.copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        IO.copyFile(sourceFile, destFile)
       destFile
     }
   }
@@ -102,106 +122,6 @@ object GenScalaTestJS {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-
-    /*copyFiles("scalatest/src/main/scala/org/scalatest", "org/scalatest",
-            List(
-              "Suite.scala",
-              "OutcomeOf.scala",
-              "Assertions.scala",
-              "Outcome.scala",
-              "TestData.scala",
-              "ConfigMap.scala",
-              "Reporter.scala",
-              //"DispatchReporter.scala",
-              "CatchReporter.scala",
-              //"ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
-              "ResourcefulReporter.scala",
-              "Tracker.scala",
-              "Filter.scala",
-              "DynaTags.scala",
-              "Status.scala",
-              "Args.scala",
-              "Stopper.scala",
-              "Distributor.scala",
-              "DistributedTestSorter.scala",
-              "DistributedSuiteSorter.scala",
-              "Informer.scala",
-              "EncodedOrdering.scala",
-              "ConcurrentInformer.scala",
-              "Documenter.scala",
-              "SuiteHelpers.scala",
-              "PendingNothing.scala",
-              "AssertionsMacro.scala",
-              "CompileMacro.scala",
-              "AppendedClues.scala",
-              "Notifier.scala",
-              "Alerter.scala",
-              "SlowpokeDetector.scala",
-              "Slowpoke.scala",
-              "RunningTest.scala",
-              "ParallelTestExecution.scala",
-              "OneInstancePerTest.scala",
-              "SuiteMixin.scala",
-              "Engine.scala",
-              "Tag.scala",
-              "FunSuiteLike.scala",
-              "FunSuite.scala",
-              "TestRegistration.scala",
-              "Informing.scala",
-              "Notifying.scala",
-              "Alerting.scala",
-              "Documenting.scala",
-              "Transformer.scala",
-              "DeferredAbortedSuite.scala",
-              "Suites.scala",
-              "FunSpecLike.scala",
-              "FunSpec.scala",
-              "UnquotedString.scala",
-              "FlatSpecLike.scala",
-              "FlatSpec.scala",
-              "WordSpecLike.scala",
-              "WordSpec.scala",
-              "FreeSpecLike.scala",
-              "FreeSpec.scala",
-              "PropSpecLike.scala",
-              "PropSpec.scala",
-              "FeatureSpecLike.scala",
-              "FeatureSpec.scala",
-              "MatchersHelper.scala",
-              "Matchers.scala",
-              "Entry.scala",
-              "Inspectors.scala",
-              "OptionValues.scala",
-              "Inside.scala",
-              "NonImplicitAssertions.scala",
-              "BeforeAndAfterAll.scala",
-              "BeforeAndAfterEachTestData.scala",
-              "BeforeAndAfterAllConfigMap.scala",
-              "BeforeAndAfterEach.scala", 
-              "GivenWhenThen.scala",
-              "SeveredStackTraces.scala",
-              "BeforeAndAfter.scala",
-              "CancelAfterFailure.scala",
-              "StopOnFailureReporter.scala",
-              //"ConfigMapWrapperSuite.scala",     // skipped because depends on java reflection
-              "Checkpoints.scala",
-              "DiagrammedAssertions.scala",
-              "DiagrammedExpr.scala",
-              "DiagrammedAssertionsMacro.scala",
-              "DiagrammedExprMacro.scala",
-              "EitherValues.scala",
-              "LoneElement.scala",
-              "Retries.scala",
-              "PartialFunctionValues.scala",
-              "RandomTestOrder.scala",
-              "SequentialNestedSuiteExecution.scala",
-              "StepwiseNestedSuiteExecution.scala",
-              "StopOnFailure.scala",
-              "Sequential.scala",
-              "Stepwise.scala",
-              "TryValues.scala",
-              "Payloads.scala"
-            ), targetDir) ++*/
     copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "DispatchReporter.scala",
@@ -209,8 +129,8 @@ object GenScalaTestJS {
         "JavaClassesWrappers.scala",
         "Shell.scala",
         "SuiteRerunner.scala",
-        "run.scala",
-        "package.scala"
+        "SuiteRerunner.scala",
+        "run.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
@@ -289,7 +209,7 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertions.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
+        "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
         "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
         "ConductorFixture.scala",       // skipped because depends on Conductors
         "ConductorMethods.scala",       // skipped because depends on Conductors
@@ -304,9 +224,9 @@ object GenScalaTestJS {
         "SocketInterruptor.scala",       // skipped because it is for java socket.
         "TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
         "ThreadInterruptor.scala",          // skipped because no interrupt in js.
-        "TimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
+        "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "TimeoutTask.scala"             // skipped because timeout is not supported.
+        "TimeoutTask.scala"            // skipped because timeout is not supported.,
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
@@ -322,6 +242,8 @@ object GenScalaTestJS {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++ 
+    //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "BigSuiteSuite.scala",
@@ -345,24 +267,30 @@ object GenScalaTestJS {
         "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
         "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
         "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+        "RefSpecSpec.scala",          // skipped because depends on java reflections.
         "SpecSpec.scala",          // skipped because depends on java reflections.
         "StatusProp.scala",        // skipped because uses VirtualMachineError
         "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
-        "SuiteSuite.scala"         // skipped because it depends on java reflection
+        "SuiteSuite.scala",          // skipped because it depends on java reflection
+        "MatchersSerializableSpec.scala"   // skipped because testing java serialization
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions not supported.
+        "WaitersSpec.scala",    // skipped because Waiters not supported.
+        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
+        "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
+        "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
+        "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
-        "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
+        "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++

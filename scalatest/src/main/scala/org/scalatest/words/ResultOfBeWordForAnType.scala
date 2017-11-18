@@ -16,8 +16,12 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.checkExpectedException
-import org.scalatest.Assertions.checkNotException
+import org.scalatest.MatchersHelper.checkExpectedException
+import org.scalatest.MatchersHelper.indicateSuccess
+import org.scalatest.MatchersHelper.indicateFailure
+import org.scalatest.Assertion
+import org.scalatest.exceptions.TestFailedException
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,7 +29,7 @@ import org.scalatest.Assertions.checkNotException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
+final class ResultOfBeWordForAnType[T](clazz: Class[T], prettifier: Prettifier, pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -34,13 +38,15 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
    * an [Exception] should be thrownBy { ... }
    *                          ^
    * </pre>
-   */
-  def thrownBy(fun: => Unit) {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 5
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 14
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+   **/
+  def thrownBy(fun: => Any): Assertion = {
+    try {
+      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
+      indicateSuccess(Resources.exceptionThrown(clazz.getName))
+    }
+    catch {
+      case tfe: TestFailedException => indicateFailure(tfe)
+    }
   }
   
   /**

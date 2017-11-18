@@ -19,10 +19,13 @@ import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
+import org.scalactic.Prettifier
 import SharedHelpers._
 import Matchers._
 
 class TheSameElementsAsContainMatcherDeciderSpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
   
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {
@@ -207,17 +210,17 @@ class TheSameElementsAsContainMatcherDeciderSpec extends FunSpec with Explicitly
 
   describe("theSameElementsAs ") {
     
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

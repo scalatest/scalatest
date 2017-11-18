@@ -16,31 +16,33 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import Matchers._
+import org.scalactic.Prettifier
 
 class ShouldBeAnTypeSpec extends FunSpec with Matchers {
+
+  private val prettifier = Prettifier.default
 
   val fileName: String = "ShouldBeAnTypeSpec.scala"
   
   case class Book(title: String)
   
   def wasNotAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
+    FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
     
   def wasAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages.wasAnInstanceOf(left, UnquotedString(right.getName))
+    FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(right.getName))
     
   def wasNotEqualTo(left: Any, right: Any) = 
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
     
   def wasEqualTo(left: Any, right: Any) = 
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def didNotEqual(left: Any, right: Any) = 
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
     
   def equaled(left: Any, right: Any) = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
     
   val aTaleOfTwoCities = new Book("A Tale of Two Cities")
   val aTaleOfThreeCities = new Book("A Tale of Three Cities")

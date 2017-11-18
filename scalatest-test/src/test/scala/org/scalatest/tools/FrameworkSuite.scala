@@ -72,19 +72,19 @@ class FrameworkSuite extends FunSuite {
     private var traceList = List[Throwable]()
     
     def ansiCodesSupported = false
-    def error(msg: String) {
+    def error(msg: String): Unit = {
       errorList ::= msg
     }
-    def warn(msg: String) {
+    def warn(msg: String): Unit = {
       warnList ::= msg
     }
-    def info(msg: String) {
+    def info(msg: String): Unit = {
       infoList ::= msg
     }
-    def debug(msg: String) {
+    def debug(msg: String): Unit = {
       debugList ::= msg
     }
-    def trace(t: Throwable) {
+    def trace(t: Throwable): Unit = {
       traceList ::= t
     }
     
@@ -96,7 +96,7 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("framework name") {
-    assert(new ScalaTestFramework().name === "ScalaTest")
+    assert(new Framework().name === "ScalaTest")
   }
   
   test("fingerprints contains 2 test fingerprints, they are SubclassFingerprint for org.scalatest.Suite and AnnotatedFingerprint for org.scalatest.WrapWith") {
@@ -136,7 +136,7 @@ class FrameworkSuite extends FunSuite {
       def isModule = false
     }
   
-  def assertSuiteSuccessEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuiteSuccessEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Success === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -151,7 +151,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteSuccessEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuiteSuccessEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Success === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -167,7 +167,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuiteFailureEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuiteFailureEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Failure === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -182,7 +182,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteFailureEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuiteFailureEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Failure === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -198,7 +198,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuiteErrorEvent(event: Event, suiteClassName: String, fingerprint: Fingerprint) {
+  def assertSuiteErrorEvent(event: Event, suiteClassName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Error === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -213,7 +213,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteErrorEvent(event: Event, suiteClassName: String, suiteId:String, fingerprint: Fingerprint) {
+  def assertNestedSuiteErrorEvent(event: Event, suiteClassName: String, suiteId:String, fingerprint: Fingerprint): Unit = {
     assert(Status.Error === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -228,7 +228,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuiteSkippedEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuiteSkippedEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Skipped === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -243,7 +243,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuiteIgnoredEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuiteIgnoredEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Ignored === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -258,7 +258,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuitePendingEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuitePendingEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Pending === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -273,7 +273,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertSuiteCanceledEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint) {
+  def assertSuiteCanceledEvent(event: Event, suiteClassName: String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Canceled === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -288,7 +288,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteSkippedEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuiteSkippedEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Skipped === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -304,7 +304,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteIgnoredEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuiteIgnoredEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Ignored === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -320,7 +320,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuitePendingEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuitePendingEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Pending === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -336,7 +336,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  def assertNestedSuiteCanceledEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint) {
+  def assertNestedSuiteCanceledEvent(event: Event, suiteClassName: String, suiteId:String, testName: String, fingerprint: Fingerprint): Unit = {
     assert(Status.Canceled === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
@@ -1131,7 +1131,7 @@ class FrameworkSuite extends FunSuite {
     assert(iae.getMessage === "Sorting timeouts (-T) is not supported when running ScalaTest from sbt.")
   }
   
-  private def makeSureDone(runners: Runner*)(fun: => Unit) {
+  private def makeSureDone(runners: Runner*)(fun: => Unit): Unit = {
     try {
       fun
     }
@@ -1207,6 +1207,111 @@ class FrameworkSuite extends FunSuite {
               assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
             case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
           }
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when after function in BeforeAndAfter throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterAllSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterAllConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEach throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterEachSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEachTestData throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterEachTestDataSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }

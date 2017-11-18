@@ -79,5 +79,5 @@ abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, va
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(testFun: => PendingNothing)
+  def is(testFun: => PendingStatement)
 }

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.Uniformity
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
@@ -24,6 +24,8 @@ import Matchers._
 import exceptions.TestFailedException
 
 class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   private def upperCase(value: Any): Any =
     value match {
@@ -60,7 +62,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -91,7 +93,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -121,7 +123,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -151,7 +153,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -181,7 +183,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -211,7 +213,7 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElements(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -255,8 +257,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(lists)))
+          "  at index 2, " + decorateToStringValue(prettifier, Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
@@ -298,8 +300,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(lists)))
+          "  at index 2, " + decorateToStringValue(prettifier, Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
@@ -337,8 +339,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -370,8 +372,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -403,8 +405,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
@@ -436,8 +438,8 @@ class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality

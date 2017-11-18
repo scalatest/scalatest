@@ -16,29 +16,33 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import Suite.unparsedXml
-import Suite.xmlContent
+import org.scalatest.events._
 import org.scalactic.Requirements._
 import java.awt.BorderLayout
 import java.awt.Container
 import java.awt.Dimension
+import java.awt.EventQueue
 import java.awt.GridLayout
 import java.awt.Point
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.KeyEvent
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintWriter
 import java.net.URL
+import java.util.concurrent.Semaphore
+import java.util.regex.Pattern
 import javax.swing.AbstractAction
 import javax.swing.DefaultListModel
 import javax.swing.ImageIcon
 import javax.swing.JButton
 import javax.swing.JCheckBoxMenuItem
 import javax.swing.JDialog
+import javax.swing.JEditorPane
 import javax.swing.JFrame
-import javax.swing.WindowConstants
 import javax.swing.JLabel
 import javax.swing.JList
 import javax.swing.JMenu
@@ -47,25 +51,20 @@ import javax.swing.JMenuItem
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JScrollPane
-import javax.swing.JEditorPane
 import javax.swing.KeyStroke
 import javax.swing.ListSelectionModel
+import javax.swing.WindowConstants
 import javax.swing.border.BevelBorder
 import javax.swing.border.EmptyBorder
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.ListSelectionListener
-import Runner.usingEventDispatchThread
-import Runner.withClassLoaderAndDispatchReporter
-import java.util.concurrent.Semaphore
-import java.util.regex.Pattern
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
-import java.awt.EventQueue
-import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-import org.scalatest.events._
-import EventToPresent.eventToEventToPresent
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
+import EventToPresent.eventToEventToPresent
+import Runner.usingEventDispatchThread
+import Runner.withClassLoaderAndDispatchReporter
+import Suite.unparsedXml
+import Suite.xmlContent
 
 /**
  * The main class for Runner's GUI.
@@ -155,10 +154,10 @@ private[scalatest] class RunnerJFrame(
   class ResettableStopper extends Stopper {
     @volatile private var stopWasRequested = false
     def stopRequested: Boolean = stopWasRequested
-    def requestStop() {
+    def requestStop(): Unit = {
       stopWasRequested = true
     }
-    def reset() {
+    def reset(): Unit = {
       stopWasRequested = false
     }
   }
@@ -184,7 +183,7 @@ private[scalatest] class RunnerJFrame(
     runJButton.setMnemonic(KeyEvent.VK_R)
     runJButton.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           currentState = currentState.runButtonPressed(RunnerJFrame.this)
         }
       }
@@ -267,7 +266,7 @@ private[scalatest] class RunnerJFrame(
     reporterJPanel.add(eventsDetailsPanel, BorderLayout.CENTER)
     eventsJList.addListSelectionListener(
       new ListSelectionListener() {
-        def valueChanged(e: ListSelectionEvent) {
+        def valueChanged(e: ListSelectionEvent): Unit = {
 
           val holder: EventHolder = eventsJList.getSelectedValue().asInstanceOf[EventHolder]
 
@@ -577,7 +576,7 @@ private[scalatest] class RunnerJFrame(
 
     rerunJButton.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           currentState = currentState.rerunButtonPressed(RunnerJFrame.this)
         }
       }
@@ -609,7 +608,7 @@ private[scalatest] class RunnerJFrame(
     exitSemaphore.acquire()
     addWindowListener(
       new WindowAdapter {
-        override def windowClosed(e: WindowEvent) { exitSemaphore.release() }
+        override def windowClosed(e: WindowEvent): Unit = { exitSemaphore.release() }
       }
     )
 
@@ -621,7 +620,7 @@ private[scalatest] class RunnerJFrame(
     setSize(dim)
   }
 
-  private[scalatest] def blockUntilWindowClosed() {
+  private[scalatest] def blockUntilWindowClosed(): Unit = {
     exitSemaphore.acquire()
   }
 
@@ -632,7 +631,7 @@ private[scalatest] class RunnerJFrame(
     new AboutJDialog(RunnerJFrame.this, title2)
   }
 
-  private def setupMenus() {
+  private def setupMenus(): Unit = {
 
     val menuBar: JMenuBar = new JMenuBar()
 
@@ -646,7 +645,7 @@ private[scalatest] class RunnerJFrame(
     scalaTestMenu.add(aboutItem)
     aboutItem.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           val location: Point = getLocation()
           location.x += 20
           location.y += 6
@@ -663,7 +662,7 @@ private[scalatest] class RunnerJFrame(
     scalaTestMenu.add(exitItem)
     exitItem.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           dispose()
           // Only exit if started from main(), not run(). If starting from run(),
           // we want to return a pass/fail status from run(). Actually, if we
@@ -687,7 +686,7 @@ private[scalatest] class RunnerJFrame(
     viewMenu.add(runsFailuresItem)
     runsFailuresItem.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           viewOptions = runsAndFailures intersect eventTypesToCollect
           updateViewOptionsAndEventsList()
         }
@@ -699,7 +698,7 @@ private[scalatest] class RunnerJFrame(
     viewMenu.add(allEventsItem)
     allEventsItem.addActionListener(
       new ActionListener() {
-        def actionPerformed(ae: ActionEvent) {
+        def actionPerformed(ae: ActionEvent): Unit = {
           viewOptions = eventTypesToCollect
           updateViewOptionsAndEventsList()
         }
@@ -744,7 +743,7 @@ private[scalatest] class RunnerJFrame(
 
       val itemAction: AbstractAction =
         new AbstractAction(menuItemText) {
-          def actionPerformed(ae: ActionEvent) {
+          def actionPerformed(ae: ActionEvent): Unit = {
 
             val checkBox: JCheckBoxMenuItem = ae.getSource().asInstanceOf[JCheckBoxMenuItem]
             val option = getValue("option").asInstanceOf[EventToPresent]
@@ -778,11 +777,11 @@ private[scalatest] class RunnerJFrame(
     map
   }
 
-  def requestStop() {
+  def requestStop(): Unit = {
     stopper.requestStop()
   }
 
-  private def updateViewOptionsAndEventsList() {
+  private def updateViewOptionsAndEventsList(): Unit = {
 
     for (option <- EventToPresent.allEventsToPresent) {
 
@@ -806,11 +805,11 @@ private[scalatest] class RunnerJFrame(
     refreshEventsJList()
   }
 
-  private def reorderCollectedEvents() {
+  private def reorderCollectedEvents(): Unit = {
     collectedEvents = collectedEvents.sortWith((a, b) => a.event.ordinal > b.event.ordinal)
   }
 
-  private def refreshEventsJList() {
+  private def refreshEventsJList(): Unit = {
 
     val formerlySelectedItem: EventHolder = eventsJList.getSelectedValue().asInstanceOf[EventHolder]
 
@@ -891,7 +890,7 @@ private[scalatest] class RunnerJFrame(
 
   private class GraphicRunReporter extends Reporter {
 
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case _: DiscoveryStarting  =>
           usingEventDispatchThread {
@@ -1097,24 +1096,24 @@ private[scalatest] class RunnerJFrame(
   // Invoked when a test is done. This is used to turn the Run button back on after
   // a Stop request has disabled it. When this method is invoked by the runner, it
   // means that the run has finished, so that it is OK to enable Run again.
-  override def done() {
+  override def done(): Unit = {
     usingEventDispatchThread {
       currentState = currentState.runFinished(RunnerJFrame.this)
     }
   }
 
   // Called from the main thread initially, thereafter from the event handler thread
-  override def runFromGUI() {
+  override def runFromGUI(): Unit = {
     (new RunnerThread).start()
   }
 
   // Must be called from event handler thread
-  override def rerunFromGUI(rerunner: Rerunner) {
+  override def rerunFromGUI(rerunner: Rerunner): Unit = {
     (new RerunnerThread(rerunner)).start()
   }
 
   // This must be called by the event handler thread
-  def prepUIForRunning() {
+  def prepUIForRunning(): Unit = {
     val stopText: String = Resources.Stop
     val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
@@ -1131,7 +1130,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIWhileRunning() {
+  def prepUIWhileRunning(): Unit = {
     val stopText: String = Resources.Stop
     val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
@@ -1142,7 +1141,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIForRerunning() {
+  def prepUIForRerunning(): Unit = {
     val runText: String = Resources.Run
     val stopText: String = Resources.Stop
     runJButton.setText(runText)
@@ -1156,7 +1155,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIWhileRerunning() {
+  def prepUIWhileRerunning(): Unit = {
     val runText: String = Resources.Run
     val stopText: String = Resources.Stop
     runJButton.setText(runText)
@@ -1166,7 +1165,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIForReady() {
+  def prepUIForReady(): Unit = {
     val runText: String = Resources.Run
     val rerunText: String = Resources.Rerun
     runJButton.setText(runText)
@@ -1177,7 +1176,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIForStopping() {
+  def prepUIForStopping(): Unit = {
     val stopText: String = Resources.Stop
     val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
@@ -1187,7 +1186,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  def prepUIForReStopping() {
+  def prepUIForReStopping(): Unit = {
     val runText: String = Resources.Run
     val stopText: String = Resources.Stop
     runJButton.setText(runText)
@@ -1230,7 +1229,7 @@ private[scalatest] class RunnerJFrame(
   here it happens even if something else is selected, because during a rerun normally the
   thing you wanted to rerun will already be selected.)
   */
-  private def selectFirstErrorInLastRerunIfThisIsThatError(candidateEventHolder: EventHolder) {
+  private def selectFirstErrorInLastRerunIfThisIsThatError(candidateEventHolder: EventHolder): Unit = {
 
     // First get the model into a List
     val modelList = getModelAsList
@@ -1249,7 +1248,7 @@ private[scalatest] class RunnerJFrame(
     }
   }
 
-  private def scrollTheRerunStartingEventToTheTopOfVisibleEvents() {
+  private def scrollTheRerunStartingEventToTheTopOfVisibleEvents(): Unit = {
 
     def indexOfRunStartingEventForLastRerunOption: Option[Int] = {
       var i = eventsListModel.getSize - 1
@@ -1312,7 +1311,7 @@ private[scalatest] class RunnerJFrame(
   }
 
   // This must be called by the event handler thread
-  private def selectFirstFailureIfExistsAndNothingElseAlreadySelected() {
+  private def selectFirstFailureIfExistsAndNothingElseAlreadySelected(): Unit = {
 
     val holder: EventHolder = eventsJList.getSelectedValue.asInstanceOf[EventHolder]
 
@@ -1360,7 +1359,7 @@ private[scalatest] class RunnerJFrame(
     // work to do.
     var anErrorHasOccurredAlready = false
 
-    def apply(event: Event) {
+    def apply(event: Event): Unit = {
 
       event match {
         case _: DiscoveryStarting => None
@@ -1537,7 +1536,7 @@ private[scalatest] class RunnerJFrame(
   // Invoked by ReadyState if can't run when the Run or Rerun buttons
   // are pressed. May never happen. If so, delete this. Before it was
   // commented that the problem could occur when they change the prefs.
-  def showErrorDialog(title: String, msg: String) {
+  def showErrorDialog(title: String, msg: String): Unit = {
     val jOptionPane: JOptionPane = new NarrowJOptionPane(msg, JOptionPane.ERROR_MESSAGE)
     val jd: JDialog = jOptionPane.createDialog(RunnerJFrame.this, title)
     jd.setVisible(true)
@@ -1545,7 +1544,7 @@ private[scalatest] class RunnerJFrame(
 
   private class RunnerThread extends Thread {
 
-    override def run() {
+    override def run(): Unit = {
   
       withClassLoaderAndDispatchReporter(
         runpathList,
@@ -1592,7 +1591,7 @@ private[scalatest] class RunnerJFrame(
 
     requireNonNull(rerun)
 
-    override def run() {
+    override def run(): Unit = {
   
       val distributor: Option[Distributor] = None
 

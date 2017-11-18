@@ -16,12 +16,14 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.SharedHelpers._
+import org.scalatest.prop.TableDrivenPropertyChecks
 import time.{Span, Second}
+
 // SKIP-SCALATESTJS-START
 import junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END
+import org.scalactic.source
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
@@ -32,13 +34,13 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(
       "exception",
-      new TestFailedException("message", 3),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", 3),
       // SKIP-SCALATESTJS-END
-      new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
-      new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty), 
+      new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty),
       new TestCanceledException("message", 3)
    )
 
@@ -152,7 +154,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   }
   
   it should "return Failed that contains TestFailedException and added payload" in {
-    val failed = Failed(new TestFailedException("boom!", 3))
+    val failed = Failed(new TestFailedException((_: StackDepthException) => Some("boom!"), None, source.Position.here))
     val result = withPayload("a payload") { failed }
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]

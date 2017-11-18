@@ -16,9 +16,9 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
+import java.lang.Thread.State._
 import org.scalatest.fixture
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
-import java.lang.Thread.State._
 import org.scalatest.exceptions.NotAllowedException
 
 // On Mac got: "ABCFEDGHI" was not equal to "ABCDEFGHI"
@@ -51,7 +51,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
   // until then, may as well ignore it.
   ignore("metronome order") { conductor => import conductor._
 
-    thread("t1") {
+    threadNamed("t1") {
       waitForBeat(1)
       aa should be (false)
       bb should be (false)
@@ -89,7 +89,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       ff = true
     }
 
-    thread("t2") {
+    threadNamed("t2") {
       waitForBeat(2)
       aa should be (true)
       bb should be (false)
@@ -127,7 +127,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       hh = true
     }
 
-    thread("t3") {
+    threadNamed("t3") {
       waitForBeat(4)
       aa should be (true)
       bb should be (true)

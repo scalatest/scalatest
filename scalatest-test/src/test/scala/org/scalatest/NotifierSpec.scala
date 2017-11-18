@@ -16,7 +16,6 @@
 package org.scalatest
 
 import SharedHelpers._
-import Matchers._
 
 class NotifierSpec extends FunSpec {
   describe("A Notifier") {

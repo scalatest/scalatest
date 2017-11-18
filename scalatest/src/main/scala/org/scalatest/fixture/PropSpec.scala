@@ -16,8 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * A sister class to <code>org.scalatest.PropSpec</code> that can pass a fixture object into its tests.
@@ -68,7 +66,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * import prop.PropertyChecks
  * import java.io._
  * 
- * class ExampleSpec extends fixture.PropSpec with PropertyChecks with ShouldMatchers {
+ * class ExampleSpec extends fixture.PropSpec with PropertyChecks with Matchers {
  * 
  *   // 1. define type FixtureParam
  *   type FixtureParam = FileReader
@@ -200,7 +198,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * import prop.PropertyChecks
  * import scala.collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends fixture.PropSpec with PropertyChecks with ShouldMatchers {
+ * class ExampleSpec extends fixture.PropSpec with PropertyChecks with Matchers {
  * 
  *   case class FixtureParam(builder: StringBuilder, buffer: ListBuffer[String])
  * 

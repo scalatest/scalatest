@@ -25,6 +25,7 @@ import java.nio.channels.Selector
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 class SelectorInterruptor(selector: Selector) extends Interruptor {
   
   /**
@@ -32,7 +33,7 @@ class SelectorInterruptor(selector: Selector) extends Interruptor {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     selector.wakeup()
   }
 }

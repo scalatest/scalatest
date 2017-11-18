@@ -20,33 +20,36 @@ import org.scalatest.enablers.Sortable
 import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeSortedLogicalAndSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   //ADDITIONAL//
   
   def wasEqualTo(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " was equal to " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " was equal to " + decorateToStringValue(prettifier, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " was not equal to " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " was not equal to " + decorateToStringValue(prettifier, right)
     
   def equaled(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " equaled " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " equaled " + decorateToStringValue(prettifier, right)
     
   def didNotEqual(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " did not equal " + decorateToStringValue(prettifier, right)
   
   def wasNotSorted(left: Any): String = 
-    decorateToStringValue(left) + " was not sorted"
+    decorateToStringValue(prettifier, left) + " was not sorted"
     
   def wasSorted(left: Any): String = 
-    decorateToStringValue(left) + " was sorted"
+    decorateToStringValue(prettifier, left) + " was sorted"
     
   def allInspectionFailed(idx: Int, message: String, lineNumber:Int, left: Any) = 
     "'all' inspection failed, because: \n" + 
     "  at index " + idx + ", " + message + " (ShouldBeSortedLogicalAndSpec.scala:" + lineNumber + ") \n" + 
-    "in " + decorateToStringValue(left)
+    "in " + decorateToStringValue(prettifier, left)
     
   case class Student(name: String, scores: Int)
   implicit val studentOrdering = new Ordering[Student] {

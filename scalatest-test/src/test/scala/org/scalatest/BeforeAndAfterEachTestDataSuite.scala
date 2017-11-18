@@ -15,12 +15,11 @@
  */
 package org.scalatest
 
-import scala.collection.mutable.ListBuffer
-import org.scalatest.events.Event
-import org.scalatest.events.Ordinal
 import org.scalatest.SharedHelpers.SilentReporter
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.Ordinal
+import scala.collection.mutable.ListBuffer
 
 class BeforeAndAfterEachTestDataSuite extends FunSuite {
 
@@ -50,28 +49,28 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
 
     test("test something") {}
 
-    override def beforeAll(config: ConfigMap) {
+    override def beforeAll(config: ConfigMap): Unit = {
       if (!runWasCalled)
         beforeAllConfigCalledBeforeExecute = true
       if (config.contains("hi") && config("hi") == "there")
         beforeAllConfigGotTheGreeting = true
       super.beforeAll(config)
     }
-    override def beforeEach(td: TestData) {
+    override def beforeEach(td: TestData): Unit = {
       if (!runTestWasCalled)
         beforeEachTestDataCalledBeforeRunTest = true
       if (td.configMap.contains("hi") && td.configMap("hi") == "there")
         beforeEachTestDataGotTheGreeting = true
       super.beforeEach(td)
     }
-    override def afterEach(td: TestData) {
+    override def afterEach(td: TestData): Unit = {
       if (runTestWasCalled)
         afterEachTestDataCalledAfterRunTest = true
       if (td.configMap.contains("hi") && td.configMap("hi") == "there")
         afterEachTestDataGotTheGreeting = true
       super.afterEach(td)
     }
-    override def afterAll(config: ConfigMap) {
+    override def afterAll(config: ConfigMap): Unit = {
       if (runWasCalled)
         afterAllConfigCalledAfterExecute = true
       if (config.contains("hi") && config("hi") == "there")
@@ -145,9 +144,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends Suite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def beforeEach(td: TestData) { throw new NumberFormatException } 
+      override def beforeEach(td: TestData): Unit = { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -162,12 +161,12 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterEachCalled = false
-      override def afterEach(td: TestData) {
+      override def afterEach(td: TestData): Unit = {
         afterEachCalled = true
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -182,29 +181,30 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterEachCalled = false
-      override def afterEach(td: TestData) {
+      override def afterEach(td: TestData): Unit = {
         afterEachCalled = true
         throw new IllegalArgumentException
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
   }
   
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
-    "exception, runTest will complete abruptly with the same exception.") {
+    "exception, runTest will return a status that is already completed and contains the exception as an unreportedException.") {
        
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def afterEach(td: TestData) { throw new NumberFormatException }
+      override def afterEach(td: TestData): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("test July"), Args(StubReporter))
-    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
  
   // test exceptions with run
@@ -212,10 +212,10 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def beforeAll(cm: ConfigMap) { throw new NumberFormatException }
+      override def beforeAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(None, Args(StubReporter))
     }
@@ -233,12 +233,12 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
       test("test 1") {}
       test("test 2") {}
       test("test 3") {}
-      override def afterAll(cm: ConfigMap) {
+      override def afterAll(cm: ConfigMap): Unit = {
         afterAllCalled = true
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
@@ -256,29 +256,167 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
       test("test 1") {}
       test("test 2") {}
       test("test 3") {}
-      override def afterAll(cm: ConfigMap) {
+      override def afterAll(cm: ConfigMap): Unit = {
         afterAllCalled = true
         throw new IllegalArgumentException
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
   }
   
   test("If super.run returns normally, but afterAll completes abruptly with an " +
-    "exception, run will complete abruptly with the same exception.") {
-       
+    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
+      override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
+  }
+
+  // SKIP-SCALATESTJS-START
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.annotation.AnnotationFormatError("test")
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[java.lang.annotation.AnnotationFormatError] {
       a.run(None, Args(StubReporter))
     }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[java.nio.charset.CoderMalfunctionError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  // SKIP-SCALATESTJS-START
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.parsers.FactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[javax.xml.parsers.FactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.LinkageError()
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[java.lang.LinkageError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.transform.TransformerFactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[javax.xml.transform.TransformerFactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.VirtualMachineError() {}
+      }
+      override def afterEach(testData: TestData): Unit = {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    assertThrows[java.lang.VirtualMachineError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+  // SKIP-SCALATESTJS-END
+
+  test("Should run afterEach, but not tests if beforeEach completes abruptly") {
+
+    class MySuite extends FunSpec with BeforeAndAfterEachTestData {
+      var afterIsCalled = false
+      var testIsCalled = false
+      override def beforeEach(testData: TestData): Unit = { throw new NumberFormatException }
+      override def afterEach(testData: TestData): Unit = {
+        afterIsCalled = true
+      }
+      it("test July") {
+        testIsCalled = true
+      }
+    }
+    val a = new MySuite
+    assertThrows[NumberFormatException] {
+      a.run(Some("test July"), Args(StubReporter))
+    }
+    assert(a.afterIsCalled)
+    assert(!a.testIsCalled)
   }
 }
 

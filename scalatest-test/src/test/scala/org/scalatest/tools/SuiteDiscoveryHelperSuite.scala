@@ -376,12 +376,12 @@ class SuiteDiscoveryHelperSpec extends FunSpec {
 //
 class SuiteDiscoveryHelperSpec2 extends FunSpec {
 
-  def `test discover tests 4` = {
+  def `test discover tests 4`: Unit = {
   }
 
-  def `test discover tests A2` = {
+  def `test discover tests A2`: Unit = {
   }
 
-  def `test discover tests A3` = {
+  def `test discover tests A3`: Unit = {
   }
 }

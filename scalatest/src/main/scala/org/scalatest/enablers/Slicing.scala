@@ -15,12 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Equality, Every}
-import org.scalatest.words.ArrayWrapper
-import scala.collection.GenTraversable
-import org.scalatest.FailureMessages
-import scala.annotation.tailrec
-import scala.collection.JavaConverters._
+
 
 /**
  * Typeclass that enables for aggregations certain <code>contain</code> syntax in the ScalaTest matchers DSL.

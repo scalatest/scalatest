@@ -18,214 +18,76 @@ package org.scalactic
 import TripleEqualsSupport._
 
 /**
- * Provides <code>===</code> and <code>!==</code> operators that return <code>Boolean</code>, delegate the equality determination
- * to an <code>Equality</code> type class, and require that either the types of the two values compared are in a subtype/supertype
- * relationship, or that an implicit conversion is available that can convert from one type to the other.
- * 
- * <table><tr><td class="usage">
- * <strong>Recommended Usage</strong>:
- * Trait <code>ConversionCheckedTripleEquals</code> is useful (in both production and test code) when you need determine equality for a type of object differently than
- * its <code>equals</code>
- * method&#8212;either you can't change the <code>equals</code> method, or the <code>equals</code> method is sensible generally, but you're in a special situation where you
- * need something else&#8212;and/or you want a compile-time type check that allows types that are implicitly convertable in either (or both) directions.
- * </td></tr></table>
+ * <strong>Trait <code>ConversionCheckedTripleEquals</code> has been deprecated and will be removed in a future version of Scalactic. Please use <code>TypeCheckedTripleEquals</code> with a type annotation instead.</strong>
  *
  * <p>
- * This trait is the middle ground of the three <em>triple equals</em> traits, in between
- * <code>TripleEquals</code>, the most lenient, and <code>TypeCheckedTripleEquals</code>, the most strict.
- * If <code>TripleEquals</code> is mixed in or imported, the <code>===</code> can be used with any two types
- * and still compile. If <code>TypeCheckedTripleEquals</code> is mixed in or imported, however, only types in 
- * a subtype or supertype relationship with each other (including when both types are exactly the same) will compile.
- * <code>ConversionCheckedTripleEquals</code> is slightly more accomodating, because in addition to compiling any
- * use of <code>===</code> that will compile under <code>TypeCheckedTripleEquals</code>, it will also compile
- * type types that would be rejected by <code>TypeCheckedTripleEquals</code>, so long as an implicit
- * conversion (in either direction) from one type to another is available.
- * </p>
- *
- * <p>
- * For example, under <code>TypeCheckedTripleEquals</code>, the following use of <code>===</code> will not compile,
- * because <code>Int</code> and <code>Long</code> are not in a subtype/supertype relationship. (<em>I.e.</em>, <code>Int</code>
- * is not a subtype or supertype of <code>Long</code>):
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; import org.scalactic._
- * import org.scalactic._
- * 
- * scala&gt; import TypeCheckedTripleEquals._
- * import TypeCheckedTripleEquals._
- * 
- * scala&gt; 1 === 1L
- * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for
- * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
- * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalactic.CanEqual[Int,Long]
- *               1 === 1L
- *                 ^
- * </pre>
- *
- * <p>
- * Trait <code>TypeCheckedTripleEquals</code> rejects types <code>Int</code> and <code>Long</code> because they are not directly related via
- * subtyping. However, an implicit widening conversion from <code>Int</code> to <code>Long</code> does exist (imported implicitly from
- * <code>scala.Predef</code>), so <code>ConversionCheckedTripleEquals</code>
- * will allow it:
+ * Trait <code>ConversionCheckedTripleEquals</code> has been deprecated because code that uses it can break if you 
+ * change the equality policy to <code>TripleEquals</code>. For example, because <code>JavaConversions</code> provides
+ * an implicit conversion between <code>java.util.Set</code> and <code>scala.collection.mutable.Set</code>,
+ * an equality comparison under <code>ConversionCheckedTripleEquals</code> can yield <code>true</code>:
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; import ConversionCheckedTripleEquals._
- * import ConversionCheckedTripleEquals._
- * 
- * scala&gt; 1 === 1L
- * res1: Boolean = true
- * </pre>
- * 
- * <p>
- * The implicit conversion can go in either direction: from the left type to the right type, or vice versa. In the above expression the 
- * implicit conversion goes from left to right (the <code>Int</code> on the left to the <code>Long</code> on the right). It also works
- * the other way:
- * </p>
- * 
- * <pre class="stREPL">
- * scala&gt; 1L === 1
- * res2: Boolean = true
- * </pre>
- * 
- * <p>
- * This trait will override or hide implicit methods defined by its sibling traits,
- * <a href="TripleEquals.html"><code>TripleEquals</code></a> or <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>,
- * and can therefore be used to temporarily turn on or off conversion checking in a limited scope. Here's an example, in which <code>TypeCheckedTripleEquals</code> will
- * cause a compiler error:
- * </p>
- * 
- * <pre class="stHighlight">
- * import org.scalactic._
- * import TypeCheckedTripleEquals._
+ * scala&gt; import collection.JavaConversions._
+ * import collection.JavaConversions._
  *
- * object Example {
- *
- *   def cmp(a: Int, b: Long): Int = {
- *     if (a === b) 0       // This line won't compile
- *     else if (a &lt; b) -1
- *     else 1
- *   }
- *
- *  def cmp(s: String, t: String): Int = {
- *    if (s === t) 0
- *    else if (s &lt; t) -1
- *    else 1
- *  }
- * }
- * </pre>
- *
- * <p>
- * Because <code>Int</code> and <code>Long</code> are not in a subtype/supertype relationship, comparing <code>1</code> and <code>1L</code> in the context
- * of <code>TypeCheckedTripleEquals</code> will generate a compiler error:
- * </p>
- *
- * <pre>
- * Example.scala:9: error: types Int and Long do not adhere to the equality constraint selected for
- * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
- * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalactic.CanEqual[Int,Long]
- *     if (a === b) 0      // This line won't compile
- *           ^
- * one error found
- * </pre>
- * 
- * <p>
- * You can &ldquo;relax&rdquo; the type checking (<em>i.e.</em>, by additionally allowing implicitly convertible types) locally by importing
- * the members of <code>ConversionCheckedTripleEquals</code> in a limited scope:
- * </p>
- * 
- * <pre class="stHighlight">
- * package org.scalactic.examples.conversioncheckedtripleequals
- * 
- * import org.scalactic._
- * import TypeCheckedTripleEquals._
- * 
- * object Example {
- * 
- *   def cmp(a: Int, b: Long): Int = {
- *     import ConversionCheckedTripleEquals._
- *     if (a === b) 0
- *     else if (a &lt; b) -1
- *     else 1
- *   }
- *
- *  def cmp(s: String, t: String): Int = {
- *    if (s === t) 0
- *    else if (s &lt; t) -1
- *    else 1
- *  }
- * }
- * </pre>
- *
- * <p>
- * With the above change, the <code>Example.scala</code> file compiles fine. Conversion checking is enabled only inside the first <code>cmp</code> method that
- * takes an <code>Int</code> and a <code>Long</code>. <code>TypeCheckedTripleEquals</code> is still enforcing its type constraint, for example, for the <code>s === t</code>
- * expression in the other overloaded <code>cmp</code> method that takes strings.
- * </p>
- * 
- * <p>
- * Because the methods in <code>ConversionCheckedTripleEquals</code> (and its siblings)
- * <em>override</em> all the methods defined in supertype <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>, you can achieve the same
- * kind of nested tuning of equality constraints whether you mix in traits, import from companion objects, or use some combination of both.
- * </p>
- *
- * <p>
- * In short, you should be able to select a primary constraint level via either a mixin or import, then change that in nested scopes
- * however you want, again either through a mixin or import, without getting any implicit conversion ambiguity. The innermost constraint level in scope
- * will always be in force.
- * <p>
- *
- * <p>
- * An alternative way to solve an unwanted compiler error caused by an over-zealous type constraint is with a <em>widening type ascription</em>. Here
- * are some examples:
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; import org.scalactic._
- * import org.scalactic._
+ * scala&gt; import collection.mutable
+ * import collection.mutable
  *
  * scala&gt; import ConversionCheckedTripleEquals._
  * import ConversionCheckedTripleEquals._
  *
- * scala&gt; List(1, 2, 3) === Vector(1, 2, 3)
- * &lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.CanEqual[List[Int],scala.collection.immutable.Vector[Int]]
- *               List(1, 2, 3) === Vector(1, 2, 3)
- *                             ^
+ * scala&gt; mutable.Set.empty[String] === new java.util.HashSet[String]
+ * res0: Boolean = true
  * </pre>
  *
  * <p>
- * Although you could solve the above type error with <a href="TraversableEqualityConstraints.html"><code>TraversableEqualityConstraints</code></a>, you could also
- * simply widen the type of one side or the other to <code>Any</code>. Because <code>Any</code> is a supertype of everything, the
- * type constraint will be satisfied:
+ * If code written under <code>ConversionCheckedTripleEquals</code> is left unchanged, but the policy
+ * is changed to <code>TripleEquals</code>, the equality comparison will now yield <code>false</code>:
  * </p>
- *
+ * 
  * <pre class="stREPL">
- * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Any)
- * res1: Boolean = true
+ * scala&gt;  import TripleEquals._
+ * import TripleEquals._
  *
- * scala&gt; (List(1, 2, 3): Any) === Vector(1, 2, 3)
- * res2: Boolean = true
+ * scala&gt; mutable.Set.empty[String] === (new java.util.HashSet[String])
+ * res1: Boolean = false
  * </pre>
  *
  * <p>
- * You could alternatively widen a type to a more specific common supertype than <code>Any</code>. For example, since <code>List[Int]</code> and
- * <code>Vector[Int]</code> are both subtypes of <code>Seq[Int]</code>, so you could widen either type to <code>Seq[Int]</code> to satisfy
- * the type checker:
+ * The above change from <code>true</code> to <code>false</code> happens without any warning
+ * or complaint from the compiler. Thus it is quite error prone. A better way to achieve equality
+ * comparisons after an implicit conversion is to do so <code>explicitly</code>, by forcing
+ * the implicit conversion via a type annotation (following an expression with a colon and
+ * the desired type). Here's an example:
  * </p>
- *
+ * 
  * <pre class="stREPL">
- * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Seq[Int])
+ * scala&gt; mutable.Set.empty[String] === (new java.util.HashSet[String]: mutable.Set[String])
  * res3: Boolean = true
+ * </pre>
  *
- * scala&gt; (List(1, 2, 3): Seq[Int]) === Vector(1, 2, 3)
+ * <p>
+ * To get rid of the deprecation warning, you can use <code>TypeCheckedTripleEquals</code> instead of
+ * <code>ConversionCheckedTripleEquals</code>, and add explicit type annotations where needed:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt;  import TypeCheckedTripleEquals._
+ * import TypeCheckedTripleEquals._
+ *
+ * scala&gt; mutable.Set.empty[String] === new java.util.HashSet[String]
+ * &lt;console&gt;:27: error: types scala.collection.mutable.Set[String] and java.util.HashSet[String] do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.CanEqual[scala.collection.mutable.Set[String],java.util.HashSet[String]]
+ *        mutable.Set.empty[String] === (new java.util.HashSet[String])
+ *                                  ^
+ *
+ * scala&gt; mutable.Set.empty[String] === (new java.util.HashSet[String]: mutable.Set[String])
  * res4: Boolean = true
  * </pre>
  * 
  * @author Bill Venners
  */
+@deprecated("ConversionCheckedTripleEquals has been deprecated and will be removed in a future version of Scalactic. Please use TypeCheckedTripleEquals with a type annotation instead")
 trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint {
 
   import scala.language.implicitConversions
@@ -247,25 +109,12 @@ trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstrai
 }
 
 /**
- * Companion object to trait <code>ConversionCheckedTripleEquals</code> that facilitates the importing of <code>ConversionCheckedTripleEquals</code> members as 
- * an alternative to mixing it in. One use case is to import <code>ConversionCheckedTripleEquals</code> members so you can use
- * them in the Scala interpreter:
+ * <strong>Object <code>ConversionCheckedTripleEquals</code> has been deprecated and will be removed in a future version of Scalactic. Please use <code>TypeCheckedTripleEquals</code> with a type annotation instead.</strong>
  *
- * <pre class="stREPL">
- * $ scala -classpath scalactic.jar
- * Welcome to Scala version 2.10.0
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- *
- * scala&gt; import org.scalactic._
- * import org.scalactic._
- * 
- * scala&gt; import ConversionCheckedTripleEquals._
- * import ConversionCheckedTripleEquals._
- * 
- * scala&gt; 1 === 1L
- * res0: Boolean = true
- * </pre>
+ * <p>
+ * For more information and examples, please see the documentation for the <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEqals</code></a> companion trait.
+ * </p>
  */
+@deprecated("ConversionCheckedTripleEquals has been deprecated and will be removed in a future version of Scalactic. Please use TypeCheckedTripleEquals with a type annotation instead")
 object ConversionCheckedTripleEquals extends ConversionCheckedTripleEquals
 

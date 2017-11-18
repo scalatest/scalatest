@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+
 /**
  * Trait defining abstract "lifecycle" methods that are implemented in <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> and can
  * be overridden in stackable modification traits.
@@ -43,21 +44,6 @@ package org.scalatest
  * @author Bill Venners
  */
 trait SuiteMixin { this: Suite =>
-
-  /**
-   * Runs the passed test function with a fixture established by this method.
-   *
-   * <p>
-   * This method should set up the fixture needed by the tests of the
-   * current suite, invoke the test function, and if needed, perform any clean
-   * up needed after the test completes. Because the <code>NoArgTest</code> function
-   * passed to this method takes no parameters, preparing the fixture will require
-   * side effects, such as initializing an external database.
-   * </p>
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  protected def withFixture(test: NoArgTest): Outcome
 
   /**
    * Runs this suite of tests.

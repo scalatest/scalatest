@@ -23,6 +23,7 @@ import org.testng.annotations.{Test => TestNG }
 import scala.collection.mutable.ListBuffer
 import org.scalatest.tools.SuiteRunner
 import SharedHelpers._
+import org.scalatest.refspec.RefSpec
 
 class StatusProp extends AllSuiteProp {
   
@@ -53,7 +54,7 @@ class StatusProp extends AllSuiteProp {
   class DelayExecutionDistributor extends Distributor {
     val buf = ListBuffer.empty[SuiteRunner]
     
-    def apply(suite: Suite, tracker: Tracker) {
+    def apply(suite: Suite, tracker: Tracker): Unit = {
       throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
     }
 
@@ -89,6 +90,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
   
@@ -104,6 +106,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
   
@@ -119,6 +122,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
 }
@@ -132,26 +136,26 @@ trait StatusFixtureServices { suite: Suite =>
 }
 
 @DoNotDiscover
-class ExampleStatusSpec extends Spec with StatusFixtureServices with ParallelTestExecution {
-  def `test 1` {}
-  def `test 2` { throw new VirtualMachineError {} }
-  def `test 3` {}
+class ExampleStatusSpec extends RefSpec with StatusFixtureServices with ParallelTestExecution {
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = { throw new VirtualMachineError {} }
+  def `test 3`: Unit = {}
   val testNameToRun = "test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFixtureSpec extends fixture.Spec with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  def `test 1`(fixture: String) {}
-  def `test 2`(fixture: String) { throw new VirtualMachineError {} }
-  def `test 3`(fixture: String) {}
+  def `test 1`(fixture: String): Unit = {}
+  def `test 2`(fixture: String): Unit = { throw new VirtualMachineError {} }
+  def `test 3`(fixture: String): Unit = {}
   val testNameToRun = "test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusJUnit3Suite extends JUnit3Suite with StatusFixtureServices {
-  def testMethod1() {}
-  def testMethod2() { throw new VirtualMachineError {} }
-  def testMethod3() {}
+  def testMethod1(): Unit = {}
+  def testMethod2(): Unit = { throw new VirtualMachineError {} }
+  def testMethod3(): Unit = {}
   override val isSupported = false
   val testNameToRun = "testMethod2"
 }
@@ -159,11 +163,11 @@ class ExampleStatusJUnit3Suite extends JUnit3Suite with StatusFixtureServices {
 @DoNotDiscover
 class ExampleStatusJUnitSuite extends JUnitSuite with StatusFixtureServices {
   @Test
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @Test 
-  def testMethod2() { throw new VirtualMachineError {} }
+  def testMethod2(): Unit = { throw new VirtualMachineError {} }
   @Test 
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
   override val isSupported = false
   val testNameToRun = "testMethod2"
 }
@@ -173,11 +177,11 @@ class ExampleStatusJUnitSuite extends JUnitSuite with StatusFixtureServices {
 @DoNotDiscover
 class ExampleStatusTestNGSuite extends TestNGSuite with StatusFixtureServices {
   @TestNG
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @TestNG
-  def testMethod2() { throw new VirtualMachineError {} }
+  def testMethod2(): Unit = { throw new VirtualMachineError {} }
   @TestNG
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
   override val isSupported = false
   val testNameToRun = "testMethod2"
 }

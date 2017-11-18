@@ -18,7 +18,7 @@ package org.scalatest.events
 /**
  * Location in source code indicating where in the source code an event originated.
  */
-sealed abstract class Location
+sealed abstract class Location extends Product with Serializable
 
 /**
  * The location in a source file where the class whose by the fully qualified name
@@ -43,9 +43,10 @@ final case class TopOfMethod(className: String, methodId: String) extends Locati
  * An arbitrary line number in a named source file.
  *
  * @param lineNumber the line number
- * @param fileName the source's filename
+ * @param fileName the source file's simple name
+ * @param filePathname an optional fully qualified pathname of the source file
  */
-final case class LineInFile(lineNumber: Int, fileName: String) extends Location
+final case class LineInFile(lineNumber: Int, fileName: String, filePathname: Option[String]) extends Location
 
 /**
  * Indicates the location should be taken from the stack depth exception, included elsewhere in 

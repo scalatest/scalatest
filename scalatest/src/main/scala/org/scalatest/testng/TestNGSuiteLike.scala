@@ -17,16 +17,16 @@ package org.scalatest.testng
 
 import org.scalatest._
 import org.scalatest.events._
-import Suite.getIndentedTextForTest
-import Suite.formatterForSuiteAborted
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import events.MotionToSuppress
-
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
 import exceptions._
+import org.scalactic.source
+import org.testng.TestListenerAdapter
+import org.testng.TestNG
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.getIndentedTextForTest
 import Suite.wrapReporterIfNecessary
+import events.MotionToSuppress
 
 /**
  * Implementation trait for class <code>TestNGSuite</code>, which represents
@@ -154,18 +154,54 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   // This seems wrong. Should ask TestNG if possible, but not sure that's even possible. Anyway some tests
   // rely on this behavior that used to be inherited, but is no more.
-  override def testNames: Set[String] = super.yeOldeTestNames
+  override def testNames: Set[String] = yeOldeTestNames
 
-  override def tags: Map[String, Set[String]] = super.yeOldeTags
+  private def getTags(testName: String) =
+    for {
+      a <- Suite.getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
+      annotationClass = a.annotationType
+      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
+    } yield annotationClass.getName
 
-  override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = super.yeOldeTestDataFor(testName, theConfigMap)
+  override def tags: Map[String, Set[String]] = {
+    val testNameSet = testNames
+
+    val testTags = Map() ++
+      (for (testName <- testNameSet; if !getTags(testName).isEmpty)
+        yield testName -> (Set() ++ getTags(testName)))
+
+    Suite.autoTagClassAnnotations(testTags, this)
+  }
+
+  override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
+    val suiteTags = for {
+      a <- this.getClass.getAnnotations
+      annotationClass = a.annotationType
+      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
+    } yield annotationClass.getName
+    val testTags: Set[String] =
+      try {
+        getTags(testName).toSet
+      }
+      catch {
+        case e: IllegalArgumentException => Set.empty[String]
+      }
+    new TestData {
+      val configMap = theConfigMap
+      val name = testName
+      val scopes = Vector.empty
+      val text = testName
+      val tags = Set.empty ++ suiteTags ++ testTags
+      val pos = None
+    }
+  }
 
   /**
    * Runs TestNG with no test name, no groups. All tests in the class will be executed.
    * @param   reporter   the reporter to be notified of test events (success, failure, etc)
    * @param   status   Status of run.
    */
-  private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) {
+  private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     runTestNG(None, reporter, Filter(), tracker, status)
   }
 
@@ -175,7 +211,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * @param   reporter   the reporter to be notified of test events (success, failure, etc)
    * @param   status   Status of run.
    */
-  private[testng] def runTestNG(testName: String, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) {
+  private[testng] def runTestNG(testName: String, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     runTestNG(Some(testName), reporter, Filter(), tracker, status)
   }
   
@@ -189,7 +225,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * @param   status   Status of run.
    */  
   private[testng] def runTestNG(testName: Option[String], reporter: Reporter,
-      filter: Filter, tracker: Tracker, status: ScalaTestStatefulStatus) {
+      filter: Filter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     
     val tagsToInclude =
       filter.tagsToInclude match {
@@ -215,7 +251,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   /**
    * Runs the TestNG object which calls back to the given Reporter.
    */
-  private[testng] def run(testng: TestNG, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) {
+  private[testng] def run(testng: TestNG, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     
     // setup the callback mechanism
     val tla = new MyTestListenerAdapter(reporter, tracker, status)
@@ -228,7 +264,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   /**
    * Tells TestNG which groups to include and exclude, which is directly a one-to-one mapping.
    */
-  private[testng] def handleGroups(groupsToInclude: Set[String], groupsToExclude: Set[String], testng: TestNG) {
+  private[testng] def handleGroups(groupsToInclude: Set[String], groupsToExclude: Set[String], testng: TestNG): Unit = {
     testng.setGroups(groupsToInclude.mkString(","))
     testng.setExcludedGroups(groupsToExclude.mkString(","))
   }
@@ -289,7 +325,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
      * TestNG's onTestStart maps cleanly to TestStarting. Simply build a report 
      * and pass it to the Reporter.
      */
-    override def onTestStart(result: ITestResult) = {
+    override def onTestStart(result: ITestResult): Unit = {
       report(TestStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), result.getName + params(result), result.getName + params(result),
              Some(MotionToSuppress), getTopOfMethod(thisSuite.getClass.getName, result.getName), Some(className)))
     }
@@ -298,7 +334,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
      * TestNG's onTestSuccess maps cleanly to TestSucceeded. Again, simply build
      * a report and pass it to the Reporter.
      */
-    override def onTestSuccess(result: ITestResult) = {
+    override def onTestSuccess(result: ITestResult): Unit = {
       val testName = result.getName + params(result)
       val formatter = getIndentedTextForTest(testName, 1, true)
       report(TestSucceeded(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), testName, testName, 
@@ -309,7 +345,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
      * TestNG's onTestSkipped maps cleanly to TestIgnored. Again, simply build
      * a report and pass it to the Reporter.
      */
-    override def onTestSkipped(result: ITestResult) = {
+    override def onTestSkipped(result: ITestResult): Unit = {
       val testName = result.getName + params(result)
       val formatter = getIndentedTextForTest(testName, 1, true)
       report(TestIgnored(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), testName, testName, Some(formatter), getTopOfMethod(thisSuite.getClass.getName, result.getName)))
@@ -318,7 +354,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     /**
      * TestNG's onTestFailure maps cleanly to TestFailed.
      */
-    override def onTestFailure(result: ITestResult) = {
+    override def onTestFailure(result: ITestResult): Unit = {
       val throwableOrNull = result.getThrowable
       val throwable = if (throwableOrNull != null) Some(throwableOrNull) else None
       val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources.testNGConfigFailed
@@ -341,7 +377,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
      * as the name of the method that failed. Create a Report with the method name and the
      * exception and call reporter(SuiteAborted).
      */
-    override def onConfigurationFailure(result: ITestResult) = {
+    override def onConfigurationFailure(result: ITestResult): Unit = {
       val throwableOrNull = result.getThrowable
       val throwable = if (throwableOrNull != null) Some(throwableOrNull) else None
       val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources.testNGConfigFailed
@@ -356,7 +392,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
      * because there may be a large number of setup methods and InfoProvided doesn't 
      * show up in your face on the UI, and so doesn't clutter the UI. 
      */
-    override def onConfigurationSuccess(result: ITestResult) = { // TODO: Work on this report
+    override def onConfigurationSuccess(result: ITestResult): Unit = { // TODO: Work on this report
       // For now don't print anything. Succeed with silence. Is adding clutter.
       // report(InfoProvided(tracker.nextOrdinal(), result.getName, Some(NameInfo(thisSuite.suiteName, Some(thisSuite.getClass.getName), None))))
     }
@@ -374,25 +410,6 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     (12:02:27 AM) bvenners: onTestFailedButWithinSuccessPercentage(ITestResult tr)
     (12:02:34 AM) bvenners: maybe a TestSucceeded with some extra info in the report
   */
-
-  /**
-   * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
-   * class, given this class's <code>run</code> method delegates to JUnit to run
-   * its tests.
-   *
-   * <p>
-   * The main purpose of this method implementation is to render a compiler error an attempt
-   * to mix in a trait that overrides <code>withFixture</code>. Because this
-   * trait does not actually use <code>withFixture</code>, the attempt to mix
-   * in behavior would very likely not work.
-   * </p>
-   *
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  override final protected def withFixture(test: NoArgTest): Outcome = {
-     throw new UnsupportedOperationException
-  }
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this

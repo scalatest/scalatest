@@ -16,8 +16,8 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import Suite.unparsedXml
-import Suite.xmlContent
+import org.scalatest.events._
+import HtmlReporter._
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -25,27 +25,27 @@ import java.io.IOException
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
-import java.util.Iterator
-import java.util.Set
 import java.io.StringWriter
-import org.scalatest.events._
-import org.scalatest.exceptions.TestFailedException
-import StringReporter.makeDurationString
-import PrintReporter.BufferSize
-import HtmlReporter._
-import org.pegdown.PegDownProcessor
-import scala.collection.mutable.ListBuffer
-import scala.xml.NodeSeq
-import scala.xml.XML
-import java.util.UUID
-import scala.xml.Node
-import scala.xml.NodeBuffer
-import scala.annotation.tailrec
 import java.net.URL
-import scala.io.Source
 import java.nio.channels.Channels
 import java.text.DecimalFormat
+import java.util.Iterator
+import java.util.Set
+import java.util.UUID
+import org.pegdown.PegDownProcessor
 import org.scalatest.exceptions.StackDepth
+import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
+import scala.io.Source
+import scala.xml.Node
+import scala.xml.NodeBuffer
+import scala.xml.NodeSeq
+import scala.xml.XML
+import PrintReporter.BufferSize
+import StringReporter.makeDurationString
+import Suite.unparsedXml
+import Suite.xmlContent
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
@@ -75,7 +75,7 @@ private[scalatest] class HtmlReporter(
   if (!cssDir.exists)
     cssDir.mkdirs()
     
-  private def copyResource(url: URL, toDir: File, targetFileName: String) {
+  private def copyResource(url: URL, toDir: File, targetFileName: String): Unit = {
     val inputStream = url.openStream
     try {
       val outputStream = new FileOutputStream(new File(toDir, targetFileName))
@@ -195,7 +195,7 @@ private[scalatest] class HtmlReporter(
       case None => suiteResult.suiteName
     }
   
-  private def makeSuiteFile(suiteResult: SuiteResult) {
+  private def makeSuiteFile(suiteResult: SuiteResult): Unit = {
     val name = getSuiteFileName(suiteResult)
 
     val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, name + ".html")), BufferSize), "UTF-8"))
@@ -433,7 +433,7 @@ private[scalatest] class HtmlReporter(
     }
   }
   
-  private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) {
+  private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]): Unit = {
     val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize), "UTF-8"))
     try {
       pw.println {
@@ -654,7 +654,7 @@ private[scalatest] class HtmlReporter(
         
   private def generateElementId = UUID.randomUUID.toString
   
-  private def setBit(stack: collection.mutable.Stack[String], tagMap: collection.mutable.HashMap[String, Int], bit: Int) {
+  private def setBit(stack: collection.mutable.Stack[String], tagMap: collection.mutable.HashMap[String, Int], bit: Int): Unit = {
     stack.foreach { scopeElementId => 
       val currentBits = tagMap(scopeElementId)
       tagMap.put(scopeElementId, currentBits | bit)
@@ -925,7 +925,7 @@ private[scalatest] class HtmlReporter(
   private var eventList = new ListBuffer[Event]()
   private var runEndEvent: Option[Event] = None
         
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
         
     event match {
       case _: DiscoveryStarting  =>
@@ -1041,7 +1041,7 @@ private[scalatest] class HtmlReporter(
     }
   }
       
-  def dispose() {
+  def dispose(): Unit = {
     runEndEvent match {
       case Some(event) => 
         event match {

@@ -17,9 +17,10 @@ package org.scalatest.events
 
 import org.scalatest._
 import SharedHelpers._
+import refspec.RefSpec
 
 class LocationMethodSuiteProp extends MethodSuiteProp {
-  
+
   test("Method suites should have correct TopOfMethod location in test events.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
@@ -31,7 +32,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   type FixtureServices = TestLocationMethodServices
-  
+
   def suite = new TestLocationSuite
   class TestLocationSuite extends Suite with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite"
@@ -45,7 +46,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def `test succeed` = {
+    def `test succeed`: Unit = {
       
     }
     def `test pending` = {
@@ -55,13 +56,13 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
       cancel
     }
     @Ignore
-    def `test ignore` = {
+    def `test ignore`: Unit = {
       
     }
   }
   
   def fixtureSuite = new TestLocationFixtureSuite
-  class TestLocationFixtureSuite extends fixture.Suite with FixtureServices with StringFixture {
+  class TestLocationFixtureSuite extends fixture.TestSuite with FixtureServices with StringFixture {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite"
     val expectedStartingList = List(TestStartingPair("testSucceed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testSucceed()"), 
                                 TestStartingPair("testPending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testPending()"), 
@@ -73,7 +74,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def `test succeed` = {
+    def `test succeed`: Unit = {
       
     }
     def `test pending` = {
@@ -83,13 +84,13 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
       cancel
     }
     @Ignore
-    def `test ignore` = {
+    def `test ignore`: Unit = {
       
     }
   }
   
   def spec = new TestLocationSpec
-  class TestLocationSpec extends Spec with FixtureServices {
+  class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec"
     val expectedStartingList = List(TestStartingPair("A Spec test succeed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020succeed()"), 
                                 TestStartingPair("A Spec test pending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020pending()"), 
@@ -102,17 +103,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$"))
     
     object `A Spec` {
-      def `test succeed` {
+      def `test succeed`: Unit = {
         
       }
-      def `test pending` {
+      def `test pending`: Unit = {
         pending
       }
-      def `test cancel` {
+      def `test cancel`: Unit = {
         cancel
       }
       @Ignore
-      def `test ignore` {
+      def `test ignore`: Unit = {
         
       }
     }
@@ -132,17 +133,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSpec$A$u0020Spec$"))
     
     object `A Spec` {
-      def `test succeed`(fixture: String) {
+      def `test succeed`(fixture: String): Unit = {
         
       }
-      def `test pending`(fixture: String) {
+      def `test pending`(fixture: String): Unit = {
         pending
       }
-      def `test cancel`(fixture: String) {
+      def `test cancel`(fixture: String): Unit = {
         cancel
       }
       @Ignore
-      def `test ignore`(fixture: String) {
+      def `test ignore`(fixture: String): Unit = {
         
       }
     }

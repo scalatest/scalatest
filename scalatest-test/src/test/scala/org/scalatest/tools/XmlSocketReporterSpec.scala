@@ -15,8 +15,7 @@
  */
 package org.scalatest.tools
 import java.net.ServerSocket
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.{File, BufferedReader, InputStreamReader}
 import scala.xml.XML
 import scala.xml.Elem
 import org.xml.sax.SAXException
@@ -110,7 +109,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     var markupProvidedList = new ListBuffer[Elem]
     def markupProvidedEvents = markupProvidedList.toArray
     
-    def run() {
+    def run(): Unit = {
       try {
         connection = socket.accept
         val inputStream = connection.getInputStream
@@ -167,7 +166,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     }
   }
   
-  def checkStringOption(value: String, expectedValueOpt: Option[String]) {
+  def checkStringOption(value: String, expectedValueOpt: Option[String]): Unit = {
     expectedValueOpt match {
       case Some(expectedValue) => 
         assert(value === expectedValue)
@@ -176,7 +175,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     }
   }
   
-  def checkLongOption(value: Long, expectedValueOpt: Option[Long]) {
+  def checkLongOption(value: Long, expectedValueOpt: Option[Long]): Unit = {
     expectedValueOpt match {
       case Some(expectedValue) => 
         assert(value === expectedValue)
@@ -184,19 +183,24 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
         assert(value === "")
     }
   }
-  
-  def checkScopeEvents(scopeOpened: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], fileName: String, lineNumber: Int) {
+  val sep = File.separator
+
+  def checkScopeEvents(scopeOpened: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], fileName: String, lineNumber: Int): Unit = {
     assert((scopeOpened \ "message").text === message )
     assert((scopeOpened \ "nameInfo" \ "suiteName").text === suiteName )
     assert((scopeOpened \ "nameInfo" \ "suiteId").text === suiteId)
     checkStringOption((scopeOpened \ "nameInfo" \ "suiteClassName").text, suiteClassName)
     assert((scopeOpened \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((scopeOpened \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
   }
   
   def checkTestStarting(testStarting:Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
                         testName: String, testText: String, fileName: String, lineNumber: Int, 
-                        rerunner: Option[String]) {
+                        rerunner: Option[String]): Unit = {
     assert((testStarting \ "suiteName").text === suiteName)
     assert((testStarting \ "suiteId").text === suiteId)
     checkStringOption((testStarting \ "suiteClassName").text, suiteClassName)
@@ -204,11 +208,15 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testStarting \ "testText").text === testText)
     assert((testStarting \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testStarting \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
     checkStringOption((testStarting \ "rerunner").text, rerunner)
   }
   
   def checkTestSucceeded(testSucceeded: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                         testName: String, testText: String, fileName: String, lineNumber: Int, rerunner: Option[String] = None) {
+                         testName: String, testText: String, fileName: String, lineNumber: Int, rerunner: Option[String] = None): Unit = {
     assert((testSucceeded \ "suiteName").text === suiteName)
     assert((testSucceeded \ "suiteId").text === suiteId)
     checkStringOption((testSucceeded \ "suiteClassName").text, suiteClassName)
@@ -216,11 +224,15 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testSucceeded \ "testText").text === testText)
     assert((testSucceeded \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testSucceeded \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
     checkStringOption((testSucceeded \ "rerunner").text, rerunner)
   }
   
   def checkTestFailed(testFailed: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                      testName: String, testText: String, rerunner: Option[String]) {
+                      testName: String, testText: String, rerunner: Option[String]): Unit = {
     assert((testFailed \ "message").text === message)
     assert((testFailed \ "suiteName").text === suiteName)
     assert((testFailed \ "suiteId").text === suiteId)
@@ -232,7 +244,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   
   def checkTestPending(testPending: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
                        testName: String, testText: String, fileName: String, lineNumber: Int, 
-                       rerunner: Option[String]) {
+                       rerunner: Option[String]): Unit = {
     assert((testPending \ "suiteName").text === suiteName)
     assert((testPending \ "suiteId").text === suiteId)
     checkStringOption((testPending \ "suiteClassName").text, suiteClassName)
@@ -240,11 +252,15 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testPending \ "testText").text === testText)
     assert((testPending \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testPending \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
     checkStringOption((testPending \ "rerunner").text, rerunner)
   }
   
   def checkTestIgnored(testIgnored: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                       testName: String, testText: String, fileName: String, lineNumber: Int) {
+                       testName: String, testText: String, fileName: String, lineNumber: Int): Unit = {
     assert((testIgnored \ "suiteName").text === suiteName)
     assert((testIgnored \ "suiteId").text === suiteId)
     checkStringOption((testIgnored \ "suiteClassName").text, suiteClassName)
@@ -252,10 +268,14 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testIgnored \ "testText").text === testText)
     assert((testIgnored \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testIgnored \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
   }
   
   def checkTestCanceled(testCanceled: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                        testName: String, testText: String, fileName: String, lineNumber: Int) {
+                        testName: String, testText: String, fileName: String, lineNumber: Int): Unit = {
     assert((testCanceled \ "message").text === message)
     assert((testCanceled \ "suiteName").text === suiteName)
     assert((testCanceled \ "suiteId").text === suiteId)
@@ -264,10 +284,14 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testCanceled \ "testText").text === testText)
     assert((testCanceled \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testCanceled \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
+      assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
+    else
+      assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
   }
   
   def checkSuiteStarting(suiteStarting: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                         topOfClassName: String, rerunner: Option[String] = None, threadName: String, timeStamp: Long) {
+                         topOfClassName: String, rerunner: Option[String] = None, threadName: String, timeStamp: Long): Unit = {
     assert((suiteStarting \ "suiteName").text === suiteName)
     assert((suiteStarting \ "suiteId").text === suiteId)
     checkStringOption((suiteStarting \ "suiteClassName").text, suiteClassName)
@@ -278,7 +302,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkSuiteCompleted(suiteCompleted: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                          duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long) {
+                          duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long): Unit = {
     assert((suiteCompleted \ "suiteName").text === suiteName)
     assert((suiteCompleted \ "suiteId").text === suiteId)
     checkStringOption((suiteCompleted \ "suiteClassName").text, suiteClassName)
@@ -290,7 +314,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkSuiteAborted(suiteAborted: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String],  
-                        duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long) {
+                        duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long): Unit = {
     assert((suiteAborted \ "message").text === message)
     assert((suiteAborted \ "suiteName").text === suiteName)
     assert((suiteAborted \ "suiteId").text === suiteId)
@@ -300,7 +324,6 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     checkStringOption((suiteAborted \ "rerunner").text, rerunner)
     assert((suiteAborted \ "threadName").text === threadName)
     assert((suiteAborted \ "timeStamp").text === timeStamp.toString)
-    
   }
 
   describe("Socket Reporter") {
@@ -491,9 +514,9 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
       
       val rep = new XmlSocketReporter("localhost", socket.getLocalPort)
       rep(InfoProvided(new Ordinal(0), "some info", Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
-          None, None, Some(LineInFile(168, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          None, None, Some(LineInFile(168, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       rep(MarkupProvided(new Ordinal(0), "some markup", Some(NameInfo("another suite name", "another suite Id", Some("another suite class"), Some("another test name"))),
-          None, Some(LineInFile(188, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          None, Some(LineInFile(188, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       rep.dispose()
       eventRecorder.stopped = true
       eventually(timeout(Span(10, Seconds))) { assert(eventRecorder.ready) } // Wait until the receiver is ready
@@ -539,7 +562,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
       rep(TestCanceled(new Ordinal(0), "test <function1> canceled, because: \n  <function1> is buggy.", "TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"),
                        "test 2", "test 2", collection.immutable.IndexedSeq.empty[RecordableEvent], Some(new RuntimeException("test <function1> canceled, because: \n  <function1> is buggy."))))
       rep(InfoProvided(new Ordinal(0), "some <function1> info, because: \n  <function1> is buggy.", Some(NameInfo("TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"), Some("test 2"))),
-          Some(new RuntimeException("some <function1> info, because: \n  <function1> is buggy.")), None, Some(LineInFile(168, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          Some(new RuntimeException("some <function1> info, because: \n  <function1> is buggy.")), None, Some(LineInFile(168, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       eventRecorder.stopped = true
       eventually(timeout(Span(10, Seconds))) { assert(eventRecorder.ready) } // Wait until the receiver is ready             
       

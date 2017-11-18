@@ -15,11 +15,7 @@
  */
 package org.scalatest.path
 
-import org.scalatest.words.BehaveWord
-import scala.collection.immutable.ListSet
-import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
-import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * A sister class to <code>org.scalatest.FunSpec</code> that isolates tests by running each test in its own
@@ -36,10 +32,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.path
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FunSpec with ShouldMatchers {
+ * class ExampleSpec extends path.FunSpec with Matchers {
  *
  *   describe("A ListBuffer") {
  *
@@ -278,10 +274,11 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * <p>
  * The reason lexical placement is the one and only one way to share fixtures in a <code>path.FunSpec</code> is because
- * all of its lifecycle methods are overridden and declared <code>final</code>. Thus you can't override
- * <code>withFixture</code>, because it is <code>final</code>, or mix in <code>BeforeAndAfter</code> or
+ * all of its lifecycle methods are overridden and declared <code>final</code>. Thus you can't mix in <code>BeforeAndAfter</code> or
  * <code>BeforeAndAfterEach</code>, because both override <code>runTest</code>, which is <code>final</code> in
- * a <code>path.FunSpec</code>. In short:
+ * a <code>path.FunSpec</code>. You also can't override <code>withFixture</code>, because <code>path.FreeSpec</code>
+ * extends <a href="../Suite.html"><code>Suite</code></a> not <a href="../TestSuite.html"><code>TestSuite</code></a>,
+ * where <code>withFixture</code> is defined. In short:
  * </p>
  *
  * <p>
@@ -307,10 +304,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.path
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FunSpec with ShouldMatchers {
+ * class ExampleSpec extends path.FunSpec with Matchers {
  *
  *   println("Start of: ExampleSpec")
  *   describe("A ListBuffer") {
@@ -512,7 +509,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * instance of the class that executes that test.
  * </p>
  *
- * <a name="howItExecutes" />
+ * <a name="howItExecutes"></a>
  * <h2>How it executes</h2>
  *
  * <p>
@@ -576,7 +573,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * initial instance repeats this process until all leaf nodes have been executed and all test results registered.
  * </p>
  *
- * <a name="ignoredTests" />
+ * <a name="ignoredTests"></a>
  * <h2>Ignored tests</h2>
  *
  * <p>
@@ -591,7 +588,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * be executed. Instead, a <code>TestIgnored</code> event will be fired.
  * </p>
  *
- * <a name="informers" />
+ * <a name="informers"></a>
  * <h2>Informers</h2>
  *
  * <p>
@@ -600,7 +597,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * section in its documentation for more information.
  * </p>
  *
- * <a name="pendingTests" />
+ * <a name="pendingTests"></a>
  * <h2>Pending tests</h2>
  *
  * <p>
@@ -615,7 +612,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * completes abruptly with a <code>TestPendingException</code>).
  * </p>
  *
- * <a name="taggingTests" />
+ * <a name="taggingTests"></a>
  * <h2>Tagging tests</h2>
  *
  * <p>
@@ -665,7 +662,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * order: first tests then nested suites. To help make <code>path.FunSpec</code> code easier to
  * reason about by giving readers of one less difference to think about, nested suites are not allowed. If you want
  * to add nested suites to a <code>path.FunSpec</code>, you can instead wrap them all in a
- * <a href="../Suites.html"><code>Suites</code></a> or <a href="../Specs.html"><code>Specs</code></a> object. They will
+ * <a href="../Suites.html"><code>Suites</code></a> object. They will
  * be executed in the order of appearance (unless a <a href="../Distributor">Distributor</a> is passed, in which case
  * they will execute in parallel).
  * </p>

@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
 /**
  * Trait to which custom information about a running suite of tests can be reported.
  * 
@@ -66,7 +68,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -91,5 +93,5 @@ trait Informer {
    *
    * @throws NullArgumentException if <code>message</code> or <code>payload</code> reference is <code>null</code>
    */
-  def apply(message: String, payload: Option[Any] = None): Unit
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit
 }

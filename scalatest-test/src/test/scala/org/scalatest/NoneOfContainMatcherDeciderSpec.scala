@@ -19,11 +19,14 @@ import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
+import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
 class NoneOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
 
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {
@@ -243,15 +246,15 @@ class NoneOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
   
   describe("noneOf ") {
     
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      e.message should be (Some(FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

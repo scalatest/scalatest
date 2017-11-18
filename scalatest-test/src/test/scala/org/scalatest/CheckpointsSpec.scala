@@ -30,6 +30,8 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.DuplicateTestNameException
 import Matchers._
 
+import org.scalactic.source
+
 // SKIP-SCALATESTJS-START
 class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
 // SKIP-SCALATESTJS-END
@@ -109,7 +111,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the TestRegistrationClosedException through immediately") {
         val cp = new Checkpoint
         a [TestRegistrationClosedException] should be thrownBy {
-          cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", 0) }
+          cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 
@@ -117,7 +119,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the NotAllowedException through immediately") {
         val cp = new Checkpoint
         a [NotAllowedException] should be thrownBy {
-          cp { throw new NotAllowedException("This should not be captured by the Checkpoint", 0) }
+          cp { throw new NotAllowedException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 
@@ -125,7 +127,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the DuplicateTestNameException through immediately") {
         val cp = new Checkpoint
         a [DuplicateTestNameException] should be thrownBy {
-          cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", 0) }
+          cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 

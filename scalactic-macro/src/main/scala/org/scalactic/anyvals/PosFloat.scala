@@ -15,8 +15,8 @@
  */
 package org.scalactic.anyvals
 
-import scala.language.implicitConversions
 import scala.collection.immutable.NumericRange
+import scala.language.implicitConversions
 
 /**
  * An <code>AnyVal</code> for positive <code>Float</code>s.
@@ -39,7 +39,7 @@ import scala.collection.immutable.NumericRange
  * compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -62,7 +62,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosFloat.from</code>, instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1.0F
  * x: Float = 1.0
  *
@@ -81,7 +81,7 @@ import scala.collection.immutable.NumericRange
  * <code>None</code>.  Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosFloat.from(x)
  * res3: Option[org.scalactic.anyvals.PosFloat] = Some(PosFloat(1.0))
  *
@@ -100,7 +100,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosFloat.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosFloat): Float = Float.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosFloat)Float
  *
@@ -346,9 +346,9 @@ final class PosFloat private (val value: Float) extends AnyVal {
   }
 
   def round: PosZInt = {
-    import scala.util.Try
-    import scala.util.Success
     import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
     val roundedInt: Int = math.round(value)
     val result = Try(PosZInt.from(math.round(value)).get)
     result match {

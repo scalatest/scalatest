@@ -18,13 +18,16 @@ package org.scalatest
 import SharedHelpers._
 import FailureMessages._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class InspectorShorthandsRegexWithGroupsSpec extends FunSpec with Matchers {
-  
+
+  private val prettifier = Prettifier.default
+
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (InspectorShorthandsRegexWithGroupsSpec.scala:" + lineNumber + ") \n" +
-    "in " + decorateToStringValue(left)
+    "in " + decorateToStringValue(prettifier, left)
   
   describe("Inspector shorthands") {
     

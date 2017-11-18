@@ -31,7 +31,7 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
 
   val out: PrintStream
   
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     try {
       doApply(event)
     }
@@ -43,7 +43,7 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
     }
   }
 
-  def dispose() {
+  def dispose(): Unit = {
     try {
       doDispose()
     }
@@ -55,8 +55,8 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
     }
   }
   
-  protected def doApply(event: Event)
-  protected def doDispose()
+  protected def doApply(event: Event): Unit
+  protected def doDispose(): Unit
 }
 
 // Out is not even being used. Can I not just ignore the whole concept?
@@ -66,11 +66,11 @@ private[scalatest] class WrapperCatchReporter(reporter: Reporter, val out: Print
   
   private val report = reporter
   
-  def doApply(event: Event) {
+  def doApply(event: Event): Unit = {
     report(event)
   }
   
-  def doDispose() {
+  def doDispose(): Unit = {
     propagateDispose(reporter)
   }
 }

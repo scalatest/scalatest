@@ -16,15 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import FixtureNodeFamily._
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
-import org.scalatest.Suite.autoTagClassAnnotations
+
 
 /**
  * A sister class to <code>org.scalatest.FlatSpec</code> that can pass a fixture object into its tests.

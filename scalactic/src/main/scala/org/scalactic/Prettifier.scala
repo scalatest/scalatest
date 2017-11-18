@@ -121,12 +121,27 @@ import scala.xml
  * custom one when a test actually fails.
  * </p>
  */
-trait Prettifier extends (Any => String)
+trait Prettifier extends Serializable { // I removed the extends (Any => String), now that we are making this implicit.
+  /**
+   * Prettifies the passed object.
+   */
+  def apply(o: Any): String
+}
 
 /**
  * Companion object for <code>Prettifier</code> that provides a default <code>Prettifier</code> implementation.
  */
 object Prettifier {
+
+  /**
+   * Constract a new <code>Prettifier</code> from a given partial function.
+   *
+   * @param fun a partial function with which to implement the apply method of the returned <code>Prettifier</code>.
+   */
+  def apply(fun: PartialFunction[Any, String]): Prettifier =
+    new Prettifier {
+      def apply(o: Any): String = fun(o)
+    }
 
   /**
    * A default <code>Prettifier</code>. 
@@ -163,7 +178,7 @@ object Prettifier {
    * For anything else, it returns the result of invoking <code>toString</code>.
    * </p>
    */
-  val default: Prettifier =
+  implicit val default: Prettifier =
     new Prettifier {
       def apply(o: Any): String = {
         try {

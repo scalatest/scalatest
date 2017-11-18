@@ -22,7 +22,7 @@ class Stack[T] {
   val MAX = 10
   private val buf = new ListBuffer[T]
 
-  def push(o: T) {
+  def push(o: T): Unit = {
     if (!full)
       buf.prepend(o)
     else
@@ -52,7 +52,7 @@ class Stack[T] {
 
 trait ExampleStackBehaviors { this: FunSpec =>
 
-  def nonEmptyStack(newStack: => Stack[Int], lastItemAdded: Int) {
+  def nonEmptyStack(newStack: => Stack[Int], lastItemAdded: Int): Unit = {
 
     it("should be non-empty") {
       assert(!newStack.empty)
@@ -77,7 +77,7 @@ trait ExampleStackBehaviors { this: FunSpec =>
     }
   }
 
-  def nonFullStack(newStack: => Stack[Int]) {
+  def nonFullStack(newStack: => Stack[Int]): Unit = {
 
     it("should not be full") {
       assert(!newStack.full)

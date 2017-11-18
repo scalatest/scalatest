@@ -24,7 +24,7 @@ trait JettySpec extends FunSpec {
   private val serverThread = new Thread() {
     private val server = new Server(0)
     
-    override def run() {
+    override def run(): Unit = {
       val webapp = new WebAppContext("webapp", "/")
       server.setHandler(webapp)
       server.setStopAtShutdown(true)
@@ -32,7 +32,7 @@ trait JettySpec extends FunSpec {
       server.join()
     }
     
-    def done() {
+    def done(): Unit = {
       server.stop()
     }
     

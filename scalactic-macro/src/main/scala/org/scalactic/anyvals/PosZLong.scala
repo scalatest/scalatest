@@ -34,7 +34,7 @@ import scala.collection.immutable.NumericRange
  * error at compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -59,7 +59,7 @@ import scala.collection.immutable.NumericRange
  * instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1L
  * x: Long = 1
  *
@@ -75,7 +75,7 @@ import scala.collection.immutable.NumericRange
  * Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosZLong.from(x)
  * res4: Option[org.scalactic.anyvals.PosZLong] = Some(PosZLong(1))
  *
@@ -93,7 +93,7 @@ import scala.collection.immutable.NumericRange
  * calling <code>PosZLong.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosZLong): Long = Long.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosZLong)Long
  *

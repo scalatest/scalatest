@@ -17,25 +17,28 @@ package org.scalatest.path
 
 import org.scalatest._
 import SharedHelpers._
-
 import org.scalatest.path.{ FreeSpec => PathFreeSpec }
+
 // elements
 import org.scalatest.events._
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import java.lang.annotation.AnnotationFormatError
+import org.scalactic.Prettifier
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 
-  describe("A FreeSpec") {
+  private val prettifier = Prettifier.default
+
+  describe("A path.FreeSpec") {
 
     describe("(when a nesting rule has been violated)") {
 
@@ -293,7 +296,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySpec extends PathFreeSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           "howdy also" in {
@@ -962,6 +965,28 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       assert(dura > 80, "duration was: " + dura)
     }
     // SKIP-SCALATESTJS-END
+
+    ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
+      class TestSpec extends PathFreeSpec with Expectations {
+        "it should do something" in {
+          expect(1 === 2)
+        }
+        "a widget" - {
+          "should do something else" in {
+            expect(1 === 2)
+          }
+        }
+        override def newInstance = new TestSpec
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FreeSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 14)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FreeSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 12)
+    }
   }
   
   describe("when failure happens") {
@@ -1023,7 +1048,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
@@ -1032,7 +1057,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -1047,7 +1072,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
@@ -1056,7 +1081,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -1070,14 +1095,36 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
+    }
+
+    it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+      class TestSpec extends PathFreeSpec {
+        override def newInstance = new TestSpec
+        "a feature" - {
+          "test 1" in {}
+          "test 1" in {}
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        (new TestSpec).run(None, Args(SilentReporter))
+      }
+      assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
     // SKIP-SCALATESTJS-START

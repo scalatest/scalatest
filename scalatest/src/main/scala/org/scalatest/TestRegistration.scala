@@ -15,47 +15,29 @@
  */
 package org.scalatest
 
-import org.scalatest.OutcomeOf._
+import org.scalactic._
 
 /**
- * Trait for test registration support.
+ * Trait declaring methods that can be used to register by-name test functions that
+ * have any result type.
  */
 trait TestRegistration { theSuite: Suite =>
 
   /**
-   * The return type of the registered test.
-   */
-  type Registration
-
-  /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
-    () =>
-      PastOutcome {
-        outcomeOf { testFun }
-      }
-
-  /**
-   * Register a test.
+   * Registers a test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Registration)
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position)
 
   /**
-   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
-   * event to be fired.
+   * Registers an ignored test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration)
-
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position)
 }

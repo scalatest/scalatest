@@ -23,6 +23,7 @@ package org.scalatest.concurrent
  * <a href="Timeouts.html"><code>Timeouts</code></a> and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * </p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 trait Interruptor extends Function1[Thread, Unit] { thisInterruptor =>
 
   /**
@@ -62,7 +63,7 @@ object Interruptor {
    */
   def apply(fun: Thread => Unit) =
     new Interruptor {
-      def apply(testThread: Thread) { fun(testThread) }
+      def apply(testThread: Thread): Unit = { fun(testThread) }
     }
 }
 

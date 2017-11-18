@@ -16,9 +16,7 @@
 package org.scalatest
 
 import time._
-import SpanSugar._
 import Matchers._
-import Now._
 import org.scalactic.exceptions.NullArgumentException
 
 class SlowpokeDetectorSpec extends FunSpec with Now {

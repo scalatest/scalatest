@@ -30,7 +30,7 @@ private[scalatest] class TestRerunner(suiteClassName: String, testName: String) 
 
   // [bv: I wasn't sure if I need to say override here.]
   def apply(report: Reporter, stopper: Stopper, filter: Filter, configMap: ConfigMap,
-            distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader) {
+            distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader): Unit = {
 
     val runStartTime = System.currentTimeMillis
 

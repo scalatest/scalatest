@@ -17,6 +17,8 @@ package org.scalatest.fixture
 
 import org.scalatest._
 
+// This one shouldn't extend Product with Serializable because it has some subclasses that=
+// aren't case classes.
 private[fixture] object FixtureNodeFamily  {
 
   sealed abstract class Node(parentOption: Option[Branch])
@@ -99,14 +101,14 @@ private[fixture] object FixtureNodeFamily  {
   private[scalatest] def getTestName(specText: String, parent: Branch): String = {
     val prefix = getPrefix(parent).trim
     if (prefix.isEmpty) {
-      // class MySpec extends Spec {
+      // class MySpec extends RefSpec {
       //   it("should pop when asked") {}
       // }
       // Should yield: "should pop when asked"
       specText
     }
     else {
-      // class MySpec extends Spec {
+      // class MySpec extends RefSpec {
       //   describe("A Stack") {
       //     it("must pop when asked") {}
       //   }

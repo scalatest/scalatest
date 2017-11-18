@@ -179,6 +179,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
   */
+/*
   abstract protected override def runTest(testName: String, args: Args): Status = {
 
     var thrownException: Option[Throwable] = None
@@ -207,6 +208,51 @@ trait BeforeAndAfterEach extends SuiteMixin {
             case None => throw laterException
           }
       }
+    }
+  }
+*/
+  abstract protected override def runTest(testName: String, args: Args): Status = {
+
+    var thrownException: Option[Throwable] = None
+
+    val runTestStatus: Status =
+      try {
+        if (!args.runTestInNewInstance) beforeEach()
+        super.runTest(testName, args)
+      }
+      catch {
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+          thrownException = Some(e)
+          FailedStatus
+      }
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    try {
+      val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          runTestStatus withAfterEffect {
+            try {
+              afterEach()
+            }
+            catch { 
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) && thrownException.isDefined =>
+                // We will swallow the exception thrown from afterEach if it is not test-aborting and exception was already thrown by beforeEach or test itself.
+            }
+          } // Make sure that afterEach is called even if runTest completes abruptly.
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and afterAll throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 }

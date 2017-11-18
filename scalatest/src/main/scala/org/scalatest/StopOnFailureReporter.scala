@@ -22,7 +22,7 @@ import Reporter.propagateDispose
 
 private[scalatest] class StopOnFailureReporter(dispatch: Reporter, stopper: Stopper, val out: PrintStream) extends CatchReporter {
     
-  def doApply(event: Event) {
+  def doApply(event: Event): Unit = {
     event match {
       case testFailed: TestFailed => stopper.requestStop()
       case _ => 
@@ -30,7 +30,7 @@ private[scalatest] class StopOnFailureReporter(dispatch: Reporter, stopper: Stop
     dispatch(event)
   }
   
-  def doDispose() {
+  def doDispose(): Unit = {
     propagateDispose(dispatch)
   }
 }

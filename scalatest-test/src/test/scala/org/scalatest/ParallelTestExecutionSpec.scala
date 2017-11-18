@@ -25,15 +25,11 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.InfoProvided
 import java.util.concurrent.Future
-// SKIP-SCALATESTJS-START
-import java.util.concurrent.LinkedBlockingQueue
-// SKIP-SCALATESTJS-END
 import org.scalatest.time.Span
 import org.scalatest.time.Second
 import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
-import Matchers._
 
 class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
   /*
@@ -59,7 +55,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         buf += ((suite, args, status))
         status
       }
-      def executeInOrder() {
+      def executeInOrder(): Unit = {
         for ((suite, args, status) <- buf) {
           val runStatus = suite.run(None, args)
           if (!runStatus.succeeds())
@@ -68,7 +64,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
           status.setCompleted()
         }
       }
-      def executeInReverseOrder() {
+      def executeInReverseOrder(): Unit = {
         for ((suite, args, status) <- buf.reverse) {
           val runStatus = suite.run(None, args)
           if (!runStatus.succeeds())
@@ -78,7 +74,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         }
       }
 
-      def apply(suite: Suite, tracker: Tracker) {
+      def apply(suite: Suite, tracker: Tracker): Unit = {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
       }
     }
@@ -86,7 +82,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
     // SKIP-SCALATESTJS-START
     class ControlledOrderConcurrentDistributor(poolSize: Int) extends Distributor {
-      private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
+      private val futureQueue = new java.util.concurrent.LinkedBlockingQueue[Future[T] forSome { type T }]
       
       val buf = ListBuffer.empty[SuiteRunner]
       val execSvc: ExecutorService = Executors.newFixedThreadPool(2)
@@ -95,7 +91,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         buf += new SuiteRunner(suite, args, status)
         status
       }
-      def executeInOrder() {
+      def executeInOrder(): Unit = {
         for (suiteRunner <- buf) {
           val future: Future[_] = execSvc.submit(suiteRunner)
           futureQueue.put(future)
@@ -103,7 +99,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         while (futureQueue.peek != null) 
           futureQueue.poll().get()
       }
-      def executeInReverseOrder() {
+      def executeInReverseOrder(): Unit = {
         for (suiteRunner <- buf.reverse) {
           val future: Future[_] = execSvc.submit(suiteRunner)
           futureQueue.put(future)
@@ -112,7 +108,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
           futureQueue.poll().get()
       }
 
-      def apply(suite: Suite, tracker: Tracker) {
+      def apply(suite: Suite, tracker: Tracker): Unit = {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
       }
     }
@@ -121,7 +117,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     // SKIP-SCALATESTJS-START
     it("should have the events reported in correct order when tests are executed in parallel") {
 
-      def withDistributor(fun: ControlledOrderDistributor => Unit) {
+      def withDistributor(fun: ControlledOrderDistributor => Unit): Unit = {
 
         val recordingReporter = new EventRecordingReporter
         val outOfOrderDistributor = new ControlledOrderDistributor
@@ -156,7 +152,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     // SKIP-SCALATESTJS-START
     it("should have InfoProvided fired from before and after block in correct order when tests are executed in parallel") {
       
-      def withDistributor(fun: ControlledOrderDistributor => Unit) {
+      def withDistributor(fun: ControlledOrderDistributor => Unit): Unit = {
 
         val recordingReporter = new EventRecordingReporter
         val outOfOrderDistributor = new ControlledOrderDistributor
@@ -203,7 +199,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
     // SKIP-SCALATESTJS-START
     it("should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
-      def withDistributor(fun: ControlledOrderConcurrentDistributor => Unit) {
+      def withDistributor(fun: ControlledOrderConcurrentDistributor => Unit): Unit = {
         val recordingReporter = new EventRecordingReporter
         val args = Args(recordingReporter)
         val outOfOrderConcurrentDistributor = new ControlledOrderConcurrentDistributor(2)

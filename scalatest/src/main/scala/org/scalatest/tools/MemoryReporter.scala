@@ -39,7 +39,7 @@ extends Reporter
   // RunCompleted event, to enable rerunning of just those tests
   // next time.
   //
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     event match {
       case e: TestFailed   => mementos += Memento(e)
       case e: TestCanceled => mementos += Memento(e)

@@ -17,6 +17,7 @@ package org.scalatest
 package exceptions
 
 import SharedHelpers.thisLineNumber
+import org.scalactic.source
 
 class TestFailedExceptionSpec extends FunSpec with Matchers {
 
@@ -220,7 +221,40 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
+      try {
+        a [IllegalArgumentException] should be thrownBy {}
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => // s should equal ("TestFailedExceptionSpec.scala:" + (baseLineNumber + 204))
+              if (s != ("TestFailedExceptionSpec.scala:" + (thisLineNumber - 6))) {
+                fail("s was: " + s, e)
+              }
+            case None => fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
+      try {
+        a [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => s should equal ("TestFailedExceptionSpec.scala:" + (thisLineNumber - 5))
+            case None => fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
       try {
         an [IllegalArgumentException] should be thrownBy {}
       }
@@ -238,9 +272,9 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
-        an [IllegalArgumentException] should be thrownBy { if (false) 1 else throw new RuntimeException }
+        an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
       }
       catch {
         case e: TestFailedException =>
@@ -255,20 +289,20 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TestFailedException(Some("doody"), Some(theCause), 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), Some(theCause), source.Position.here)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TestFailedException(Some("doody"), None, 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), None, source.Position.here)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }
 
     it("should be equal to itself") {
-      val tfe = new TestFailedException(Some("doody"), None, 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), None, source.Position.here)
       assert(tfe equals tfe)
     }
   }

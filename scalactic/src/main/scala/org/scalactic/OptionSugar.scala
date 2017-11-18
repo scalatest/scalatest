@@ -28,7 +28,7 @@ package org.scalactic
  * <code>None</code> or else if the contained optional age is <code>None</code>:
  * </p>
  *
- * <pre class="REPL">
+ * <pre class="stREPL">
  * scala&gt; case class Person(name: String, age: Option[Int])
  * defined class Person
  *
@@ -56,7 +56,7 @@ package org.scalactic
  * failed if a <code>None</code> is encountered:
  * </p>
  *
- * <pre class="REPL">
+ * <pre class="stREPL">
  * scala&gt; import OptionSugar._
  * import OptionSugar._
  *

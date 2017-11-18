@@ -15,8 +15,8 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest._
 import java.util.concurrent.locks.{Lock, ReadWriteLock}
+
 
 /**
  * Provides implicit def for pimping a ReadWriteLock.
@@ -34,7 +34,7 @@ private[concurrent] object PimpedReadWriteLock {
    * @param lock the <code>ReadWriteLock</code>
    * @return an instance of <code>PimpedReadWriteLock</code>
    */
-  implicit def pimpMyReadWriteLock(lock: ReadWriteLock) = new PimpedReadWriteLock(lock)
+  implicit def pimpMyReadWriteLock(lock: ReadWriteLock): PimpedReadWriteLock = new PimpedReadWriteLock(lock)
 
   /**
    * Locks the given lock

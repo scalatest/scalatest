@@ -20,6 +20,8 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
 import OptionValues._
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic._
+import org.scalatest.exceptions.StackDepthException
 
 class InsideSpec extends FunSpec {
 
@@ -88,13 +90,9 @@ class InsideSpec extends FunSpec {
     }
     
     it("should throw a TFE when matcher fails inside due to exception") {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 0
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, address, age) =>
-          throw new TestFailedException(None, None, stackDepth)
+          throw new TestFailedException((_: StackDepthException) => None, None, source.Position.here)
         }
       }
       caught.message.value should be (Resources.insidePartialFunctionAppendNone("", rec))
@@ -103,20 +101,37 @@ class InsideSpec extends FunSpec {
     }
 
     it("should include a nested inside clause when a matcher fails inside due to exception") {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 0
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, _) =>
           inside (name) { case Name(first, _, _) =>
-            throw new TestFailedException(None, None, stackDepth)
+            throw new TestFailedException((_: StackDepthException) => None, None, source.Position.here)
           }
         }
       }
       caught.message.value should be (Resources.insidePartialFunctionAppendSomeMsg(Resources.insidePartialFunctionAppendNone("  ", rec.name), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
+    }
+    it("should infer the result type from the block, and pass the value through") {
+
+      inside(rec) { case Record(name, _, _) => name } shouldBe Name("Sally", "Mary", "Jones")
+      (inside(rec) { case Record(name, _, _) => name }: Name) shouldBe a [Name]
+
+      inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => first }
+      } shouldBe "Sally"
+
+      (inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => first }
+      }: String) shouldBe a [String]
+
+      inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => (first should have length 5) }
+      } shouldBe Succeeded
+
+      (inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => (first should have length 5) }
+      }: Assertion) shouldBe an [Assertion]
     }
   }
 }

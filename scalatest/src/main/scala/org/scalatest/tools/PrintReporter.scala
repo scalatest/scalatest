@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 // SKIP-SCALATESTJS-START
 import java.io.BufferedOutputStream
 import java.io.File
@@ -43,7 +42,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
-  presentReminderWithoutCanceledTests: Boolean
+  presentReminderWithoutCanceledTests: Boolean,
+  presentFilePathname: Boolean
 ) extends StringReporter(
   presentAllDurations,
   presentInColor,
@@ -53,7 +53,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
-  presentReminderWithoutCanceledTests
+  presentReminderWithoutCanceledTests,
+  presentFilePathname
 ) {
 
   /**
@@ -75,7 +76,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean
   ) =
     this(
       new PrintWriter(
@@ -91,7 +93,8 @@ private[scalatest] abstract class PrintReporter(
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      presentFilePathname
     )
 
   // SKIP-SCALATESTJS-START
@@ -115,7 +118,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean
   ) =
     this(
       new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(filename)), BufferSize)),
@@ -127,16 +131,17 @@ private[scalatest] abstract class PrintReporter(
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      presentFilePathname
     )
 
   // SKIP-SCALATESTJS-END
 
-  protected def printPossiblyInColor(fragment: Fragment) {
+  protected def printPossiblyInColor(fragment: Fragment): Unit = {
     pw.println(fragment.toPossiblyColoredText(presentInColor))
   }
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
 
     super.apply(event)
 
@@ -145,7 +150,7 @@ private[scalatest] abstract class PrintReporter(
 
   // Closes the print writer. Subclasses StandardOutReporter and StandardErrReporter override dispose to do nothing
   // so that those aren't closed.
-  override def dispose() {
+  override def dispose(): Unit = {
     pw.close()
   }
 

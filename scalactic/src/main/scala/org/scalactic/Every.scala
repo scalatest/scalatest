@@ -15,16 +15,17 @@
  */
 package org.scalactic
 
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.collection.GenIterable
+import scala.collection.GenSeq
+import scala.collection.GenTraversableOnce
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Buffer
+import scala.reflect.ClassTag
+import Every.fromNonEmptyVector
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.GenTraversableOnce
-import scala.reflect.ClassTag
-import scala.collection.mutable.Buffer
-import scala.collection.GenSeq
-import scala.collection.GenIterable
-import scala.collection.generic.CanBuildFrom
-import Every.fromNonEmptyVector
-import scala.annotation.unchecked.{ uncheckedVariance => uV }
+
 
 // Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
 /**
@@ -141,7 +142,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * @tparam T the type of elements contained in this <code>Every</code>
  */
-sealed abstract class Every[+T] protected (underlying: Vector[T]) extends PartialFunction[Int, T] with Serializable {
+sealed abstract class Every[+T] protected (underlying: Vector[T]) extends PartialFunction[Int, T] with Product with Serializable {
 
 /*
   private def this(firstElement: T, otherElements: T*) = this(Vector(firstElement) ++ otherElements)

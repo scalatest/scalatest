@@ -16,7 +16,7 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.prop._
+import org.scalactic.source
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.PropertyCheckFailedException
 */
@@ -27,9 +27,9 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
 
     val e =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => "msg",
+        (_: StackDepthException) => "msg",
         None,
-        sde => 7,
+        source.Position.here,
         None,
         "msg",
         List(1, 2, 3),
@@ -44,9 +44,9 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
 
     val e =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => "msg",
+        (_: StackDepthException) => "msg",
         None,
-        sde => 7,
+        source.Position.here,
         None,
         "msg",
         List(1, 2, 3),

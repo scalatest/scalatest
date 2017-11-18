@@ -16,16 +16,19 @@
 package org.scalatest
 
 import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
 import Matchers._
+import org.scalactic.Prettifier
+// SKIP-SCALATESTJS-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS-END
 
 class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  private val prettifier = Prettifier.default
 
   describe("the 'should have length/size' syntax on an arbitrary object with both length and size methods") {
 
@@ -86,22 +89,22 @@ class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThr
       val caught1 = intercept[TestFailedException] {
         obj should have length (3)
       }
-      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 3))
+      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
       val caught2 = intercept[TestFailedException] {
         obj should have size (3)
       }
-      assert(caught2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 3))
+      assert(caught2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 3))
     }
 
     it("should throw TestFailedException with normal error message if specified length is negative") {
       val caught1 = intercept[TestFailedException] {
         obj should have length (-2)
       }
-      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, -2))
+      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
       val caught2 = intercept[TestFailedException] {
         obj should have size (-2)
       }
-      assert(caught2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, -2))
+      assert(caught2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, -2))
     }
 
     it("should throw an assertion error when object length or size doesn't match and used in a logical-and expression") {
@@ -109,32 +112,32 @@ class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThr
       val caught1 = intercept[TestFailedException] {
         obj should { have length (5) and (have length (2 - 1)) }
       }
-      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 5))
+      assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 5))
 
       val caught2 = intercept[TestFailedException] {
         obj should ((have length (5)) and (have length (2 - 1)))
       }
-      assert(caught2.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 5))
+      assert(caught2.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 5))
 
       val caught3 = intercept[TestFailedException] {
         obj should (have length (5) and have length (2 - 1))
       }
-      assert(caught3.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 5))
+      assert(caught3.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 5))
 
       val caught1b = intercept[TestFailedException] {
         obj should { have size (5) and (have size (2 - 1)) }
       }
-      assert(caught1b.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 5))
+      assert(caught1b.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 5))
 
       val caughtb2 = intercept[TestFailedException] {
         obj should ((have size (5)) and (have size (2 - 1)))
       }
-      assert(caughtb2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 5))
+      assert(caughtb2.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 5))
 
       val caughtb3 = intercept[TestFailedException] {
         obj should (have size (5) and have size (2 - 1))
       }
-      assert(caughtb3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 5))
+      assert(caughtb3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 5))
     }
 
     it("should throw an assertion error when object length or size doesn't match and used in a logical-or expression") {
@@ -142,32 +145,32 @@ class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThr
       val caught1 = intercept[TestFailedException] {
         obj should { have length (55) or (have length (22)) }
       }
-      assert(caught1.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 22))))
+      assert(caught1.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 22))))
 
       val caught2 = intercept[TestFailedException] {
         obj should ((have length (55)) or (have length (22)))
       }
-      assert(caught2.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 22))))
+      assert(caught2.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 22))))
 
       val caught3 = intercept[TestFailedException] {
         obj should (have length (55) or have length (22))
       }
-      assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 22))))
+      assert(caught3.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 22))))
 
       val caught1b = intercept[TestFailedException] {
         obj should { have size (55) or (have size (22)) }
       }
-      assert(caught1b.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 22))))
+      assert(caught1b.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 22))))
 
       val caught2b = intercept[TestFailedException] {
         obj should ((have size (55)) or (have size (22)))
       }
-      assert(caught2b.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 22))))
+      assert(caught2b.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 22))))
 
       val caught3b = intercept[TestFailedException] {
         obj should (have size (55) or have size (22))
       }
-      assert(caught3b.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 22))))
+      assert(caught3b.getMessage === FailureMessages.commaAnd(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 22))))
     }
 
     it("should throw an assertion error when object length or size matches and used in a logical-and expression with not") {
@@ -175,32 +178,32 @@ class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThr
       val caught1 = intercept[TestFailedException] {
         obj should { not { have length (3) } and not { have length (2) }}
       }
-      assert(caught1.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(UnquotedString("lengthy"), 2))))
+      assert(caught1.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(prettifier, UnquotedString("lengthy"), 2))))
 
       val caught2 = intercept[TestFailedException] {
         obj should { { not have length (3) } and { not have length (2) }}
       }
-      assert(caught2.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(UnquotedString("lengthy"), 2))))
+      assert(caught2.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(prettifier, UnquotedString("lengthy"), 2))))
 
       val caught3 = intercept[TestFailedException] {
         obj should (not have length (3) and not have length (2))
       }
-      assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(UnquotedString("lengthy"), 2))))
+      assert(caught3.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadLength(prettifier, UnquotedString("lengthy"), 2))))
 
       val caught1b = intercept[TestFailedException] {
         obj should { not { have size (3) } and not { have size (2) }}
       }
-      assert(caught1b.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("lengthy"), 2))))
+      assert(caught1b.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(prettifier, UnquotedString("lengthy"), 2))))
 
       val caught2b = intercept[TestFailedException] {
         obj should { { not have size (3) } and { not have size (2) }}
       }
-      assert(caught2b.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("lengthy"), 2))))
+      assert(caught2b.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(prettifier, UnquotedString("lengthy"), 2))))
 
       val caught3b = intercept[TestFailedException] {
         obj should (not have size (3) and not have size (2))
       }
-      assert(caught3b.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("lengthy"), 2))))
+      assert(caught3b.getMessage === FailureMessages.commaBut(prettifier, UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, UnquotedString("lengthy"), 2, 3)), UnquotedString(FailureMessages.hadSize(prettifier, UnquotedString("lengthy"), 2))))
     }
 
     it("should throw an assertion error when object length or size matches and used in a logical-or expression with not") {

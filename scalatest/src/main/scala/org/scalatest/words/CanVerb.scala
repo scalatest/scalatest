@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>can</code> methods to <code>String</code>
@@ -92,7 +92,9 @@ trait CanVerb {
    */
   trait StringCanWrapperForVerb {
 
-    val left: String
+    val leftSideString: String
+
+    val pos: source.Position
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -110,12 +112,12 @@ trait CanVerb {
      * <p>
      * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
-    def can(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(left, "can", right)
+    def can(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "can", right, pos)
     }
 
     /**
@@ -134,11 +136,11 @@ trait CanVerb {
      * <p>
      * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> passes in a function via the implicit parameter that takes
      * a string and results in a <code>BehaveWord</code>. This method
-     * simply invokes this function, passing in left, and returns the result.
+     * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def can(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(left)
+    def can(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
+      svbli(leftSideString, pos)
     }
 
     /**
@@ -158,13 +160,13 @@ trait CanVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter of type <code>StringVerbBlockRegistration</code>,
      * a function that takes two strings and a no-arg function and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"can"</code>, and the right by-name parameter transformed into a
      * no-arg function.
      * </p>
      */
-    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(left, "can", right _)
+    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
+      fun(leftSideString, "can", pos, right _)
     }
 
     /**
@@ -186,12 +188,12 @@ trait CanVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter that takes
      * two strings and a <code>ResultOfAfterWordApplication</code> and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(left, "can", resultOfAfterWordApplication)
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
+      swawr(leftSideString, "can", resultOfAfterWordApplication, pos)
     }
   }
 
@@ -201,8 +203,9 @@ trait CanVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
    * to enable <code>can</code> methods to be invokable on that object.
    */
-  implicit def convertToStringCanWrapper(o: String): StringCanWrapperForVerb =
+  implicit def convertToStringCanWrapper(o: String)(implicit position: source.Position): StringCanWrapperForVerb =
     new StringCanWrapperForVerb {
-      val left = o.trim
+      val leftSideString = o.trim
+      val pos = position
     }
 }

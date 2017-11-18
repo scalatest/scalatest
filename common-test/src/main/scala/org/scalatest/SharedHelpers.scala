@@ -16,20 +16,21 @@
 package org.scalatest
 
 import org.scalatest.events._
-import java.util.concurrent.Executors
 import java.io.File
-import scala.annotation.tailrec
-import scala.collection.GenTraversable
-import scala.collection.GenMap
-import scala.collection.SortedSet
-import scala.collection.SortedMap
-import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
+import scala.annotation.tailrec
+import scala.collection.GenMap
+import scala.collection.GenTraversable
+import scala.collection.SortedMap
+import scala.collection.SortedSet
+import FailureMessages.decorateToStringValue
+import java.util.concurrent.Executors
+import org.scalactic.Prettifier
 
 object SharedHelpers extends Assertions with LineNumberHelper {
 
   object SilentReporter extends Reporter {
-    def apply(event: Event) = ()
+    def apply(event: Event): Unit = ()
   }
 
   object NoisyReporter extends Reporter {
@@ -39,7 +40,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class TestDurationReporter extends Reporter {
     var testSucceededWasFiredAndHadADuration = false
     var testFailedWasFiredAndHadADuration = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case event: TestSucceeded => testSucceededWasFiredAndHadADuration = event.duration.isDefined
         case event: TestFailed => testFailedWasFiredAndHadADuration = event.duration.isDefined
@@ -51,7 +52,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class SuiteDurationReporter extends Reporter {
     var suiteCompletedWasFiredAndHadADuration = false
     var suiteAbortedWasFiredAndHadADuration = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case event: SuiteCompleted => suiteCompletedWasFiredAndHadADuration = event.duration.isDefined
         case event: SuiteAborted => suiteAbortedWasFiredAndHadADuration = event.duration.isDefined
@@ -62,7 +63,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   class PendingReporter extends Reporter {
     var testPendingWasFired = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case _: TestPending => testPendingWasFired = true
         case _ =>
@@ -70,157 +71,193 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
   }
 
+  // This now needs to be thread safe, because I'm setting it in one thread
+  // and asserting using it from a different thread in Async tests.
   class EventRecordingReporter extends Reporter {
     private var eventList: List[Event] = List()
-    def eventsReceived = eventList.reverse
+    def eventsReceived = synchronized { eventList.reverse }
     def testSucceededEventsReceived: List[TestSucceeded] = {
-      eventsReceived filter {
-        case event: TestSucceeded => true
-        case _ => false
-      } map {
-        case event: TestSucceeded => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestSucceeded => true
+          case _ => false
+        } map {
+          case event: TestSucceeded => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def testStartingEventsReceived: List[TestStarting] = {
-      eventsReceived filter {
-        case event: TestStarting => true
-        case _ => false
-      } map {
-        case event: TestStarting => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestStarting => true
+          case _ => false
+        } map {
+          case event: TestStarting => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     // Why doesn't this work:
     // for (event: TestSucceeded <- eventsReceived) yield event
     def infoProvidedEventsReceived: List[InfoProvided] = {
-      eventsReceived filter {
-        case event: InfoProvided => true
-        case _ => false
-      } map {
-        case event: InfoProvided => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: InfoProvided => true
+          case _ => false
+        } map {
+          case event: InfoProvided => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def noteProvidedEventsReceived: List[NoteProvided] = {
-      eventsReceived filter {
-        case event: NoteProvided => true
-        case _ => false
-      } map {
-        case event: NoteProvided => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: NoteProvided => true
+          case _ => false
+        } map {
+          case event: NoteProvided => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def alertProvidedEventsReceived: List[AlertProvided] = {
-      eventsReceived filter {
-        case event: AlertProvided => true
-        case _ => false
-      } map {
-        case event: AlertProvided => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: AlertProvided => true
+          case _ => false
+        } map {
+          case event: AlertProvided => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def markupProvidedEventsReceived: List[MarkupProvided] = {
-      eventsReceived filter {
-        case event: MarkupProvided => true
-        case _ => false
-      } map {
-        case event: MarkupProvided => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: MarkupProvided => true
+          case _ => false
+        } map {
+          case event: MarkupProvided => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def scopeOpenedEventsReceived: List[ScopeOpened] = {
-      eventsReceived filter {
-        case event: ScopeOpened => true
-        case _ => false
-      } map {
-        case event: ScopeOpened => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: ScopeOpened => true
+          case _ => false
+        } map {
+          case event: ScopeOpened => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def scopeClosedEventsReceived: List[ScopeClosed] = {
-      eventsReceived filter {
-        case event: ScopeClosed => true
-        case _ => false
-      } map {
-        case event: ScopeClosed => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: ScopeClosed => true
+          case _ => false
+        } map {
+          case event: ScopeClosed => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def scopePendingEventsReceived: List[ScopePending] = {
-      eventsReceived filter {
-        case event: ScopePending => true
-        case _ => false
-      } map {
-        case event: ScopePending => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: ScopePending => true
+          case _ => false
+        } map {
+          case event: ScopePending => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def testPendingEventsReceived: List[TestPending] = {
-      eventsReceived filter {
-        case event: TestPending => true
-        case _ => false
-      } map {
-        case event: TestPending => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestPending => true
+          case _ => false
+        } map {
+          case event: TestPending => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def testCanceledEventsReceived: List[TestCanceled] = {
-      eventsReceived filter {
-        case event: TestCanceled => true
-        case _ => false
-      } map {
-        case event: TestCanceled => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestCanceled => true
+          case _ => false
+        } map {
+          case event: TestCanceled => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def testFailedEventsReceived: List[TestFailed] = {
-      eventsReceived filter {
-        case event: TestFailed => true
-        case _ => false
-      } map {
-        case event: TestFailed => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestFailed => true
+          case _ => false
+        } map {
+          case event: TestFailed => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def testIgnoredEventsReceived: List[TestIgnored] = {
-      eventsReceived filter {
-        case event: TestIgnored => true
-        case _ => false
-      } map {
-        case event: TestIgnored => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: TestIgnored => true
+          case _ => false
+        } map {
+          case event: TestIgnored => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def suiteStartingEventsReceived: List[SuiteStarting] = {
-      eventsReceived filter {
-        case event: SuiteStarting => true
-        case _ => false
-      } map {
-        case event: SuiteStarting => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: SuiteStarting => true
+          case _ => false
+        } map {
+          case event: SuiteStarting => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def suiteCompletedEventsReceived: List[SuiteCompleted] = {
-      eventsReceived filter {
-        case event: SuiteCompleted => true
-        case _ => false
-      } map {
-        case event: SuiteCompleted => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: SuiteCompleted => true
+          case _ => false
+        } map {
+          case event: SuiteCompleted => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
     def suiteAbortedEventsReceived: List[SuiteAborted] = {
-      eventsReceived filter {
-        case event: SuiteAborted => true
-        case _ => false
-      } map {
-        case event: SuiteAborted => event
-        case _ => throw new RuntimeException("should never happen")
+      synchronized {
+        eventsReceived filter {
+          case event: SuiteAborted => true
+          case _ => false
+        } map {
+          case event: SuiteAborted => event
+          case _ => throw new RuntimeException("should never happen")
+        }
       }
     }
-    def apply(event: Event) {
-      eventList ::= event
+    def apply(event: Event): Unit = {
+      synchronized {
+        eventList ::= event
+      }
     }
   }
 
@@ -346,7 +383,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
   }
 
-  def ensureTestFailedEventReceived(suite: Suite, testName: String) {
+  def ensureTestFailedEventReceived(suite: Suite, testName: String): Unit = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
@@ -354,7 +391,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName === testName)
   }
 
-  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String) {
+  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String): Unit = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
@@ -366,7 +403,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class TestIgnoredTrackingReporter extends Reporter {
     var testIgnoredReceived = false
     var lastEvent: Option[TestIgnored] = None
-    def apply(event: Event) {
+    def apply(event: Event): Unit = {
       event match {
         case event: TestIgnored =>
           testIgnoredReceived = true
@@ -792,7 +829,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexElementForJavaIterator[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], errorFun: T => Boolean): Array[String] = {
@@ -802,13 +839,13 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexElementForJavaIterator[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], errorFun: java.util.Map.Entry[K, V] => Boolean): Array[String] = {
     val element = getNextInJavaIterator[java.util.Map.Entry[K, V]](itr, errorFun)
     val indexOrKey = element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
@@ -838,7 +875,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.length.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.length.toString)
   }
 
   def indexElementLengthString[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
@@ -848,7 +885,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.length.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.length.toString)
   }
 
   def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = {
@@ -858,7 +895,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = {
@@ -868,7 +905,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthJavaCol[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = {
@@ -878,7 +915,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthJavaMap[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = {
@@ -888,7 +925,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
@@ -1795,6 +1832,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     sortedMap
   }
 
+  // SKIP-SCALATESTJS-START
   def serializeRoundtrip[A](a: A): A = {
     val baos = new java.io.ByteArrayOutputStream
     val oos = new java.io.ObjectOutputStream(baos)
@@ -1803,8 +1841,9 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
     ois.readObject.asInstanceOf[A]
   }
+  // SKIP-SCALATESTJS-END
 
-  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
+  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int): Unit = {
     assert(exception.message === Some(message))
     assert(exception.failedCodeFileName === Some(fileName))
     assert(exception.failedCodeLineNumber === Some(lineNumber))
@@ -1845,7 +1884,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
 
     @tailrec
-    def transform(itr: BufferedIterator[Char], openBracket: Int, builder: StringBuilder, multilineBracket: Boolean = false) {
+    def transform(itr: BufferedIterator[Char], openBracket: Int, builder: StringBuilder, multilineBracket: Boolean = false): Unit = {
       if (itr.hasNext) {
         val next = itr.next
         val (newOpenBracket, newMultilineBracket) =

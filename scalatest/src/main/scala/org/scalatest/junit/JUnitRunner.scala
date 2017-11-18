@@ -93,7 +93,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    * @param notifier the JUnit <code>RunNotifier</code> to which to report the results of executing
    * this suite of tests
    */
-  def run(notifier: RunNotifier) {
+  def run(notifier: RunNotifier): Unit = {
     try {
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),

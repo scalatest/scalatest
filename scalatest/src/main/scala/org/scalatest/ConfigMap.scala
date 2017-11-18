@@ -16,13 +16,18 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
+import exceptions.StackDepthException
+
 import reflect.ClassTag
 import collection.immutable.MapLike
 import org.scalactic.Equality
+import org.scalactic.source
 import enablers.Containing
 import enablers.Aggregating
 import enablers.KeyMapping
 import enablers.ValueMapping
+import org.scalatest.exceptions.StackDepthException
+
 import scala.collection.GenTraversable
 
 // TODO: Oops. Need to pass ConfigMap not Map[String, Any] in TestStarting.
@@ -158,7 +163,7 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
    * @param key the key with which the desired value should be associated
    * @param classTag an implicit <code>ClassTag</code> specifying the expected type for the desired value
    */
-  def getRequired[V](key: String)(implicit classTag: ClassTag[V]): V = {
+  def getRequired[V](key: String)(implicit classTag: ClassTag[V], pos: source.Position): V = {
     underlying.get(key) match {
       case Some(value) =>
         val expectedClass = classTag.runtimeClass
@@ -175,11 +180,11 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
             case _ => expectedClass
           }
         val actualClass = value.asInstanceOf[AnyRef].getClass
-        if (actualClass.isAssignableFrom(boxedExpectedClass))
+        if (boxedExpectedClass.isAssignableFrom(actualClass))
           value.asInstanceOf[V]
         else
-            throw new TestCanceledException(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef]), 1) // TODO: Fix stack depth
-      case None => throw new TestCanceledException(Resources.configMapEntryNotFound(key), 1) // TODO: Fix stack depth
+            throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef])), None, pos, None)
+      case None => throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryNotFound(key)), None, pos, None)
     }
   }
 }

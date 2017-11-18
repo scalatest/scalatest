@@ -19,17 +19,20 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import LoneElement._
+import org.scalactic.Prettifier
 
 class StringLoneElementSpec extends FunSpec {
 
+  private val prettifier = Prettifier.default
+
   def didNotEqual(left: Any, right: Any): String =
-    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " did not equal " + decorateToStringValue(prettifier, right)
 
   def wasNotEqualTo(left: Any, right: Any): String =
-    decorateToStringValue(left) + " was not equal to " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " was not equal to " + decorateToStringValue(prettifier, right)
 
   def notLoneElement(left: Any, size: Int): String =
-    "Expected " + decorateToStringValue(left) + " to contain exactly 1 element, but it has size " + size
+    "Expected " + decorateToStringValue(prettifier, left) + " to contain exactly 1 element, but it has size " + size
 
   describe("The loneElement syntax") {
 

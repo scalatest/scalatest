@@ -48,6 +48,8 @@ import org.openqa.selenium.JavascriptExecutor
 import org.scalatest.ScreenshotCapturer
 import org.scalatest.time.Nanosecond
 import org.scalatest.Resources
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import org.scalactic.source
 
 /**
  * Trait that provides a domain specific language (DSL) for writing browser-based tests using <a href="http://seleniumhq.org">Selenium</a>.  
@@ -1011,7 +1013,7 @@ import org.scalatest.Resources
  * In case the test code fails, you'll see the screenshot location appended to the error message, for example:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre>
  * Expected gold but got silver; screenshot capture in /tmp/AbCdEfGhIj.png
  * </pre>
  * 
@@ -1095,7 +1097,7 @@ import org.scalatest.Resources
  * quit()
  * </pre>
  * 
- * <a name="alternateForms"/>
+ * <a name="alternateForms"></a>
  * <h2>Alternate forms</h2>
  * 
  * <p>
@@ -1473,7 +1475,7 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): T
+    def switch(driver: WebDriver)(implicit position: source.Position): T
   }
 
   /**
@@ -1496,8 +1498,8 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): Element = {
-      createTypedElement(driver.switchTo.activeElement)
+    def switch(driver: WebDriver)(implicit position: source.Position): Element = {
+      createTypedElement(driver.switchTo.activeElement, position)
     }
   }
 
@@ -1521,7 +1523,7 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): Alert = { 
+    def switch(driver: WebDriver)(implicit position: source.Position): Alert = {
       driver.switchTo.alert
     }
   }
@@ -1546,7 +1548,7 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver = {
+    def switch(driver: WebDriver)(implicit position: source.Position): WebDriver = {
       driver.switchTo.defaultContent
     }
   }
@@ -1571,16 +1573,16 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver = 
+    def switch(driver: WebDriver)(implicit pos: source.Position): WebDriver =
       try {
         driver.switchTo.frame(index)
       }
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame at index '" + index + "' not found."),
+                     (_: StackDepthException) => Some("Frame at index '" + index + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
       }
   }
@@ -1605,16 +1607,16 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver = 
+    def switch(driver: WebDriver)(implicit pos: source.Position): WebDriver =
       try {
         driver.switchTo.frame(nameOrId)
       }
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame with name or ID '" + nameOrId + "' not found."),
+                     (_: StackDepthException) => Some("Frame with name or ID '" + nameOrId + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
       }
   }
@@ -1630,16 +1632,16 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver = 
+    def switch(driver: WebDriver)(implicit pos: source.Position): WebDriver =
       try {
         driver.switchTo.frame(webElement)
       }
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame element '" + webElement + "' not found."),
+                     (_: StackDepthException) => Some("Frame element '" + webElement + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
       }
   }
@@ -1655,16 +1657,16 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver = 
+    def switch(driver: WebDriver)(implicit pos: source.Position): WebDriver =
       try {
         driver.switchTo.frame(element.underlying)
       }
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame element '" + element + "' not found."),
+                     (_: StackDepthException) => Some("Frame element '" + element + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
       }
   }
@@ -1689,16 +1691,16 @@ trait WebBrowser {
      *
      * @param driver the <code>WebDriver</code> with which to perform the switch
      */
-    def switch(driver: WebDriver): WebDriver =
+    def switch(driver: WebDriver)(implicit pos: source.Position): WebDriver =
       try {
         driver.switchTo.window(nameOrHandle)
       }
       catch {
         case e: org.openqa.selenium.NoSuchWindowException => 
           throw new TestFailedException(
-                     sde => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
+                     (_: StackDepthException) => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
       }
   }
@@ -1742,13 +1744,13 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a text field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text field
    */
-  final class TextField(val underlying: WebElement) extends Element {
+  final class TextField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     
     if(!isTextField(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not text field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     
     /**
@@ -1767,7 +1769,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1775,7 +1777,7 @@ trait WebBrowser {
     /**
      * Clears this text field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
 
   /**
@@ -1793,12 +1795,12 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a text area
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
    */
-  final class TextArea(val underlying: WebElement) extends Element {
+  final class TextArea(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isTextArea(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not text area."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not text area."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     
     /**
@@ -1817,7 +1819,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1825,7 +1827,7 @@ trait WebBrowser {
     /**
      * Clears this text area.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
   
   /**
@@ -1843,13 +1845,13 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a password field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a password field
    */
-  final class PasswordField(val underlying: WebElement) extends Element {
+  final class PasswordField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     
     if(!isPasswordField(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not password field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     
     /**
@@ -1868,7 +1870,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1876,18 +1878,18 @@ trait WebBrowser {
     /**
      * Clears this text field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
   
   trait ValueElement extends Element {
     val underlying: WebElement
 
-    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String) = {
+    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
       if(!isA(underlying))
         throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not " + typeDescription + " field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not " + typeDescription + " field."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     }
 
@@ -1907,7 +1909,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1915,7 +1917,7 @@ trait WebBrowser {
     /**
      * Clears this field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
 
   /**
@@ -1933,8 +1935,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a email field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
    */
-  final class EmailField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isEmailField, "email")
+  final class EmailField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isEmailField, "email")(pos)
   }
 
   /**
@@ -1952,8 +1954,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a color field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
    */
-  final class ColorField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isColorField, "color")
+  final class ColorField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isColorField, "color")(pos)
   }
 
   /**
@@ -1971,8 +1973,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a date field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a date field
    */
-  final class DateField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isDateField, "date")
+  final class DateField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isDateField, "date")(pos)
   }
 
   /**
@@ -1990,8 +1992,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime field
    */
-  final class DateTimeField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isDateTimeField, "datetime")
+  final class DateTimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isDateTimeField, "datetime")(pos)
   }
 
   /**
@@ -2009,8 +2011,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime-local field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime-local field
    */
-  final class DateTimeLocalField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isDateTimeLocalField, "datetime-local")
+  final class DateTimeLocalField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isDateTimeLocalField, "datetime-local")(pos)
   }
 
   /**
@@ -2028,8 +2030,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a month field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a month field
    */
-  final class MonthField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isMonthField, "month")
+  final class MonthField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isMonthField, "month")(pos)
   }
 
   /**
@@ -2047,8 +2049,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a number field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a number field
    */
-  final class NumberField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isNumberField, "number")
+  final class NumberField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isNumberField, "number")(pos)
   }
 
   /**
@@ -2066,8 +2068,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a range field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a range field
    */
-  final class RangeField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isRangeField, "range")
+  final class RangeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isRangeField, "range")(pos)
   }
 
   /**
@@ -2085,8 +2087,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a search field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a search field
    */
-  final class SearchField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isSearchField, "search")
+  final class SearchField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isSearchField, "search")(pos)
   }
 
   /**
@@ -2104,8 +2106,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a tel field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a tel field
    */
-  final class TelField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isTelField, "tel")
+  final class TelField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isTelField, "tel")(pos)
   }
 
   /**
@@ -2123,8 +2125,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a time field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a time field
    */
-  final class TimeField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isTimeField, "time")
+  final class TimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isTimeField, "time")(pos)
   }
 
   /**
@@ -2142,8 +2144,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a url field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a url field
    */
-  final class UrlField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isUrlField, "url")
+  final class UrlField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isUrlField, "url")(pos)
   }
 
   /**
@@ -2161,8 +2163,8 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a week field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a week field
    */
-  final class WeekField(val underlying: WebElement) extends Element with ValueElement {
-    checkCorrectType(isWeekField, "week")
+  final class WeekField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isWeekField, "week")(pos)
   }
 
   /**
@@ -2180,12 +2182,12 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a text area
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
    */
-  final class RadioButton(val underlying: WebElement) extends Element {
+  final class RadioButton(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isRadioButton(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not radio button."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not radio button."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     /**
      * Gets this radio button's value.
@@ -2213,15 +2215,15 @@ trait WebBrowser {
    *
    * @throws TestFailedExeption if no radio button with the passed <code>groupName</code> are found
    */
-  final class RadioButtonGroup(groupName: String, driver: WebDriver) {
+  final class RadioButtonGroup(groupName: String, driver: WebDriver)(implicit pos: source.Position) {
 
     private def groupElements = driver.findElements(By.name(groupName)).asScala.toList.filter(isRadioButton(_))
 
     if (groupElements.length == 0)
       throw new TestFailedException(
-                     sde => Some("No radio buttons with group name '" + groupName + "' was found."),
+                     (_: StackDepthException) => Some("No radio buttons with group name '" + groupName + "' was found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
 
     /**
@@ -2231,13 +2233,13 @@ trait WebBrowser {
      * @return the value of this group's selected radio button
      * @throws TestFailedExeption if no radio button in this group is selected
      */
-    def value: String = selection match {
+    def value(implicit pos: source.Position): String = selection match {
       case Some(v) => v
       case None => 
         throw new TestFailedException(
-                     sde => Some("The radio button group on which value was invoked contained no selected radio button."),
+                     (_: StackDepthException) => Some("The radio button group on which value was invoked contained no selected radio button."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "value", 1)
+                     pos
                    )
     }
 
@@ -2262,15 +2264,15 @@ trait WebBrowser {
      * @param the value of the radio button to select
      * @throws TestFailedExeption if the passed string is not the value of any radio button in this group
      */
-    def value_=(value: String) {
+    def value_=(value: String)(implicit pos: source.Position): Unit = {
       groupElements.find(_.getAttribute("value") == value) match {
         case Some(radio) => 
           radio.click()
         case None => 
           throw new TestFailedException(
-                     sde => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
+                     (_: StackDepthException) => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "value_=", 1)
+                     pos
                    )
       }
     }
@@ -2291,18 +2293,18 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a checkbox
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a checkbox
    */
-  final class Checkbox(val underlying: WebElement) extends Element {
+  final class Checkbox(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isCheckBox(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not check box."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not check box."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     
     /**
      * Selects this checkbox.
      */
-    def select() {
+    def select(): Unit = {
       if (!underlying.isSelected)
         underlying.click()
     }
@@ -2310,7 +2312,7 @@ trait WebBrowser {
     /**
      * Clears this checkbox
      */
-    def clear() {
+    def clear(): Unit = {
       if (underlying.isSelected())
         underlying.click()
     }
@@ -2453,19 +2455,19 @@ trait WebBrowser {
    * @param underlying a <code>WebElement</code> representing a single selection list
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a single selection list
    */
-  class SingleSel(val underlying: WebElement) extends Element {
+  class SingleSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not select."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     private val select = new Select(underlying)
     if (select.isMultiple)
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not a single-selection list."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not a single-selection list."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     
     /**
@@ -2488,13 +2490,13 @@ trait WebBrowser {
      * @return the single selection list's value
      * @throws TestFailedException if the single selection list has no selected value
      */
-    def value: String = selection match {
+    def value(implicit pos: source.Position): String = selection match {
       case Some(v) => v
       case None => 
         throw new TestFailedException(
-                     sde => Some("The single selection list on which value was invoked had no selection."),
+                     (_: StackDepthException) => Some("The single selection list on which value was invoked had no selection."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "value", 1)
+                     pos
                    )
     }
     
@@ -2504,16 +2506,16 @@ trait WebBrowser {
      * @param value the new value
      * @throws TestFailedException if the passed value does not match not one of the single selection list's values
      */
-    def value_=(value : String) {
+    def value_=(value : String)(implicit pos: source.Position): Unit = {
       try {
         select.selectByValue(value)
       }
       catch {
         case e: org.openqa.selenium.NoSuchElementException => 
           throw new TestFailedException(
-                     sde => Some(e.getMessage),
+                     (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "value_=", 1)
+                     pos
                    )
       }
     }
@@ -2536,19 +2538,19 @@ trait WebBrowser {
    * @param underlying a <code>WebElement</code> representing a multiple selection list
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a multiple selection list
    */
-  class MultiSel(val underlying: WebElement) extends Element {
+  class MultiSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not select."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
     private val select = new Select(underlying)
     if (!select.isMultiple)
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not a multi-selection list."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not a multi-selection list."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                     pos
                    )
 
     /**
@@ -2556,7 +2558,7 @@ trait WebBrowser {
      *
      * @param value the value to clear
      */
-    def clear(value: String) {
+    def clear(value: String): Unit = {
       select.deselectByValue(value)
     }
   
@@ -2587,7 +2589,7 @@ trait WebBrowser {
      * @throws TestFailedException if a value contained in the passed <code>Seq[String]</code> is not
      *         among this multiple selection list's values.
      */
-    def values_=(values: collection.Seq[String]) {
+    def values_=(values: collection.Seq[String])(implicit pos: source.Position): Unit = {
       try {
         clearAll()
         values.foreach(select.selectByValue(_))
@@ -2595,9 +2597,9 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchElementException => 
           throw new TestFailedException(
-                     sde => Some(e.getMessage),
+                     (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "value_=", 1)
+                     pos
                    )
       }
     }
@@ -2607,7 +2609,7 @@ trait WebBrowser {
      *
      * @param value the value to clear
      */
-    def clearAll() {
+    def clearAll(): Unit = {
       select.deselectAll()
     }
   }
@@ -2642,7 +2644,7 @@ trait WebBrowser {
      * @param url the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def to(url: String)(implicit driver: WebDriver) {
+    def to(url: String)(implicit driver: WebDriver): Unit = {
       driver.get(url)
     }
 
@@ -2661,7 +2663,7 @@ trait WebBrowser {
      * @param page the <code>Page</code> object containing the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def to(page: Page)(implicit driver: WebDriver) {
+    def to(page: Page)(implicit driver: WebDriver): Unit = {
       driver.get(page.url)
     }
   }
@@ -2680,7 +2682,7 @@ trait WebBrowser {
    * @param url the URL to which to send the browser
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goTo(url: String)(implicit driver: WebDriver) {
+  def goTo(url: String)(implicit driver: WebDriver): Unit = {
     go to url
   }
   
@@ -2698,7 +2700,7 @@ trait WebBrowser {
    * @param page the <code>Page</code> object containing the URL to which to send the browser
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goTo(page: Page)(implicit driver: WebDriver) {
+  def goTo(page: Page)(implicit driver: WebDriver): Unit = {
     go to page
   }
   
@@ -2707,7 +2709,7 @@ trait WebBrowser {
    *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def close()(implicit driver: WebDriver) {
+  def close()(implicit driver: WebDriver): Unit = {
     driver.close()
   }
   
@@ -2760,7 +2762,7 @@ trait WebBrowser {
    *          ^
    * </pre>
    */
-  sealed trait Query {
+  sealed trait Query extends Product with Serializable {
 
     /**
      * The Selenium <code>By</code> for this query.
@@ -2790,16 +2792,18 @@ trait WebBrowser {
      * @return the <code>Element</code> selected by this query
      * @throws TestFailedException if nothing is selected by this query
      */
-    def element(implicit driver: WebDriver): Element = {
+    def element(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Element = {
       try {
-        createTypedElement(driver.findElement(by))
+        createTypedElement(driver.findElement(by), pos)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
+          // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
+          val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("Element '" + queryString + "' not found."),
+                     (_: StackDepthException) => Some("Element '" + queryStringValue + "' not found."),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "name", 1)
+                     pos
                    )
       }
     }
@@ -2818,9 +2822,9 @@ trait WebBrowser {
      * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
      *   no <code>Element</code> is selected
      */
-    def findElement(implicit driver: WebDriver): Option[Element] = 
+    def findElement(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Option[Element] =
       try {
-        Some(createTypedElement(driver.findElement(by)))
+        Some(createTypedElement(driver.findElement(by), pos))
       }
       catch {
         case e: org.openqa.selenium.NoSuchElementException => None
@@ -2843,7 +2847,7 @@ trait WebBrowser {
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
      */
-    def findAllElements(implicit driver: WebDriver): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e) }
+    def findAllElements(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
     
     /**
      * Returns the first <code>WebElement</code> selected by this query, or throws <code>TestFailedException</code>
@@ -2853,16 +2857,18 @@ trait WebBrowser {
      * @return the <code>WebElement</code> selected by this query
      * @throws TestFailedException if nothing is selected by this query
      */
-    def webElement(implicit driver: WebDriver): WebElement = {
+    def webElement(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WebElement = {
       try {
         driver.findElement(by)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
+          // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
+          val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("WebElement '" + queryString + "' not found."),
+                     (_: StackDepthException) => Some("WebElement '" + queryStringValue + "' not found."),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "name", 1)
+                     pos
                    )
       }
     }
@@ -3125,49 +3131,49 @@ trait WebBrowser {
    */
   def tagName(tagName: String): TagNameQuery = new TagNameQuery(tagName)
 
-  private def createTypedElement(element: WebElement): Element = {
+  private def createTypedElement(element: WebElement, pos: source.Position = implicitly[source.Position]): Element = {
     if (isTextField(element))
-      new TextField(element)
+      new TextField(element)(pos)
     else if (isTextArea(element))
-      new TextArea(element)
+      new TextArea(element)(pos)
     else if (isPasswordField(element))
-      new PasswordField(element)
+      new PasswordField(element)(pos)
     else if (isEmailField(element))
-      new EmailField(element)
+      new EmailField(element)(pos)
     else if (isColorField(element))
-      new ColorField(element)
+      new ColorField(element)(pos)
     else if (isDateField(element))
-      new DateField(element)
+      new DateField(element)(pos)
     else if (isDateTimeField(element))
-      new DateTimeField(element)
+      new DateTimeField(element)(pos)
     else if (isDateTimeLocalField(element))
-      new DateTimeLocalField(element)
+      new DateTimeLocalField(element)(pos)
     else if (isMonthField(element))
-      new MonthField(element)
+      new MonthField(element)(pos)
     else if (isNumberField(element))
-      new NumberField(element)
+      new NumberField(element)(pos)
     else if (isRangeField(element))
-      new RangeField(element)
+      new RangeField(element)(pos)
     else if (isSearchField(element))
-      new SearchField(element)
+      new SearchField(element)(pos)
     else if (isTelField(element))
-      new TelField(element)
+      new TelField(element)(pos)
     else if (isTimeField(element))
-      new TimeField(element)
+      new TimeField(element)(pos)
     else if (isUrlField(element))
-      new UrlField(element)
+      new UrlField(element)(pos)
     else if (isWeekField(element))
-      new WeekField(element)
+      new WeekField(element)(pos)
     else if (isCheckBox(element))
-      new Checkbox(element)
+      new Checkbox(element)(pos)
     else if (isRadioButton(element))
-      new RadioButton(element)
+      new RadioButton(element)(pos)
     else if (element.getTagName.toLowerCase == "select") {
       val select = new Select(element)
       if (select.isMultiple)
-        new MultiSel(element)
+        new MultiSel(element)(pos)
       else
-        new SingleSel(element)
+        new SingleSel(element)(pos)
     }
     else
       new Element() { val underlying = element }
@@ -3284,7 +3290,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextField</code>
    * @return the <code>TextField</code> selected by this query
    */
-  def textField(query: Query)(implicit driver: WebDriver): TextField = new TextField(query.webElement)
+  def textField(query: Query)(implicit driver: WebDriver, pos: source.Position): TextField = new TextField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>TextField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3295,8 +3301,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextField</code>
    * @return the <code>TextField</code> selected by this query
    */
-  def textField(queryString: String)(implicit driver: WebDriver): TextField = 
-    tryQueries(queryString)(q => new TextField(q.webElement))
+  def textField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextField =
+    tryQueries(queryString)(q => new TextField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>TextArea</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3307,7 +3313,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextArea</code>
    * @return the <code>TextArea</code> selected by this query
    */
-  def textArea(query: Query)(implicit driver: WebDriver) = new TextArea(query.webElement)
+  def textArea(query: Query)(implicit driver: WebDriver, pos: source.Position) = new TextArea(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>TextArea</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3318,8 +3324,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextArea</code>
    * @return the <code>TextArea</code> selected by this query
    */
-  def textArea(queryString: String)(implicit driver: WebDriver): TextArea = 
-    tryQueries(queryString)(q => new TextArea(q.webElement))
+  def textArea(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextArea =
+    tryQueries(queryString)(q => new TextArea(q.webElement)(pos))
     
   /**
    * Finds and returns the first <code>PasswordField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3330,7 +3336,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>PasswordField</code>
    * @return the <code>PasswordField</code> selected by this query
    */
-  def pwdField(query: Query)(implicit driver: WebDriver): PasswordField = new PasswordField(query.webElement)
+  def pwdField(query: Query)(implicit driver: WebDriver, pos: source.Position): PasswordField = new PasswordField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>PasswordField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3341,8 +3347,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>PasswordField</code>
    * @return the <code>PasswordField</code> selected by this query
    */
-  def pwdField(queryString: String)(implicit driver: WebDriver): PasswordField = 
-    tryQueries(queryString)(q => new PasswordField(q.webElement))
+  def pwdField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): PasswordField =
+    tryQueries(queryString)(q => new PasswordField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>EmailField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3353,7 +3359,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
    * @return the <code>EmailField</code> selected by this query
    */
-  def emailField(query: Query)(implicit driver: WebDriver): EmailField = new EmailField(query.webElement)
+  def emailField(query: Query)(implicit driver: WebDriver, pos: source.Position): EmailField = new EmailField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>EmailField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3364,8 +3370,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
    * @return the <code>EmailField</code> selected by this query
    */
-  def emailField(queryString: String)(implicit driver: WebDriver): EmailField = 
-    tryQueries(queryString)(q => new EmailField(q.webElement))
+  def emailField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): EmailField =
+    tryQueries(queryString)(q => new EmailField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>ColorField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3376,7 +3382,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
    * @return the <code>ColorField</code> selected by this query
    */
-  def colorField(query: Query)(implicit driver: WebDriver): ColorField = new ColorField(query.webElement)
+  def colorField(query: Query)(implicit driver: WebDriver, pos: source.Position): ColorField = new ColorField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>ColorField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3387,8 +3393,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
    * @return the <code>ColorField</code> selected by this query
    */
-  def colorField(queryString: String)(implicit driver: WebDriver): ColorField = 
-    tryQueries(queryString)(q => new ColorField(q.webElement))
+  def colorField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): ColorField =
+    tryQueries(queryString)(q => new ColorField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>DateField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3399,7 +3405,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateField</code>
    * @return the <code>DateField</code> selected by this query
    */
-  def dateField(query: Query)(implicit driver: WebDriver): DateField = new DateField(query.webElement)
+  def dateField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateField = new DateField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>DateField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3410,8 +3416,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateField</code>
    * @return the <code>DateField</code> selected by this query
    */
-  def dateField(queryString: String)(implicit driver: WebDriver): DateField = 
-    tryQueries(queryString)(q => new DateField(q.webElement))
+  def dateField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateField =
+    tryQueries(queryString)(q => new DateField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>DateTimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3422,7 +3428,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeField</code>
    * @return the <code>DateTimeField</code> selected by this query
    */
-  def dateTimeField(query: Query)(implicit driver: WebDriver): DateTimeField = new DateTimeField(query.webElement)
+  def dateTimeField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateTimeField = new DateTimeField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>DateTimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3433,8 +3439,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeField</code>
    * @return the <code>DateTimeField</code> selected by this query
    */
-  def dateTimeField(queryString: String)(implicit driver: WebDriver): DateTimeField = 
-    tryQueries(queryString)(q => new DateTimeField(q.webElement))
+  def dateTimeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateTimeField =
+    tryQueries(queryString)(q => new DateTimeField(q.webElement)(pos))
 
   /**
    * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3445,7 +3451,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeLocalField</code>
    * @return the <code>DateTimeLocalField</code> selected by this query
    */
-  def dateTimeLocalField(query: Query)(implicit driver: WebDriver): DateTimeLocalField = new DateTimeLocalField(query.webElement)
+  def dateTimeLocalField(query: Query)(implicit driver: WebDriver, pos: source.Position): DateTimeLocalField = new DateTimeLocalField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3456,8 +3462,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeLocalField</code>
    * @return the <code>DateTimeLocalField</code> selected by this query
    */
-  def dateTimeLocalField(queryString: String)(implicit driver: WebDriver): DateTimeLocalField = 
-    tryQueries(queryString)(q => new DateTimeLocalField(q.webElement))
+  def dateTimeLocalField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateTimeLocalField =
+    tryQueries(queryString)(q => new DateTimeLocalField(q.webElement)(pos))
 
   /**
    * Finds and returns the first <code>MonthField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3468,7 +3474,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MonthField</code>
    * @return the <code>MonthField</code> selected by this query
    */
-  def monthField(query: Query)(implicit driver: WebDriver): MonthField = new MonthField(query.webElement)
+  def monthField(query: Query)(implicit driver: WebDriver, pos: source.Position): MonthField = new MonthField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>MonthField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3479,8 +3485,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MonthField</code>
    * @return the <code>MonthField</code> selected by this query
    */
-  def monthField(queryString: String)(implicit driver: WebDriver): MonthField = 
-    tryQueries(queryString)(q => new MonthField(q.webElement))
+  def monthField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MonthField =
+    tryQueries(queryString)(q => new MonthField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>NumberField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3491,7 +3497,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>NumberField</code>
    * @return the <code>NumberField</code> selected by this query
    */
-  def numberField(query: Query)(implicit driver: WebDriver): NumberField = new NumberField(query.webElement)
+  def numberField(query: Query)(implicit driver: WebDriver, pos: source.Position): NumberField = new NumberField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>NumberField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3502,8 +3508,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>NumberField</code>
    * @return the <code>NumberField</code> selected by this query
    */
-  def numberField(queryString: String)(implicit driver: WebDriver): NumberField = 
-    tryQueries(queryString)(q => new NumberField(q.webElement))
+  def numberField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): NumberField =
+    tryQueries(queryString)(q => new NumberField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>RangeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3514,7 +3520,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RangeField</code>
    * @return the <code>RangeField</code> selected by this query
    */
-  def rangeField(query: Query)(implicit driver: WebDriver): RangeField = new RangeField(query.webElement)
+  def rangeField(query: Query)(implicit driver: WebDriver, pos: source.Position): RangeField = new RangeField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>RangeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3525,8 +3531,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RangeField</code>
    * @return the <code>RangeField</code> selected by this query
    */
-  def rangeField(queryString: String)(implicit driver: WebDriver): RangeField = 
-    tryQueries(queryString)(q => new RangeField(q.webElement))
+  def rangeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RangeField =
+    tryQueries(queryString)(q => new RangeField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>SearchField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3537,7 +3543,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SearchField</code>
    * @return the <code>SearchField</code> selected by this query
    */
-  def searchField(query: Query)(implicit driver: WebDriver): SearchField = new SearchField(query.webElement)
+  def searchField(query: Query)(implicit driver: WebDriver, pos: source.Position): SearchField = new SearchField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>SearchField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3548,8 +3554,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SearchField</code>
    * @return the <code>SearchField</code> selected by this query
    */
-  def searchField(queryString: String)(implicit driver: WebDriver): SearchField = 
-    tryQueries(queryString)(q => new SearchField(q.webElement))
+  def searchField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SearchField =
+    tryQueries(queryString)(q => new SearchField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>TelField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3560,7 +3566,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TelField</code>
    * @return the <code>TelField</code> selected by this query
    */
-  def telField(query: Query)(implicit driver: WebDriver): TelField = new TelField(query.webElement)
+  def telField(query: Query)(implicit driver: WebDriver, pos: source.Position): TelField = new TelField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>TelField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3571,8 +3577,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TelField</code>
    * @return the <code>TelField</code> selected by this query
    */
-  def telField(queryString: String)(implicit driver: WebDriver): TelField = 
-    tryQueries(queryString)(q => new TelField(q.webElement))
+  def telField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TelField =
+    tryQueries(queryString)(q => new TelField(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>TimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3583,7 +3589,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TimeField</code>
    * @return the <code>TimeField</code> selected by this query
    */
-  def timeField(query: Query)(implicit driver: WebDriver): TimeField = new TimeField(query.webElement)
+  def timeField(query: Query)(implicit driver: WebDriver, pos: source.Position): TimeField = new TimeField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>TimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3594,8 +3600,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TimeField</code>
    * @return the <code>TimeField</code> selected by this query
    */
-  def timeField(queryString: String)(implicit driver: WebDriver): TimeField = 
-    tryQueries(queryString)(q => new TimeField(q.webElement))
+  def timeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TimeField =
+    tryQueries(queryString)(q => new TimeField(q.webElement)(pos))
 
   /**
    * Finds and returns the first <code>UrlField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3606,7 +3612,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>UrlField</code>
    * @return the <code>UrlField</code> selected by this query
    */
-  def urlField(query: Query)(implicit driver: WebDriver): UrlField = new UrlField(query.webElement)
+  def urlField(query: Query)(implicit driver: WebDriver, pos: source.Position): UrlField = new UrlField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>UrlField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3617,8 +3623,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>UrlField</code>
    * @return the <code>UrlField</code> selected by this query
    */
-  def urlField(queryString: String)(implicit driver: WebDriver): UrlField = 
-    tryQueries(queryString)(q => new UrlField(q.webElement))
+  def urlField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): UrlField =
+    tryQueries(queryString)(q => new UrlField(q.webElement)(pos))
 
   /**
    * Finds and returns the first <code>WeekField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3629,7 +3635,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>WeekField</code>
    * @return the <code>WeekField</code> selected by this query
    */
-  def weekField(query: Query)(implicit driver: WebDriver): WeekField = new WeekField(query.webElement)
+  def weekField(query: Query)(implicit driver: WebDriver, pos: source.Position): WeekField = new WeekField(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>WeekField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3640,8 +3646,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>WeekField</code>
    * @return the <code>WeekField</code> selected by this query
    */
-  def weekField(queryString: String)(implicit driver: WebDriver): WeekField = 
-    tryQueries(queryString)(q => new WeekField(q.webElement))
+  def weekField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WeekField =
+    tryQueries(queryString)(q => new WeekField(q.webElement)(pos))
 
   /**
    * Finds and returns <code>RadioButtonGroup</code> selected by the specified group name, throws <code>TestFailedException</code> if 
@@ -3652,7 +3658,7 @@ trait WebBrowser {
    * @throws TestFailedException if no element with the specified group name is found, or found any element with the specified group name but not a <code>RadioButton</code>
    * @return the <code>RadioButtonGroup</code> selected by this query
    */
-  def radioButtonGroup(groupName: String)(implicit driver: WebDriver) = new RadioButtonGroup(groupName, driver)
+  def radioButtonGroup(groupName: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new RadioButtonGroup(groupName, driver)(pos)
   
   /**
    * Finds and returns the first <code>RadioButton</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3663,7 +3669,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RadioButton</code>
    * @return the <code>RadioButton</code> selected by this query
    */
-  def radioButton(query: Query)(implicit driver: WebDriver) = new RadioButton(query.webElement)
+  def radioButton(query: Query)(implicit driver: WebDriver, pos: source.Position) = new RadioButton(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>RadioButton</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3674,8 +3680,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RadioButton</code>
    * @return the <code>RadioButton</code> selected by this query
    */
-  def radioButton(queryString: String)(implicit driver: WebDriver): RadioButton = 
-    tryQueries(queryString)(q => new RadioButton(q.webElement))
+  def radioButton(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RadioButton =
+    tryQueries(queryString)(q => new RadioButton(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>Checkbox</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3686,7 +3692,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>Checkbox</code>
    * @return the <code>Checkbox</code> selected by this query
    */
-  def checkbox(query: Query)(implicit driver: WebDriver) = new Checkbox(query.webElement)
+  def checkbox(query: Query)(implicit driver: WebDriver, pos: source.Position) = new Checkbox(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>Checkbox</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3697,8 +3703,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>Checkbox</code>
    * @return the <code>Checkbox</code> selected by this query
    */
-  def checkbox(queryString: String)(implicit driver: WebDriver): Checkbox = 
-    tryQueries(queryString)(q => new Checkbox(q.webElement))
+  def checkbox(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Checkbox =
+    tryQueries(queryString)(q => new Checkbox(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>SingleSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3709,7 +3715,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SingleSel</code>
    * @return the <code>SingleSel</code> selected by this query
    */
-  def singleSel(query: Query)(implicit driver: WebDriver) = new SingleSel(query.webElement)
+  def singleSel(query: Query)(implicit driver: WebDriver, pos: source.Position) = new SingleSel(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>SingleSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3720,8 +3726,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SingleSel</code>
    * @return the <code>SingleSel</code> selected by this query
    */
-  def singleSel(queryString: String)(implicit driver: WebDriver): SingleSel = 
-    tryQueries(queryString)(q => new SingleSel(q.webElement))
+  def singleSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SingleSel =
+    tryQueries(queryString)(q => new SingleSel(q.webElement)(pos))
   
   /**
    * Finds and returns the first <code>MultiSel</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3732,7 +3738,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MultiSel</code>
    * @return the <code>MultiSel</code> selected by this query
    */
-  def multiSel(query: Query)(implicit driver: WebDriver) = new MultiSel(query.webElement)
+  def multiSel(query: Query)(implicit driver: WebDriver, pos: source.Position) = new MultiSel(query.webElement)(pos)
   
   /**
    * Finds and returns the first <code>MultiSel</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
@@ -3743,8 +3749,8 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MultiSel</code>
    * @return the <code>MultiSel</code> selected by this query
    */
-  def multiSel(queryString: String)(implicit driver: WebDriver): MultiSel = 
-    tryQueries(queryString)(q => new MultiSel(q.webElement))
+  def multiSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MultiSel =
+    tryQueries(queryString)(q => new MultiSel(q.webElement)(pos))
     
   /**
    * This object is part of ScalaTest's Selenium DSL. Please see the documentation for
@@ -3765,7 +3771,7 @@ trait WebBrowser {
      * 
      * @param element the <code>WebElement</code> to click on
      */
-    def on(element: WebElement) {
+    def on(element: WebElement): Unit = {
       element.click()
     }
     
@@ -3775,7 +3781,7 @@ trait WebBrowser {
      * @param query the <code>Query</code> with which to search
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(query: Query)(implicit driver: WebDriver) {
+    def on(query: Query)(implicit driver: WebDriver): Unit = {
       query.webElement.click()
     }
   
@@ -3785,7 +3791,7 @@ trait WebBrowser {
      * @param queryString the string with which to search, first by ID then by name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(queryString: String)(implicit driver: WebDriver) {
+    def on(queryString: String)(implicit driver: WebDriver): Unit = {
       // stack depth is not correct if just call the button("...") directly.
       val target = tryQueries(queryString)(q => q.webElement)
       on(target)
@@ -3796,7 +3802,7 @@ trait WebBrowser {
      * 
      * @param element the <code>Element</code> to click on
      */
-    def on(element: Element) {
+    def on(element: Element): Unit = {
       element.underlying.click()
     }
   }
@@ -3806,7 +3812,7 @@ trait WebBrowser {
    * 
    * @param element the <code>WebElement</code> to click on
    */
-  def clickOn(element: WebElement) {
+  def clickOn(element: WebElement): Unit = {
     click on element
   }
   
@@ -3816,7 +3822,7 @@ trait WebBrowser {
    * @param query the <code>Query</code> with which to search
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(query: Query)(implicit driver: WebDriver) {
+  def clickOn(query: Query)(implicit driver: WebDriver): Unit = {
     click on query
   }
   
@@ -3826,7 +3832,7 @@ trait WebBrowser {
    * @param queryString the string with which to search, first by ID then by name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(queryString: String)(implicit driver: WebDriver) {
+  def clickOn(queryString: String)(implicit driver: WebDriver): Unit = {
     click on queryString
   }
   
@@ -3835,7 +3841,7 @@ trait WebBrowser {
    * 
    * @param element the <code>Element</code> to click on
    */
-  def clickOn(element: Element) {
+  def clickOn(element: Element): Unit = {
     click on element
   }
   
@@ -3847,24 +3853,24 @@ trait WebBrowser {
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @throws TestFailedException if current active element is not in a form or underlying WebDriver encounters problem when submitting the form.
    */
-  def submit()(implicit driver: WebDriver) {
+  def submit()(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     try {
       (switch to activeElement).underlying.submit()
     }
     catch {
       case e: org.openqa.selenium.NoSuchElementException => 
         throw new TestFailedException(
-                     sde => Some("Current element is not a form element."),
+                     (_: StackDepthException) => Some("Current element is not a form element."),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "name", 1)
+                     pos
                    )
       case e: Throwable => 
         // Could happens as bug in different WebDriver, like NullPointerException in HtmlUnitDriver when element is not a form element.
         // Anyway, we'll just wrap them as TestFailedException
         throw new TestFailedException(
-                     sde => Some("WebDriver encountered problem to submit(): " + e.getMessage),
+                     (_: StackDepthException) => Some("WebDriver encountered problem to submit(): " + e.getMessage),
                      Some(e),
-                     getStackDepthFun("WebBrowser.scala", "submit", 0)
+                     pos
                    )
     }
   }
@@ -3890,7 +3896,7 @@ trait WebBrowser {
    * @param timeout the time span to implicitly wait
    * @param driver the <code>WebDriver</code> on which to set the implicit wait
    */
-  def implicitlyWait(timeout: Span)(implicit driver: WebDriver) {
+  def implicitlyWait(timeout: Span)(implicit driver: WebDriver): Unit = {
     driver.manage.timeouts.implicitlyWait(timeout.totalNanos, TimeUnit.NANOSECONDS)
   }
 
@@ -3899,7 +3905,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> on which to quit. 
    */
-  def quit()(implicit driver: WebDriver) {
+  def quit()(implicit driver: WebDriver): Unit = {
     driver.quit()
   }
   
@@ -3938,8 +3944,8 @@ trait WebBrowser {
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return instance of specified <code>SwitchTarget</code>'s type parameter
      */
-    def to[T](target: SwitchTarget[T])(implicit driver: WebDriver): T = {
-      target.switch(driver)
+    def to[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): T = {
+      target.switch(driver)(pos)
     }
   }
   
@@ -4076,14 +4082,14 @@ trait WebBrowser {
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @return instance of specified <code>SwitchTarget</code>'s type parameter
    */
-  def switchTo[T](target: SwitchTarget[T])(implicit driver: WebDriver): T = switch to target
+  def switchTo[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): T = switch to target
   
   /**
    * Go back to previous page.
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goBack()(implicit driver: WebDriver) {
+  def goBack()(implicit driver: WebDriver): Unit = {
     driver.navigate.back()
   }
   
@@ -4092,7 +4098,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goForward()(implicit driver: WebDriver) {
+  def goForward()(implicit driver: WebDriver): Unit = {
     driver.navigate.forward()
   }
   
@@ -4101,7 +4107,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def reloadPage()(implicit driver: WebDriver) {
+  def reloadPage()(implicit driver: WebDriver): Unit = {
     driver.navigate.refresh()
   }
   
@@ -4119,7 +4125,7 @@ trait WebBrowser {
    * </pre>
    */
   object add {
-    private def addCookie(cookie: Cookie)(implicit driver: WebDriver) {
+    private def addCookie(cookie: Cookie)(implicit driver: WebDriver): Unit = {
       driver.manage.addCookie(cookie)
     }
     
@@ -4135,7 +4141,7 @@ trait WebBrowser {
      * @param secure whether this cookie is secured.
      * @param driver the <code>WebDriver</code> with which to drive the browser 
      */
-    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver) { 
+    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = { 
       addCookie(new Cookie(name, value, domain, path, expiry, secure))
     }
   }
@@ -4146,19 +4152,19 @@ trait WebBrowser {
    * @param name cookie's name
    * @return a WrappedCookie instance
    */
-  def cookie(name: String)(implicit driver: WebDriver): WrappedCookie = {
-    getCookie(name)
+  def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
+    getCookie(name)(driver, pos)
   }
   
-  private def getCookie(name: String)(implicit driver: WebDriver): WrappedCookie = {
+  private def getCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
     driver.manage.getCookies.asScala.toList.find(_.getName == name) match {
       case Some(cookie) => 
         new WrappedCookie(cookie)
       case None =>
         throw new TestFailedException(
-                     sde => Some("Cookie '" + name + "' not found."),
+                     (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "getCookie", 1)
+                     pos
                    )
     }
   }
@@ -4180,13 +4186,13 @@ trait WebBrowser {
    * </pre>
    */
   object delete {
-    private def deleteCookie(name: String)(implicit driver: WebDriver) {
+    private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       val cookie = getCookie(name)
       if (cookie == null) 
         throw new TestFailedException(
-                     sde => Some("Cookie '" + name + "' not found."),
+                     (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "deleteCookie", 1)
+                     pos
                    )
       driver.manage.deleteCookie(cookie.underlying)
     }
@@ -4197,7 +4203,7 @@ trait WebBrowser {
      * @param name cookie's name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def cookie(name: String)(implicit driver: WebDriver) {
+    def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       deleteCookie(name)
     }
     
@@ -4206,7 +4212,7 @@ trait WebBrowser {
      * 
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def all(cookies: CookiesNoun)(implicit driver: WebDriver) {
+    def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       driver.manage.deleteAllCookies()
     }
   }
@@ -4222,7 +4228,7 @@ trait WebBrowser {
      * @param secure whether this cookie is secured.
      * @param driver the <code>WebDriver</code> with which to drive the browser 
      */
-  def addCookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver) {
+  def addCookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = {
     add cookie (name, value, path, expiry, domain, secure)
   }
   
@@ -4232,7 +4238,7 @@ trait WebBrowser {
    * @param name cookie's name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteCookie(name: String)(implicit driver: WebDriver) {
+  def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete cookie name
   }
   
@@ -4241,7 +4247,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteAllCookies()(implicit driver: WebDriver) {
+  def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete all cookies
   }
   
@@ -4277,7 +4283,7 @@ trait WebBrowser {
      * 
      * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
      */
-    def to(fileName: String)(implicit driver: WebDriver) {
+    def to(fileName: String)(implicit driver: WebDriver): Unit = {
       driver match {
         case takesScreenshot: TakesScreenshot => 
           val tmpFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
@@ -4314,7 +4320,7 @@ trait WebBrowser {
    * 
    * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
    */
-  def captureTo(fileName: String)(implicit driver: WebDriver) {
+  def captureTo(fileName: String)(implicit driver: WebDriver): Unit = {
     capture to fileName
   }
   
@@ -4326,7 +4332,7 @@ trait WebBrowser {
    * 
    * @param targetDirPath the path of capture directory
    */
-  def setCaptureDir(targetDirPath: String) {
+  def setCaptureDir(targetDirPath: String): Unit = {
       targetDir = 
         if (targetDirPath.endsWith(File.separator))
           new File(targetDirPath)
@@ -4442,50 +4448,8 @@ trait WebBrowser {
    * 
    * @param timeout the amount of time to wait for an asynchronous script to finish execution before throwing exception
    */
-  def setScriptTimeout(timeout: Span)(implicit driver: WebDriver) {
+  def setScriptTimeout(timeout: Span)(implicit driver: WebDriver): Unit = {
     driver.manage().timeouts().setScriptTimeout(timeout.totalNanos, TimeUnit.NANOSECONDS);
-  }
-  
-  private def getStackDepthFun(fileName: String, methodName: String, adjustment: Int = 0): (StackDepthException => Int) = { sde =>
-    getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
-  }
-  
-  private def getStackDepth(stackTrace: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0) = {
-    val stackTraceList = stackTrace.toList
-
-    val fileNameIsDesiredList: List[Boolean] =
-      for (element <- stackTraceList) yield
-        element.getFileName == fileName // such as "Checkers.scala"
-
-    val methodNameIsDesiredList: List[Boolean] =
-      for (element <- stackTraceList) yield
-        element.getMethodName == methodName // such as "check"
-
-    // For element 0, the previous file name was not desired, because there is no previous
-    // one, so you start with false. For element 1, it depends on whether element 0 of the stack trace
-    // had the desired file name, and so forth.
-    val previousFileNameIsDesiredList: List[Boolean] = false :: (fileNameIsDesiredList.dropRight(1))
-
-    // Zip these two related lists together. They now have two boolean values together, when both
-    // are true, that's a stack trace element that should be included in the stack depth.
-    val zipped1 = methodNameIsDesiredList zip previousFileNameIsDesiredList
-    val methodNameAndPreviousFileNameAreDesiredList: List[Boolean] =
-      for ((methodNameIsDesired, previousFileNameIsDesired) <- zipped1) yield
-        methodNameIsDesired && previousFileNameIsDesired
-
-    // Zip the two lists together, that when one or the other is true is an include.
-    val zipped2 = fileNameIsDesiredList zip methodNameAndPreviousFileNameAreDesiredList
-    val includeInStackDepthList: List[Boolean] =
-      for ((fileNameIsDesired, methodNameAndPreviousFileNameAreDesired) <- zipped2) yield
-        fileNameIsDesired || methodNameAndPreviousFileNameAreDesired
-
-    val includeDepth = includeInStackDepthList.takeWhile(include => include).length
-    val depth = if (includeDepth == 0 && stackTrace(0).getFileName != fileName && stackTrace(0).getMethodName != methodName) 
-      stackTraceList.takeWhile(st => st.getFileName != fileName || st.getMethodName != methodName).length
-    else
-      includeDepth
-    
-    depth + adjustment
   }
 
   // Clears the text field or area, then presses the passed keys
@@ -4495,7 +4459,7 @@ trait WebBrowser {
    * 
    * @param value keys to press in current active <code>TextField</code> or <code>TextArea</code>
    */
-  def enter(value: String)(implicit driver: WebDriver) {
+  def enter(value: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     val ae = switch to activeElement
     ae match {
       case tf: TextField => tf.value = value
@@ -4507,9 +4471,9 @@ trait WebBrowser {
       case pf: UrlField => pf.value = value
       case _ => 
         throw new TestFailedException(
-                     sde => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
+                     (_: StackDepthException) => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
                      None,
-                     getStackDepthFun("WebBrowser.scala", "switch", 1)
+                     pos
                    )
     }
   }
@@ -4519,7 +4483,7 @@ trait WebBrowser {
    * 
    * @param value keys to press in current active element
    */
-  def pressKeys(value: String)(implicit driver: WebDriver) {
+  def pressKeys(value: String)(implicit driver: WebDriver): Unit = {
     val ae: WebElement = driver.switchTo.activeElement
     ae.sendKeys(value)
   }
@@ -4602,7 +4566,7 @@ trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4643,12 +4607,12 @@ trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
    * You can mutate this object to modify the profile, or override <code>firefoxProfile</code>.
    * </p>
    */
-  implicit val webDriver = new FirefoxDriver(firefoxProfile)
+  implicit val webDriver: WebDriver = new FirefoxDriver(firefoxProfile)
 
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4672,7 +4636,7 @@ trait Safari extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4696,7 +4660,7 @@ trait Chrome extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4720,7 +4684,7 @@ trait InternetExplorer extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }

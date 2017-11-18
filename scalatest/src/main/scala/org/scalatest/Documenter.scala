@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
  /*
  * <p>
  * A <code>Documenter</code> is essentially
@@ -61,10 +63,10 @@ package org.scalatest
  * </p>
  * 
  * <pre class="stHighlight">
- * import org.scalatest.Spec
+ * import org.scalatest.refspec.RefSpec
  * import scala.collection.mutable.Stack
  *
- * class StackSpec extends Spec {
+ * class StackSpec extends RefSpec {
  *
  *   markup("""
  *
@@ -94,7 +96,7 @@ package org.scalatest
  *
  *     it("should throw NoSuchElementException if an empty stack is popped") {
  *       val emptyStack = new Stack[String]
- *       intercept[NoSuchElementException] {
+ *       assertThrows[NoSuchElementException] {
  *         emptyStack.pop()
  *       }
  *     }
@@ -131,7 +133,7 @@ package org.scalatest
  * 
  * @author Bill Venners
  */
-trait Documenter extends (String => Unit) {
+trait Documenter {
 
   /**
    * Provide documentation to the <code>Reporter</code>.
@@ -141,5 +143,5 @@ trait Documenter extends (String => Unit) {
    *
    * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
-  def apply(text: String): Unit
+  def apply(text: String)(implicit pos: source.Position): Unit
 }

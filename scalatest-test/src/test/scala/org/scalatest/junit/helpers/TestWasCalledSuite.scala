@@ -21,13 +21,13 @@ import org.scalatest.junit._
 // This needs to be top level, not nested, because JUnit3 can't instantiate it
 // to run each test in its own instance if it is nested (no no-arg construtor).
 class TestWasCalledSuite extends JUnit3Suite {
-  def testThis() { TestWasCalledSuite.theTestThisCalled = true }
-  def testThat() { TestWasCalledSuite.theTestThatCalled = true }
+  def testThis(): Unit = { TestWasCalledSuite.theTestThisCalled = true }
+  def testThat(): Unit = { TestWasCalledSuite.theTestThatCalled = true }
 }
 
 object TestWasCalledSuite {
 
-  def reinitialize() {
+  def reinitialize(): Unit = {
     theTestThisCalled = false
     theTestThatCalled = false
   }
@@ -39,47 +39,47 @@ object TestWasCalledSuite {
 }
 
 class TestWithNonUnitMethod extends JUnit3Suite {
-  def testThis() {}
-  def testThat() {}
+  def testThis(): Unit = {}
+  def testThat(): Unit = {}
   // JUnit will not discover or run this, because its return type
   // is not Unit
   def testTheOtherThing(): String = "hi"
 }
 
 class TestWithMethodNamedTest extends JUnit3Suite {
-  def testThis() {}
-  def testThat() {}
+  def testThis(): Unit = {}
+  def testThat(): Unit = {}
   // JUnit will discover and run this method:
-  def test() {}
+  def test(): Unit = {}
 }
 
 class ASuite extends JUnit3Suite {
-  def testThis() = ()
-  def testThat(info: Informer) = ()
+  def testThis(): Unit = ()
+  def testThat(info: Informer): Unit = ()
 }
 
 class BSuite extends JUnit3Suite {
   @Ignore
-  def testThis() = ()
-  def testThat(info: Informer) = ()
+  def testThis(): Unit = ()
+  def testThat(info: Informer): Unit = ()
 }
 
 class CSuite extends JUnit3Suite {
   @FastAsLight
-  def testThis() = ()
-  def testThat(info: Informer) = ()
+  def testThis(): Unit = ()
+  def testThat(info: Informer): Unit = ()
 }
 
 class DSuite extends JUnit3Suite {
   @FastAsLight
   @SlowAsMolasses
-  def testThis() = ()
+  def testThis(): Unit = ()
   @SlowAsMolasses
-  def testThat(info: Informer) = ()
-  def testTheOtherThing(info: Informer) = ()
-  def testOne() = ()
-  def testTwo() = ()
-  def test() = () // JUnit will discover and run this method simply named "test"
+  def testThat(info: Informer): Unit = ()
+  def testTheOtherThing(info: Informer): Unit = ()
+  def testOne(): Unit = ()
+  def testTwo(): Unit = ()
+  def test(): Unit = () // JUnit will discover and run this method simply named "test"
   def testFour(): String = "hi" // JUnit will not run these two because they don't
   def testFive(): Int = 5       // have result type Unit.
 }
@@ -87,15 +87,15 @@ class DSuite extends JUnit3Suite {
 class ESuite extends JUnit3Suite {
   @FastAsLight
   @SlowAsMolasses
-  def testThis() = ()
+  def testThis(): Unit = ()
   @SlowAsMolasses
-  def testThat(info: Informer) = ()
+  def testThat(info: Informer): Unit = ()
   @Ignore
-  def testTheOtherThing(info: Informer) = ()
+  def testTheOtherThing(info: Informer): Unit = ()
 }
 
 class ShouldFailSuite extends JUnit3Suite {
-  def testThrowsAssertionError() { throw new AssertionError }
-  def testThrowsPlainOldError() { throw new Error }
-  def testThrowsThrowable() { throw new Throwable }
+  def testThrowsAssertionError(): Unit = { throw new AssertionError }
+  def testThrowsPlainOldError(): Unit = { throw new Error }
+  def testThrowsThrowable(): Unit = { throw new Throwable }
 }

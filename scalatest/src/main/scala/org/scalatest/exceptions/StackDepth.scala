@@ -15,6 +15,8 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.source
+
 /**
  * Trait that encapsulates the information required of an exception thrown by ScalaTest's assertions
  * and matchers, which includes a stack depth at which the failing line of test code resides.
@@ -44,13 +46,28 @@ trait StackDepth { this: Throwable =>
   val failedCodeStackDepth: Int
 
   /**
+   * A string that provides the full pathname of the source file containing the line of code that failed, suitable
+   * for presenting to a user.
+   *
+   * @return a string containing the full pathname of the source file containing the line of code that caused this exception
+   */
+  val failedCodeFilePathname: Option[String]
+
+  /**
+   * An optional source position describing the line of test code that caused this exception.
+   */
+  val position: Option[source.Position]
+
+  /**
    * A string that provides the filename and line number of the line of code that failed, suitable
-   * for presenting to a user, which is taken from this exception's <code>StackTraceElement</code> at the depth specified
-   * by <code>failedCodeStackDepth</code>.
+   * for presenting to a user of the failing line.  It calls <code>failedCodeFileName</code> and
+   * <code>failedCodeLineNumber</code> to get the failing filename and line number.
    *
    * <p>
-   * This is a <code>def</code> instead of a <code>val</code> because exceptions are mutable: their stack trace can
-   * be changed after the exception is created. This is done, for example, by the <code>SeveredStackTraces</code> trait.
+   * <code>failedCodeFileName</code> and <code>failedCodeLineNumber</code> will fall back to exception stack trace
+   * when <code>Position</code> is not avaiable, this is the reason it is a <code>def</code> instead of a <code>val</code>,
+   * because exceptions are mutable: their stack trace can be changed after the exception is created. This is done, for example,
+   * by the <code>SeveredStackTraces</code> trait.
    * </p>
    *
    * @return a user-presentable string containing the filename and line number that caused the failed test
@@ -60,7 +77,27 @@ trait StackDepth { this: Throwable =>
       fileName + ":" + lineNum
   }
 
-  private def stackTraceElement = getStackTrace()(failedCodeStackDepth)
+  /**
+    * A string that provides the absolute filename and line number of the line of code that failed, suitable
+    * for presenting to a user of the failing line.  It calls <code>failedCodeFilePathname</code> and
+    * <code>failedCodeLineNumber</code> to get the failing absolute filename and line number.
+    *
+    * @return a user-presentable string containing the absolute filename and line number that caused the failed test
+    */
+  lazy val failedCodeFilePathnameAndLineNumberString: Option[String] = {
+    for (fileName <- failedCodeFilePathname; lineNum <- failedCodeLineNumber) yield
+      fileName + ":" + lineNum
+  }
+
+  private def stackTraceElement: Option[StackTraceElement] = {
+    val stackTrace = getStackTrace()
+    position match {
+      case Some(pos) => stackTrace.find(e => StackDepthExceptionHelper.isMatch(e, pos))
+      case None =>
+        if (stackTrace.length <= failedCodeStackDepth) None
+        else Some(stackTrace(failedCodeStackDepth))
+    }
+  }
 
   /**
    * A string that provides the filename of the line of code that failed, suitable
@@ -74,7 +111,15 @@ trait StackDepth { this: Throwable =>
    *
    * @return a string containing the filename that caused the failed test
    */
-  def failedCodeFileName: Option[String] = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement)
+  def failedCodeFileName: Option[String] = {
+    position match {
+      case Some(pos) => Some(pos.fileName)
+      case None =>
+        stackTraceElement flatMap { ele =>
+          StackDepthExceptionHelper.getFailedCodeFileName(ele)
+        }
+    }
+  }
 
   /**
    * A string that provides the line number of the line of code that failed, suitable
@@ -89,11 +134,14 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the line number that caused the failed test
    */
   def failedCodeLineNumber: Option[Int] = {
-    val lineNum = stackTraceElement.getLineNumber
-    if (lineNum > 0) {
-      Some(lineNum)
+    position match {
+      case Some(pos) => Some(pos.lineNumber)
+      case None =>
+        stackTraceElement flatMap { ele =>
+          val lineNum = ele.getLineNumber
+          if (lineNum > 0) Some(lineNum) else None
+        }
     }
-    else None
   }
 
   /**

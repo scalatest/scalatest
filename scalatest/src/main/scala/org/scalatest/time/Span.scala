@@ -15,9 +15,9 @@
  */
 package org.scalatest.time
 
-import Span.totalNanosForLongLength
-import Span.totalNanosForDoubleLength
 import java.io.Serializable
+import Span.totalNanosForDoubleLength
+import Span.totalNanosForLongLength
 
 /**
  * A time span.
@@ -689,6 +689,7 @@ object Span {
 
   import scala.language.implicitConversions
   import scala.concurrent.duration.Duration
+  import scala.concurrent.duration.FiniteDuration
 
   /**
    * Implicitly converts a <code>scala.concurrent.duration.Duration</code> to a <code>Span</code>,
@@ -709,9 +710,9 @@ object Span {
   }
 
   /**
-   * Implicitly converts a <code>Span</code> to a <code>scala.concurrent.duration.Duration</code>,
-   * so that a <code>Span</code> can be used where a <code>Duration</code> is needed.
+   * Implicitly converts a <code>Span</code> to a <code>scala.concurrent.duration.FiniteDuration</code>,
+   * so that a <code>Span</code> can be used where a <code>FiniteDuration</code> is needed.
    */
-  implicit def convertSpanToDuration(span: Span): Duration = Duration.fromNanos(span.totalNanos)
+  implicit def convertSpanToDuration(span: Span): FiniteDuration = Duration.fromNanos(span.totalNanos)
 }
 

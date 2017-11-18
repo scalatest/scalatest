@@ -15,7 +15,9 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Assertions.checkNoException
+import org.scalatest.MatchersHelper.checkNoException
+import org.scalatest.Assertion
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -23,7 +25,7 @@ import org.scalatest.Assertions.checkNoException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForNoException {
+final class ResultOfBeWordForNoException(pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -32,13 +34,14 @@ final class ResultOfBeWordForNoException {
    * noException should be thrownBy { ... }
    *                       ^
    * </pre>
-   */
-  def thrownBy(fun: => Unit) {
-    checkNoException(fun)
+   **/
+  def thrownBy(fun: => Any): Assertion = {
+    checkNoException(fun, pos)
   }
-  
+
   /**
    * Overrides toString to return pretty noException should/must be
    */
   override def toString: String = "ResultOfBeWordForNoException"
 }
+

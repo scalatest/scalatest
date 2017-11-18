@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.prop.Checkers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 

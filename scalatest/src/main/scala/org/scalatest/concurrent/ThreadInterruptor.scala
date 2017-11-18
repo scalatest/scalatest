@@ -24,6 +24,7 @@ package org.scalatest.concurrent
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 object ThreadInterruptor extends Interruptor {
 
   /**
@@ -31,7 +32,7 @@ object ThreadInterruptor extends Interruptor {
    *
    * @param testThread the <code>Thread</code> to interrupt
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     testThread.interrupt()
   }
 }

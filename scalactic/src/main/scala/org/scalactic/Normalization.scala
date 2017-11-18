@@ -45,9 +45,9 @@ package org.scalactic
  * </pre>
  *
  * <p>
- * Note that to use a <code>Normalization</code> with the <code>Explicitly</code> DSL, you'll need to be using either
- * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> or
- * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>. If you're just using plain-old
+ * Note that to use a <code>Normalization</code> with the <code>Explicitly</code> DSL, you'll need to use
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
+ * If you're just using plain-old
  * <a href="TripleEquals.html"><code>TripleEquals</code></a>, you'll need a <a href="Uniformity.html"><code>Uniformity</code></a>, a <code>Normalization</code> subclass.
  * </p>
  *

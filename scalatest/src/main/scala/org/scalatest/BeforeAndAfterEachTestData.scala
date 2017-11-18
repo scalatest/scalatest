@@ -140,7 +140,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
    * needed by each test. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def beforeEach(testData: TestData) {
+  protected def beforeEach(testData: TestData): Unit = {
   }
 
   /**
@@ -155,7 +155,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
    * needed by each test. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def afterEach(testData: TestData) {
+  protected def afterEach(testData: TestData): Unit = {
   }
 
   /**
@@ -188,30 +188,44 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
 
     var thrownException: Option[Throwable] = None
 
-    if (!args.runTestInNewInstance) beforeEach(testDataFor(testName, args.configMap))
-    try {
-      super.runTest(testName, args)
-    }
-    catch {
-      case e: Exception => 
-        thrownException = Some(e)
-        FailedStatus
-    }
-    finally {
+    val runTestStatus: Status =
       try {
-        if (!args.runTestInNewInstance) afterEach(testDataFor(testName, args.configMap)) // Make sure that afterEach is called even if runTest completes abruptly.
-        thrownException match {
-          case Some(e) => throw e
-          case None =>
-        }
+        if (!args.runTestInNewInstance) beforeEach(testDataFor(testName, args.configMap))
+        super.runTest(testName, args)
       }
       catch {
-        case laterException: Exception =>
-          thrownException match { // If both run and afterAll throw an exception, report the test exception
-            case Some(earlierException) => throw earlierException
-            case None => throw laterException
-          }
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+          thrownException = Some(e)
+          FailedStatus
       }
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    try {
+      val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          runTestStatus withAfterEffect {
+            try {
+              afterEach(testDataFor(testName, args.configMap))
+            }
+            catch { 
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) && thrownException.isDefined =>
+                // We will swallow the exception thrown from afterEach if it is not test-aborting and exception was already thrown by beforeEach or test itself.
+            }
+          } // Make sure that afterEach is called even if runTest completes abruptly.
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and afterAll throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 }

@@ -15,10 +15,10 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.anyvals._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.anyvals._
 
 class GeneratorSpec extends FunSpec with Matchers {
   describe("A Generator") {
@@ -230,7 +230,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should be usable in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
@@ -241,7 +241,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least minSuccessful times in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var count = 0
       forAll { (i: Int) => 
         count += 1
@@ -260,7 +260,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least maxDiscarded times in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var count = 0
       a [TestFailedException] should be thrownBy {
         forAll { (i: Int) => 
@@ -499,8 +499,8 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseInt method") {
-      import Generator._
       import org.scalactic.anyvals._
+import Generator._
       def posIntGen: Generator[PosInt] =
         for (i <- Generator.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 

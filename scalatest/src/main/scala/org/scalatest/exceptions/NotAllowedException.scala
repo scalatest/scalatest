@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
@@ -26,17 +28,44 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @param message a string that explains the problem
  * @param cause an optional cause
- * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
+ * @param posOrStackDepthFun either a source position or a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *    something not allowed resides.
  *
  * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
  *
  * @author Bill Venners
  */
-class NotAllowedException(message: String, cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
+class NotAllowedException(
+  message: String,
+  cause: Option[Throwable],
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
+) extends StackDepthException((_: StackDepthException) => Some(message), cause, posOrStackDepthFun) {
 
-  requireNonNull(message, failedCodeStackDepthFun)
+  requireNonNull(message, cause, posOrStackDepthFun)
+
+  /**
+    * Constructs a <code>NotAllowedException</code> with given error message, optional cause and source position.
+    *
+    * @param message the exception's detail message
+    * @param cause the optional cause
+    * @param pos the source position
+    */
+  def this(
+    message: String,
+    cause: Option[Throwable],
+    pos: source.Position
+  ) = this(message, cause, Left(pos))
+
+  /**
+    * Constructs a <code>NotAllowedException</code> with given error message and source position.
+    *
+    * @param message the exception's detail message
+    * @param pos the source position
+    */
+  def this(
+    message: String,
+    pos: source.Position
+  ) = this(message, None, Left(pos))
 
   /**
    * Constructs a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -48,7 +77,8 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepth: Int) = this(message, None, e => failedCodeStackDepth)
+  def this(message: String, failedCodeStackDepth: Int) =
+    this(message, None, Right((_: StackDepthException) => failedCodeStackDepth))
 
   /**
    * Construct a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -59,7 +89,8 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, failedCodeStackDepthFun)
+  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) =
+    this(message, None, Right(failedCodeStackDepthFun))
 
   /**
    * Returns an exception of class <code>NotAllowedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -69,7 +100,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    */
   def severedAtStackDepth: NotAllowedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new NotAllowedException(message, 0)
+    val e = new NotAllowedException(message, None, posOrElseStackDepthFun(position, _ => 0))
     e.setStackTrace(truncated)
     e
   }

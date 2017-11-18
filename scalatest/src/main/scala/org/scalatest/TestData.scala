@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic._
+
 /**
  * A bundle of information about the current test.
  *
@@ -46,7 +48,7 @@ package org.scalatest
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -131,5 +133,7 @@ trait TestData {
    * Tag names for this test.
    */
   val tags: Set[String]
+
+  val pos: Option[source.Position]
 }
 

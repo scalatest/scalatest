@@ -1,5 +1,9 @@
 package org.scalatest.exceptions
 
+import org.scalactic._
+import Requirements.requireNonNull
+import org.scalactic.exceptions.NullArgumentException
+
 /*
 For check methods in Checkers, passed fileName will be "Checkers.scala" and
 passed methodName will be "check":
@@ -95,7 +99,7 @@ Conductor from conduct method: Stack depth should be 3 or 4. Both of which are t
 [scalatest] 	at org.scalatest.FunSuite$class.runTest(FunSuite.scala:1028)
 [scalatest] 	at org.scalatest.concurrent.ConductorSuite.runTest(ConductorSuite.scala:23)
 */
-private[scalatest] object StackDepthExceptionHelper {
+private[scalatest] object StackDepthExceptionHelper extends Serializable {
 
   def getStackDepth(stackTrace: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0): Int = {
     val stackTraceList = stackTrace.toList
@@ -139,6 +143,18 @@ private[scalatest] object StackDepthExceptionHelper {
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
   }
 
+  def isMatch(ele: StackTraceElement, pos: source.Position): Boolean =
+    ele.getFileName == pos.fileName && ele.getLineNumber == pos.lineNumber
+
+  def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
+    val idx = stackTrace.indexWhere(e => isMatch(e, pos))
+    if (idx >= 0) idx else 0
+  }
+
+  def getStackDepthFun(pos: source.Position): (StackDepthException => Int) = { sde =>
+    getStackDepth(sde.getStackTrace, pos)
+  }
+
   def getFailedCodeFileName(stackTraceElement: StackTraceElement): Option[String] = {
     val fileName = stackTraceElement.getFileName
     if (fileName != null) {
@@ -147,5 +163,17 @@ private[scalatest] object StackDepthExceptionHelper {
     else None
   }
 
-  val macroCodeStackDepth: Int = 0
+  def posOrElseStackDepthFun(pos: Option[source.Position], sdf: StackDepthException => Int): Either[source.Position, StackDepthException => Int] = {
+    // requireNonNull(pos, sdf) TODO30 this doesn't compile, probably a problem with hiding a package name again
+    if (pos == null) throw new NullArgumentException("pos was null")
+    if (sdf == null) throw new NullArgumentException("sdf was null")
+    pos match {
+      case Some(null) => throw new NullArgumentException("pos was Some(null)")
+      case _ =>
+    }
+    pos match {
+      case Some(pos) => Left(pos)
+      case None => Right(sdf)
+    }
+  }
 }

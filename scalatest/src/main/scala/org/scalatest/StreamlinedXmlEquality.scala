@@ -15,8 +15,7 @@
  */
 package org.scalatest
 
-import annotation.tailrec
-import scala.xml.{Elem,Node,NodeSeq}
+import scala.xml.{NodeSeq}
 import org.scalactic.{Equality, Uniformity}
 
 /**

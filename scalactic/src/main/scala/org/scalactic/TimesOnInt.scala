@@ -96,7 +96,7 @@ trait TimesOnInt {
      *
      * @param fun the by-name parameter to execute <code>num</code> times
      */
-    def times(fun: => Unit) {
+    def times(fun: => Unit): Unit = {
       var i = 0
       while (i < num) {
         fun

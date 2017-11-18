@@ -25,9 +25,9 @@ import TripleEqualsSupport._
  * <strong>Recommended Usage</strong>:
  * Trait <code>TripleEquals</code> is useful (in both production and test code) when you need determine equality for a type of object differently than its
  * <code>equals</code> method: either you can't change the <code>equals</code> method, or the <code>equals</code> method is sensible generally, but
- * you are in a special situation where you need something else. If you also want a compile-time type check, however, you should use one
- * of <code>TripleEquals</code> sibling traits: 
- * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> or <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
+ * you are in a special situation where you need something else. You can use the <a href="http://www.scalactic.org/supersafe">SuperSafe Community Edition</a> compiler plugin  to
+ * get a compile-time safety check of types being compared with <code>===</code>. In situations where you need a stricter type check, you can use
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
  * </td></tr></table>
  *
  * <p>
