@@ -19,6 +19,7 @@ import org.scalatest.events.Ordinal
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
+import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
@@ -33,6 +34,9 @@ class FilterProp extends SuiteProp {
       if (!suite.isInstanceOf[TestNGSuite])
       // SKIP-SCALATESTJS-END
         reporter.suiteStartingEventsReceived.length should be (0)
+      // SKIP-SCALATESTJS-START
+      else Succeeded
+      // SKIP-SCALATESTJS-END
     }
   }
   
@@ -42,7 +46,7 @@ class FilterProp extends SuiteProp {
   def suite = new Suite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureSuite = new fixture.Suite with StringFixture {
+  def fixtureSuite = new fixture.TestSuite with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
   def junit3Suite = new JUnit3Suite {
@@ -54,7 +58,7 @@ class FilterProp extends SuiteProp {
   def testngSuite = new TestNGSuite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def spec = new Spec {
+  def spec = new RefSpec {
     override def nestedSuites = Vector(new Suite {})
   }
   def fixtureSpec = new fixture.Spec with StringFixture {

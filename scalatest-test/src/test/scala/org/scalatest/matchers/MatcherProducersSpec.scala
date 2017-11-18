@@ -16,7 +16,6 @@
 package org.scalatest.matchers
 
 import org.scalatest._
-import Inside._
 import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
 

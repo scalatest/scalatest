@@ -15,8 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
-import java.io.IOException
 
 /**
  * A <code>Reporter</code> that prints test status information to a file.
@@ -42,7 +40,8 @@ private[scalatest] class FileReporter(
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
-  presentReminderWithoutCanceledTests: Boolean
+  presentReminderWithoutCanceledTests: Boolean,
+  presentFilePathname: Boolean
 ) extends PrintReporter(
   filename,
   presentAllDurations,
@@ -53,6 +52,7 @@ private[scalatest] class FileReporter(
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
-  presentReminderWithoutCanceledTests
+  presentReminderWithoutCanceledTests,
+  presentFilePathname
 )
 

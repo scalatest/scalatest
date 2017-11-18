@@ -15,9 +15,8 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 
-private[tools] sealed abstract class ReporterConfigParam(val character: String)
+private[tools] sealed abstract class ReporterConfigParam(val character: String) extends Product with Serializable
 
 private[tools] case object FilterTestStarting extends ReporterConfigParam("N")
 private[tools] case object FilterTestSucceeded extends ReporterConfigParam("C")
@@ -42,3 +41,4 @@ private[tools] case object PresentReminderWithoutStackTraces extends ReporterCon
 private[tools] case object PresentReminderWithShortStackTraces extends ReporterConfigParam("T")
 private[tools] case object PresentReminderWithFullStackTraces extends ReporterConfigParam("G")
 private[tools] case object PresentReminderWithoutCanceledTests extends ReporterConfigParam("K")
+private[tools] case object PresentFilePathname extends ReporterConfigParam("V")

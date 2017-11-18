@@ -19,20 +19,23 @@ import SharedHelpers.thisLineNumber
 import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class MapShouldBeDefinedAtSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   def wasDefinedAt(left: Any, right: Any): String =
-    decorateToStringValue(left) + " was defined at " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " was defined at " + decorateToStringValue(prettifier, right)
     
   def wasNotDefinedAt(left: Any, right: Any): String =
-    decorateToStringValue(left) + " was not defined at " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " was not defined at " + decorateToStringValue(prettifier, right)
       
   def equaled(left: Any, right: Any): String =
-    decorateToStringValue(left) + " equaled " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " equaled " + decorateToStringValue(prettifier, right)
       
   def didNotEqual(left: Any, right: Any): String =
-    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
+    decorateToStringValue(prettifier, left) + " did not equal " + decorateToStringValue(prettifier, right)
   
   describe("PartialFunction ") {
     

@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.{StackDepthExceptionHelper, TestFailedException}
+import org.scalatest.exceptions.{StackDepthExceptionHelper, TestFailedException, StackDepthException}
+import org.scalactic.source
 
 class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTraces {
 
@@ -246,7 +247,43 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
+      try {
+        a [IllegalArgumentException] should be thrownBy {}
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => // s should equal ("SeveredStackTracesSpec.scala:" + (baseLineNumber + 204))
+              if (s != ("SeveredStackTracesSpec.scala:" + (thisLineNumber - 6))) {
+                fail("s was: " + s, e)
+              }
+              checkFileNameAndLineNumber(e, s)
+            case None => fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
+      try {
+        a [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) =>
+              s should equal ("SeveredStackTracesSpec.scala:" + (thisLineNumber - 6))
+              checkFileNameAndLineNumber(e, s)
+            case None => fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
       try {
         an [IllegalArgumentException] should be thrownBy {}
       }
@@ -265,9 +302,9 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
-        an [IllegalArgumentException] should be thrownBy { if (false) 1 else throw new RuntimeException }
+        an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
       }
       catch {
         case e: TestFailedException =>
@@ -284,19 +321,19 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TestFailedException(Some("doody"), Some(theCause), 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), Some(theCause), source.Position.here)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TestFailedException(Some("doody"), None, 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), None, source.Position.here)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }
   }
-  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {
+  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String): Unit = {
     val stackTraceElement = e.getStackTrace()(e.failedCodeStackDepth)
     val fileName = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement).get
     val lineNumber = stackTraceElement.getLineNumber

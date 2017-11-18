@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>should</code> methods to <code>String</code>
@@ -119,6 +119,8 @@ trait ShouldVerb {
     // Don't use "left" because that conflicts with Scalaz's left method on strings
     val leftSideString: String
 
+    val pos: source.Position
+
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
      *
@@ -133,14 +135,14 @@ trait ShouldVerb {
      * </pre>
      *
      * <p>
-     * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
+     * <code>FlatSpec</code> passes in a StringVerbStringInvocation via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
      * simply invokes this function, passing in leftSideString, the verb string
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "should", right)
+    def should(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "should", right, pos)
     }
 
     /**
@@ -162,8 +164,8 @@ trait ShouldVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def should(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(leftSideString)
+    def should(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
+      svbli(leftSideString, pos)
     }
 
     /**
@@ -188,8 +190,8 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideString, "should", right _)
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
+      fun(leftSideString, "should", pos, right _)
     }
 
     /**
@@ -215,8 +217,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideString, "should", resultOfAfterWordApplication)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
+      swawr(leftSideString, "should", resultOfAfterWordApplication, pos)
     }
   }
 
@@ -226,8 +228,9 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb =
+  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit position: source.Position): StringShouldWrapperForVerb =
     new StringShouldWrapperForVerb {
       val leftSideString = o.trim
+      val pos = position
     }
 }

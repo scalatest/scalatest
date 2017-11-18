@@ -16,7 +16,6 @@
 package org.scalatest
 
 import time._
-import SpanSugar._
 
 private[scalatest] final case class RunningTest(
   suiteName: String,

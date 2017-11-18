@@ -15,17 +15,20 @@
  */
 package org.scalatest
 
-import org.scalatest.junit._
-import org.scalatest.testng.TestNGSuite
-import org.junit.Test
-import org.testng.annotations.{Test => TestNG }
 import org.scalatest.events._
-import java.io.PrintStream
-import java.io.ByteArrayOutputStream
-import org.scalatest.tools.SuiteSortingReporter
+import org.scalatest.junit._
 import org.scalatest.time._
-import org.scalatest.tools.TestSortingReporter
 import SharedHelpers._
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import org.junit.Test
+import org.scalatest.testng.TestNGSuite
+import org.scalatest.tools.SuiteSortingReporter
+import org.scalatest.tools.TestSortingReporter
+import org.testng.annotations.{Test => TestNG }
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class CatchReporterProp extends AllSuiteProp {
 
@@ -55,7 +58,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class WrapAwareReporter extends EventRecordingReporter {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -75,14 +78,14 @@ class CatchReporterProp extends AllSuiteProp {
   }
   
   class WrapperReporter(dispatch: Reporter) extends Reporter {
-    def apply(event: Event) {
+    def apply(event: Event): Unit = {
       dispatch(event)
     }
   }
   
   class WrapAwareCatchReporter(dispatch: Reporter) extends WrapperCatchReporter(dispatch, new PrintStream(new ByteArrayOutputStream)) {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -103,7 +106,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class BuggyReporter extends WrapAwareReporter {
     private var count = 0
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
       if (!isWrapped) {
         isWrapped = stackTraceList.exists { element => 
@@ -133,7 +136,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class WrapAwareDispatchReporter(reporters: List[Reporter], out: PrintStream) extends DispatchReporter(reporters, out) {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -154,7 +157,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class WrapAwareSuiteSortingReporter(dispatch: Reporter, sortingTimeout: Span) extends SuiteSortingReporter(dispatch, sortingTimeout, new PrintStream(new ByteArrayOutputStream)) {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -175,7 +178,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class WrapAwareTestSortingReporter(suiteId: String, dispatch: Reporter, sortingTimeout: Span, testCount: Int, suiteSorter: Option[DistributedSuiteSorter]) extends TestSortingReporter(suiteId, dispatch, sortingTimeout, testCount, suiteSorter, new PrintStream(new ByteArrayOutputStream)) {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -196,7 +199,7 @@ class CatchReporterProp extends AllSuiteProp {
   
   class WrapAwareStopOnFailureReporter(reporter: Reporter) extends StopOnFailureReporter(reporter, Stopper.default, new PrintStream(new ByteArrayOutputStream)) {
     @volatile var isWrapped = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       if (!isWrapped) {
         val stackTraceList = Thread.currentThread.getStackTrace.drop(2)
         isWrapped = stackTraceList.find { element => 
@@ -380,37 +383,37 @@ class CatchReporterProp extends AllSuiteProp {
 trait CatchReporterFixtureServices {}
 
 @DoNotDiscover
-class ExampleCatchReporterSpec extends Spec with CatchReporterFixtureServices {
-  def `test 1` {}
-  def `test 2` {}
-  def `test 3` {}
+class ExampleCatchReporterSpec extends RefSpec with CatchReporterFixtureServices {
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = {}
+  def `test 3`: Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFixtureSpec extends fixture.Spec with CatchReporterFixtureServices with StringFixture {
-  def `test 1`(fixture: String) {}
-  def `test 2`(fixture: String) {}
-  def `test 3`(fixture: String) {}
+  def `test 1`(fixture: String): Unit = {}
+  def `test 2`(fixture: String): Unit = {}
+  def `test 3`(fixture: String): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterJUnit3Suite extends JUnit3Suite with CatchReporterFixtureServices {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
+  def testMethod1(): Unit = {}
+  def testMethod2(): Unit = {}
+  def testMethod3(): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterJUnitSuite extends JUnitSuite with CatchReporterFixtureServices {
   @Test
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @Test 
-  def testMethod2() {}
+  def testMethod2(): Unit = {}
   @Test 
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
@@ -419,11 +422,11 @@ class ExampleCatchReporterJUnitSuite extends JUnitSuite with CatchReporterFixtur
 @DoNotDiscover
 class ExampleCatchReporterTestNGSuite extends TestNGSuite with CatchReporterFixtureServices {
   @TestNG
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @TestNG
-  def testMethod2() {}
+  def testMethod2(): Unit = {}
   @TestNG
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 

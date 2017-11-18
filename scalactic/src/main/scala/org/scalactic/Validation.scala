@@ -68,7 +68,7 @@ package org.scalactic
  * 
  * @tparam E the type of error value describing a validation failure for this <code>Validation</code>
  */
-sealed trait Validation[+E] {
+sealed trait Validation[+E] extends Product with Serializable {
 
   /**
    * Ands this <code>Validation</code> with another, passed, <code>Validation</code>.

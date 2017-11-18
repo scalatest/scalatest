@@ -19,8 +19,11 @@ import SharedHelpers.thisLineNumber
 import enablers.Definition
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeDefinedImplicitSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   trait Thing {
     def isDefined: Boolean
@@ -42,14 +45,14 @@ class ShouldBeDefinedImplicitSpec extends FunSpec {
   val fileName: String = "ShouldBeDefinedImplicitSpec.scala"
     
   def wasNotDefined(left: Any): String = 
-    FailureMessages.wasNotDefined(left)
+    FailureMessages.wasNotDefined(prettifier, left)
     
   def wasDefined(left: Any): String = 
-    FailureMessages.wasDefined(left)
+    FailureMessages.wasDefined(prettifier, left)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("Defined matcher") {

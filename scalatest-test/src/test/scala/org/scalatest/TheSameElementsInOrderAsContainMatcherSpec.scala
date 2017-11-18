@@ -18,14 +18,17 @@ package org.scalatest
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class TheSameElementsInOrderAsContainMatcherSpec extends FunSpec {
 
+  private val prettifier = Prettifier.default
+
   describe("theSameElementsInOrderAs ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -209,9 +212,9 @@ class TheSameElementsInOrderAsContainMatcherSpec extends FunSpec {
   
   describe("not theSameElementsInOrderAs ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception class that encapsulates information about the stack depth at which the line of code that failed resides,
@@ -27,7 +29,7 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @param messageFun a function that produces an optional detail message for this <code>StackDepthException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  *
  * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
  *
@@ -36,15 +38,62 @@ import org.scalactic.exceptions.NullArgumentException
 abstract class StackDepthException(
   val messageFun: StackDepthException => Option[String],
   val cause: Option[Throwable],
-  val failedCodeStackDepthFun: StackDepthException => Int
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
 ) extends RuntimeException(if (cause != null && cause.isDefined) cause.get else null) with StackDepth {
 
-  requireNonNull(messageFun, cause, failedCodeStackDepthFun)
+  requireNonNull(messageFun, cause, posOrStackDepthFun)
 
   cause match {
     case Some(null) => throw new NullArgumentException("cause was a Some(null)")
     case _ =>
   }
+
+  posOrStackDepthFun match {
+    case Right(null) => throw new NullArgumentException("posOrStackDepthFun was Right(null)")
+    case Left(null) => throw new NullArgumentException("posOrStackDepthFun was Left(null)")
+    case _ =>
+  }
+
+  val position: Option[source.Position] = posOrStackDepthFun.left.toOption
+
+  /**
+    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
+    * a source position.
+    *
+    * @param message an optional detail message for this <code>StackDepthException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
+    * @param position a source position.
+    *.
+    */
+  def this(message: Option[String], cause: Option[Throwable], position: source.Position) =
+    this(
+      message match {
+        case null => throw new NullArgumentException("message was null")
+        case Some(null) => throw new NullArgumentException("message was a Some(null)")
+        case _ => (e: StackDepthException) => message
+      },
+      cause,
+      Left(position)
+    )
+
+  /**
+    * Constructs a <code>StackDepthException</code> with message function, optional cause, and
+    * a <code>failedCodeStackDepth</code> function.
+    *
+    * @param messageFun a function that produces an optional detail message for this <code>StackDepthException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+    *.
+    */
+  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
+    this(
+      messageFun,
+      cause,
+      failedCodeStackDepthFun match {
+        case null => throw new NullArgumentException("failedCodeStackDepthFun was null")
+        case _ => Right(failedCodeStackDepthFun)
+      }
+    )
 
   /**
    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
@@ -64,7 +113,10 @@ abstract class StackDepthException(
         case _ => (e: StackDepthException) => message
       },
       cause,
-      failedCodeStackDepthFun
+      failedCodeStackDepthFun match {
+        case null => throw new NullArgumentException("failedCodeStackDepthFun was null")
+        case _ => Right(failedCodeStackDepthFun)
+      }
     )
 
   /**
@@ -86,7 +138,7 @@ abstract class StackDepthException(
         case _ => (e: StackDepthException) => message
       },
       cause,
-      (e: StackDepthException) => failedCodeStackDepth
+      Right((e: StackDepthException) => failedCodeStackDepth)
     )
 
   /**
@@ -103,6 +155,8 @@ abstract class StackDepthException(
    */
   lazy val message: Option[String] = messageFun(this)
  
+  lazy val failedCodeFilePathname: Option[String] = position.map(_.filePathname)
+
   /**
    * The depth in the stack trace of this exception at which the line of test code that failed resides.
    *
@@ -115,7 +169,14 @@ abstract class StackDepthException(
    * stack depth, such as the failed file name and line number.
    * </p>
    */
-  lazy val failedCodeStackDepth: Int = failedCodeStackDepthFun(this)
+  lazy val failedCodeStackDepth: Int = {
+    val stackDepthFun =
+      posOrStackDepthFun match {
+        case Left(pos) => getStackDepthFun(pos)
+        case Right(sdf) => sdf
+      }
+    stackDepthFun(this)
+  }
 
   /**
    * Returns the detail message string of this <code>StackDepthException</code>.
@@ -126,7 +187,7 @@ abstract class StackDepthException(
 
   /*
   * Throws <code>IllegalStateException</code>, because <code>StackDepthException</code>s are
-  * always initialized with a cause passed to the constructor of superclass <code>
+  * always initialized with a cause passed to the constructor of superclass <code>RuntimeException</code>.
   */
   override final def initCause(throwable: Throwable): Throwable = { throw new IllegalStateException }
 

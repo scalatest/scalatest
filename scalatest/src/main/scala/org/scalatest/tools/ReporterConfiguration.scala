@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 import java.net.URL
 
 /**
@@ -23,7 +22,7 @@ import java.net.URL
  *
  * @author Bill Venners
  */
-private[tools] sealed abstract class ReporterConfiguration
+private[tools] sealed abstract class ReporterConfiguration extends Product with Serializable
 
 private[tools] case class GraphicReporterConfiguration(configSet: Set[ReporterConfigParam]) extends ReporterConfiguration
 private[tools] case class StandardOutReporterConfiguration(configSet: Set[ReporterConfigParam]) extends ReporterConfiguration

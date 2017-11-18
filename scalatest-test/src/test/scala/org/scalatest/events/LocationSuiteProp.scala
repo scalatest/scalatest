@@ -16,6 +16,7 @@
 package org.scalatest.events
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import org.scalatest._
 import SharedHelpers._
@@ -95,7 +96,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends StringFixtureFunSuite {
-      test("fail") { fail }
+      test("fail") { () => fail }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   } 
@@ -222,7 +223,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends StringFixtureFeatureSpec {
       feature("feature") { 
         scenario("fail") {
-          fail
+          () => fail
         }
       }
     }
@@ -499,7 +500,7 @@ class LocationSuiteProp extends SuiteProp
 
   // SKIP-SCALATESTJS-START
   def spec = new TestLocationSpec
-  class TestLocationSpec extends Spec with FixtureServices {
+  class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationSuiteProp$TestLocationSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSpec"),
       TopOfClassPair(suiteTypeName + "$AbortNestedSpec"),
@@ -511,18 +512,18 @@ class LocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("test fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 4))
 
-    class NestedSpec extends Spec {
-      def `test info` {
+    class NestedSpec extends RefSpec {
+      def `test info`: Unit = {
         info("test info")
       }
     }
-    class AbortNestedSpec extends Spec {
+    class AbortNestedSpec extends RefSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSpec extends Spec {
-      def `test fail` { fail }
+    class FailNestedSpec extends RefSpec {
+      def `test fail`: Unit = { fail }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }
@@ -542,7 +543,7 @@ class LocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 4))
 
     class NestedSpec extends StringFixtureSpec {
-      def `test info` {
+      def `test info`: Unit = {
         info("test info")
       }
     }
@@ -552,7 +553,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSpec extends StringFixtureSpec {
-      def `test fail` { fail }
+      def `test fail`: Unit = { fail }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }

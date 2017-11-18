@@ -116,7 +116,7 @@ object run {
    *
    * @param args
    */
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     tools.Runner.main(Array("-R", ".", "-o") ++ args.flatMap(s => Array("-s", s)))
   }
 
@@ -130,7 +130,7 @@ object run {
    * <code>fullStacksPassed</code>, and <code>statsPassed</code>).
    * </p>
    */
-  def apply(suite: Suite, testName: String = null, configMap: ConfigMap = ConfigMap.empty) {
+  def apply(suite: Suite, testName: String = null, configMap: ConfigMap = ConfigMap.empty): Unit = {
     defaultShell.run(suite, testName, configMap)
   }
 }

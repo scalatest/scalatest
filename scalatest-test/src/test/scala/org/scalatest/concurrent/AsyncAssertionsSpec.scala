@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package org.scalatest.concurrent
 
+import org.scalatest.Retries._
 import org.scalatest._
 import SharedHelpers._
-import SharedHelpers.thisLineNumber
-import time.{Span, Millis}
+import scala.concurrent.ExecutionContext.Implicits._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
+import SharedHelpers.thisLineNumber
+import time.{Span, Millis}
 
+// This is the test that makes sure the deprecated name still works during the deprecation period.
 
 class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFixture with
-    OptionValues with AsyncAssertions {
+OptionValues with AsyncAssertions {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))
@@ -37,37 +38,37 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       super.withFixture(test)
   }
 
-/*
-  def withCause(cause: Throwable)(fun: => Unit) {
-    try {
-      fun  
+  /*
+    def withCause(cause: Throwable)(fun: => Unit) {
+      try {
+        fun
+      }
+      catch {
+        case e: TestFailedException =>
+          def setCause(oldEx: Throwable) {
+            if (oldEx.getCause == null)
+              oldEx.initCause(cause)
+            else
+              setCause(oldEx.getCause)
+          }
+          try {
+            setCause(e)
+          }
+          catch {
+            // Swallow IAEs and ISEs. IAE can occur if they try to set an exception's cause to itself
+            // The ISE can happen if initCause was already invoked on an exception. In either case, withCause
+            // will just fail.
+            case iae: IllegalArgumentException => println("Got an IAE")
+            case ise: IllegalStateException => println("Got an ISE")
+          }
+          throw e // Rethrow the same exception with its cause augmented
+      }
     }
-    catch {
-      case e: TestFailedException =>
-        def setCause(oldEx: Throwable) {
-          if (oldEx.getCause == null)
-            oldEx.initCause(cause)  
-          else
-            setCause(oldEx.getCause)
-        }
-        try {
-          setCause(e)
-        }
-        catch {
-          // Swallow IAEs and ISEs. IAE can occur if they try to set an exception's cause to itself
-          // The ISE can happen if initCause was already invoked on an exception. In either case, withCause
-          // will just fail.
-          case iae: IllegalArgumentException => println("Got an IAE")
-          case ise: IllegalStateException => println("Got an ISE")
-        }
-        throw e // Rethrow the same exception with its cause augmented
-    }
-  }
-  */
+    */
   describe("A Waiter") {
 
     it("should throw a NotAllowedException if await is called by a thread different from the" +
-    		"thread that constructed the Waiter", Retryable) { con => import con._
+      "thread that constructed the Waiter", Retryable) { con => import con._
       val w = new Waiter
       thread {
         val caught =
@@ -81,7 +82,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
       con.conduct()
     }
- 
+
     it("should continue when dismissed.") { con => import con._
       @volatile var w: Waiter = null
       thread {
@@ -112,7 +113,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
       con.conduct()
     }
-    
+
     it("should pass through even exceptions that would not normally cause a test to fail") { con => import con._
       @volatile var w: Waiter = null
       thread {
@@ -130,7 +131,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
       con.conduct()
     }
-  
+
     it("should wait for multiple dismissals when requested", Retryable) { con => import con._
       @volatile var w: Waiter = null
       @volatile var doneWaiting = false
@@ -163,8 +164,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
     }
 
-    it("should throw a TFE from await if there's a timeout") { con => import con._
-      val w = new Waiter
+    it("should throw a TFE from await if there's a timeout") { con =>       val w = new Waiter
       val caught =
         intercept[TestFailedException] {
           w.await(timeout(Span(10, Millis)))
@@ -192,7 +192,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
       con.conduct()
     }
-  
+
     it("should still complete normally if await without a timeout is called after dismiss is called.") { con => import con._
       @volatile var w: Waiter = null
       thread {
@@ -231,7 +231,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       }
       con.conduct()
     }
-    
+
     it("should await to be called multiple times") { con => import con._
 
       @volatile var w: Waiter = null
@@ -256,13 +256,13 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
 
       con.conduct()
     }
-    
+
     it("should should handle many dismissals without races", Retryable) { con => import con._
 
       @volatile var w: Waiter = null
-      
+
       val n = 10000
-      
+
       thread {
         waitForBeat(1)
         var i = 0

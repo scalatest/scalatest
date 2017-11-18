@@ -17,10 +17,10 @@
 package org.scalatest.junit
 
 import org.scalatest._
-import org.junit.runner.notification.RunNotifier
+import org.scalatest.events._
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
-import org.scalatest.events._
+import org.junit.runner.notification.RunNotifier
 
 // There's no way to really pass along a SuiteStarting or SuiteCompleted
 // event. They have a dumb comment to "Do not invoke" fireTestRunStarted
@@ -38,7 +38,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var fireTestStartedInvocationCount = 0
         var passedDesc: Option[Description] = None
-        override def fireTestStarted(description: Description) {
+        override def fireTestStarted(description: Description): Unit = {
           fireTestStartedInvocationCount += 1
           passedDesc = Some(description)
         }
@@ -65,7 +65,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure) {
+        override def fireTestFailure(failure: Failure): Unit = {
           methodInvocationCount += 1
           passed = Some(failure)
         }
@@ -88,7 +88,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Description] = None
-        override def fireTestFinished(description: Description) {
+        override def fireTestFinished(description: Description): Unit = {
           methodInvocationCount += 1
           passed = Some(description)
         }
@@ -109,7 +109,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Description] = None
-        override def fireTestIgnored(description: Description) {
+        override def fireTestIgnored(description: Description): Unit = {
           methodInvocationCount += 1
           passed = Some(description)
         }
@@ -139,7 +139,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure) {
+        override def fireTestFailure(failure: Failure): Unit = {
           methodInvocationCount += 1
           passed = Some(failure)
         }
@@ -174,7 +174,7 @@ class RunNotifierSuite extends FunSuite {
       new RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure) {
+        override def fireTestFailure(failure: Failure): Unit = {
           methodInvocationCount += 1
           passed = Some(failure)
         }

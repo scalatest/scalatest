@@ -15,12 +15,12 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
+import org.scalatest.enablers.Existence
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatcherFactory1
 import org.scalatest.matchers.MatcherFactory2
+import org.scalatest.Resources
 import org.scalatest.matchers.MatchResult
-import org.scalatest.enablers.Existence
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of

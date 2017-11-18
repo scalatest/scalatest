@@ -29,27 +29,28 @@ import TripleEqualsSupport._
  * </p>
  *
  * <p>
- * <b>Unchecked</b> - <code>A</code> and <code>B</code> can be any two types. This (weakest) constraint level is available from
- * subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a>.
+ * <b>Unchecked</b> - <code>A</code> and <code>B</code> can be any two types. This constraint level is available from
+ * subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a>.
  * </p>
  * 
  * <p>
- * <b>Conversion checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa, or an implicit conversion must be available that converts
- * <code>A</code> to <code>B</code>, or vice versa. (Both <code>A</code> and <code>B</code> can be the same type, because a type is considered a subtype
- * of itself.)
- * This (intermediate) constraint level is available from subtraits <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
+ * <b>Statically-checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa, or must cooperate such that the
+ * equality laws stated in the <code>equals</code> contract are preserved.
+ * This (intermediate) constraint level is available by using subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a> and installing the <a href="http://www.scalactic.org/supersafe">SuperSafe Community Edition</a>
+ * Scala compiler plugin.
  * </p>
  * 
  * <p>
- * <b>Type checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa.
+ * <b>Type-checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa.
  * (Both <code>A</code> and <code>B</code> can be the same type, because a type is considered a subtype
  * of itself.)
- * This (strongest) constraint level is available from subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
+ * This (strongest) constraint level is available from subtrait <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
  * </p>
  *
  * <p>
- * This trait defines all methods that need to be defined implicitly by the six subtraits so that if multiple subtraits are used together, the inner-most
- * subtrait in scope can not only enable the implicits it needs by overriding or hiding those methods (currently-in-scope as regular, non-implicit methods) and making
+ * This trait defines all methods that need to be defined implicitly by the subtraits so that if multiple subtraits are used together, the inner-most
+ * subtrait in scope can not only enable the implicits it needs by overriding or hiding those methods (currently-in-scope as regular, non-implicit
+ * methods) and making
  * them implicit, it can also <em>disable</em> any implicits enabled by its sibling subtraits in enclosing scopes. For example, if your test class mixes
  * in <code>TypeCheckedTripleEquals</code>, inside your test class the following methods will be implicit:
  * </p>

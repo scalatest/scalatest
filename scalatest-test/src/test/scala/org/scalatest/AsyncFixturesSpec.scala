@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
 
+/*
 class AsyncFixturesSpec extends FunSpec {
 
   describe("AsyncFixtures") {
@@ -96,3 +96,4 @@ class AsyncFixturesSpec extends FunSpec {
   }
 
 }
+*/

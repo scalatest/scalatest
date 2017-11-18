@@ -46,6 +46,7 @@ class SuitesSpec extends FunSpec {
       val f = new Suites(a, b, c, d, e)
       f.run(None, Args(SilentReporter))
       f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("FunSuite")), None, new Tracker, Set.empty))
+      // TODO: Is this test really testing anything?
     }
 
     it("should care about chosenStyles if it contains tests directly") {

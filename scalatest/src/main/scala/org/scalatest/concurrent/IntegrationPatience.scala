@@ -54,7 +54,7 @@ import org.scalatest.time.{Millis, Seconds, Span}
  *
  * <p>
  * Mix this trait into any class that uses <code>PatienceConfiguration</code> (such as classes that mix in <a href="Eventually.html"><code>Eventually</code></a>
- * or <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>) to get timeouts tuned towards integration testing, like this:
+ * or <a href="Waiters.html"><code>Waiters</code></a>) to get timeouts tuned towards integration testing, like this:
  * </p>
  *
  * <pre class="stHighlight">

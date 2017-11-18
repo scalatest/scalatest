@@ -15,13 +15,16 @@
  */
 package org.scalatest
 
-import collection.immutable.TreeSet
-import org.scalatest.events._
-import scala.reflect.NameTransformer.encode
 import SharedHelpers._
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
-import org.scalactic.exceptions.NullArgumentException
+import scala.reflect.NameTransformer.encode
+import collection.immutable.TreeSet
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
+import org.scalactic._
 
 protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
@@ -30,7 +33,7 @@ protected[scalatest] class MandarinOrangeFunSpec(ns: Suite*) extends FunSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-START
-protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends Spec {
+protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends RefSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-END
@@ -53,7 +56,7 @@ protected[scalatest] class MandarinOrangePropSpec(ns: Suite*) extends PropSpec {
 // Named these with a MandarinOrange prefix so they wouldn't confict
 // with anything else in the test suite. These need to be top level
 // else they end up with dollar signs in the names.
-trait MandarinOrangeFixture { this: fixture.Suite =>
+trait MandarinOrangeFixture { this: fixture.TestSuite =>
   type FixtureParam = String
   def withFixture(test: OneArgTest): Outcome = { test("hi") }
 }
@@ -107,7 +110,7 @@ class SuiteSpec extends FunSpec {
             ( new FunSuite, "FunSuite"),
             ( new FunSpec, "FunSpec"),
             // SKIP-SCALATESTJS-START
-            ( new Spec, "Spec"),
+            ( new RefSpec, "RefSpec"),
             // SKIP-SCALATESTJS-END
             ( new WordSpec, "WordSpec"),
             ( new FlatSpec, "FlatSpec"),
@@ -341,8 +344,8 @@ class SuiteSpec extends FunSpec {
       
       class IgnoreStopRequestStopper extends Stopper {
         def stopRequested: Boolean = false
-        def requestStop() {}
-        def reset() {}
+        def requestStop(): Unit = {}
+        def reset(): Unit = {}
       }
 
       val x = Suites(a, b, c, d, e, f, g)
@@ -430,6 +433,7 @@ class SuiteSpec extends FunSpec {
              val scopes: collection.immutable.IndexedSeq[String] = test.scopes
              val name: String = test.name
              val tags: Set[String] = test.tags
+             val pos: Option[source.Position] = test.pos
             }
           )
         }
@@ -456,6 +460,135 @@ class SuiteSpec extends FunSpec {
       c.run(None, Args(SilentReporter))
       assert(c.sideEffectedFixtureWas === "HI")
     }
+  }
+
+  describe("Suite's runNestedSuites method") {
+
+    it("should fire SuiteAborted event when after function in BeforeAndAfter nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfter {
+
+        test("test 1") {}
+
+        after {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterAll {
+
+        test("test 1") {}
+
+        override protected def afterAll(): Unit = {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterAllConfigMap {
+
+        test("test 1") {}
+
+        override protected def afterAll(configMap: ConfigMap): Unit = {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEach nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterEach {
+
+        test("test 1") {}
+
+        override protected def afterEach(): Unit = {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEachTestData nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterEachTestData {
+
+        test("test 1") {}
+
+        override protected def afterEach(test: TestData): Unit = {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
   }
 }
 

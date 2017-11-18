@@ -19,7 +19,7 @@ import org.scalatest.Reporter
 import org.scalatest.events.Event
 
 private[tools] class SbtDispatchReporter(reporters: IndexedSeq[Reporter]) extends Reporter {
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     reporters.foreach(_.apply(event))
   }
 }

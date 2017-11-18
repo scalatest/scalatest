@@ -15,15 +15,15 @@
  */
 package org.scalatest
 
-import scala.xml.Elem
-import Suite.reportMarkupProvided
 import DocSpec.stripMargin
 import DocSpec.trimMarkup
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
+import Suite.reportMarkupProvided
+import collection.mutable.ListBuffer
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
 import scala.collection.mutable.ListBuffer
+import scala.xml.Elem
 
 private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying with Alerting { thisSuite =>
 
@@ -43,7 +43,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying
   protected def note: Notifier = atomicNotifier.get
   protected def alert: Alerter = atomicAlerter.get
 
-  sealed abstract class Snippet
+  sealed abstract class Snippet extends Product with Serializable
   case class MarkupSnippet(text: String) extends Snippet
   case class SuiteSnippet(suite: Suite) extends Snippet
 

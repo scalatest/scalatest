@@ -41,7 +41,7 @@ private[scalatest] class StatusJPanel extends JPanel {
   // an initialize method. Is this true?
   initialize()
 
-  private def initialize() {
+  private def initialize(): Unit = {
 
     val testsRunJLabel: JLabel = new JLabel(Resources.testsRun)
     val testsExpectedJLabel: JLabel = new JLabel(Resources.testsExpected)
@@ -72,7 +72,7 @@ private[scalatest] class StatusJPanel extends JPanel {
     add(centeredJPanel)
   }
 
-  def setTestsRun(testsRun: Int, succeeded: Boolean) {
+  def setTestsRun(testsRun: Int, succeeded: Boolean): Unit = {
 
     if (testsRun < 0) 
       throw new IllegalArgumentException()
@@ -90,7 +90,7 @@ private[scalatest] class StatusJPanel extends JPanel {
     testsFailedNumJLabel.setText(Integer.toString(testsFailed))
   }
 
-  def setTestsExpected(testsExpected: Int) {
+  def setTestsExpected(testsExpected: Int): Unit = {
 
     if (testsExpected < 0)
       throw new IllegalArgumentException()
@@ -105,7 +105,7 @@ private[scalatest] class StatusJPanel extends JPanel {
     testsFailedNumJLabel.setText(Integer.toString(testsFailed))
   }
 
-  def reset() {
+  def reset(): Unit = {
     testsExpected = 0
     testsRun = 0
     testsFailed = 0

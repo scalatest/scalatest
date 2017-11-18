@@ -25,6 +25,10 @@ import org.scalatest.TagAnnotation;
  * <em>Note: This is actually an annotation defined in Java, not a Scala trait. It must be defined in Java instead of Scala so it will be accessible
  * at runtime. It has been inserted into Scaladoc by pretending it is a trait.</em>
  * </p>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
+ * </p>
  */
 @TagAnnotation("org.scalatest.tags.ChromeBrowser")
 @Retention(RetentionPolicy.RUNTIME)

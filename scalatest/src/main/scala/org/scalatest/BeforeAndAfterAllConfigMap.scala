@@ -77,12 +77,12 @@ package org.scalatest
  * class RedSpec extends TempFileExistsSpec
  * class BlueSpec extends TempFileExistsSpec
  * 
- * class ExampleSpec extends Specs(
+ * class ExampleSpec extends Suites(
  *   new OneSpec,
  *   new TwoSpec,
  *   new RedSpec,
  *   new BlueSpec
- * ) with TempFileExistsSpec with BeforeAndAfterAll {
+ * ) with TempFileExistsSpec with BeforeAndAfterAllConfigMap {
  * 
  *   private val tempFileName = "tempFileName"
  * 
@@ -113,7 +113,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:</span>
  * <span class="stRed">Exception encountered when invoking run on a suite. *** ABORTED ***
  *   Exception encountered when invoking run on a suite. (<console>:30)
@@ -126,7 +126,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute (configMap = ConfigMap("tempFileName" -&gt; "tmp.txt"))
+ * scala&gt; (new ExampleSpec).execute(configMap = ConfigMap("tempFileName" -&gt; "tmp.txt"))
  * <span class="stGreen">ExampleSpec:
  * OneSpec:
  * The temp file
@@ -186,7 +186,7 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
    * needed by the entire suite. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def beforeAll(configMap: ConfigMap) {
+  protected def beforeAll(configMap: ConfigMap): Unit = {
   }
 
   /**
@@ -201,7 +201,7 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
    * needed by the entire suite. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def afterAll(configMap: ConfigMap) {
+  protected def afterAll(configMap: ConfigMap): Unit = {
   }
 
   /**
@@ -240,25 +240,56 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
   */
   abstract override def run(testName: Option[String], args: Args): Status = {
-    if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-      beforeAll(args.configMap)
 
     val (runStatus, thrownException) =
       try {
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
+          beforeAll(args.configMap)
         (super.run(testName, args), None)
       }
       catch {
         case e: Exception => (FailedStatus, Some(e))
       }
 
-    thrownException match {
+    try {
+      val statusToReturn =
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
+          // runStatus may not be completed, call afterAll only after it is completed
+          runStatus withAfterEffect {
+            try {
+              afterAll(args.configMap)
+            }
+            catch {
+              case laterException: Exception if !Suite.anExceptionThatShouldCauseAnAbort(laterException) && thrownException.isDefined =>
+              // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
+            }
+          }
+        }
+        else runStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and afterAll throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
+    }
+
+    /*thrownException match {
       case Some(earlierException) =>
         try {
           if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
             afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
+          runStatus
         }
         catch {
           case laterException: Exception => // Do nothing, will need to throw the earlier exception
+          runStatus // TODO: do a println here of the swallowed exception
         }
         finally {
           throw earlierException
@@ -266,20 +297,21 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
       case None =>
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
           // runStatus may not be completed, call afterAll only after it is completed
-          runStatus.whenCompleted { succeeded =>
+          runStatus withAfterEffectNew {
             try {
               afterAll(args.configMap)
+              None
             }
             catch {
               case laterException: Exception =>
                 thrownException match { // If both run and afterAll throw an exception, report the test exception
-                  case Some(earlierException) => throw earlierException
-                  case None => throw laterException
+                  case None => Some(laterException)
+                  case someEarlierException => someEarlierException
                 }
             }
           }
         }
-    }
-    runStatus
+        else runStatus
+    }*/
   }
 }

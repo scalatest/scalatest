@@ -18,28 +18,31 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeWritableStructuralLogicalOrSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeWritableStructuralLogicalOrSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
     
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
   
   def wasNotWritable(left: Any): String = 
-    FailureMessages.wasNotWritable(left)
+    FailureMessages.wasNotWritable(prettifier, left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages.wasWritable(left)
+    FailureMessages.wasWritable(prettifier, left)
     
   describe("writable matcher") {
     

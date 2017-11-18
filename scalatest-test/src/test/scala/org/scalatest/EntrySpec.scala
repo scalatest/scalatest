@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import java.util.{Map => JMap}
-import java.util.{HashMap => JHashMap}
 import Matchers._
+import java.util.{HashMap => JHashMap}
+import java.util.{Map => JMap}
 
 class EntrySpec extends FunSpec {
 

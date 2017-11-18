@@ -17,11 +17,14 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Explicitly
+import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
 class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
   
   class CustomEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -35,16 +38,16 @@ class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
     
     implicit val equality = new CustomEquality
     
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " did not contain all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(leftText + " did not contain all of (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " contained all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(leftText + " contained all of (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

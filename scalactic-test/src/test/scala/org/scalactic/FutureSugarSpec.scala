@@ -15,16 +15,14 @@
  */
 package org.scalactic
 
-import java.text._
-import org.scalatest._
 import scala.concurrent.Future
-import prop.TableDrivenPropertyChecks._
 // SKIP-SCALATESTJS-START
 import scala.concurrent.ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS-END
 //SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
+import org.scalatest.exceptions.TestFailedException
 
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with ScalaFutures {
 
@@ -39,6 +37,7 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with S
   "FutureSugar" should "offer a validating method that takes a T => Validation" in {
     Future.successful(12).validating(isRound).failed.futureValue shouldBe ValidationFailedException("12 was not a round number")
     Future.successful(10).validating(isRound).futureValue shouldBe 10
+    // Scala 2.10 has problem compiling the following:
     // Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
     Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
   }

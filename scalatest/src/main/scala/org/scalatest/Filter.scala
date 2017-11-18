@@ -68,7 +68,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
         } yield testName
     }
 
-  private def verifyPreconditionsForMethods(testNames: Set[String], tags: Map[String, Set[String]]) {
+  private def verifyPreconditionsForMethods(testNames: Set[String], tags: Map[String, Set[String]]): Unit = {
     val testWithEmptyTagSet = tags.find(tuple => tuple._2.isEmpty)
     testWithEmptyTagSet match {
       case Some((testName, _)) => throw new IllegalArgumentException(testName + " was associated with an empty set in the map passsed as tags")

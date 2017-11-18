@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
 import events.{SuiteCompleted, Event}
 
 /*
@@ -54,7 +53,7 @@ class SuiteCompletedStatusReporter extends Reporter {
       case _: NumberFormatException => 10
     }
   var startTime = System.currentTimeMillis
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
     event match {
       case e: SuiteCompleted =>
         count += 1

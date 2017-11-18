@@ -33,6 +33,17 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
   def asScala: GenTraversable[T] = queue
 }
 
+private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
+
+  private final val queue = new scala.collection.mutable.ListBuffer[T]
+
+  def put(ele: T): Unit = queue += ele
+
+  def take(): T = queue.remove(0)
+
+  def size: Int = queue.size
+}
+
 private[scalatest] class CountDownLatch(count: Int) {
 
   private var currentCount: Long = count
@@ -85,5 +96,7 @@ private[scalatest] class Timer {
         }
       )
   }
+
+  def cancel(): Unit = ()   // You can't cancel the one and only timer in javascript.
 
 }

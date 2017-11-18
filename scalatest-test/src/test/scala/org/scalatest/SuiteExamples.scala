@@ -20,6 +20,7 @@ import org.scalatest.prop.Tables
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 
 trait SuiteExamples extends Tables {
@@ -30,7 +31,7 @@ trait SuiteExamples extends Tables {
   def junit3Suite: JUnit3Suite with FixtureServices
   def junitSuite: JUnitSuite with FixtureServices
   def testngSuite: TestNGSuite with FixtureServices
-  def spec: Spec with FixtureServices
+  def spec: RefSpec with FixtureServices
   def fixtureSpec: fixture.Spec with FixtureServices
   // SKIP-SCALATESTJS-END
   def funSuite: FunSuite with FixtureServices

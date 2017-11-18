@@ -18,16 +18,19 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeWritableStructuralSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeWritableStructuralSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages.wasNotWritable(left)
+    FailureMessages.wasNotWritable(prettifier, left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages.wasWritable(left)
+    FailureMessages.wasWritable(prettifier, left)
   
   describe("writable matcher") {
     

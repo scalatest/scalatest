@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 
 /**
  * Called when the run has been finished. TODO: Justify this one.
@@ -23,5 +22,5 @@ import org.scalatest._
  * @author Bill Venners
  */
 private[scalatest] trait RunDoneListener {
-    def done() = ()
+    def done(): Unit = ()
 }

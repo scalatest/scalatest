@@ -52,9 +52,9 @@ class TableStyleSpec extends FunSpec with Matchers with TableDrivenPropertyCheck
 
       class Counter {
         private var v = 0
-        def reset() { v = 0 }
-        def click() { v += 1 }
-        def enter(n: Int) { v = n }
+        def reset(): Unit = { v = 0 }
+        def click(): Unit = { v += 1 }
+        def enter(n: Int): Unit = { v = n }
         def value = v
       }
 

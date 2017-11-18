@@ -102,7 +102,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
           throw new IllegalArgumentException("Something went wrong!")
         }
       }
-      caught.getCause().getClass === classOf[IllegalArgumentException]
+      assert(caught.getCause().getClass === classOf[IllegalArgumentException])
     }
  
     it("should close a Socket connection via SocketInterruptor when the timeout is reached") {
@@ -110,7 +110,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -141,7 +141,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -187,7 +187,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           selector.select()
           val it = selector.selectedKeys.iterator
           while (it.hasNext) {
@@ -283,7 +283,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
           throw new IllegalArgumentException("Something goes wrong!")
         }
       }
-      caught.getCause().getClass === classOf[IllegalArgumentException]
+      assert(caught.getCause().getClass === classOf[IllegalArgumentException])
     }
     
     it("should close Socket connection via SocketInterruptor when timeout reached") {
@@ -291,7 +291,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -322,7 +322,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -368,7 +368,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           selector.select()
           val it = selector.selectedKeys.iterator
           while (it.hasNext) {

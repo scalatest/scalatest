@@ -15,12 +15,12 @@
  */
 package org.scalactic
 
-import java.util.Date
 import org.scalatest._
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
 import prop.TableDrivenPropertyChecks._
+import java.util.Date
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 

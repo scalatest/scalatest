@@ -115,10 +115,10 @@ package org.scalatest.testng {
   package test {
     
     class TestNGSuiteWithGroups extends TestNGSuite {
-      @Test(groups = Array("runMe")) def testThatRuns() {}
-      @Test(groups = Array("runMeToo")) def testThatRunsInAnotherGroup() {}
-      @Test(groups = Array("runMeToo")) def anotherTestThatRunsInAnotherGroup() {}
-      @Test(groups = Array("runMeThree")) def yetAnotherTestThatRunsInYetAnotherGroup() {}
+      @Test(groups = Array("runMe")) def testThatRuns(): Unit = {}
+      @Test(groups = Array("runMeToo")) def testThatRunsInAnotherGroup(): Unit = {}
+      @Test(groups = Array("runMeToo")) def anotherTestThatRunsInAnotherGroup(): Unit = {}
+      @Test(groups = Array("runMeThree")) def yetAnotherTestThatRunsInYetAnotherGroup(): Unit = {}
     }
   }
 }

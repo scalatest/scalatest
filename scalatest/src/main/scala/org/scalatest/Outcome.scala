@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic.Requirements._
+import org.scalactic._
+import Requirements._
+import org.scalatest.exceptions.StackDepthException
 
 /**
  * Superclass for the possible outcomes of running a test.
@@ -42,7 +44,7 @@ import org.scalactic.Requirements._
  * then the outcome was that the test was pending.
  * </p>
  */
-sealed abstract class Outcome {
+sealed abstract class Outcome extends Product with Serializable {
 
   /**
    * Indicates whether this <code>Outcome</code> represents a test that succeeded.
@@ -126,7 +128,7 @@ sealed abstract class Outcome {
   // Used internally to resuse the old code that was catching these exceptions when running tests. Eventually I would
   // like to rewrite that old code to use the result type, but it will still needs to catch and handle these exceptions
   // in the same way in case they come back from a user's withFixture implementation.
-  private[scalatest] def toUnit {
+  private[scalatest] def toUnit: Unit = {
     this match {
       case Succeeded =>
       case Exceptional(e) => throw e
@@ -244,7 +246,7 @@ object Outcome {
  * enables patterns that match a test that either failed or canceled, as in:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * outcome match {
  *   case Exceptional(ex) =&gt; // handle failed or canceled case
  *   case _ =&gt; // handle succeeded, pending, or omitted case
@@ -292,7 +294,7 @@ object Exceptional {
    * like this:
    * </p>
    * 
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   super.withFixture(test) match {
    *     case Exceptional(e: StackDepth) =&gt; Exceptional(e.severedAtStackDepth)
@@ -319,7 +321,7 @@ object Exceptional {
    * like this:
    * </p>
    * 
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   super.withFixture(test) match {
    *     case Exceptional(e: StackDepth) =&gt; Exceptional(e.severedAtStackDepth)
@@ -345,14 +347,14 @@ object Exceptional {
  *
  * <p>
  * Note: the difference between this <code>Succeeded</code> object and the similarly named <a href="SucceededStatus$.html"><code>SucceededStatus</code></a>
- * object is that this object indicates one test succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
+ * object is that this object indicates one test (or assertion) succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
  * aborted suites during a run. Both are used as the result type of <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> lifecycle methods, but <code>Succeeded</code>
  * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
- * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test (or assertion), whereas <code>SucceededStatus</code> could be
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-case object Succeeded extends Outcome {
+case object Succeeded extends Outcome with compatible.Assertion {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.
@@ -415,28 +417,50 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
 
 object Failed {
 
-  // SKIP-SCALATESTJS-START
-  val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY val stackDepth = 10
+  /**
+    * Creates a <code>Failed</code> instance, with a <code>TestFailedException</code> set as its <code>exception</code> field.
+    *
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> set as its <code>exception</code> field.
+    */
+  def apply()(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException((_: StackDepthException) => None, None, pos))
 
-  def apply(): Failed = new Failed(new exceptions.TestFailedException(stackDepth))
-  def apply(message: String): Failed = new Failed(new exceptions.TestFailedException(message, stackDepth))
-  // I always wrap this in a TFE because I need to do that to get the message in there.
-  def apply(message: String, cause: Throwable): Failed = {
+  /**
+    * Creates a <code>Failed</code> instance with the passed in message.
+    *
+    * @param message the message for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> created from passed in <code>message</code> set as its <code>exception</code> field.
+    */
+  def apply(message: String)(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException((_: StackDepthException) => Some(message), None, pos))
+
+  /**
+    * Creates a <code>Failed</code> instance with the passed in message and cause.
+    *
+    * @param message the message for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @param cause the cause for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> created from passed in <code>message</code> and <code>cause</code> set as its <code>exception</code> field.
+    */
+  def apply(message: String, cause: Throwable)(implicit pos: source.Position): Failed = {
+    // I always wrap this in a TFE because I need to do that to get the message in there.
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to a factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to a factory method in object Failed")
-    new Failed(new exceptions.TestFailedException(message, cause, stackDepth))
+    new Failed(new exceptions.TestFailedException((_: StackDepthException) => Some(message), Some(cause), pos))
   }
-  def here(cause: Throwable): Failed = {
+
+  /**
+    * Creates a <code>Failed</code> with the passed in cause.
+    *
+    * @param cause the passed in cause
+    * @return A <code>Failed</code> with <code>exception</code> field set to a newly created <code>TestFailedException</code> using the passed in <code>cause</code>.
+    */
+  def here(cause: Throwable)(implicit pos: source.Position): Failed = {
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to the \"here\" factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to the \"here\" factory method in object Failed")
 
     new Failed(
       if (cause.getMessage != null)
-        new exceptions.TestFailedException(cause.getMessage, cause, stackDepth)
+        new exceptions.TestFailedException((_: StackDepthException) => Some(cause.getMessage), Some(cause), pos)
        else
-        new exceptions.TestFailedException(cause, stackDepth)
+        new exceptions.TestFailedException((_: StackDepthException) => None, Some(cause), pos)
      )
   }
 }
@@ -476,24 +500,40 @@ case class Canceled(exception: exceptions.TestCanceledException) extends Excepti
  */
 object Canceled {
 
-  // SKIP-SCALATESTJS-START
-  protected[scalatest] val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY protected[scalatest] val stackDepth = 10
+  /**
+    * Creates a <code>Canceled</code> instance, with a <code>TestCanceledException</code> set as its <code>exception</code> field.
+    *
+    * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> set as its <code>exception</code> field.
+    */
+  def apply()(implicit pos: source.Position): Canceled = new Canceled(new exceptions.TestCanceledException((_: StackDepthException) => None, None, Left(pos), None))
 
-  def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(stackDepth))
-  def apply(message: String, cause: Throwable): Canceled = // TODO write tests for NPEs
-    new Canceled(new exceptions.TestCanceledException(message, cause, stackDepth))
-  def apply(ex: Throwable): Canceled = { // TODO write tests for NPEs
+  /**
+    * Creates a <code>Canceled</code> instance with the passed in message and cause.
+    *
+    * @param message the message for the <code>TestCanceledException</code> set as its <code>exception</code> field
+    * @param cause the cause for the <code>TestCanceledException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> created from passed in <code>message</code> and <code>cause</code> set as its <code>exception</code> field.
+    */
+  def apply(message: String, cause: Throwable)(implicit pos: source.Position): Canceled = // TODO write tests for NPEs
+    new Canceled(new exceptions.TestCanceledException((_: StackDepthException) => Some(message), Some(cause), Left(pos), None))
+
+  /**
+    * Creates a <code>Canceled</code> instance with the passed in <code>Throwable</code>.  If the passed in <code>Throwable</code> is a <code>TestCanceledException</code>,
+    * it will be set as <code>exception</code> field, in other case a new <code>TestCanceledException</code> will be created using <code>ex</code> as its <code>cause</code>
+    *
+    * @param ex the passed in <code>Throwable</code>
+    * @return An instance of <code>Canceled</code> with <code>ex</code> set as its <code>exception</code> field if <code>ex</code> is a <code>TestCanceledException</code>, or a newly created <code>TestCanceledException</code> with <code>ex</code> set as its <code>cause</code> if <code>ex</code> is not a <code>TestCanceledException</code>.
+    */
+  def apply(ex: Throwable)(implicit pos: source.Position): Canceled = { // TODO write tests for NPEs
     ex match {
       case tce: exceptions.TestCanceledException => 
         new Canceled(tce)
       case _ =>
         val msg = ex.getMessage
         if (msg == null)
-          new Canceled(new exceptions.TestCanceledException(ex, stackDepth))
+          new Canceled(new exceptions.TestCanceledException((_: StackDepthException) => None, Some(ex), Left(pos), None))
         else 
-          new Canceled(new exceptions.TestCanceledException(msg, ex, stackDepth))
+          new Canceled(new exceptions.TestCanceledException((_: StackDepthException) => Some(msg), Some(ex), Left(pos), None))
     }
   }
 
@@ -506,7 +546,7 @@ object Canceled {
    * be the case if a test failed previously while running the suite:
    * </p>
    *
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   if (cancelRemaining) 
    *     Canceled("Canceled by CancelOnFailure because a test failed previously")
@@ -520,19 +560,25 @@ object Canceled {
    *  }
    * </pre>
    */
-  def apply(message: String): Canceled = {
+  def apply(message: String)(implicit pos: source.Position): Canceled = {
     requireNonNull(message)
-    val e = new exceptions.TestCanceledException(message, stackDepth)
+    val e = new exceptions.TestCanceledException((_: StackDepthException) => Some(message), None, Left(pos), None)
     //e.fillInStackTrace()
     Canceled(e)
   }
 
-  def here(cause: Throwable): Canceled = {
+  /**
+    * Creates a <code>Canceled</code> with the passed in cause.
+    *
+    * @param cause the passed in cause
+    * @return A <code>Canceled</code> with <code>exception</code> field set to a newly created <code>TestCanceledException</code> using the passed in <code>cause</code>.
+    */
+  def here(cause: Throwable)(implicit pos: source.Position): Canceled = {
     new Canceled(
       if (cause.getMessage != null)
-        new exceptions.TestCanceledException(cause.getMessage, cause, stackDepth)
+        new exceptions.TestCanceledException((_: StackDepthException) => Some(cause.getMessage), Some(cause), Left(pos), None)
        else
-        new exceptions.TestCanceledException(cause, stackDepth)
+        new exceptions.TestCanceledException((_: StackDepthException) => None, Some(cause), Left(pos), None)
      )
   }
 }

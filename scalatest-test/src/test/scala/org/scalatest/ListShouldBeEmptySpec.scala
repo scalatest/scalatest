@@ -18,9 +18,12 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ListShouldBeEmptySpec extends FunSpec {
-  
+
+  private val prettifier = Prettifier.default
+
   //ADDITIONAL//
   
   val nonEmptyList = List(1, 2, 3)
@@ -29,14 +32,14 @@ class ListShouldBeEmptySpec extends FunSpec {
   val fileName: String = "ListShouldBeEmptySpec.scala"
     
   def wasNotEmpty(left: Any): String = 
-    FailureMessages.wasNotEmpty(left)
+    FailureMessages.wasNotEmpty(prettifier, left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages.wasEmpty(left)
+    FailureMessages.wasEmpty(prettifier, left)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("Empty matcher") {

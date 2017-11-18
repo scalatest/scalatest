@@ -15,15 +15,16 @@
  */
 package org.scalactic
 
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.collection.GenIterable
+import scala.collection.GenSeq
+import scala.collection.GenTraversableOnce
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Buffer
+import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.GenTraversableOnce
-import scala.reflect.ClassTag
-import scala.collection.mutable.Buffer
-import scala.collection.GenSeq
-import scala.collection.GenIterable
-import scala.collection.generic.CanBuildFrom
-import scala.annotation.unchecked.{ uncheckedVariance => uV }
+
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
 /**
@@ -1711,8 +1712,8 @@ object Chain {
  * Here's an example:
  * </p>
  * 
- * <pre class="REPL">
- * scala> 1 :: 2 :: 3 :: End
+ * <pre class="stREPL">
+ * scala&gt; 1 :: 2 :: 3 :: End
  * res0: org.scalactic.Chain[Int] = Chain(1, 2, 3)
  * </pre>
  *
@@ -1722,11 +1723,11 @@ object Chain {
  * no empty <code>Chain</code>:
  * </p>
  * 
- * <pre class="REPL">
- * scala> Nil.isInstanceOf[List[_]]
+ * <pre class="stREPL">
+ * scala&gt; Nil.isInstanceOf[List[_]]
  * res0: Boolean = true
  *
- * scala> End.isInstanceOf[Chain[_]]
+ * scala&gt; End.isInstanceOf[Chain[_]]
  * res1: Boolean = false
  * </pre>
  */
@@ -1740,7 +1741,7 @@ object End {
    * Here's an example:
    * </p>
    *
-   * <pre class="REPL">
+   * <pre class="stREPL">
    * scala> 1 :: End
    * res0: org.scalactic.Chain[Int] = Chain(1)
    * </pre>

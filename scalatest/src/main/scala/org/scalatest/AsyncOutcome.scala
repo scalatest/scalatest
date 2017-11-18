@@ -1,7 +1,6 @@
 
 package org.scalatest
 
-import scala.concurrent.duration.Duration.Infinite
 import scala.util.{Success, Try, Failure}
 import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._
@@ -9,13 +8,16 @@ import scala.concurrent.duration._
 private[scalatest] trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
+  // SKIP-SCALATESTJS-START
   def toOutcome: Outcome // may block
-  def toFutureOutcome: Future[Outcome]
+  // SKIP-SCALATESTJS-END
+  def toInternalFutureOutcome: Future[Outcome]
+  def toFutureOutcome: FutureOutcome
 }
 
 private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
 
-  def onComplete(f: Try[Outcome] => Unit) = {
+  def onComplete(f: Try[Outcome] => Unit): Unit = {
     f(new Success(past))
   }
   def toStatus: Status =
@@ -23,11 +25,14 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
       case _: Failed => FailedStatus
       case _ => SucceededStatus
     }
+  // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = past
-  def toFutureOutcome: Future[Outcome] = Future.successful(past)
+  // SKIP-SCALATESTJS-END
+  def toInternalFutureOutcome: Future[Outcome] = Future.successful(past)
+  def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
@@ -41,11 +46,11 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
     case Failure(ex) =>
       for (f <- queue.iterator)
         f(Failure(ex))
-      status.setFailed()
+      status.setFailedWith(ex)
       status.setCompleted()
   } /* fills in ctx here */
 
-  def onComplete(f: Try[Outcome] => Unit) = {
+  def onComplete(f: Try[Outcome] => Unit): Unit = {
     var executeLocally = false
     synchronized {
       if (!future.isCompleted)
@@ -64,6 +69,6 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
   // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY def toOutcome: Outcome = throw new UnsupportedOperationException("Not supported on scalatest-js")
-  def toFutureOutcome: Future[Outcome] = future
+  def toInternalFutureOutcome: Future[Outcome] = future
+  def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }

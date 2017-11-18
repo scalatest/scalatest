@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import events._
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting

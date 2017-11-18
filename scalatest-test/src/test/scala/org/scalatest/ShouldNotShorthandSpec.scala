@@ -20,8 +20,11 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
+
+  private val prettifier = Prettifier.default
 
   describe("The shouldNot syntax") {
 
@@ -976,7 +979,7 @@ class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMa
       val caught1 = intercept[TestFailedException] {
         map shouldNot contain key "1"
       }
-      assert(caught1.message === Some(decorateToStringValue(map) + " contained key \"1\""))
+      assert(caught1.message === Some(decorateToStringValue(prettifier, map) + " contained key \"1\""))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -992,7 +995,7 @@ class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMa
       val caught1 = intercept[TestFailedException] {
         map shouldNot contain value "one"
       }
-      assert(caught1.message === Some(decorateToStringValue(map) + " contained value \"one\""))
+      assert(caught1.message === Some(decorateToStringValue(prettifier, map) + " contained value \"one\""))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

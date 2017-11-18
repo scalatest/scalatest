@@ -18,6 +18,8 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import OptionValues._
 import OutcomeOf._
+import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException
 
 class OutcomeSpec extends FunSpec {
 
@@ -108,7 +110,7 @@ class OutcomeSpec extends FunSpec {
   }
   describe("The Failed class") {
     it("should offer a constructor that takes any exception except for TCE, TPE, and TOE and returns it unchanged from its exception field") {
-      val ex2 = new exceptions.TestFailedException(0)
+      val ex2 = new exceptions.TestFailedException((_: StackDepthException) => Some(""), None, source.Position.here)
       assert(new Failed(ex2).exception eq ex2)
       val ex3 = new RuntimeException
       assert(new Failed(ex3).exception eq ex3)
@@ -230,7 +232,7 @@ class OutcomeSpec extends FunSpec {
       assert(canceled3.exception.getCause eq re)
       val ex1 = new exceptions.TestCanceledException(0)
       assert(new Canceled(ex1).exception eq ex1)
-      val ex2 = new exceptions.TestFailedException(0)
+      val ex2 = new exceptions.TestFailedException((_: StackDepthException) => Some(""), None, source.Position.here)
       assert(Canceled(ex2).exception.getCause eq ex2)
       val ex3 = new RuntimeException
       assert(Canceled(ex3).exception.getCause eq ex3)
@@ -275,7 +277,7 @@ class OutcomeSpec extends FunSpec {
   describe("The outcomeOf method") {
     it("must transform expression evaluations into the appropriate Outcome class") {
       assert(outcomeOf { 99 } == Succeeded)
-      val tfe = new exceptions.TestFailedException(0)
+      val tfe = new exceptions.TestFailedException((_: StackDepthException) => Some(""), None, source.Position.here)
       assert(outcomeOf { throw tfe } === Failed(tfe))
       val iae = new IllegalArgumentException
       assert(outcomeOf { throw iae } === Failed(iae))
@@ -302,7 +304,7 @@ class OutcomeSpec extends FunSpec {
     }
     
     it("should throw the containing exception when it is Failed") {
-      val tfe = new exceptions.TestFailedException("boom!", 3)
+      val tfe = new exceptions.TestFailedException((_: StackDepthException) => Some("boom!"), None, source.Position.here)
       val outcome1: Outcome = Failed(tfe)
       val e1 = intercept[exceptions.TestFailedException] {
         outcome1.toSucceeded

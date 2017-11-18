@@ -15,16 +15,15 @@
  */
 package org.scalatest
 
-import exceptions.TestCanceledException
+import org.scalactic._
+import Requirements._
 import scala.reflect.ClassTag
-import Assertions.areEqualComparingArraysStructurally
-import org.scalactic.TripleEquals
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
-import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalactic.{Prettifier, Bool}
+import Assertions.areEqualComparingArraysStructurally
+import exceptions.StackDepthException
+import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
-import org.scalactic.Requirements._
+import exceptions.TestPendingException
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -58,13 +57,13 @@ import org.scalactic.Requirements._
  * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly
  * which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
+ * In addition, ScalaTest's <code>assert</code> provides better error messages than Scala's <code>assert</code>.
  * <p>
  *
  * <p>
  * If you pass the previous <code>Boolean</code> expression, <code>left == right</code> to <code>assert</code> in a ScalaTest test,
  * a failure will be reported that, because <code>assert</code> is implemented as a macro,
  * includes reporting the left and right values.
- *
  * For example, given the same code as above but using ScalaTest assertions:
  *
  * <pre class="stHighlight">
@@ -182,8 +181,26 @@ import org.scalactic.Requirements._
  * fail("I've got a bad feeling about this")
  * </pre>
  *
+ * <a name="achievingSuccess"></a>
+ * <h2>Achieving success</h2>
+ *
+ * <p>
+ * In async style tests, you must end your test body with either <code>Future[Assertion]</code> or
+ * <code>Assertion</code>. ScalaTest's assertions (including matcher expressions) have result type
+ * <code>Assertion</code>, so ending with an assertion will satisfy the compiler.
+ * If a test body or function body passed to <code>Future.map</code> does
+ * <em>not</em> end with type <code>Assertion</code>, however, you can fix the type error by placing
+ * <code>succeed</code> at the end of the
+ * test or function body:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * succeed // Has type Assertion
+ * </pre>
+ *
  * <a name="interceptedExceptions"></a>
- * <h2>Intercepted exceptions</h2>
+ * <a name="expectedExceptions"></a>
+ * <h2>Expected exceptions</h2>
  *
  * <p>
  * Sometimes you need to test whether a method throws an expected exception under certain circumstances, such
@@ -209,24 +226,40 @@ import org.scalactic.Requirements._
  * </p>
  *
  * <p>
- * To make this common use case easier to express and read, ScalaTest provides an <code>intercept</code>
- * method. You use it like this:
+ * To make this common use case easier to express and read, ScalaTest provides two methods:
+ * <code>assertThrows</code> and <code>intercept</code>.
+ * Here's how you use <code>assertThrows</code>:
  * </p>
  *
+ * <a name="assertThrowsMethod"></a>
  * <pre class="stHighlight">
  * val s = "hi"
- * intercept[IndexOutOfBoundsException] {
+ * assertThrows[IndexOutOfBoundsException] { // Result type: Assertion
  *   s.charAt(-1)
  * }
  * </pre>
  *
  * <p>
  * This code behaves much like the previous example. If <code>charAt</code> throws an instance of <code>IndexOutOfBoundsException</code>,
- * <code>intercept</code> will return that exception. But if <code>charAt</code> completes normally, or throws a different
- * exception, <code>intercept</code> will complete abruptly with a <code>TestFailedException</code>. <code>intercept</code> returns the
- * caught exception so that you can inspect it further if you wish, for example, to ensure that data contained inside
- * the exception has the expected values.
+ * <code>assertThrows</code> will return <code>Succeeded</code>. But if <code>charAt</code> completes normally, or throws a different
+ * exception, <code>assertThrows</code> will complete abruptly with a <code>TestFailedException</code>.
  * </p>
+ *
+ * <p>
+ * The <code>intercept</code> method behaves the same as <code>assertThrows</code>, except that instead of returning <code>Succeeded</code>,
+ * <code>intercept</code> returns the caught exception so that you can inspect it further if you wish. For example, you may need
+ * to ensure that data contained inside the exception have expected values. Here's an example:
+ * </p>
+ *
+ * <a name="interceptMethod"></a>
+ * <pre class="stHighlight">
+ * val s = "hi"
+ * val caught =
+ *   intercept[IndexOutOfBoundsException] { // Result type: IndexOutOfBoundsException
+ *     s.charAt(-1)
+ *   }
+ * assert(caught.getMessage.indexOf("-1") != -1)
+ * </pre>
  *
  * <a name="checkingThatCodeDoesNotCompile"></a>
  * <h2>Checking that a snippet of code does or does not compile</h2>
@@ -379,7 +412,9 @@ import org.scalactic.Requirements._
  *
  * @author Bill Venners
  */
-trait Assertions extends TripleEquals {
+trait Assertions extends TripleEquals  {
+
+  //implicit val prettifier = Prettifier.default
 
   import language.experimental.macros
 
@@ -428,17 +463,12 @@ trait Assertions extends TripleEquals {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  def assert(condition: Boolean): Unit = macro AssertionsMacro.assert
+  def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assert
 
   /**
    * Helper class used by code generated by the <code>assert</code> macro.
    */
   class AssertionsHelper {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepthAdjustment = 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
 
     private def append(currentMessage: Option[String], clue: Any) = {
       val clueStr = clue.toString
@@ -464,12 +494,13 @@ trait Assertions extends TripleEquals {
      * @param bool the <code>Bool</code> to assert for
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
-    def macroAssert(bool: Bool, clue: Any) {
-      requireNonNull(clue)
+    def macroAssert(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position): Assertion = {
+      requireNonNull(clue)(prettifier, pos)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
+        throw newAssertionFailedException(append(failureMessage, clue), None, pos)
       }
+      Succeeded
     }
 
     /**
@@ -478,12 +509,13 @@ trait Assertions extends TripleEquals {
      * @param bool the <code>Bool</code> to assume for
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
-    def macroAssume(bool: Bool, clue: Any) {
-      requireNonNull(clue)
+    def macroAssume(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position): Assertion = {
+      requireNonNull(clue)(prettifier, pos)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
+        throw newTestCanceledException(append(failureMessage, clue), None, pos)
       }
+      Succeeded
     }
   }
 
@@ -492,27 +524,11 @@ trait Assertions extends TripleEquals {
    */
   val assertionsHelper = new AssertionsHelper
 
-  private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new TestFailedException(stackDepth)
-      case (None, Some(cause)) => new TestFailedException(cause, stackDepth)
-      case (Some(message), None) => new TestFailedException(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new TestFailedException(message.toString, cause, stackDepth)
-    }
-  
-  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
+  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
 
-  private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new TestCanceledException(stackDepth)
-      case (None, Some(cause)) => new TestCanceledException(cause, stackDepth)
-      case (Some(message), None) => new TestCanceledException(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new TestCanceledException(message.toString, cause, stackDepth)
-    }
-
-  private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
+  private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -564,7 +580,7 @@ trait Assertions extends TripleEquals {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def assert(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assertWithClue
+  def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assertWithClue
 
   /**
    * Assume that a boolean condition is true.
@@ -611,7 +627,7 @@ trait Assertions extends TripleEquals {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  def assume(condition: Boolean): Unit = macro AssertionsMacro.assume
+  def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assume
 
   /**
    * Assume that a boolean condition, described in <code>String</code>
@@ -663,7 +679,7 @@ trait Assertions extends TripleEquals {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def assume(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assumeWithClue
+  def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assumeWithClue
 
   /**
    * Asserts that a given string snippet of code does not pass the Scala type checker, failing if the given
@@ -695,7 +711,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
+  def assertTypeError(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertTypeErrorImpl
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -726,7 +742,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertDoesNotCompile(code: String): Unit = macro CompileMacro.assertDoesNotCompileImpl
+  def assertDoesNotCompile(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertDoesNotCompileImpl
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -747,95 +763,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should compile
    */
-  def assertCompiles(code: String): Unit = macro CompileMacro.assertCompilesImpl
-
-  /* *
-   * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable
-   * assertions with <code>===</code> comparisons.
-   *
-   * <p>
-   * For more information
-   * on this mechanism, see the <a href="Suite.Equalizer.html">documentation for </code>Equalizer</code></a>.
-   * </p>
-   *
-   * <p>
-   * Because trait <code>Suite</code> mixes in <code>Assertions</code>, this implicit conversion will always be
-   * available by default in ScalaTest <code>Suite</code>s. This is the only implicit conversion that is in scope by default in every
-   * ScalaTest <code>Suite</code>. Other implicit conversions offered by ScalaTest, such as those that support the matchers DSL
-   * or <code>invokePrivate</code>, must be explicitly invited into your test code, either by mixing in a trait or importing the
-   * members of its companion object. The reason ScalaTest requires you to invite in implicit conversions (with the exception of the
-   * implicit conversion for <code>===</code> operator)  is because if one of ScalaTest's implicit conversions clashes with an
-   * implicit conversion used in the code you are trying to test, your program won't compile. Thus there is a chance that if you
-   * are ever trying to use a library or test some code that also offers an implicit conversion involving a <code>===</code> operator,
-   * you could run into the problem of a compiler error due to an ambiguous implicit conversion. If that happens, you can turn off
-   * the implicit conversion offered by this <code>convertToEqualizer</code> method simply by overriding the method in your
-   * <code>Suite</code> subclass, but not marking it as implicit:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * // In your Suite subclass
-   * override def convertToEqualizer(left: Any) = new Equalizer(left)
-   * </pre>
-   * 
-   * @param left the object whose type to convert to <code>Equalizer</code>.
-   * @throws NullArgumentException if <code>left</code> is <code>null</code>.
-   */
-  // implicit def convertToEqualizer(left: Any) = new Equalizer(left)
-
-  /*
-   * Intercept and return an instance of the passed exception class (or an instance of a subclass of the
-   * passed class), which is expected to be thrown by the passed function value. This method invokes the passed
-   * function. If it throws an exception that's an instance of the passed class or one of its
-   * subclasses, this method returns that exception. Else, whether the passed function returns normally
-   * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>
-   * whose detail message includes the <code>String</code> obtained by invoking <code>toString</code> on the passed <code>clue</code>.
-   *
-   * <p>
-   * Note that the passed <code>Class</code> may represent any type, not just <code>Throwable</code> or one of its subclasses. In
-   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense to pass in a class instance for
-   * a trait. If a class instance is passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
-   * for example), this method will complete abruptly with a <code>TestFailedException</code>.
-   * </p>
-   *
-   * @param message An object whose <code>toString</code> method returns a message to include in a failure report.
-   * @param f the function value that should throw the expected exception
-   * @return the intercepted exception, if it is of the expected type
-   * @throws TestFailedException if the passed function does not result in a value equal to the
-   *     passed <code>expected</code> value.
-  def intercept[T <: AnyRef](message: Any)(f: => Any)(implicit manifest: Manifest[T]): T = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
-    val messagePrefix = if (message.toString.trim.isEmpty) "" else (message +"\n")
-    val caught = try {
-      f
-      None
-    }
-    catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(messagePrefix + s), Some(u), 4)
-        }
-        else {
-          Some(u)
-        }
-      }
-    }
-    caught match {
-      case None =>
-        val message = messagePrefix + Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
-  }
-THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR JUST LEAVE IT OUT. FOR NOW I'LL LEAVE IT OUT.
-   */
-
-  // SKIP-SCALATESTJS-START
-  private[scalatest] val failStackDepth = 4
-  private[scalatest] val cancelStackDepth = 3
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
-  //SCALATESTJS-ONLY private[scalatest] val cancelStackDepth = 12
+  def assertCompiles(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertCompilesImpl
 
   /**
    * Intercept and return an exception that's expected to
@@ -854,15 +782,24 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * for example), this method will complete abruptly with a <code>TestFailedException</code>.
    * </p>
    *
+   * <p>
+   * Also note that the difference between this method and <code>assertThrows</code> is that this method
+   * returns the expected exception, so it lets you perform further assertions on
+   * that exception. By contrast, the <code>assertThrows</code> method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. <code>assertThrows</code> also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
    * @param f the function value that should throw the expected exception
    * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
    * type parameter.
    * @return the intercepted exception, if it is of the expected type
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
-   *    that's an instance of the specified type
-   *     passed <code>expected</code> value.
+   *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -872,7 +809,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
+          throw newAssertionFailedException(Some(s), Some(u), pos)
         }
         else {
           Some(u)
@@ -882,45 +819,68 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, failStackDepth)
+        throw newAssertionFailedException(Some(message), None, pos)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
 
-  /*
-   * Intercept and return an instance of the passed exception class (or an instance of a subclass of the
-   * passed class), which is expected to be thrown by the passed function value. This method invokes the passed
-   * function. If it throws an exception that's an instance of the passed class or one of its
-   * subclasses, this method returns that exception. Else, whether the passed function returns normally
+  /**
+   * Ensure that an expected exception is thrown by the passed function value. The thrown exception must be an instance of the
+   * type specified by the type parameter of this method. This method invokes the passed
+   * function. If the function throws an exception that's an instance of the specified type,
+   * this method returns <code>Succeeded</code>. Else, whether the passed function returns normally
    * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
    *
    * <p>
-   * Note that the passed <code>Class</code> may represent any type, not just <code>Throwable</code> or one of its subclasses. In
-   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense to pass in a class instance for
-   * a trait. If a class instance is passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
+   * Note that the type specified as this method's type parameter may represent any subtype of
+   * <code>AnyRef</code>, not just <code>Throwable</code> or one of its subclasses. In
+   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense
+   * to specify a trait that the intercepted exception's class must mix in. If a class instance is
+   * passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
    * for example), this method will complete abruptly with a <code>TestFailedException</code>.
    * </p>
    *
-   * @param clazz a type to which the expected exception class is assignable, i.e., the exception should be an instance of the type represented by <code>clazz</code>.
+   * <p>
+   * Also note that the difference between this method and <code>intercept</code> is that this method
+   * does not return the expected exception, so it does not let you perform further assertions on
+   * that exception. Instead, this method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. It also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
    * @param f the function value that should throw the expected exception
-   * @return the intercepted exception, if 
-   * @throws TestFailedException if the passed function does not complete abruptly with an exception that is assignable to the 
-   *     passed <code>Class</code>.
-   * @throws IllegalArgumentException if the passed <code>clazz</code> is not <code>Throwable</code> or
-   *     one of its subclasses.
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
+   * type parameter.
+   * @return the <code>Succeeded</code> singleton, if an exception of the expected type is thrown
+   * @throws TestFailedException if the passed function does not complete abruptly with an exception
+   *    that's an instance of the specified type.
    */
-
-/*
-  def intercept[T <: AnyRef](clazz: java.lang.Class[T])(f: => Unit): T = {
-    // intercept(clazz)(f)(manifest)
-    "hi".asInstanceOf[T]
+  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = {
+    val clazz = classTag.runtimeClass
+    val threwExpectedException =
+      try {
+        f
+        false
+      }
+      catch {
+          case u: Throwable => {
+          if (!clazz.isAssignableFrom(u.getClass)) {
+            val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+            throw newAssertionFailedException(Some(s), Some(u), pos)
+          }
+          else true
+        }
+      }
+    if (threwExpectedException) {
+      Succeeded
+    }
+    else {
+        val message = Resources.exceptionExpected(clazz.getName)
+        throw newAssertionFailedException(Some(message), None, pos)
+    }
   }
-*/
-/*
-  def intercept[T <: AnyRef](clazz: java.lang.Class[T])(f: => Unit)(implicit manifest: Manifest[T]): T = {
-    intercept(clazz)(f)(manifest)
-  }
-*/
 
   /**
    * Trap and return any thrown exception that would normally cause a ScalaTest test to fail, or create and return a new <code>RuntimeException</code>
@@ -1014,6 +974,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * Scala interpreter sessions by eliminating stack traces when executing assertion and matcher expressions.
    * </p>
    */
+  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, and will be removed in a future version of ScalaTest")
   def trap[T](f: => T): Throwable = {
     try { new NormalResult(f) }
     catch {
@@ -1034,13 +995,14 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any) {
+  def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages.expectedButGot(exp, act)
+      val s = FailureMessages.expectedButGot(prettifier, exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
-      throw newAssertionFailedException(Some(fullMsg), None, failStackDepth)
+      throw newAssertionFailedException(Some(fullMsg), None, pos)
     }
+    Succeeded
   }
 
   /** 
@@ -1054,12 +1016,13 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any)(actual: Any) {
+  def assertResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages.expectedButGot(exp, act)
-      throw newAssertionFailedException(Some(s), None, failStackDepth)
+      val s = FailureMessages.expectedButGot(prettifier, exp, act)
+      throw newAssertionFailedException(Some(s), None, pos)
     }
+    Succeeded
   }
   
 /*
@@ -1109,7 +1072,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail(): Nothing = { throw newAssertionFailedException(None, None, failStackDepth) }
+  def fail()(implicit pos: source.Position): Nothing = { throw newAssertionFailedException(None, None, pos) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1119,11 +1082,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param message A message describing the failure.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def fail(message: String): Nothing = {
+  def fail(message: String)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message)
      
-    throw newAssertionFailedException(Some(message),  None, failStackDepth)
+    throw newAssertionFailedException(Some(message),  None, pos)
   }
 
   /**
@@ -1135,11 +1098,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def fail(message: String, cause: Throwable): Nothing = {
+  def fail(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message, cause)
 
-    throw newAssertionFailedException(Some(message), Some(cause), failStackDepth)
+    throw newAssertionFailedException(Some(message), Some(cause), pos)
   }
 
   /**
@@ -1151,17 +1114,17 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def fail(cause: Throwable): Nothing = {
+  def fail(cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(cause)
         
-    throw newAssertionFailedException(None, Some(cause), failStackDepth)
+    throw newAssertionFailedException(None, Some(cause), pos)
   }
   
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  def cancel(): Nothing = { throw newTestCanceledException(None, None, cancelStackDepth) }
+  def cancel()(implicit pos: source.Position): Nothing = { throw newTestCanceledException(None, None, pos) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1171,11 +1134,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param message A message describing the cancellation.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def cancel(message: String): Nothing = {
+  def cancel(message: String)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message)
      
-    throw newTestCanceledException(Some(message),  None, cancelStackDepth)
+    throw newTestCanceledException(Some(message),  None, pos)
   }
 
   /**
@@ -1187,11 +1150,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def cancel(message: String, cause: Throwable): Nothing = {
+  def cancel(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message, cause)
 
-    throw newTestCanceledException(Some(message), Some(cause), cancelStackDepth)
+    throw newTestCanceledException(Some(message), Some(cause), pos)
   }
 
   /**
@@ -1203,11 +1166,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def cancel(cause: Throwable): Nothing = {
+  def cancel(cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(cause)
         
-    throw newTestCanceledException(None, Some(cause), cancelStackDepth)
+    throw newTestCanceledException(None, Some(cause), pos)
   }
   
   /**
@@ -1278,6 +1241,105 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     fun
   }
 */
+  /**
+   * Throws <code>TestPendingException</code> to indicate a test is pending.
+   *
+   * <p>
+   * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
+   * pending tests is to facilitate a style of testing in which documentation of behavior is sketched
+   * out before tests are written to verify that behavior (and often, the before the behavior of
+   * the system being tested is itself implemented). Such sketches form a kind of specification of
+   * what tests and functionality to implement later.
+   * </p>
+   *
+   * <p>
+   * To support this style of testing, a test can be given a name that specifies one
+   * bit of behavior required by the system being tested. The test can also include some code that
+   * sends more information about the behavior to the reporter when the tests run. At the end of the test,
+   * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+   * Because tests in ScalaTest can be designated as pending with <code>TestPendingException</code>, both the test name and any information
+   * sent to the reporter when running the test can appear in the report of a test run. (In other words,
+   * the code of a pending test is executed just like any other test.) However, because the test completes abruptly
+   * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
+   * the actual test, and possibly the functionality it is intended to test, has not yet been implemented.
+   * </p>
+   *
+   * <p>
+   * Note: This method always completes abruptly with a <code>TestPendingException</code>. Thus it always has a side
+   * effect. Methods with side effects are usually invoked with parentheses, as in <code>pending()</code>. This
+   * method is defined as a parameterless method, in flagrant contradiction to recommended Scala style, because it 
+   * forms a kind of DSL for pending tests. It enables tests in suites such as <code>FunSuite</code> or <code>FunSpec</code>
+   * to be denoted by placing "<code>(pending)</code>" after the test name, as in:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * test("that style rules are not laws") (pending)
+   * </pre>
+   *
+   * <p>
+   * Readers of the code see "pending" in parentheses, which looks like a little note attached to the test name to indicate
+   * it is pending. Whereas "<code>(pending())</code> looks more like a method call, "<code>(pending)</code>" lets readers
+   * stay at a higher level, forgetting how it is implemented and just focusing on the intent of the programmer who wrote the code.
+   * </p>
+   */
+  def pending: Assertion with PendingStatement = { throw new TestPendingException }
+
+  /**
+   * Execute the passed block of code, and if it completes abruptly, throw <code>TestPendingException</code>, else
+   * throw <code>TestFailedException</code>.
+   *
+   * <p>
+   * This method can be used to temporarily change a failing test into a pending test in such a way that it will
+   * automatically turn back into a failing test once the problem originally causing the test to fail has been fixed.
+   * At that point, you need only remove the <code>pendingUntilFixed</code> call. In other words, a
+   * <code>pendingUntilFixed</code> surrounding a block of code that isn't broken is treated as a test failure.
+   * The motivation for this behavior is to encourage people to remove <code>pendingUntilFixed</code> calls when
+   * there are no longer needed.
+   * </p>
+   *
+   * <p>
+   * This method facilitates a style of testing in which tests are written before the code they test. Sometimes you may
+   * encounter a test failure that requires more functionality than you want to tackle without writing more tests. In this
+   * case you can mark the bit of test code causing the failure with <code>pendingUntilFixed</code>. You can then write more
+   * tests and functionality that eventually will get your production code to a point where the original test won't fail anymore.
+   * At this point the code block marked with <code>pendingUntilFixed</code> will no longer throw an exception (because the
+   * problem has been fixed). This will in turn cause <code>pendingUntilFixed</code> to throw <code>TestFailedException</code>
+   * with a detail message explaining you need to go back and remove the <code>pendingUntilFixed</code> call as the problem orginally
+   * causing your test code to fail has been fixed.
+   * </p>
+   *
+   * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
+   * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
+   */
+  def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = {
+    val isPending =
+      try {
+        f
+        false
+      }
+      catch {
+        case _: Exception => true
+        case _: AssertionError => true
+      }
+      if (isPending)
+        throw new TestPendingException
+      else
+        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, pos)
+  }
+
+  /**
+   * The <code>Succeeded</code> singleton.
+   *
+   * <p>
+   * You can use <code>succeed</code> to solve a type error when an async test 
+   * does not end in either <code>Future[Assertion]</code> or <code>Assertion</code>.
+   * Because <code>Assertion</code> is a type alias for <code>Succeeded.type</code>,
+   * putting <code>succeed</code> at the end of a test body (or at the end of a
+   * function being used to map the final future of a test body) will solve
+   * the type error.
+   * </p>
+   */
+  final val succeed: Assertion = Succeeded
 }
 
 /**
@@ -1324,6 +1386,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
  */
 object Assertions extends Assertions {
 
+  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")
   case class NormalResult(result: Any) extends Throwable {
     override def toString = if (result == ()) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
   }
@@ -1343,58 +1406,6 @@ object Assertions extends Assertions {
         right match {
           case rightArray: Array[_] => left == rightArray.deep
           case _ => left == right
-        }
-      }
-    }
-  }
-  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, stackDepth: Int): T = {
-    val caught = try {
-      f
-      None
-    }
-    catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
-        }
-        else {
-          Some(u)
-        }
-      }
-    }
-    caught match {
-      case None =>
-        val message = exceptionExpectedMessageFun(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, stackDepth)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
-  }
-  private[scalatest] def checkNoException(fun: => Any) {
-    val caught = try {
-      fun
-    }
-    catch {
-      case u: Throwable => {
-        val message = Resources.exceptionNotExpected(u.getClass.getName)
-        // SKIP-SCALATESTJS-START
-        val stackDepth = 4
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 13
-        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
-      }
-    }
-  }
-  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit classTag: ClassTag[T]) {
-    val clazz = classTag.runtimeClass
-    try {
-      f
-    }
-    catch {
-      case u: Throwable => {
-        if (clazz.isAssignableFrom(u.getClass)) {
-          val s = exceptionNotExpectedMessageFun(u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
         }
       }
     }

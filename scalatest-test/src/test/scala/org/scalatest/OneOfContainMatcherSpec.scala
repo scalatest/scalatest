@@ -18,13 +18,16 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class OneOfContainMatcherSpec extends FunSpec {
 
+  private val prettifier = Prettifier.default
+
   describe("oneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.mkString(", ")))))
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      e.message should be (Some(FailureMessages.didNotContainOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -318,9 +321,9 @@ class OneOfContainMatcherSpec extends FunSpec {
   
   describe("not oneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.containedOneOfElements(left, UnquotedString(right.mkString(", ")))))
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.containedOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

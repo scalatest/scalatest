@@ -17,6 +17,7 @@ package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
 import exceptions.NotAllowedException
+import org.scalactic.source
 
 /**
  * Trait that can be mixed into suites that need code executed before and after running each test.
@@ -133,12 +134,12 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def before(fun: => Any) {
+  protected def before(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", 0)
+      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", pos)
     val success = beforeFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", 0)
+      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", pos)
   }
 
   /**
@@ -153,12 +154,12 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def after(fun: => Any) {
+  protected def after(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", 0)
+      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", pos)
     val success = afterFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", 0)
+      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", pos)
   }
 
   /**
@@ -190,40 +191,55 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
   */
   abstract protected override def runTest(testName: String, args: Args): Status = {
 
+    // Do I need to make this volatile?
     var thrownException: Option[Throwable] = None
 
-    beforeFunctionAtomic.get match {
-      case Some(fun) => if (!args.runTestInNewInstance) fun()
-      case None =>
-    }
-
-    try {
-      super.runTest(testName, args)
-    }
-    catch {
-      case e: Exception => thrownException = Some(e)
-      FailedStatus
-    }
-    finally {
+    val runTestStatus: Status =
       try {
-        // Make sure that afterEach is called even if runTest completes abruptly.
-        afterFunctionAtomic.get match {
+        beforeFunctionAtomic.get match {
           case Some(fun) => if (!args.runTestInNewInstance) fun()
           case None =>
         }
-
-        thrownException match {
-          case Some(e) => throw e
-          case None =>
-        }
+        super.runTest(testName, args)
       }
       catch {
-        case laterException: Exception =>
-          thrownException match { // If both run and afterAll throw an exception, report the test exception
-            case Some(earlierException) => throw earlierException
-            case None => throw laterException
-          }
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+          thrownException = Some(e)
+          FailedStatus // I think if this happens, we just want to try the after code, swallowing exceptions, right here. No
+                       // need to do it asynchronously. I suspect that would simplify the code.
       }
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    try {
+      val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          // Make sure that afterEach is called even if runTest completes abruptly.
+          runTestStatus withAfterEffect {
+            try {
+              afterFunctionAtomic.get match {
+                case Some(fun) => fun()
+                case None =>
+              }
+            }
+            catch {
+              case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) && thrownException.isDefined =>
+                // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
+            }
+          }
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and after throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 

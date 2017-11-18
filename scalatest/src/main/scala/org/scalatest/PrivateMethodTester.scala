@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import java.lang.reflect.{InvocationTargetException, Method, Modifier}
 import org.scalactic.Requirements._
+import java.lang.reflect.{InvocationTargetException, Method, Modifier}
 
 /**
  * Trait that facilitates the testing of private methods.

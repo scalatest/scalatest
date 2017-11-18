@@ -34,7 +34,7 @@ trait TestLocationServices {
   val expectedTestSucceededList: List[LocationPair]
   val expectedInfoProvidedList: List[LineInFilePair]
   
-  private def checkLocation(expectedList: List[LocationPair], event: Event) {
+  private def checkLocation(expectedList: List[LocationPair], event: Event): Unit = {
     event.location match {
       case Some(location) =>
         location match {
@@ -85,7 +85,7 @@ trait TestLocationServices {
     }
   }
   
-  private def checkSeeStackDepthExceptionPair(expectedList: List[SeeStackDepthExceptionPair], expectedName: String, event: Event) {
+  private def checkSeeStackDepthExceptionPair(expectedList: List[SeeStackDepthExceptionPair], expectedName: String, event: Event): Unit = {
     val expectedPairOpt: Option[SeeStackDepthExceptionPair] = expectedList.find { pair => pair.name == expectedName }
     expectedPairOpt match {
       case Some(expectedPair) =>
@@ -99,7 +99,7 @@ trait TestLocationServices {
     }
   }
   
-  def checkFun(event: Event) {
+  def checkFun(event: Event): Unit = {
     event match {
       case suiteStarting: SuiteStarting => 
         checkLocation(expectedSuiteStartingList, suiteStarting)
@@ -119,7 +119,7 @@ trait TestLocationServices {
     }
   }
   
-  def allChecked = {
+  def allChecked: Unit = {
     expectedSuiteStartingList.foreach { pair => assert(pair.checked, suiteTypeName + ": SuiteStarting with location " + pair + " not fired.") }
     expectedSuiteCompletedList.foreach { pair => assert(pair.checked, suiteTypeName + ": SuiteCompleted with location " + pair + " not fired.") }
     expectedSuiteAbortedList.foreach { pair => assert(pair.checked, suiteTypeName + ": SuiteAborted for " + pair.name + " not fired.") }

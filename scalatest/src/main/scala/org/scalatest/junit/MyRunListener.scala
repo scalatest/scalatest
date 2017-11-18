@@ -38,7 +38,7 @@ import exceptions._
     val failedTests = Collections.synchronizedSet(new HashSet[String])
     def getTopOfMethod(className: String, methodName: String) = Some(TopOfMethod(className, "public void " + className + "." + methodName + "()"))
 
-    override def testFailure(failure: Failure) {
+    override def testFailure(failure: Failure): Unit = {
       failedTests.add(failure.getDescription.getDisplayName)
       val (testName, testClass, testClassName) =
         parseTestDescription(failure.getDescription)
@@ -67,7 +67,7 @@ import exceptions._
       // TODO: can I add a duration?
     }
 
-    override def testFinished(description: Description) {
+    override def testFinished(description: Description): Unit = {
       if (!failedTests.contains(description.getDisplayName)) {
         val (testName, testClass, testClassName) =
           parseTestDescription(description)
@@ -79,22 +79,22 @@ import exceptions._
         status.setFailed()
     }
 
-    override def testIgnored(description: Description) {
+    override def testIgnored(description: Description): Unit = {
       val (testName, testClass, testClassName) =
         parseTestDescription(description)
       val formatter = getIndentedTextForTest(testName, 1, true)
       report(TestIgnored(theTracker.nextOrdinal(), testClassName, testClass, Some(testClass), testName, testName, Some(formatter), getTopOfMethod(testClass, testName)))
     }
 
-    override def testRunFinished(result: Result) {
+    override def testRunFinished(result: Result): Unit = {
       // don't report these - they get reported by Runner
     }
 
-    override def testRunStarted(description: Description) {
+    override def testRunStarted(description: Description): Unit = {
       // don't report these - they get reported by Runner
     }
 
-    override def testStarted(description: Description) {
+    override def testStarted(description: Description): Unit = {
       val (testName, testClass, testClassName) =
         parseTestDescription(description)
       report(TestStarting(theTracker.nextOrdinal(), testClassName, testClass, Some(testClass), testName, testName, Some(MotionToSuppress), getTopOfMethod(testClass, testName)))

@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic._
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
 /**
@@ -87,7 +88,7 @@ trait PartialFunctionValues {
    *
    * @param pf the <code>PartialFunction</code> on which to add the <code>valueAt</code> method
    */
-  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B]) = new Valuable(pf)
+  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position): Valuable[A, B] = new Valuable(pf, pos)
   
   /**
    * Wrapper class that adds a <code>valueAt</code> method to <code>PartialFunction</code>, allowing
@@ -99,7 +100,7 @@ trait PartialFunctionValues {
    *
    * @param pf An <code>PartialFunction</code> to convert to <code>Valuable</code>, which provides the <code>valueAt</code> method.
    */
-  class Valuable[A, B](pf: PartialFunction[A, B]) {
+  class Valuable[A, B](pf: PartialFunction[A, B], pos: source.Position) {
 
     /**
      * Returns the result of applying the wrapped <code>PartialFunction</code> to the passed input, if it is defined at that input, else
@@ -110,7 +111,7 @@ trait PartialFunctionValues {
         pf.apply(input)
       }
       else
-        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, getStackDepthFun("PartialFunctionValues.scala", "valueAt"))
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, pos)
     }
   }
 }

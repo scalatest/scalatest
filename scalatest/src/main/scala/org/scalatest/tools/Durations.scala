@@ -57,7 +57,7 @@ private[scalatest] case class Durations(file: File) {
   //
   // The 'run' parameter is the timestamp identifier for the run.
   //
-  def addTests(run: String, runXml: NodeSeq) {
+  def addTests(run: String, runXml: NodeSeq): Unit = {
     for (suite <- runXml \\ "suite") {
       val suiteId   = (suite \ "@id").toString
       val suiteName = (suite \ "@name").toString
@@ -90,7 +90,7 @@ private[scalatest] case class Durations(file: File) {
   }
 
   def addDuration(suiteId: String, suiteName: String, testName: String,
-                  run: String, millis: Int)
+                  run: String, millis: Int): Unit =
   {
     def getSuite(): Suite = {
       val suiteOption = suites.find(suite => suite.suiteId == suiteId)
@@ -119,7 +119,7 @@ private[scalatest] case class Durations(file: File) {
       }
     }
 
-    def archiveOldestDuration(test: Test) {
+    def archiveOldestDuration(test: Test): Unit = {
       val oldestDuration = test.durations.last
       test.durations = test.durations.dropRight(1)
 

@@ -16,9 +16,10 @@
 package org.scalactic
 
 import org.scalatest._
+import SharedHelpers.{javaList, javaSortedMap}
 import scala.collection.mutable.{WrappedArray, ArrayOps}
 import scala.util.Success
-import SharedHelpers.{javaList, javaSortedMap}
+
 // SKIP-SCALATESTJS-START
 import scala.xml.NodeSeq
 // SKIP-SCALATESTJS-END

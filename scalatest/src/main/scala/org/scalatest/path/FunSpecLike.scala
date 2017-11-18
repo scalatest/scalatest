@@ -15,11 +15,12 @@
  */
 package org.scalatest.path
 
-import org.scalatest.words.BehaveWord
-import scala.collection.immutable.ListSet
-import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
-import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalatest.exceptions._
+import org.scalactic.{source, Prettifier}
+import org.scalatest.words.BehaveWord
+import Suite.autoTagClassAnnotations
+import org.scalatest.PathEngine.isInTargetPath
 
 /**
  * Implementation trait for class <code>path.FunSpec</code>, which is
@@ -143,14 +144,14 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     
     /**
@@ -261,8 +262,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
     }
  
     /**
@@ -346,7 +347,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -354,7 +355,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
   
   /**
@@ -370,20 +371,20 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.path.FunSpec</code>.
    * </p>
    */
-  protected def describe(description: String)(fun: => Unit) {
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val errorStackDepth = 4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val errorStackDepth = 11
+
     try {
-      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None, Some(pos))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
       case other: Throwable => throw other
     }
   }
@@ -407,19 +408,6 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * </p>
    */
   protected val behave = new BehaveWord
-
-  /**
-   * This lifecycle method is unused by this trait, and will complete abruptly with
-   * <code>UnsupportedOperationException</code> if invoked.
-   *
-   * <p>
-   * This trait's implementation of this method is  marked as final. For insight onto why, see the
-   * <a href="#sharedFixtures">Shared fixtures</a> section in the main documentation for this trait.
-   * </p>
-   */
-  final override def withFixture(test: NoArgTest): Outcome = {
-    throw new UnsupportedOperationException
-  }
 
   /**
    * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
@@ -470,8 +458,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   final override def testNames: Set[String] = {
     ensureTestResultsRegistered(thisSuite)
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**
@@ -531,9 +518,9 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   final protected override def runTest(testName: String, args: Args): Status = {
 
     ensureTestResultsRegistered(thisSuite)
-
-    def dontInvokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
-      PastOutcome(theTest.testFun().toOutcome)
+    
+    def dontInvokeWithFixture(theTest: TestLeaf): Outcome = {
+      theTest.testFun()
     }
 
     runTestImpl(thisSuite, testName, args, true, dontInvokeWithFixture)
@@ -632,9 +619,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.FunSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FunSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FunSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>
@@ -656,9 +642,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.FunSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FunSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FunSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>

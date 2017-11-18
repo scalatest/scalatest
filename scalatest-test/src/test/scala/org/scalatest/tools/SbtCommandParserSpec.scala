@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.scalatest.tools
+/*package org.scalatest.tools
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
@@ -23,7 +23,7 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
 
   val parser = new SbtCommandParser
 
-  def canParsePhrase(s: String) {
+  def canParsePhrase(s: String): Unit = {
       val result = parser.parseResult(s)
       result match {
         case ns: parser.NoSuccess => fail(ns.toString)
@@ -31,7 +31,7 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
       }
   }
 
-  def cannotParsePhrase(s: String) {
+  def cannotParsePhrase(s: String): Unit = {
       val result = parser.parseResult(s)
       result match {
         case parser.Success(result, _) => fail("wasn't supposed to, but parsed: " + result)
@@ -45,5 +45,5 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
       canParsePhrase("""st --""")
     }
   }
-}
+}*/
 

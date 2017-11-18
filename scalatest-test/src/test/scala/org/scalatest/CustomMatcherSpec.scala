@@ -15,11 +15,10 @@
  */
 package org.scalatest
 
-import scala.collection.mutable.ListBuffer
-import org.scalatest.exceptions.TestFailedException
-
-import matchers.Matcher
 import matchers.MatchResult
+import matchers.Matcher
+import org.scalatest.exceptions.TestFailedException
+import scala.collection.mutable.ListBuffer
 
 trait CustomMatchers {
 

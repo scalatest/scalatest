@@ -66,7 +66,7 @@ object Stopper {
   private class DefaultStopper extends Stopper {
     @volatile private var stopWasRequested = false
     def stopRequested: Boolean = stopWasRequested
-    def requestStop() {
+    def requestStop(): Unit = {
       stopWasRequested = true
     }
   }

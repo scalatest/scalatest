@@ -53,7 +53,7 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
       case None => suiteName
     }
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
 
     event match {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException
 
 class AssertionsSpec extends FunSpec {
-  
+
   val fileName: String = "AssertionsSpec.scala"
+
+  private val prettifier = Prettifier.default
 
   describe("The === method") {
     it("should be usable when the left expression results in null") {
@@ -89,43 +91,46 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assert(a === null)
       }
-      assert(e1.message === Some(FailureMessages.didNotEqual(a, null)))
+      assert(e1.message === Some(FailureMessages.didNotEqual(prettifier, a, null)))
     }
   }
   describe("The intercept method") {
-    it("should  catches subtypes") {
+    it("should catch subtypes") {
       class MyException extends RuntimeException
       class MyExceptionSubClass extends MyException
       intercept[MyException] {
         throw new MyException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
       intercept[MyException] {
         throw new MyExceptionSubClass
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
       // Try with a trait
       trait MyTrait {
-        def someRandomMethod() {}
+        def someRandomMethod(): Unit = {}
       }
       class AnotherException extends RuntimeException with MyTrait
       val caught = intercept[MyTrait] {
         throw new AnotherException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
       // Make sure the result type is the type passed in, so I can 
       // not cast and still invoke any method on it I want
       caught.someRandomMethod()
     }
 
+    it("should throw TFE if no exception is thrown") {
+      assertThrows[TestFailedException] {
+        intercept[IllegalArgumentException] { "hi" }
+      }
+    }
+
     it("should return the caught exception") {
       val e = new RuntimeException
       val result = intercept[RuntimeException] {
         throw e
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
       assert(result eq e)
     }
+
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
@@ -138,29 +143,54 @@ class AssertionsSpec extends FunSpec {
         assert(caught.cause.value eq wrongException)
       }
     }
-    it("should catch subtypes of the given exception type") {
+  }
+  describe("The assertThrows method") {
+    it("should catch subtypes") {
       class MyException extends RuntimeException
       class MyExceptionSubClass extends MyException
-      intercept[MyException] {
+      assertThrows[MyException] {
         throw new MyException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
-      intercept[MyException] {
+      assertThrows[MyException] {
         throw new MyExceptionSubClass
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
       // Try with a trait
       trait MyTrait {
-        def someRandomMethod() {}
+        def someRandomMethod(): Unit = {}
       }
       class AnotherException extends RuntimeException with MyTrait
-      val caught = intercept[MyTrait] {
+      assertThrows[MyTrait] {
         throw new AnotherException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
       }
-      // Make sure the result type is the type passed in, so I can 
-      // not cast and still invoke any method on it I want
-      caught.someRandomMethod()
+    }
+
+    it("should return Succeeded") {
+      val e = new RuntimeException
+      val result = assertThrows[RuntimeException] {
+        throw e
+      }
+      assert(result eq Succeeded)
+    }
+
+    it("should throw TFE if no exception is thrown") {
+      val caught =
+        intercept[TestFailedException] {
+          assertThrows[Exception] { "hi" }
+        }
+      assert(caught.isInstanceOf[TestFailedException])
+    }
+
+    describe("when the bit of code throws the wrong exception") {
+      it("should include that wrong exception as the TFE's cause") {
+        val wrongException = new RuntimeException("oops!")
+        val caught =
+          intercept[TestFailedException] {
+            assertThrows[IllegalArgumentException] {
+              throw wrongException
+            }
+          }
+        assert(caught.cause.value eq wrongException)
+      }
     }
   }
   describe("The trap method") {
@@ -170,7 +200,7 @@ class AssertionsSpec extends FunSpec {
       assert(trappedEx.isInstanceOf[TestFailedException])
       assert(trappedEx.getMessage == "12 did not equal 13")
       val trappedUnit = trap { assert(a == 12) }
-      assert(trappedUnit == NormalResult(()))
+      assert(trappedUnit == NormalResult(Succeeded))
       val trappedInt = trap { 12 }
       assert(trappedInt == NormalResult(12))
       val trappedString = trap { "12" }
@@ -186,44 +216,44 @@ class AssertionsSpec extends FunSpec {
 
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages.didNotEqual(leftee, rightee)
+    FailureMessages.didNotEqual(prettifier, leftee, rightee)
   }
 
   def equaled(left: Any, right: Any): String =
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
 
   def expressionFailed(left: String): String =
-    FailureMessages.expressionFailed(UnquotedString(left))
+    FailureMessages.expressionFailed(prettifier, UnquotedString(left))
 
   def wasNotGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThan(left, right)
+    FailureMessages.wasNotGreaterThan(prettifier, left, right)
 
   def wasGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThan(left, right)
+    FailureMessages.wasGreaterThan(prettifier, left, right)
 
   def wasNotGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasNotLessThan(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThan(left, right)
+    FailureMessages.wasNotLessThan(prettifier, left, right)
 
   def wasLessThan(left: Any, right: Any): String =
-    FailureMessages.wasLessThan(left, right)
+    FailureMessages.wasLessThan(prettifier, left, right)
 
   def wasNotLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThanOrEqualTo(left, right)
+    FailureMessages.wasNotLessThanOrEqualTo(prettifier, left, right)
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasLessThanOrEqualTo(left, right)
+    FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
-    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
 
   def commaBut(left: String, right: String): String =
-    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -280,16 +310,16 @@ class AssertionsSpec extends FunSpec {
     quoteString(left) + " was instance of " + className
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadLengthInsteadOfExpectedLength(left, actual, expected)
+    FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
-    FailureMessages.hadLength(left, actual)
+    FailureMessages.hadLength(prettifier, left, actual)
 
   def hadSizeInsteadOfExpectedSize(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadSizeInsteadOfExpectedSize(left, actual, expected)
+    FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
-    FailureMessages.hadSize(left, actual)
+    FailureMessages.hadSize(prettifier, left, actual)
 
   class Stateful {
     var state = false
@@ -858,9 +888,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -871,9 +904,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1761,6 +1797,11 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'))
         """.stripMargin)
     }
+
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assert(x + 1 == 2) eq Succeeded)
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -2291,9 +2332,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -2304,9 +2348,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -3194,7 +3241,10 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assert(x + 1 == 2, "clue") eq Succeeded)
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -3718,9 +3768,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -3731,9 +3784,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -4621,6 +4677,10 @@ class AssertionsSpec extends FunSpec {
           |assume(org.exists(_ == 'b'))
         """.stripMargin)
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assume(x + 1 == 2) eq Succeeded)
+    }
   }
 
   describe("The assume(boolean, clue) method") {
@@ -5151,9 +5211,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -5164,9 +5227,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -6054,7 +6120,10 @@ class AssertionsSpec extends FunSpec {
           |assume(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assume(x + 1 == 2, "clue") eq Succeeded)
+    }
   }
 
   describe("assertTypeError method ") {
@@ -6083,6 +6152,26 @@ class AssertionsSpec extends FunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError("val i: Int = null")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError("arrayList.asScala")
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
 
@@ -6123,6 +6212,38 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError(
+          """
+            |val i: Int = null
+            |""".stripMargin
+        )
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError(
+            """
+              |arrayList.asScala
+              |""".stripMargin
+          )
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
+      }
+    }
+
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertTypeError("val x: String = 1") eq Succeeded)
     }
   }
 
@@ -6145,6 +6266,30 @@ class AssertionsSpec extends FunSpec {
 
       it("should do nothing when parse failed") {
         assertDoesNotCompile("println(\"test)")
+      }
+
+      it("should result in type Assertion and, on success, return the Succeeded value") {
+        assert(assertDoesNotCompile("val x: String = 1") eq Succeeded)
+      }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile("val i: Int = null")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertDoesNotCompile("arrayList.asScala".stripMargin)
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
     }
@@ -6180,8 +6325,40 @@ class AssertionsSpec extends FunSpec {
         )
       }
 
-    }
+      it("should result in type Assertion and, on success, return the Succeeded value") {
+        assert(assertDoesNotCompile(
+          """
+            |val x: String = 1
+            |""".stripMargin) eq Succeeded)
+      }
 
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile(
+          """
+            |val i: Int = null
+            |""".stripMargin
+        )
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertDoesNotCompile(
+            """
+              |arrayList.asScala
+              |""".stripMargin)
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+      }
+    }
   }
 
   describe("assertCompiles method") {
@@ -6212,6 +6389,17 @@ class AssertionsSpec extends FunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+
+      it("should do nothing when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        assertCompiles("arrayList.asScala")
       }
     }
 
@@ -6254,6 +6442,23 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+
+      it("should do nothing when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        assertCompiles(
+          """
+            |arrayList.asScala
+            |""".stripMargin)
+      }
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertCompiles("val x: Int = 1") eq Succeeded)
     }
   }
 
@@ -6316,7 +6521,11 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a) { null }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null)))
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assertResult(2) { x + 1 } eq Succeeded)
     }
   }
 
@@ -6379,7 +6588,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "a clue") { null }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(a, null) + " a clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null) + " a clue"))
     }
     it("should append clues in a satisfying manner") {
       val a = "hi"
@@ -6389,22 +6598,26 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "the clue") { b }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + " the clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + " the clue"))
 
       val e2 = intercept[TestFailedException] {
         assertResult(a, ", the clue") { b }
       }
-      assert(e2.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ", the clue"))
+      assert(e2.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + ", the clue"))
 
       val e3 = intercept[TestFailedException] {
         assertResult(a, ". the clue") { b }
       }
-      assert(e3.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ". the clue"))
+      assert(e3.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + ". the clue"))
 
       val e4 = intercept[TestFailedException] {
         assertResult(a, "; the clue") { b }
       }
-      assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
+      assert(e4.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + "; the clue"))
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assertResult(2, "clue") { x + 1 } eq Succeeded)
     }
   }
 }

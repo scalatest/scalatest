@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import java.util.NoSuchElementException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.exceptions.TestFailedException
-
-import scala.util.Try
+import org.scalactic._
 import scala.util.Failure
 import scala.util.Success
+import scala.util.Try
+import java.util.NoSuchElementException
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * Trait that provides an implicit conversion that adds <code>success</code> and <code>failure</code> methods
@@ -96,7 +96,7 @@ trait TryValues {
    *
    * @param theTry the <code>Try</code> to which to add the <code>success</code> and <code>failure</code> methods
    */
-  implicit def convertTryToSuccessOrFailure[T](theTry: Try[T]) = new SuccessOrFailure(theTry)
+  implicit def convertTryToSuccessOrFailure[T](theTry: Try[T])(implicit pos: source.Position): SuccessOrFailure[T] = new SuccessOrFailure(theTry, pos)
 
   /**
    * Wrapper class that adds <code>success</code> and <code>failure</code> methods to <code>scala.util.Try</code>, allowing
@@ -109,7 +109,7 @@ trait TryValues {
    *
    * @param theTry An <code>Try</code> to convert to <code>SuccessOrFailure</code>, which provides the <code>success</code> and <code>failure</code> methods.
    */
-  class SuccessOrFailure[T](theTry: Try[T]) {
+  class SuccessOrFailure[T](theTry: Try[T], pos: source.Position) {
 
     /**
      * Returns the <code>Try</code> passed to the constructor as a <code>Failure</code>, if it is a <code>Failure</code>, else throws <code>TestFailedException</code> with
@@ -119,7 +119,7 @@ trait TryValues {
       theTry match {
         case failure: Failure[T] => failure
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotAFailure), None, getStackDepthFun("TryValues.scala", "failure"))
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotAFailure), None, pos)
       }
     }
 
@@ -131,7 +131,7 @@ trait TryValues {
       theTry match {
         case success: Success[T] => success
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotASuccess), None, getStackDepthFun("TryValues.scala", "success"))
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotASuccess), None, pos)
       }
     }
   }

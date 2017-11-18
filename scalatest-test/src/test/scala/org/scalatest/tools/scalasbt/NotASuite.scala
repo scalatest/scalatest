@@ -17,15 +17,15 @@ package org.scalatest.tools.scalasbt
 
 class NotASuite {
 
-  def testMethod1() {
+  def testMethod1(): Unit = {
     
   }
   
-  def testMethod2() {
+  def testMethod2(): Unit = {
     
   }
   
-  def testMethod3() {
+  def testMethod3(): Unit = {
     
   }
   

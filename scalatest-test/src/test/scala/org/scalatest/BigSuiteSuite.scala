@@ -61,7 +61,7 @@ class BigSuiteSuite extends FunSuite {
       }
     }
   }
-  def ensureTestFailedEventReceivedOrNot(suite: Suite, shouldReceiveCount: Int) {
+  def ensureTestFailedEventReceivedOrNot(suite: Suite, shouldReceiveCount: Int): Unit = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvents = reporter.testFailedEventsReceived

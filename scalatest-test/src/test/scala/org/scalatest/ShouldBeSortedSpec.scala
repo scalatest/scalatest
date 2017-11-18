@@ -15,26 +15,29 @@
  */
 package org.scalatest
 
+import Matchers._
+import org.scalactic.Prettifier
+import FailureMessages.decorateToStringValue
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
-import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
 
 class ShouldBeSortedSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   //ADDITIONAL//
   
   def wasNotSorted(left: Any): String = 
-    decorateToStringValue(left) + " was not sorted"
+    decorateToStringValue(prettifier, left) + " was not sorted"
     
   def wasSorted(left: Any): String = 
-    decorateToStringValue(left) + " was sorted"
+    decorateToStringValue(prettifier, left) + " was sorted"
     
   def allInspectionFailed(idx: Int, message: String, lineNumber:Int, left: Any) = 
     "'all' inspection failed, because: \n" + 
     "  at index " + idx + ", " + message + " (ShouldBeSortedSpec.scala:" + lineNumber + ") \n" + 
-    "in " + decorateToStringValue(left)
+    "in " + decorateToStringValue(prettifier, left)
     
   case class Student(name: String, scores: Int)
   implicit val studentOrdering = new Ordering[Student] {

@@ -18,11 +18,17 @@ package org.scalatest.concurrent
 private[scalatest] object SleepHelper {
 
   def sleep(millis: Long, nanos: Int): Unit = {
-    // Do nothing, as we cannot block in javascript environment.
+    sleep(millis)
   }
 
   def sleep(millis: Long): Unit = {
-    // Do nothing, as we cannot block in javascript environment.
+    val startTime = scala.compat.Platform.currentTime
+    val buffer = new StringBuilder
+    while ((scala.compat.Platform.currentTime - startTime) < millis) {
+      buffer.clear()
+      for (i <- 1 to 100)
+        buffer.append(i.toString)
+    }
   }
 
 }

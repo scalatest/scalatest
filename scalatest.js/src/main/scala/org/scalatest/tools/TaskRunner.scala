@@ -1,3 +1,18 @@
+/*
+ * Copyright 2001-2015 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.scalatest.tools
 
 import org.scalatest.Suite._
@@ -39,6 +54,7 @@ final class TaskRunner(task: TaskDef,
                        presentReminderWithShortStackTraces: Boolean,
                        presentReminderWithFullStackTraces: Boolean,
                        presentReminderWithoutCanceledTests: Boolean,
+                       presentFilePathname: Boolean,
                        notifyServer: Option[String => Unit]) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
@@ -73,6 +89,7 @@ println("GOT TO THIS RECOVER CALL")
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       notifyServer
     )
 
@@ -135,8 +152,15 @@ println("GOT TO THIS RECOVER CALL")
         status.whenCompleted { _ =>
           val formatter = Suite.formatterForSuiteCompleted(suite)
           val duration = Platform.currentTime
-          reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-          promise.complete(Success(()))
+          status.unreportedException match {
+            case Some(ue) =>
+              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+              promise.complete(scala.util.Failure(ue))
+
+            case None =>
+              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              promise.complete(Success(()))
+          }
         }
         promise.future
       } catch {
@@ -164,6 +188,7 @@ println("GOT TO THIS RECOVER CALL")
                                     presentReminderWithShortStackTraces: Boolean,
                                     presentReminderWithFullStackTraces: Boolean,
                                     presentReminderWithoutCanceledTests: Boolean,
+                                    presentFilePathname: Boolean,
                                     notifyServer: Option[String => Unit]
                                     ) extends StringReporter(
     presentAllDurations,
@@ -174,7 +199,8 @@ println("GOT TO THIS RECOVER CALL")
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentFilePathname
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment) {
@@ -203,6 +229,7 @@ println("GOT TO THIS RECOVER CALL")
         presentReminderWithShortStackTraces,
         presentReminderWithFullStackTraces,
         presentReminderWithoutCanceledTests,
+        presentFilePathname,
         reminderEventsBuf
       ) foreach printPossiblyInColor
     }

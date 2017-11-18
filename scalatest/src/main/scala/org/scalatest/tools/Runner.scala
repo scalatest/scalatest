@@ -777,7 +777,7 @@ object Runner {
     private val runDoneSemaphore = new Semaphore(1)
     runDoneSemaphore.acquire()
 
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case _: TestFailed =>
           failedAbortedOrStopped = true
@@ -813,7 +813,7 @@ object Runner {
   /**
    * Runs a suite of tests, with optional GUI. See the main documentation for this singleton object for the details.
    */
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     // println("FOR DEBUGGING, THESE ARE THE ARGS PASSED TO main(): " + args.mkString(" "))
     Thread.currentThread.setName("ScalaTest-main")
     val result = 
@@ -1305,23 +1305,25 @@ object Runner {
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
-                  for (suiteConfig <- suiteInstances) {
+                  val statuses = for (suiteConfig <- suiteInstances) yield {
                     val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                     val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
                     val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                     distributor.apply(suiteConfig.suite, runArgs)
                   }
                   distributor.waitUntilDone()
+                  (new CompositeStatus(statuses.toSet)).waitUntilCompleted()
                 }
               }
               else {
-                for (suiteConfig <- suiteInstances) {
+                val statuses = for (suiteConfig <- suiteInstances) yield {
                   val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                   val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
                   val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                   distributor.apply(suiteConfig.suite, runArgs)
                 }
                 distributor.waitUntilDone()
+                (new CompositeStatus(statuses.toSet)).waitUntilCompleted()
               }
             }
             finally {
@@ -1336,6 +1338,7 @@ object Runner {
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()
+              status.waitUntilCompleted()
             }
           }
 
@@ -1559,7 +1562,7 @@ object Runner {
   private[scalatest] def usingEventDispatchThread(f: => Unit): Unit = {
     SwingUtilities.invokeLater(
       new Runnable() {
-        def run() {
+        def run(): Unit = {
           f
         }
       }

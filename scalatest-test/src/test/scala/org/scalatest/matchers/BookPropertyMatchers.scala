@@ -15,10 +15,6 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 
 trait BookPropertyMatchers {
 

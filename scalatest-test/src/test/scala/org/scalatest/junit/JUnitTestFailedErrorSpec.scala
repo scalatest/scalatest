@@ -16,10 +16,12 @@
 package org.scalatest.junit
 
 import org.scalatest._
+import org.scalactic.source
+import SharedHelpers.thisLineNumber
 
 class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJUnit {
 
-  val baseLineNumber = 22
+  val baseLineNumber = thisLineNumber
 
   describe("The JUnitTestFailedError") {
 

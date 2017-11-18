@@ -21,7 +21,6 @@ import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 import SharedHelpers._
 import concurrent.Eventually._
-import time.SpanSugar._
 import Matchers._
 import OptionValues._
 import Inside._

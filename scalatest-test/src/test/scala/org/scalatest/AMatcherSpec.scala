@@ -19,8 +19,11 @@ import matchers._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import org.scalactic.Prettifier
 
 class AMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("AMatcher ") {
     
@@ -205,7 +208,7 @@ class AMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be a (positiveSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was a positive size map"))
+        e.message should be (Some(decorateToStringValue(prettifier, Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -323,7 +326,7 @@ class AMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be a (positiveSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(left) + " was a positive size map"))
+        e.message should be (Some(decorateToStringValue(prettifier, left) + " was a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

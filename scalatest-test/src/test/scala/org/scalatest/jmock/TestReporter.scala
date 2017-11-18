@@ -29,7 +29,7 @@ class TestReporter extends Reporter {
   
   // def errorMessage = event.get.throwable.get.getMessage
 
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     event match {
       case event: TestIgnored =>
         ignoreCount = ignoreCount + 1 

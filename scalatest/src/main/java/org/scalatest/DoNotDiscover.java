@@ -52,10 +52,13 @@ import java.lang.annotation.*;
  * <p>
  * ScalaTest will run classes annotated with <code>DoNotDiscover</code> if asked to explicitly, it just won't discover them. 
  * </p>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
+ * </p>
  */
 @TagAnnotation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface DoNotDiscover {
-
 }

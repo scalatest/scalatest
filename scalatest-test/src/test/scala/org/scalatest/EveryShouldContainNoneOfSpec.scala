@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
@@ -24,6 +24,8 @@ import org.scalatest.exceptions.NotAllowedException
 import exceptions.TestFailedException
 
 class EveryShouldContainNoneOfSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   val upperCaseEquality =
     new Equality[String] {
@@ -46,7 +48,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
         // Contains duplicate elements in the right list
         val e2 = intercept[NotAllowedException] {
           fumList should contain noneOf ("fee", "fam", "foe", "fam")
@@ -90,7 +92,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -128,7 +130,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -166,7 +168,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -204,7 +206,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -242,7 +244,7 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -294,8 +296,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(lists)))
+          "  at index 2, " + FailureMessages.containedAtLeastOneOf(prettifier, lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
@@ -345,8 +347,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(lists)))
+          "  at index 2, " + FailureMessages.containedAtLeastOneOf(prettifier, lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
@@ -392,8 +394,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(prettifier, toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -433,8 +435,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(prettifier, toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -474,8 +476,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(prettifier, toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -515,8 +517,8 @@ class EveryShouldContainNoneOfSpec extends FunSpec {
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
-          "in " + decorateToStringValue(toLists)))
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(prettifier, toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + offendingLine + ") \n" +
+          "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality

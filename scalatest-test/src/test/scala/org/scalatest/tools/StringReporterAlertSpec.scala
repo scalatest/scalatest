@@ -39,6 +39,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
@@ -54,6 +55,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
@@ -78,6 +80,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
@@ -100,6 +103,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
@@ -124,6 +128,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertFormattedText("some alert "), AnsiYellow)) // TODO: I'm not sure where the extra space is coming from. Be nice to zap it.
       }
@@ -146,6 +151,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
+          presentFilePathname = false,
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.noteFormattedText("some update "), AnsiGreen))
       }

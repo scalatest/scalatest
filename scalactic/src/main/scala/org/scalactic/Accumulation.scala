@@ -15,18 +15,18 @@
  */
 package org.scalactic
 
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
-import scala.util.control.NonFatal
+import scala.collection.GenSet
 import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable.Builder
-import scala.collection.GenSet
-import Accumulation.Combinable
-import Accumulation.Validatable
-import Accumulation.TravValidatable
 import Accumulation.Accumulatable
+import Accumulation.Combinable
+import Accumulation.TravValidatable
+import Accumulation.Validatable
+import scala.collection.mutable.Builder
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+import scala.util.control.NonFatal
 
 /**
  * Provides mechanisms that enable errors to be accumulated in &ldquo;accumulating <a href="Or.html"><code>Or</code></a>s,&rdquo; <code>Or</code>s whose
@@ -52,6 +52,7 @@ import Accumulation.Accumulatable
 trait Accumulation {
 
   import scala.language.{higherKinds, implicitConversions}
+
 
   /**
    * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Acumulatable.html"><code>Accumulatable</code></a>, which

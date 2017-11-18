@@ -42,6 +42,12 @@ class OptionValuesSpec extends FunSpec {
       caught.failedCodeFileName.value should be ("OptionValuesSpec.scala")
       caught.message.value should be (Resources.optionValueNotDefined)
     }
+
+    it("should allow an immediate application of parens to invoke apply on the type contained in the Option") {
+      val opt: Option[Map[String, Int]] = Some(Map("I" -> 1, "II" -> 2))
+      opt.value("II") shouldBe 2
+    }
   }
 }
+
 

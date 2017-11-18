@@ -22,6 +22,8 @@ import scala.collection.JavaConversions._
 
 object GenTable {
 
+  val generatorSource = new File("GenTable.scala")
+
 val scaladocForTableFor1VerbatimString = """
 /**
  * A table with 1 column.
@@ -177,10 +179,11 @@ import scala.collection.mutable.Builder
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
+import org.scalatest.enablers.TableAsserting
+import org.scalactic._
 """
 
 val tableScaladocTemplate = """
@@ -312,45 +315,16 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    *
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
-  def apply(fun: ($alphaUpper$) => Unit) {
-    for ((($alphaLower$), idx) <- rows.zipWithIndex) {
-      try {
-        fun($alphaLower$)
-      }
-      catch {
-        case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
-        case ex: Throwable =>
-          val ($alphaName$) = heading
+  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAll(heading, rows: _*)(fun)
+  }
 
-          // SKIP-SCALATESTJS-START
-          val stackDepth = 2
-          // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY val stackDepth = 0
+  def forEvery[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forEvery(heading, rows: _*)(fun)
+  }
 
-          throw new TableDrivenPropertyCheckFailedException(
-            sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-              (
-                ex match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                  case _ => ""
-                }
-              ) +
-              "  " + FailureMessages.occurredAtRow(idx) + "\n" +
-$namesAndValues$
-              "  )",
-            Some(ex),
-            getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
-            None, // Payload
-            FailureMessages.undecoratedPropertyCheckFailureMessage,
-            List($alphaLower$),
-            List($alphaName$),
-            idx
-          )
-      }
-    }
+  def exists[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.exists(heading, rows: _*)(fun)
   }
 
   /**
@@ -508,9 +482,10 @@ object Tables extends Tables
 """
 
 val propertyCheckPreamble = """
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import scala.annotation.tailrec
+import org.scalatest.enablers.TableAsserting
+import org.scalactic._
 
 /**
  * Trait containing methods that faciliate property checks against tables of data.
@@ -891,90 +866,10 @@ val propertyCheckForAllTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forAll[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit) {
+  def forAll[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     table(fun)
   }
 """
-
-val propertyCheckForEveryPreamble = """
-
-  case class ForResult[T](passedCount: Int = 0,
-                          discardedCount: Int = 0,
-                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
-                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty,
-                          failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
-
-
-  private[scalatest] def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
-    import InspectorsHelper.{shouldPropagate, indentErrorMessages}
-    @tailrec
-    def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
-      if (itr.hasNext) {
-        val head = itr.next
-        val newResult =
-          try {
-            fun(head)
-            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
-          }
-          catch {
-            case _: exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
-            case ex if !shouldPropagate(ex) =>
-              result.copy(failedElements =
-                result.failedElements :+ (index,
-                  head,
-                  new exceptions.TableDrivenPropertyCheckFailedException(
-                    (sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
-                      (sde.failedCodeFileNameAndLineNumberString match {
-                        case Some(s) => " (" + s + ")";
-                        case None => ""
-                      }) + "\n" +
-                      "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-                      (
-                        ex match {
-                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                            "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                          case _ => ""
-                        }
-                        ) +
-                      "  " + FailureMessages.occurredAtRow(index) + "\n" +
-                      indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
-                        name + " = " + value
-                      }.toIndexedSeq).mkString("\n") +
-                      "  )"),
-                    Some(ex),
-                    getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
-                    None,
-                    FailureMessages.undecoratedPropertyCheckFailureMessage,
-                    head.productIterator.toList,
-                    namesOfArgs,
-                    index
-                  )
-                )
-              )
-          }
-
-        innerRunAndCollectResult(itr, newResult, index + 1)(fun)
-      }
-      else
-        result
-    }
-    innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
-  }
-
-  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
-    import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
-    val messageList = result.failedElements.map(_._3)
-    if (messageList.size > 0)
-      throw new exceptions.TestFailedException(
-        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
-        messageList.headOption,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-  }
-
-"""
-
 
 val propertyCheckForEveryTemplateFor1 = """
   /**
@@ -990,8 +885,9 @@ val propertyCheckForEveryTemplateFor1 = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
+  def forEvery[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    table.forEvery(fun)
+    //asserting.forEvery[Tuple1[A], ASSERTION](table.heading, table.map(Tuple1.apply)){a => fun(a._1)}
   }
 
 """
@@ -1010,29 +906,11 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
-    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
+  def forEvery[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    table.forEvery(fun)
+    //asserting.forEvery[($alphaUpper$), ASSERTION](table.heading, table)(fun.tupled)
   }
 """
-
-
-  val propertyCheckExistsPreamble = """
-
-  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
-    import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
-    if (result.passedCount == 0) {
-      val messageList = result.failedElements.map(_._3)
-      throw new exceptions.TestFailedException(
-        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
-        messageList.headOption,
-        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
-      )
-    }
-  }
-
-                                      """
-
 
   val propertyCheckExistsTemplateFor1 = """
   /**
@@ -1042,8 +920,9 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  def exists[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    table.exists(fun)
+    //asserting.exists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
                                           """
@@ -1056,8 +935,9 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
-    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
+  def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    table.exists(fun)
+    //asserting.exists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
                                       """
 
@@ -1115,8 +995,9 @@ val tableSuitePreamble = """
 
 import org.scalatest.Matchers._
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
+import org.scalatest.refspec.RefSpec
 
-class TableSuite extends Spec with TableDrivenPropertyChecks {
+class TableSuite extends RefSpec with TableDrivenPropertyChecks {
 """
 
 val tableSuiteTemplate = """
@@ -1284,204 +1165,818 @@ $columnsOfIndexes$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genTableForNs(targetDir: File, scalaJS: Boolean) {
+  def genTableForNs(targetDir: File, scalaJS: Boolean): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableFor1.scala")))
- 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      val imports = new org.antlr.stringtemplate.StringTemplate(importsForTableForNTemplate)
-      bw.write(imports.toString)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(
-          (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate
-        )
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
-        val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
-        val strings = List.fill(i)("String").mkString(", ")
-        val argsNamedArgSeq =
-          for (argsIdx <- 0 until i) yield
-            "\"" + "arg" + argsIdx + "\""
-        val argsNamedArg = argsNamedArgSeq.mkString(",")                                  
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val rawRows =                              
-          for (idx <- 0 to 9) yield                
-            List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("alphaName", alphaName)
-        st.setAttribute("strings", strings)
-        st.setAttribute("argsNamedArg", argsNamedArg)
-        st.setAttribute("namesAndValues", namesAndValues)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        if (scalaJS)
-          bw.write(transform(st.toString))
-        else
-          bw.write(st.toString)
+    val targetFile = new File(targetDir, "TableFor1.scala")
+
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
+        bw.write(st.toString)
+        val imports = new org.antlr.stringtemplate.StringTemplate(importsForTableForNTemplate)
+        bw.write(imports.toString)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(
+            (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate
+          )
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+          val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+          val strings = List.fill(i)("String").mkString(", ")
+          val argsNamedArgSeq =
+            for (argsIdx <- 0 until i) yield
+              "\"" + "arg" + argsIdx + "\""
+          val argsNamedArg = argsNamedArgSeq.mkString(",")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+          val rawRows =
+            for (idx <- 0 to 9) yield
+              List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+          val columnsOfIndexes = rawRows.mkString(",\n")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("alphaName", alphaName)
+          st.setAttribute("strings", strings)
+          st.setAttribute("argsNamedArg", argsNamedArg)
+          st.setAttribute("namesAndValues", namesAndValues)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+          if (scalaJS)
+            bw.write(transform(st.toString))
+          else
+            bw.write(st.toString)
+        }
+      }
+      finally {
+        bw.flush()
+        bw.close()
       }
     }
-    finally {
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
-  def genPropertyChecks(targetDir: File) {
+  def genPropertyChecks(targetDir: File): Seq[File] = {
     val filename = "TableDrivenPropertyChecks.scala"
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, filename)))
+    val targetFile = new File(targetDir, filename)
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(propertyCheckPreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
-      }
+        bw.write(propertyCheckPreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
 
-      {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForEveryPreamble)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
-      }
+        for (i <- 1 to 22) {
+          val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
+          val st = new org.antlr.stringtemplate.StringTemplate(template)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
 
-      for (i <- 1 to 22) {
-        val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
-        val st = new org.antlr.stringtemplate.StringTemplate(template)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
-      }
+        for (i <- 1 to 22) {
+          val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
+          val st = new org.antlr.stringtemplate.StringTemplate(template)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          st.setAttribute("filename", filename)
+          bw.write(st.toString)
+        }
 
-      {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckExistsPreamble)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
+        bw.write("}\n")
+        bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
       }
-
-      for (i <- 1 to 22) {
-        val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
-        val st = new org.antlr.stringtemplate.StringTemplate(template)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("filename", filename)
-        bw.write(st.toString)
+      finally {
+        bw.flush()
+        bw.close()
       }
-
-      bw.write("}\n")
-      bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
     }
-    finally {
-      bw.close()
-    }
+
+    Seq(targetFile)
+
   }
 
-  def genTables(targetDir: File) {
+  def genTables(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "Tables.scala")))
+    val targetFile = new File(targetDir, "Tables.scala")
 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(tableObjectPreamble)
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
+        bw.write(st.toString)
+        bw.write(tableObjectPreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        for (i <- 1 to 22) {
+          val st = new org.antlr.stringtemplate.StringTemplate(tableObjectApplyTemplate)
+          val alphaLower = alpha.take(i).mkString(", ")
+          val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+          val strings = List.fill(i)("String").mkString(", ")
+          st.setAttribute("n", i)
+          st.setAttribute("alphaLower", alphaLower)
+          st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("strings", strings)
+          bw.write(st.toString)
+        }
+
+        bw.write("  }\n")
+        bw.write("}\n")
+        bw.write(tablesCompanionObjectVerbatimString)
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
+    }
+
+    Seq(targetFile)
+  }
+
+  def genTableAsserting(targetDir: File, scalaJS: Boolean): Seq[File] = {
+
+    val doForAllMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forAll</code> syntax.
+        | */
+        |def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
+
+    def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
-      for (i <- 1 to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(tableObjectApplyTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        st.setAttribute("n", i)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
+
+      val st = new org.antlr.stringtemplate.StringTemplate(doForAllMethodTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    def doForAllMethodImpl(i: Int): String = {
+      val forAllImplTemplate: String =
+        doForAllMethodTemplate + """ = {
+          |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
+          |    try {
+          |      fun($alphaLower$)
+          |    }
+          |    catch {
+          |      case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
+          |      case ex: Throwable =>
+          |        val ($alphaName$) = heading
+          |
+          |        // SKIP-SCALATESTJS-START
+          |        val stackDepth = 2
+          |        // SKIP-SCALATESTJS-END
+          |        //SCALATESTJS-ONLY val stackDepth = 1
+          |
+          |        indicateFailure(
+          |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+          |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+          |            (
+          |              ex match {
+          |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+          |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+          |                case _ => ""
+          |              }
+          |            ) +
+          |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+          |            $namesAndValues$
+          |            "  )",
+          |          FailureMessages.undecoratedPropertyCheckFailureMessage,
+          |          List($alphaLower$),
+          |          List($alphaName$),
+          |          Some(ex),
+          |          None, // Payload
+          |          prettifier,
+          |          pos,
+          |          idx
+          |        )
+          |      }
+          |  }
+          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+          |}
+        """.stripMargin
+
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(forAllImplTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    val doForEveryMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forEvery</code> syntax.
+        | */
+        |def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+        |""".stripMargin
+
+    def doForEveryMethod(i: Int): String = {
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(doForEveryMethodTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    def doForEveryMethodImpl(i: Int): String = {
+      val heading =
+        if (i == 1)
+          "heading"
+        else
+          (1 to i).map(x => "heading._" + x).mkString(", ")
+      val row = (1 to i).map(x => "row._" + x).mkString(", ")
+      val rows =
+        if (i == 1)
+          "rows.map(Tuple1.apply[A])"
+        else
+          "rows"
+      val forEveryImplTemplate: String =
+        doForEveryMethodTemplate + """ = {
+                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                                   |}
+                                 """.stripMargin
+
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(forEveryImplTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      val rowType = if (i == 1) "Tuple1[A]" else "(" + alphaUpper + ")"
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      st.setAttribute("heading", heading)
+      st.setAttribute("rowType", rowType)
+      st.setAttribute("row", row)
+      st.setAttribute("rows", rows)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    val doExistsMethodTemplate: String =
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>exists</code> syntax.
+        | */
+        |def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
+
+    def doExistsMethod(i: Int): String = {
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(doExistsMethodTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    def doExistsMethodImpl(i: Int): String = {
+      val heading =
+        if (i == 1)
+          "heading"
+        else
+          (1 to i).map(x => "heading._" + x).mkString(", ")
+      val row = (1 to i).map(x => "row._" + x).mkString(", ")
+      val rows =
+        if (i == 1)
+          "rows.map(Tuple1.apply[A])"
+        else
+          "rows"
+      val forEveryImplTemplate: String =
+        doExistsMethodTemplate + """ = {
+                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                                     |}
+                                   """.stripMargin
+
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(forEveryImplTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      val rowType = if (i == 1) "Tuple1[A]" else "(" + alphaUpper + ")"
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      st.setAttribute("heading", heading)
+      st.setAttribute("rowType", rowType)
+      st.setAttribute("row", row)
+      st.setAttribute("rows", rows)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    val mainTemplate =
+      """/*
+         | * Copyright 2001-2015 Artima, Inc.
+         | *
+         | * Licensed under the Apache License, Version 2.0 (the "License");
+         | * you may not use this file except in compliance with the License.
+         | * You may obtain a copy of the License at
+         | *
+         | *     http://www.apache.org/licenses/LICENSE-2.0
+         | *
+         | * Unless required by applicable law or agreed to in writing, software
+         | * distributed under the License is distributed on an "AS IS" BASIS,
+         | * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         | * See the License for the specific language governing permissions and
+         | * limitations under the License.
+         | */
+         |package org.scalatest.enablers
+         |
+         |import org.scalatest.Assertion
+         |import org.scalatest.Succeeded
+         |import org.scalatest.FailureMessages
+         |import org.scalatest.UnquotedString
+         |import org.scalatest.Resources
+         |import org.scalatest.exceptions.StackDepthException
+         |import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
+         |import org.scalatest.exceptions.DiscardedEvaluationException
+         |import org.scalatest.exceptions.StackDepth
+         |import org.scalactic._
+         |
+         |/**
+         | * Supertrait for <code>TableAsserting</code> typeclasses, which are used to implement and determine the result
+         | * type of [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forAll</code>, <code>forEvery</code> and <code>exists</code> method.
+         | *
+         | * <p>
+         | * Currently, an [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]] expression will have result type <code>Assertion</code>, if the function passed has result type <code>Assertion</code>,
+         | * else it will have result type <code>Unit</code>.
+         | * </p>
+         | */
+         |trait TableAsserting[ASSERTION] {
+         |  /**
+         |   * Return type of <code>forAll</code>, <code>forEvery</code> and <code>exists</code> method.
+         |   */
+         |  type Result
+         |  $forAllMethods$
+         |  $forEveryMethods$
+         |  $existsMethods$
+         |}
+         |
+         |/**
+         |  * Class holding lowest priority <code>TableAsserting</code> implicit, which enables [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
+         |  */
+         |abstract class UnitTableAsserting {
+         |
+         |  /**
+         |   * Abstract subclass of <code>TableAsserting</code> that provides the bulk of the implementations of <code>TableAsserting</code>'s
+         |   * <code>forAll</code>, <code>forEvery</code> and <code>exists</code>.
+         |   */
+         |  abstract class TableAssertingImpl[ASSERTION] extends TableAsserting[ASSERTION] {
+         |
+         |    $forAllMethodImpls$
+         |
+         |    $forEveryMethodImpls$
+         |
+         |    private[scalatest] case class ForResult[E](passedCount: Int = 0,
+         |                          discardedCount: Int = 0,
+         |                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
+         |                          passedElements: IndexedSeq[(Int, E)] = IndexedSeq.empty,
+         |                          failedElements: IndexedSeq[(Int, E, Throwable)] = IndexedSeq.empty)
+         |
+         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION): ForResult[E] = {
+         |      import org.scalatest.InspectorsHelper.{shouldPropagate, indentErrorMessages}
+         |
+         |      @scala.annotation.tailrec
+         |      def innerRunAndCollectResult(itr: Iterator[E], result: ForResult[E], index: Int)(fun: E => ASSERTION): ForResult[E] = {
+         |        if (itr.hasNext) {
+         |          val head = itr.next
+         |          val newResult =
+         |            try {
+         |              fun(head)
+         |              result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |            }
+         |            catch {
+         |              case _: org.scalatest.exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
+         |              case ex if !shouldPropagate(ex) =>
+         |                result.copy(failedElements =
+         |                  result.failedElements :+ ((index,
+         |                    head,
+         |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                      ((sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+         |                        (sde.failedCodeFileNameAndLineNumberString match {
+         |                          case Some(s) => " (" + s + ")";
+         |                          case None => ""
+         |                        }) + "\n" +
+         |                        "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+         |                        (
+         |                          ex match {
+         |                            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+         |                              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+         |                            case _ => ""
+         |                          }
+         |                          ) +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                          name + " = " + value
+         |                        }.toIndexedSeq).mkString("\n") +
+         |                        "  )"),
+         |                      Some(ex),
+         |                      pos,
+         |                      None,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      head.productIterator.toList,
+         |                      namesOfArgs,
+         |                      index
+         |                    ))
+         |                  )
+         |                )
+         |            }
+         |
+         |          innerRunAndCollectResult(itr, newResult, index + 1)(fun)
+         |        }
+         |        else
+         |          result
+         |      }
+         |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
+         |    }
+         |
+         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |      import org.scalatest.InspectorsHelper.indentErrorMessages
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      val messageList = result.failedElements.map(_._3)
+         |      if (messageList.size > 0)
+         |        indicateFailure(
+         |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
+         |          messageList.headOption,
+         |          prettifier,
+         |          pos
+         |        )
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |    }
+         |
+         |    $existsMethodImpls$
+         |
+         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, pos: source.Position)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |      import org.scalatest.InspectorsHelper.indentErrorMessages
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, pos)(fun)
+         |      if (result.passedCount == 0) {
+         |        val messageList = result.failedElements.map(_._3)
+         |        indicateFailure(
+         |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
+         |          messageList.headOption,
+         |          prettifier,
+         |          pos
+         |        )
+         |      }
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |    }
+         |
+         |    private[scalatest] def indicateSuccess(message: => String): Result
+         |
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Result
+         |
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Result
+         |  }
+         |
+         |  /**
+         |   * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Unit.  Do nothing when the check succeeds,
+         |   * but throw [[org.scalatest.exceptions.TableDrivenPropertyCheckFailedException TableDrivenPropertyCheckFailedException]]
+         |   * when check fails.
+         |   */
+         |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
+         |    new TableAssertingImpl[T] {
+         |      type Result = Unit
+         |      def indicateSuccess(message: => String): Unit = ()
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
+         |        throw new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Unit =
+         |        throw new org.scalatest.exceptions.TestFailedException(
+         |          (_: StackDepthException) => Some(message),
+         |          optionalCause,
+         |          pos
+         |        )
+         |    }
+         |  }
+         |}
+         |
+         | /**
+         |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
+         |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
+         |  */
+         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting {
+         |
+         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
+         |    new TableAsserting[Expectation] {
+         |      type Result = Expectation
+         |    }
+         |  }
+         |}*/
+         |
+         |/**
+         | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+         | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
+         | */
+         |object TableAsserting extends UnitTableAsserting /*ExpectationTableAsserting*/ {
+         |
+         |  /**
+         |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
+         |    * but throw [[org.scalatest.exceptions.TableDrivenPropertyCheckFailedException TableDrivenPropertyCheckFailedException]]
+         |    * when check fails.
+         |    */
+         |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
+         |    new TableAssertingImpl[Assertion] {
+         |      type Result = Assertion
+         |      def indicateSuccess(message: => String): Assertion = Succeeded
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
+         |        throw new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
+         |        throw new org.scalatest.exceptions.TestFailedException(
+         |          (_: StackDepthException) => Some(message),
+         |          optionalCause,
+         |          pos
+         |        )
+         |    }
+         |  }
+         |}
+         |
+         |
+      """.stripMargin
+
+    val targetFile = new File(targetDir, "TableAsserting.scala")
+
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
+
+      try {
+        val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
+        val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
+        val forEveryMethods = (for (i <- 1 to 22) yield doForEveryMethod(i)).mkString("\n\n")
+        val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i)).mkString("\n\n")
+        val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
+        val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i)).mkString("\n\n")
+        val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
+        st.setAttribute("forAllMethods", forAllMethods)
+        st.setAttribute("forAllMethodImpls", forAllMethodImpls)
+        st.setAttribute("forEveryMethods", forEveryMethods)
+        st.setAttribute("forEveryMethodImpls", forEveryMethodImpls)
+        st.setAttribute("existsMethods", existsMethods)
+        st.setAttribute("existsMethodImpls", existsMethodImpls)
         bw.write(st.toString)
       }
+      finally {
+        bw.flush()
+        bw.close()
+      }
+    }
 
-      bw.write("  }\n")
-      bw.write("}\n")
-      bw.write(tablesCompanionObjectVerbatimString)
-    }
-    finally {
-      bw.close()
-    }
+    Seq(targetFile)
   }
  
-  def genTableSuite(targetDir: File) {
+  def genTableSuite(targetDir: File): Seq[File] = {
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableSuite.scala")))
- 
-    try {
-      val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
-      st.setAttribute("year", thisYear);
-      bw.write(st.toString)
-      bw.write(tableSuitePreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
-      // for (i <- 1 to 22) {
-      for (i <- 1 to 20) { // TODO: To avoid 2.9.0 compiler bug at arities 21 and 22
+    val targetFile = new File(targetDir, "TableSuite.scala")
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
 
-        val st = new org.antlr.stringtemplate.StringTemplate(tableSuiteTemplate)
-        val rowOfMinusOnes = List.fill(i)(" -1").mkString(", ")
-        val rowOfOnes = List.fill(i)("  1").mkString(", ")
-        val rowOfTwos = List.fill(i)("  2").mkString(", ")
-        val listOfIs = List.fill(i)("i").mkString(", ")
-        val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
-        val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
-        val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =
-          for (idx <- 0 to 9) yield                
-            List.fill(i)("  " + idx).mkString("        (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val names = alpha.take(i).mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        st.setAttribute("n", i)
-        st.setAttribute("columnsOfOnes", columnsOfOnes)
-        st.setAttribute("columnOfMinusOnes", columnOfMinusOnes)
-        st.setAttribute("columnsOfTwos", columnsOfTwos)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("names", names)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("listOfIs", listOfIs)
+      try {
+        val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        st.setAttribute("year", thisYear);
         bw.write(st.toString)
-      }
+        bw.write(tableSuitePreamble)
+        val alpha = "abcdefghijklmnopqrstuv"
+        // for (i <- 1 to 22) {
+        for (i <- 1 to 20) { // TODO: To avoid 2.9.0 compiler bug at arities 21 and 22
 
-      bw.write("}\n")
+          val st = new org.antlr.stringtemplate.StringTemplate(tableSuiteTemplate)
+          val rowOfMinusOnes = List.fill(i)(" -1").mkString(", ")
+          val rowOfOnes = List.fill(i)("  1").mkString(", ")
+          val rowOfTwos = List.fill(i)("  2").mkString(", ")
+          val listOfIs = List.fill(i)("i").mkString(", ")
+          val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
+          val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
+          val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
+          val rawRows =
+            for (idx <- 0 to 9) yield
+              List.fill(i)("  " + idx).mkString("        (", ", ", ")")
+          val columnsOfIndexes = rawRows.mkString(",\n")
+          val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+          val names = alpha.take(i).mkString(", ")
+          val sumOfArgs = alpha.take(i).mkString(" + ")
+          st.setAttribute("n", i)
+          st.setAttribute("columnsOfOnes", columnsOfOnes)
+          st.setAttribute("columnOfMinusOnes", columnOfMinusOnes)
+          st.setAttribute("columnsOfTwos", columnsOfTwos)
+          st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+          st.setAttribute("argNames", argNames)
+          st.setAttribute("names", names)
+          st.setAttribute("sumOfArgs", sumOfArgs)
+          st.setAttribute("listOfIs", listOfIs)
+          bw.write(st.toString)
+        }
+
+        bw.write("}\n")
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
     }
-    finally {
-      bw.close()
-    }
+
+    Seq(targetFile)
   }
 
   def main(args: Array[String]) {
@@ -1498,21 +1993,30 @@ $columnsOfIndexes$
     genTest(testDir, version, scalaVersion)
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, false)
-    genPropertyChecks(dir)
-    genTables(dir)
+
+    val propDir = new File(dir, "prop")
+    propDir.mkdirs()
+
+    val enablersDir = new File(dir, "enablers")
+    enablersDir.mkdirs()
+
+    genTableForNs(propDir, false) ++
+    genPropertyChecks(propDir) ++
+    genTables(propDir) ++
+    genTableAsserting(enablersDir, false)
   }
 
-  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, true)
-    genPropertyChecks(dir)
-    genTables(dir)
+    genTableForNs(dir, true) ++
+    genPropertyChecks(dir) ++
+    genTables(dir) ++
+    genTableAsserting(dir, true)
   }
   
-  def genTest(dir: File, version: String, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
     genTableSuite(dir)
   }

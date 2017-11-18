@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.Requirements._
+import org.scalactic.source
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception thrown to indicate a test has been canceled.
@@ -33,7 +35,7 @@ import org.scalactic.Requirements._
  *
  * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
  *
  * @author Travis Stevens
@@ -42,10 +44,37 @@ import org.scalactic.Requirements._
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  failedCodeStackDepthFun: StackDepthException => Int, 
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   val payload: Option[Any]
-) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
+) extends StackDepthException(messageFun, cause, posOrStackDepthFun/*, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)*/) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
 
+  /**
+    * Constructs a <code>TestCanceledException</code> with the given error message function, optional cause, source position and optional payload.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+    * @param pos a source position
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    */
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any]
+  ) = this(messageFun, cause, Left(pos), payload)
+
+  /**
+    * Constructs a <code>TestCanceledException</code> with the given error message function, optional cause and source position.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+    * @param pos a source position
+    */
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: source.Position
+  ) = this(messageFun, cause, Left(pos), None)
 
   /**
    * Constructs a <code>TestCanceledException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -61,7 +90,7 @@ class TestCanceledException(
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
-      e => failedCodeStackDepth, 
+      Right((_: StackDepthException) => failedCodeStackDepth), 
       None
     )
 
@@ -71,7 +100,8 @@ class TestCanceledException(
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(failedCodeStackDepth: Int) = this(None, None, failedCodeStackDepth)
+  def this(failedCodeStackDepth: Int) =
+    this((_: StackDepthException) => None, None, Right((_: StackDepthException) => failedCodeStackDepth), None)
 
   /**
    * Create a <code>TestCanceledException</code> with a specified stack depth and detail message.
@@ -83,11 +113,12 @@ class TestCanceledException(
    */
   def this(message: String, failedCodeStackDepth: Int) =
     this(
-    {
-      Option(message)
-    },
-    None,
-    failedCodeStackDepth
+      {
+        (_: StackDepthException) => Option(message)
+      },
+      None,
+      Right((_: StackDepthException) => failedCodeStackDepth),
+      None
     )
 
   /**
@@ -102,12 +133,13 @@ class TestCanceledException(
    */
   def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
-    {
-      requireNonNull(cause)
-      if (cause.getMessage == null) None else Some(cause.getMessage)
-    },
-    Some(cause),
-    failedCodeStackDepth
+      {
+        requireNonNull(cause)
+        (_: StackDepthException) => if (cause.getMessage == null) None else Some(cause.getMessage)
+      },
+      Some(cause),
+      Right((_: StackDepthException) => failedCodeStackDepth),
+      None
     )
 
   /**
@@ -126,15 +158,29 @@ class TestCanceledException(
    */
   def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
-    {
-      requireNonNull(message)
-      Some(message)
-    }, {
-      requireNonNull(cause)
-      Some(cause)
-    },
-    failedCodeStackDepth
+      {
+        requireNonNull(message)
+        (_: StackDepthException) => Some(message)
+      }, {
+        requireNonNull(cause)
+        Some(cause)
+      },
+      Right((_: StackDepthException) => failedCodeStackDepth),
+      None
     )
+
+  /**
+    * Constructs a <code>TestCanceledException</code> with the given error message function, optional cause, stack depth function and optional payload.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    */
+  def this(messageFun: StackDepthException => Option[String],
+           cause: Option[Throwable],
+           failedCodeStackDepthFun: StackDepthException => Int,
+           payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload)
 
   /**
    * Returns an exception of class <code>TestCanceledException</code> with <code>failedExceptionStackDepth</code> set to 0 and
@@ -144,7 +190,7 @@ class TestCanceledException(
    */
   def severedAtStackDepth: TestCanceledException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestCanceledException(message, cause, 0)
+    val e = new TestCanceledException(messageFun, cause, posOrStackDepthFun, payload)
     e.setStackTrace(truncated)
     e
   }
@@ -158,7 +204,7 @@ class TestCanceledException(
    *            the modified optional detail message for the result instance of <code>TestCanceledException</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestCanceledException = {
-    val mod = new TestCanceledException(fun(message), cause, failedCodeStackDepth)
+    val mod = new TestCanceledException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -173,7 +219,7 @@ class TestCanceledException(
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestCanceledException = {
     val currentPayload = payload
-    val mod = new TestCanceledException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
+    val mod = new TestCanceledException(messageFun, cause, posOrStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }

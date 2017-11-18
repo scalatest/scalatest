@@ -18,16 +18,19 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeReadableStructuralSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeReadableStructuralSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages.wasNotReadable(left)
+    FailureMessages.wasNotReadable(prettifier, left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages.wasReadable(left)
+    FailureMessages.wasReadable(prettifier, left)
   
   describe("readable matcher") {
     

@@ -16,6 +16,9 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
+// SKIP-SCALATESTJS-START
+import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class SecondTestIgnoredExamples extends SuiteExamples {
 
@@ -50,15 +53,15 @@ class SecondTestIgnoredExamples extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services {
-    def `test first` = {}
-    @Ignore def `test second` = {}
+  class SpecExample extends RefSpec with Services {
+    def `test first`: Unit = {}
+    @Ignore def `test second`: Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
 
   class FixtureSpecExample extends StringFixtureSpec with Services {
-    def `test first`(s: String) = {}
-    @Ignore def `test second`(s: String) = {}
+    def `test first`(s: String): Unit = {}
+    @Ignore def `test second`(s: String): Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
   // SKIP-SCALATESTJS-END

@@ -30,7 +30,7 @@ class TestLocationTestNGSuite extends TestNGSuite with TestLocationServices {
   val expectedInfoProvidedList = Nil
   
   @Test
-  def testFail() { 
+  def testFail(): Unit = { 
     fail
   }
 }

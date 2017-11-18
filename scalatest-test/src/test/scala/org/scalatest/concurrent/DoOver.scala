@@ -16,7 +16,7 @@
 package org.scalatest.concurrent
 
 private[concurrent] object DoOver {
-  def tryTryAgain(maxTries: Int = 1, delayBetweenTries: Int = 0)(fun: => Unit) {
+  def tryTryAgain(maxTries: Int = 1, delayBetweenTries: Int = 0)(fun: => Unit): Unit = {
 
     if (maxTries < 1)
       throw new IllegalArgumentException("maxTries cannot be less than 1, but was equal to " + maxTries)

@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
-import java.io.File
 
 /**
  * Stackable trait that when mixed into a <code>Suite with ScreenshotCapturer</code> ensures a screenshot
@@ -28,7 +26,7 @@ import java.io.File
  * To change this, override <code>screenshotDir</code>.
  * </p>
  */
-private[scalatest] trait ScreenshotOnFailure extends SuiteMixin { this: Suite with ScreenshotCapturer => 
+private[scalatest] trait ScreenshotOnFailure extends TestSuiteMixin { this: TestSuite with ScreenshotCapturer => 
   
   /**
    * The name of the directory into which screenshots will be captured.

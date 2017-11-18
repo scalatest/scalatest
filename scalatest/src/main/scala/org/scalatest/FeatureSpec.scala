@@ -15,13 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
 
 /**
  * A suite of tests in which each test represents one <em>scenario</em> of a <em>feature</em>. 
@@ -93,7 +86,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note: for more information on the calls to <code>Given</code>, <code>When</code>, and <code>Then</code>, see the documentation 
- * for <a href="GivenWhenThen.html">trait <code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
+ * for trait <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
  * </p>
  *
  * <p>
@@ -101,11 +94,11 @@ import Suite.autoTagClassAnnotations
  * with <code>feature</code>, and a scenario with <code>scenario</code>. Both
  * <code>feature</code> and <code>scenario</code> are methods, defined in
  * <code>FeatureSpec</code>, which will be invoked
- * by the primary constructor of <code>StackFeatureSpec</code>. 
+ * by the primary constructor of <code>TVSetSpec</code>. 
  * A feature clause describes a feature of the <em>subject</em> (class or other entity) you are specifying
  * and testing. In the previous example, 
- * the subject under specification and test is a Set. The feature being specified and tested is 
- * the behavior of a Set when it is empty and head is invoked. With each scenario you provide a
+ * the subject under specification and test is a TV set. The feature being specified and tested is 
+ * the behavior of a TV set when its power button is pressed. With each scenario you provide a
  * string (the <em>spec text</em>) that specifies the behavior of the subject for
  * one scenario in which the feature may be used, and a block of code that tests that behavior.
  * You place the spec text between the parentheses, followed by the test code between curly
@@ -143,7 +136,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -173,7 +166,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute "TV is on"
+ * scala&gt; org.scalatest.run(new TVSetSpec, "TV is on")
  * <span class="stGreen">TVSetSpec:
  * As a TV set owner 
  * I want to be able to turn the TV on and off 
@@ -187,23 +180,10 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
- * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
- * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
- * <a href="Shell.html">ScalaTest shell</a>.
- * </p>
- *
- * <p>
- * The <code>execute</code> method invokes a <code>run</code> method that takes two
- * parameters. This <code>run</code> method, which actually executes the suite, will usually be invoked by a test runner, such
- * as <a href="run$.html"><code>run</code></a>, <a href="tools/Runner$.html"><code>tools.Runner</code></a>, a build tool, or an IDE.
- * </p>
- *
- * <p>
  * <em>Note: Trait <code>FeatureSpec</code>'s syntax is in part inspired by <a href="http://cukes.info/" target="_blank">Cucumber</a>, a Ruby BDD framework.</em>
  *</p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
@@ -251,7 +231,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -265,7 +245,7 @@ import Suite.autoTagClassAnnotations
  *   <span class="stGreen">Scenario: User presses power button when TV is on</span>
  * </pre>
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>FeatureSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
@@ -286,7 +266,7 @@ import Suite.autoTagClassAnnotations
  * to pass such information to the reporter. You can see this in action in the <a href="#initialExample">initial example</a> of this trait's documentation.
  * </p>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>FeatureSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -361,7 +341,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/featureSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -409,7 +389,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * Feature: An element can be added to an empty mutable Set
  *   + notes are sent immediately</span>
@@ -420,13 +400,20 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
+ *
+ * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
  * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
  * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
@@ -489,7 +476,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -571,7 +558,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * <span class="stGreen">TVSetSpec:
  * As a TV set owner 
  * I want to be able to turn the TV on and off 
@@ -599,9 +586,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified name, 
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>FeatureSpec</code>s like this:
+ * create a matching tag for <code>FeatureSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -609,16 +596,16 @@ import Suite.autoTagClassAnnotations
  * 
  * import org.scalatest.Tag
  * 
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>FeatureSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>FeatureSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
  * import org.scalatest.FeatureSpec
+ * import org.scalatest.tagobjects.Slow
  * 
  * class TVSet {
  *   private var on: Boolean = false
@@ -631,14 +618,14 @@ import Suite.autoTagClassAnnotations
  * class TVSetSpec extends FeatureSpec {
  * 
  *   feature("TV power button") {
- *     scenario("User presses power button when TV is off", SlowTest) {
+ *     scenario("User presses power button when TV is off", Slow) {
  *       val tv = new TVSet
  *       assert(!tv.isOn)
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
  *     }
  * 
- *     scenario("User presses power button when TV is on", SlowTest, DbTest) {
+ *     scenario("User presses power button when TV is on", Slow, DbTest) {
  *       val tv = new TVSet
  *       tv.pressPowerButton()
  *       assert(tv.isOn)
@@ -650,7 +637,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
@@ -666,9 +653,10 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of a <code>FeatureSpec</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>FeatureSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * tag each test individually at the test site.
  * </p>
  *
  * <a name="sharedFixtures"></a>
@@ -755,11 +743,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *  <ul>
- *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
- *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
- *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
- *  </ul>
+ *  <dl>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</dd>
+ *  </dl>
  *  </td>
  * </tr>
  *
@@ -818,12 +806,13 @@ import Suite.autoTagClassAnnotations
  * 
  * class ExampleSpec extends FeatureSpec {
  * 
- *   def fixture = 
- *     new {
- *       val builder = new StringBuilder("ScalaTest is designed to ")
- *       val buffer = new ListBuffer[String]
- *     }
- *   
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is designed to ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *  
+ *   def fixture = new Fixture
+ *  
  *   feature("Simplicity") {
  *     scenario("User needs to read test code written by others") {
  *       val f = fixture
@@ -1004,7 +993,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * Scenario: This scenario should succeed</span>
  * <span class="stRed">Scenario: This scenario should fail *** FAILED ***
@@ -1252,7 +1241,7 @@ import Suite.autoTagClassAnnotations
  * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some side-effecting mechanism, commonly by
  * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
  * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
- * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
+ * of the test class (on the JVM, not Scala.js) unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
  * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
  * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
  * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
@@ -1282,7 +1271,7 @@ import Suite.autoTagClassAnnotations
  * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * trait Builder extends SuiteMixin { this: Suite =&gt;
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val builder = new StringBuilder
  * 
@@ -1293,7 +1282,7 @@ import Suite.autoTagClassAnnotations
  *   }
  * }
  * 
- * trait Buffer extends SuiteMixin { this: Suite =&gt;
+ * trait Buffer extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val buffer = new ListBuffer[String]
  * 
@@ -1331,7 +1320,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends FeatureSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1339,7 +1328,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends FeatureSpec with Builder
  * </pre>
  *
  * <p>
@@ -1642,7 +1631,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("peek is invoked on the stack")
  *       Then("peek throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         stack.peek
  *       }
  *     }
@@ -1654,7 +1643,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("pop is invoked on the stack")
  *       Then("pop throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         emptyStack.pop
  *       }
  *     }
@@ -1684,7 +1673,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("push is invoked on the stack")
  *       Then("push throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         stack.push(10)
  *       }
  *     }
@@ -1786,10 +1775,10 @@ import Suite.autoTagClassAnnotations
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>FeatureSpec</code> there is no nesting construct analogous to <code>FunSpec</code>'s <code>describe</code> clause.
- * Therefore, you need to do a bit of
+ * Although in a <code>FeatureSpec</code>, the <code>feature</code> clause is a nesting construct analogous to
+ * <code>FunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in a
- * <code>FeatureSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can pass this string
+ * <code>FeatureSpec</code>, you can pass in a prefix or suffix string to add to each test name. You can pass this string
  * the same way you pass any other data needed by the shared tests, or just call <code>toString</code> on the shared fixture object.
  * This is the approach taken by the previous <code>FeatureSpecStackBehaviors</code> example.
  * </p>

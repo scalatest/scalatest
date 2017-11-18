@@ -17,16 +17,19 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeDefinedStructuralSpec extends FunSpec with Matchers {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeDefinedStructuralSpec.scala"
     
   def wasNotDefined(left: Any): String = 
-    FailureMessages.wasNotDefined(left)
+    FailureMessages.wasNotDefined(prettifier, left)
     
   def wasDefined(left: Any): String = 
-    FailureMessages.wasDefined(left)
+    FailureMessages.wasDefined(prettifier, left)
   
   describe("defined matcher") {
     

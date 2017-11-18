@@ -16,6 +16,8 @@
 package org.scalatest
 package exceptions
 
+import org.scalactic.source
+
 /**
  * Exception that indicates a table-driven property check failed.
  *
@@ -26,7 +28,7 @@ package exceptions
  *
  * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
  * @param args the argument values
@@ -40,15 +42,65 @@ package exceptions
 class TableDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   undecoratedMessage: String,
   args: List[Any],
   namesOfArgs: List[String],
   val row: Int
 ) extends PropertyCheckFailedException(
-  messageFun, cause, failedCodeStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
+  messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
 ) {
+
+  /**
+    * Constructs a <code>TableDrivenPropertyCheckFailedException</code> with given error message function, optional cause, source position,
+    * optional payload, undecorated message, argument values and names, and index of the failing row.
+    *
+    * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
+    * @param pos a source position
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
+    * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
+    * @param args the argument values
+    * @param namesOfArgs a list of string names for the arguments
+    * @param row the index of the table row that failed the property check, causing this exception to be thrown
+    *
+    */
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: List[String],
+    row: Int
+  ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, row)
+
+  /**
+    * Constructs a <code>TableDrivenPropertyCheckFailedException</code> with given error message function, optional cause, source position,
+    * optional payload, undecorated message, argument values and names, and index of the failing row.
+    *
+    * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
+    * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
+    * @param args the argument values
+    * @param namesOfArgs a list of string names for the arguments
+    * @param row the index of the table row that failed the property check, causing this exception to be thrown
+    *
+    */
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: List[String],
+    row: Int
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, namesOfArgs, row)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -61,9 +113,9 @@ class TableDrivenPropertyCheckFailedException(
   override def modifyMessage(fun: Option[String] => Option[String]): TableDrivenPropertyCheckFailedException = {
     val mod =
       new TableDrivenPropertyCheckFailedException(
-        sde => fun(message).getOrElse(messageFun(this)),
+        (sde: StackDepthException) => fun(message).getOrElse(messageFun(this)),
         cause,
-        failedCodeStackDepthFun,
+        posOrStackDepthFun,
         payload,
         undecoratedMessage,
         args,
@@ -88,7 +140,7 @@ class TableDrivenPropertyCheckFailedException(
       new TableDrivenPropertyCheckFailedException(
         messageFun,
         cause,
-        failedCodeStackDepthFun,
+        posOrStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,
         args,

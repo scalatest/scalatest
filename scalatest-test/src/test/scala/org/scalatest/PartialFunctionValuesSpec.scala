@@ -22,19 +22,19 @@ import Matchers._
 import exceptions.TestFailedException
 
 class PartialFunctionValuesSpec extends FunSpec {
-  
+
   val pf = new PartialFunction[Int, Int]() {
     def isDefinedAt(x: Int): Boolean = x % 2 == 0
     def apply(x: Int): Int = x * x
   }
-  
-  describe("values on PartialFunction") {
-    
+
+  describe("valueAt on PartialFunction") {
+
     it("should return correct value when is defined") {
       pf.isDefinedAt(8) should === (true)
       pf.valueAt(8) should === (64)
     }
-    
+
     it("should throw TestFailedException when is not defined") {
       val caught = 
         the [TestFailedException] thrownBy {
@@ -44,6 +44,12 @@ class PartialFunctionValuesSpec extends FunSpec {
       caught.failedCodeFileName.value should be ("PartialFunctionValuesSpec.scala")
       caught.message.value should be (Resources.partialFunctionValueNotDefined("5"))
     }
-    
+
+    it("should allow an immediate application of parens to invoke apply on the type returned by the PartialFunction") {
+      val pf: PartialFunction[Int, Map[String, Int]] = {
+        case 2 => Map("I" -> 1, "II" -> 2)
+      }
+      pf.valueAt(2)("II") shouldBe 2
+    }
   }
 }

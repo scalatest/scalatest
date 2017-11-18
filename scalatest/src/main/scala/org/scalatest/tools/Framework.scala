@@ -15,24 +15,25 @@
  */
 package org.scalatest.tools
 
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
 import org.scalatest._
-import SuiteDiscoveryHelper._
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import Suite.formatterForSuiteAborted
 import org.scalatest.events._
-import Suite.SELECTED_TAG
-import Suite.mergeMap
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
+import ArgsParser._
+import SuiteDiscoveryHelper._
 import scala.collection.JavaConverters._
-import StringReporter.fragmentsForEvent
+import java.io.{StringWriter, PrintWriter}
+import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
+import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
+import org.scalatest.time.{Span, Millis}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
-import ArgsParser._
-import org.scalactic.Requirements._
+import StringReporter.fragmentsForEvent
+import Suite.SELECTED_TAG
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.mergeMap
+
 
 /**
  * <p>
@@ -220,49 +221,6 @@ class Framework extends SbtFramework {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-  
-  private def createTaskDispatchReporter(
-    reporter: Reporter,
-    loggers: Array[Logger],
-    loader: ClassLoader,
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean, 
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean,
-    configSet: Set[ReporterConfigParam],
-    summaryCounter: SummaryCounter
-  ) = {
-    val reporters = 
-      if (useSbtLogInfoReporter) {
-        val sbtLogInfoReporter =
-          new FilterReporter(
-            new SbtLogInfoReporter(
-              loggers,
-              presentAllDurations,
-              presentInColor,
-              presentShortStackTraces,
-              presentFullStackTraces, // If they say both S and F, F overrules
-              presentUnformatted,
-              presentReminder,
-              presentReminderWithShortStackTraces,
-              presentReminderWithFullStackTraces,
-              presentReminderWithoutCanceledTests,
-              summaryCounter
-            ),
-          configSet
-          )
-        Vector(reporter, sbtLogInfoReporter)
-      }
-      else 
-        Vector(reporter)
-    new SbtDispatchReporter(reporters)
-  }
       
   private def runSuite(
     taskDefinition: TaskDef,
@@ -358,10 +316,19 @@ class Framework extends SbtFramework {
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
 
-      if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-        status.whenCompleted { succeed =>
-          report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+      // Needs to block here whether or not ConcurrentDistributor is in used.
+      // In case of async if it is not blocked here, sbt will start spitting out the output right after this method
+      // returns, and mix up the result output in the sbt.
+      status.succeeds()
+      if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
+        status.unreportedException match {
+          case Some(ue) =>
+            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+
+          case None =>
+            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
         }
+      }
     }
     catch {       
       case e: Throwable => {
@@ -370,12 +337,16 @@ class Framework extends SbtFramework {
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
         // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
         // from the resource file so we can later localize.
-        val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+        val rawString =
+          if (e.getMessage == null)
+            e.getClass.getName + " encountered when attempting to run suite " + suite.suiteId
+          else
+            e.getMessage
         val formatter = formatterForSuiteAborted(suite, rawString)
 
         val duration = System.currentTimeMillis - suiteStartTime
         // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
-        report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+        report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suite.suiteName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
 
         statefulStatus match {
           case Some(s) => s.setFailed()
@@ -387,10 +358,6 @@ class Framework extends SbtFramework {
       }
     }
     finally {
-      distributor match {
-        case Some(dist) => dist.waitUntilDone()
-        case None =>
-      }
       statefulStatus match {
         case Some(s) => s.setCompleted()
         case None => // Do nothing
@@ -403,7 +370,7 @@ class Framework extends SbtFramework {
   private class ScalaTestTask(
     taskDefinition: TaskDef, 
     loader: ClassLoader,
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
@@ -422,6 +389,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean,
     configSet: Set[ReporterConfigParam],
     execService: ExecutorService
   ) extends Task {
@@ -476,34 +444,45 @@ class Framework extends SbtFramework {
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
           } catch {
-            case t: Throwable => new DeferredAbortedSuite(t)
+            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
-        
-        val taskReporter =
-          createTaskDispatchReporter(
-            reporter,
-            loggers,
-            loader,
-            useSbtLogInfoReporter,
-            presentAllDurations,
-            presentInColor,
-            presentShortStackTraces, 
-            presentFullStackTraces,
-            presentUnformatted,
-            presentReminder,
-            presentReminderWithShortStackTraces,
-            presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests,
-            configSet,
-            summaryCounter
-          )
+
+        if (useSbtLogInfoReporter) {
+          val sbtLogInfoReporter =
+            new FilterReporter(
+              new SbtLogInfoReporter(
+                loggers,
+                presentAllDurations,
+                presentInColor,
+                presentShortStackTraces,
+                presentFullStackTraces, // If they say both S and F, F overrules
+                presentUnformatted,
+                presentReminder,
+                presentReminderWithShortStackTraces,
+                presentReminderWithFullStackTraces,
+                presentReminderWithoutCanceledTests,
+                presentFilePathname,
+                summaryCounter
+              ),
+              configSet
+            )
+
+          // we need to report for any nested suites as well
+          // fixes https://github.com/scalatest/scalatest/issues/978
+          def registerReporter(suite: Suite): Unit = {
+            suiteSortingReporter.registerReporter(suite.suiteId, sbtLogInfoReporter)
+            suite.nestedSuites.foreach(registerReporter)
+          }
+          registerReporter(suite)
+
+        }
 
         runSuite(
           taskDefinition,
           suite.suiteId,
           suite,
           loader,
-          taskReporter,
+          suiteSortingReporter,
           tracker,
           eventHandler,
           tagsToInclude,
@@ -539,39 +518,39 @@ class Framework extends SbtFramework {
     val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
     val reminderEventsQueue = new LinkedBlockingQueue[ExceptionalEvent]
     
-    def incrementTestsSucceededCount() { 
+    def incrementTestsSucceededCount(): Unit = { 
       testsSucceededCount.incrementAndGet() 
     }
     
-    def incrementTestsFailedCount() {
+    def incrementTestsFailedCount(): Unit = {
       testsFailedCount.incrementAndGet()
     }
     
-    def incrementTestsIgnoredCount() {
+    def incrementTestsIgnoredCount(): Unit = {
       testsIgnoredCount.incrementAndGet()
     }
     
-    def incrementTestsPendingCount() {
+    def incrementTestsPendingCount(): Unit = {
       testsPendingCount.incrementAndGet()
     }
     
-    def incrementTestsCanceledCount() {
+    def incrementTestsCanceledCount(): Unit = {
       testsCanceledCount.incrementAndGet()
     }
     
-    def incrementSuitesCompletedCount() {
+    def incrementSuitesCompletedCount(): Unit = {
       suitesCompletedCount.incrementAndGet()
     }
     
-    def incrementSuitesAbortedCount() {
+    def incrementSuitesAbortedCount(): Unit = {
       suitesAbortedCount.incrementAndGet()
     }
     
-    def incrementScopesPendingCount() {
+    def incrementScopesPendingCount(): Unit = {
       scopesPendingCount.incrementAndGet()
     }
     
-    def recordReminderEvents(events: ExceptionalEvent) {
+    def recordReminderEvents(events: ExceptionalEvent): Unit = {
       reminderEventsQueue.put(events)
     }
   }
@@ -586,7 +565,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean, 
+    presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean,
     summaryCounter: SummaryCounter
   ) extends StringReporter(
     presentAllDurations,
@@ -597,16 +577,17 @@ class Framework extends SbtFramework {
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentFilePathname: Boolean
   ) {
 
-    protected def printPossiblyInColor(fragment: Fragment) {
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
     
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case ee: ExceptionalEvent if presentReminder =>
           if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {
@@ -624,11 +605,12 @@ class Framework extends SbtFramework {
         presentReminderWithShortStackTraces,
         presentReminderWithFullStackTraces,
         presentReminderWithoutCanceledTests,
+        presentFilePathname,
         reminderEventsBuf
       ) foreach printPossiblyInColor
     }
 
-    def dispose() = ()
+    def dispose(): Unit = ()
   }
   
   private[scalatest] class ScalaTestRunner(
@@ -651,6 +633,7 @@ class Framework extends SbtFramework {
     val presentReminderWithShortStackTraces: Boolean,
     val presentReminderWithFullStackTraces: Boolean,
     val presentReminderWithoutCanceledTests: Boolean,
+    val presentFilePathname: Boolean,
     val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
@@ -663,7 +646,16 @@ class Framework extends SbtFramework {
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
+
+    val suiteSortingReporter =
+      new SuiteSortingReporter(
+        dispatchReporter,
+        Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
+        System.err)
+
+    if (detectSlowpokes)
+      dispatchReporter.registerSlowpokeReporter(suiteSortingReporter)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 
@@ -687,7 +679,7 @@ class Framework extends SbtFramework {
       new ScalaTestTask(
           td, 
           loader,
-          dispatchReporter,
+          suiteSortingReporter,
           tracker,
           tagsToInclude,
           tagsToExclude,
@@ -706,6 +698,7 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
+          presentFilePathname,
           configSet,
           execSvc
         )
@@ -729,7 +722,14 @@ class Framework extends SbtFramework {
       if (!isDone.getAndSet(true)) {
 
         // Wait until all status is completed
-        statusList.asScala.foreach(_.waitUntilCompleted())
+        statusList.asScala.foreach { s =>
+          try {
+            s.waitUntilCompleted()
+          }
+          catch {
+            case t: Throwable => // TODO: What should we do here?
+          }
+        }
 
         serverThread.get match {
           case Some(thread) =>
@@ -756,7 +756,8 @@ class Framework extends SbtFramework {
             presentReminder,
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests
+            presentReminderWithoutCanceledTests,
+            presentFilePathname
           ) 
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
@@ -767,9 +768,9 @@ class Framework extends SbtFramework {
     def args = runArgs
 
     def remoteArgs: Array[String] = {
-      import java.net.{ServerSocket, InetAddress}
-      import java.io.{ObjectInputStream, ObjectOutputStream}
       import org.scalatest.events._
+import java.io.{ObjectInputStream, ObjectOutputStream}
+import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -789,7 +790,7 @@ class Framework extends SbtFramework {
         
         val server = new ServerSocket(0)
         
-        def run() {
+        def run(): Unit = {
           val socket = server.accept()
           val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
 
@@ -804,7 +805,7 @@ class Framework extends SbtFramework {
         
         class React(is: ObjectInputStream) {
           @annotation.tailrec 
-          final def react() { 
+          final def react(): Unit = { 
             val event = is.readObject
             event match {
               case e: TestStarting =>
@@ -1003,6 +1004,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       configSet
     ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
@@ -1021,6 +1023,7 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithoutCanceledTests),
+            configSet.contains(PresentFilePathname),
             configSet
           )
         case None =>
@@ -1028,7 +1031,7 @@ class Framework extends SbtFramework {
           // the reason that sub-process must use stdout is that the Array[Logger] is passed in from SBT only when the
           // suite is run, in the fork mode case this happens only at the sub-process side, the main process will not be
           // able to get the Array[Logger] to create SbtInfoLoggerReporter.
-          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
@@ -1064,6 +1067,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,
@@ -1103,7 +1107,7 @@ class Framework extends SbtFramework {
           case None => new OptionalThrowable
         }
       
-      override def apply(event: Event) {
+      override def apply(event: Event): Unit = {
         report(event)
         event match {
           // the results of running an actual test

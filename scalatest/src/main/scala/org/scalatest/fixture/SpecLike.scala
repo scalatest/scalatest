@@ -15,46 +15,52 @@
  */
 package org.scalatest.fixture
 
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.{IgnoreAnnotation, autoTagClassAnnotations}
 import org.scalatest._
+import org.scalatest.exceptions._
 import Spec._
 import Suite._
-import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
+import org.scalactic.{source, Prettifier}
+import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
+import org.scalatest.events.{TopOfClass, TopOfMethod}
+
 
 /**
- * Implementation trait for class <code>fixture.Spec</code>, which is
- * a sister class to <a href="../Spec.html"><code>org.scalatest.Spec</code></a> that can pass a
- * fixture object into its tests.
- * 
+ * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+ * <code>org.scalatest.fixture.FunSpec</code> instead.</strong>
+ *
  * <p>
- * <a href="Spec.html"><code>fixture.Spec</code></a> is a class,
- * not a trait, to minimize compile time given there is a slight compiler
- * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.Spec</code> into some other
- * class, you can use this trait instead, because class
- * <code>fixture.Spec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * Because this style uses reflection at runtime to discover scopes and tests, it can only be supported on the JVM, not Scala.js.
+ * Thus in ScalaTest 3.0.0, class <code>org.scalatest.SpecLike</code> was moved to the <code>org.scalatest.refspec</code> package and renamed
+ * <code>RefSpecLike</code>, with the intention of later moving it to a separate module available only on the JVM. If the 
+ * <code>org.scalatest.refspec._</code> package contained a <code>fixture</code> subpackage, then importing <code>org.scalatest.refspec._</code>
+ * would import the name <code>fixture</code> as <code>org.scalatest.refspec.fixture</code>. This would likely be confusing for users,
+ * who expect <code>fixture</code> to mean <code>org.scalatest.fixture</code>.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="Spec.html">detailed
- * overview of <code>fixture.Spec</code></a>.
+ * As a result this class has been deprecated and will <em>not</em>
+ * be moved to package <code>org.scalatest.refspec</code>. Instead we recommend you rewrite any test classes that currently extend
+ * <code>org.scalatest.fixture.SpecLike</code> to extend <a href="FunSpecLike.html"><code>org.scalatest.fixture.FunSpecLike</code></a> instead,
+ * replacing any scope <code>object</code>
+ * with a <code>describe</code> clause, and any test method with an <code>it</code> clause.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
+@deprecated("fixture.SpecLike has been deprecated and will be removed in a future version of ScalaTest. Please use org.scalatest.fixture.FunSpecLike instead.")
+trait SpecLike extends TestSuite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
-  
-  private def ensureScopesAndTestsRegistered() {
-    
+
+  private def ensureScopesAndTestsRegistered(): Unit = {
+
     thisSuite.synchronized {
       if (!scopesRegistered) {
         scopesRegistered = true
@@ -102,7 +108,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
           }
         }
         
-        def register(o: AnyRef) {
+        def register(o: AnyRef): Unit = {
           val testMethods = o.getClass.getMethods.filter(isTestMethod(_)).sorted(MethodNameEncodedOrdering)
           
 // TODO: Detect duplicate test names, one with fixture param and one without.
@@ -110,7 +116,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
             val scope = isScopeMethod(o, m)
             if (scope) {
               val scopeDesc = getScopeDesc(m)
-              def scopeFun = {
+              def scopeFun: Unit = {
                 try {
                   val scopeObj = m.invoke(o)
                   register(scopeObj)
@@ -122,13 +128,17 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
               }
               val scopeLocation = TopOfClass(m.getReturnType.getName)
               try {
-                registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
+                registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case dtne: exceptions.DuplicateTestNameException => throw dtne
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, (_: StackDepthException) => 8))
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, (_: StackDepthException) => 8))
+                case dtne: DuplicateTestNameException => throw dtne
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
+                  if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 9))
+                  else
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 8))
                 case other: Throwable => throw other
               }
             }
@@ -156,13 +166,20 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
           
               val testLocation = TopOfMethod(getScopeClassName(o), m.toGenericString)
               val isIgnore = testTags.get(methodName) match {
-                case Some(tagSet) => tagSet.contains(IgnoreAnnotation) || methodTags.contains(IgnoreAnnotation)
-                case None => methodTags.contains(IgnoreAnnotation)
+                case Some(tagSet) => tagSet.contains(IgnoreTagName) || methodTags.contains(IgnoreTagName)
+                case None => methodTags.contains(IgnoreTagName)
               }
+
+              val registerTestStackDepth =
+                if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+                  3
+                else
+                  2
+
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", registerTestStackDepth, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
             }
           }
         }
@@ -229,9 +246,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.Spec
+   * import org.scalatest.refspec.RefSpec
    *
-   * class StackSpec extends Spec {
+   * class StackSpec extends RefSpec {
    *   object &#96;A Stack&#96; {
    *     object &#96;(when not empty)&#96; {
    *       def &#96;must allow me to pop&#96; {}
@@ -262,8 +279,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    */
   override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
   
   /**
@@ -286,21 +302,20 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
     ensureScopesAndTestsRegistered()
 
-    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithFixture(theTest: TestLeaf): Outcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      PastOutcome(
-        withFixture(
-          new OneArgTest {
-            val name = testData.name
-            def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture).toOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-          }
-          //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
-        )
+      withFixture(
+        new OneArgTest {
+          val name = testData.name
+          def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture) }
+          val configMap = testData.configMap
+          val scopes = testData.scopes
+          val text = testData.text
+          val tags = testData.tags
+          val pos = testData.pos
+        }
+        //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
       )
     }
 

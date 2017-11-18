@@ -79,7 +79,7 @@ import org.scalatest.{Group, Spec}
 object Fast extends Group("Fast")
 object Slow extends Group("Slow")
 
-class StackSpec extends Spec with ShouldMatchers {
+class StackSpec extends RefSpec with ShouldMatchers {
 
  it ("should test something", Fast) {
  }
@@ -611,7 +611,7 @@ From the SharedTests trait:
  * </p>
  *
  * <pre>
- * class SharedTestExampleSpec extends Spec with SharedTests with StackBehaviors {
+ * class SharedTestExampleSpec extends RefSpec with SharedTests with StackBehaviors {
  * 
  *   // Stack fixture creation methods
  *   def emptyStack = new Stack[Int]
@@ -1113,7 +1113,7 @@ The stuff I deleted which was a ScalaTest specs comparison.
  * 
  * import org.specs.Specification
  * 
- * object CopyExchangeSpec extends Specification {
+ * object CopyExchangeSpec extends RefSpecification {
  * 
  *   "CopyExchange" should {
  *    

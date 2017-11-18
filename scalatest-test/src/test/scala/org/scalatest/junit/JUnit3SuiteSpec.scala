@@ -19,15 +19,14 @@ import org.scalatest._
 import SharedHelpers._
 import collection.immutable.TreeSet
 import helpers._
-import org.scalatest.events._
 
 class JUnit3SuiteSpec extends FunSpec {
 
   describe("A JUnit3Suite") {
     it("should return the test names in alphabetical order from testNames") {
       val a = new JUnit3Suite {
-        def testThis() {}
-        def testThat() {}
+        def testThis(): Unit = {}
+        def testThat(): Unit = {}
       }
 
       assertResult(List("testThat", "testThis")) {
@@ -41,8 +40,8 @@ class JUnit3SuiteSpec extends FunSpec {
       }
 
       val c = new JUnit3Suite {
-        def testThat() {}
-        def testThis() {}
+        def testThat(): Unit = {}
+        def testThis(): Unit = {}
       }
 
       assertResult(List("testThat", "testThis")) {
@@ -53,8 +52,8 @@ class JUnit3SuiteSpec extends FunSpec {
     it("should return the proper testNames for test methods whether or not they take an Informer") {
 
       val a = new JUnit3Suite {
-        def testThis() = ()
-        def testThat(info: Informer) = ()
+        def testThis(): Unit = ()
+        def testThat(info: Informer): Unit = ()
       }
       assert(a.testNames === TreeSet("testThis"))
 
@@ -80,35 +79,35 @@ class JUnit3SuiteSpec extends FunSpec {
 
       val a = new JUnit3Suite {
         @Ignore
-        def testThis() = ()
-        def testThat(info: Informer) = ()
+        def testThis(): Unit = ()
+        def testThat(info: Informer): Unit = ()
       }
 
       assert(a.tags.isEmpty)
 
       val b = new JUnit3Suite {
-        def testThis() = ()
+        def testThis(): Unit = ()
         @Ignore
-        def testThat(info: Informer) = ()
+        def testThat(info: Informer): Unit = ()
       }
 
       assert(b.tags.isEmpty)
 
       val c = new JUnit3Suite {
         @Ignore
-        def testThis() = ()
+        def testThis(): Unit = ()
         @Ignore
-        def testThat(info: Informer) = ()
+        def testThat(info: Informer): Unit = ()
       }
 
       assert(c.tags.isEmpty)
 
       val d = new JUnit3Suite {
         @SlowAsMolasses
-        def testThis() = ()
+        def testThis(): Unit = ()
         @SlowAsMolasses
         @Ignore
-        def testThat(info: Informer) = ()
+        def testThat(info: Informer): Unit = ()
       }
 
       assert(d.tags.isEmpty)

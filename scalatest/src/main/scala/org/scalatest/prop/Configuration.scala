@@ -16,8 +16,9 @@
 package org.scalatest.prop
 
 import org.scalacheck.Test.Parameters
-import org.scalacheck.Test.TestCallback
 import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
+import org.scalacheck.Test.TestCallback
+
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -163,7 +164,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  sealed abstract class PropertyCheckConfigParam
+  sealed abstract class PropertyCheckConfigParam extends Product with Serializable
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum number of successful
@@ -172,7 +173,7 @@ trait Configuration {
    * @author Bill Venners
    */
   case class MinSuccessful(value: PosInt) extends PropertyCheckConfigParam
-  
+
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the maximum number of discarded
    * property evaluations allowed during property evaluation.
@@ -412,43 +413,41 @@ trait Configuration {
     if (workersTotalFound > 1)
       throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
 
-    new Parameters {
-      val minSuccessfulTests: Int = minSuccessful.getOrElse(config.minSuccessful)
+    val minSuccessfulTests: Int = minSuccessful.getOrElse(config.minSuccessful)
 
-      val minSize: Int = pminSize.getOrElse(config.minSize)
+    val minSize: Int = pminSize.getOrElse(config.minSize)
 
-      val maxSize: Int = {
-        (psizeRange, pmaxSize, config.legacyMaxSize) match {
-          case (None, None, Some(legacyMaxSize)) =>
-            legacyMaxSize
-          case (None, Some(maxSize), _) =>
-            maxSize
-          case _ =>
-            psizeRange.getOrElse(config.sizeRange.value) + minSize
-        }
+    val maxSize = {
+      (psizeRange, pmaxSize, config.legacyMaxSize) match {
+        case (None, None, Some(legacyMaxSize)) =>
+          legacyMaxSize
+        case (None, Some(maxSize), _) =>
+          maxSize
+        case _ =>
+          psizeRange.getOrElse(config.sizeRange.value) + minSize
       }
-
-      val rng: scala.util.Random = org.scalacheck.Gen.Parameters.default.rng
-
-      val workers: Int =
-        pworkers.getOrElse(config.workers)
-
-      val testCallback: TestCallback = new TestCallback {}
-
-      val maxDiscardRatio: Float = {
-        (maxDiscardedFactor, maxDiscarded, config.legacyMaxDiscarded, minSuccessful) match {
-          case (None, None, Some(legacyMaxDiscarded), Some(specifiedMinSuccessful)) =>
-            PropertyCheckConfiguration.calculateMaxDiscardedFactor(specifiedMinSuccessful, legacyMaxDiscarded).toFloat
-          case (None, Some(md), _, _) =>
-            if (md < 0) Parameters.default.maxDiscardRatio
-            else PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessfulTests, md).toFloat
-          case _ =>
-            maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
-        }
-      }
-
-      val customClassLoader: Option[ClassLoader] = None
     }
+
+    val maxDiscardRatio: Float = {
+      (maxDiscardedFactor, maxDiscarded, config.legacyMaxDiscarded, minSuccessful) match {
+        case (None, None, Some(legacyMaxDiscarded), Some(specifiedMinSuccessful)) =>
+          PropertyCheckConfiguration.calculateMaxDiscardedFactor(specifiedMinSuccessful, legacyMaxDiscarded).toFloat
+        case (None, Some(md), _, _) =>
+          if (md < 0) Parameters.default.maxDiscardRatio
+          else PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessfulTests, md).toFloat
+        case _ =>
+          maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
+      }
+    }
+
+    Parameters.default
+      .withMinSuccessfulTests(minSuccessfulTests)
+      .withMinSize(minSize)
+      .withMaxSize(maxSize)
+      .withWorkers(pworkers.getOrElse(config.workers))
+      .withTestCallback(new TestCallback {})
+      .withMaxDiscardRatio(maxDiscardRatio)
+      .withCustomClassLoader(None)
   }
 
   /**

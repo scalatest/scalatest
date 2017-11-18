@@ -17,14 +17,11 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 import org.scalatest.exceptions.TestRegistrationClosedException
 
 class ShouldBehaveLikeSpec extends FunSpec {
 
-  def myFirstBehavior(i: Int) {
+  def myFirstBehavior(i: Int): Unit = {
     it("This one is should blow up") {}
   }
 
@@ -49,14 +46,14 @@ class ShouldBehaveLikeSpec extends FunSpec {
   }
 */
 
-  def myBehavior(i: Int) {
+  def myBehavior(i: Int): Unit = {
     it("This one is solo") {}
   }
   it should behave like myBehavior(1) 
 
   // TODO: Make these into real tests. I looked at it and heck they work. So I can indeed put describe clauses in
   // the shared behaviors. Cool.
-  def myNestedBehavior(i: Int) {
+  def myNestedBehavior(i: Int): Unit = {
     describe("and this is the shared describe") {
       it("This one is nested") {}
     }

@@ -15,18 +15,7 @@
  */
 package org.scalatest.testng
 
-import org.scalatest._
-import org.scalatest.events._
-import Suite.getIndentedTextForTest
-import Suite.formatterForSuiteAborted
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import events.MotionToSuppress
 
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import exceptions._
-import Suite.wrapReporterIfNecessary
 
 /**
  * A suite of tests that can be run with either TestNG or ScalaTest. This class allows you to mark any

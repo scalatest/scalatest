@@ -30,7 +30,7 @@ import org.scalatest.Resources
  * Span(1, Second)
  * </pre>
  */
-sealed abstract class Units {
+sealed abstract class Units extends Product with Serializable {
   private[scalatest] def singularMessageFun(lengthString: String): String
   private[scalatest] def pluralMessageFun(lengthString: String): String
 }

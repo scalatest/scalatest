@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>must</code> methods to <code>String</code>
@@ -116,6 +116,8 @@ trait MustVerb {
 
     val leftSideString: String
 
+    val pos: source.Position
+
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
      *
@@ -136,8 +138,8 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "must", right)
+    def must(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "must", right, pos)
     }
 
     /**
@@ -159,8 +161,8 @@ trait MustVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def must(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(leftSideString)
+    def must(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
+      svbli(leftSideString, pos)
     }
 
     /**
@@ -185,8 +187,8 @@ trait MustVerb {
      * no-arg function.
      * </p>
      */
-    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideString, "must", right _)
+    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
+      fun(leftSideString, "must", pos, right _)
     }
 
     /**
@@ -212,8 +214,8 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideString, "must", resultOfAfterWordApplication)
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
+      swawr(leftSideString, "must", resultOfAfterWordApplication, pos)
     }
   }
 
@@ -223,8 +225,9 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb =
+  implicit def convertToStringMustWrapperForVerb(o: String)(implicit position: source.Position): StringMustWrapperForVerb =
     new StringMustWrapperForVerb {
       val leftSideString = o.trim
+      val pos = position
     }
 }

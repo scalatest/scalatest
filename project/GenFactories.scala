@@ -21,6 +21,8 @@ import scala.collection.JavaConversions._
 
 object GenFactories {
 
+  val generatorSource = new File("GenFactories.scala")
+
   val topPart = """
 package org.scalatest.matchers
 
@@ -30,10 +32,9 @@ import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
-import org.scalactic.Equality
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalactic.Prettifier
+import org.scalactic._
+import TripleEqualsSupport.Spread
+import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord
@@ -312,7 +313,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class AndContainWord {
+  final class AndContainWord(prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -379,7 +380,7 @@ $endif$
      * </pre>
      */
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -390,7 +391,7 @@ $endif$
      * </pre>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -412,7 +413,7 @@ $endif$
      * </pre>
      */
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -434,7 +435,7 @@ $endif$
      * </pre>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -456,7 +457,7 @@ $endif$
      * </pre>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -478,7 +479,7 @@ $endif$
      * </pre>
      */
     def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -489,7 +490,7 @@ $endif$
      * </pre>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -511,7 +512,7 @@ $endif$
      * </pre>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -533,7 +534,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  def and(containWord: ContainWord): AndContainWord = new AndContainWord
+  def and(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): AndContainWord = new AndContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -840,7 +841,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class AndNotWord {
+  final class AndNotWord(prettifier: Prettifier, pos: source.Position) {
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro only.
@@ -1017,7 +1018,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation))
+      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
     // SKIP-SCALATESTJS-START
     /**
@@ -1531,7 +1532,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  def and(notWord: NotWord): AndNotWord = new AndNotWord
+  def and(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): AndNotWord = new AndNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -1610,7 +1611,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class OrContainWord {
+  final class OrContainWord(prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1673,7 +1674,7 @@ $endif$
      * </pre>
      */
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1684,7 +1685,7 @@ $endif$
      * </pre>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1706,7 +1707,7 @@ $endif$
      * </pre>
      */
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1728,7 +1729,7 @@ $endif$
      * </pre>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1750,7 +1751,7 @@ $endif$
      * </pre>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1772,7 +1773,7 @@ $endif$
      * </pre>
      */
     def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1783,7 +1784,7 @@ $endif$
      * </pre>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1805,7 +1806,7 @@ $endif$
      * </pre>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1827,7 +1828,7 @@ $endif$
    *                  ^
    * </pre>
    */
-  def or(containWord: ContainWord): OrContainWord = new OrContainWord
+  def or(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): OrContainWord = new OrContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2134,7 +2135,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class OrNotWord {
+  final class OrNotWord(prettifier: Prettifier, pos: source.Position) {
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro.
@@ -2311,7 +2312,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation))
+      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
     // SKIP-SCALATESTJS-START
     /**
@@ -2822,7 +2823,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  def or(notWord: NotWord): OrNotWord = new OrNotWord
+  def or(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): OrNotWord = new OrNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -3012,16 +3013,16 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 */
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, false)
     }
   }
 
-  def genMainJS(dir: File, version: String, scalaVersion: String): Unit = {
+  def genMainJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, true)
     }
   }
@@ -3047,7 +3048,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     }.mkString("\n")
   }
 
-  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean) {
+  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean): File = {
 
     def setCommonOnes(arity: Int, st: org.antlr.stringtemplate.StringTemplate) {
       if (arity == 1)
@@ -3061,68 +3062,72 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
       st.setAttribute("commaSeparatedTCNs", commaSeparatedTCNs);
     }
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "MatcherFactory" + arity + ".scala")))
- 
-    try {
+    val targetFile = new File(targetDir, "MatcherFactory" + arity + ".scala")
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
 
-      val topSt = new org.antlr.stringtemplate.StringTemplate(topPart)
-      setCommonOnes(arity, topSt)
-      val nTypeclassInstances =
-        if (arity == 1) "one typeclass instance"
+      try {
+
+        val topSt = new org.antlr.stringtemplate.StringTemplate(topPart)
+        setCommonOnes(arity, topSt)
+        val nTypeclassInstances =
+          if (arity == 1) "one typeclass instance"
+          else {
+            val numStr =
+              arity match {
+                case 2 => "two"
+                case 3 => "three"
+                case 4 => "four"
+                case 5 => "five"
+                case 6 => "six"
+                case 7 => "seven"
+                case 8 => "eight"
+                case 9 => "nine"
+              }
+            numStr + " typeclass instances"
+          }
+        topSt.setAttribute("nTypeclassInstances", nTypeclassInstances)
+        bw.write(transform(topSt.toString))
+
+        // Now do the and/or methods that take matcher factories of various arities
+        for (passedArity <- 1 to MaxArity - arity) {
+          val resultArity = arity + passedArity
+          val middleSt = new org.antlr.stringtemplate.StringTemplate(middlePart)
+          setCommonOnes(arity, middleSt)
+          middleSt.setAttribute("passedArity", passedArity);
+          middleSt.setAttribute("resultArity", resultArity);
+          val resultColonSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(" : ")
+          middleSt.setAttribute("resultColonSeparatedTCNs", resultColonSeparatedTCNs);
+          val resultCommaSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(", ")
+          middleSt.setAttribute("resultCommaSeparatedTCNs", resultCommaSeparatedTCNs);
+          val passedTypeConstructors = (arity + 1 to resultArity).map("TC" + _ + "[_]").mkString(", ")
+          middleSt.setAttribute("passedTypeConstructors", passedTypeConstructors);
+          val passedCommaSeparatedTCNs = (arity + 1 to resultArity).map("TC" + _).mkString(", ")
+          middleSt.setAttribute("passedCommaSeparatedTCNs", passedCommaSeparatedTCNs);
+          bw.write(transform(middleSt.toString))
+        }
+
+        // Just don't put the and/or DSL under MatcherFactory<MaxArity>, even though the ones that could
+        // return another MatcherFactory<MaxArity> could be implemented. That would mean only *some* of the
+        // DSL is implemented under MatcherFactory<MaxArity>. I'd rather just say none of it is.
+        if (arity < MaxArity) {
+          def doABottomHalf(bottomSt: org.antlr.stringtemplate.StringTemplate) {
+            setCommonOnes(arity, bottomSt)
+            bottomSt.setAttribute("arityPlusOne", arity + 1);
+            bw.write(transform(bottomSt.toString))
+          }
+          doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart1)) // Do in two halves, because hitting class file max string size limit
+          doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart2))
+        }
         else {
-          val numStr =
-            arity match {
-              case 2 => "two"
-              case 3 => "three"
-              case 4 => "four"
-              case 5 => "five"
-              case 6 => "six"
-              case 7 => "seven"
-              case 8 => "eight"
-              case 9 => "nine"
-            }
-           numStr + " typeclass instances"
+          bw.write("}\n")
         }
-      topSt.setAttribute("nTypeclassInstances", nTypeclassInstances)
-      bw.write(transform(topSt.toString))
-
-      // Now do the and/or methods that take matcher factories of various arities
-      for (passedArity <- 1 to MaxArity - arity) {
-        val resultArity = arity + passedArity
-        val middleSt = new org.antlr.stringtemplate.StringTemplate(middlePart)
-        setCommonOnes(arity, middleSt)
-        middleSt.setAttribute("passedArity", passedArity);
-        middleSt.setAttribute("resultArity", resultArity);
-        val resultColonSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(" : ")
-        middleSt.setAttribute("resultColonSeparatedTCNs", resultColonSeparatedTCNs);
-        val resultCommaSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(", ")
-        middleSt.setAttribute("resultCommaSeparatedTCNs", resultCommaSeparatedTCNs);
-        val passedTypeConstructors = (arity + 1 to resultArity).map("TC" + _ + "[_]").mkString(", ")
-        middleSt.setAttribute("passedTypeConstructors", passedTypeConstructors);
-        val passedCommaSeparatedTCNs = (arity + 1 to resultArity).map("TC" + _).mkString(", ")
-        middleSt.setAttribute("passedCommaSeparatedTCNs", passedCommaSeparatedTCNs);
-        bw.write(transform(middleSt.toString))
       }
-
-      // Just don't put the and/or DSL under MatcherFactory<MaxArity>, even though the ones that could
-      // return another MatcherFactory<MaxArity> could be implemented. That would mean only *some* of the
-      // DSL is implemented under MatcherFactory<MaxArity>. I'd rather just say none of it is.
-      if (arity < MaxArity) {
-        def doABottomHalf(bottomSt: org.antlr.stringtemplate.StringTemplate) {
-          setCommonOnes(arity, bottomSt)
-          bottomSt.setAttribute("arityPlusOne", arity + 1);
-          bw.write(transform(bottomSt.toString))
-        }
-        doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart1)) // Do in two halves, because hitting class file max string size limit
-        doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart2))
-      }
-      else {
-        bw.write("}\n")
+      finally {
+        bw.close()
       }
     }
-    finally {
-      bw.close()
-    }
+    targetFile
   }
 }
 

@@ -31,10 +31,16 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   private val slotMap = collection.mutable.HashMap[String, Slot]()
   // suiteEventMap is suite Id -> events for that suite (should be a Vector)
   private val suiteEventMap = collection.mutable.HashMap[String, Vector[Event]]()
+  private val suiteReporterMap = collection.mutable.HashMap[String, Reporter]()
+
+  def registerReporter(suiteId: String, reporter: Reporter): Unit =
+    synchronized {
+      suiteReporterMap += (suiteId -> reporter)
+    }
   
   // Passed slot will always be the head of waitingBuffer
   class TimeoutTask(val slot: Slot) extends TimerTask {
-    override def run() {
+    override def run(): Unit = {
       timeout()
     }
   }
@@ -42,7 +48,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   private val timer = new Timer
   private var timeoutTask: Option[TimeoutTask] = None
 
-  def doApply(event: Event) {
+  def doApply(event: Event): Unit = {
     synchronized {
       event match {
         case suiteStarting: SuiteStarting =>
@@ -118,20 +124,29 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
+  private def dispatchToRegisteredSuiteReporter(suiteId: String, event: Event): Unit = {
+    synchronized(suiteReporterMap.get(suiteId)) match {
+      case Some(rep) => rep(event)
+      case None =>
+    }
+  }
+
   // Handles just SuiteCompleted and SuiteAborted
-  private def handleSuiteEvents(suiteId: String, event: Event) {
+  private def handleSuiteEvents(suiteId: String, event: Event): Unit = {
     val slot = slotMap(suiteId)
     val newSlot = slot.copy(doneEvent = Some(event), ready = (if (slot.includesDistributedTests) slot.testsCompleted else true))  // Assuming here that a done event hasn't already arrived
     slotMap.put(suiteId, newSlot)                     // Probably should fail on the second one
     val slotIdx = slotListBuf.indexOf(slot)
     if (slotIdx >= 0)                                 // In what case would it not be there?
       slotListBuf.update(slotIdx, newSlot)  // Why not fire ready events here? Oh, at end of apply
-    else
-      dispatch(event)  // could happens after timeout
+    else {
+      dispatch(event) // could happens after timeout
+      dispatchToRegisteredSuiteReporter(suiteId, event)
+    }
   }
   // Handles SuiteStarting, TestStarting, TestIgnored, TestSucceeded, TestFailed, TestPending,
   // TestCanceled, InfoProvided, AlertProvided, NoteProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
-  private def handleTestEvents(suiteId: String, event: Event) {
+  private def handleTestEvents(suiteId: String, event: Event): Unit = {
     val slot = slotMap(suiteId)
     val slotIdx = slotListBuf.indexOf(slot)
     if (slotIdx >= 0) {
@@ -143,18 +158,22 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
           suiteEventMap.put(suiteId, Vector(event))
       }
     }
-    else
+    else {
       dispatch(event)
+      dispatchToRegisteredSuiteReporter(suiteId, event)
+    }
   }
 
   // Only called within synchronized
-  private def fireReadyEvents() {
+  private def fireReadyEvents(): Unit = {
     if (slotListBuf.size > 0) {
       val head = slotListBuf.head
       fireSuiteEvents(head.suiteId)
       if (head.ready) {
-        for (doneEvent<- head.doneEvent)
+        for (doneEvent<- head.doneEvent) {
           dispatch(doneEvent)
+          dispatchToRegisteredSuiteReporter(head.suiteId, doneEvent)
+        }
         slotListBuf = fireReadySuiteEvents(slotListBuf.tail)
         if (slotListBuf.size > 0) 
           scheduleTimeoutTask()
@@ -164,7 +183,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
 
   // suiteId must exist in the suiteEventMap
   @tailrec
-  private def fireSuiteEvents(suiteId: String) {
+  private def fireSuiteEvents(suiteId: String): Unit = {
     // Fire all of them and empty it out. The done event is stored elsewhere
     suiteEventMap.get(suiteId) match {
       case Some(eventList) =>
@@ -172,12 +191,14 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
           val head = eventList.head
           suiteEventMap.put(suiteId, eventList.tail)
           dispatch(head)
+          dispatchToRegisteredSuiteReporter(suiteId, head)
           fireSuiteEvents(suiteId)
         }
         else if (eventList.length == 1) {
           val head = eventList.head
           suiteEventMap.put(suiteId, Vector.empty[Event])
           dispatch(head)
+          dispatchToRegisteredSuiteReporter(suiteId, head)
         }
       case None =>
       // Unable to get event vector from map, shouldn't happen
@@ -190,11 +211,17 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       slot =>
         fireSuiteEvents(slot.suiteId)
         dispatch(slot.doneEvent.get)
+        dispatchToRegisteredSuiteReporter(slot.suiteId, slot.doneEvent.get)
     }
     undone
   }
-  
-  def completedTests(suiteId: String) {
+
+  /**
+    * This method is called after all tests in the suite completed execution, this implementation will update the slot state and fire all events accordingly.
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's completed its tests execution
+    */
+  def completedTests(suiteId: String): Unit = {
     synchronized {
       val slot = slotMap(suiteId)
       val newSlot = slot.copy(testsCompleted = true, ready = slot.doneEvent.isDefined)
@@ -203,6 +230,21 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
+      suiteReporterMap -= (suiteId)
+    }
+  }
+
+  /**
+    * This internal method is called by DispatchReporter when a slow poke is triggered.
+    *
+    * @param event an <code>AlertProvided</code> event representing the slow poke.
+    */
+  private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
+    synchronized {
+      synchronized(suiteReporterMap.values.headOption) match {
+        case Some(rep) => rep(event)
+        case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
+      }
     }
   }
 
@@ -210,7 +252,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   // suite's timeout to be 20% longer than the -T one. If an overridden sortingTimeout timeout is shorter, then
   // that's no prob. But if it is longer, then the suiteTimeout will timeout first. I think that's fine. I'll
   // just document that behavior.
-  def distributingTests(suiteId: String) {
+  /**
+    * This method is called before first test in a suite is distributed to execute, this implementation will setup a new slot for the given suite.
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's starting to execute its tests
+    */
+  def distributingTests(suiteId: String): Unit = {
     synchronized {
       slotMap.get(suiteId) match {
         case Some(slot) => 
@@ -225,12 +272,15 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
-  override def doDispose() = {
+  /**
+    * Dispose this reporter, will fire all pending events before disposing.
+    */
+  override def doDispose(): Unit = {
     fireReadyEvents()
   }
   
   // Also happening inside synchronized block
-  private def scheduleTimeoutTask() {
+  private def scheduleTimeoutTask(): Unit = {
     val head = slotListBuf.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
         case Some(task) => 
@@ -245,7 +295,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       }
   }
   
-  private def timeout() {
+  private def timeout(): Unit = {
     synchronized {
       if (slotListBuf.size > 0) {
         val head = slotListBuf.head

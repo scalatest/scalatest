@@ -15,16 +15,16 @@
  */
 package org.scalatest.junit;
 
-import collection.immutable.TreeSet
-import java.lang.reflect.{Method, Modifier}
-import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalatest._
-import org.scalatest.Suite
-import org.junit.runner.notification.RunListener
+import java.lang.reflect.{Method, Modifier}
 import org.junit.runner.notification.Failure
-import org.scalatest.events._
+import org.junit.runner.notification.RunListener
+import org.junit.runner.{Request, JUnitCore, Description, Result}
+import org.scalactic.source
+import org.scalatest.Suite
 import org.scalatest.Suite.autoTagClassAnnotations
 import Suite.wrapReporterIfNecessary
+import collection.immutable.TreeSet
 
 /**
  * Implementation trait for class <code>JUnitSuite</code>, which represents
@@ -50,25 +50,6 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
                  
   // This is volatile, because who knows what Thread JUnit will fire through this.
   @volatile private var theTracker = new Tracker
-
-  /**
-   * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
-   * class, given this class's <code>run</code> method delegates to JUnit to run
-   * its tests.
-   *
-   * <p>
-   * The main purpose of this method implementation is to render a compiler error an attempt
-   * to mix in a trait that overrides <code>withFixture</code>. Because this
-   * trait does not actually use <code>withFixture</code>, the attempt to mix
-   * in behavior would very likely not work.
-   * </p>
-   *
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  override final protected def withFixture(test: NoArgTest): Outcome = {
-     throw new UnsupportedOperationException
-  }
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
@@ -233,6 +214,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty ++ suiteTags ++ testTags
+      val pos = None
     }
   }
 

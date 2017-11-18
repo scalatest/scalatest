@@ -15,7 +15,7 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.enablers.WheneverAsserting
 
 /**
  * Trait that contains the <code>whenever</code> clause that can be used in table- or generator-driven property checks.
@@ -74,7 +74,7 @@ trait Whenever {
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.matchers.ShouldMatchers._
+   * import org.scalatest.matchers.Matchers._
    *
    * forAll (fractions) { (n: Int, d: Int) =>
    *
@@ -106,10 +106,6 @@ trait Whenever {
    *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
    * @param fun the function to evaluate if the specified <code>condition</code> is true
    */
-  def whenever(condition: Boolean)(fun: => Unit) {
-    if (!condition)
-      throw new DiscardedEvaluationException
-    else
-     fun
-  }
+  def whenever[T](condition: Boolean)(fun: => T)(implicit wa: WheneverAsserting[T]): wa.Result =
+    wa.whenever(condition)(fun)
 }

@@ -15,7 +15,7 @@
  */
 package org.scalatest.exceptions
 
-import org.scalatest._
+import org.scalactic.source
 
 // TODO: A test and code for null labels throwing an NPE
 /**
@@ -23,7 +23,7 @@ import org.scalatest._
  *
  * @param messageFun a function that returns a detail message (not optional) for this <code>GeneratorDrivenPropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>GeneratorDrivenPropertyCheckFailedException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it.
  * @param args the argument values, if any, that caused the property check to fail.
@@ -37,15 +37,64 @@ import org.scalatest._
 class GeneratorDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   undecoratedMessage: String,
   args: List[Any],
   namesOfArgs: Option[List[String]],
   val labels: List[String]
 ) extends PropertyCheckFailedException(
-  messageFun, cause, failedCodeStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
+  messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
 ) {
+
+  /**
+    * Constructs a <code>GeneratorDrivenPropertyCheckFailedException</code> with the given message function, cause exception, source position, payload,
+    * undecorated message, argument values, names and labels.
+    *
+    * @param messageFun the message function
+    * @param cause the optional cause
+    * @param pos the source position
+    * @param payload the payload
+    * @param undecoratedMessage the undecorated message
+    * @param args the argument values
+    * @param namesOfArgs the argument names
+    * @param labels the argument labels
+    * @return
+    */
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: Option[List[String]],
+    labels: List[String]
+  ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, labels)
+
+  /**
+    * Constructs a <code>GeneratorDrivenPropertyCheckFailedException</code> with the given message function, cause exception, stack depth function,
+    * payload, undecorated message, argument values, names and labels.
+    *
+    * @param messageFun the message function
+    * @param cause the optional cause
+    * @param failedCodeStackDepthFun the function that returns the depth in the stack trace of this exception at which the line of test code that failed resides
+    * @param payload the payload
+    * @param undecoratedMessage the undecorated message
+    * @param args the argument values
+    * @param namesOfArgs the argument names
+    * @param labels the argument labels
+    */
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: Option[List[String]],
+    labels: List[String]
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, namesOfArgs, labels)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -58,9 +107,9 @@ class GeneratorDrivenPropertyCheckFailedException(
   override def modifyMessage(fun: Option[String] => Option[String]): GeneratorDrivenPropertyCheckFailedException = {
     val mod =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => fun(message).getOrElse(messageFun(this)),
+        (_: StackDepthException) => fun(message).getOrElse(messageFun(this)),
         cause,
-        failedCodeStackDepthFun,
+        posOrStackDepthFun,
         payload,
         undecoratedMessage,
         args,
@@ -85,7 +134,7 @@ class GeneratorDrivenPropertyCheckFailedException(
       new GeneratorDrivenPropertyCheckFailedException(
         messageFun,
         cause,
-        failedCodeStackDepthFun,
+        posOrStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,
         args,

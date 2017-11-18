@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 import javax.swing._
 import java.awt.Color
 import java.awt.Font
@@ -117,7 +116,7 @@ private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCell
     val noteProvidedSelIcon = greenSelImageIcon
   }
 
-  private def setRendererFont(renderer: JLabel, color: Color) {
+  private def setRendererFont(renderer: JLabel, color: Color): Unit = {
     val font: Font = renderer.getFont()
     renderer.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()))
     renderer.setForeground(color)

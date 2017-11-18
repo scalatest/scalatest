@@ -74,7 +74,7 @@ import org.scalactic.Requirements._
  * Timeouts are used by the <code>eventually</code> methods of trait
  * <a href="Eventually.html"><code>Eventually</code></a> and the <code>await</code> method of class
  * <code>Waiter</code>, a member of trait
- * <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>. Intervals are used by 
+ * <a href="Waiters.html"><code>Waiters</code></a>. Intervals are used by
  * the <code>eventually</code> methods.
  * </p>
  *
@@ -92,7 +92,7 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
    * <code>PatienceConfig</code> containing your desired default configuration values.
    * </p>
    */
-  implicit def patienceConfig = defaultPatienceConfig
+  implicit def patienceConfig: PatienceConfig = defaultPatienceConfig
 
   /**
    * Returns a <code>Timeout</code> configuration parameter containing the passed value, which
@@ -110,17 +110,17 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
 object PatienceConfiguration {
 
   /**
-   * Abstract class defining a family of configuration parameters for traits <code>Eventually</code> and <code>AsyncAssertions</code>.
+   * Abstract class defining a family of configuration parameters for traits <code>Eventually</code> and <code>Waiters</code>.
    * 
    * <p>
    * The subclasses of this abstract class are used to pass configuration information to
-   * the <code>eventually</code> methods of trait <code>Eventually</code> and the <code>await</code> methods of trait <code>AsyncAssertions</code>.
+   * the <code>eventually</code> methods of trait <code>Eventually</code> and the <code>await</code> methods of trait <code>Waiters</code>.
    * </p>
    *
    * @author Bill Venners
    * @author Chua Chee Seng
    */
-  sealed abstract class PatienceConfigParam
+  sealed abstract class PatienceConfigParam extends Product with Serializable
 
   /**
    * A <code>PatienceConfigParam</code> that specifies the maximum amount of time to wait for an asynchronous operation to
