@@ -319,6 +319,15 @@ if [[ $MODE = 'examplesJS' ]] ; then
   exit $rc
 fi
 
+if [[ $MODE = 'scalacticTestsJS1' ]] ; then
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.A*" "scalacticTestJS/test-only org.scalactic.B*" "scalacticTestJS/test-only org.scalactic.C*" "scalacticTestJS/test-only org.scalactic.D*" "scalacticTestJS/test-only org.scalactic.E*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
   sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
