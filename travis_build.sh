@@ -325,7 +325,7 @@ if [[ $MODE = 'scalacticTestsJS1' ]] ; then
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalacticTestJS/test:compile'"
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
-  echo "Doing 'sbt "scalacticTestJS/test-only org.scalactic.A*" "scalacticTestJS/test-only org.scalactic.B*" "scalacticTestJS/test-only org.scalactic.C*" "scalacticTestJS/test-only org.scalactic.D*" "scalacticTestJS/test-only org.scalactic.E*"'
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.A* scalacticTestJS/test-only org.scalactic.B* scalacticTestJS/test-only org.scalactic.C* scalacticTestJS/test-only org.scalactic.D* scalacticTestJS/test-only org.scalactic.E*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.A*" "scalacticTestJS/test-only org.scalactic.B*" "scalacticTestJS/test-only org.scalactic.C*" "scalacticTestJS/test-only org.scalactic.D*" "scalacticTestJS/test-only org.scalactic.E*"
   rc=$?
   kill %1
@@ -338,7 +338,7 @@ if [[ $MODE = 'scalacticTestsJS2' ]] ; then
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalacticTestJS/test:compile'"
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
-  echo "Doing 'sbt "scalacticTestJS/test-only org.scalactic.F*" "scalacticTestJS/test-only org.scalactic.G*" "scalacticTestJS/test-only org.scalactic.H*" "scalacticTestJS/test-only org.scalactic.I*" "scalacticTestJS/test-only org.scalactic.J*"'
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.F* scalacticTestJS/test-only org.scalactic.G* scalacticTestJS/test-only org.scalactic.H* scalacticTestJS/test-only org.scalactic.I* scalacticTestJS/test-only org.scalactic.J*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.F*" "scalacticTestJS/test-only org.scalactic.G*" "scalacticTestJS/test-only org.scalactic.H*" "scalacticTestJS/test-only org.scalactic.I*" "scalacticTestJS/test-only org.scalactic.J*"
   rc=$?
   kill %1
@@ -351,7 +351,7 @@ if [[ $MODE = 'scalacticTestsJS3' ]] ; then
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalacticTestJS/test:compile'"
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
-  echo "Doing 'sbt "scalacticTestJS/test-only org.scalactic.K*" "scalacticTestJS/test-only org.scalactic.L*" "scalacticTestJS/test-only org.scalactic.M*" "scalacticTestJS/test-only org.scalactic.N*" "scalacticTestJS/test-only org.scalactic.O*"'
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.K* scalacticTestJS/test-only org.scalactic.L* scalacticTestJS/test-only org.scalactic.M* scalacticTestJS/test-only org.scalactic.N* scalacticTestJS/test-only org.scalactic.O*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.K*" "scalacticTestJS/test-only org.scalactic.L*" "scalacticTestJS/test-only org.scalactic.M*" "scalacticTestJS/test-only org.scalactic.N*" "scalacticTestJS/test-only org.scalactic.O*"
   rc=$?
   kill %1
@@ -364,7 +364,7 @@ if [[ $MODE = 'scalacticTestsJS4' ]] ; then
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalacticTestJS/test:compile'"
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
-  echo "Doing 'sbt "scalacticTestJS/test-only org.scalactic.P*" "scalacticTestJS/test-only org.scalactic.Q*" "scalacticTestJS/test-only org.scalactic.R*" "scalacticTestJS/test-only org.scalactic.S*" "scalacticTestJS/test-only org.scalactic.T*"'
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.P* scalacticTestJS/test-only org.scalactic.Q* scalacticTestJS/test-only org.scalactic.R* scalacticTestJS/test-only org.scalactic.S* scalacticTestJS/test-only org.scalactic.T*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.P*" "scalacticTestJS/test-only org.scalactic.Q*" "scalacticTestJS/test-only org.scalactic.R*" "scalacticTestJS/test-only org.scalactic.S*" "scalacticTestJS/test-only org.scalactic.T*"
   rc=$?
   kill %1
@@ -377,7 +377,7 @@ if [[ $MODE = 'scalacticTestsJS5' ]] ; then
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalacticTestJS/test:compile'"
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
-  echo "Doing 'sbt "scalacticTestJS/test-only org.scalactic.U*" "scalacticTestJS/test-only org.scalactic.V*" "scalacticTestJS/test-only org.scalactic.W*" "scalacticTestJS/test-only org.scalactic.X*" "scalacticTestJS/test-only org.scalactic.Y*" "scalacticTestJS/test-only org.scalactic.Z*"'
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.U* scalacticTestJS/test-only org.scalactic.V* scalacticTestJS/test-only org.scalactic.W* scalacticTestJS/test-only org.scalactic.X* scalacticTestJS/test-only org.scalactic.Y* scalacticTestJS/test-only org.scalactic.Z*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.U*" "scalacticTestJS/test-only org.scalactic.V*" "scalacticTestJS/test-only org.scalactic.W*" "scalacticTestJS/test-only org.scalactic.X*" "scalacticTestJS/test-only org.scalactic.Y*" "scalacticTestJS/test-only org.scalactic.Z*"
   rc=$?
   kill %1
