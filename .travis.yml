@@ -49,7 +49,8 @@ env:
 #    - MODE=genEmptyTests
 #    - MODE=examples
 #    - MODE=examplesJS
-     - MODE=scalacticTestsJS1
+#    - MODE=scalacticTestsJS1
+     - MODE=scalacticTestsJS2
 
 matrix:
   exclude:
