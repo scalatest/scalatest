@@ -319,6 +319,97 @@ if [[ $MODE = 'examplesJS' ]] ; then
   exit $rc
 fi
 
+if [[ $MODE = 'scalacticTestsJS1' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.A* scalacticTestJS/test-only org.scalactic.B* scalacticTestJS/test-only org.scalactic.C* scalacticTestJS/test-only org.scalactic.D* scalacticTestJS/test-only org.scalactic.E*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.A*" "scalacticTestJS/test-only org.scalactic.B*" "scalacticTestJS/test-only org.scalactic.C*" "scalacticTestJS/test-only org.scalactic.D*" "scalacticTestJS/test-only org.scalactic.E*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalacticTestsJS2' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.F* scalacticTestJS/test-only org.scalactic.G* scalacticTestJS/test-only org.scalactic.H* scalacticTestJS/test-only org.scalactic.I* scalacticTestJS/test-only org.scalactic.J*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.F*" "scalacticTestJS/test-only org.scalactic.G*" "scalacticTestJS/test-only org.scalactic.H*" "scalacticTestJS/test-only org.scalactic.I*" "scalacticTestJS/test-only org.scalactic.J*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalacticTestsJS3' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.K* scalacticTestJS/test-only org.scalactic.L* scalacticTestJS/test-only org.scalactic.M* scalacticTestJS/test-only org.scalactic.N* scalacticTestJS/test-only org.scalactic.O*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.K*" "scalacticTestJS/test-only org.scalactic.L*" "scalacticTestJS/test-only org.scalactic.M*" "scalacticTestJS/test-only org.scalactic.N*" "scalacticTestJS/test-only org.scalactic.O*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalacticTestsJS4' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.P* scalacticTestJS/test-only org.scalactic.Q* scalacticTestJS/test-only org.scalactic.R* scalacticTestJS/test-only org.scalactic.S* scalacticTestJS/test-only org.scalactic.T*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.P*" "scalacticTestJS/test-only org.scalactic.Q*" "scalacticTestJS/test-only org.scalactic.R*" "scalacticTestJS/test-only org.scalactic.S*" "scalacticTestJS/test-only org.scalactic.T*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalacticTestsJS5' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.U* scalacticTestJS/test-only org.scalactic.V* scalacticTestJS/test-only org.scalactic.W* scalacticTestJS/test-only org.scalactic.X* scalacticTestJS/test-only org.scalactic.Y* scalacticTestJS/test-only org.scalactic.Z*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.U*" "scalacticTestJS/test-only org.scalactic.V*" "scalacticTestJS/test-only org.scalactic.W*" "scalacticTestJS/test-only org.scalactic.X*" "scalacticTestJS/test-only org.scalactic.Y*" "scalacticTestJS/test-only org.scalactic.Z*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalacticTestsJS6' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalacticTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test:compile
+  echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.anyvals.* scalacticTestJS/test-only org.scalactic.source.*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalacticTestJS/test-only org.scalactic.anyvals.*" "scalacticTestJS/test-only org.scalactic.source.*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'scalatestTestsJS1' ]] ; then
+
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  echo "Doing 'sbt scalatestTestJS/test:compile'"
+  sbt ++$TRAVIS_SCALA_VERSION -J -Xmx4000m scalatestTestJS/test:compile
+  echo "Doing 'sbt scalatestTestJS/test-only org.scalatest.A* scalatestTestJS/test-only org.scalatest.B* scalatestTestJS/test-only org.scalatest.C*'"
+  sbt ++$TRAVIS_SCALA_VERSION "scalatestTestJS/test-only org.scalatest.A*" "scalatestTestJS/test-only org.scalatest.B*" "scalatestTestJS/test-only org.scalatest.C*"
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
   sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
