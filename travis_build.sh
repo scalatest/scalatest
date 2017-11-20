@@ -321,7 +321,7 @@ fi
 
 if [[ $MODE = 'scalacticTestsJS1' ]] ; then
   echo "Doing 'sbt scalacticTestJS/test-only org.scalactic.A*" "scalacticTestJS/test-only org.scalactic.B*" "scalacticTestJS/test-only org.scalactic.C*" "scalacticTestJS/test-only org.scalactic.D*" "scalacticTestJS/test-only org.scalactic.E*'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export SBT_OPTS="-server -Xms1G -Xmx4G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   while true; do echo "..."; sleep 60; done &
