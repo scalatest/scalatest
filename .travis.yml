@@ -53,7 +53,8 @@ env:
 #    - MODE=scalacticTestsJS2
 #    - MODE=scalacticTestsJS3
 #    - MODE=scalacticTestsJS4
-     - MODE=scalacticTestsJS5
+#    - MODE=scalacticTestsJS5
+     - MODE=scalacticTestsJS6
 
 matrix:
   exclude:
