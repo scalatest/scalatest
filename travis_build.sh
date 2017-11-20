@@ -402,7 +402,7 @@ if [[ $MODE = 'scalatestTestsJS1' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   while true; do echo "..."; sleep 60; done &
   echo "Doing 'sbt scalatestTestJS/test:compile'"
-  sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:compile
+  sbt ++$TRAVIS_SCALA_VERSION -J -Xmx4000m scalatestTestJS/test:compile
   echo "Doing 'sbt scalatestTestJS/test-only org.scalatest.A* scalatestTestJS/test-only org.scalatest.B* scalatestTestJS/test-only org.scalatest.C*'"
   sbt ++$TRAVIS_SCALA_VERSION "scalatestTestJS/test-only org.scalatest.A*" "scalatestTestJS/test-only org.scalatest.B*" "scalatestTestJS/test-only org.scalatest.C*"
   rc=$?
