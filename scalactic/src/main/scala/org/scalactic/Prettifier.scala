@@ -22,7 +22,7 @@ import scala.xml
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
- * where &ldquo;pretty&rdquo; is in the eye of the implementer. 
+ * where &ldquo;pretty&rdquo; is in the eye of the implementer.
  *
  * <p>
  * Scala's `Any` type declares a `toString` that will convert any object to a `String`
@@ -46,7 +46,7 @@ import scala.xml
  * </pre>
  *
  * <p>
- * To make it quicker to figure out why the assertion failed, ScalaTest ''prettifies'' the objects involved in 
+ * To make it quicker to figure out why the assertion failed, ScalaTest ''prettifies'' the objects involved in
  * the error message. The default `Prettifier` will place double quotes on either side of a `String`s
  * `toString` result:
  * </p>
@@ -129,8 +129,8 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
 }
 
 /**
- * Companion object for `Prettifier` that provides a default `Prettifier` implementation.
- */
+  * Companion object for `Prettifier` that provides a default `Prettifier` implementation.
+  */
 object Prettifier {
 
   /**
@@ -144,7 +144,7 @@ object Prettifier {
     }
 
   /**
-   * A default `Prettifier`. 
+   * A default `Prettifier`.
    *
    * <p>
    * This default `Prettifier` is used in ScalaTest to clarify error messages.
@@ -179,83 +179,7 @@ object Prettifier {
    * </p>
    */
   implicit val default: Prettifier =
-    new Prettifier {
-      def apply(o: Any): String = {
-        try {
-          o match {
-            case null => "null"
-            case aUnit: Unit => "<(), the Unit value>"
-            case aString: String => "\"" + aString + "\""
-            case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
-            case aChar: Char =>  "\'" + aChar + "\'"
-            case Some(e) => "Some(" + apply(e) + ")"
-            case Success(e) => "Success(" + apply(e) + ")"
-            case Left(e) => "Left(" + apply(e) + ")"
-            case Right(e) => "Right(" + apply(e) + ")"
-            case Good(e) => "Good(" + apply(e) + ")"
-            case Bad(e) => "Bad(" + apply(e) + ")"
-            case One(e) => "One(" + apply(e) + ")"
-            case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
-            case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
-            case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
-            case aGenMap: GenMap[_, _] =>
-              aGenMap.stringPrefix + "(" +
-              (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
-                apply(key) + " -> " + apply(value)
-              }).mkString(", ") + ")"
-            // SKIP-SCALATESTJS-START
-            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
-            case anXMLNodeBuffer: xml.NodeBuffer =>
-              xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
-            // SKIP-SCALATESTJS-END
-            case aGenTraversable: GenTraversable[_] =>
-              val isSelf =
-                if (aGenTraversable.size == 1) {
-                  aGenTraversable.head match {
-                    case ref: AnyRef => ref eq aGenTraversable
-                    case other => other == aGenTraversable
-                  }
-                }
-                else
-                  false
-              if (isSelf)
-                aGenTraversable.toString
-              else
-                aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-            // SKIP-SCALATESTJS-START
-            case javaCol: java.util.Collection[_] =>
-              // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
-              // let's do our best to prettify its element when it is not overriden
-              import scala.collection.JavaConverters._
-              val theToString = javaCol.toString
-              if (theToString.startsWith("[") && theToString.endsWith("]"))
-                "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
-              else
-                theToString
-            case javaMap: java.util.Map[_, _] =>
-              // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
-              // let's do our best to prettify its element when it is not overriden
-              import scala.collection.JavaConverters._
-              val theToString = javaMap.toString
-              if (theToString.startsWith("{") && theToString.endsWith("}"))
-                "{" + javaMap.entrySet.iterator.asScala.map { entry =>
-                  apply(entry.getKey) + "=" + apply(entry.getValue)
-                }.mkString(", ") + "}"
-              else
-                theToString
-            // SKIP-SCALATESTJS-END
-            case anythingElse => anythingElse.toString
-          }
-        }
-        catch {
-          // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
-          // specially above, but in case someone else creates a collection whose iterator
-          // returns itself, which will cause infinite recursion, at least we'll pop out and
-          // give them a string back.
-          case _: StackOverflowError => o.toString
-        }
-      }
-    }
+    new DefaultPrettifier
 
   /**
    * A basic `Prettifier`.
@@ -295,6 +219,7 @@ object Prettifier {
       }
       i
     }
+
     def findCommonSuffixLength(s: String, t: String): Int = {
       val max = s.length.min(t.length) // the maximum potential size of the suffix
       var i = 0
@@ -306,6 +231,7 @@ object Prettifier {
       }
       i
     }
+
     if (s != t) {
       val commonPrefixLength = findCommonPrefixLength(s, t)
       val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
@@ -336,9 +262,92 @@ object Prettifier {
       }
       case _ => (a, b)
     }
-	
+
   private[org] val lineSeparator: String = scala.compat.Platform.EOL
 }
+
+/**
+ * Default `Prettifier`.
+ */
+class DefaultPrettifier extends Prettifier {
+
+  def apply(o: Any): String = {
+    try {
+      o match {
+        case null => "null"
+        case aUnit: Unit => "<(), the Unit value>"
+        case aString: String => "\"" + aString + "\""
+        case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
+        case aChar: Char => "\'" + aChar + "\'"
+        case Some(e) => "Some(" + apply(e) + ")"
+        case Success(e) => "Success(" + apply(e) + ")"
+        case Left(e) => "Left(" + apply(e) + ")"
+        case Right(e) => "Right(" + apply(e) + ")"
+        case Good(e) => "Good(" + apply(e) + ")"
+        case Bad(e) => "Bad(" + apply(e) + ")"
+        case One(e) => "One(" + apply(e) + ")"
+        case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
+        case anArray: Array[_] => "Array(" + (anArray map apply).mkString(", ") + ")"
+        case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+        case aGenMap: GenMap[_, _] =>
+          aGenMap.stringPrefix + "(" +
+            (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+              apply(key) + " -> " + apply(value)
+            }).mkString(", ") + ")"
+        // SKIP-SCALATESTJS-START
+        case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
+        case anXMLNodeBuffer: xml.NodeBuffer =>
+          xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
+        // SKIP-SCALATESTJS-END
+        case aGenTraversable: GenTraversable[_] =>
+          val isSelf =
+            if (aGenTraversable.size == 1) {
+              aGenTraversable.head match {
+                case ref: AnyRef => ref eq aGenTraversable
+                case other => other == aGenTraversable
+              }
+            }
+            else
+              false
+          if (isSelf)
+            aGenTraversable.toString
+          else
+            aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+        // SKIP-SCALATESTJS-START
+        case javaCol: java.util.Collection[_] =>
+          // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+          // let's do our best to prettify its element when it is not overriden
+          import scala.collection.JavaConverters._
+          val theToString = javaCol.toString
+          if (theToString.startsWith("[") && theToString.endsWith("]"))
+            "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
+          else
+            theToString
+        case javaMap: java.util.Map[_, _] =>
+          // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+          // let's do our best to prettify its element when it is not overriden
+          import scala.collection.JavaConverters._
+          val theToString = javaMap.toString
+          if (theToString.startsWith("{") && theToString.endsWith("}"))
+            "{" + javaMap.entrySet.iterator.asScala.map { entry =>
+              apply(entry.getKey) + "=" + apply(entry.getValue)
+            }.mkString(", ") + "}"
+          else
+            theToString
+        // SKIP-SCALATESTJS-END
+        case anythingElse => anythingElse.toString
+      }
+    }
+    catch {
+      // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
+      // specially above, but in case someone else creates a collection whose iterator
+      // returns itself, which will cause infinite recursion, at least we'll pop out and
+      // give them a string back.
+      case _: StackOverflowError => o.toString
+    }
+  }
+}
+
 
 private[scalactic] class BasicPrettifier extends Prettifier {
 
@@ -347,8 +356,8 @@ private[scalactic] class BasicPrettifier extends Prettifier {
       case null => "null"
       case aUnit: Unit => "<(), the Unit value>"
       case aString: String => "\"" + aString + "\""
-      case aChar: Char =>  "\'" + aChar + "\'"
-      case anArray: Array[_] =>  prettifyArrays(anArray)
+      case aChar: Char => "\'" + aChar + "\'"
+      case anArray: Array[_] => prettifyArrays(anArray)
       case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
       case anythingElse => anythingElse.toString
     }
