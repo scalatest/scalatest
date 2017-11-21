@@ -98,45 +98,45 @@ class EventSpec extends FunSpec with Checkers {
   }
 */
 
-  import io.circe._
-  import io.circe.parser._
+  import spray.json._
+  import DefaultJsonProtocol._
 
-  def getField[T](json: Json, key: String)(implicit d: Decoder[T]): T =
+  /*def getField[T](json: Json, key: String)(implicit d: Decoder[T]): T =
     json.hcursor.downField(key).as[T] match {
       case Right(t) => t
       case _ => fail(s"failed to decode $key from: $json")
-    }
+    }*/
 
   describe("TestStaring event") {
 
     it("should return correct JSON in its toJson method") {
       val event = TestStarting(new Ordinal(0), "testSuiteName", "testSuiteId", Some("testSuiteClassName"), "test name", "test text", Some(MotionToSuppress), Some(LineInFile(159, "File.scala", None)), Some("rerunner name"))
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestStarting")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
+          assert(jsObj.fields("eventType") == JsString("TestStarting"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val formatterObj = jsObj.fields("formatter").asJsObject
+          assert(formatterObj.fields("formatterType") == JsString("MotionToSuppress"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 159)
-          assert(getField[String](locationJson, "fileName") == "File.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == None)
+          val locationObj = jsObj.fields("location").asJsObject
+          assert(locationObj.fields("locationType") == JsString("LineInFile"))
+          assert(locationObj.fields("lineNumber") == JsNumber(159))
+          assert(locationObj.fields("fileName") == JsString("File.scala"))
+          assert(locationObj.fields("filePathname") == JsNull)
 
-          assert(getField[Option[String]](json, "rerunner") == Some("rerunner name"))
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -169,61 +169,65 @@ class EventSpec extends FunSpec with Checkers {
           None
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestSucceeded")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
+          assert(jsObj.fields("eventType") == JsString("TestSucceeded"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val recordedEvents = getField[Vector[Json]](json, "recordedEvents")
-          assert(recordedEvents.length == 1)
-          val infoProvidedJson = recordedEvents(0)
-          assert(getField[String](infoProvidedJson, "eventType") == "InfoProvided")
-          assert(getField[Int](infoProvidedJson, "ordinal") == 1)
-          assert(getField[String](infoProvidedJson, "message") == "success")
+          jsObj.fields("recordedEvents") match {
+            case recordedEvents: JsArray =>
+              assert(recordedEvents.elements.length == 1)
+              val infoProvidedJson = recordedEvents.elements(0).asJsObject
+              assert(infoProvidedJson.fields("eventType") == JsString("InfoProvided"))
+              assert(infoProvidedJson.fields("ordinal") == JsNumber(1))
+              assert(infoProvidedJson.fields("message") == JsString("success"))
 
-          val ipNameInfoJson = getField[Json](infoProvidedJson, "nameInfo")
-          assert(getField[String](ipNameInfoJson, "suiteName") == "testSuiteName")
-          assert(getField[String](ipNameInfoJson, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](ipNameInfoJson, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[Option[String]](ipNameInfoJson, "testName") == Some("test name"))
+              val ipNameInfoJson = infoProvidedJson.fields("nameInfo").asJsObject
+              assert(ipNameInfoJson.fields("suiteName") == JsString("testSuiteName"))
+              assert(ipNameInfoJson.fields("suiteId") == JsString("testSuiteId"))
+              assert(ipNameInfoJson.fields("suiteClassName") == JsString("testSuiteClassName"))
+              assert(ipNameInfoJson.fields("testName") == JsString("test name"))
 
-          val ipThrowableJson = getField[Json](infoProvidedJson, "throwable")
-          assert(getField[String](ipThrowableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](ipThrowableJson, "message") == "testing")
+              val ipThrowableJson = infoProvidedJson.fields("throwable").asJsObject
+              assert(ipThrowableJson.fields("className") == JsString("java.lang.RuntimeException"))
+              assert(ipThrowableJson.fields("message") == JsString("testing"))
 
-          val ipFormatterJson = getField[Json](infoProvidedJson, "formatter")
-          assert(getField[String](ipFormatterJson, "formatterType") == "MotionToSuppress")
+              val ipFormatterJson = infoProvidedJson.fields("formatter").asJsObject
+              assert(ipFormatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          val ipLocationJson = getField[Json](infoProvidedJson, "location")
-          assert(getField[Int](ipLocationJson, "lineNumber") == 123)
-          assert(getField[String](ipLocationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](ipLocationJson, "filePathname") == None)
+              val ipLocationJson = infoProvidedJson.fields("location").asJsObject
+              assert(ipLocationJson.fields("lineNumber") == JsNumber(123))
+              assert(ipLocationJson.fields("fileName") == JsString("Test.scala"))
+              assert(ipLocationJson.fields("filePathname") == JsNull)
 
-          assert(getField[Option[Int]](json, "duration") == Some(777))
+            case other => fail("Expected JsArray but got: " + other)
+          }
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "IndentedText")
-          assert(getField[String](formatterJson, "formattedText") == "formatted text")
-          assert(getField[String](formatterJson, "rawText") == "raw text")
-          assert(getField[Int](formatterJson, "indentationLevel") == 2)
+          assert(jsObj.fields("duration") == JsNumber(777))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("IndentedText"))
+          assert(formatterJson.fields("formattedText") == JsString("formatted text"))
+          assert(formatterJson.fields("rawText") == JsString("raw text"))
+          assert(formatterJson.fields("indentationLevel") == JsNumber(2))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -257,64 +261,69 @@ class EventSpec extends FunSpec with Checkers {
           None
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestFailed")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          assert(getField[String](json, "message") == "error message")
+          assert(jsObj.fields("eventType") == JsString("TestFailed"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val recordedEvents = getField[Vector[Json]](json, "recordedEvents")
-          assert(recordedEvents.length == 1)
-          val markupProvidedJson = recordedEvents(0)
-          assert(getField[String](markupProvidedJson, "eventType") == "MarkupProvided")
-          assert(getField[Int](markupProvidedJson, "ordinal") == 1)
-          assert(getField[String](markupProvidedJson, "text") == "<b>success</b>")
+          assert(jsObj.fields("message") == JsString("error message"))
 
-          val mpNameInfoJson = getField[Json](markupProvidedJson, "nameInfo")
-          assert(getField[String](mpNameInfoJson, "suiteName") == "testSuiteName")
-          assert(getField[String](mpNameInfoJson, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](mpNameInfoJson, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[Option[String]](mpNameInfoJson, "testName") == Some("test name"))
+          jsObj.fields("recordedEvents") match {
+            case recordedEvents: JsArray =>
+              assert(recordedEvents.elements.length == 1)
+              val markupProvidedJson = recordedEvents.elements(0).asJsObject
+              assert(markupProvidedJson.fields("eventType") == JsString("MarkupProvided"))
+              assert(markupProvidedJson.fields("ordinal") == JsNumber(1))
+              assert(markupProvidedJson.fields("text") == JsString("<b>success</b>"))
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "fail message here")
+              val mpNameInfoJson = markupProvidedJson.fields("nameInfo").asJsObject
+              assert(mpNameInfoJson.fields("suiteName") == JsString("testSuiteName"))
+              assert(mpNameInfoJson.fields("suiteId") == JsString("testSuiteId"))
+              assert(mpNameInfoJson.fields("suiteClassName") == JsString("testSuiteClassName"))
+              assert(mpNameInfoJson.fields("testName") == JsString("test name"))
 
-          val mpFormatterJson = getField[Json](markupProvidedJson, "formatter")
-          assert(getField[String](mpFormatterJson, "formatterType") == "IndentedText")
-          assert(getField[String](mpFormatterJson, "formattedText") == "formatted text")
-          assert(getField[String](mpFormatterJson, "rawText") == "raw text")
-          assert(getField[Int](mpFormatterJson, "indentationLevel") == 2)
+              val mpFormatterJson = markupProvidedJson.fields("formatter").asJsObject
+              assert(mpFormatterJson.fields("formatterType") == JsString("IndentedText"))
+              assert(mpFormatterJson.fields("formattedText") == JsString("formatted text"))
+              assert(mpFormatterJson.fields("rawText") == JsString("raw text"))
+              assert(mpFormatterJson.fields("indentationLevel") == JsNumber(2))
 
-          val mpLocationJson = getField[Json](markupProvidedJson, "location")
-          assert(getField[String](mpLocationJson, "locationType") == "LineInFile")
-          assert(getField[Int](mpLocationJson, "lineNumber") == 456)
-          assert(getField[String](mpLocationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](mpLocationJson, "filePathname") == None)
+              val mpLocationJson = markupProvidedJson.fields("location").asJsObject
+              assert(mpLocationJson.fields("locationType") == JsString("LineInFile"))
+              assert(mpLocationJson.fields("lineNumber") == JsNumber(456))
+              assert(mpLocationJson.fields("fileName") == JsString("Test.scala"))
+              assert(mpLocationJson.fields("filePathname") == JsNull)
 
-          assert(getField[Option[Int]](json, "duration") == Some(555))
+            case other => fail("Expected JsArray but got: " + other)
+          }
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("fail message here"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          assert(jsObj.fields("duration") == JsNumber(555))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
+
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -334,29 +343,30 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestIgnored")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("eventType") == JsString("TestIgnored"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -407,64 +417,69 @@ class EventSpec extends FunSpec with Checkers {
           None
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestCanceled")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          assert(getField[String](json, "message") == "error message")
+          assert(jsObj.fields("eventType") == JsString("TestCanceled"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val recordedEvents = getField[Vector[Json]](json, "recordedEvents")
-          assert(recordedEvents.length == 1)
-          val markupProvidedJson = recordedEvents(0)
-          assert(getField[String](markupProvidedJson, "eventType") == "MarkupProvided")
-          assert(getField[Int](markupProvidedJson, "ordinal") == 1)
-          assert(getField[String](markupProvidedJson, "text") == "<b>cancel</b>")
+          assert(jsObj.fields("message") == JsString("error message"))
 
-          val mpNameInfoJson = getField[Json](markupProvidedJson, "nameInfo")
-          assert(getField[String](mpNameInfoJson, "suiteName") == "testSuiteName")
-          assert(getField[String](mpNameInfoJson, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](mpNameInfoJson, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[Option[String]](mpNameInfoJson, "testName") == Some("test name"))
+          jsObj.fields("recordedEvents") match {
+            case recordedEvents: JsArray =>
+              assert(recordedEvents.elements.length == 1)
+              val markupProvidedJson = recordedEvents.elements(0).asJsObject
+              assert(markupProvidedJson.fields("eventType") == JsString("MarkupProvided"))
+              assert(markupProvidedJson.fields("ordinal") == JsNumber(1))
+              assert(markupProvidedJson.fields("text") == JsString("<b>cancel</b>"))
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "cancel message here")
+              val mpNameInfoJson = markupProvidedJson.fields("nameInfo").asJsObject
+              assert(mpNameInfoJson.fields("suiteName") == JsString("testSuiteName"))
+              assert(mpNameInfoJson.fields("suiteId") == JsString("testSuiteId"))
+              assert(mpNameInfoJson.fields("suiteClassName") == JsString("testSuiteClassName"))
+              assert(mpNameInfoJson.fields("testName") == JsString("test name"))
 
-          val mpFormatterJson = getField[Json](markupProvidedJson, "formatter")
-          assert(getField[String](mpFormatterJson, "formatterType") == "IndentedText")
-          assert(getField[String](mpFormatterJson, "formattedText") == "formatted text")
-          assert(getField[String](mpFormatterJson, "rawText") == "raw text")
-          assert(getField[Int](mpFormatterJson, "indentationLevel") == 2)
+              val mpFormatterJson = markupProvidedJson.fields("formatter").asJsObject
+              assert(mpFormatterJson.fields("formatterType") == JsString("IndentedText"))
+              assert(mpFormatterJson.fields("formattedText") == JsString("formatted text"))
+              assert(mpFormatterJson.fields("rawText") == JsString("raw text"))
+              assert(mpFormatterJson.fields("indentationLevel") == JsNumber(2))
 
-          val mpLocationJson = getField[Json](markupProvidedJson, "location")
-          assert(getField[String](mpLocationJson, "locationType") == "LineInFile")
-          assert(getField[Int](mpLocationJson, "lineNumber") == 456)
-          assert(getField[String](mpLocationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](mpLocationJson, "filePathname") == None)
+              val mpLocationJson = markupProvidedJson.fields("location").asJsObject
+              assert(mpLocationJson.fields("locationType") == JsString("LineInFile"))
+              assert(mpLocationJson.fields("lineNumber") == JsNumber(456))
+              assert(mpLocationJson.fields("fileName") == JsString("Test.scala"))
+              assert(mpLocationJson.fields("filePathname") == JsNull)
 
-          assert(getField[Option[Int]](json, "duration") == Some(555))
+            case other => fail("Expected JsArray but got: " + other)
+          }
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("cancel message here"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          assert(jsObj.fields("duration") == JsNumber(555))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
+
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -494,54 +509,60 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "TestPending")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[String](json, "testName") == "test name")
-          assert(getField[String](json, "testText") == "test text")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
+          assert(jsObj.fields("eventType") == JsString("TestPending"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
+          assert(jsObj.fields("testName") == JsString("test name"))
+          assert(jsObj.fields("testText") == JsString("test text"))
 
-          val recordedEvents = getField[Vector[Json]](json, "recordedEvents")
-          assert(recordedEvents.length == 1)
-          val markupProvidedJson = recordedEvents(0)
-          assert(getField[String](markupProvidedJson, "eventType") == "MarkupProvided")
-          assert(getField[Int](markupProvidedJson, "ordinal") == 1)
-          assert(getField[String](markupProvidedJson, "text") == "<b>success</b>")
+          jsObj.fields("recordedEvents") match {
+            case recordedEvents: JsArray =>
+              assert(recordedEvents.elements.length == 1)
+              val markupProvidedJson = recordedEvents.elements(0).asJsObject
+              assert(markupProvidedJson.fields("eventType") == JsString("MarkupProvided"))
+              assert(markupProvidedJson.fields("ordinal") == JsNumber(1))
+              assert(markupProvidedJson.fields("text") == JsString("<b>success</b>"))
 
-          val mpNameInfoJson = getField[Json](markupProvidedJson, "nameInfo")
-          assert(getField[String](mpNameInfoJson, "suiteName") == "testSuiteName")
-          assert(getField[String](mpNameInfoJson, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](mpNameInfoJson, "suiteClassName") == Some("testSuiteClassName"))
-          assert(getField[Option[String]](mpNameInfoJson, "testName") == Some("test name"))
+              val mpNameInfoJson = markupProvidedJson.fields("nameInfo").asJsObject
+              assert(mpNameInfoJson.fields("suiteName") == JsString("testSuiteName"))
+              assert(mpNameInfoJson.fields("suiteId") == JsString("testSuiteId"))
+              assert(mpNameInfoJson.fields("suiteClassName") == JsString("testSuiteClassName"))
+              assert(mpNameInfoJson.fields("testName") == JsString("test name"))
 
-          val mpFormatterJson = getField[Json](markupProvidedJson, "formatter")
-          assert(getField[String](mpFormatterJson, "formatterType") == "IndentedText")
-          assert(getField[String](mpFormatterJson, "formattedText") == "formatted text")
-          assert(getField[String](mpFormatterJson, "rawText") == "raw text")
-          assert(getField[Int](mpFormatterJson, "indentationLevel") == 2)
+              val mpFormatterJson = markupProvidedJson.fields("formatter").asJsObject
+              assert(mpFormatterJson.fields("formatterType") == JsString("IndentedText"))
+              assert(mpFormatterJson.fields("formattedText") == JsString("formatted text"))
+              assert(mpFormatterJson.fields("rawText") == JsString("raw text"))
+              assert(mpFormatterJson.fields("indentationLevel") == JsNumber(2))
 
-          val mpLocationJson = getField[Json](markupProvidedJson, "location")
-          assert(getField[Int](mpLocationJson, "lineNumber") == 456)
-          assert(getField[String](mpLocationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](mpLocationJson, "filePathname") == None)
+              val mpLocationJson = markupProvidedJson.fields("location").asJsObject
+              assert(mpLocationJson.fields("locationType") == JsString("LineInFile"))
+              assert(mpLocationJson.fields("lineNumber") == JsNumber(456))
+              assert(mpLocationJson.fields("fileName") == JsString("Test.scala"))
+              assert(mpLocationJson.fields("filePathname") == JsNull)
 
-          assert(getField[Option[Int]](json, "duration") == Some(555))
+            case other => fail("Expected JsArray but got: " + other)
+          }
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("duration") == JsNumber(555))
 
-          val loationJson = getField[Json](json, "location")
-          assert(getField[Int](loationJson, "lineNumber") == 456)
-          assert(getField[String](loationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](loationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -560,27 +581,28 @@ class EventSpec extends FunSpec with Checkers {
           Some("rerunner name")
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "SuiteStarting")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("eventType") == JsString("SuiteStarting"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "TopOfClass")
-          assert(getField[String](locationJson, "className") == "com.test.TestClassName")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("TopOfClass"))
+          assert(locationJson.fields("className") == JsString("com.test.TestClassName"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -600,29 +622,30 @@ class EventSpec extends FunSpec with Checkers {
           Some("rerunner name")
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "SuiteCompleted")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          assert(getField[Option[Int]](json, "duration") == Some(555))
+          assert(jsObj.fields("eventType") == JsString("SuiteCompleted"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("duration") == JsNumber(555))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "TopOfClass")
-          assert(getField[String](locationJson, "className") == "com.test.TestClassName")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("TopOfClass"))
+          assert(locationJson.fields("className") == JsString("com.test.TestClassName"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -644,35 +667,36 @@ class EventSpec extends FunSpec with Checkers {
           Some("rerunner name")
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "SuiteAborted")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "suiteName") == "testSuiteName")
-          assert(getField[String](json, "suiteId") == "testSuiteId")
-          assert(getField[Option[String]](json, "suiteClassName") == Some("testSuiteClassName"))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          assert(getField[String](json, "message") == "boom!")
+          assert(jsObj.fields("eventType") == JsString("SuiteAborted"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("suiteName") == JsString("testSuiteName"))
+          assert(jsObj.fields("suiteId") == JsString("testSuiteId"))
+          assert(jsObj.fields("suiteClassName") == JsString("testSuiteClassName"))
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "oops!")
+          assert(jsObj.fields("message") == JsString("boom!"))
 
-          assert(getField[Option[Int]](json, "duration") == Some(555))
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("oops!"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("duration") == JsNumber(555))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "TopOfClass")
-          assert(getField[String](locationJson, "className") == "com.test.TestClassName")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "rerunner") == "rerunner name")
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("TopOfClass"))
+          assert(locationJson.fields("className") == JsString("com.test.TestClassName"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("rerunner") == JsString("rerunner name"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -689,30 +713,31 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "RunStarting")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[Int](json, "testCount") == 123)
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val configMapJson = getField[Json](json, "configMap")
-          assert(getField[String](configMapJson, "k1") == "value 1")
-          assert(getField[String](configMapJson, "k2") == "value 2")
-          assert(getField[String](configMapJson, "k3") == "value 3")
+          assert(jsObj.fields("eventType") == JsString("RunStarting"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("testCount") == JsNumber(123))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val configMapJson = jsObj.fields("configMap").asJsObject
+          assert(configMapJson.fields("k1") == JsString("value 1"))
+          assert(configMapJson.fields("k2") == JsString("value 2"))
+          assert(configMapJson.fields("k3") == JsString("value 3"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -729,35 +754,36 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "RunCompleted")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[Option[Int]](json, "duration") == Some(123))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val summaryJson = getField[Json](json, "summary")
-          assert(getField[Int](summaryJson, "testsSucceededCount") == 1)
-          assert(getField[Int](summaryJson, "testsFailedCount") == 2)
-          assert(getField[Int](summaryJson, "testsIgnoredCount") == 3)
-          assert(getField[Int](summaryJson, "testsPendingCount") == 4)
-          assert(getField[Int](summaryJson, "testsCanceledCount") == 5)
-          assert(getField[Int](summaryJson, "suitesCompletedCount") == 6)
-          assert(getField[Int](summaryJson, "suitesAbortedCount") == 7)
-          assert(getField[Int](summaryJson, "scopesPendingCount") == 8)
+          assert(jsObj.fields("eventType") == JsString("RunCompleted"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("duration") == JsNumber(123))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val summaryJson = jsObj.fields("summary").asJsObject
+          assert(summaryJson.fields("testsSucceededCount") == JsNumber(1))
+          assert(summaryJson.fields("testsFailedCount") == JsNumber(2))
+          assert(summaryJson.fields("testsIgnoredCount") == JsNumber(3))
+          assert(summaryJson.fields("testsPendingCount") == JsNumber(4))
+          assert(summaryJson.fields("testsCanceledCount") == JsNumber(5))
+          assert(summaryJson.fields("suitesCompletedCount") == JsNumber(6))
+          assert(summaryJson.fields("suitesAbortedCount") == JsNumber(7))
+          assert(summaryJson.fields("scopesPendingCount") == JsNumber(8))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -774,35 +800,36 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "RunStopped")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[Option[Int]](json, "duration") == Some(123))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val summaryJson = getField[Json](json, "summary")
-          assert(getField[Int](summaryJson, "testsSucceededCount") == 1)
-          assert(getField[Int](summaryJson, "testsFailedCount") == 2)
-          assert(getField[Int](summaryJson, "testsIgnoredCount") == 3)
-          assert(getField[Int](summaryJson, "testsPendingCount") == 4)
-          assert(getField[Int](summaryJson, "testsCanceledCount") == 5)
-          assert(getField[Int](summaryJson, "suitesCompletedCount") == 6)
-          assert(getField[Int](summaryJson, "suitesAbortedCount") == 7)
-          assert(getField[Int](summaryJson, "scopesPendingCount") == 8)
+          assert(jsObj.fields("eventType") == JsString("RunStopped"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("duration") == JsNumber(123))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val summaryJson = jsObj.fields("summary").asJsObject
+          assert(summaryJson.fields("testsSucceededCount") == JsNumber(1))
+          assert(summaryJson.fields("testsFailedCount") == JsNumber(2))
+          assert(summaryJson.fields("testsIgnoredCount") == JsNumber(3))
+          assert(summaryJson.fields("testsPendingCount") == JsNumber(4))
+          assert(summaryJson.fields("testsCanceledCount") == JsNumber(5))
+          assert(summaryJson.fields("suitesCompletedCount") == JsNumber(6))
+          assert(summaryJson.fields("suitesAbortedCount") == JsNumber(7))
+          assert(summaryJson.fields("scopesPendingCount") == JsNumber(8))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -821,41 +848,42 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "RunAborted")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "error message")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "oops!")
+          assert(jsObj.fields("eventType") == JsString("RunAborted"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("error message"))
 
-          assert(getField[Option[Int]](json, "duration") == Some(123))
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("oops!"))
 
-          val summaryJson = getField[Json](json, "summary")
-          assert(getField[Int](summaryJson, "testsSucceededCount") == 1)
-          assert(getField[Int](summaryJson, "testsFailedCount") == 2)
-          assert(getField[Int](summaryJson, "testsIgnoredCount") == 3)
-          assert(getField[Int](summaryJson, "testsPendingCount") == 4)
-          assert(getField[Int](summaryJson, "testsCanceledCount") == 5)
-          assert(getField[Int](summaryJson, "suitesCompletedCount") == 6)
-          assert(getField[Int](summaryJson, "suitesAbortedCount") == 7)
-          assert(getField[Int](summaryJson, "scopesPendingCount") == 8)
+          assert(jsObj.fields("duration") == JsNumber(123))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val summaryJson = jsObj.fields("summary").asJsObject
+          assert(summaryJson.fields("testsSucceededCount") == JsNumber(1))
+          assert(summaryJson.fields("testsFailedCount") == JsNumber(2))
+          assert(summaryJson.fields("testsIgnoredCount") == JsNumber(3))
+          assert(summaryJson.fields("testsPendingCount") == JsNumber(4))
+          assert(summaryJson.fields("testsCanceledCount") == JsNumber(5))
+          assert(summaryJson.fields("suitesCompletedCount") == JsNumber(6))
+          assert(summaryJson.fields("suitesAbortedCount") == JsNumber(7))
+          assert(summaryJson.fields("scopesPendingCount") == JsNumber(8))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -873,29 +901,30 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "InfoProvided")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "info message")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "oops!")
+          assert(jsObj.fields("eventType") == JsString("InfoProvided"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("info message"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("oops!"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -913,29 +942,30 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "AlertProvided")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "alert message")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "oops!")
+          assert(jsObj.fields("eventType") == JsString("AlertProvided"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("alert message"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("oops!"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -953,29 +983,29 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "NoteProvided")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "note message")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
+          assert(jsObj.fields("eventType") == JsString("NoteProvided"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("note message"))
 
-          val throwableJson = getField[Json](json, "throwable")
-          assert(getField[String](throwableJson, "className") == "java.lang.RuntimeException")
-          assert(getField[String](throwableJson, "message") == "oops!")
+          val throwableJson = jsObj.fields("throwable").asJsObject
+          assert(throwableJson.fields("className") == JsString("java.lang.RuntimeException"))
+          assert(throwableJson.fields("message") == JsString("oops!"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -992,25 +1022,25 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "MarkupProvided")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "text") == "markup message")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
+          assert(jsObj.fields("eventType") == JsString("MarkupProvided"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("text") == JsString("markup message"))
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -1027,25 +1057,26 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "ScopeOpened")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "open the scope!")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("eventType") == JsString("ScopeOpened"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("open the scope!"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -1062,25 +1093,26 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "ScopeClosed")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "close the scope!")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("eventType") == JsString("ScopeClosed"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("close the scope!"))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -1097,25 +1129,26 @@ class EventSpec extends FunSpec with Checkers {
           Some(LineInFile(456, "Test.scala", Some("path/Test.scala")))
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "ScopePending")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[String](json, "message") == "this scope is pending..")
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val formatterJson = getField[Json](json, "formatter")
-          assert(getField[String](formatterJson, "formatterType") == "MotionToSuppress")
+          assert(jsObj.fields("eventType") == JsString("ScopePending"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("message") == JsString("this scope is pending.."))
 
-          val locationJson = getField[Json](json, "location")
-          assert(getField[String](locationJson, "locationType") == "LineInFile")
-          assert(getField[Int](locationJson, "lineNumber") == 456)
-          assert(getField[String](locationJson, "fileName") == "Test.scala")
-          assert(getField[Option[String]](locationJson, "filePathname") == Some("path/Test.scala"))
+          val formatterJson = jsObj.fields("formatter").asJsObject
+          assert(formatterJson.fields("formatterType") == JsString("MotionToSuppress"))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val locationJson = jsObj.fields("location").asJsObject
+          assert(locationJson.fields("locationType") == JsString("LineInFile"))
+          assert(locationJson.fields("lineNumber") == JsNumber(456))
+          assert(locationJson.fields("fileName") == JsString("Test.scala"))
+          assert(locationJson.fields("filePathname") == JsString("path/Test.scala"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -1129,20 +1162,21 @@ class EventSpec extends FunSpec with Checkers {
           ConfigMap("k1" -> "value 1", "k2" -> "value 2", "k3" -> "value 3")
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "DiscoveryStarting")
-          assert(getField[Int](json, "ordinal") == 0)
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          val configMapJson = getField[Json](json, "configMap")
-          assert(getField[String](configMapJson, "k1") == "value 1")
-          assert(getField[String](configMapJson, "k2") == "value 2")
-          assert(getField[String](configMapJson, "k3") == "value 3")
+          assert(jsObj.fields("eventType") == JsString("DiscoveryStarting"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          val configMapJson = jsObj.fields("configMap").asJsObject
+          assert(configMapJson.fields("k1") == JsString("value 1"))
+          assert(configMapJson.fields("k2") == JsString("value 2"))
+          assert(configMapJson.fields("k3") == JsString("value 3"))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
@@ -1156,16 +1190,17 @@ class EventSpec extends FunSpec with Checkers {
           Some(123)
         )
       val jsonText = event.toJson
-      parse(jsonText) match {
-        case Right(json) =>
-          assert(getField[String](json, "eventType") == "DiscoveryCompleted")
-          assert(getField[Int](json, "ordinal") == 0)
-          assert(getField[Option[Int]](json, "duration") == Some(123))
+      jsonText.parseJson match {
+        case jsObj: JsObject =>
 
-          assert(getField[String](json, "threadName").nonEmpty)
-          assert(getField[Long](json, "timeStamp") > 0L)
+          assert(jsObj.fields("eventType") == JsString("DiscoveryCompleted"))
+          assert(jsObj.fields("ordinal") == JsNumber(0))
+          assert(jsObj.fields("duration") == JsNumber(123))
 
-        case Left(failure) => fail("Unable to parse JSON: " + jsonText + ", failure: " + failure.message)
+          assert(jsObj.fields("threadName").toString.nonEmpty)
+          assert(jsObj.fields("timeStamp").toString.nonEmpty)
+
+        case _ =>  fail("Unable to parse JSON: " + jsonText + " into a JsObject.")
       }
     }
   }
