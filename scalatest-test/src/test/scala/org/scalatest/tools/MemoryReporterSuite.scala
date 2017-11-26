@@ -62,6 +62,7 @@ class MemoryReporterSuite extends FunSuite {
       testName = "Some(say one)",
       testText = "say one",
       recordedEvents = Vector.empty[RecordableEvent],
+      analysis = Vector.empty[String],
       rerunner = Some("org.example.OneSuite"))
 
   val testStarting2 =

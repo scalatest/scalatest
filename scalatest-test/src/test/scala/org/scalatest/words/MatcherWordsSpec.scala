@@ -44,9 +44,9 @@ class MatcherWordsSpec extends FunSpec with MatcherWords {
         mr.rawNegatedFailureMessage shouldBe "{0} equaled {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1}"
-        mr.failureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        mr.failureMessageArgs shouldBe Vector("tomy", "tommy")
         mr.negatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
-        mr.midSentenceFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("tomy", "tommy")
         mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
 
       }
@@ -64,9 +64,9 @@ class MatcherWordsSpec extends FunSpec with MatcherWords {
         nmr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1}"
         nmr.failureMessageArgs shouldBe Vector("tomy", "tommy")
-        nmr.negatedFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        nmr.negatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
         nmr.midSentenceFailureMessageArgs shouldBe Vector("tomy", "tommy")
-        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
 
       }
       
