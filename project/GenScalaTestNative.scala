@@ -293,6 +293,7 @@ object GenScalaTestNative {
         "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
         "EntrySpec.scala",    // skipped because Entry extends java.util.Map
         "ExampleBeforeAfterParallelSpec.scala",
+        "EveryShouldContainAllElementsOfSpec.scala", // skipped because causing crash
         "ExampleParallelSpec.scala",
         "ExampleStackSpec.scala",
         "ExampleSuiteTimeoutSpec.scala",
