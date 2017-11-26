@@ -453,7 +453,7 @@ trait Configuration {
   /**
    * Implicit <code>PropertyCheckConfig</code> value providing default configuration values.
    */
-  implicit val generatorDrivenConfig = PropertyCheckConfiguration()
+  implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration()
 }
 
 /**

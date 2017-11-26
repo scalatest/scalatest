@@ -19,142 +19,11 @@ import java.io.BufferedWriter
 import java.util.Calendar
 import scala.collection.JavaConversions._
 
-object GenGen {
+object GenScalaCheckGen {
 
-  val generatorSource = new File("GenGen.scala")
+  val generatorSource = new File("GenScalaCheckGen.scala")
 
-val scaladocForTableFor1VerbatimString = """
-/**
- * A table with 1 column.
- *
- * <p>
- * For an overview of using tables, see the documentation for trait
- * <a href="TableDrivenPropertyChecks.html">TableDrivenPropertyChecks</a>.
- * </p>
- *
- * <p>
- * This table is a sequence of objects, where each object represents one row of the (one-column) table.
- * This table also carries with it a <em>heading</em> tuple that gives a string name to the
- * lone column of the table.
- * </p>
- *
- * <p>
- * A handy way to create a <code>TableFor1</code> is via an <code>apply</code> factory method in the <code>Table</code>
- * singleton object provided by the <code>Tables</code> trait. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * val examples =
- *   Table(
- *     "a",
- *       0,
- *       1,
- *       2,
- *       3,
- *       4,
- *       5,
- *       6,
- *       7,
- *       8,
- *       9
- *   )
- * </pre>
- *
- * <p>
- * Because you supplied a list of non-tuple objects, the type you'll get back will be a <code>TableFor1</code>.
- * </p>
- *
- * <p>
- * The table provides an <code>apply</code> method that takes a function with a parameter list that matches
- * the type of the objects contained in this table. The <code>apply</code> method will invoke the
- * function with the object in each row passed as the lone argument, in ascending order by index. (<em>I.e.</em>,
- * the zeroth object is checked first, then the object with index 1, then index 2, and so on until all the rows
- * have been checked (or until a failure occurs). The function represents a property of the code under test
- * that should succeed for every row of the table. If the function returns normally, that indicates the property
- * check succeeded for that row. If the function completes abruptly with an exception, that indicates the
- * property check failed and the <code>apply</code> method will complete abruptly with a
- * <code>TableDrivenPropertyCheckFailedException</code> that wraps the exception thrown by the supplied property function.
- * </p>
- * 
- * <p>
- * The usual way you'd invoke the <code>apply</code> method that checks a property is via a <code>forAll</code> method
- * provided by trait <code>TableDrivenPropertyChecks</code>. The <code>forAll</code> method takes a <code>TableFor1</code> as its
- * first argument, then in a curried argument list takes the property check function. It invokes <code>apply</code> on
- * the <code>TableFor1</code>, passing in the property check function. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * forAll (examples) { (a) =>
- *   a should equal (a * 1)
- * }
- * </pre>
- *
- * <p>
- * Because <code>TableFor1</code> is a <code>Seq[(A)]</code>, you can use it as a <code>Seq</code>. For example, here's how
- * you could get a sequence of <a href="../Outcome.html"><code>Outcome</code></a>s for each row of the table, indicating whether a property check succeeded or failed
- * on each row of the table:
- * </p>
- *
- * <pre class="stHighlight">
- * for (row <- examples) yield {
- *   outcomeOf { row._1 should not equal (7) }
- * }
- * </pre>
- *
- * <p>
- * Note: the <code>outcomeOf</code> method, contained in the <code>OutcomeOf</code> trait, will execute the supplied code (a by-name parameter) and
- * transform it to an <code>Outcome</code>. If no exception is thrown by the code, <code>outcomeOf</code> will result in a
- * <a href="../Succeeded\$.html"><code>Succeeded</code></a>, indicating the "property check"
- * succeeded. If the supplied code completes abruptly in an exception that would normally cause a test to fail, <code>outcomeOf</code> will result in
- * in a <a href="../Failed.html"><code>Failed</code></a> instance containing that exception. For example, the previous for expression would give you:
- * </p>
- *
- * <pre class="stHighlight">
- * Vector(Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded,
- *     Failed(org.scalatest.TestFailedException: 7 equaled 7), Succeeded, Succeeded)
- * </pre>
- *
- * <p>
- * This shows that all the property checks succeeded, except for the one at index 7.
- * </p>
- *
- * <p>
- * One other way to use a <code>TableFor1</code> is to test subsequent return values
- * of a stateful function. Imagine, for example, you had an object named <code>FiboGen</code>
- * whose <code>next</code> method returned the <em>next</em> fibonacci number, where next
- * means the next number in the series following the number previously returned by <code>next</code>.
- * So the first time <code>next</code> was called, it would return 0. The next time it was called
- * it would return 1. Then 1. Then 2. Then 3, and so on. <code>FiboGen</code> would need to
- * be stateful, because it has to remember where it is in the series. In such a situation,
- * you could create a <code>TableFor1</code> (a table with one column, which you could alternatively
- * think of as one row), in which each row represents
- * the next value you expect.
- * </p>
- *
- * <pre class="stHighlight">
- * val first14FiboNums =
- *   Table("n", 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233)
- * </pre>
- *
- * <p>
- * Then in your <code>forAll</code> simply call the function and compare it with the
- * expected return value, like this:
- * </p>
- *
- * <pre class="stHighlight">
- *  forAll (first14FiboNums) { n =>
- *    FiboGen.next should equal (n)
- *  }
- * </pre>
- *
- * @param heading a string name for the lone column of this table
- * @param rows a variable length parameter list of objects containing the data of this table
- *
- * @author Bill Venners 
- */
-"""
-
-val copyrightTemplate = """/*
+  val copyrightTemplate = """/*
  * Copyright 2001-$year$ Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -171,9 +40,9 @@ val copyrightTemplate = """/*
  */
 package org.scalatest
 package prop
-"""
+                          """
 
-val propertyCheckPreamble = """
+  val propertyCheckPreamble = """
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
 import org.scalacheck.Prop
@@ -194,7 +63,7 @@ import org.scalactic._
  * </p>
  *
  * <p>
- * For an example of trait <code>GeneratorDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
+ * For an example of trait <code>ScalaCheckDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
  * </p>
  *  
  * <pre class="stHighlight">
@@ -212,7 +81,7 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>GeneratorDrivenPropertyChecks</code>
+ * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>ScalaCheckDrivenPropertyChecks</code>
  * (and <code>Matchers</code>) and check a property using a <code>forAll</code> method, like this:
  * </p>
  *
@@ -237,7 +106,7 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * Trait <code>GeneratorDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
+ * Trait <code>ScalaCheckDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
  * that allow you to check properties using the data provided by a ScalaCheck generator. The simplest form
  * of <code>forAll</code> method takes two parameter lists, the second of which is implicit. The first parameter list
  * is a "property" function with one to six parameters. An implicit <code>Arbitrary</code> generator and <code>Shrink</code> object needs to be supplied for
@@ -253,7 +122,7 @@ import org.scalactic._
  * <p>
  * The <code>forAll</code> methods use the supplied <code>Arbitrary</code> generators to generate example
  * arguments and pass them to the property function, and
- * generate a <code>GeneratorDrivenPropertyCheckFailedException</code> if the function
+ * generate a <code>ScalaCheckDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
  * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
  * <code>DiscardedEvaluationException</code>,
@@ -509,11 +378,11 @@ import org.scalactic._
  * </table>
  *
  * <p>
- * The <code>forAll</code> methods of trait <code>GeneratorDrivenPropertyChecks</code> each take a <code>PropertyCheckConfiguration</code>
+ * The <code>forAll</code> methods of trait <code>ScalaCheckDrivenPropertyChecks</code> each take a <code>PropertyCheckConfiguration</code>
  * object as an implicit parameter. This object provides values for each of the five configuration parameters. Trait <code>Configuration</code>
  * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value. 
  * If you want to set one or more configuration parameters to a different value for all property checks in a suite you can override this
- * val (or hide it, for example, if you are importing the members of the <code>GeneratorDrivenPropertyChecks</code> companion object rather
+ * val (or hide it, for example, if you are importing the members of the <code>ScalaCheckDrivenPropertyChecks</code> companion object rather
  * than mixing in the trait.) For example, if
  * you want all parameters at their defaults except for <code>minSize</code> and <code>maxSize</code>, you can override
  * <code>generatorDrivenConfig</code>, like this:
@@ -534,7 +403,7 @@ import org.scalactic._
  *
  * <p>
  * In addition to taking a <code>PropertyCheckConfiguration</code> object as an implicit parameter, the <code>forAll</code> methods of trait
- * <code>GeneratorDrivenPropertyChecks</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
+ * <code>ScalaCheckDrivenPropertyChecks</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
  * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfiguration</code> for a single <code>forAll</code>
  * invocation. For example, if you want to set <code>minSuccessful</code> to 500 for just one particular <code>forAll</code> invocation,
  * you can do so like this:
@@ -579,7 +448,7 @@ import org.scalactic._
  * 
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
+trait ScalaCheckDrivenPropertyChecks extends Whenever with Configuration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -630,7 +499,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    * <code>PropertyGenConfig</code> object passed implicitly to its <code>apply</code> methods with parameter values passed to its constructor.
    *
    * <p>
-   * Instances of this class are returned by trait <code>GeneratorDrivenPropertyChecks</code> <code>forAll</code> method that accepts a variable length
+   * Instances of this class are returned by trait <code>ScalaCheckDrivenPropertyChecks</code> <code>forAll</code> method that accepts a variable length
    * argument list of <code>PropertyCheckConfigParam</code> objects. Thus it is used with functions of all six arities.
    * Here are some examples:
    * </p>
@@ -721,7 +590,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -766,7 +635,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -812,7 +681,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -859,7 +728,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -907,7 +776,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -956,7 +825,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
               case e: DiscardedEvaluationException => (true, None)
               case e: Throwable => (false, Some(e))
             }
-          propBoolean(!unmetCondition) ==> (
+          !unmetCondition ==> (
             if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
           )
         }
@@ -965,9 +834,9 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting.check(prop, params, prettifier, pos)
     }
   }
-"""
+                              """
 
-val propertyCheckForAllTemplate = """
+  val propertyCheckForAllTemplate = """
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators.
@@ -1002,7 +871,7 @@ $arbShrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        propBoolean(!unmetCondition) ==> (
+        !unmetCondition ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1045,7 +914,7 @@ $arbShrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        propBoolean(!unmetCondition) ==> (
+        !unmetCondition ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1095,7 +964,7 @@ $shrinks$,
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        propBoolean(!unmetCondition) ==> (
+        !unmetCondition ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1148,7 +1017,7 @@ $tupleBusters$
             case e: DiscardedEvaluationException => (true, None)
             case e: Throwable => (false, Some(e))
           }
-        propBoolean(!unmetCondition) ==> (
+        !unmetCondition ==> (
           if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
         )
       }
@@ -1156,21 +1025,21 @@ $tupleBusters$
       val params = getScalaCheckParams(configParams, config)
       asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
   }
-"""
+                                    """
 
-val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
+  val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
-"""
+object ScalaCheckDrivenPropertyChecks extends ScalaCheckDrivenPropertyChecks
+                                                                   """
 
-val generatorSuitePreamble = """
+  val generatorSuitePreamble = """
 
 import org.scalatest.Matchers
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Gen
-"""
+                               """
 
-val generatorSuitePostamble = """
+  val generatorSuitePostamble = """
   val famousLastWords = for {
     s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
   } yield s
@@ -1190,9 +1059,9 @@ val generatorSuitePostamble = """
       else
         throw new Exception("expected size 5 but got " + size)
     }
-"""
+                                """
 
-val generatorSuiteTemplate = """
+  val generatorSuiteTemplate = """
 
   it("generator-driven property that takes $n$ args, which succeeds") {
 
@@ -1873,7 +1742,7 @@ $lengthAssertions$
 $lengthAssertions$
     }
   }
- 
+
   // set minSize == maxSize with (param, param) (ensure always passed with that size)
   it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
 
@@ -2029,9 +1898,9 @@ $okayAssertions$
 $okayAssertions$
     }
   }
-"""
+                               """
 
-val checkersSuiteTemplate = """
+  val checkersSuiteTemplate = """
 
   it("ScalaCheck property that takes $n$ args, which succeeds") {
 
@@ -2519,20 +2388,21 @@ $okayExpressions$
     }
     check(prop)
   }
-"""
-// 1712  2205
+                              """
+  // 1712  2205
 
-// For some reason that I don't understand, I need to leave off the stars before the <pre> when 
-// they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
+  // For some reason that I don't understand, I need to leave off the stars before the <pre> when
+  // they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
   def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
+    val targetFile = new File(targetDir, "ScalaCheckDrivenPropertyChecks.scala")
 
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val bw = new BufferedWriter(new FileWriter(targetFile))
+
       try {
         val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
         st.setAttribute("year", thisYear);
@@ -2584,14 +2454,11 @@ $okayExpressions$
           st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
           bw.write(st.toString)
         }
-
         bw.write("}\n")
         bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
       }
       finally {
-        bw.flush()
         bw.close()
-        println("###Generated: " + targetFile.getAbsolutePath)
       }
     }
 
@@ -2602,15 +2469,15 @@ $okayExpressions$
   def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean): Seq[File] = {
 
     targetDir.mkdirs()
-    
+
     val traitOrObjectName =
       if (doItForCheckers)
         "Checkers"
       else {
-        if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
+        if (withTables) "PropertyChecks" else "ScalaCheckDrivenPropertyChecks"
       }
-    val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite" 
-    val fileName = suiteClassName + ".scala" 
+    val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite"
+    val fileName = suiteClassName + ".scala"
 
     val targetFile = new File(targetDir, fileName)
 
@@ -2688,18 +2555,14 @@ $okayExpressions$
         }
 
         bw.write("}\n")
-
-        println("Generated " + targetFile.getAbsolutePath)
       }
       finally {
-        bw.flush()
         bw.close()
       }
     }
-
     Seq(targetFile)
   }
-  
+
   def main(args: Array[String]) {
     val targetDir = args(0)
     val version = args(1)
@@ -2707,16 +2570,16 @@ $okayExpressions$
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/prop")
     mainDir.mkdirs()
     genMain(mainDir, version, scalaVersion)
-    
+
     val testDir = new File("gentests/" + targetDir + "/test/scala/org/scalatest/prop")
     testDir.mkdirs()
     genTest(testDir, version, scalaVersion)
   }
-  
+
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     genPropertyChecks(dir)
   }
-  
+
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     genGeneratorDrivenSuite(dir, true, false, false) ++
     genGeneratorDrivenSuite(dir, false, false, false) ++
@@ -2726,4 +2589,3 @@ $okayExpressions$
     genGeneratorDrivenSuite(dir, false, true, true)
   }
 }
-

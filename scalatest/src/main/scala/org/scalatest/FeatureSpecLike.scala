@@ -97,7 +97,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -105,7 +105,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   @deprecated("use Scenario instead", "ScalaTest 3.1.1")
@@ -137,7 +137,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(() => testFun), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -165,7 +165,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(() => testFun), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   @deprecated("use Feature instead", "ScalaTest 3.1.1")

@@ -550,7 +550,7 @@ trait Conductors extends PatienceConfiguration {
         case _ =>
           if (threadNames contains name)
             throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), pos)
-          val t = TestThread(name, fun _)
+          val t = TestThread(name, () => fun)
           threads add t
           threadNames add name
           t.start()

@@ -2022,7 +2022,7 @@ import resultOfStringPassedToVerb.verb
               // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
               //                                                            ^
               def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _), pos)
+                registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(() => testFun), pos)
               }
             }
           }

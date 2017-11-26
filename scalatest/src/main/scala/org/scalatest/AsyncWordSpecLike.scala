@@ -277,7 +277,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(specText, tags, "in", testFun _, pos)
+      registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
     /**
@@ -297,7 +297,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(specText, tags, "is", testFun _, pos)
+      registerPendingTestToRun(specText, tags, "is", () => testFun, pos)
     }
 
     /**
@@ -317,7 +317,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -355,7 +355,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def in(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToRun(string, List(), "in", f _, pos)
+      registerTestToRun(string, List(), "in", () => f, pos)
     }
 
     /**
@@ -375,7 +375,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def ignore(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _, pos)
+      registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 
     /**
@@ -395,7 +395,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def is(f: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(string, List(), "is", f _, pos)
+      registerPendingTestToRun(string, List(), "is", () => f, pos)
     }
 
     /**
@@ -436,7 +436,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def when(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string, Some("when"), "when", pos, f _)
+      registerBranch(string, Some("when"), "when", pos, () => f)
     }
 
     /**
@@ -478,7 +478,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def that(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " that", None, "that", pos, f _)
+      registerBranch(string.trim + " that", None, "that", pos, () => f)
     }
 
     /**
@@ -498,7 +498,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def which(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " which", None, "which", pos, f _)
+      registerBranch(string.trim + " which", None, "which", pos, () => f)
     }
 
     /**
@@ -606,7 +606,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * methods.  For more information, see the <a href="WordSpec.html#AfterWords">main documentation</code></a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def apply(f: => Unit) = new ResultOfAfterWordApplication(text, f _)
+    def apply(f: => Unit) = new ResultOfAfterWordApplication(text, () => f)
   }
 
   /**
@@ -706,7 +706,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -729,7 +729,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -752,7 +752,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -775,7 +775,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
     }
   }
 
@@ -841,7 +841,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -864,7 +864,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -887,7 +887,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
     }
 
     /**
@@ -910,7 +910,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, right _)
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
     }
   }
 

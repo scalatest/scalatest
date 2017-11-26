@@ -1409,12 +1409,12 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer a par method consistent with StringOps") {
+    /*it("should offer a par method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.par shouldEqual
           numStr.value.par
       }
-    }
+    }*/
     // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a partition method consistent with StringOps") {
       def isEven(ch: Char): Boolean = (ch - '0') % 2 == 0

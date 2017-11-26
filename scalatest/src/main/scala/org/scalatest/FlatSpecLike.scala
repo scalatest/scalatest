@@ -98,7 +98,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -106,7 +106,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -267,7 +267,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
     /**
@@ -311,7 +311,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -379,7 +379,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
     /**
@@ -421,7 +421,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
     /**
@@ -673,7 +673,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos)
     }
 
     /**
@@ -770,7 +770,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos)
     }
 
     /**
@@ -982,7 +982,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
     /**
@@ -1026,7 +1026,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -1094,7 +1094,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
     /**
@@ -1136,7 +1136,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
     /**
@@ -1395,7 +1395,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _, pos)
+      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
     
     /**
@@ -1416,7 +1416,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
   }
 
@@ -1493,7 +1493,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _, pos)
+      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
 
     /**
@@ -1516,7 +1516,7 @@ import resultOfStringPassedToVerb.verb
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _, pos)
+      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
   }
 

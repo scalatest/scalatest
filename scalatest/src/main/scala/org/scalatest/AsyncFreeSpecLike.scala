@@ -202,7 +202,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion]): Unit = {
-      registerTestToRun(specText, tags, testFun _, pos)
+      registerTestToRun(specText, tags, () => testFun, pos)
     }
 
     /**
@@ -222,7 +222,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(specText, tags, testFun _, pos)
+      registerPendingTestToRun(specText, tags, () => testFun, pos)
     }
 
     /**
@@ -242,7 +242,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }
 
@@ -293,7 +293,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def in(f: => Future[compatible.Assertion]): Unit = {
-      registerTestToRun(string, List(), f _, pos)
+      registerTestToRun(string, List(), () => f, pos)
     }
 
     /**
@@ -313,7 +313,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def ignore(f: => Future[compatible.Assertion]): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _, pos)
+      registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 
     /**
@@ -333,7 +333,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def is(f: => PendingStatement): Unit = {
-      registerPendingTestToRun(string, List(), f _, pos)
+      registerPendingTestToRun(string, List(), () => f, pos)
     }
 
     /**

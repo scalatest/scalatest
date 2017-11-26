@@ -301,6 +301,9 @@ fi
 #fi
 
 if [[ $MODE = 'examples' ]] ; then
+  echo "Doing 'sbt examples/test'"
+  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   while true; do echo "..."; sleep 60; done &
   project examples
@@ -311,6 +314,9 @@ if [[ $MODE = 'examples' ]] ; then
 fi
 
 if [[ $MODE = 'examplesJS' ]] ; then
+  echo "Doing 'sbt examplesJS/test'"
+  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION examplesJS/compile examplesJS/test:compile

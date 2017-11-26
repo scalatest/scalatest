@@ -189,7 +189,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def in(testFun: => Unit /* Assertion */): Unit = {
-      registerTestToRun(specText, tags, "in", testFun _, pos)
+      registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
     /**
@@ -216,7 +216,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def is(testFun: => PendingNothing): Unit = {
-      registerTestToRun(specText, tags, "is", testFun _, pos)
+      registerTestToRun(specText, tags, "is", () => testFun, pos)
     }
 
     /**
@@ -240,7 +240,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def ignore(testFun: => Unit /* Assertion */): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
+      registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }       
 
@@ -303,7 +303,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def in(f: => Unit /* Assertion */): Unit = {
-      registerTestToRun(string, List(), "in", f _, pos)
+      registerTestToRun(string, List(), "in", () => f, pos)
     }
 
     /**
@@ -327,7 +327,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def ignore(f: => Unit /* Assertion */): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _, pos)
+      registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 
     /**
@@ -354,7 +354,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def is(f: => PendingNothing): Unit = {
-      registerTestToRun(string, List(), "is", f _, pos)
+      registerTestToRun(string, List(), "is", () => f, pos)
     }
 
     /**

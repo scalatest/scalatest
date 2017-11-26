@@ -117,9 +117,33 @@ If you would like to export a particular private key into a separate GPG file, y
 
 With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
 
+Before publishing any patch release, binary compatibility with previous version should be checked, using Java 6 (for Scala 2.10 and 2.11):
+
+    $ sbt ++2.11.11 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.11.11 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.11.11 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.11.11 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+
+    $ sbt ++2.10.6 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.10.6 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.10.6 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.10.6 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+
+and using Java 8 (for Scala 2.12 and 2.13): 
+
+    $ sbt ++2.12.4 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.12.4 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.12.4 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.12.4 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+
+    $ sbt ++2.13.0-M2 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.0-M2 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.0-M2 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0-M2 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned ++2.11.11 "project scalatestAppJS" clean publishSigned ++2.10.6 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt clean publishSigned ++2.11.12 "project scalatestAppJS" clean publishSigned ++2.10.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
 
