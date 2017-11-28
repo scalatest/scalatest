@@ -723,11 +723,6 @@ private[tools] object ArgsParser {
           }
           else
             throw new IllegalArgumentException("-K needs to be followed by a host name and port number" )
-        case "-C" =>
-          if (it.hasNext)
-            it.next // scroll past the reporter class
-          else
-            throw new IllegalArgumentException("-C needs to be followed by a reporter class name arg: ")
         case arg: String =>
           throw new IllegalArgumentException("An arg started with an invalid character string: " + arg)
       }
