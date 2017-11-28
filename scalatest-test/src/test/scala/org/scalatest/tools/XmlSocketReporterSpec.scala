@@ -558,7 +558,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
       
       val rep = new XmlSocketReporter("localhost", socket.getLocalPort)
       rep(TestFailed(new Ordinal(0), "test <function1> failed, because: \n  <function1> is buggy.", "TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"),
-                     "test 1", "test 1", collection.immutable.IndexedSeq.empty[RecordableEvent], Some(new RuntimeException("test <function1> failed, because: \n  <function1> is buggy."))))
+                     "test 1", "test 1", collection.immutable.IndexedSeq.empty[RecordableEvent], collection.immutable.IndexedSeq.empty[String], Some(new RuntimeException("test <function1> failed, because: \n  <function1> is buggy."))))
       rep(TestCanceled(new Ordinal(0), "test <function1> canceled, because: \n  <function1> is buggy.", "TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"),
                        "test 2", "test 2", collection.immutable.IndexedSeq.empty[RecordableEvent], Some(new RuntimeException("test <function1> canceled, because: \n  <function1> is buggy."))))
       rep(InfoProvided(new Ordinal(0), "some <function1> info, because: \n  <function1> is buggy.", Some(NameInfo("TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"), Some("test 2"))),

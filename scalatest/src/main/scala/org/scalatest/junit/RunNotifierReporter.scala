@@ -60,7 +60,7 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
         runNotifier.fireTestStarted(Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName)))
 
-      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, analysis, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
         val throwableOrNull =
           throwable match {
             case Some(t) => t

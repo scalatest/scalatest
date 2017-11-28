@@ -42,12 +42,12 @@ class MatcherFactorySpec extends FunSpec {
         val mr = mt("Bob")
         
         val leftResult = 
-          MatchResult(
+          new EqualMatchResult(
             true, 
             "{0} equaled {1}", 
             "{0} did not equal {1}",
             Vector("Bob", "hi"), 
-            Vector("[Bob]", "[hi]")
+            Vector("Bob", "hi")
           )
           
         val rightResult = 
