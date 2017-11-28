@@ -23,7 +23,6 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import SharedHelpers.serializeRoundtrip
-import org.scalatest.concurrent.Ultimately.{interval, timeout, ultimately}
 
 import scala.concurrent.Future
 
