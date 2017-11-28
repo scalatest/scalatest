@@ -15,13 +15,16 @@
  */
 package org.scalatest.enablers
 
+import java.util.concurrent.{Executors, ScheduledExecutorService, ThreadFactory, TimeUnit}
+
 import org.scalactic.source
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
-
 import org.scalatest.Resources
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestPendingException}
 import org.scalatest.time.{Nanosecond, Nanoseconds, Span}
 
+import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success}
 import scala.annotation.tailrec
 import scala.language.higherKinds
 
@@ -32,6 +35,85 @@ trait Retrying[T] {
 }
 
 object Retrying {
+
+  private lazy val scheduler: ScheduledExecutorService = {
+    val threadFactory = new ThreadFactory {
+      val inner = Executors.defaultThreadFactory()
+      def newThread(runnable: Runnable) = {
+        val thread = inner.newThread(runnable)
+        thread.setDaemon(true)
+        thread
+      }
+    }
+
+    Executors.newSingleThreadScheduledExecutor(threadFactory)
+  }
+
+  implicit def retryingNatureOfFutureT[T](implicit execCtx: ExecutionContext): Retrying[Future[T]] =
+    new Retrying[Future[T]] {
+      def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => Future[T]): Future[T] = {
+        val startNanos = System.nanoTime
+
+        val initialInterval = Span(interval.totalNanos * 0.1, Nanoseconds) // config.interval scaledBy 0.1
+
+        // Can't make this tail recursive. TODO: Document that fact.
+        def tryTryAgain(attempt: Int): Future[T] = {
+          fun recoverWith {
+
+            case tpe: TestPendingException => Future.failed(tpe)
+
+            case e: Throwable if !anExceptionThatShouldCauseAnAbort(e) =>
+
+              // Here I want to try again after the duration. So first calculate the duration to
+              // wait before retrying. This is front loaded with a simple backoff algo.
+              val duration = System.nanoTime - startNanos
+              if (duration < timeout.totalNanos) {
+                val chillTime =
+                  if (duration < interval.totalNanos) // For first interval, we wake up every 1/10 of the interval.  This is mainly for optimization purpose.
+                    initialInterval.millisPart
+                  else
+                    interval.millisPart
+
+                // Create a Promise
+                val promise = Promise[T]
+
+                val task =
+                  new Runnable {
+                    override def run(): Unit = {
+                      val newFut = tryTryAgain(attempt + 1)
+                      newFut onComplete {
+                        case Success(res) => promise.success(res)
+                        case Failure(ex) => promise.failure(ex)
+                      }
+                    }
+                  }
+
+                scheduler.schedule(task, chillTime, TimeUnit.MILLISECONDS)
+                promise.future
+              }
+              else { // Timed out so return a failed Future
+                val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
+                Future.failed(
+                  new TestFailedDueToTimeoutException(
+                    (_: StackDepthException) =>
+                      Some(
+                        if (e.getMessage == null)
+                          Resources.didNotUltimatelySucceed(attempt.toString, durationSpan.prettyString)
+                        else
+                          Resources.didNotUltimatelySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
+                      ),
+                    Some(e),
+                    Left(pos),
+                    None,
+                    timeout
+                  )
+                )
+              }
+          }
+        }
+        tryTryAgain(1)
+      }
+    }
 
   implicit def retryingNatureOfT[T]: Retrying[T] =
     new Retrying[T] {
