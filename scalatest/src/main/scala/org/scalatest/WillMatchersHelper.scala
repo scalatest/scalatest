@@ -43,6 +43,11 @@ private[scalatest] object WillMatchersHelper {
     Fact.No(failureMessage)(prettifier)
   }
 
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: Option[String])(implicit prettifier: Prettifier): Fact = {
+    val message: String = failureMessage
+    Fact.No(message)(prettifier)  // TODO: we may need to include analysis to Fact too, analysis.map(Vector(_)).getOrElse(Vector.empty)
+  }
+
   def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Fact =
     Fact.No(e.getMessage)(prettifier)
 
