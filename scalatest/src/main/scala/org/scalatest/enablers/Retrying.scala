@@ -28,12 +28,32 @@ import scala.util.{Failure, Success}
 import scala.annotation.tailrec
 import scala.language.higherKinds
 
+/**
+  * Supertrait for <code>Retrying</code> typeclasses, which are used to implement and determine the behavior
+  * of <a href="../Eventually.html"><code>Eventually</code></a> methods.
+  *
+  * <p>
+  * Currently, implementations for anything type <code>T</code> and <code>Future[T]</code> is provided.
+  * </p>
+  */
 trait Retrying[T] {
 
+  /**
+    * Retry the passed in function until the given timeout is reached, with the given interval between attempts.
+    *
+    * @param timeout the timespan to try before giving up
+    * @param interval interval between call attempts
+    * @param pos the position of the call site
+    * @param fun function to be called
+    * @return the value returned from the passed in <code>fun</code>.
+    */
   def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => T): T
 
 }
 
+/**
+  * Companion object that provides <code>Retrying</code> implementations for <code>T</code> and <code>Future[T]</code>.
+  */
 object Retrying {
 
   private lazy val scheduler: ScheduledExecutorService = {
@@ -49,6 +69,9 @@ object Retrying {
     Executors.newSingleThreadScheduledExecutor(threadFactory)
   }
 
+  /**
+    * Provides implicit <code>Retrying</code> implementation for <code>Future[T]</code>.
+    */
   implicit def retryingNatureOfFutureT[T](implicit execCtx: ExecutionContext): Retrying[Future[T]] =
     new Retrying[Future[T]] {
       def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => Future[T]): Future[T] = {
@@ -115,6 +138,9 @@ object Retrying {
       }
     }
 
+  /**
+    * Provides implicit <code>Retrying</code> implementation for <code>T</code>.
+    */
   implicit def retryingNatureOfT[T]: Retrying[T] =
     new Retrying[T] {
       def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => T): T = {

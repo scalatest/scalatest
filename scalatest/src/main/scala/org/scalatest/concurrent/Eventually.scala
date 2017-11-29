@@ -300,10 +300,12 @@ trait Eventually extends PatienceConfiguration {
    * <code>interval</code> parameter.
    * </p>
    *
-   * @tparam result type of the by-name parameter <code>fun</code>
+   * @tparam T type of the by-name parameter <code>fun</code>
    * @param timeout the <code>Timeout</code> configuration parameter
    * @param interval the <code>Interval</code> configuration parameter
    * @param fun the by-name parameter to repeatedly invoke
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
   def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit retrying: Retrying[T], pos: source.Position): T =
@@ -333,6 +335,8 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the (unused) <code>timeout</code> and
    *          (used) <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
   def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
@@ -361,6 +365,8 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the (used) <code>timeout</code> and
    *          (unused) <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
   def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
@@ -388,6 +394,8 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> and
    *          <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
   def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
