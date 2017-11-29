@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 dist: trusty
-sudo: false
+sudo: true
 
 sbt_args: -J-Xss10m
 
