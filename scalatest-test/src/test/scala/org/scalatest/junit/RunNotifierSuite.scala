@@ -76,9 +76,9 @@ class RunNotifierSuite extends FunSuite {
 
     import scala.language.reflectiveCalls
 
-    reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", Some("fully.qualified.SuiteClassName"), "theTestName", "theTestName", Vector.empty, Some(exception)))
+    reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", Some("fully.qualified.SuiteClassName"), "theTestName", "theTestName", Vector.empty, Vector.empty, Some(exception)))
     assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(fully.qualified.SuiteClassName)")
-    reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", None, "theTestName", "theTestName", Vector.empty, Some(exception)))
+    reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", None, "theTestName", "theTestName", Vector.empty, Vector.empty, Some(exception)))
     assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(SuiteClassName)")
   }
 

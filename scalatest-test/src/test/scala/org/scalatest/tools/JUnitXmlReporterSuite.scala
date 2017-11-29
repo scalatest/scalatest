@@ -174,7 +174,8 @@ class JUnitXmlReporterSuite extends FunSuite {
       suiteClassName = Some("Suite3Class"),
       testName = "a fail test",
       testText = "a fail test text",
-      recordedEvents = Vector.empty[RecordableEvent])
+      recordedEvents = Vector.empty[RecordableEvent],
+      analysis = Vector.empty[String])
 
   val startTest3 =
     TestStarting(

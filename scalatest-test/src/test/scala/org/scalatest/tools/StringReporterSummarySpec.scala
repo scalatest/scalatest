@@ -85,6 +85,7 @@ class StringReporterSummarySpec extends UnitSpec {
         testName = "the summaryFragments method should fail on purpose",
         testText = "should fail on purpose",
         recordedEvents = Vector.empty,
+        analysis = Vector.empty,
         throwable = Some(testFailedException),
         duration = Some(16),
         formatter = Some(IndentedText("THIS SHOULD NOT BE USED", "SHOULD NOT BE USED", 1)),

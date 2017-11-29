@@ -144,7 +144,8 @@ class DispatchReporterSpec extends FunSpec {
             suiteClassName = Some("suiteClassName"),
             testName = "the test name",
             testText = "test name",
-            recordedEvents = collection.immutable.IndexedSeq.empty
+            recordedEvents = collection.immutable.IndexedSeq.empty,
+            analysis = collection.immutable.IndexedSeq.empty
           )
         )
       }

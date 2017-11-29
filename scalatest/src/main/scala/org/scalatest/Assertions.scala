@@ -467,8 +467,8 @@ trait Assertions extends TripleEquals  {
    */
   def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assert
 
-  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
+  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
     new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
@@ -752,7 +752,7 @@ trait Assertions extends TripleEquals  {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), pos)
+          throw newAssertionFailedException(Some(s), Some(u), pos, Vector.empty)
         }
         else {
           Some(u)
@@ -762,7 +762,7 @@ trait Assertions extends TripleEquals  {
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, pos)
+        throw newAssertionFailedException(Some(message), None, pos, Vector.empty)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
@@ -811,7 +811,7 @@ trait Assertions extends TripleEquals  {
           case u: Throwable => {
           if (!clazz.isAssignableFrom(u.getClass)) {
             val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-            throw newAssertionFailedException(Some(s), Some(u), pos)
+            throw newAssertionFailedException(Some(s), Some(u), pos, Vector.empty)
           }
           else true
         }
@@ -821,7 +821,7 @@ trait Assertions extends TripleEquals  {
     }
     else {
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, pos)
+        throw newAssertionFailedException(Some(message), None, pos, Vector.empty)
     }
   }
 
@@ -943,7 +943,7 @@ trait Assertions extends TripleEquals  {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
-      throw newAssertionFailedException(Some(fullMsg), None, pos)
+      throw newAssertionFailedException(Some(fullMsg), None, pos, Vector.empty)
     }
     Succeeded
   }
@@ -963,7 +963,7 @@ trait Assertions extends TripleEquals  {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
-      throw newAssertionFailedException(Some(s), None, pos)
+      throw newAssertionFailedException(Some(s), None, pos, Vector.empty)
     }
     Succeeded
   }
@@ -1015,7 +1015,7 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail()(implicit pos: source.Position): Nothing = { throw newAssertionFailedException(None, None, pos) }
+  def fail()(implicit pos: source.Position): Nothing = { throw newAssertionFailedException(None, None, pos, Vector.empty) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1029,7 +1029,7 @@ trait Assertions extends TripleEquals  {
 
     requireNonNull(message)
      
-    throw newAssertionFailedException(Some(message),  None, pos)
+    throw newAssertionFailedException(Some(message),  None, pos, Vector.empty)
   }
 
   /**
@@ -1045,7 +1045,7 @@ trait Assertions extends TripleEquals  {
 
     requireNonNull(message, cause)
 
-    throw newAssertionFailedException(Some(message), Some(cause), pos)
+    throw newAssertionFailedException(Some(message), Some(cause), pos, Vector.empty)
   }
 
   /**
@@ -1061,7 +1061,7 @@ trait Assertions extends TripleEquals  {
 
     requireNonNull(cause)
         
-    throw newAssertionFailedException(None, Some(cause), pos)
+    throw newAssertionFailedException(None, Some(cause), pos, Vector.empty)
   }
   
   /**
@@ -1396,7 +1396,7 @@ object Assertions extends Assertions {
       requireNonNull(clue)(prettifier, pos)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, pos)
+        throw newAssertionFailedException(append(failureMessage, clue), None, pos, bool.analysis)
       }
       Succeeded
     }

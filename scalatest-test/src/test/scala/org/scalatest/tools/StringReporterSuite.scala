@@ -137,6 +137,7 @@ class StringReporterSuite extends FunSuite with Matchers {
         errorMessageFun = Resources.infoProvided,
         message = msg,
         throwable = None,
+        analysis = Vector.empty,
         formatter = None,
         suiteName = None,
         testName = None,
@@ -382,19 +383,71 @@ class StringReporterSuite extends FunSuite with Matchers {
   test("withPossibleLineNumber returns simple file name on same line if presentFilePathname is false") {
     import org.scalactic.source
 import StringReporter.withPossibleLineNumber
-    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), false)
+    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None, Vector.empty)), false)
     assert(result === "oops (StringReporterSuite.scala:" + (thisLineNumber - 1) + ")")
   }
 
   test("withPossibleLineNumber returns full file pathname on next line if presentFilePathname is true and it is available") {
     import StringReporter.withPossibleLineNumber
     import org.scalactic.source
-    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), true)
+    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None, Vector.empty)), true)
     assert(result startsWith "oops\n** ")
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert(result endsWith "org/scalatest/tools/StringReporterSuite.scala:" + (thisLineNumber - 3) + " **")
     else
       assert(result endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.:" + (thisLineNumber - 5) + " **")
+  }
+
+  class BuilderStringReporter(presentInColor: Boolean) extends StringReporter(
+    false,
+    presentInColor,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ) {
+    val builder = new StringBuilder
+
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
+      builder.append(fragment.toPossiblyColoredText(presentInColor) + scala.compat.Platform.EOL)
+    }
+
+    protected def printNoColor(text: String): Unit = {
+      builder.append(text)
+    }
+
+    def dispose(): Unit = {
+
+    }
+
+    def content: String = builder.toString
+
+  }
+
+  case class Person(name: String, age: Int)
+
+  test("StringReporter should include difference analysis in the content it display") {
+    class ExampleSpec extends FunSuite with Matchers {
+      test("test") {
+        Person("Student 1", 22) shouldEqual Person("Student 2", 23)
+      }
+    }
+    val rep = new BuilderStringReporter(false)
+    val suite = new ExampleSpec
+    suite.run(None, Args(rep))
+    val failingLineNumber = thisLineNumber - 6
+    assert(rep.content ==
+      s"""- test *** FAILED ***
+        |  Person(Student 1,22) did not equal Person(Student 2,23) (StringReporterSuite.scala:$failingLineNumber)
+        |  Analysis:
+        |  StringReporterSuite$$Person(age: 22 -> 23, name: "Student [1]" -> "Student [2]")
+        |""".stripMargin
+    )
   }
 }
 
