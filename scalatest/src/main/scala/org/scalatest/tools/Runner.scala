@@ -40,6 +40,8 @@ import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
 import org.scalactic.Requirements._
 import org.scalatest.prop.Randomizer
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
 
 /*
 Command line args:
@@ -180,6 +182,8 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">memorize failed and canceled tests in a file, so they can be rerun with -A (again)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M rerun.txt</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">used in conjunction with -M (momento) to select previously failed<br/>and canceled tests to rerun again</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A rerun.txt</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W <em>&lt;delay&gt;</em> <em>&lt;period&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">requests <a href="#slowpokeNotifications">notifications of <em>slowpoke</em> tests</a>, tests that have been running<br/>longer than <em>delay</em> seconds, every <em>period</em> seconds.</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W 60 60</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-N <em>&lt;generatorMinSize&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>minSize</code>'s default value for <code>PropertyCheckConfiguration</code><br/>(Note: only one <code>-N</code> is allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-N 10</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-S <em>&lt;generatorSizeRange&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>sizeRange</code>'s default value for <code>PropertyCheckConfiguration</code><br/>(Note: only one <code>-S</code> is allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-S 50</code></td></tr>
  * </table>
  *
  * <p>
@@ -881,7 +885,9 @@ object Runner {
       spanScaleFactors, 
       testSortingReporterTimeouts,
       slowpokeArgs,
-      seedArgs
+      seedArgs,
+      generatorMinSize,
+      generatorSizeRange
     ) = parseArgs(args)
 
     val fullReporterConfigurations: ReporterConfigurations =
@@ -910,6 +916,8 @@ object Runner {
 
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
+    Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
     seedList match {
       case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))

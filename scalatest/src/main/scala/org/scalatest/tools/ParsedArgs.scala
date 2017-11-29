@@ -43,5 +43,7 @@ private[scalatest] case class ParsedArgs(
   testSortingReporterTimeout: List[String],
   slowpokeParams: List[String],
   // SKIP-SCALATESTJS-END
-  seeds: List[String]
+  seeds: List[String],
+  generatorMinSize: List[String],
+  generatorSizeRange: List[String]
 )

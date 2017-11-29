@@ -38,6 +38,9 @@ import Suite.formatterForSuiteStarting
 import Suite.mergeMap
 import org.scalatest.prop.Randomizer
 
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
+
 
 /**
  * <p>
@@ -946,7 +949,9 @@ import java.net.{ServerSocket, InetAddress}
       spanScaleFactors, 
       testSortingReporterTimeouts,
       slowpokeArgs,
-      seedArgs
+      seedArgs,
+      generatorMinSize,
+      generatorSizeRange
     ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
     
     if (!runpathArgs.isEmpty)
@@ -992,6 +997,8 @@ import java.net.{ServerSocket, InetAddress}
       }
     
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+    Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
     parseLongArgument(seedArgs, "-S") match {
       case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
