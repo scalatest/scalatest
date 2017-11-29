@@ -521,12 +521,11 @@ final class BeWord {
   def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
-        MatchResult(
+        new EqualMatchResult(
           areEqualComparingArraysStructurally(left, right),
           Resources.rawWasNotEqualTo,
           Resources.rawWasEqualTo,
-          Vector(leftee, rightee), 
+          Vector(left, right),
           Vector(left, right)
         )
       }

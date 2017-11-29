@@ -43,6 +43,7 @@ object MatchFailed {
    * @param matchResult the <code>MatchResult</code> to extract the failure message from.
    * @return a <code>Some</code> wrapping the contained failure message if <code>matchResult.matches</code> is equal to <code>true</code>, else <code>None</code>.
    */
-  def unapply(matchResult: MatchResult)(implicit prettifier: Prettifier): Option[String] =
+  def unapply(matchResult: MatchResult)(implicit prettifier: Prettifier): Option[String] = {
     if (!matchResult.matches) Some(matchResult.failureMessage(prettifier)) else None
+  }
 }
