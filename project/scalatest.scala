@@ -466,7 +466,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       testOptions in Test ++=
@@ -474,9 +473,6 @@ object ScalatestBuild extends Build {
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
-      //postLinkJSEnv := PhantomJSEnv().value,
-      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -687,12 +683,10 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       libraryDependencies += "io.spray" %%  "spray-json" % "1.3.4" % "optional",
-      //jsDependencies += RuntimeDOM % "test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
