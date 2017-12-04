@@ -291,7 +291,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
@@ -300,9 +299,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
-      // Currently 1.0.6 for scala-js does not contain anything due to a reported bug: https://github.com/scala/scala-parser-combinators/issues/119
-      // 1.0.5 works for scala 2.12 but not 2.13, we should use 1.0.7 once it is published which suppose to support scala 2.13.
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.0.5",
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
@@ -454,7 +450,6 @@ object ScalatestBuild extends Build {
           "-W", "120", "60")),
       logBuffered in Test := false,
       libraryDependencies += scalacheckDependency("test"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -585,7 +580,6 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
@@ -867,7 +861,6 @@ object ScalatestBuild extends Build {
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
-    libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
