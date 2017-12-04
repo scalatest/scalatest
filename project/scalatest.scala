@@ -179,7 +179,6 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
-          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
           scalacheckDependency("optional")
         )
       case _ =>
@@ -222,8 +221,7 @@ object ScalatestBuild extends Build {
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test",
-      "io.spray" %%  "spray-json" % "1.3.4" % "test"
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
   def scalatestJSLibraryDependencies =
@@ -293,6 +291,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
+      libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
@@ -301,6 +300,9 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
+      // Currently 1.0.6 for scala-js does not contain anything due to a reported bug: https://github.com/scala/scala-parser-combinators/issues/119
+      // 1.0.5 works for scala 2.12 but not 2.13, we should use 1.0.7 once it is published which suppose to support scala 2.13.
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.0.5",
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
@@ -686,7 +688,6 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      libraryDependencies += "io.spray" %%  "spray-json" % "1.3.4" % "optional",
       //jsDependencies += RuntimeDOM % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
@@ -855,8 +856,7 @@ object ScalatestBuild extends Build {
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
-      "io.spray" %%  "spray-json" % "1.3.4" % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
 
     )
 
