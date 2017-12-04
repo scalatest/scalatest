@@ -609,7 +609,7 @@ abstract class UnitPropCheckerAsserting {
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
-            None,
+            Some(ex),
             pos
           )
 
