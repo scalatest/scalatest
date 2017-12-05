@@ -179,7 +179,6 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
-          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
           scalacheckDependency("optional")
         )
       case _ =>
@@ -222,8 +221,7 @@ object ScalatestBuild extends Build {
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test",
-      "io.spray" %%  "spray-json" % "1.3.4" % "test"
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
   def scalatestJSLibraryDependencies =
@@ -452,7 +450,6 @@ object ScalatestBuild extends Build {
           "-W", "120", "60")),
       logBuffered in Test := false,
       libraryDependencies += scalacheckDependency("test"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -583,7 +580,6 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
@@ -688,7 +684,6 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      libraryDependencies += "io.spray" %%  "spray-json" % "1.3.4" % "optional",
       //jsDependencies += RuntimeDOM % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
@@ -857,8 +852,7 @@ object ScalatestBuild extends Build {
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
-      "io.spray" %%  "spray-json" % "1.3.4" % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
 
     )
 
@@ -869,7 +863,6 @@ object ScalatestBuild extends Build {
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
-    libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
