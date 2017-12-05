@@ -737,7 +737,7 @@ class Framework extends SbtFramework {
     def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
       for { 
         taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
-        val task = createTask(taskDef)
+        task = createTask(taskDef)
         if task.shouldDiscover
       } yield task
     

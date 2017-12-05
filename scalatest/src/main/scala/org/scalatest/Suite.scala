@@ -1417,7 +1417,7 @@ private[scalatest] object Suite {
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
     
     try {
-      val constructor = clazz.getConstructor(new Array[java.lang.Class[T] forSome { type T }](0): _*)
+      val constructor = clazz.getConstructor(new Array[java.lang.Class[_]](0): _*)
 
       Modifier.isPublic(constructor.getModifiers)
     }
@@ -1616,9 +1616,9 @@ used for test events like succeeded/failed, etc.
     IndentedText(formattedText, decodedTestText, level)
   }
   
-  def getEscapedIndentedTextForTest(testText: String, level: Int, includeIcon: Boolean) = {
+  def getEscapedIndentedTextForTest(testText: String, level: Int, includeIcon: Boolean): IndentedText = {
     val decodedTestText = NameTransformer.decode(testText)
-    val escapedTestText = 
+    val escapedTestText =
       if (decodedTestText.startsWith("test: "))
         decodedTestText.drop(6)
       else
@@ -1681,6 +1681,12 @@ used for test events like succeeded/failed, etc.
   
   def xmlContent(value: String) = unparsedXml(substituteHtmlSpace(value))
 
+  def analysisFromThrowable(throwable: Throwable): scala.collection.immutable.IndexedSeq[String] =
+    throwable match {
+      case tfe: TestFailedException => tfe.analysis
+      case _ => Vector.empty
+    }
+
   def reportTestFailed(theSuite: Suite, report: Reporter, throwable: Throwable, testName: String, testText: String,
                        recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]): Unit = {
 
@@ -1693,7 +1699,7 @@ used for test events like succeeded/failed, etc.
         case _ => 
           None
       }
-    report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(throwable), Some(duration), Some(formatter), location, theSuite.rerunner, payload))
+    report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, analysisFromThrowable(throwable), Some(throwable), Some(duration), Some(formatter), location, theSuite.rerunner, payload))
   }
 
   // TODO: Possibly separate these out from method tests and function tests, because locations are different
@@ -2104,7 +2110,7 @@ used for test events like succeeded/failed, etc.
         case _ => 
           None
       }
-    report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testName, recordedEvents, Some(throwable), Some(duration), Some(formatter), Some(SeeStackDepthException), theSuite.rerunner, payload))
+    report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testName, recordedEvents, analysisFromThrowable(throwable), Some(throwable), Some(duration), Some(formatter), Some(SeeStackDepthException), theSuite.rerunner, payload))
   }
 
   // SKIP-SCALATESTJS-START

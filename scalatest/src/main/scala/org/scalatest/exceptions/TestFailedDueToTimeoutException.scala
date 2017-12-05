@@ -44,7 +44,7 @@ class TestFailedDueToTimeoutException(
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   val timeout: Span
-) extends TestFailedException(messageFun, cause, posOrStackDepthFun, payload) with TimeoutField {
+) extends TestFailedException(messageFun, cause, posOrStackDepthFun, payload, Vector.empty) with TimeoutField {
 
   /**
     * Constructs a <code>TestFailedDueToTimeoutException</code> with the given error message function, optional cause, source position and optional payload.
