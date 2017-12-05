@@ -205,13 +205,24 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionDelay.getAndSet(60000L)
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
+
+          // We need to use the following code to set Runner object instance for different Runner using different class loader.
+          import scala.reflect.runtime._
+
+          val runtimeMirror = universe.runtimeMirror(testLoader)
           
-          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
-          Configuration.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
-          Configuration.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
+          val runnerInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.tools.Runner$")).instance.asInstanceOf[Runner.type]
+          runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+          val configurationInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Configuration$")).instance.asInstanceOf[Configuration.type]
+          configurationInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+          configurationInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
           parseLongArgument(seedArgs, "-S") match {
-            case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+            case Some(seed) =>
+              val randomizerInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Randomizer$")).instance.asInstanceOf[Randomizer.type]
+              randomizerInstance.defaultSeed.getAndSet(Some(seed))
+
             case None => // do nothing
           }
           
