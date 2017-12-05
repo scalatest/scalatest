@@ -292,7 +292,7 @@ class DifferSpec extends FunSpec {
       assert(
         ObjectDiffer.difference(a, b, Prettifier.default).analysis ==
           (
-            if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+            if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
               Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(value: DifferSpec$Bar(s: \"[asdf]\" -> \"[qwer]\")))")
             else
               Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: \"[asdf]\" -> \"[qwer]\")))")
