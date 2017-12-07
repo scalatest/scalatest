@@ -686,7 +686,13 @@ object ScalatestBuild extends Build {
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
