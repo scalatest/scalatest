@@ -695,6 +695,8 @@ object ScalatestBuild extends Build {
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
+      parallelExecution in Test := false,
+      fork in Test := false,
       publishArtifact := false,
       publish := {},
       publishLocal := {},
