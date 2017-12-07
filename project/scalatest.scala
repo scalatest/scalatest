@@ -679,7 +679,7 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       //jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       jsEnv := {
