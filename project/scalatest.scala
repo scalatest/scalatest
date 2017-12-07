@@ -476,7 +476,7 @@ object ScalatestBuild extends Build {
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
       parallelExecution in Test := false,
-      fork in Test := false, 
+      fork in Test := false,
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       sourceGenerators in Test += {
         Def.task {
@@ -697,7 +697,6 @@ object ScalatestBuild extends Build {
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
       parallelExecution in Test := false,
       fork in Test := false,
