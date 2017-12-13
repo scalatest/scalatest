@@ -867,17 +867,19 @@ object ScalatestBuild extends Build {
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalaTestNative.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenScalaTestNative.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
+ 
+          GenScalaTestNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
       javaSourceManaged <<= target(t => t / "java"),
       managedSourceDirectories in Compile <+= javaSourceManaged,
       sourceGenerators in Compile += {
         Def.task{
-          GenScalaTestNative.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestNative.genJava((javaSourceManaged in Compile).value / "java", version.value, scalaVersion.value)
         }.taskValue
       },
       resourceGenerators in Compile += {
