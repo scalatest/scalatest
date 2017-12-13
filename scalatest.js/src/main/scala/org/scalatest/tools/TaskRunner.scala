@@ -78,7 +78,7 @@ println("GOT TO THIS RECOVER CALL")
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
+    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl, Seq.empty)(Seq.empty).asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,

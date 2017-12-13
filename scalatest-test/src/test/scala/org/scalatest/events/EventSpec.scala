@@ -20,6 +20,7 @@ import SharedHelpers.EventRecordingReporter
 import org.scalatest.prop.Checkers
 import examples._
 
+// SKIP-SCALATESTJS-START
 class EventSpec extends FunSpec with Checkers {
 /*
   describe("An TestStarting Event") {
@@ -1185,3 +1186,4 @@ class EventSpec extends FunSpec with Checkers {
     }
   }
 }
+// SKIP-SCALATESTJS-END

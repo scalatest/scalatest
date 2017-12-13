@@ -463,17 +463,21 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
-      //postLinkJSEnv := PhantomJSEnv().value,
-      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      parallelExecution in Test := false,
+      fork in Test := false,
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -683,13 +687,19 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       //jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
-      fork in test := false,
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       testOptions in Test := scalatestTestJSOptions,
+      parallelExecution in Test := false,
+      fork in Test := false,
       publishArtifact := false,
       publish := {},
       publishLocal := {},
