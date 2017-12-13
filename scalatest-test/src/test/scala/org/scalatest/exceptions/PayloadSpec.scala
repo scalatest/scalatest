@@ -29,7 +29,7 @@ import org.scalactic.source
 import org.scalatest.exceptions.TestFailedException
 */
 
-class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks with Payloads with SeveredStackTraces {
+class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks with Payloads {
 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(

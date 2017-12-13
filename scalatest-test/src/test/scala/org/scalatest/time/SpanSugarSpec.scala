@@ -15,10 +15,10 @@
  */
 package org.scalatest.time
 
-import org.scalatest.{SeveredStackTraces, FunSpec, Matchers}
+import org.scalatest.{FunSpec, Matchers}
 
 
-class SpanSugarSpec extends FunSpec with SpanMatchers with Matchers with SeveredStackTraces {
+class SpanSugarSpec extends FunSpec with SpanMatchers with Matchers {
   
   import SpanSugar._
  
