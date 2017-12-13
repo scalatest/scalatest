@@ -867,35 +867,35 @@ object ScalatestBuild extends Build {
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalaTestNative.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
-
-          GenScalaTestNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-            GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-            GenScalaTestNative.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
-            ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-            ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+          GenScalaTestNative.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      genFactoriesTask,
-      //genSafeStylesTask,
-      sourceGenerators in Compile += Def.task {
-        genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,
-      sourceGenerators in Compile += Def.task {
-        genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,
-      sourceGenerators in Compile += Def.task {
-        genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,
-      sourceGenerators in Compile += Def.task {
-        genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,
-      /*sourceGenerators in Compile += Def.task {
-        genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,*/
-      /*sourceGenerators in Compile += Def.task {
-        genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
-      }.taskValue,*/
+      javaSourceManaged <<= target(t => t / "java"),
+      managedSourceDirectories in Compile <+= javaSourceManaged,
+      sourceGenerators in Compile += {
+        Def.task{
+          GenScalaTestNative.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
+      sourceGenerators in Compile += {
+        Def.task{
+          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenScalaCheckGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
       scalatestJSDocTaskSetting
     ).settings(osgiSettings: _*).settings(
     OsgiKeys.exportPackage := Seq(
@@ -945,7 +945,7 @@ object ScalatestBuild extends Build {
       fork in test := false,
       nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(pass.DeadBlockElimination +: orig.passes)
+        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
       },
       nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
         override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
