@@ -594,6 +594,7 @@ abstract class UnitPropCheckerAsserting {
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
               "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
+              ex.fold("")(e => "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(e.getMessage)) + EOL) +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
@@ -1358,6 +1359,7 @@ trait FuturePropCheckerAsserting {
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
               "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
+              ex.fold("")(e => "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(e.getMessage)) + EOL) +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
@@ -1373,7 +1375,7 @@ trait FuturePropCheckerAsserting {
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
-            None,
+            ex,
             pos
           )
 
