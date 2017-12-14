@@ -40,7 +40,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 trait PropSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 

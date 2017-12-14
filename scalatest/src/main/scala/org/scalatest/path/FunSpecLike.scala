@@ -45,7 +45,7 @@ import org.scalatest.PathEngine.isInTargetPath
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()

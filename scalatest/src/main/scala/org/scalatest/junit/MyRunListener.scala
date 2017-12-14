@@ -63,7 +63,7 @@ import exceptions._
           case _ => 
             None
         }
-      report(TestFailed(theTracker.nextOrdinal(), message, testClassName, testClass, Some(testClass), testName, testName, Vector.empty, throwable, None, Some(formatter), Some(SeeStackDepthException), None, payload))
+      report(TestFailed(theTracker.nextOrdinal(), message, testClassName, testClass, Some(testClass), testName, testName, Vector.empty, Vector.empty, throwable, None, Some(formatter), Some(SeeStackDepthException), None, payload))
       // TODO: can I add a duration?
     }
 

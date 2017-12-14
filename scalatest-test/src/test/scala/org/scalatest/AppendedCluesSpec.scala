@@ -30,7 +30,7 @@ import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
 
 // TODO: Test with imported AppendedClues
-class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
+class AppendedCluesSpec extends FlatSpec with Matchers {
 
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(

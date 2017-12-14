@@ -96,7 +96,7 @@ import org.scalactic._
  */
 trait AssertionsForJUnit extends Assertions {
 
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
+  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[String]): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
 
@@ -201,7 +201,7 @@ object AssertionsForJUnit extends AssertionsForJUnit {
       requireNonNull(clue)(prettifier, pos)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, pos)
+        throw newAssertionFailedException(append(failureMessage, clue), None, pos, bool.analysis)
       }
       Succeeded
     }

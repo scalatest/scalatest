@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait PropSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")

@@ -42,7 +42,7 @@ import words.BehaveWord
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FunSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "FunSpec")

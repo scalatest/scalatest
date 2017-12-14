@@ -45,7 +45,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
