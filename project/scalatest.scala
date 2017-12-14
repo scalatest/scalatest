@@ -622,7 +622,7 @@ object ScalatestBuild extends Build {
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(pass.DeadBlockElimination +: orig.passes)
+        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
       },
       nativeLinkStubs in NativeTest := true,
       sourceGenerators in Test += {
@@ -870,7 +870,7 @@ object ScalatestBuild extends Build {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.3",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.6",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
@@ -955,7 +955,7 @@ object ScalatestBuild extends Build {
       fork in test := false,
       nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(_ == pass.GlobalBoxingElimination))
+        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
       },
       nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
         override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
