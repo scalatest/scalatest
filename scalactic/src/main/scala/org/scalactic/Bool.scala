@@ -34,6 +34,8 @@ trait Bool {
   private def makeString(raw: String, args: Array[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply))
 
+  lazy val analysis: scala.collection.immutable.IndexedSeq[String] = Vector.empty
+
   /**
    * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to
    * raw message returned from <code>rawFailureMessage</code>
@@ -656,6 +658,23 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    */
   def this(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier) =
     this(left, operator, right, bool.value, prettifier)
+
+  private lazy val prettyPair: PrettyPair = {
+    val leftValue =
+      left match {
+        case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] => aEqualizer.leftSide
+        case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] => aEqualizer.leftSide
+        case _ => left
+      }
+    prettifier.apply(leftValue, right)
+  }
+
+  override lazy val analysis: scala.collection.immutable.IndexedSeq[String] = {
+    operator match {
+      case "==" | "===" => prettyPair.analysis.map(Vector(_)).getOrElse(Vector.empty)
+      case _ => Vector.empty
+    }
+  }
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.

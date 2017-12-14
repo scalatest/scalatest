@@ -36,7 +36,7 @@ import util.Success
 import util.Failure
 import org.scalactic.source
 
-class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with ScalaFutures with SeveredStackTraces {
+class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with ScalaFutures {
 
   describe("A FutureConcept") {
 

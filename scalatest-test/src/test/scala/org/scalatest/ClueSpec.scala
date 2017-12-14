@@ -32,7 +32,7 @@ import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
 import time.{Second, Span}
 
-class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
+class ClueSpec extends FlatSpec with Matchers {
 
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(

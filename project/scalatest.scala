@@ -5,12 +5,15 @@ import java.io.PrintWriter
 import scala.io.Source
 import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
+/*import org.scalajs.sbtplugin.ScalaJSPlugin.
+  autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}*/
+
 import org.scalajs.sbtplugin.ScalaJSPlugin
-import scalanative.sbtplugin.ScalaNativePlugin
-import org.scalajs.sbtplugin.ScalaJSPlugin.
-  autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
+
 import sbtcrossproject.CrossPlugin.autoImport._
 
+import scalanative.sbtplugin.ScalaNativePlugin
 import scalanative.tools
 import scalanative.optimizer.{inject, pass}
 import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
@@ -190,7 +193,6 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
-          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
           scalacheckDependency("optional")
         )
       case _ =>
@@ -248,13 +250,12 @@ object ScalatestBuild extends Build {
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test",
-      "io.spray" %%  "spray-json" % "1.3.4" % "test"
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.20"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.21"
     )
 
   def scalatestTestOptions =
@@ -573,7 +574,6 @@ object ScalatestBuild extends Build {
           "-W", "120", "60")),
       logBuffered in Test := false,
       libraryDependencies += scalacheckDependency("test"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -587,17 +587,21 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
-      //postLinkJSEnv := PhantomJSEnv().value,
-      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      parallelExecution in Test := false,
+      fork in Test := false,
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -727,7 +731,6 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
@@ -830,15 +833,20 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      libraryDependencies += "io.spray" %%  "spray-json" % "1.3.4" % "optional",
       //jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      scalaJSStage in Global := FastOptStage,
-      fork in test := false,
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       testOptions in Test := scalatestTestJSOptions,
+      parallelExecution in Test := false,
+      fork in Test := false,
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -1186,8 +1194,7 @@ object ScalatestBuild extends Build {
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
-      "io.spray" %%  "spray-json" % "1.3.4" % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
 
     )
 
@@ -1198,7 +1205,6 @@ object ScalatestBuild extends Build {
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies.value,
     libraryDependencies ++= gentestsLibraryDependencies,
-    libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 

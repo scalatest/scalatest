@@ -21,7 +21,7 @@ import TableDrivenPropertyChecks._
 import Matchers._
 import org.scalactic.exceptions.NullArgumentException
 
-class ArgsSpec extends WordSpec with SeveredStackTraces {
+class ArgsSpec extends WordSpec {
   "The Args constructor" should {
     "throw NullArgumentException when passed a null" in {
 

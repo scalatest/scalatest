@@ -46,7 +46,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * @author Bill Venners
  */
-//SCALATESTJS,NATIVE-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS,NATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 

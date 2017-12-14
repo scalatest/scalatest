@@ -356,7 +356,7 @@ object DiagrammedAssertions extends DiagrammedAssertions {
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
-        throw newAssertionFailedException(failureMessage, None, pos)
+        throw newAssertionFailedException(failureMessage, None, pos, Vector.empty)
       }
       Succeeded
     }

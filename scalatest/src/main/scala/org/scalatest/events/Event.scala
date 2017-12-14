@@ -557,7 +557,8 @@ final case class TestFailed (
   suiteClassName: Option[String],
   testName: String,
   testText: String,
-  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], 
+  recordedEvents: collection.immutable.IndexedSeq[RecordableEvent],
+  analysis: collection.immutable.IndexedSeq[String],
   throwable: Option[Throwable] = None,
   duration: Option[Long] = None,
   formatter: Option[Formatter] = None,
@@ -597,6 +598,7 @@ final case class TestFailed (
       <testName>{ testName }</testName>
       <testText>{ testText }</testText>
       <recordedEvents>{ recordedEvents.map(_.toXml) }</recordedEvents>
+      <analysis>analysis.map(a => <message>a</message>)</analysis>
       <throwable>{ throwableOption(throwable) }</throwable>
       <formatter>{ formatterOption(formatter) }</formatter>
       <location>{ locationOption(location) }</location>

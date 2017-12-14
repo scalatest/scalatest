@@ -26,7 +26,7 @@ import org.scalactic.source
 import org.scalatest.SharedHelpers.thisLineNumber
 import scala.compat.Platform.EOL
 
-class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures with SeveredStackTraces {
+class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
 
   import scala.language.implicitConversions
 

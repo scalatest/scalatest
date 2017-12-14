@@ -15,6 +15,8 @@
  */
 package org.scalatest.matchers
 
+import java.util.concurrent.atomic.AtomicReference
+
 import org.scalactic.Prettifier
 import org.scalatest.Resources
 
@@ -193,7 +195,7 @@ import org.scalatest.Resources
  * @author Bill Venners
  * @author Chee Seng
  */
-final case class MatchResult(
+sealed case class MatchResult(
   matches: Boolean,
   rawFailureMessage: String,
   rawNegatedFailureMessage: String,
@@ -385,3 +387,64 @@ object MatchResult {
     )
 }
 
+class EqualMatchResult(
+  matches: Boolean,
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any]
+) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
+                      failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+
+  private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
+  private[scalatest] def analysis = {
+    atomicAnalysis.get
+  }
+
+  override def failureMessage(implicit prettifier: Prettifier): String = {
+    val prettyPair = prettifier(failureMessageArgs(0), failureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def midSentenceFailureMessage(implicit prettifier: Prettifier): String = {
+    val prettyPair = prettifier(midSentenceFailureMessageArgs(0), midSentenceFailureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawMidSentenceFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def negated: MatchResult =
+    new NotEqualMatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
+
+}
+
+class NotEqualMatchResult(
+  matches: Boolean,
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any]
+) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
+  failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+
+  private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
+  private[scalatest] def analysis = {
+    atomicAnalysis.get
+  }
+
+  override def negatedFailureMessage(implicit prettifier: Prettifier): String = {
+    val prettyPair = prettifier(negatedFailureMessageArgs(0), negatedFailureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def midSentenceNegatedFailureMessage(implicit prettifier: Prettifier): String = {
+    val prettyPair = prettifier(midSentenceNegatedFailureMessageArgs(0), midSentenceNegatedFailureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawMidSentenceNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def negated: MatchResult =
+    new EqualMatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
+
+}
