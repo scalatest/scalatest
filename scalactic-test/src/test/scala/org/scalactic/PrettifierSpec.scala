@@ -25,6 +25,7 @@ import scala.xml.NodeSeq
 // SKIP-SCALATESTJS,NATIVE-END
 
 class PrettifierSpec extends FunSpec with Matchers {
+
   describe("A Prettifier") {
     it("should convert an Any to a String") {
       val f =
@@ -370,7 +371,7 @@ class PrettifierSpec extends FunSpec with Matchers {
       */
       class Fred extends Seq[Fred] { thisFred =>
         override def toIterator: Iterator[Fred] = iterator
-        def iterator: Iterator[Fred] = 
+        def iterator: Iterator[Fred] =
           new Iterator[Fred] {
             private var hasNextElement: Boolean = true
             def next: Fred = {
