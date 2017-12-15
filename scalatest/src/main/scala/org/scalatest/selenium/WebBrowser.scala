@@ -3812,7 +3812,7 @@ trait WebBrowser {
      * @param queryString the string with which to search, first by ID then by name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(queryString: String)(implicit driver: WebDriver): Unit = {
+    def on(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       // stack depth is not correct if just call the button("...") directly.
       val target = tryQueries(queryString)(q => q.webElement)
       on(target)
@@ -3853,7 +3853,7 @@ trait WebBrowser {
    * @param queryString the string with which to search, first by ID then by name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(queryString: String)(implicit driver: WebDriver): Unit = {
+  def clickOn(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     click on queryString
   }
   
@@ -4076,7 +4076,7 @@ trait WebBrowser {
    * @param query <code>Query</code> used to select <code>WebElement</code> which is contained in the frame to switch to 
    * @return a FrameWebElementTarget instance
    */
-  def frame(query: Query)(implicit driver: WebDriver) = new FrameWebElementTarget(query.webElement)
+  def frame(query: Query)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new FrameWebElementTarget(query.webElement)
   
   /**
    * This class supports switching to a window by name or handle in ScalaTest's Selenium DSL.
