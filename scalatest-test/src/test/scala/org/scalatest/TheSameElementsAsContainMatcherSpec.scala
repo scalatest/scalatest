@@ -39,10 +39,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains same elements in different order as right List") {
@@ -50,10 +50,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains same elements in different order as right Set") {
@@ -61,10 +61,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain theSameElementsAs Set(2, 1, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains same elements in same order as right Set") {
@@ -72,17 +72,17 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain theSameElementsAs Set(1, 2, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left Map contains same elements as right Map") {
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
@@ -107,7 +107,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = List(2, 5, 3)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -121,7 +121,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List") {
@@ -146,7 +146,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = List(1, 2, 3, 4)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -160,7 +160,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List is longer than right List") {
@@ -185,7 +185,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = List(1, 2)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -199,7 +199,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain different elements") {
@@ -224,7 +224,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = Set(2, 5, 3)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -238,7 +238,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are not same size, though they contain same elements") {
@@ -264,14 +264,14 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         right2 should contain theSameElementsAs left2
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList(1, 2, 3, 3, 4)
       val right3 = List(1, 2, 3, 4)
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List is shorter than right Set") {
@@ -296,7 +296,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = Set(1, 2, 3, 4)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -310,7 +310,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List is longer than right Set") {
@@ -335,7 +335,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = Set(1, 2)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -349,7 +349,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should contain theSameElementsAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List does not contain all repeated elements in right List") {
@@ -367,14 +367,14 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList(1, 1, 2)
       val right3 = List(1, 2, 2)
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
   
@@ -393,10 +393,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 8 -> "eight"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains different elements in different order as right List") {
@@ -404,10 +404,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(2 -> "two", 1 -> "one", 8 -> "eight"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains different elements in different order as right Set") {
@@ -415,10 +415,10 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (LinkedHashMap(2 -> "two", 1 -> "one", 8 -> "eight"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(2, 1, 8))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeeded when left List contains different elements in same order as right Set") {
@@ -426,18 +426,18 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(1, 2, 8))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeed when left and right List contains same element but has different size") {
       List(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
       Array(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in different order") {
@@ -462,7 +462,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val right4 = List(2, 1, 3)
       val e4 = intercept[exceptions.TestFailedException] {
@@ -476,7 +476,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
         left5 should not contain theSameElementsAs (right5)
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain same elements in different order") {

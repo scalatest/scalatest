@@ -48,54 +48,54 @@ class ArgsParserSpec extends FunSpec {
                 ) = {
 
       val ParsedArgs(
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       runpathList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       reportersList,
       suitesList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       runAgainsList,
       junitsList,
       propsList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       includesList,
       excludesList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       concurrentList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       memberOfList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY beginsWithList
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY beginsWithList
+      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ) = ArgsParser.parseArgs(args)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(runpathList === expectedRunpathList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(reportersList === expectedReporterList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(suitesList === expectedSuitesList)
       assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(includesList === expectedIncludesList)
       assert(excludesList === expectedExcludesList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(concurrentList === expectedConcurrentList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(memberOfList === expectedMemberOfList)
       assert(beginsWithList === expectedBeginsWithList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedScaleFactorList)
@@ -107,7 +107,7 @@ class ArgsParserSpec extends FunSpec {
         assert(!suffixes.isEmpty)
         assert(suffixes.get.toString === expectedSuffixes.get.toString)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     intercept[IllegalArgumentException] {
@@ -529,54 +529,54 @@ class ArgsParserSpec extends FunSpec {
                 ) = {
 
       val ParsedArgs(
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       runpathList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       reportersList,
       suitesList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       runAgainsList,
       junitsList,
       propsList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       includesList,
       excludesList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       concurrentList,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       memberOfList,
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY beginsWithList
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY beginsWithList
+      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ) = ArgsParser.parseArgs(args)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(runpathList === expectedRunpathList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(reportersList === expectedReporterList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(suitesList === expectedSuitesList)
       assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(includesList === expectedIncludesList)
       assert(excludesList === expectedExcludesList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(concurrentList === expectedConcurrentList)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(memberOfList === expectedMemberOfList)
       assert(beginsWithList === expectedBeginsWithList)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
@@ -587,10 +587,10 @@ class ArgsParserSpec extends FunSpec {
         assert(!suffixes.isEmpty)
         assert(suffixes.get.toString === expectedSuffixes.get.toString)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     verify(
       Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
         "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out", "-R"),
@@ -1066,7 +1066,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil
     )
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("parseCompoundArgIntoSet should") {
@@ -1284,7 +1284,7 @@ class ArgsParserSpec extends FunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it("parseReporterArgsIntoSpecs should work correctly") {
     intercept[NullArgumentException] {
       ArgsParser.parseReporterArgsIntoConfigurations(null)
@@ -1455,7 +1455,7 @@ class ArgsParserSpec extends FunSpec {
       ArgsParser.parseRunpathArgIntoList(List("-R", """\ c:\ c:\Program\ Files c:\Documents\ and\ Settings \ myjini"""))
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   it("parsePropertiesArgsIntoMap should work correctly") {
     intercept[NullArgumentException] {
@@ -1502,7 +1502,7 @@ class ArgsParserSpec extends FunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it("parseSuiteArgs should work correctly") {
     intercept[NullArgumentException] {
       ArgsParser.parseSuiteArgs(null)
@@ -1672,7 +1672,7 @@ class ArgsParserSpec extends FunSpec {
     assert(tests12(4).spec === "substr2")
     assert(tests12(4).isSubstring === true)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   it("checkArgsForValidity should work correctly") {
     intercept[IllegalArgumentException] {
@@ -1697,7 +1697,7 @@ class ArgsParserSpec extends FunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it("parseChosenStylesIntoChosenStyleSet should work correctly") {
     intercept[IllegalArgumentException] {
       ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-a", "aStyle"), "-y")
@@ -1717,7 +1717,7 @@ class ArgsParserSpec extends FunSpec {
     assert(multiStyle.contains("bStyle"))
     assert(multiStyle.contains("cStyle"))
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   it("parseDoubleArgument should work correctly") {
     intercept[IllegalArgumentException] {
@@ -1757,7 +1757,7 @@ class ArgsParserSpec extends FunSpec {
     assert(spanScaleFactor === 888)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it("parseConcurrentConfig should work correctly") {
     val emptyConcurrentConfig = ArgsParser.parseConcurrentConfig(List.empty)
     assert(emptyConcurrentConfig.numThreads === 0)
@@ -1795,7 +1795,7 @@ class ArgsParserSpec extends FunSpec {
     assert(multipDashPSThreadNum.numThreads === 8)
     assert(multipDashPSThreadNum.enableSuiteSortingReporter === true)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   it("""parseArgs should disallow -t"something""") {
     val e = intercept[IllegalArgumentException] {

@@ -36,5 +36,5 @@ class ExampleSuite extends FunSuite with OneInstancePerTest {
     assert(buffer.isEmpty)
   }
 
-  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSuite
+  //SCALATESTJS,NATIVE-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSuite
 }

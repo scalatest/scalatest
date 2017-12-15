@@ -16,14 +16,14 @@
 package org.scalatest
 
 import org.scalatest.prop.Tables
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 import org.testng.annotations.{Test => TestNGTest}
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import Matchers._
 import org.scalatest.events.Ordinal
@@ -41,13 +41,13 @@ this behavior during the deprecation period. The deprecation period for Suite as
 expired, so now it is only testing that no style traits handle test: prefixes specially.
 */
 trait NonTestColonEscapeExamples extends Tables {
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec: RefSpec
   def fixtureSpec: fixture.Spec
   def junit3Suite: JUnit3Suite
   def junitSuite: JUnitSuite
   def testngSuite: TestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite: FunSuite
   def fixtureFunSuite: fixture.FunSuite
   def funSpec: FunSpec
@@ -68,13 +68,13 @@ trait NonTestColonEscapeExamples extends Tables {
   def examples =
   Table(
     ("suite", "succeeded", "failed", "ignored", "pending", "canceled"),
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     (spec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (fixtureSpec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (junit3Suite, Some("- test: A Succeeded Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), Some("- test: A Failed Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), None, None, None),
     (junitSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
     (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     (funSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (fixtureFunSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")), 
     (funSpec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
@@ -94,7 +94,7 @@ trait NonTestColonEscapeExamples extends Tables {
   )
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class TestColonEscapeExampleJUnit3Suite extends JUnit3Suite {
   def `test: A Succeeded Test`(): Unit = {}
@@ -114,7 +114,7 @@ class TestColonEscapeExampleTestNGSuite extends TestNGSuite {
   @TestNGTest(groups = Array("run")) def `test: A Failed Test`(): Unit = { _root_.org.testng.Assert.assertEquals(1, 2) }
   @TestNGTest(dependsOnGroups = Array("run")) def `test: An Ignored Test`(): Unit = {}
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class TestColonEscapeExamplePathFreeSpec extends path.FreeSpec {
@@ -197,7 +197,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleSpec()
   class ExampleSpec extends RefSpec {
     def `test: A Succeeded Test`: Unit = {}
@@ -215,7 +215,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
     def `test: A Pending Test` = { pending }
     def `test: A Canceled Test` = { cancel }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def funSuite = new ExampleFunSuite()
   class ExampleFunSuite extends FunSuite {
@@ -357,9 +357,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
   def pathFreeSpec = new TestColonEscapeExamplePathFreeSpec
   def pathFunSpec = new TestColonEscapeExamplePathFunSpec
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def junit3Suite = new TestColonEscapeExampleJUnit3Suite
   def junitSuite = new TestColonEscapeExampleJUnitSuite
   def testngSuite = new TestColonEscapeExampleTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

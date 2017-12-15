@@ -22,13 +22,13 @@ import scala.annotation.tailrec
 import SharedHelpers.EventRecordingReporter
 import collection.mutable.ListBuffer
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedRandomTestOrderSpec extends FunSpec {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class ExampleSpec(listBuffer: ListBuffer[Int]) extends RefSpec with RandomTestOrder {
     def `test 1`: Unit = {
       listBuffer += 0
@@ -56,7 +56,7 @@ class DeprecatedRandomTestOrderSpec extends FunSpec {
 
     override def newInstance = new ExampleFixtureSpec(listBuffer)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends FunSuite with RandomTestOrder {
     test("test 1") {
@@ -273,10 +273,10 @@ class DeprecatedRandomTestOrderSpec extends FunSpec {
   def examples =
     Table(
       ("suite", "test1Name", "test2Name", "test3Name"),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((buffer: ListBuffer[Int]) => new ExampleSpec(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureSpec(buffer), "test 1", "test 2", "test 3"),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((buffer: ListBuffer[Int]) => new ExampleFunSuite(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureFunSuite(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFunSpec(buffer), "test 1", "test 2", "test 3"),

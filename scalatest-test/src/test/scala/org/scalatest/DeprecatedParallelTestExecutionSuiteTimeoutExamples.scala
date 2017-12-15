@@ -23,9 +23,9 @@ import org.scalatest.events.ScopeClosed
 import org.scalatest.events.TestStarting
 import org.scalatest.events.TestSucceeded
 import org.scalatest.time.Millis
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedSuiteTimeoutSetting { s: ParallelTestExecution =>
   override abstract def sortingTimeout: Span = Span(300, Millis)
@@ -66,9 +66,9 @@ object DeprecatedParallelTestExecutionSuiteTimeoutExamples extends Tables {
   def suiteTimeoutExamples = 
     Table(
       "pair",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       new DeprecatedExampleParallelTestExecutionSuiteTimeoutSpecPair,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuitePair, 
       new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpecPair, 
       new DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair,
@@ -79,7 +79,7 @@ object DeprecatedParallelTestExecutionSuiteTimeoutExamples extends Tables {
     )
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutSpecPair extends DeprecatedSuiteTimeoutSuites {
   def suite1 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutSpec
   def suite2 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureSpec
@@ -124,7 +124,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
   def `test 2`(fixture: String): Unit = {}
   def `test 3`(fixture: String): Unit = {}
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuitePair extends DeprecatedSuiteTimeoutSuites {
   def suite1 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuite
@@ -162,7 +162,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFun
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuite
 }
 
 @DoNotDiscover
@@ -170,7 +170,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -226,7 +226,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFun
     it("Test 3") {}
     it("Test 4") {}
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpec
 }
 
 @DoNotDiscover
@@ -239,7 +239,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
     it("Fixture Test 3") { fixture => }
     it("Fixture Test 4") { fixture => }
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -295,7 +295,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFea
     scenario("Test 3") {}
     scenario("Test 4") {}
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpec
 }
 
 @DoNotDiscover
@@ -308,7 +308,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
     scenario("Fixture Test 3") { fixture => }
     scenario("Fixture Test 4") { fixture => }
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -363,7 +363,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFla
   behavior of "Scope 2"
   it should "Test 3" in {}
   it should "Test 4" in {}
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec
 }
 
 @DoNotDiscover
@@ -375,7 +375,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
   behavior of "Fixture Scope 2"
   it should "Fixture Test 3" in { fixture => }
   it should "Fixture Test 4" in { fixture => }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -432,7 +432,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFre
     "Test 3" in {}
     "Test 4" in {}
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpec
 }
 
 @DoNotDiscover
@@ -446,7 +446,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
     "Fixture Test 3" in { fixture => }
     "Fixture Test 4" in { fixture => }
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -485,7 +485,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutPro
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpec
 }
 
 @DoNotDiscover
@@ -493,7 +493,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixturePropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixturePropSpec
 }
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpecPair extends DeprecatedSuiteTimeoutSuites {
@@ -550,7 +550,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutWor
     "Test 3" in {}
     "Test 4" in {}
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpec
 }
 
 @DoNotDiscover
@@ -564,5 +564,5 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFix
     "Fixture Test 3" in { fixture => }
     "Fixture Test 4" in { fixture => }
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec
 }

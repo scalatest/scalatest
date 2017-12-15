@@ -671,7 +671,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
       val caught1 = intercept[IllegalArgumentException] {
         tolerantEquivalence[Double](tolerance = -0.2)
       }
-      assert(caught1.getMessage === "-0.2 passed to tolerantEquivalence was zero or negative. Must be a positive non-zero number.", caught1.getMessage)
+      assert(caught1.getMessage === (-0.2).toString + " passed to tolerantEquivalence was zero or negative. Must be a positive non-zero number.", caught1.getMessage)
     }
 
     it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Float") {
@@ -724,7 +724,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should return Equivalences with a pretty toString") {
 
       assert(tolerantEquivalence(1.0).toString === "TolerantEquivalence(" + (1.0).toString + ")")
-      assert(tolerantEquivalence(2.2).toString === "TolerantEquivalence(2.2)")
+      assert(tolerantEquivalence(2.2).toString === "TolerantEquivalence(" + (2.2).toString + ")")
 
       assert(tolerantEquivalence(1.0f).toString === "TolerantEquivalence(" + (1.0f).toString + ")")
       assert(tolerantEquivalence(2.2f).toString === "TolerantEquivalence(" + (2.2f).toString + ")")

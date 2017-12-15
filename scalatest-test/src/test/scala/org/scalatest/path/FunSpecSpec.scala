@@ -53,7 +53,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
 
       class BFunSpec extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new BFunSpec
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new BFunSpec
       }
       val b = new BFunSpec
 
@@ -159,7 +159,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         assert(testStartingIndex < testSucceededIndex)
       }
       class InfoBeforeTestSpec extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new InfoBeforeTestSpec
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new InfoBeforeTestSpec
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
@@ -176,7 +176,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySpec extends PathFunSpec {
-          //SCALATESTJS-ONLY override def newInstance = new MySpec
+          //SCALATESTJS,NATIVE-ONLY override def newInstance = new MySpec
           it(testName) {}
           info(msg)
         }
@@ -342,7 +342,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     "should throw NullArgumentException if a null test tag is provided" in {
       // it
       class TestSpec1 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec1
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec1
         it("hi", null) {}
       }
       intercept[NullArgumentException] {
@@ -350,7 +350,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
 
       class TestSpec2 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec2
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec2
         it("hi", mytags.SlowAsMolasses, null) {}
       }
       val caught = intercept[NullArgumentException] {
@@ -359,7 +359,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(caught.getMessage === "a test tag was null")
 
       class TestSpec3 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec3
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec3
         it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
       }
       intercept[NullArgumentException] {
@@ -368,7 +368,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // ignore
       class TestSpec4 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec4
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec4
         ignore("hi", null) {}
       }
       intercept[NullArgumentException] {
@@ -376,7 +376,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
 
       class TestSpec5 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec5
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec5
         ignore("hi", mytags.SlowAsMolasses, null) {}
       }
       val caught2 = intercept[NullArgumentException] {
@@ -385,7 +385,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(caught2.getMessage === "a test tag was null")
 
       class TestSpec6 extends PathFunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec6
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec6
         ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
       }
       intercept[NullArgumentException] {
@@ -783,7 +783,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(tf.size === 3)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     "should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than AssertionError, causing Suites and Runs to abort." in {
       class AFunSpec extends PathFunSpec {
         it("throws AssertionError") { throw new OutOfMemoryError }
@@ -795,7 +795,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         // a.run(None, Args(SilentReporter))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
 /*
     "should send InfoProvided events with aboutAPendingTest set to true for info calls made from a test that is pending" in {
@@ -983,7 +983,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
       class TestSpec extends FunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           val a = 1
           assert(a == 2)
@@ -1007,7 +1007,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
       class TestSpec extends FunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           val a = 1
           assume(a == 2)
@@ -1031,7 +1031,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
       class TestSpec extends FunSpec {
-        //SCALATESTJS-ONLY override def newInstance = new TestSpec
+        //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           throw new RuntimeException("on purpose")
         }
@@ -1073,7 +1073,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     "should propagate AnnotationFormatError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
         describe("a feature") {
@@ -1170,7 +1170,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
       assert(e.getMessage == "on purpose")
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
   }
 }

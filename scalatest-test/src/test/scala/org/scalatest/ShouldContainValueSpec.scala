@@ -222,11 +222,11 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained value 2, and Map(\"one\" -> 1, \"two\" -> 2) contained value 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         Map("one" -> 1, "two" -> 2).par should contain value (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.Map") {
@@ -378,11 +378,11 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained value 2, and " + decorateToStringValue(prettifier, map3) + " contained value 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.Map("one" -> 1, "two" -> 2).par should contain value (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.Map") {
@@ -521,11 +521,11 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained value 2, and Map(\"one\" -> 1, \"two\" -> 2) contained value 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         map.par should contain value (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.immutable.HashMap") {
@@ -678,11 +678,11 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
         caught1.getMessage should fullyMatch regex ("Map(.*) contained value 2, and Map(.*) contained value 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         HashMap("one" -> 1, "two" -> 2).par should contain value (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.collection.mutable.HashMap") {
@@ -834,14 +834,14 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained value 2, and " + decorateToStringValue(prettifier, map3) + " contained value 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         mutable.HashMap("one" -> 1, "two" -> 2).par should contain value (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("on java.util.Map") {
 
       val javaMap: java.util.Map[String, Int] = new java.util.HashMap
@@ -996,6 +996,6 @@ class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyT
           equal ("{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2"))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }

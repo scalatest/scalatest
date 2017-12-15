@@ -43,7 +43,7 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
       all(List(string, obj)) shouldBe theSameInstanceAs (obj)
 
       // This won't work in js, string and otherString will be same instance in js.
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val list = List(otherString, string)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe theSameInstanceAs (otherString)
@@ -51,7 +51,7 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
       assert(caught1.message === (Some(errorMessage(1, "\"Hi\" was not the same instance as \"Hi\"", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should work with any") {
@@ -155,7 +155,7 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should work with symbol") {
       
       emptyMock shouldBe 'empty
@@ -198,7 +198,7 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
       assert(ex4.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should work with BePropertyMatcher") {
       case class MyFile(
@@ -727,10 +727,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe a [String]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -749,10 +749,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe a [Int]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -789,10 +789,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe a [Short]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -829,10 +829,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe a [Double]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -905,10 +905,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe an [String]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -927,10 +927,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe an [Int]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -967,10 +967,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe an [Short]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
@@ -1007,10 +1007,10 @@ class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPrope
         all(list) shouldBe an [Double]
       }
       val offendingLine = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", offendingLine, list))))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }

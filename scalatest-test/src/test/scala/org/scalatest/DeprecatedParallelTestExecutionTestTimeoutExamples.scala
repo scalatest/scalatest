@@ -22,9 +22,9 @@ import org.scalatest.time.Span
 import org.scalatest.events.TestSucceeded
 import org.scalatest.time.Millis
 import org.scalatest.tools.TestSortingReporter
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution =>
   def assertTestTimeoutTest(events: List[Event])
@@ -36,10 +36,10 @@ trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution
 
 object DeprecatedParallelTestExecutionTestTimeoutExamples extends Tables {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def testTimeoutSpec = new ExampleParallelTestExecutionTestTimeoutSpec()
   def testTimeoutFixtureSpec = new ExampleParallelTestExecutionTestTimeoutFixtureSpec()
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def testTimeoutFunSuite = new ExampleParallelTestExecutionTestTimeoutFunSuite()
   def testTimeoutFixtureFunSuite = new ExampleParallelTestExecutionTestTimeoutFixtureFunSuite()
   def testTimeoutFunSpec = new ExampleParallelTestExecutionTestTimeoutFunSpec()
@@ -58,10 +58,10 @@ object DeprecatedParallelTestExecutionTestTimeoutExamples extends Tables {
   def testTimeoutExamples =
     Table(
       "suite1",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       testTimeoutSpec, 
       testTimeoutFixtureSpec,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       testTimeoutFunSuite, 
       testTimeoutFixtureFunSuite, 
       testTimeoutFunSpec, 
@@ -98,7 +98,7 @@ class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) 
   }
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   def `test 1`: Unit = {}
@@ -150,7 +150,7 @@ class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec wi
     checkTestSucceeded(events(5), "test 2")
   }
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite extends FunSuite with ParallelTestExecution with TestTimeoutExpectedResults {
@@ -176,7 +176,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite exten
     // The missing one
     checkTestSucceeded(events(5), "Test 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFunSuite
 }
 
 @DoNotDiscover
@@ -203,7 +203,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuit
     // The missing one
     checkTestSucceeded(events(5), "Test 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFunSuite
 }
 
 @DoNotDiscover
@@ -241,7 +241,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extend
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFunSpec
 }
 
 @DoNotDiscover
@@ -279,7 +279,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
 }
 
 @DoNotDiscover
@@ -317,7 +317,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec ex
     // The missing one
     checkTestSucceeded(events(11), "Feature: Scope 2 Scenario: Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFeatureSpec
 }
 
 @DoNotDiscover
@@ -355,7 +355,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeature
     // The missing one
     checkTestSucceeded(events(11), "Feature: Scope 2 Scenario: Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec
 }
 
 @DoNotDiscover
@@ -392,7 +392,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec exten
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 should Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFlatSpec
 }
 
 @DoNotDiscover
@@ -429,7 +429,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpe
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 should Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFlatSpec
 }
 
 @DoNotDiscover
@@ -468,7 +468,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec exten
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFreeSpec
 }
 
 @DoNotDiscover
@@ -507,7 +507,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpe
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureFreeSpec
 }
 
 @DoNotDiscover
@@ -534,7 +534,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec exten
     // The missing one
     checkTestSucceeded(events(5), "Test 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutPropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutPropSpec
 }
 
 @DoNotDiscover
@@ -561,7 +561,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpe
     // The missing one
     checkTestSucceeded(events(5), "Test 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixturePropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixturePropSpec
 }
 
 @DoNotDiscover
@@ -600,7 +600,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec exten
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 should Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutWordSpec
 }
 
 @DoNotDiscover
@@ -639,5 +639,5 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureWordSpe
     // The missing one
     checkTestSucceeded(events(11), "Scope 2 should Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionTestTimeoutFixtureWordSpec
 }

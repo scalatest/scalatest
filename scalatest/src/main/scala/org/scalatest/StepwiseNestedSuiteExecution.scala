@@ -98,9 +98,9 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
           val st = callExecuteOnSuite(nestedSuite)
           // The distributor is being passed down with stepwise execution,
           // so it may run in parallel. Make sure all is done before moving on.
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           st.waitUntilCompleted() // TODO, make this async
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
           statusBuffer += st
         }
       }

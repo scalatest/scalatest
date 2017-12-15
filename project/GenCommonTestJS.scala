@@ -20,7 +20,9 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenCommonTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
@@ -35,9 +37,9 @@ object GenCommonTestJS {
       val lines = Source.fromFile(sourceFile).getLines.toList
       var skipMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-SCALATESTJS-START")
+        if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
           skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS-END")
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
           skipMode = false
         else if (!skipMode) {
           destWriter.write(transformLine(line))

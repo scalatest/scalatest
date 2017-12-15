@@ -147,10 +147,10 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll()(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 1
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 10
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 10
       if (!failures.isEmpty) {
         val failMessages =
           for (failure <- failures.asScala)

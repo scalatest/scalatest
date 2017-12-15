@@ -18,10 +18,10 @@ package org.scalatest
 import org.scalatest.Checkpoints._
 import org.scalatest.OptionValues._
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.JUnitTestFailedError
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
@@ -32,10 +32,10 @@ import Matchers._
 
 import org.scalactic.source
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
-// SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY class CheckpointsSpec extends FunSpec {
+// SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY class CheckpointsSpec extends FunSpec {
 
   describe("a Checkpoint") {
     describe("with a failure condition") {
@@ -133,7 +133,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
     } 
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   describe("a Checkpoint using AssertionsForJUnit") {
     describe("with a failure condition") {
 
@@ -156,5 +156,5 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       }
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

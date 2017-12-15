@@ -52,38 +52,38 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
   private[scalatest] val sourceFileName = "PropSpecRegistering.scala"
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
     def apply(testFun: () => Future[compatible.Assertion]) {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
   }
@@ -107,21 +107,21 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Future[compatible.Assertion]) {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }

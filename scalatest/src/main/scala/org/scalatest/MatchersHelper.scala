@@ -35,7 +35,7 @@ import org.scalactic._
 
 private[scalatest] object MatchersHelper {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a
   // method named "getTitle". The method must take no parameters.
   //
@@ -97,7 +97,7 @@ private[scalatest] object MatchersHelper {
       case (None, None, None) => None
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def transformOperatorChars(s: String): String = {
     val builder = new StringBuilder
@@ -176,7 +176,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, pos: source.Position): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
@@ -224,7 +224,7 @@ private[scalatest] object MatchersHelper {
         )
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,

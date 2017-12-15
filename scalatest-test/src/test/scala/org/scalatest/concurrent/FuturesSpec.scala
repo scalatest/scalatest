@@ -30,7 +30,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
 
   import scala.language.implicitConversions
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] =
     new FutureConcept[T] {
       def eitherValue: Option[Either[Throwable, T]] =
@@ -42,11 +42,11 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
       def isCanceled: Boolean = javaFuture.isCancelled // Two ll's in Canceled. The verbosity of Java strikes again!
       // This one doesn't override futureResult, so that I can test the polling code
     }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   describe("A FutureConcept") {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     class SuperFutureOfJava extends FutureOfJava[String] {
       def cancel(mayInterruptIfRunning: Boolean): Boolean = false
       def get: String = "hi"
@@ -54,10 +54,10 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
       def isCancelled: Boolean = false
       def isDone: Boolean = true
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("when using the isReadyWithin method") {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should just return the result if the future completes normally") {
         val futureIsNow = new SuperFutureOfJava
         futureIsNow.isReadyWithin(Span(1, Second)) should be (true)
@@ -77,7 +77,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should throw TFE with appropriate detail message if the future expires") {
         val expiredFuture =
@@ -95,7 +95,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val neverReadyFuture =
         new SuperFutureOfJava {
           override def isDone = false
@@ -106,7 +106,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         neverReadyFuture.isReadyWithin(Span(1250, Milliseconds)) should be (false)
         (System.currentTimeMillis - startTime).toInt should be >= (1250)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -127,7 +127,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture =
@@ -141,7 +141,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
           vmeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
@@ -172,7 +172,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
 
     describe("when using the futureValue method") {
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should just return the result if the future completes normally") {
         val futureIsNow = new SuperFutureOfJava
         futureIsNow.futureValue should equal ("hi")
@@ -192,7 +192,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should throw TFE with appropriate detail message if the future expires") {
         val expiredFuture =
@@ -210,7 +210,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should eventually blow up with a TFE if the future is never ready") {
 
         var count = 0
@@ -290,7 +290,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -311,7 +311,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture =
@@ -325,7 +325,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
           vmeFuture.futureValue
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
@@ -356,7 +356,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
 
     describe("when using the whenReady construct") {
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       class SuperFutureOfJava extends FutureOfJava[String] {
           def cancel(mayInterruptIfRunning: Boolean): Boolean = false
           def get: String = "hi"
@@ -453,7 +453,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         }
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should throw TFE with appropriate detail message if the future expires") {
         val expiredFuture =
@@ -473,7 +473,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should eventually blow up with a TFE if the future is never ready") {
 
         var count = 0
@@ -563,7 +563,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -586,7 +586,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture =
@@ -602,7 +602,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
           }
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       // Same thing here and in 2.0 need to add a test for TestCanceledException
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
