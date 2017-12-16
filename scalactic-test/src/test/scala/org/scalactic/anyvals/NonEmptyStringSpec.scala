@@ -79,11 +79,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123")(1) shouldEqual '2'
     NonEmptyString("hi")(0) shouldEqual 'h'
     NonEmptyString("789")(2) shouldEqual '9'
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
       NonEmptyString("123")(3)                 // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
     } should have message "String index out of range: 3"
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a length method" in {
     NonEmptyString("1").length shouldBe 1
@@ -362,9 +362,9 @@ class NonEmptyStringSpec extends UnitSpec {
   it can "be flattened when in a GenTraversableOnce" in {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')
     List(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe List('1', '2', '3', '1', '2', '3')
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     List(NonEmptyString("123"), NonEmptyString("123")).par.flatten shouldBe List('1', '2', '3', '1', '2', '3').par
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptyString("1").fold('0')((e1, e2) => (e1.toString.toInt + e2.toString.toInt).toString.charAt(0)) shouldBe '1'

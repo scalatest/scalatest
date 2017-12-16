@@ -17,9 +17,9 @@ package org.scalatest
 
 import org.scalactic.exceptions.NullArgumentException
 import scala.collection.immutable.TreeSet
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class FilterSpec extends FunSpec {
   
@@ -596,7 +596,7 @@ class FilterSpec extends FunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   describe("(when invoke apply on test names with suite annotation)") {
     
     @FastAsLight
@@ -710,5 +710,5 @@ class FilterSpec extends FunSpec {
       assertTestTags(insideTagSuiteTestTags)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

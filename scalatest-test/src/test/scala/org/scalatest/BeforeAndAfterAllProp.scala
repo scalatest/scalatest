@@ -15,14 +15,14 @@
  */
 package org.scalatest
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 import scala.compat.Platform
 import org.scalatest.concurrent.SleepHelper
@@ -31,13 +31,13 @@ class BeforeAndAfterAllProp extends AllSuiteProp {
 
   type FixtureServices = BeforeAndAfterAllPropFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleBeforeAndAfterAllPropSpec
   def fixtureSpec = new ExampleBeforeAndAfterAllPropFixtureSpec
   def junit3Suite = new ExampleBeforeAndAfterAllPropJUnit3Suite
   def junitSuite = new ExampleBeforeAndAfterAllPropJUnitSuite
   def testngSuite = new ExampleBeforeAndAfterAllPropTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new ExampleBeforeAndAfterAllPropFunSuite
   def fixtureFunSuite = new ExampleBeforeAndAfterAllPropFixtureFunSuite
   def funSpec = new ExampleBeforeAndAfterAllPropFunSpec
@@ -85,11 +85,11 @@ class BeforeAndAfterAllProp extends AllSuiteProp {
 
 trait BeforeAndAfterAllPropFixtureServices {
   def included = this match {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     case _: JUnit3Suite => false
     case _: JUnitSuite => false
     case _: TestNGSuite => false
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     case _: path.FreeSpec => false
     case _: path.FunSpec => false
     case _ => true
@@ -98,7 +98,7 @@ trait BeforeAndAfterAllPropFixtureServices {
   @volatile var afterAllTime: Long = 0
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
@@ -142,7 +142,7 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropJUnitSuite extends JUnitS
 // Not supported as JUnitSuite cannot use ParallelTestExecution
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropTestNGSuite extends TestNGSuite with BeforeAndAfterAllPropFixtureServices { }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {

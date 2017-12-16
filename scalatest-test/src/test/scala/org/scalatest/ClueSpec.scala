@@ -17,9 +17,9 @@ package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestCanceledException}
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnitTestFailedError
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import prop.TableDrivenPropertyChecks
 import TableDrivenPropertyChecks._
 import org.scalatest.exceptions.ModifiableMessage
@@ -38,9 +38,9 @@ class ClueSpec extends FlatSpec with Matchers {
     Table(
       "exception",
       new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       new JUnitTestFailedError("message", 3),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)
@@ -248,7 +248,7 @@ class ClueSpec extends FlatSpec with Matchers {
     result should be theSameInstanceAs succeeded
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   it should "throw Serializable TestFailedDueToTimeoutException thrown from withClue wrapping a failing eventually" in {
 
     import org.scalatest.concurrent.Eventually._
@@ -265,6 +265,6 @@ class ClueSpec extends FlatSpec with Matchers {
 
     serializeRoundtrip(result)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }
 

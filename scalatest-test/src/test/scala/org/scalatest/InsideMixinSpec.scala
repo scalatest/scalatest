@@ -90,10 +90,10 @@ class InsideMixinSpec extends FunSpec {
     }
 
     it("should throw a TFE when matcher fails inside due to exception") {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 0
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 8
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, address, age) =>
           throw new TestFailedException((_: StackDepthException) => None, None, source.Position.here)
@@ -105,10 +105,10 @@ class InsideMixinSpec extends FunSpec {
     }
 
     it("should include a nested inside clause when a matcher fails inside due to exception") {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 0
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 8
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, _) =>
           inside (name) { case Name(first, _, _) =>

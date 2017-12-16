@@ -23,13 +23,13 @@ class StatefulStatusSpec extends fixture.FunSpec {
   protected type FixtureParam = {
     def setCompleted()
     def isCompleted: Boolean
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     def succeeds(): Boolean
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     def setFailed()
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     def waitUntilCompleted()
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     def whenCompleted(f: Try[Boolean] => Unit)
     def setFailedWith(ex: Throwable): Unit
     def unreportedException: Option[Throwable]
@@ -57,7 +57,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(status.isCompleted)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should return true for succeeds() after completes() is called without fails()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
@@ -70,15 +70,15 @@ class StatefulStatusSpec extends fixture.FunSpec {
       status.setCompleted()
       assert(!status.succeeds)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("waitUntilCompleted should not block after completes() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should throw IllegalStateException when setFailed() is called after setCompleted() is set") { status =>
       import scala.language.reflectiveCalls
@@ -235,11 +235,11 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(secondSucceeded === false)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should not replace previous failed exception if it is already set") { status =>
       val e1 = new RuntimeException("exception 1")

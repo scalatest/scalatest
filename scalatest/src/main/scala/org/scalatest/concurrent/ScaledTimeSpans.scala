@@ -16,9 +16,9 @@
 package org.scalatest.concurrent
 
 import org.scalatest.time.Span
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.tools.Runner
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 /*
 I have checked in the PoC at the following branch:-
@@ -194,9 +194,9 @@ trait ScaledTimeSpans {
    * </p>
    */
   def spanScaleFactor: Double =
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     Runner.spanScaleFactor
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY 1.0
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY 1.0
 }
 

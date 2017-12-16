@@ -281,7 +281,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
@@ -320,7 +320,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
@@ -396,7 +396,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     assert(!a.afterAllCalled)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("Should run afterEach, but not tests if beforeEach completes abruptly") {
 

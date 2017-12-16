@@ -15,7 +15,9 @@
  */
 package org.scalactic
 
+// SKIP-SCALATESTNATIVE-START
 import org.scalactic.source.ObjectMeta
+// SKIP-SCALATESTNATIVE-END
 
 private[scalactic] trait Differ {
 
@@ -217,6 +219,7 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
 private[scalactic] object GenMapDiffer extends GenMapDiffer
 
+// SKIP-SCALATESTNATIVE-START
 private[scalactic] trait ObjectDiffer extends Differ {
 
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
@@ -264,12 +267,12 @@ private[scalactic] trait ObjectDiffer extends Differ {
       val shortName = Differ.simpleClassName(a)
       PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")"))
     }
-
   }
 
 }
 
 private[scalactic] object ObjectDiffer extends ObjectDiffer
+// SKIP-SCALATESTNATIVE-END
 
 private[scalactic] class AnyDiffer extends Differ {
 
@@ -280,7 +283,9 @@ private[scalactic] class AnyDiffer extends Differ {
       case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2, prettifier)
       case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2, prettifier)
       case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2, prettifier)
+      // SKIP-SCALATESTNATIVE-START
       case (s1: Product, s2: Product) => ObjectDiffer.difference(s1, s2, prettifier)
+      // SKIP-SCALATESTNATIVE-END
       case _ => PrettyPair(prettifier(a), prettifier(b), None)
     }
   }

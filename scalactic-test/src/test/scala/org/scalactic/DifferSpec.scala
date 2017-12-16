@@ -265,6 +265,7 @@ class DifferSpec extends FunSpec {
   case class Bar( s: String, i: Int ) extends Parent
   case class Foo( bar: Bar, b: List[Int], parent: Option[Parent] ) extends Parent
 
+  // SKIP-SCALATESTNATIVE-START
   describe("ObjectDiffer") {
 
     it("should produce difference of 2 Bars correctly") {
@@ -396,6 +397,7 @@ class DifferSpec extends FunSpec {
     }
 
   }
+  // SKIP-SCALATESTNATIVE-END
 
   describe("GenSeqDiffer") {
 

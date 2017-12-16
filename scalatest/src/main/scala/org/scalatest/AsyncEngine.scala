@@ -363,7 +363,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           sorter.completedTest(testName)
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
@@ -379,7 +379,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
       if (shouldBeDocumenterForThisTest ne documenterForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     asyncOutcome.toStatus
@@ -619,7 +619,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     val status = superRun(testName, args.copy(reporter = report))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     status.whenCompleted { r =>
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
@@ -637,7 +637,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
         throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     status
   }
@@ -839,14 +839,14 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val suiteTags = Set.empty[String]
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val suiteTags = Set.empty[String]
     val testTagSet = atomic.get.tagsMap.getOrElse(testName, Set.empty)
     Set.empty ++ suiteTags ++ testTagSet
   }

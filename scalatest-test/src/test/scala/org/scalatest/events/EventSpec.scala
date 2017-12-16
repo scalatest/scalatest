@@ -99,6 +99,8 @@ class EventSpec extends FunSpec with Checkers {
   }
 */
 
+// SKIP-SCALATESTNATIVE-START
+
   /*def getField[T](json: Json, key: String)(implicit d: Decoder[T]): T =
     json.hcursor.downField(key).as[T] match {
       case Right(t) => t
@@ -430,7 +432,7 @@ class EventSpec extends FunSpec with Checkers {
       assert(canceledEvents.length === 1)
       assert(canceledEvents(0).rerunner === Some(suite.getClass.getName))
     }
-    
+
     it("should carry top level suite class name as its rerunner when it is fired from nested suites") {
       val rep = new EventRecordingReporter
       val suite = new ExampleCancelInNestedSuite
@@ -1185,5 +1187,6 @@ class EventSpec extends FunSpec with Checkers {
       assert((jsObj \ "timeStamp").get.value.toString.nonEmpty)
     }
   }
+// SKIP-SCALATESTNATIVE-END
 }
 // SKIP-SCALATESTJS-END

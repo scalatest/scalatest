@@ -44,7 +44,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       ((set: Set[Int]) => set.toArray), 
       ((set: Set[Int]) => set.toIndexedSeq), 
       ((set: Set[Int]) => Vector.empty ++ set),
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       ((set: Set[Int]) => set.par), 
       ((set: Set[Int]) => set.toList.par), 
       ((set: Set[Int]) => set.toSeq.par), 
@@ -53,7 +53,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       ((set: Set[Int]) => (new mutable.ListBuffer() ++ set).par),
       ((set: Set[Int]) => (mutable.Seq.empty ++ set).par),
       ((set: Set[Int]) => (mutable.IndexedSeq.empty ++ set).par),
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       ((set: Set[Int]) => mutable.Set.empty ++ set), 
       ((set: Set[Int]) => new mutable.ListBuffer() ++ set), 
       ((set: Set[Int]) => mutable.Seq.empty ++ set), 
@@ -148,7 +148,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -211,7 +211,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("when used with Arrays") {
       it("should do nothing if succeeds") {
@@ -265,7 +265,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("when used with java.util.Collection") {
       import collection.JavaConverters._
       it("should do nothing if succeeds") {
@@ -323,7 +323,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forAtLeast ") {
@@ -497,7 +497,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -560,7 +560,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("forAtMost ") {
@@ -645,7 +645,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -708,7 +708,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forExactly ") {
@@ -898,7 +898,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -961,7 +961,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forNo ") {
@@ -1036,7 +1036,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -1099,7 +1099,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forBetween ") {
@@ -1322,7 +1322,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
@@ -1385,7 +1385,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forEvery ") {
@@ -1450,7 +1450,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
@@ -1513,7 +1513,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("forAll nested") {

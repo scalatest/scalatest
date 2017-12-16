@@ -22,9 +22,9 @@ import org.scalatest.time.Millis
 import org.scalatest.time.Span
 import org.scalatest.tools.SuiteSortingReporter
 import scala.collection.mutable.ListBuffer
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.concurrent.Eventually._
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.Retries._
 import SharedHelpers._
 import org.scalatest.tagobjects.Retryable
@@ -118,7 +118,7 @@ class ParallelTestExecutionProp extends FunSuite {
     recordingReporter.eventsReceived
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def withTestHoldingDistributor(suite: Suite with TestTimeoutExpectedResults, fun: TestHoldingControlledOrderDistributor => Unit) = {
     val recordingReporter = new EventRecordingReporter
     val distributor = new TestHoldingControlledOrderDistributor
@@ -152,7 +152,7 @@ class ParallelTestExecutionProp extends FunSuite {
     holdingReporter(SuiteCompleted(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
     recordingReporter.eventsReceived
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   def withSuiteDistributor(suite1: Suite, suite2: Suite, fun: ControlledOrderDistributor => Unit) = {
     val recordingReporter = new EventRecordingReporter
@@ -189,7 +189,7 @@ class ParallelTestExecutionProp extends FunSuite {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("ParallelTestExecution should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired", Retryable) {
     import ParallelTestExecutionTestTimeoutExamples._
     forAll(testTimeoutExamples) { example =>
@@ -199,7 +199,7 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertTestTimeoutTest(reverseOrderEvents)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   test("ParallelTestExecution should have the events reported in correct order when multiple suite's tests are executed in parallel") {
     import ParallelTestExecutionParallelSuiteExamples._
@@ -211,7 +211,7 @@ class ParallelTestExecutionProp extends FunSuite {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("ParallelTestExecution should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
     import ParallelTestExecutionSuiteTimeoutExamples._
     forAll(suiteTimeoutExamples) { example =>
@@ -219,5 +219,5 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertSuiteTimeoutTest(events)
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

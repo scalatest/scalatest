@@ -69,9 +69,9 @@ class ShorthandShouldNotBeThrownBySpec extends FunSpec {
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       // TODO: should re-enable this when we got the macro-based source location working.
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(e.failedCodeLineNumber === Some(offendingLine))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

@@ -101,17 +101,17 @@ object GenMatchers {
         for (line <- lines) {
           val mustLine: String =
             if (scalaJS) {
-              if (line.trim == "// SKIP-SCALATESTJS-START") {
+              if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
                 skipMode = true
                 ""
               }
-              else if (line.trim == "// SKIP-SCALATESTJS-END") {
+              else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
                 skipMode = false
                 ""
               }
               else if (!skipMode) {
-                if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                  translateFun(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+                if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+                  translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
                 else
                   translateFun(line)
               }

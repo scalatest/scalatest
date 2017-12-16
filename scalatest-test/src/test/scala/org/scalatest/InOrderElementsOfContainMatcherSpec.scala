@@ -40,10 +40,10 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       Array(1, 2, 3, 4, 5) should contain inOrderElementsOf Seq(1, 3, 5)
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").iterator.toStream should contain inOrderElementsOf Seq(1 -> "one", 3 -> "three", 5 -> "five")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3, 4, 5) should contain inOrderElementsOf Seq(1, 3, 5)
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain inOrderElementsOf Seq(1 -> "one", 3 -> "three", 5 -> "five")
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when left List contains same elements in same order as right Set") {
@@ -51,10 +51,10 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 3)
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain inOrderElementsOf Seq(1 -> "one", 2 -> "two", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 3)
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain inOrderElementsOf Seq(1 -> "one", 2 -> "two", 3 -> "three")
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should failed with correct stack depth and message when left List contains same elements in different order as right List") {
@@ -76,7 +76,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(2 -> "two", 1 -> "one", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain inOrderElementsOf Seq(2, 1, 3)
@@ -90,16 +90,16 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
             }
             checkStackDepth(e5, left5, Array(2 -> "two", 1 -> "one", 3 -> "three"), thisLineNumber - 2)
       */
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should do nothing when inOrder contains duplicate element") {
       List(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
       Array(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
@@ -121,7 +121,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(2 -> "two", 5 -> "five", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       /*
             val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
             val e4 = intercept[exceptions.TestFailedException] {
@@ -135,7 +135,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
         left5 should contain inOrderElementsOf Seq(2, 5, 3)
       }
       checkStackDepth(e5, left5, Seq(2, 5, 3), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contains same elements but in different order") {
@@ -157,7 +157,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(2 -> "two", 1 -> "one", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       /*
             val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
             val e4 = intercept[exceptions.TestFailedException] {
@@ -171,7 +171,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
         left5 should contain inOrderElementsOf Seq(2, 1, 3)
       }
       checkStackDepth(e5, left5, Seq(2, 1, 3), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List") {
@@ -193,7 +193,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       /*
             val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
             val e4 = intercept[exceptions.TestFailedException] {
@@ -207,7 +207,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
         left5 should contain inOrderElementsOf Seq(1, 2, 3, 4)
       }
       checkStackDepth(e5, left5, Seq(1, 2, 3, 4), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left List is longer than right List and right List has different elements") {
@@ -229,7 +229,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(1 -> "one", 5 -> "five"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       /*
             val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
             val e4 = intercept[exceptions.TestFailedException] {
@@ -243,7 +243,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
         left5 should contain inOrderElementsOf Seq(1, 5)
       }
       checkStackDepth(e5, left5, Seq(1, 5), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 
@@ -262,10 +262,10 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 2, 8))
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrderElementsOf (Seq(1 -> "one", 2 -> "two", 8 -> "eight"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 2, 8))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderElementsOf (Seq(1 -> "one", 2 -> "two", 8 -> "eight"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when left List contains same elements as right List in different order") {
@@ -273,10 +273,10 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       Array(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 3, 2))
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrderElementsOf (Seq(1 -> "one", 3 -> "three", 2 -> "two"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 3, 2))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderElementsOf (Seq(1 -> "one", 3 -> "three", 2 -> "two"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contain same elements in same order") {
@@ -298,7 +298,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       /*
             val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
             val e4 = intercept[exceptions.TestFailedException] {
@@ -313,7 +313,7 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e5, left5, Seq(1, 2, 3), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

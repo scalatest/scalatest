@@ -108,7 +108,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a codePointBefore method that is consistent with String") {
       forAll { (numStr: NumericString, pint: PosInt) =>
         whenever (numStr.length > 0) {
@@ -119,7 +119,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a codePointCount method that is consistent with String") {
       forAll { (numStr: NumericString, p1: PosInt, p2: PosInt) =>
         whenever (numStr.length > 0) {
@@ -184,7 +184,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a contentEquals method that is consistent with String") {
       forAll { (numStr: NumericString, str: String) =>
         val cs: CharSequence = str
@@ -197,7 +197,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.contentEquals(matchingCs)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer an endsWith method that is consistent with String") {
       forAll { (numStr: NumericString, str: String, p1: PosInt) =>
         numStr.endsWith(str) shouldEqual
@@ -260,7 +260,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     }
     it("should offer an indexOf method that is consistent with String") {
       forAll { (numStr: NumericString, i1: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
           numStr.indexOf(i1) shouldEqual
             numStr.value.indexOf(i1)
 
@@ -271,13 +271,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
             numStr.indexOf(findableCh) shouldEqual
               numStr.value.indexOf(findableCh)
           }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, ch: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (numStr.length > 0) {
           val fromIndex = p1 % numStr.length
 
@@ -290,13 +290,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.indexOf(findableCh, fromIndex) shouldEqual
             numStr.value.indexOf(findableCh, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, str: String, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         numStr.indexOf(str) shouldEqual
           numStr.value.indexOf(str)
 
@@ -312,13 +312,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.indexOf(findableStr) shouldEqual
             numStr.value.indexOf(findableStr)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, str: String, p1: PosInt, p2: PosInt, p3: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (numStr.length > 0) {
           val fromIndex = p3 % numStr.length
 
@@ -336,10 +336,10 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.indexOf(findableStr, fromIndex) shouldEqual
             numStr.value.indexOf(findableStr, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
     }
     it("should offer a intern method that is consistent with String") {
@@ -356,7 +356,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     }
     it("should offer a lastIndexOf method that is consistent with String") {
       forAll { (numStr: NumericString, ch: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
           numStr.lastIndexOf(ch) shouldEqual
             numStr.value.lastIndexOf(ch)
 
@@ -367,13 +367,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
             numStr.lastIndexOf(findableCh) shouldEqual
               numStr.value.lastIndexOf(findableCh)
           }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because lastIndexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because lastIndexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, ch: Int, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (numStr.length > 0) {
           val fromIndex = p2 % numStr.length
 
@@ -386,13 +386,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.lastIndexOf(findableCh, fromIndex) shouldEqual
             numStr.value.lastIndexOf(findableCh, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, str: String, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         numStr.lastIndexOf(str) shouldEqual
           numStr.value.lastIndexOf(str)
 
@@ -408,13 +408,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.lastIndexOf(findableStr) shouldEqual
             numStr.value.lastIndexOf(findableStr)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (numStr: NumericString, str: String, p1: PosInt, p2: PosInt, p3: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (numStr.length > 0) {
           val fromIndex = p3 % numStr.length
 
@@ -432,10 +432,10 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.lastIndexOf(findableStr, fromIndex) shouldEqual
             numStr.value.lastIndexOf(findableStr, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
     }
     it("should offer a matches method that is consistent with String") {
@@ -449,7 +449,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.matches(r2)
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a offsetByCodePoints method that is consistent with String") {
       forAll { (numStr: NumericString, p1: PosInt, p2: PosInt) =>
         whenever (numStr.length > 0) {
@@ -461,7 +461,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer regionMatches methods that are consistent with String") {
       forAll { (numStr: NumericString, i1: Int, str: String, i2: Int, len: Int ) =>
         numStr.regionMatches(true, i1, str, i2, len) shouldEqual
@@ -588,7 +588,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toCharArray
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
 /*  Please leave this here for other String AnyVals besides NumericString
     it("should offer toLowerCase methods that are consistent with String") {
       forAll { (numStr: NumericString) =>
@@ -609,7 +609,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
 */
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a trim method that is consistent with String") {
       forAll { (numStr: NumericString) =>
         numStr.trim shouldEqual
@@ -839,7 +839,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a contentEquals method that accepts a StringBuffer") {
       forAll { (numStr: NumericString, str: String) =>
         var sb = new StringBuffer(str)
@@ -851,7 +851,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.contentEquals(sb)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a copyToArray method that takes start and len args") {
       forAll { (numStr: NumericString, start: PosInt, len: PosInt) =>
         val xs1 = Array.fill[Char](256)(0)
@@ -1391,14 +1391,14 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.padTo(reasonableLen, elem)
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /*it("should offer a par method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.par shouldEqual
           numStr.value.par
       }
     }*/
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a partition method consistent with StringOps") {
       def isEven(ch: Char): Boolean = (ch - '0') % 2 == 0
 

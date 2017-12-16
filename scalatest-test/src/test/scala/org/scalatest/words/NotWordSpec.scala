@@ -28,9 +28,9 @@ import matchers.{NegatedFailureMessage,
                  MidSentenceFailureMessage, 
                  MidSentenceNegatedFailureMessage}
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import java.io.File
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic._
@@ -349,7 +349,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("val exists of type MatcherFactory1") {
       
       val tempDir = createTempDirectory()
@@ -400,7 +400,7 @@ class NotWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("equal(null) method returns MatcherFactory1") {
       
@@ -746,7 +746,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       intercept[NotAllowedException] { val mt = be === "cheese" }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("be(Symbol) method returns Matcher") {
       val mt = not be ('file)
       
@@ -792,7 +792,7 @@ class NotWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("be(BePropertyMatcher) method returns Matcher") {
       
@@ -856,7 +856,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("apply(ResultOfAWordToSymbolApplication) method returns Matcher") {
       val mt = not be a ('file)
       
@@ -902,7 +902,7 @@ class NotWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("be(ResultOfAWordToBePropertyMatcherApplication) method returns Matcher") {
       
@@ -1021,7 +1021,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("be(ResultOfAnWordToSymbolApplication) method returns Matcher") {
       val mt = not be an ('file)
       
@@ -1067,7 +1067,7 @@ class NotWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("be(ResultOfAnWordToBePropertyMatcherApplication) method returns Matcher") {
       

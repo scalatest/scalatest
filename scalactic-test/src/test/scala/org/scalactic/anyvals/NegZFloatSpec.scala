@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import OptionValues._
 import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
@@ -383,9 +383,9 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: NegZFloat) =>
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
         pzfloat.floor.toFloat shouldEqual pzfloat.toFloat.floor
       }
@@ -398,7 +398,7 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -410,7 +410,7 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
       NegZFloat(-33.0f).ensuringValid(_ + 1.0f) shouldEqual NegZFloat(-32.0f)

@@ -19,9 +19,9 @@ import org.scalatest._
 import OptionValues._
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
@@ -538,7 +538,7 @@ class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks w
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -550,7 +550,7 @@ class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks w
         rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NonZeroFiniteFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual NonZeroFiniteFloat(34.0f)

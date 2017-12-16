@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.scalatest.events
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._
 import SharedHelpers._
 
@@ -35,13 +35,13 @@ class LocationSuiteProp extends SuiteProp
   
   type FixtureServices = TestLocationServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def junit3Suite = new TestLocationJUnit3Suite
   
   def junitSuite = new TestLocationJUnitSuite
   
   def testngSuite = new TestLocationTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   def funSuite = new TestLocationFunSuite
   class TestLocationFunSuite extends FunSuite with FixtureServices {
@@ -498,7 +498,7 @@ class LocationSuiteProp extends SuiteProp
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new TestLocationSpec
   class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationSuiteProp$TestLocationSpec"
@@ -557,5 +557,5 @@ class LocationSuiteProp extends SuiteProp
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

@@ -118,7 +118,7 @@ class MatchersSpec extends FunSpec {
       
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("HavePropertyMatcherGenerator ") {
       
       describe("apply(Any) returns HavePropertyMatcher") {
@@ -133,7 +133,7 @@ class MatchersSpec extends FunSpec {
       }
       
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("ResultOfBeWordForAny ") {
       val word = 1 should be
