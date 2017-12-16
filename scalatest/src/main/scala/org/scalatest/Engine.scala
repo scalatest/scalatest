@@ -653,10 +653,10 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val testName = getTestName(testText, currentBranch)
 
     if (atomic.get.testsMap.keySet.contains(testName)) {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val duplicateTestNameAdjustment = 0
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val duplicateTestNameAdjustment = -1
       throw new DuplicateTestNameException(testName, posOrElseStackDepthFun(pos, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
     }
     val testLocation = 
@@ -761,14 +761,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val suiteTags = Set.empty[String]
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val suiteTags = Set.empty[String]
     val testTagSet = atomic.get.tagsMap.getOrElse(testName, Set.empty)
     Set.empty ++ suiteTags ++ testTagSet
   }

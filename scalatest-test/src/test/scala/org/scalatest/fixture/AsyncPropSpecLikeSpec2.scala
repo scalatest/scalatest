@@ -230,7 +230,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -380,7 +380,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
         assert(!rep.testSucceededEventsReceived.isEmpty)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
@@ -415,9 +415,9 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -460,9 +460,9 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }

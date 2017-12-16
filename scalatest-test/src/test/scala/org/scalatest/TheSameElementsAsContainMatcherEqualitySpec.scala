@@ -46,7 +46,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class JavaMapTrimEquality extends Equality[java.util.Map.Entry[Int, String]] {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
       right match {
@@ -59,7 +59,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
         case right => left == right
       }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   class FalseEquality extends Equality[Int] {
     def areEqual(left: Int, right: Any): Boolean = false
@@ -69,11 +69,11 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
     def areEqual(left: (Int, String), right: Any): Boolean = false
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class JavaMapFalseEquality extends Equality[java.util.Map.Entry[Int, String]] {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any): Boolean = false
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
     
   describe("theSameElementsAs ") {
       
@@ -102,13 +102,13 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       implicit val mapEquality = new MapTrimEquality
       Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")
       javaSet("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")
 
       implicit val javaMapEquality = new JavaMapTrimEquality
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom implicit equality in scope when 'should contain and should contain' is used") {
@@ -131,7 +131,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       Map(1 -> "one ", 2 -> "two", 3 -> " three") should ((contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ")) and (contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three")))
       Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") and (contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three")))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))
       javaList("1 ", "2", " 3") should ((contain theSameElementsAs List(" 1", " 2", "3 ")) and (contain theSameElementsAs List("1 ", "2 ", " 3")))
       javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and (contain theSameElementsAs List("1 ", "2 ", " 3")))
@@ -145,7 +145,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom explicit equality in scope when 'should contain and should contain' is used") {
@@ -159,14 +159,14 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       
       (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") and contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (mapEquality, mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
       (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
 
       val javaMapEquality = new JavaMapTrimEquality
       
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))) (javaMapEquality, javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom implicit equality in scope when 'should contain or should contain' is used") {
@@ -189,7 +189,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       Map(1 -> "one ", 2 -> "two", 3 -> " three") should ((contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ")) or (contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three")))
       Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") or (contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three")))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))
       javaList("1 ", "2", " 3") should ((contain theSameElementsAs List(" 1", " 2", "3 ")) or (contain theSameElementsAs List("1 ", "2 ", " 3")))
       javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or (contain theSameElementsAs List("1 ", "2 ", " 3")))
@@ -203,7 +203,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom explicit equality in scope when 'should contain or should contain' is used") {
@@ -217,14 +217,14 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       
       (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (mapEquality, mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
       (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
 
       val javaMapEquality = new JavaMapTrimEquality
       
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (javaMapEquality, javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should take custom implicit equality in scope when 'should not contain' is used") {
@@ -236,13 +236,13 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       implicit val mapEquality = new MapFalseEquality
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))
       javaSet(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))
 
       implicit val javaMapEquality = new JavaMapFalseEquality
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
@@ -278,7 +278,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       }
       checkShouldContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val right5 = List(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
@@ -294,7 +294,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
         left6 should contain theSameElementsAs right6
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
@@ -330,7 +330,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       }
       checkShouldNotContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1 ", "2", " 3")
       val right5 = List("1", " 2", "3")
       val e5 = intercept[exceptions.TestFailedException] {
@@ -346,7 +346,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
         left6 should not contain theSameElementsAs (right6)
       }
       checkShouldNotContainStackDepth(e6, left6, right6, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
         
     it("should take passed in custom explicit equality when 'should contain' is used") {
@@ -358,12 +358,12 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       val mapEquality = new MapTrimEquality
       (Map(1 -> "one ", 2 -> "two", 3 -> " three") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (equality)
 
       val javaMapEquality = new JavaMapTrimEquality
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should take passed in custom explicit equality when 'should not contain' is used") {
@@ -375,12 +375,12 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       val mapEquality = new MapFalseEquality
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))) (mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))) (equality)
 
       val javaMapEquality = new JavaMapFalseEquality
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
@@ -416,7 +416,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       }
       checkShouldContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val right5 = List(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
@@ -432,7 +432,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
         (left6 should contain theSameElementsAs right6) (javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
       
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
@@ -468,7 +468,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
       }
       checkShouldNotContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1 ", "2", " 3")
       val right5 = List(" 1", "2 ", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
@@ -484,7 +484,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends FunSpec with Explicitl
         (left6 should not contain theSameElementsAs (right6)) (javaMapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, right6, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

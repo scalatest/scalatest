@@ -22,8 +22,8 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.Failure
 import scala.util.Success
-// SKIP-SCALATESTJS-START
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-START
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.OutcomeOf.outcomeOf
 
 class CompleteLastlySpec extends AsyncFunSpec {
@@ -32,10 +32,11 @@ class CompleteLastlySpec extends AsyncFunSpec {
 /*
     val asyncSuite =
       new AsyncSuite {
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
         override def executionContext: ExecutionContext = ExecutionContext.Implicits.global
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
       }
 */
     describe("when an exception is immediately thrown") {

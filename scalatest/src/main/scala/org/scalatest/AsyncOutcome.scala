@@ -8,9 +8,9 @@ import scala.concurrent.duration._
 private[scalatest] trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome // may block
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def toInternalFutureOutcome: Future[Outcome]
   def toFutureOutcome: FutureOutcome
 }
@@ -25,9 +25,9 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
       case _: Failed => FailedStatus
       case _ => SucceededStatus
     }
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome = past
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def toInternalFutureOutcome: Future[Outcome] = Future.successful(past)
   def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
@@ -66,9 +66,9 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
     }
   }
   def toStatus: Status = status
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def toInternalFutureOutcome: Future[Outcome] = future
   def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }

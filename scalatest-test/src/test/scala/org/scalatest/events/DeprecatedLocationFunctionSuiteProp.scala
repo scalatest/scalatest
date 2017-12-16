@@ -453,7 +453,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
 
 class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
-  //SCALATESTJS-ONLY override def newInstance = new TestLocationFunctionPathFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestLocationFunctionPathFreeSpec
   "Test" - {
     "should succeed" in {
       
@@ -482,7 +482,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
 
 class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
-  //SCALATESTJS-ONLY override def newInstance = new TestLocationFunctionPathFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestLocationFunctionPathFunSpec
   describe("A Spec") {
     it("succeed") {
        

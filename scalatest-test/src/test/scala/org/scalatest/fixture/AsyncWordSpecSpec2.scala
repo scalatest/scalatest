@@ -231,7 +231,7 @@ class AsyncWordSpecSpec2 extends org.scalatest.AsyncFunSpec {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -381,7 +381,7 @@ class AsyncWordSpecSpec2 extends org.scalatest.AsyncFunSpec {
         assert(!rep.testSucceededEventsReceived.isEmpty)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
@@ -911,9 +911,9 @@ class AsyncWordSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should allow other execution context to be used") {
       class TestSpec extends AsyncWordSpec {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
 
         type FixtureParam = String

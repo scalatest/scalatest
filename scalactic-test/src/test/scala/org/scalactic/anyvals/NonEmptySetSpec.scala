@@ -49,11 +49,11 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet.from(Set.empty[String]) shouldBe None
     NonEmptySet.from(Set("1")) shouldBe Some(NonEmptySet("1"))
     NonEmptySet.from(Set(1, 2, 3)) shouldBe Some(NonEmptySet(1, 2, 3))
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     NonEmptySet.from(Set.empty[String].par) shouldBe None
     NonEmptySet.from(Set("1").par) shouldBe Some(NonEmptySet("1"))
     NonEmptySet.from(Set(1, 2, 3).par) shouldBe Some(NonEmptySet(1, 2, 3))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptySet("hi", null, "ho")
@@ -314,9 +314,9 @@ class NonEmptySetSpec extends UnitSpec {
     Vector(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).flatten shouldBe Vector(2, 3, 1, 2, 3, 1)
     Set(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).flatten shouldBe Set(1, 2, 3, 1, 2, 3)
     Set(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).toIterator.flatten.toStream shouldBe Set(2, 3, 1, 2, 3, 1).toIterator.toStream
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     Set(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).par.flatten shouldBe Set(1, 2, 3, 1, 2, 3).par
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptySet(1).fold(0)(_ + _) shouldBe 1

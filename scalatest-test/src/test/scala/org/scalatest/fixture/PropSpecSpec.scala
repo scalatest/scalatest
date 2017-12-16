@@ -937,7 +937,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new PropSpec {
@@ -952,7 +952,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
         a.run(None, Args(SilentReporter))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should allow both tests that take fixtures and tests that don't") {
       val a = new PropSpec {
 

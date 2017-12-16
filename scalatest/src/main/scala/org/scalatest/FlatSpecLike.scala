@@ -45,7 +45,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
@@ -94,18 +94,18 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
@@ -129,12 +129,12 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
@@ -182,10 +182,10 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def of(description: String)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 5
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecLike.scala", "of", stackDepth, 0, Some(pos))
     }
   }
@@ -1553,10 +1553,10 @@ import resultOfStringPassedToVerb.verb
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
     new StringVerbStringInvocation {
       def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         val stackDepth = 6
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 8
+        // SKIP-SCALATESTJS,NATIVE-END
+        //SCALATESTJS,NATIVE-ONLY val stackDepth = 8
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
 
@@ -1632,12 +1632,12 @@ import resultOfStringPassedToVerb.verb
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 

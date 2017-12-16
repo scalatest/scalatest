@@ -39,11 +39,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 3, 5, 8) should contain oneElementOf Seq(7, 8, 9)
       Map(1 -> "one", 3 -> "three", 5 -> "five", 8 -> "eight") should contain oneElementOf Seq(7 -> "seven", 8 -> "eight", 9 -> "nine")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 3, 5, 8) should contain oneElementOf Seq(7, 8, 9)
       javaSet(1, 3, 5, 8) should contain oneElementOf Seq(7, 8, 9)
       javaMap(Entry(1, "one"), Entry(3, "three"), Entry(5, "five"), Entry(8, "eight")) should contain oneElementOf Seq(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when right List contains at least one element in right List") {
@@ -52,11 +52,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should contain oneElementOf Seq(5, 3, 8)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain oneElementOf Seq(5 -> "five", 3 -> "three", 8 -> "eight")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain oneElementOf Seq(5, 3, 8)
       javaSet(1, 2, 3) should contain oneElementOf Seq(5, 3, 8)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain oneElementOf Seq(Entry(5, "five"), Entry(3, "three"), Entry(8, "eight"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should allow oneElementOf contains duplicate element") {
@@ -84,7 +84,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(7, 8, 9), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(7, 8, 9)
@@ -96,7 +96,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
       checkStackDepth(e5, left5, Seq(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List and does not contain any same element") {
@@ -118,7 +118,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(6, 7, 8, 9), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(6, 7, 8, 9)
@@ -130,7 +130,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
       checkStackDepth(e5, left5, Seq(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left List is longer than right List and does not contain any same element") {
@@ -152,7 +152,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(8, 5), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(8, 5)
@@ -164,7 +164,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(8, "eight"), Entry(5, "five"))
       }
       checkStackDepth(e5, left5, Seq(Entry(8, "eight"), Entry(5, "five")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contain all same element in different order") {
@@ -186,7 +186,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(3, 2, 1), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(3, 2, 1)
@@ -198,7 +198,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
       }
       checkStackDepth(e5, left5, Seq(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contain all same element in same order") {
@@ -220,7 +220,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(1, 2, 3), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(1, 2, 3)
@@ -232,7 +232,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
       checkStackDepth(e5, left5, Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contain more than one same element") {
@@ -254,7 +254,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(5, 1, 2), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain oneElementOf Seq(5, 1, 2)
@@ -266,7 +266,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should contain oneElementOf Seq(Entry(5, "five"), Entry(1, "one"), Entry(2, "two"))
       }
       checkStackDepth(e5, left5, Seq(Entry(5, "five"), Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 
@@ -285,11 +285,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should not contain oneElementOf (Seq(7, 8, 9))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(7 -> "seven", 8 -> "eight", 9 -> "nine"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaSet(1, 2, 3) should not contain oneElementOf (Seq(7, 8, 9))
       javaList(1, 2, 3) should not contain oneElementOf (Seq(7, 8, 9))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when left and right List contain at least one same element") {
@@ -311,7 +311,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Seq(5, 1, 7), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain oneElementOf (Seq(5, 1, 7))
@@ -323,7 +323,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
         left5 should not contain oneElementOf (Seq(Entry(5, "five"), Entry(1, "one"), Entry(7, "seven")))
       }
       checkStackDepth(e5, left5, Seq(Entry(5, "five"), Entry(1, "one"), Entry(7, "seven")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when right List contains all elements in left List in different order") {
@@ -332,11 +332,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should not contain oneElementOf (Seq(1, 3, 2))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(1 -> "one", 3 -> "three", 2 -> "twp"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain oneElementOf (Seq(1, 3, 2))
       javaSet(1, 2, 3) should not contain oneElementOf (Seq(1, 3, 2))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(1, "one"), Entry(3, "three"), Entry(2, "twp")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when right List contains all elements in left List in same order") {
@@ -345,11 +345,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(1 -> "one", 2 -> "two", 3 -> "three"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))
       javaSet(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should succeeded when right List contains more than one element in right List") {
@@ -358,11 +358,11 @@ class OneElementOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should not contain oneElementOf (Seq(5, 3, 2))
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(5 -> "five", 3 -> "three", 2 -> "two"))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain oneElementOf (Seq(5, 3, 2))
       javaSet(1, 2, 3) should not contain oneElementOf (Seq(5, 3, 2))
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(5, "five"), Entry(3, "three"), Entry(2, "two")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

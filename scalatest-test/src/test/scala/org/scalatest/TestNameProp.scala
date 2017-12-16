@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 package org.scalatest
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class TestNameProp  extends AllSuiteProp {
 
   type FixtureServices = TestNameFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleTestNameSpec
   def fixtureSpec = new ExampleTestNameFixtureSpec
   def junit3Suite = new ExampleTestNameJUnit3Suite
   def junitSuite = new ExampleTestNameJUnitSuite
   def testngSuite = new ExampleTestNameTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new ExampleTestNameFunSuite
   def fixtureFunSuite = new ExampleTestNameFixtureFunSuite
   def funSpec = new ExampleTestNameFunSpec
@@ -70,7 +70,7 @@ trait TestNameFixtureServices { suite: Suite =>
   }
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class ExampleTestNameSpec extends RefSpec with TestNameFixtureServices {
   val expectedTestNames = 
@@ -246,7 +246,7 @@ class ExampleTestNameTestNGSuite extends TestNGSuite with TestNameFixtureService
   @TestNG
   def testingShouldBeFun(): Unit = {}
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleTestNameFunSuite extends FunSuite with TestNameFixtureServices {

@@ -44,11 +44,11 @@ import annotation.tailrec
 import collection.GenTraversable
 import collection.mutable.ListBuffer
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import Suite.getTopOfClass
 import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 /*
  * <h2>Using <code>info</code> and <code>markup</code></h2>
@@ -541,7 +541,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   */
   def nestedSuites: collection.immutable.IndexedSeq[Suite] = Vector.empty
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Executes one or more tests in this <code>Suite</code>, printing results to the standard output.
    *
@@ -853,7 +853,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
    final def execute: Unit = { execute() }
 
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tests that are tagged and
@@ -889,7 +889,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def testNames: Set[String] = Set.empty
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   // Leave this around for a while so can print out a warning if we find testXXX methods.
   private[scalatest] def yeOldeTestNames: Set[String] = {
 
@@ -911,7 +911,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     }
     result
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /*
   Old style method names will have (Informer) at the end still, but new ones will
@@ -1028,12 +1028,12 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
     requireNonNull(testName, args)
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     if (!this.isInstanceOf[refspec.RefSpec] && yeOldeTestNames.nonEmpty) {
       if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
       else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     import args._
 
@@ -1345,15 +1345,15 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def rerunner: Option[String] = {
     val suiteClass = getClass
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
     val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
     if (isAccessible || hasWrapWithAnnotation)
       Some(suiteClass.getName)
     else
       None
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY Some(suiteClass.getName)
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY Some(suiteClass.getName)
   }
   
   /**
@@ -1413,7 +1413,7 @@ private[scalatest] object Suite {
       fullyQualifiedName
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
     
     try {
@@ -1425,7 +1425,7 @@ private[scalatest] object Suite {
       case nsme: NoSuchMethodException => false
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   // This attempts to strip dollar signs that happen when using the interpreter. It is quite fragile
   // and already broke once. In the early days, all funky dollar sign encrusted names coming out of
@@ -1489,7 +1489,7 @@ private[scalatest] object Suite {
 
   def anExceptionThatShouldCauseAnAbort(throwable: Throwable): Boolean =
     throwable match {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       case _: AnnotationFormatError | 
 /*
            _: org.scalatest.TestRegistrationClosedException |
@@ -1504,7 +1504,7 @@ private[scalatest] object Suite {
       // Don't use AWTError directly because it doesn't exist on Android, and a user
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       case _ => false
     }
 
@@ -2073,7 +2073,7 @@ used for test events like succeeded/failed, etc.
   }
 
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val suiteTags = for {
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
@@ -2087,8 +2087,8 @@ used for test events like succeeded/failed, etc.
         Map.empty[String, Set[String]]
 
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY tags
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY tags
   }
 
   def handleFailedTest(
@@ -2113,7 +2113,7 @@ used for test events like succeeded/failed, etc.
     report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testName, recordedEvents, analysisFromThrowable(throwable), Some(throwable), Some(duration), Some(formatter), Some(SeeStackDepthException), theSuite.rerunner, payload))
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def getTopOfClass(theSuite: Suite) = TopOfClass(theSuite.getClass.getName)
   def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(theSuite.getClass.getName, method.toGenericString())
   def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, getMethodForTestName(theSuite, testName).toGenericString())
@@ -2124,9 +2124,9 @@ used for test events like succeeded/failed, etc.
     val method = getMethodForTestName(theSuite, testName)
     (theStopper, report, method, testStartTime)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
-  //SCALATESTJS-ONLY def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, "test" + testName.capitalize)
+  //SCALATESTJS,NATIVE-ONLY def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, "test" + testName.capitalize)
 
   // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
@@ -2159,7 +2159,7 @@ used for test events like succeeded/failed, etc.
     else
       testName
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def getMethodForTestName(theSuite: org.scalatest.Suite, testName: String): Method = {
     val candidateMethods = theSuite.getClass.getMethods.filter(_.getName == Suite.simpleNameForTest(testName))
     val found =
@@ -2193,7 +2193,7 @@ used for test events like succeeded/failed, etc.
          throw new IllegalArgumentException(Resources.testNotFound(testName))
      }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   // The substitution, if defined, indicates that the _1 string should be replace
   // by _2. This may transform "FunSpec" into "path.FunSpec", for example.

@@ -38,7 +38,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
   val sub2: Sub = new Sub(2)
   val nullSuper: Super = null
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val javaList: java.util.List[Int] = new java.util.ArrayList
   javaList.add(1)
   javaList.add(2)
@@ -59,7 +59,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
   val javaHashSet: java.util.HashSet[Int] = new java.util.HashSet
   javaHashSet.add(1)
   javaHashSet.add(2)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   describe("the custom equality should === (operator") {
 
@@ -126,7 +126,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Seq(1, 2, 3))
           Array(1, 2, 3) should !== (Seq(2, 3, 4))
 
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -153,7 +153,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
 
           intercept[TestFailedException] { javaSet should === (7) }
           javaSet should !== (7)
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
 
           () should === (())
           () should !== (7)
@@ -397,7 +397,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Array(1, 2, 3))
           Array(1, 2, 3) should !== (Array(2, 3, 4))
 
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -415,7 +415,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
 
           javaHashSet should === (javaSet)
           intercept[TestFailedException] { javaHashSet should !== (javaSet) }
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
 
           () should === (())
 
@@ -678,7 +678,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Seq(1, 2, 3))
           Array(1, 2, 3) should !== (Seq(2, 3, 4))
 
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -696,7 +696,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
 
           javaHashSet should === (javaSet)
           intercept[TestFailedException] { javaHashSet should !== (javaSet) }
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
 
           () should === (())
 

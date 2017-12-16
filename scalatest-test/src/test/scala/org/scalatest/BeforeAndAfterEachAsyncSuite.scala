@@ -157,7 +157,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
   }
  
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
@@ -277,6 +277,6 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
     assert(!a.afterAllCalled)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }
 

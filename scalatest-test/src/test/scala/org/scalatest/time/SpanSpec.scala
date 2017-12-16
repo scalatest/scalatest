@@ -15,9 +15,9 @@
  */
 package org.scalatest.time
 
-import org.scalatest.{SeveredStackTraces, FunSpec, Matchers}
+import org.scalatest.{FunSpec, Matchers}
 
-class SpanSpec extends FunSpec with Matchers with SpanMatchers with SeveredStackTraces {
+class SpanSpec extends FunSpec with Matchers with SpanMatchers {
 
   describe("A Span") {
 

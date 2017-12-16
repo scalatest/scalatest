@@ -671,7 +671,7 @@ class TolerantEqualitySpec extends FunSpec with TripleEquals with TolerantNumeri
       val caught1 = intercept[IllegalArgumentException] {
         tolerantDoubleEquality(tolerance = -0.2)
       }
-      assert(caught1.getMessage === "-0.2 passed to tolerantDoubleEquality was zero or negative. Must be a positive non-zero number.", caught1.getMessage)
+      assert(caught1.getMessage === (-0.2).toString + " passed to tolerantDoubleEquality was zero or negative. Must be a positive non-zero number.", caught1.getMessage)
     }
 
     it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Float") {
@@ -723,22 +723,11 @@ class TolerantEqualitySpec extends FunSpec with TripleEquals with TolerantNumeri
   describe("TolerantNumeric's methods") {
     it("should return Equalitys with a pretty toString") {
 
-      // SKIP-SCALATESTJS-START
-      assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1.0)")
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1)")
+      assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(" + (1.0).toString + ")")
+      assert(tolerantDoubleEquality(2.2).toString === "TolerantDoubleEquality(" + (2.2).toString + ")")
 
-      assert(tolerantDoubleEquality(2.2).toString === "TolerantDoubleEquality(2.2)")
-
-      // SKIP-SCALATESTJS-START
-      assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1.0)")
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1)")
-
-      // SKIP-SCALATESTJS-START
-      assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.2)")
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.200000047683716)")
+      assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(" + (1.0f).toString + ")")
+      assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(" + (2.2f).toString + ")")
 
       assert(tolerantLongEquality(1L).toString === "TolerantLongEquality(1)")
       assert(tolerantLongEquality(2L).toString === "TolerantLongEquality(2)")

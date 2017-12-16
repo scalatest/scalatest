@@ -24,15 +24,15 @@ class ShouldExistLogicalOrSpec extends FunSpec {
 
   private val prettifier = Prettifier.default
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val tempDir = createTempDirectory()
   val existFile = File.createTempFile("delete", "me", tempDir)
   val imaginaryFile = new File(tempDir, "imaginary")
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY trait File { def exists: Boolean }
-  //SCALATESTJS-ONLY val existFile = new File { val exists: Boolean = true }
-  //SCALATESTJS-ONLY val imaginaryFile = new File { val exists: Boolean = false }
-  //SCALATESTJS-ONLY implicit val fileExistence = new org.scalatest.enablers.Existence[File] { def exists(file: File): Boolean = file.exists }
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY trait File { def exists: Boolean }
+  //SCALATESTJS,NATIVE-ONLY val existFile = new File { val exists: Boolean = true }
+  //SCALATESTJS,NATIVE-ONLY val imaginaryFile = new File { val exists: Boolean = false }
+  //SCALATESTJS,NATIVE-ONLY implicit val fileExistence = new org.scalatest.enablers.Existence[File] { def exists(file: File): Boolean = file.exists }
   
   val fileName = "ShouldExistLogicalOrSpec.scala"
   

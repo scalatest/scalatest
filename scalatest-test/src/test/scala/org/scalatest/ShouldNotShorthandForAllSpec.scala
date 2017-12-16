@@ -33,7 +33,7 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
   
   describe("The shouldNot syntax") {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should work with theSameInstanceAs") {
       
       val string = "Hi"
@@ -59,7 +59,7 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should work with any") {
       all(List(1)) shouldNot { be (2) }
@@ -196,7 +196,7 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should work with symbol") {
       
       all(List(notEmptyMock)) shouldNot { be ('empty) }
@@ -236,7 +236,7 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
       assert(ex4.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should work with BePropertyMatcher") {
       
@@ -526,10 +526,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list3) shouldNot be (7.1 +- 2L)
       }
       val offendingLine3 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught3.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2.0", offendingLine3, list3)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught3.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine3, list3)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught3.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine3, list3)))
       assert(caught3.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(offendingLine3))
 
@@ -539,10 +539,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list4) shouldNot be (7.1 +- 2)
       }
       val offendingLine4 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught4.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2.0", offendingLine4, list4)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught4.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine4, list4)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught4.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine4, list4)))
       assert(caught4.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(offendingLine4))
 
@@ -552,10 +552,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list5) shouldNot be (7.1 +- 2.toShort)
       }
       val offendingLine5 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught5.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2.0", offendingLine5, list5)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught5.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine5, list5)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught5.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine5, list5)))
       assert(caught5.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(offendingLine5))
 
@@ -565,10 +565,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list6) shouldNot be (7.1 +- 2.toByte)
       }
       val offendingLine6 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught6.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2.0", offendingLine6, list6)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught6.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine6, list6)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught6.message === Some(errorMessage(0, sevenDotOh + " was 7.1 plus or minus 2", offendingLine6, list6)))
       assert(caught6.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(offendingLine6))
 
@@ -588,10 +588,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list8) shouldNot be (7.1f +- 2L)
       }
       val offendingLine8 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught8.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2.0", offendingLine8, list8)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught8.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine8, list8)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught8.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine8, list8)))
       assert(caught8.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(offendingLine8))
 
@@ -601,10 +601,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list9) shouldNot be (7.1f +- 2)
       }
       val offendingLine9 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught9.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2.0", offendingLine9, list9)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught9.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine9, list9)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught9.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine9, list9)))
       assert(caught9.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(offendingLine9))
 
@@ -614,10 +614,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list10) shouldNot be (7.1f +- 2.toShort)
       }
       val offendingLine10 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught10.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2.0", offendingLine10, list10)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught10.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine10, list10)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught10.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine10, list10)))
       assert(caught10.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(offendingLine10))
 
@@ -627,10 +627,10 @@ class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookProp
         all(list11) shouldNot be (7.1f +- 2.toByte)
       }
       val offendingLine11 = thisLineNumber - 2
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(caught11.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2.0", offendingLine11, list11)))
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY assert(caught11.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine11, list11)))
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY assert(caught11.message === Some(errorMessage(0, sevenDotOh + " was " + 7.1f + " plus or minus 2", offendingLine11, list11)))
       assert(caught11.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(offendingLine11))
 

@@ -17,9 +17,9 @@ package org.scalatest
 
 import org.scalatest.events.Event
 import org.scalatest.prop.Tables
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedInfoExpectedResults extends EventHelpers {
   def assertBeforeAfterInfo(events: List[Event])
@@ -27,10 +27,10 @@ trait DeprecatedInfoExpectedResults extends EventHelpers {
 
 object DeprecatedParallelTestExecutionInfoExamples extends Tables {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def infoSpec = new DeprecatedExampleParallelTestExecutionInfoSpec()
   def infoFixtureSpec = new DeprecatedExampleParallelTestExecutionInfoFixtureSpec()
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def infoFunSuite = new DeprecatedExampleParallelTestExecutionInfoFunSuite()
   def infoFixtureFunSuite = new DeprecatedExampleParallelTestExecutionInfoFixtureFunSuite()
   def infoFunSpec = new DeprecatedExampleParallelTestExecutionInfoFunSpec()
@@ -49,10 +49,10 @@ object DeprecatedParallelTestExecutionInfoExamples extends Tables {
   def infoExamples =
     Table(
       "suite1",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       infoSpec, 
       infoFixtureSpec,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       infoFunSuite, 
       infoFixtureFunSuite, 
       infoFunSpec, 
@@ -70,7 +70,7 @@ object DeprecatedParallelTestExecutionInfoExamples extends Tables {
     )
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoSpec extends RefSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before {}  // how to fire info here?
@@ -108,7 +108,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureSpec
     checkTestSucceeded(events(5), "test 3")
   }
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSuite extends FunSuite with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
@@ -133,7 +133,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSuite ex
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFunSuite
 }
 
 @DoNotDiscover
@@ -159,7 +159,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunS
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFunSuite
 }
 
 @DoNotDiscover
@@ -198,7 +198,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSpec ext
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFunSpec
 }
 
 @DoNotDiscover
@@ -237,7 +237,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunS
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFunSpec
 }
 
 @DoNotDiscover
@@ -276,7 +276,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFeatureSpec
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Feature: Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFeatureSpec
 }
 
 @DoNotDiscover
@@ -315,7 +315,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFeat
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Feature: Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFeatureSpec
 }
 
 @DoNotDiscover
@@ -353,7 +353,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFlatSpec ex
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFlatSpec
 }
 
 @DoNotDiscover
@@ -391,7 +391,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFlat
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFlatSpec
 }
 
 @DoNotDiscover
@@ -431,7 +431,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFreeSpec ex
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFreeSpec
 }
 
 @DoNotDiscover
@@ -471,7 +471,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFree
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureFreeSpec
 }
 
 @DoNotDiscover
@@ -497,7 +497,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoPropSpec ex
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoPropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoPropSpec
 }
 
 @DoNotDiscover
@@ -523,7 +523,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureProp
     checkTestSucceeded(events(10), "Test 3")
     checkInfoProvided(events(11), "In After")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixturePropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixturePropSpec
 }
 
 @DoNotDiscover
@@ -563,7 +563,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoWordSpec ex
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoWordSpec
 }
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureWordSpec extends fixture.WordSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
@@ -602,5 +602,5 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureWord
     checkInfoProvided(events(18), "In After")
     checkScopeClosed(events(19), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoFixtureWordSpec
 }

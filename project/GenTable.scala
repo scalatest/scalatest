@@ -76,7 +76,7 @@ val scaladocForTableFor1VerbatimString = """
  * property check failed and the <code>apply</code> method will complete abruptly with a
  * <code>TableDrivenPropertyCheckFailedException</code> that wraps the exception thrown by the supplied property function.
  * </p>
- * 
+ *
  * <p>
  * The usual way you'd invoke the <code>apply</code> method that checks a property is via a <code>forAll</code> method
  * provided by trait <code>TableDrivenPropertyChecks</code>. The <code>forAll</code> method takes a <code>TableFor1</code> as its
@@ -151,7 +151,7 @@ val scaladocForTableFor1VerbatimString = """
  * @param heading a string name for the lone column of this table
  * @param rows a variable length parameter list of objects containing the data of this table
  *
- * @author Bill Venners 
+ * @author Bill Venners
  */
 """
 
@@ -197,7 +197,7 @@ val tableScaladocTemplate = """
  *
  * <p>
  * This table is a sequence of <code>Tuple$n$</code> objects, where each tuple represents one row of the table.
- * The first element of each tuple comprise the first column of the table, the second element of 
+ * The first element of each tuple comprise the first column of the table, the second element of
  * each tuple comprise the second column, and so on.  This table also carries with it
  * a <em>heading</em> tuple that gives string names to the columns of the table.
  * </p>
@@ -230,7 +230,7 @@ $columnsOfIndexes$
  * property check failed and the <code>apply</code> method will complete abruptly with a
  * <code>TableDrivenPropertyCheckFailedException</code> that wraps the exception thrown by the supplied property function.
  * </p>
- * 
+ *
  * <p>
  * The usual way you'd invoke the <code>apply</code> method that checks a property is via a <code>forAll</code> method
  * provided by trait <code>TableDrivenPropertyChecks</code>. The <code>forAll</code> method takes a <code>TableFor$n$</code> as its
@@ -276,7 +276,7 @@ $columnsOfIndexes$
  * @param heading a tuple containing string names of the columns in this table
  * @param rows a variable length parameter list of <code>Tuple$n$</code>s containing the data of this table
  *
- * @author Bill Venners 
+ * @author Bill Venners
  */
 """
 
@@ -337,7 +337,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
  * Companion object for class <code>TableFor$n$</code> that provides an implicit <code>canBuildFrom</code> method
  * that enables higher order functions defined on <code>TableFor$n$</code> to return another <code>TableFor$n$</code>.
  *
- * @author Bill Venners 
+ * @author Bill Venners
  */
 object TableFor$n$ {
 
@@ -362,7 +362,7 @@ val tableObjectPreamble = """
 /**
  * Trait containing the <code>Table</code> object, which offers one <code>apply</code> factory method for
  * each <code>TableForN</code> class, <code>TableFor1</code> through <code>TableFor22</code>.
- * 
+ *
  * <p>
  * For an introduction to using tables, see the documentation for trait
  * <a href="TableDrivenPropertyChecks.html">TableDrivenPropertyChecks</a>.
@@ -374,7 +374,7 @@ trait Tables {
 
   /**
    * Object containing one <code>apply</code> factory method for each <code>TableFor&lt;n&gt;</code> class.
-   * 
+   *
    * <p>
    * For example, you could create a table of 5 rows and 2 colums like this:
    * </p>
@@ -436,7 +436,7 @@ trait Tables {
    * tables to a <code>forAll</code> method (defined in trait <code>PropertyChecks</code>), to perform a property
    * check with the data in the table. Or, because tables are sequences of tuples, you can treat them as a <code>Seq</code>.
    * </p>
-   * 
+   *
    * @author Bill Venners
    */
   object Table {
@@ -455,7 +455,7 @@ val tableObjectApplyTemplate = """
 
 val tablesCompanionObjectVerbatimString = """
 /**
- * Companion object that facilitates the importing of <code>Tables</code> members as 
+ * Companion object that facilitates the importing of <code>Tables</code> members as
  * an alternative to mixing it in. One use case is to import <code>Tables</code> members so you can use
  * them in the Scala interpreter:
  *
@@ -463,10 +463,10 @@ val tablesCompanionObjectVerbatimString = """
  * Welcome to Scala version 2.8.0.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_22).
  * Type in expressions to have them evaluated.
  * Type :help for more information.
- * 
+ *
  * scala> import org.scalatest.prop.Tables._
  * import org.scalatest.prop.Tables._
- * 
+ *
  * scala> val examples =
  *   |   Table(
  *   |     ("a", "b"),
@@ -500,7 +500,7 @@ import org.scalactic._
  * <p>
  * For an example of trait <code>TableDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
  * </p>
- *  
+ *
  * <pre class="stHighlight">
  * class Fraction(n: Int, d: Int) {
  *
@@ -518,7 +518,7 @@ import org.scalactic._
  * <p>
  * <code>TableDrivenPropertyChecks</code> allows you to create tables with
  * between 1 and 22 columns and any number of rows. You create a table by passing
- * tuples to one of the factory methods of object <code>Table</code>. Each tuple must have the 
+ * tuples to one of the factory methods of object <code>Table</code>. Each tuple must have the
  * same arity (number of members). The first tuple you pass must all be strings, because
  * it define names for the columns. Subsequent tuples define the data. After the initial tuple
  * that contains string column names, all tuples must have the same type. For example,
@@ -712,7 +712,7 @@ import org.scalactic._
  * </pre>
  *
  * <a name="invalidArgCombos"></a><h2>Testing invalid argument combinations</h2>
- * 
+ *
  * <p>
  * A table-driven property check can also be helpful to ensure that the proper exception is thrown when invalid data is
  * passed to a method or constructor. For example, the <code>Fraction</code> constructor shown above should throw <code>IllegalArgumentException</code>
@@ -744,7 +744,7 @@ import org.scalactic._
  *     (1,                 0)
  *   )
  * </pre>
- * 
+ *
  * <p>
  * Given this table, you could check that all invalid combinations produce <code>IllegalArgumentException</code>, like this:
  * </p>
@@ -839,13 +839,13 @@ trait TableDrivenPropertyChecks extends Whenever with Tables {
    * </pre>
    *
    * <p>
-   * In this example, rows 6, 8, and 9 have values that would cause a false to be passed 
+   * In this example, rows 6, 8, and 9 have values that would cause a false to be passed
    * to <code>whenever</code>. (For example, in row 6, <code>d</code> is 0, which means <code>d</code> <code>!=</code> <code>0</code>
    * will be false.) For those rows, <code>whenever</code> will throw <code>DiscardedEvaluationException</code>,
    * which will cause the <code>forAll</code> method to skip that row.
    * </p>
    *
-   * @param condition the boolean condition that determines whether <code>whenever</code> will evaluate the 
+   * @param condition the boolean condition that determines whether <code>whenever</code> will evaluate the
    *    <code>fun</code> function (<code>condition<code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition<code> is false)
    * @param fun the function to evaluate if the specified <code>condition</code> is true
    */
@@ -944,7 +944,7 @@ val propertyCheckForEveryTemplate = """
 
 val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
 /*
- * Companion object that facilitates the importing of <code>TableDrivenPropertyChecks</code> members as 
+ * Companion object that facilitates the importing of <code>TableDrivenPropertyChecks</code> members as
  * an alternative to mixing it in. One use case is to import <code>TableDrivenPropertyChecks</code> members so you can use
  * them in the Scala interpreter:
  *
@@ -956,11 +956,11 @@ val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
  * scala> import org.scalatest.prop.TableDrivenPropertyChecks._
  * import org.scalatest.prop.TableDrivenPropertyChecks._
  *
- * scala> val examples =                                       
- *   |   Table(                                             
- *   |     ("a", "b"),                                      
- *   |     (  1,   2),                                      
- *   |     (  3,   4)                                       
+ * scala> val examples =
+ *   |   Table(
+ *   |     ("a", "b"),
+ *   |     (  1,   2),
+ *   |     (  3,   4)
  *   |   )
  * examples: org.scalatest.prop.TableFor2[Int,Int] = TableFor2((1,2), (3,4))
  *
@@ -968,7 +968,7 @@ val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
  * import org.scalatest.Matchers._
  *
  * scala> forAll (examples) { (a, b) => a should be < b }
- * 
+ *
  * scala> forAll (examples) { (a, b) => a should be > b }
  * org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException (included as this exception's cause) was thrown during property evaluation.
  * Message: 1 was not greater than 2
@@ -1322,19 +1322,19 @@ $columnsOfTwos$
   }
 """
 
-// For some reason that I don't understand, I need to leave off the stars before the <pre> when 
+// For some reason that I don't understand, I need to leave off the stars before the <pre> when
 // they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
 
   def transform(content: String): String = {
     var skipMode = false
     content.split("\n").map { line =>
-      if (line.trim == "// SKIP-SCALATESTJS-START")
+      if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START")
         skipMode = true
-      else if (line.trim == "// SKIP-SCALATESTJS-END")
+      else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END")
         skipMode = false
       else if (!skipMode) {
-        if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-          line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
+        if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+          line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
         else
           line
       }
@@ -1570,10 +1570,10 @@ $columnsOfTwos$
                                  |      case ex: Throwable =>
                                  |        val ($alphaName$) = heading
                                  |
-                                 |        // SKIP-SCALATESTJS-START
+                                 |        // SKIP-SCALATESTJS,NATIVE-START
                                  |        val stackDepth = 2
-                                 |        // SKIP-SCALATESTJS-END
-                                 |        //SCALATESTJS-ONLY val stackDepth = 1
+                                 |        // SKIP-SCALATESTJS,NATIVE-END
+                                 |        //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |        indicateFailure(
                                  |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
@@ -1619,10 +1619,10 @@ $columnsOfTwos$
                                  |            case ex: Throwable =>
                                  |              val ($alphaName$) = heading
                                  |
-                                 |              // SKIP-SCALATESTJS-START
+                                 |              // SKIP-SCALATESTJS,NATIVE-START
                                  |              val stackDepth = 2
-                                 |              // SKIP-SCALATESTJS-END
-                                 |              //SCALATESTJS-ONLY val stackDepth = 1
+                                 |              // SKIP-SCALATESTJS,NATIVE-END
+                                 |              //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |              indicateFailure(
                                  |                (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
@@ -1656,10 +1656,10 @@ $columnsOfTwos$
                                  |          case ex: Throwable =>
                                  |            val ($alphaName$) = heading
                                  |
-                                 |            // SKIP-SCALATESTJS-START
+                                 |            // SKIP-SCALATESTJS,NATIVE-START
                                  |            val stackDepth = 2
-                                 |            // SKIP-SCALATESTJS-END
-                                 |            //SCALATESTJS-ONLY val stackDepth = 1
+                                 |            // SKIP-SCALATESTJS,NATIVE-END
+                                 |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
                                  |            indicateFailure(
                                  |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
@@ -2517,12 +2517,12 @@ $columnsOfTwos$
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/prop")
     mainDir.mkdirs()
     genMain(mainDir, version, scalaVersion)
-    
+
     val testDir = new File("gentests/" + targetDir + "/test/scala/org/scalatest/prop")
     testDir.mkdirs()
     genTest(testDir, version, scalaVersion)
   }
-  
+
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
 
@@ -2545,7 +2545,7 @@ $columnsOfTwos$
     genTables(dir) ++
     genTableAsserting(dir, true)
   }
-  
+
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
     genTableSuite(dir) ++

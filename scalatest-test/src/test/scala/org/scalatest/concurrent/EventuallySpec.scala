@@ -462,7 +462,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     // TODO: This is failing (on the JVM) and I'm not sure why. Figure it out.
     ignore("should blow up with a TFE that is serializable") {
       recoverToExceptionIf[TestFailedException] {
@@ -474,7 +474,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
         succeed
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 

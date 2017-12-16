@@ -397,9 +397,9 @@ class ShouldBeThrownBySpec extends FunSpec {
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       // TODO: Skipped because stack trace for multiline expression in scala-js is wrong, should re-enable this after we got macro based stack depth working or scala-js fix the problem.
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(e.failedCodeLineNumber === Some(offendingLine))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code produced expected exception with different message") {

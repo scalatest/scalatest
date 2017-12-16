@@ -26,9 +26,9 @@ import org.scalatest.testng.TestNGSuite
 import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.tools.TestSortingReporter
 import org.testng.annotations.{Test => TestNG }
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedCatchReporterProp extends AllSuiteProp {
 

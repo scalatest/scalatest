@@ -20,9 +20,9 @@ import org.scalatest._
 import org.scalatest.prop._
 import OptionValues._
 import java.nio.charset.Charset
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import java.util.Locale
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 
 class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
@@ -143,7 +143,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a codePointBefore method that is consistent with String") {
       forAll { (regStr: RegexString, pint: PosInt) =>
         whenever (regStr.length > 0) {
@@ -154,7 +154,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer a codePointCount method that is consistent with String") {
       forAll { (regStr: RegexString, p1: PosInt, p2: PosInt) =>
         whenever (regStr.length > 0) {
@@ -216,7 +216,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a contentEquals method that is consistent with String") {
       forAll { (regStr: RegexString, str: String) =>
         val cs: CharSequence = str
@@ -229,7 +229,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.value.contentEquals(matchingCs)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer an endsWith method that is consistent with String") {
       forAll { (regStr: RegexString, str: String, p1: PosInt) =>
         regStr.endsWith(str) shouldEqual
@@ -292,7 +292,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     }
     it("should offer an indexOf method that is consistent with String") {
       forAll { (regStr: RegexString, i1: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         regStr.indexOf(i1) shouldEqual
           regStr.value.indexOf(i1)
 
@@ -303,13 +303,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.indexOf(findableCh) shouldEqual
             regStr.value.indexOf(findableCh)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, ch: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (regStr.length > 0) {
           val fromIndex = p1 % regStr.length
 
@@ -322,13 +322,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.indexOf(findableCh, fromIndex) shouldEqual
             regStr.value.indexOf(findableCh, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, str: String, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         regStr.indexOf(str) shouldEqual
           regStr.value.indexOf(str)
 
@@ -344,13 +344,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.indexOf(findableStr) shouldEqual
             regStr.value.indexOf(findableStr)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, str: String, p1: PosInt, p2: PosInt, p3: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (regStr.length > 0) {
           val fromIndex = p3 % regStr.length
 
@@ -368,10 +368,10 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.indexOf(findableStr, fromIndex) shouldEqual
             regStr.value.indexOf(findableStr, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
     }
     it("should offer a intern method that is consistent with String") {
@@ -388,7 +388,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     }
     it("should offer a lastIndexOf method that is consistent with String") {
       forAll { (regStr: RegexString, ch: Int, p1: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         regStr.lastIndexOf(ch) shouldEqual
           regStr.value.lastIndexOf(ch)
 
@@ -399,13 +399,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.lastIndexOf(findableCh) shouldEqual
             regStr.value.lastIndexOf(findableCh)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, ch: Int, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (regStr.length > 0) {
           val fromIndex = p2 % regStr.length
 
@@ -418,13 +418,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.lastIndexOf(findableCh, fromIndex) shouldEqual
             regStr.value.lastIndexOf(findableCh, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, str: String, p1: PosInt, p2: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         regStr.lastIndexOf(str) shouldEqual
           regStr.value.lastIndexOf(str)
 
@@ -440,13 +440,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.lastIndexOf(findableStr) shouldEqual
             regStr.value.lastIndexOf(findableStr)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
       forAll { (regStr: RegexString, str: String, p1: PosInt, p2: PosInt, p3: PosInt) =>
-        //SCALATESTJS-ONLY try {
+        //SCALATESTJS,NATIVE-ONLY try {
         whenever (regStr.length > 0) {
           val fromIndex = p3 % regStr.length
 
@@ -464,10 +464,10 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.lastIndexOf(findableStr, fromIndex) shouldEqual
             regStr.value.lastIndexOf(findableStr, fromIndex)
         }
-        //SCALATESTJS-ONLY }
-        //SCALATESTJS-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
-        //SCALATESTJS-ONLY   case iae: IllegalArgumentException => succeed
-        //SCALATESTJS-ONLY }
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY catch { // This smells like a Scala.js bug, because indexOf throws IllegalArgumentException
+        //SCALATESTJS,NATIVE-ONLY   case iae: IllegalArgumentException => succeed
+        //SCALATESTJS,NATIVE-ONLY }
       }
     }
     it("should offer a matches method that is consistent with String") {
@@ -481,7 +481,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.value.matches(r2)
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer a offsetByCodePoints method that is consistent with String") {
       forAll { (regStr: RegexString, p1: PosInt, p2: PosInt) =>
         whenever (regStr.length > 0) {
@@ -493,7 +493,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should offer regionMatches methods that are consistent with String") {
       forAll { (regStr: RegexString, i1: Int, str: String, i2: Int, len: Int ) =>
         regStr.regionMatches(true, i1, str, i2, len) shouldEqual
@@ -625,10 +625,10 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         regStr.toLowerCase shouldEqual
           regStr.value.toLowerCase
 
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         regStr.toLowerCase(Locale.getDefault) shouldEqual
           regStr.value.toLowerCase(Locale.getDefault)
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
       }
     }
     it("should offer toUpperCase methods that are consistent with String") {
@@ -636,10 +636,10 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         regStr.toUpperCase shouldEqual
           regStr.value.toUpperCase
 
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         regStr.toUpperCase(Locale.getDefault) shouldEqual
           regStr.value.toUpperCase(Locale.getDefault)
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
       }
     }
     it("should offer a trim method that is consistent with String") {

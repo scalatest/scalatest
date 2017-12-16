@@ -22,7 +22,9 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenScalaTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
@@ -36,9 +38,9 @@ object GenScalaTestJS {
       val lines = Source.fromFile(sourceFile).getLines.toList
       var skipMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-SCALATESTJS-START")
+        if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
           skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS-END")
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
           skipMode = false
         else if (!skipMode) {
           destWriter.write(transformLine(line))
@@ -130,7 +132,8 @@ object GenScalaTestJS {
         "Shell.scala",
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
-        "run.scala"
+        "run.scala",
+        "SeveredStackTraces.scala"        // skipped because stack trace isn't really helpful after linked in different js env like node.
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
@@ -244,7 +247,7 @@ object GenScalaTestJS {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++ 
+    //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
     //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
@@ -279,7 +282,9 @@ object GenScalaTestJS {
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "SuiteSuite.scala",          // skipped because it depends on java reflection
-        "MatchersSerializableSpec.scala"   // skipped because testing java serialization
+        "MatchersSerializableSpec.scala",   // skipped because testing java serialization
+        "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
+        "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(

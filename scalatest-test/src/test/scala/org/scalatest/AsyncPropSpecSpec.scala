@@ -30,6 +30,7 @@ class AsyncPropSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -69,9 +70,9 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
@@ -90,6 +91,7 @@ class AsyncPropSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -119,9 +121,9 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
@@ -142,6 +144,7 @@ class AsyncPropSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           Future {
@@ -172,9 +175,9 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
@@ -188,6 +191,7 @@ class AsyncPropSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           SleepHelper.sleep(30)
@@ -212,16 +216,16 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
 
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -349,13 +353,14 @@ class AsyncPropSpecSpec extends FunSpec {
       status.waitUntilCompleted()
       assert(!rep.testSucceededEventsReceived.isEmpty)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
       class ExampleSpec extends AsyncPropSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           Future {
@@ -382,9 +387,9 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "test 1")
@@ -401,6 +406,7 @@ class AsyncPropSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           SleepHelper.sleep(60)
@@ -421,9 +427,9 @@ class AsyncPropSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "test 1")

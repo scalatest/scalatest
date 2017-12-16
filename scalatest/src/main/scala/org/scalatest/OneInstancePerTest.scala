@@ -252,9 +252,9 @@ In BeforeAndAfter and BeforeAndAfterEach, we want to only execute beforeEach/aft
    * }
    * </pre>
    */
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def newInstance: Suite with OneInstancePerTest = this.getClass.newInstance.asInstanceOf[Suite with OneInstancePerTest]
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY def newInstance: Suite with OneInstancePerTest
 }
 

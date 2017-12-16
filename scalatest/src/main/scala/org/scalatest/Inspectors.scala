@@ -224,7 +224,7 @@ trait Inspectors {
     asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure that all elements in a given <code>java.util.Map</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
    * without throwing an exception).
@@ -246,7 +246,7 @@ trait Inspectors {
   def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure that all characters in a given <code>String</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
@@ -282,7 +282,7 @@ trait Inspectors {
     asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure that at least <code>min</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
@@ -298,7 +298,7 @@ trait Inspectors {
   def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure that at least <code>min</code> number of characters in a given <code>String</code> pass the given inspection function.
@@ -329,7 +329,7 @@ trait Inspectors {
     asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure that at most <code>max</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
@@ -344,7 +344,7 @@ trait Inspectors {
   def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure that at most <code>max</code> number of characters in a given <code>String</code> pass the given inspection function.
@@ -372,7 +372,7 @@ trait Inspectors {
     asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure that exactly <code>succeededCount</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
@@ -387,7 +387,7 @@ trait Inspectors {
   def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure that exactly <code>succeededCount</code> number of characters in a given <code>String</code> pass the given inspection function.
@@ -405,11 +405,11 @@ trait Inspectors {
     asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def forNo[ASSERTION](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
@@ -430,7 +430,7 @@ trait Inspectors {
     asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure the number of elements in a given <code>java.util.Map</code> that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
    *
@@ -446,7 +446,7 @@ trait Inspectors {
   def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure the number of characters of a given <code>String</code> that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
@@ -481,7 +481,7 @@ trait Inspectors {
     asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Ensure that every element in a given <code>java.util.Map</code> passes the given inspection function, where "pass" means returning normally
    * from the function (<em>i.e.</em>, without throwing an exception).
@@ -502,7 +502,7 @@ trait Inspectors {
   def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Ensure that every character in a given <code>String</code> passes the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,

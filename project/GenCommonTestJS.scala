@@ -20,7 +20,9 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenCommonTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
@@ -35,9 +37,9 @@ object GenCommonTestJS {
       val lines = Source.fromFile(sourceFile).getLines.toList
       var skipMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-SCALATESTJS-START")
+        if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
           skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS-END")
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
           skipMode = false
         else if (!skipMode) {
           destWriter.write(transformLine(line))
@@ -80,10 +82,49 @@ object GenCommonTestJS {
         "BookPropertyMatchers.scala",
         "EmptyMocks.scala",
         "FileMocks.scala",
-        "StringFixture.scala"
+        "StringFixture.scala",
+        "JSON.scala"
       ), targetDir) ++
     copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
-      List("ExampleLikeSpecs.scala"), targetDir)
+      List("ExampleLikeSpecs.scala"), targetDir) ++
+    copyDir("common-test/src/main/scala/scala/util/parsing/combinator", "scala/util/parsing/combinator",
+      List(
+        "ImplicitConversions.scala",
+        "JavaTokenParsers.scala",
+        "PackratParsers.scala",
+        "Parsers.scala",
+        "RegexParsers.scala",
+        "SubSequence.scala"
+      ), targetDir) ++
+    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/lexical", "scala/util/parsing/combinator/lexical",
+      List(
+        "Lexical.scala",
+        "Scanners.scala",
+        "StdLexical.scala"
+      ), targetDir) ++
+    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/syntactical", "scala/util/parsing/combinator/syntactical",
+      List(
+        "StandardTokenParsers.scala",
+        "StdTokenParsers.scala",
+        "TokenParsers.scala"
+      ), targetDir) ++
+    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/token", "scala/util/parsing/combinator/token",
+      List(
+        "StdTokens.scala",
+        "Tokens.scala"
+      ), targetDir) ++
+    copyDir("common-test/src/main/scala/scala/util/parsing/input", "scala/util/parsing/input",
+      List(
+        "CharArrayReader.scala",
+        "CharSequenceReader.scala",
+        "NoPosition.scala",
+        "OffsetPosition.scala",
+        "PagedSeqReader.scala",
+        "Position.scala",
+        "Positional.scala",
+        "Reader.scala",
+        "StreamReader.scala"
+      ), targetDir)
   }
 
 }

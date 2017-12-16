@@ -298,11 +298,11 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         assert(caught3.getMessage === "Array(1, 2) had length 2, and Array(1, 2) had length 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         Array(1, 2).par should have length (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("on scala.List") {
@@ -428,14 +428,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         assert(caught3.getMessage === "List(1, 2) had length 2, and List(1, 2) had length 2")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should work on parallel form") {
         List(1, 2).par should have length (2)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("on java.util.List") {
 
       val javaList: java.util.List[Int] = new java.util.ArrayList
@@ -561,7 +561,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         assert(caught3.getMessage === "[1, 2] had length 2, and [1, 2] had length 2")
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     // I repeat these with copy and paste, becuase I need to test that each static structural type works, and
     // that makes it hard to pass them to a common "behaves like" method
@@ -2415,7 +2415,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should allow multiple implicits of the same type class (such as Length) to be resolve so long as the type param is not ambiguous") {
       import java.net.DatagramPacket
       val dp = new DatagramPacket(Array(0x0, 0x1, 0x2, 0x3), 4)
@@ -2435,6 +2435,6 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       db should have length 4
       db should not have length (99)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }

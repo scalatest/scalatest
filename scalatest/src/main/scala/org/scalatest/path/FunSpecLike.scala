@@ -45,16 +45,16 @@ import org.scalatest.PathEngine.isInTargetPath
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   override def newInstance: FunSpecLike = this.getClass.newInstance.asInstanceOf[FunSpecLike]
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY override def newInstance: FunSpecLike
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: FunSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
@@ -145,12 +145,12 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 5
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
       handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     
@@ -348,12 +348,12 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
     handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
@@ -372,10 +372,10 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * </p>
    */
   protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
 
     try {
       handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None, Some(pos))

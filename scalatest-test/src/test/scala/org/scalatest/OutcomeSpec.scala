@@ -286,13 +286,13 @@ class OutcomeSpec extends FunSpec {
       val tpe = new exceptions.TestPendingException
       assert(outcomeOf { throw tpe } === Pending)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("if UnknownError is thrown, should complete abruptly with that exception") {
       intercept[UnknownError] {
         outcomeOf { throw new UnknownError }
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
   describe("The Outcome's toSucceeded method") {

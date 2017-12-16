@@ -47,7 +47,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class JavaMapTrimEquality extends Equality[java.util.Map.Entry[Int, String]] {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
       right match {
@@ -60,7 +60,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
         case right => left == right
       }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   class FalseEquality extends Equality[Int] {
     def areEqual(left: Int, right: Any): Boolean = false
@@ -70,11 +70,11 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
     def areEqual(left: (Int, String), right: Any): Boolean = false
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class JavaMapFalseEquality extends Equality[java.util.Map.Entry[Int, String]] {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any): Boolean = false
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   describe("only ") {
     
@@ -101,13 +101,13 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       implicit val mapEquality = new MapTrimEquality
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain only (1 -> " one", 2 -> "two ", 3 -> " three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("1", " 2", "3") should contain only (" 1", "2 ", " 3")
       javaSet("1", " 2", "3") should contain only (" 1", "2 ", " 3")
 
       implicit val javaMapEquality = new JavaMapTrimEquality
       javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom implicit equality in scope when 'should not contain' is used") {
@@ -119,13 +119,13 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       implicit val mapEquality = new MapFalseEquality
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain only (1, 2, 3)
       javaSet(1, 2, 3) should not contain only (1, 2, 3)
 
       implicit val javaMapEquality = new JavaMapFalseEquality
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
@@ -157,7 +157,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       }
       checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should contain only (1, 2, 3)
@@ -171,7 +171,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
         left6 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
@@ -203,7 +203,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       }
       checkShouldNotContainStackDepth(e4, left4, Array(1 -> " one", 2 -> "two ", 3 -> " three").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1", " 2", "3")
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should not contain only (" 1", "2 ", " 3")
@@ -217,7 +217,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
         left6 should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, " one"), Entry(2, "two "), Entry(3, " three")).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should contain' is used") {
@@ -229,12 +229,12 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       implicit val mapEquality = new MapTrimEquality
       (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", " 2", "3 ") should contain only (" 1", "2 ", " 3")) (equality)
 
       implicit val javaMapEquality = new JavaMapTrimEquality
       (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should not contain' is used") {
@@ -246,12 +246,12 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       implicit val mapEquality = new MapFalseEquality
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList(1, 2, 3) should not contain only (1, 2, 3)) (equality)
 
       implicit val javaMapEquality = new JavaMapFalseEquality
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
@@ -283,7 +283,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       }
       checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should contain only (1, 2, 3)) (equality)
@@ -297,7 +297,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
         (left6 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
@@ -329,7 +329,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
       }
       checkShouldNotContainStackDepth(e4, left4, Array(1 -> " one ", 2 -> "two ", 3 -> " three").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1", " 2", "3")
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should not contain only (" 1", "2 ", " 3")) (equality)
@@ -343,7 +343,7 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
         (left6 should not contain only (Entry(1, " one "), Entry(2, "two "), Entry(3, " three"))) (javaMapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, " one "), Entry(2, "two "), Entry(3, " three")).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

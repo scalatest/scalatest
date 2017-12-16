@@ -227,7 +227,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       intercept[NotAllowedException] { val mt = be === "cheese" }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("a(Symbol) method returns Matcher") {
       val mt = be a ('file)
       
@@ -273,7 +273,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("a(BePropertyMatcher) method returns Matcher") {
       
@@ -392,7 +392,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("an(Symbol) method returns Matcher") {
       val mt = be an ('file)
       
@@ -438,7 +438,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("an(BePropertyMatcher) method returns Matcher") {
       
@@ -753,7 +753,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("apply(Symbol) method returns Matcher") {
       val mt = be ('file)
       
@@ -799,7 +799,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("apply(BeMatcher) method returns Matcher") {
       class OddMatcher extends BeMatcher[Int] {
