@@ -16,12 +16,14 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import exceptions.{TestFailedDueToTimeoutException,  TestPendingException}
+import exceptions.{TestFailedDueToTimeoutException, TestPendingException}
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+
 import scala.annotation.tailrec
-import time.{Nanosecond, Span, Nanoseconds}
+import time.{Nanosecond, Nanoseconds, Span}
 import PatienceConfiguration._
 import org.scalactic.source
+import org.scalatest.enablers.Retrying
 import org.scalatest.exceptions.StackDepthException
 
 /**
@@ -298,14 +300,16 @@ trait Eventually extends PatienceConfiguration {
    * <code>interval</code> parameter.
    * </p>
    *
-   * @tparam result type of the by-name parameter <code>fun</code>
+   * @tparam T type of the by-name parameter <code>fun</code>
    * @param timeout the <code>Timeout</code> configuration parameter
    * @param interval the <code>Interval</code> configuration parameter
    * @param fun the by-name parameter to repeatedly invoke
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit pos: source.Position): T =
-    eventually(fun)(PatienceConfig(timeout.value, interval.value), pos)
+  def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit retrying: Retrying[T], pos: source.Position): T =
+    eventually(fun)(PatienceConfig(timeout.value, interval.value), retrying, pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -331,10 +335,12 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the (unused) <code>timeout</code> and
    *          (used) <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, pos: source.Position): T =
-    eventually(fun)(PatienceConfig(timeout.value, config.interval), pos)
+  def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+    eventually(fun)(PatienceConfig(timeout.value, config.interval), retrying, pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -359,10 +365,12 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the (used) <code>timeout</code> and
    *          (unused) <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, pos: source.Position): T =
-    eventually(fun)(PatienceConfig(config.timeout, interval.value), pos)
+  def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+    eventually(fun)(PatienceConfig(config.timeout, interval.value), retrying, pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -386,58 +394,12 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> and
    *          <code>interval</code> parameters
+   * @param retrying the <code>Retrying</code> implementation for type <code>T</code>
+   * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](fun: => T)(implicit config: PatienceConfig, pos: source.Position): T = {
-    val startNanos = System.nanoTime
-    def makeAValiantAttempt(): Either[Throwable, T] = {
-      try {
-        Right(fun)
-      }
-      catch {
-        case tpe: TestPendingException => throw tpe
-        case e: Throwable if !anExceptionThatShouldCauseAnAbort(e) => Left(e)
-      }
-    }
-
-    val initialInterval = Span(config.interval.totalNanos * 0.1, Nanoseconds) // config.interval scaledBy 0.1
-
-    @tailrec
-    def tryTryAgain(attempt: Int): T = {
-      val timeout = config.timeout
-      val interval = config.interval
-      makeAValiantAttempt() match {
-        case Right(result) => result
-        case Left(e) => 
-          val duration = System.nanoTime - startNanos
-          if (duration < timeout.totalNanos) {
-            if (duration < interval.totalNanos) // For first interval, we wake up every 1/10 of the interval.  This is mainly for optimization purpose. 
-              Thread.sleep(initialInterval.millisPart, initialInterval.nanosPart)
-            else
-              Thread.sleep(interval.millisPart, interval.nanosPart)
-          }
-          else {
-            val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
-            throw new TestFailedDueToTimeoutException(
-              (_: StackDepthException) =>
-                Some(
-                  if (e.getMessage == null)
-                    Resources.didNotEventuallySucceed(attempt.toString, durationSpan.prettyString)
-                  else
-                    Resources.didNotEventuallySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
-                ),
-              Some(e),
-              Left(pos),
-              None,
-              config.timeout
-            )
-          }
-
-          tryTryAgain(attempt + 1)
-      }
-    }
-    tryTryAgain(1)
-  }
+  def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+    retrying.retry(config.timeout, config.interval, pos)(fun)
 }
 
 /**
