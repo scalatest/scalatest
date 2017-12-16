@@ -33,6 +33,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -76,9 +77,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "should test 1")
@@ -97,6 +98,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -130,9 +132,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "should test 1")
@@ -153,6 +155,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -187,9 +190,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
@@ -203,6 +206,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -231,16 +235,16 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
 
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -380,13 +384,14 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       status.waitUntilCompleted()
       assert(!rep.testSucceededEventsReceived.isEmpty)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -417,9 +422,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "should test 1")
@@ -436,6 +441,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -460,9 +466,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "should test 1")
@@ -478,6 +484,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -490,9 +497,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val infoList = reporter.infoProvidedEventsReceived
 
@@ -504,6 +511,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -517,9 +525,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val infoList = reporter.infoProvidedEventsReceived
       assert(infoList.size == 0)
@@ -537,6 +545,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -552,9 +561,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val infoList = reporter.infoProvidedEventsReceived
       assert(infoList.size == 0)
@@ -572,6 +581,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -583,9 +593,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val noteList = reporter.noteProvidedEventsReceived
 
@@ -597,6 +607,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -609,9 +620,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val noteList = reporter.noteProvidedEventsReceived
       assert(noteList.size == 1)
@@ -622,6 +633,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -636,9 +648,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val noteList = reporter.noteProvidedEventsReceived
       assert(noteList.size == 1)
@@ -649,6 +661,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -660,9 +673,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val alertList = reporter.alertProvidedEventsReceived
 
@@ -674,6 +687,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -686,9 +700,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val alertList = reporter.alertProvidedEventsReceived
       assert(alertList.size == 1)
@@ -699,6 +713,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -713,9 +728,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val alertList = reporter.alertProvidedEventsReceived
       assert(alertList.size == 1)
@@ -726,6 +741,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -737,9 +753,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val markupList = reporter.markupProvidedEventsReceived
 
@@ -751,6 +767,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -763,9 +780,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val markupList = reporter.markupProvidedEventsReceived
       assert(markupList.size == 0)
@@ -783,6 +800,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -797,9 +815,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val markupList = reporter.markupProvidedEventsReceived
       assert(markupList.size == 0)
@@ -831,9 +849,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
 
     it("should allow other execution context to be used") {
       class TestSpec extends AsyncFlatSpec {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
 
         type FixtureParam = String
@@ -855,9 +873,9 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       assert(reporter.scopeOpenedEventsReceived.length == 3)
       assert(reporter.scopeClosedEventsReceived.length == 3)
       assert(reporter.testStartingEventsReceived.length == 3)

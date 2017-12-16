@@ -18,17 +18,17 @@ package org.scalatest.events
 import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._
 import Inside._
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @RunWith(classOf[JUnitRunner])
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 class LocationSpec extends FunSpec with Checkers {
   
   class TestLocationFunSuite extends FunSuite {
@@ -82,7 +82,7 @@ class LocationSpec extends FunSpec with Checkers {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class TestLocationSpec extends RefSpec {
     def `test succeed`: Unit = {
     }
@@ -124,5 +124,5 @@ class LocationSpec extends FunSpec with Checkers {
       }
     }
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }

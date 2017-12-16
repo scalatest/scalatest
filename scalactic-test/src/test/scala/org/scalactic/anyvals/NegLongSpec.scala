@@ -20,9 +20,9 @@ import OptionValues._
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
@@ -335,7 +335,7 @@ class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
         }
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should offer 'to' and 'until' method that is consistent with Long") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
@@ -347,7 +347,7 @@ class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
           rangeEqual(plong.to(end, step), plong.toLong.to(end, step)) shouldBe true
         }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
       NegLong(-33L).ensuringValid(_ + 1L) shouldEqual NegLong(-32L)

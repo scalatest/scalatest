@@ -17,19 +17,19 @@ package org.scalatest.concurrent
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.tools.Runner
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class ScaledTimeSpansSpec extends FunSpec with Matchers with ScaledTimeSpans {
 
     describe("ScaledTimeSpans") {
       
       it("should use Runner's spanScaleFactor by default") {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         assert(spanScaleFactor === Runner.spanScaleFactor)
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY assert(spanScaleFactor === 1.0)
+        // SKIP-SCALATESTJS,NATIVE-END
+        //SCALATESTJS,NATIVE-ONLY assert(spanScaleFactor === 1.0)
         // These test may cause other test that use eventually to failed if run in concurrent.
         // May be we could find a better way to test this.
         //Runner.spanScaleFactor = 2.0

@@ -216,7 +216,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
 
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
@@ -354,7 +354,7 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
         assert(!rep.testSucceededEventsReceived.isEmpty)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
@@ -385,9 +385,9 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -426,9 +426,9 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -846,9 +846,9 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
 
     it("should allow other execution context to be used") {
       class TestSpec extends AsyncFeatureSpec {
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
         Feature("feature 1") {

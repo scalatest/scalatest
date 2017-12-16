@@ -18,31 +18,31 @@ package org.scalatest.tools
 import java.util.regex.Pattern
 
 private[scalatest] case class ParsedArgs(
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   runpath: List[String],
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   reporters: List[String],
   suites: List[String],
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   tryAgains: List[String],
   junits: List[String],
   props: List[String],
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   includes: List[String],
   excludes: List[String],
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   concurrent: List[String],
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   membersOnly: List[String],
   wildcard: List[String],
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   testNGXMLFiles: List[String],
   genSuffixesPattern: Option[Pattern],
   chosenStyles: List[String], 
   spanScaleFactor: List[String], 
   testSortingReporterTimeout: List[String],
   slowpokeParams: List[String],
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   seeds: List[String],
   generatorMinSize: List[String],
   generatorSizeRange: List[String]

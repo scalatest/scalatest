@@ -17,18 +17,18 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.Tables
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait SuiteExamples extends Tables {
 
   type FixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val spec: RefSpec with FixtureServices
   val fixtureSpec: fixture.Spec with FixtureServices
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   val funSuite: FunSuite with FixtureServices
   val fixtureFunSuite: fixture.FunSuite with FixtureServices
@@ -104,10 +104,10 @@ trait SuiteExamples extends Tables {
   def examples =
     Table(
       "suite",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       spec,
       fixtureSpec, // TODO: Need nested ones
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       
       funSuite,
       fixtureFunSuite,

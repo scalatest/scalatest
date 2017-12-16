@@ -46,11 +46,11 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray.from(Array.empty[String]) shouldBe None
     NonEmptyArray.from(Array("1")).get shouldBe NonEmptyArray("1")
     NonEmptyArray.from(Array(1, 2, 3)).get shouldBe NonEmptyArray(1, 2, 3)
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     NonEmptyArray.from(Array.empty[String].par) shouldBe None
     NonEmptyArray.from(Array("1").par).get shouldBe NonEmptyArray("1")
     NonEmptyArray.from(Array(1, 2, 3).par).get shouldBe NonEmptyArray(1, 2, 3)
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   // This does not compile with scala 2.10
   /*it can "be constructed with null elements" in {
@@ -141,12 +141,12 @@ class NonEmptyArraySpec extends UnitSpec {
     arr3(0) shouldEqual "hi"
     val arr4 = NonEmptyArray(7, 8, 9)
     arr4(2) shouldEqual 9
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
       val arr5 = NonEmptyArray(1, 2, 3)        // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
       arr5(3)
     } should have message "3"
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a length method" in {
     NonEmptyArray(1).length shouldBe 1
@@ -439,9 +439,9 @@ class NonEmptyArraySpec extends UnitSpec {
     Vector(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).flatten shouldBe Array(1, 2, 3, 1, 2, 3)
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).toIterator.flatten.toStream shouldBe Array(1, 2, 3, 1, 2, 3).toIterator.toStream
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).par.flatten shouldBe Array(1, 2, 3, 1, 2, 3).par
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptyArray(1).fold(0)(_ + _) shouldBe 1

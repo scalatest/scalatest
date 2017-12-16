@@ -15,27 +15,27 @@
  */
 package org.scalatest.deprecated
 import org.scalatest._
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 import org.testng.annotations.{Test => TestNG }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 
 class DeprecatedStopOnFailureProp extends AllSuiteProp {
 
   type FixtureServices = StopOnFailureFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleStopOnFailureSpec
   def fixtureSpec = new ExampleStopOnFailureFixtureSpec
   def junit3Suite = new ExampleStopOnFailureJUnit3Suite
   def junitSuite = new ExampleStopOnFailureJUnitSuite
   def testngSuite = new ExampleStopOnFailureTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new ExampleStopOnFailureFunSuite
   def fixtureFunSuite = new ExampleStopOnFailureFixtureFunSuite
   def funSpec = new ExampleStopOnFailureFunSpec
@@ -99,7 +99,7 @@ trait StopOnFailureFixtureServices {
   val supportStopTest: Boolean = true
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class ExampleStopOnFailureSpec extends RefSpec with StopOnFailure with StopOnFailureFixtureServices {
   def `test 1`: Unit = {}
@@ -168,7 +168,7 @@ class ExampleStopOnFailureTestNGSuite extends TestNGSuite with StopOnFailure wit
   
   override val supportStopTest: Boolean = false
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFunSuite extends FunSuite with StopOnFailure with StopOnFailureFixtureServices {

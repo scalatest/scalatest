@@ -3,4 +3,5 @@ test-output/
 gentests/
 scalatest.js/target/
 *.swp
-.idea
+.idea/
+.DS_Store

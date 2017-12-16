@@ -37,9 +37,9 @@ class InOrderContainMatcherSpec extends FunSpec {
     it("should succeeded when left List contains same elements in same order as right List") {
       List(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
       Array(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").iterator.toStream should contain inOrder (1 -> "one", 3 -> "three", 5 -> "five")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain inOrder (1 -> "one", 3 -> "three", 5 -> "five")
@@ -48,9 +48,9 @@ class InOrderContainMatcherSpec extends FunSpec {
     it("should succeeded when left List contains same elements in same order as right Set") {
       List(1, 2, 3) should contain inOrder (1, 2, 3)
       Array(1, 2, 3) should contain inOrder (1, 2, 3)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain inOrder (1, 2, 3)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
@@ -63,13 +63,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(2, 1, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder (2, 1, 3)
       }
       checkStackDepth(e2, left2, Array(2, 1, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
@@ -98,12 +98,12 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       e1.getMessage() should be (FailureMessages.inOrderDuplicate)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain inOrder (1, 2, 1)
       }
       e2.getMessage() should be (FailureMessages.inOrderDuplicate)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain inOrder (1, 2, 1)
@@ -118,13 +118,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(2, 5, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder (2, 5, 3)
       }
       checkStackDepth(e2, left2, Array(2, 5, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
@@ -154,13 +154,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(2, 1, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder (2, 1, 3)
       }
       checkStackDepth(e2, left2, Array(2, 1, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
@@ -190,13 +190,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder (1, 2, 3, 4)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
@@ -226,13 +226,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(1, 5).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder (1, 5)
       }
       checkStackDepth(e2, left2, Array(1, 5).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
@@ -268,9 +268,9 @@ class InOrderContainMatcherSpec extends FunSpec {
     it("should succeeded when left List contains different elements as right List") {
       List(1, 2, 3) should not contain inOrder (1, 2, 8)
       Array(1, 2, 3) should not contain inOrder (1, 2, 8)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain inOrder (1, 2, 8)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
@@ -279,9 +279,9 @@ class InOrderContainMatcherSpec extends FunSpec {
     it("should succeeded when left List contains same elements as right List in different order") {
       List(1, 2, 3) should not contain inOrder (1, 3, 2)
       Array(1, 2, 3) should not contain inOrder (1, 3, 2)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain inOrder (1, 3, 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
@@ -294,13 +294,13 @@ class InOrderContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain inOrder (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {

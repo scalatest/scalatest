@@ -16,9 +16,9 @@
 package org.scalactic.anyvals
 
 import java.nio.charset.Charset
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import java.util.Locale
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 private[scalactic] final class RegexString private (val value: String) extends AnyVal {
   override def toString: String = s"RegexString($value)"
@@ -29,9 +29,9 @@ private[scalactic] final class RegexString private (val value: String) extends A
 
   def codePointAt(index: Int): Int = value.codePointAt(index)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def codePointBefore(index: Int): Int = value.codePointBefore(index)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def codePointCount(beginIndex: Int, endIndex: Int): Int =
     value.codePointCount(beginIndex, endIndex)
@@ -48,10 +48,10 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def contains(s: CharSequence): Boolean =
     value.contains(s)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def contentEquals(cs: CharSequence): Boolean =
     value.contentEquals(cs)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def endsWith(suffix: String): Boolean =
     value.endsWith(suffix)
@@ -101,10 +101,10 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def matches(regex: String): Boolean =
     value.matches(regex)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def regionMatches(ignoreCase: Boolean, toffset: Int, other: String, ooffset: Int, len: Int): Boolean =
     value.regionMatches(ignoreCase, toffset, other, ooffset, len)
@@ -151,18 +151,18 @@ private[scalactic] final class RegexString private (val value: String) extends A
   def toLowerCase: String =
     value.toLowerCase
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
   def toLowerCase(locale: Locale): String =
     value.toLowerCase(locale: Locale)
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
   def toUpperCase: String =
     value.toUpperCase
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
   def trim: String =
     value.trim

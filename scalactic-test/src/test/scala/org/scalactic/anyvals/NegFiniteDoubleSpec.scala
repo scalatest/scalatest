@@ -19,9 +19,9 @@ import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 import scala.util.{Failure, Success, Try}
@@ -282,7 +282,7 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Double") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -294,7 +294,7 @@ class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         rangeEqual(pdouble.to(end, step), pdouble.toDouble.to(end, step)) shouldBe true
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pdouble: NegFiniteDouble) =>

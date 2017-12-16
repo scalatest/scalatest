@@ -36,5 +36,5 @@ class ExampleSpec extends FlatSpec with OneInstancePerTest {
     assert(buffer.isEmpty)
   }
 
-  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
+  //SCALATESTJS,NATIVE-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }

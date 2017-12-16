@@ -155,7 +155,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     }
   }
  
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run after code if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
@@ -275,6 +275,6 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     }
     assert(!a.afterAllCalled)
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 }
 

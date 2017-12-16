@@ -154,10 +154,10 @@ private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAware
 
 private[scalatest] class MessageRecordingInformer(recorder: MessageRecorder, eventFun: RecordedMessageEventFun) extends Informer {
   def apply(message: String, payload: Option[Any])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 4
     recorder.apply(message, payload, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }

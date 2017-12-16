@@ -74,18 +74,18 @@ class InOrderOnlyContainMatcherEqualitySpec extends FunSpec with Matchers with E
       implicit val equality = new TrimEquality
       List("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")
       Array("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take custom implicit equality in scope when 'should not contain' is used") {
       implicit val equality = new FalseEquality
       List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)
       Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
@@ -103,13 +103,13 @@ class InOrderOnlyContainMatcherEqualitySpec extends FunSpec with Matchers with E
       }
       checkShouldContainStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrderOnly (1, 2, 3)
       }
       checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
@@ -127,31 +127,31 @@ class InOrderOnlyContainMatcherEqualitySpec extends FunSpec with Matchers with E
       }
       checkShouldNotContainStackDepth(e2, left2, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain inOrderOnly (" 1", "2 ", " 3")
       }
       checkShouldNotContainStackDepth(e3, left3, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should contain' is used") {
       implicit val equality = new TrimEquality
       (List("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
       (Array("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should not contain' is used") {
       implicit val equality = new FalseEquality
       (List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
       (Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
@@ -169,13 +169,13 @@ class InOrderOnlyContainMatcherEqualitySpec extends FunSpec with Matchers with E
       }
       checkShouldContainStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain inOrderOnly (1, 2, 3)) (equality)
       }
       checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
@@ -193,13 +193,13 @@ class InOrderOnlyContainMatcherEqualitySpec extends FunSpec with Matchers with E
       }
       checkShouldNotContainStackDepth(e2, left2, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

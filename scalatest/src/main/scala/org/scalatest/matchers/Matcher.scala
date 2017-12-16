@@ -882,7 +882,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class AndBeWord {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -892,7 +892,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     def a(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.a(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -914,7 +914,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      **/
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = and(MatcherWords.be.a(aMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -924,7 +924,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     def an(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.an(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2164,7 +2164,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class OrBeWord {
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -2174,7 +2174,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     def a(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.a(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2196,7 +2196,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      **/
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = or(MatcherWords.be.a(aMatcher))
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -2206,7 +2206,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     def an(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.an(symbol))
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax, where <code>orange</code> and <code>apple</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:

@@ -20,21 +20,24 @@ import Matchers._
 import java.io.File
 
 class HavePropertyMatcherSpec extends FunSpec {
-  
+
   describe("HavePropertyMatcher ") {
-    
+
     describe("instance created by HavePropertyMatcher apply method") {
-      
+
       val havePropertyMatcher = HavePropertyMatcher[String, Int] { str =>
         HavePropertyMatchResult(true, "name", 8, 9)
       }
-      
+
       it("should have pretty toString") {
+        // SKIP-SCALATESTNATIVE-START
         havePropertyMatcher.toString should be ("HavePropertyMatcher[java.lang.String, int](java.lang.String => HavePropertyMatchResult[int])")
+        // SKIP-SCALATESTNATIVE-END
+        //SCALATESTNATIVE-ONLY havePropertyMatcher.toString should be ("HavePropertyMatcher[java.lang.String, scala.scalanative.runtime.PrimitiveInt](java.lang.String => HavePropertyMatchResult[scala.scalanative.runtime.PrimitiveInt])")
       }
-      
+
     }
-    
+
   }
-  
+
 }

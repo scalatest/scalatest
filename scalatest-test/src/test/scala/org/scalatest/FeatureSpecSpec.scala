@@ -776,7 +776,7 @@ class FeatureSpecSpec extends FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FeatureSpec {
@@ -786,7 +786,7 @@ class FeatureSpecSpec extends FunSpec {
         a.run(None, Args(SilentReporter))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
             "calls made from a test that is pending") {
@@ -1451,7 +1451,7 @@ class FeatureSpecSpec extends FunSpec {
         assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("Feature: a feature Scenario: test 1")))
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should propagate AnnotationFormatError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
           Feature("a feature") {
@@ -1548,7 +1548,7 @@ class FeatureSpecSpec extends FunSpec {
         assert(e.getMessage == "on purpose")
       }
 
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy

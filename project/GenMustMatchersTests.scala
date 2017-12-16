@@ -64,17 +64,17 @@ trait GenMustMatchersTestsBase {
           for (shouldLine <- shouldLines) {
             val mustLine: String =
               if (scalaJS) {
-                if (shouldLine.trim == "// SKIP-SCALATESTJS-START") {
+                if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
                   skipMode = true
                   ""
                 }
-                else if (shouldLine.trim == "// SKIP-SCALATESTJS-END") {
+                else if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
                   skipMode = false
                   ""
                 }
                 else if (!skipMode) {
-                  if (shouldLine.trim.startsWith("//SCALATESTJS-ONLY "))
-                    translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS-ONLY ") + 19))
+                  if (shouldLine.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+                    translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
                   else
                     translateShouldToMustInTests(shouldLine)
                 }

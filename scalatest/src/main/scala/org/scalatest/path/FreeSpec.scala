@@ -691,10 +691,10 @@ import org.scalatest._
  * @author Chua Chee Seng
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 class FreeSpec extends FreeSpecLike {
-// SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY abstract class FreeSpec extends FreeSpecLike {
+// SKIP-SCALATESTJS,NATIVE-END
+//SCALATESTJS,NATIVE-ONLY abstract class FreeSpec extends FreeSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

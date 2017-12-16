@@ -214,7 +214,7 @@ class AMatcherSpec extends FunSpec {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("when used with java list") {
 
       val positiveSizeList = AMatcher[java.util.List[Int]]("positive size list") { _.size > 0 }
@@ -331,7 +331,7 @@ class AMatcherSpec extends FunSpec {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("when used with custom object") {
 

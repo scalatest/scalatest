@@ -96,11 +96,11 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       Set("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")
       Array("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")
       Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allElementsOf Seq(1 -> "one", 2 -> "two ", 3 -> "three")
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
       javaList("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")
       javaSet("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should take custom implicit equality in scope when 'should not contain' is used") {
@@ -114,11 +114,11 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       Array("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))
       Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allElementsOf (Seq(1 -> "a ", 2 -> "b", 3 -> "c "))
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))
       javaSet("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))
       javaMap(Entry(1, "A "), Entry(2, "B"), Entry(3, "C ")) should not contain allElementsOf (Seq(Entry(1, "a "), Entry(2, "b"), Entry(3, "c ")))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
@@ -151,7 +151,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       }
       checkShouldContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should contain allElementsOf Seq(1, 2, 3)
@@ -163,7 +163,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
         left6 should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
       checkShouldContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
@@ -196,7 +196,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       }
       checkShouldNotContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should not contain allElementsOf (Seq("1", "2 ", "3"))
@@ -208,7 +208,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
         left6 should not contain allElementsOf (Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")))
       }
       checkShouldNotContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should take passed in custom explicit equality when 'should contain' is used") {
@@ -221,10 +221,10 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       (Array("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3 ")) (trimEquality)
       (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allElementsOf Seq(1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3 ")) (trimEquality)
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (javaMapTrimEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should take passed in custom explicit equality when 'should not contain' is used") {
@@ -235,11 +235,11 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       val mapEquality = new MapFalseEquality
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain allElementsOf (Seq(1 -> "one", 2 -> "two", 3 -> "three"))) (mapEquality)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       (javaList(1, 2, 3) should not contain allElementsOf (Seq(1, 2, 3))) (equality)
       val javaMapEquality = new JavaMapFalseEquality
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain allElementsOf (Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (javaMapEquality)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
@@ -271,7 +271,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       }
       checkShouldContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should contain allElementsOf Seq(1, 2, 3)) (equality)
@@ -285,7 +285,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
         (left6 should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
@@ -317,7 +317,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
       }
       checkShouldNotContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should not contain allElementsOf (Seq("1", "2 ", "3"))) (trimEquality)
@@ -331,7 +331,7 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
         (left6 should not contain allElementsOf (Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")))) (javaMapTrimEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 

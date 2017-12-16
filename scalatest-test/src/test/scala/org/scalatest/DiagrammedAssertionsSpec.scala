@@ -2403,7 +2403,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
         assert(<person>Dude</person> == <person>Dude</person>)
       }
@@ -2425,7 +2425,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
@@ -4851,7 +4851,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
         assert(<person>Dude</person> == <person>Dude</person>, "this is a clue")
       }
@@ -4873,7 +4873,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
@@ -7299,7 +7299,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
         assume(<person>Dude</person> == <person>Dude</person>)
       }
@@ -7321,7 +7321,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
@@ -9747,7 +9747,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
         assume(<person>Dude</person> == <person>Dude</person>, "this is a clue")
       }
@@ -9769,7 +9769,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(

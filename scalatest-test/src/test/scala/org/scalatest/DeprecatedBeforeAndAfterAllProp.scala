@@ -15,14 +15,14 @@
  */
 package org.scalatest
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 import scala.compat.Platform
 import org.scalatest.concurrent.SleepHelper
@@ -31,13 +31,13 @@ class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
 
   type FixtureServices = DeprecatedBeforeAndAfterAllPropFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def spec = new DeprecatedExampleBeforeAndAfterAllPropSpec
   def fixtureSpec = new DeprecatedExampleBeforeAndAfterAllPropFixtureSpec
   def junit3Suite = new DeprecatedExampleBeforeAndAfterAllPropJUnit3Suite
   def junitSuite = new DeprecatedExampleBeforeAndAfterAllPropJUnitSuite
   def testngSuite = new DeprecatedExampleBeforeAndAfterAllPropTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new DeprecatedExampleBeforeAndAfterAllPropFunSuite
   def fixtureFunSuite = new DeprecatedExampleBeforeAndAfterAllPropFixtureFunSuite
   def funSpec = new DeprecatedExampleBeforeAndAfterAllPropFunSpec
@@ -85,11 +85,11 @@ class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
 
 trait DeprecatedBeforeAndAfterAllPropFixtureServices {
   def included = this match {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     case _: JUnit3Suite => false
     case _: JUnitSuite => false
     case _: TestNGSuite => false
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     case _: path.FreeSpec => false
     case _: path.FunSpec => false
     case _ => true
@@ -98,7 +98,7 @@ trait DeprecatedBeforeAndAfterAllPropFixtureServices {
   @volatile var afterAllTime: Long = 0
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropSpec extends RefSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
@@ -142,7 +142,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropJUnitSuite exte
 // Not supported as JUnitSuite cannot use ParallelTestExecution
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropTestNGSuite extends TestNGSuite with DeprecatedBeforeAndAfterAllPropFixtureServices { }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {

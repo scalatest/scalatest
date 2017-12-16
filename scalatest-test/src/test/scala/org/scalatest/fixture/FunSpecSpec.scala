@@ -906,7 +906,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     "should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort." in {
       val a = new FunSpec {
@@ -921,7 +921,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
         a.run(None, Args(SilentReporter))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true for info " +
             "calls made from a test that is pending") {
@@ -1658,7 +1658,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     "should propagate AnnotationFormatError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
 
@@ -1786,6 +1786,6 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       }
       assert(e.getMessage == "on purpose")
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }

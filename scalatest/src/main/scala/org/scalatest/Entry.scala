@@ -38,10 +38,10 @@ package org.scalatest
  * @param key the key of this entry
  * @param value the value of this entry
  */
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 case class Entry[K, V](key: K, value: V) extends java.util.Map.Entry[K, V] {
-// SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY case class Entry[K, V](key: K, value: V) {
+// SKIP-SCALATESTJS,NATIVE-END
+//SCALATESTJS,NATIVE-ONLY case class Entry[K, V](key: K, value: V) {
 
   /**
    * Returns the key corresponding to this <code>Entry</code>.
