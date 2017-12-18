@@ -1704,30 +1704,38 @@ trait WebBrowser {
                    )
       }
   }
-  
-  private def isInputField(webElement: WebElement, name: String): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
-      
-  private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
-  private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
-  private def isCheckBox(webElement: WebElement): Boolean = isInputField(webElement, "checkbox")
-  private def isRadioButton(webElement: WebElement): Boolean = isInputField(webElement, "radio")
-  private def isEmailField(webElement: WebElement): Boolean = isInputField(webElement, "email") || isInputField(webElement, "text")
-  private def isColorField(webElement: WebElement): Boolean = isInputField(webElement, "color") || isInputField(webElement, "text")
-  private def isDateField(webElement: WebElement): Boolean = isInputField(webElement, "date") || isInputField(webElement, "text")
-  private def isDateTimeField(webElement: WebElement): Boolean = isInputField(webElement, "datetime") || isInputField(webElement, "text")
-  private def isDateTimeLocalField(webElement: WebElement): Boolean = isInputField(webElement, "datetime-local") || isInputField(webElement, "text")
-  private def isMonthField(webElement: WebElement): Boolean = isInputField(webElement, "month") || isInputField(webElement, "text")
-  private def isNumberField(webElement: WebElement): Boolean = isInputField(webElement, "number") || isInputField(webElement, "text")
-  private def isRangeField(webElement: WebElement): Boolean = isInputField(webElement, "range") || isInputField(webElement, "text")
-  private def isSearchField(webElement: WebElement): Boolean = isInputField(webElement, "search") || isInputField(webElement, "text")
-  private def isTelField(webElement: WebElement): Boolean = isInputField(webElement, "tel") || isInputField(webElement, "text")
-  private def isTimeField(webElement: WebElement): Boolean = isInputField(webElement, "time") || isInputField(webElement, "text")
-  private def isUrlField(webElement: WebElement): Boolean = isInputField(webElement, "url") || isInputField(webElement, "text")
-  private def isWeekField(webElement: WebElement): Boolean = isInputField(webElement, "week") || isInputField(webElement, "text")
 
-  private def isTextArea(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "textarea"
+  private case class TagMeta(webElement: WebElement) {
+    lazy val tagName: String = webElement.getTagName.toLowerCase
+    lazy val typeValue: String = {
+      val vType = webElement.getAttribute("type")
+      if (vType == null) null else vType.toLowerCase
+    }
+  }
+
+  private def isInputField(tagMeta: TagMeta, name: String): Boolean =
+    tagMeta.tagName == "input" && tagMeta.typeValue == name
+      
+  private def isTextField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "text")
+  private def isPasswordField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "password")
+  private def isCheckBox(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "checkbox")
+  private def isRadioButton(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "radio")
+  private def isEmailField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "email") || isInputField(tagMeta, "text")
+  private def isColorField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "color") || isInputField(tagMeta, "text")
+  private def isDateField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "date") || isInputField(tagMeta, "text")
+  private def isDateTimeField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "datetime") || isInputField(tagMeta, "text")
+  private def isDateTimeLocalField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "datetime-local") || isInputField(tagMeta, "text")
+  private def isMonthField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "month") || isInputField(tagMeta, "text")
+  private def isNumberField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "number") || isInputField(tagMeta, "text")
+  private def isRangeField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "range") || isInputField(tagMeta, "text")
+  private def isSearchField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "search") || isInputField(tagMeta, "text")
+  private def isTelField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "tel") || isInputField(tagMeta, "text")
+  private def isTimeField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "time") || isInputField(tagMeta, "text")
+  private def isUrlField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "url") || isInputField(tagMeta, "text")
+  private def isWeekField(tagMeta: TagMeta): Boolean = isInputField(tagMeta, "week") || isInputField(tagMeta, "text")
+
+  private def isTextArea(tagMeta: TagMeta): Boolean =
+    tagMeta.tagName == "textarea"
   
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
@@ -1746,7 +1754,7 @@ trait WebBrowser {
    */
   final class TextField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     
-    if(!isTextField(underlying))
+    if(!isTextField(TagMeta(underlying)))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
                      None,
@@ -1796,7 +1804,7 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
    */
   final class TextArea(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(!isTextArea(underlying))
+    if(!isTextArea(TagMeta(underlying)))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not text area."),
                      None,
@@ -1847,7 +1855,7 @@ trait WebBrowser {
    */
   final class PasswordField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     
-    if(!isPasswordField(underlying))
+    if(!isPasswordField(TagMeta(underlying)))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
                      None,
@@ -1884,8 +1892,8 @@ trait WebBrowser {
   trait ValueElement extends Element {
     val underlying: WebElement
 
-    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
-      if(!isA(underlying))
+    def checkCorrectType(isA: (TagMeta) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
+      if(!isA(TagMeta(underlying)))
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not " + typeDescription + " field."),
                      None,
@@ -1935,7 +1943,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a email field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
    */
-  final class EmailField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class EmailField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isEmailField, "email")(pos)
   }
 
@@ -1954,7 +1962,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a color field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
    */
-  final class ColorField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class ColorField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isColorField, "color")(pos)
   }
 
@@ -1973,7 +1981,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a date field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a date field
    */
-  final class DateField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class DateField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isDateField, "date")(pos)
   }
 
@@ -1992,7 +2000,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime field
    */
-  final class DateTimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class DateTimeField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isDateTimeField, "datetime")(pos)
   }
 
@@ -2011,7 +2019,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime-local field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime-local field
    */
-  final class DateTimeLocalField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class DateTimeLocalField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isDateTimeLocalField, "datetime-local")(pos)
   }
 
@@ -2030,7 +2038,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a month field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a month field
    */
-  final class MonthField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class MonthField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isMonthField, "month")(pos)
   }
 
@@ -2049,7 +2057,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a number field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a number field
    */
-  final class NumberField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class NumberField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isNumberField, "number")(pos)
   }
 
@@ -2068,7 +2076,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a range field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a range field
    */
-  final class RangeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class RangeField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isRangeField, "range")(pos)
   }
 
@@ -2087,7 +2095,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a search field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a search field
    */
-  final class SearchField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class SearchField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isSearchField, "search")(pos)
   }
 
@@ -2106,7 +2114,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a tel field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a tel field
    */
-  final class TelField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class TelField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isTelField, "tel")(pos)
   }
 
@@ -2125,7 +2133,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a time field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a time field
    */
-  final class TimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class TimeField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isTimeField, "time")(pos)
   }
 
@@ -2144,7 +2152,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a url field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a url field
    */
-  final class UrlField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class UrlField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isUrlField, "url")(pos)
   }
 
@@ -2163,7 +2171,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a week field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a week field
    */
-  final class WeekField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+  final class WeekField(val underlying: WebElement)(implicit pos: source.Position) extends ValueElement {
     checkCorrectType(isWeekField, "week")(pos)
   }
 
@@ -2183,7 +2191,7 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
    */
   final class RadioButton(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(!isRadioButton(underlying))
+    if(!isRadioButton(TagMeta(underlying)))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not radio button."),
                      None,
@@ -2217,7 +2225,7 @@ trait WebBrowser {
    */
   final class RadioButtonGroup(groupName: String, driver: WebDriver)(implicit pos: source.Position) {
 
-    private def groupElements = driver.findElements(By.name(groupName)).asScala.toList.filter(isRadioButton(_))
+    private def groupElements = driver.findElements(By.name(groupName)).asScala.toList.filter(e => isRadioButton(TagMeta(e)))
 
     if (groupElements.length == 0)
       throw new TestFailedException(
@@ -2294,7 +2302,7 @@ trait WebBrowser {
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a checkbox
    */
   final class Checkbox(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(!isCheckBox(underlying))
+    if(!isCheckBox(TagMeta(underlying)))
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not check box."),
                      None,
@@ -3132,41 +3140,42 @@ trait WebBrowser {
   def tagName(tagName: String): TagNameQuery = new TagNameQuery(tagName)
 
   private def createTypedElement(element: WebElement, pos: source.Position = implicitly[source.Position]): Element = {
-    if (isTextField(element))
+    val tagMeta = TagMeta(element)
+    if (isTextField(tagMeta))
       new TextField(element)(pos)
-    else if (isTextArea(element))
+    else if (isTextArea(tagMeta))
       new TextArea(element)(pos)
-    else if (isPasswordField(element))
+    else if (isPasswordField(tagMeta))
       new PasswordField(element)(pos)
-    else if (isEmailField(element))
+    else if (isEmailField(tagMeta))
       new EmailField(element)(pos)
-    else if (isColorField(element))
+    else if (isColorField(tagMeta))
       new ColorField(element)(pos)
-    else if (isDateField(element))
+    else if (isDateField(tagMeta))
       new DateField(element)(pos)
-    else if (isDateTimeField(element))
+    else if (isDateTimeField(tagMeta))
       new DateTimeField(element)(pos)
-    else if (isDateTimeLocalField(element))
+    else if (isDateTimeLocalField(tagMeta))
       new DateTimeLocalField(element)(pos)
-    else if (isMonthField(element))
+    else if (isMonthField(tagMeta))
       new MonthField(element)(pos)
-    else if (isNumberField(element))
+    else if (isNumberField(tagMeta))
       new NumberField(element)(pos)
-    else if (isRangeField(element))
+    else if (isRangeField(tagMeta))
       new RangeField(element)(pos)
-    else if (isSearchField(element))
+    else if (isSearchField(tagMeta))
       new SearchField(element)(pos)
-    else if (isTelField(element))
+    else if (isTelField(tagMeta))
       new TelField(element)(pos)
-    else if (isTimeField(element))
+    else if (isTimeField(tagMeta))
       new TimeField(element)(pos)
-    else if (isUrlField(element))
+    else if (isUrlField(tagMeta))
       new UrlField(element)(pos)
-    else if (isWeekField(element))
+    else if (isWeekField(tagMeta))
       new WeekField(element)(pos)
-    else if (isCheckBox(element))
+    else if (isCheckBox(tagMeta))
       new Checkbox(element)(pos)
-    else if (isRadioButton(element))
+    else if (isRadioButton(tagMeta))
       new RadioButton(element)(pos)
     else if (element.getTagName.toLowerCase == "select") {
       val select = new Select(element)
@@ -3791,7 +3800,7 @@ trait WebBrowser {
      * @param queryString the string with which to search, first by ID then by name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(queryString: String)(implicit driver: WebDriver): Unit = {
+    def on(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       // stack depth is not correct if just call the button("...") directly.
       val target = tryQueries(queryString)(q => q.webElement)
       on(target)
@@ -3832,7 +3841,7 @@ trait WebBrowser {
    * @param queryString the string with which to search, first by ID then by name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(queryString: String)(implicit driver: WebDriver): Unit = {
+  def clickOn(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     click on queryString
   }
   
@@ -4055,7 +4064,7 @@ trait WebBrowser {
    * @param query <code>Query</code> used to select <code>WebElement</code> which is contained in the frame to switch to 
    * @return a FrameWebElementTarget instance
    */
-  def frame(query: Query)(implicit driver: WebDriver) = new FrameWebElementTarget(query.webElement)
+  def frame(query: Query)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new FrameWebElementTarget(query.webElement)
   
   /**
    * This class supports switching to a window by name or handle in ScalaTest's Selenium DSL.
