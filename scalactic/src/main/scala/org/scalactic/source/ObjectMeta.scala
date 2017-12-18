@@ -15,6 +15,8 @@
  */
 package org.scalactic.source
 
+import org.scalactic.ScalacticVersions
+
 trait ObjectMeta {
 
   def fieldNames: scala.collection.immutable.IndexedSeq[String]
@@ -31,9 +33,8 @@ trait ObjectMeta {
 
 object ObjectMeta {
 
-  import reflect.runtime.universe._
-
-  def apply(v: Any): ObjectMeta = {
+  def objectMetaUsingScalaReflection(v: Any): ObjectMeta = {
+    import reflect.runtime.universe._
 
     val typeMirror = runtimeMirror(v.getClass.getClassLoader)
     val instanceMirror = typeMirror.reflect(v)
@@ -101,5 +102,46 @@ object ObjectMeta {
       }
     }
   }
+
+  def objectMetaUsingJavaReflection(v: Any): ObjectMeta =
+    new ObjectMeta {
+      lazy val privFields = v.getClass.getDeclaredFields.filter(!_.isAccessible).map(_.getName)
+
+      lazy val fieldNames = {
+        v.getClass.getDeclaredMethods.filter { m =>
+          m.getParameterTypes.isEmpty && privFields.contains(m.getName)
+        }.map { f =>
+          if (f.getName.endsWith("$mcI$sp"))
+            f.getName.dropRight(7)
+          else
+            f.getName
+        }.toVector
+      }
+
+      def value(name: String): Any =
+        try {
+          v.getClass.getDeclaredMethod(name).invoke(v)
+        }
+        catch {
+          case e: NoSuchMethodException =>
+            try {
+              v.getClass.getDeclaredMethod(name + "$mcI$sp").invoke(v)
+            }
+            catch {
+              case e: NoSuchMethodException =>
+                throw new IllegalArgumentException("'" + name + "' is not attribute for this instance.")
+            }
+        }
+
+      def typeName(name: String): String = value(name).getClass.getName
+
+      def shortTypeName(name: String): String = value(name).getClass.getSimpleName
+    }
+
+  def apply(v: Any): ObjectMeta =
+    if (ScalacticVersions.BuiltForScalaVersion == "2.10")
+      objectMetaUsingJavaReflection(v)
+    else
+      objectMetaUsingScalaReflection(v)
 
 }
