@@ -926,7 +926,7 @@ import java.net.{ServerSocket, InetAddress}
       spanScaleFactors, 
       testSortingReporterTimeouts,
       slowpokeArgs
-    ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
+    ) = parseArgs(args)
     
     if (!runpathArgs.isEmpty)
       throw new IllegalArgumentException("Specifying a runpath (-R <runpath>) is not supported when running ScalaTest from sbt.")
