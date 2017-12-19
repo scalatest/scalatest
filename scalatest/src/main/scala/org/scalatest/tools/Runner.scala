@@ -154,7 +154,7 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-R <em>&lt;runpath elements&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">the <a href="#specifyingARunpath">specifies the <em>runpath</em></a> from which tests classes will be<br/>discovered and loaded (Note: only one <code>-R</code> allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><em>Unix</em>: <code>-R target/classes:target/generated/classes</code><br/><em>Windows</em>: <code>-R target\classes;target\generated\classes</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-n <em>&lt;tag name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#specifyingTagsToIncludeAndExclude">specifies a tag to include</a> (Note: only one tag name allowed per <code>-n</code>)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-n UnitTests -n FastTests</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-l <em>&lt;tag name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#specifyingTagsToIncludeAndExclude">specifies a tag to exclude</a> (Note: only one tag name allowed per <code>-l</code>)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-l SlowTests -l PerfTests</code></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-P<em>[S][integer thread count]</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#executingSuitesInParallel">specifies a parallel run</a>, with optional suite sorting and thread count<br/>(Note: only one <code>-P</code> allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-P</code>, <code>-PS</code>, <code>-PS 8</code>, <em>or</em> <code>-P8</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-P<em>[CS][integer thread count]</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#executingSuitesInParallel">specifies a parallel run</a>, with optional cached thread pool, suite sorting and thread count<br/>(Note: only one <code>-P</code> allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-P</code>, <code>-PS</code>, <code>-PS8</code>, <code>-P8</code>, <code>-PC</code> <em>or</em> <code>-PCS</code>.  Negative or zero number of thread count is not allowed.</td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-s <em>&lt;suite class name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">specifies a <a href="#executingSuites">suite class</a> to run</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-s com.company.project.StackSpec</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-m <em>&lt;members-only package&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">requests that suites that are <a href="#membersOnlyWildcard">direct members of the specified package</a><br/> be discovered and run</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-m com.company.project</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-w <em>&lt;wildcard package&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">requests that suites that are <a href="#membersOnlyWildcard">members of the specified package or its subpackages</a><br/>be discovered and run</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-w com.company.project</code></td></tr>
@@ -1274,8 +1274,10 @@ object Runner {
             // Because some tests may do IO, will create a pool of 2 times the number of processors reported
             // by the Runtime's availableProcessors method.
             val poolSize =
-              if (concurrentConfig.numThreads > 0) concurrentConfig.numThreads
-              else Runtime.getRuntime.availableProcessors * 2
+            if (concurrentConfig.numThreads == 0)
+              Runtime.getRuntime.availableProcessors * 2
+            else
+              concurrentConfig.numThreads
 
             val distributedSuiteSorter = 
               if (concurrentConfig.enableSuiteSortingReporter)
@@ -1298,7 +1300,11 @@ object Runner {
                   thread
                 }
               }
-            val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
+            val execSvc: ExecutorService =
+              if (poolSize > 0)
+                Executors.newFixedThreadPool(poolSize, threadFactory)
+              else
+                Executors.newCachedThreadPool(threadFactory)
             try {
 
               val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet), execSvc)
