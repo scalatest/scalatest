@@ -123,17 +123,36 @@ private[tools] object ArgsParser {
   // with the 'S' option, SuiteSortingReporter will be enabled.
   //
   private[scalatest] def parseConcurrentConfig(concurrentList: List[String]): ConcurrentConfig = {
-    val threadOpt = concurrentList.find(s => s.matches("-P\\d+") || s.matches("-PS\\d+"))
-    val numThreads = threadOpt match {
+    val threadOpt = concurrentList.find(s =>
+      s.matches("-P\\d+") ||
+      s.matches("-PS\\d+") ||
+      s.matches("-P-\\d+") ||
+      s.matches("-PS-\\d+") ||
+      s == "-PS" ||
+      s == "-PC" ||
+      s == "-PSC" ||
+      s == "-PCS"
+    )
+    val (numThreads, enableSuiteSortingReporter) = threadOpt match {
+      case Some("-PC") => (-1, false)
+      case Some("-PSC") => (-1, true)
+      case Some("-PCS") => (-1, true)
+      case Some("-PS") => (0, true)
       case Some(arg) =>
-        if (arg.startsWith("-PS"))
-          arg.substring(3).toInt
+        val numT =
+          if (arg.startsWith("-PS"))
+            arg.substring(3).toInt
+          else
+            arg.substring(2).toInt
+        if (numT > 0)
+          (numT, arg.contains('S'))
         else
-          arg.substring(2).toInt
-      case None      => 0
+          throw new IllegalArgumentException("-P with negative or zero thread number is invalid, please pass in a positive thread number instead.")
+
+      case None => (0, false)
     }
 
-    val enableSuiteSortingReporter = concurrentList.find(_.startsWith("-PS")).isDefined
+    //val enableSuiteSortingReporter = concurrentList.find(_.startsWith("-PS")).isDefined
 
     ConcurrentConfig(numThreads, enableSuiteSortingReporter)
   }
