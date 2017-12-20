@@ -157,7 +157,7 @@ class ScalaTestFramework extends SbtFramework {
             seedArgs,
             generatorMinSize,
             generatorSizeRange
-          ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
+          ) = parseArgs(args)
           
           if (!runpathArgs.isEmpty)
             throw new IllegalArgumentException("-R (runpath) is not supported when runs in SBT.")
@@ -211,16 +211,62 @@ class ScalaTestFramework extends SbtFramework {
 
           val runtimeMirror = universe.runtimeMirror(testLoader)
           
-          val runnerInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.tools.Runner$")).instance.asInstanceOf[Runner.type]
+          val runnerInstance =
+            if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+              val runnerCompanionClass = testLoader.loadClass("org.scalatest.tools.Runner$")
+              val module = runnerCompanionClass.getField("MODULE$")
+              val obj = module.get(runnerCompanionClass)
+              obj.asInstanceOf[Runner.type]
+            }
+            else {
+              // We need to use the following code to set Runner object instance for different Runner using different class loader.
+              import scala.reflect.runtime._
+
+              val runtimeMirror = universe.runtimeMirror(testLoader)
+
+              val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+              val obj = runtimeMirror.reflectModule(module)
+              obj.instance.asInstanceOf[Runner.type]
+            }
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
-          val configurationInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Configuration$")).instance.asInstanceOf[Configuration.type]
+          val configurationInstance = 
+            if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+              val configurationCompanionClass = testLoader.loadClass("org.scalatest.prop.Configuration$")
+              val module = configurationCompanionClass.getField("MODULE$")
+              val obj = module.get(configurationCompanionClass)
+              obj.asInstanceOf[Configuration.type]
+            }
+            else {
+              // We need to use the following code to set Configuration object instance for different Runner using different class loader.
+              import scala.reflect.runtime._
+
+              val runtimeMirror = universe.runtimeMirror(testLoader)
+
+              val module = runtimeMirror.staticModule("org.scalatest.prop.Configuration$")
+              val obj = runtimeMirror.reflectModule(module)
+              obj.instance.asInstanceOf[Configuration.type]
+            }
+
           configurationInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
           configurationInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
           parseLongArgument(seedArgs, "-S") match {
             case Some(seed) =>
-              val randomizerInstance = runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Randomizer$")).instance.asInstanceOf[Randomizer.type]
+              val randomizerInstance = 
+                if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+                  val randomizerCompanionClass = testLoader.loadClass("org.scalatest.prop.Randomizer$")
+                  val randomizerModule = randomizerCompanionClass.getField("MODULE$")
+                  val randomizerObj = randomizerModule.get(randomizerCompanionClass)
+                  randomizerObj.asInstanceOf[Randomizer.type]
+                }
+                else {
+                  // We need to use the following code to set Runner object instance for different Runner using different class loader.
+                  import scala.reflect.runtime._
+
+                  val runtimeMirror = universe.runtimeMirror(testLoader)
+                  runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Randomizer$")).instance.asInstanceOf[Randomizer.type]
+                }
               randomizerInstance.defaultSeed.getAndSet(Some(seed))
 
             case None => // do nothing
