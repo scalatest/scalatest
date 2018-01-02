@@ -82,7 +82,7 @@ trait ConfigMapFixture { this: fixture.TestSuite =>
   type FixtureParam = ConfigMap
 
   /**
-   * Invoke the test function, passing to the the test function the <code>configMap</code>
+   * Invoke the test function, passing to the test function the <code>configMap</code>
    * obtained by invoking <code>configMap</code> on the passed <code>OneArgTest</code>.
    *
    * <p>
