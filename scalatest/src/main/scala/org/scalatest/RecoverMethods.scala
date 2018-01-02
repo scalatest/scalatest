@@ -115,7 +115,7 @@ import org.scalactic.source
  * <p>
  * In other words, <code>recoverToExpectionIf</code> is to
  * <a href="Assertions.html#expectedExceptions"><code>intercept</code></a> as
- * <code>recovertToSucceededIf</code> is to <code>assertThrows</code>. The first one allows you to perform further
+ * <code>recoverToSucceededIf</code> is to <code>assertThrows</code>. The first one allows you to perform further
  * assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
  * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
  * </p>
