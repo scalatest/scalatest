@@ -178,7 +178,7 @@ import exceptions.TestFailedException
  *
  * <p>
  * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, Scalactic provides a
- * simple "explictly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
+ * simple "explicitly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
  * sides (which must be strings), by transforming them to lowercase:
  * </p>
  *
@@ -197,7 +197,7 @@ import exceptions.TestFailedException
  *
  * <p>
  * The <code>after</code> <code>being</code> <code>lowerCased</code> expression results in an <code>Equality[String]</code>, which is then passed
- * explicitly as the second curried parameter to <code>equal</code>. For more information on the explictly DSL, see the main documentation
+ * explicitly as the second curried parameter to <code>equal</code>. For more information on the explicitly DSL, see the main documentation
  * for trait <a href="../scalactic/Explicitly.html"><code>Explicitly</code></a>.
  * </p>
  *
@@ -921,7 +921,7 @@ import exceptions.TestFailedException
  * <h2>Working with iterators</h2>
  *
  * <p>
- * Althought it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
+ * Although it seems desirable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
  * <code>Seq</code>s, <code>Array</code>, and <code>java.util.List</code>, the
  * ephemeral nature of iterators makes this problematic. Some syntax (such as <code>should</code> <code>contain</code>) is relatively straightforward to
  * support on iterators, but other syntax (such
@@ -1041,7 +1041,7 @@ import exceptions.TestFailedException
  * 
  * <p>
  * Like <a href=""><code>Inspectors</code></a>, objects used with inspector shorthands can be any type <code>T</code> for which a <code>Collecting[T, E]</code>
- * is availabe, which by default includes <code>GenTraversable</code>, 
+ * is available, which by default includes <code>GenTraversable</code>,
  * Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>s, and <code>String</code>s.
  * Here are some examples:
  * </p>
@@ -1150,7 +1150,7 @@ import exceptions.TestFailedException
  * javaMap should contain oneOf (Entry(2, 3), Entry(3, 4))
  * </pre>
  * 
- * You can you alse just check whether a Java <code>Map</code> contains a particular key, or value, like this:
+ * You can also just check whether a Java <code>Map</code> contains a particular key, or value, like this:
  * 
  * <pre class="stHighlight">
  * javaMap should contain key 1
@@ -1294,7 +1294,7 @@ import exceptions.TestFailedException
  *
  * <p>
  * Note that the <code>shouldNot</code> <code>typeCheck</code> syntax will only succeed if the given snippet of code does not
- * compile because of a type error. A syntax error will still result on a thrown <code>TestFailedException</code>.
+ * compile because of a type error. A syntax error will still result in a thrown <code>TestFailedException</code>.
  * </p>
  *
  * <p>
@@ -1503,14 +1503,14 @@ import exceptions.TestFailedException
  * This expression will use reflection to ensure the <code>title</code>, <code>author</code>, and <code>pubYear</code> properties of object <code>book</code>
  * are equal to the specified values. For example, it will ensure that <code>book</code> has either a public Java field or method
  * named <code>title</code>, or a public method named <code>getTitle</code>, that when invoked (or accessed in the field case) results
- * in a the string <code>"Programming in Scala"</code>. If all specified properties exist and have their expected values, respectively,
+ * in the string <code>"Programming in Scala"</code>. If all specified properties exist and have their expected values, respectively,
  * execution will continue. If one or more of the properties either does not exist, or exists but results in an unexpected value,
  * a <code>TestFailedException</code> will be thrown that explains the problem. (For the details on how a field or method is selected during this
  * process, see the documentation for <a href="Matchers$HavePropertyMatcherGenerator.html"><code>HavePropertyMatcherGenerator</code></a>.)
  * </p>
  * 
  * <p>
- * When you use this syntax, you must place one or more property values in parentheses after <code>have</code>, seperated by commas, where a <em>property
+ * When you use this syntax, you must place one or more property values in parentheses after <code>have</code>, separated by commas, where a <em>property
  * value</em> is a symbol indicating the name of the property followed by the expected value in parentheses. The only exceptions to this rule is the syntax
  * for checking size and length shown previously, which does not require parentheses. If you forget and put parentheses in, however, everything will
  * still work as you'd expect. Thus instead of writing:
@@ -1673,7 +1673,7 @@ import exceptions.TestFailedException
  * exception, this expression will complete abruptly with a <code>TestFailedException</code>.
  * 
  * <p>
- * If you need to further isnpect an expected exception, you can capture it using this syntax:
+ * If you need to further inspect an expected exception, you can capture it using this syntax:
  * </p>
  * 
  * <pre class="stHighlight">
