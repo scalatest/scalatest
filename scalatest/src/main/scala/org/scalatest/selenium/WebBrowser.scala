@@ -1892,6 +1892,7 @@ trait WebBrowser {
   trait ValueElement extends Element {
     val underlying: WebElement
 
+    @deprecated("This method is internal which is not intended to be called by user, we plan to remove it in the future version of ScalaTest, if you did use it, please kindly let us know by contacting us.")
     def checkCorrectType(isA: (TagMeta) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
       if(!isA(TagMeta(underlying)))
         throw new TestFailedException(
