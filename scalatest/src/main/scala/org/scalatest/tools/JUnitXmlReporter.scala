@@ -459,8 +459,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     <properties> {
       for (name <- propertyNames(sysprops))
         yield
-          <property name={ name } value = { sysprops.getProperty(name) }>
-          </property>
+          <property name={ name } value = { sysprops.getProperty(name) } />
     }
     </properties>
   }
