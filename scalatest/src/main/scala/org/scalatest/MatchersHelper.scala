@@ -48,7 +48,7 @@ private[scalatest] object MatchersHelper {
   // 1           0            1                      Some(G)
   // 1           1            0                      Some(M)
   // 1           1            1                      Some(M) prefer a Scala style one of a Java style, such as when using BeanProperty annotation
-  // 
+  //
   def accessProperty(objectWithProperty: AnyRef, propertySymbol: Symbol, isBooleanProperty: Boolean): Option[Any] = {
 
     // If 'title passed, propertyName would be "title"
@@ -226,12 +226,12 @@ private[scalatest] object MatchersHelper {
   }
   // SKIP-SCALATESTJS-END
 
-  def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
+  def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String],
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
                                  andGroupMessage: => String): MatchResult = {
     if (groups.size == 0 || !matches)
       MatchResult(
-        matches, 
+        matches,
         didNotMatchMessage,
         matchMessage,
         Vector(left, UnquotedString(regex.toString))
@@ -239,54 +239,60 @@ private[scalatest] object MatchersHelper {
     else {
       val count = pMatcher.groupCount
       val failed = // Find the first group that fails
-        groups.zipWithIndex.find { case (group, idx) => 
+        groups.zipWithIndex.find { case (group, idx) =>
           val groupIdx = idx + 1
           !(groupIdx <= count && pMatcher.group(groupIdx) == group)
         }
       failed match {
         case Some((group, idx)) =>
           MatchResult(
-            false, 
+            false,
             if (groups.size > 1) notGroupAtIndexMessage else notGroupMessage,
             andGroupMessage,
-            if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
+            if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)),
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
-        case None => 
+        case None =>
           // None of group failed
           MatchResult(
-            true, 
+            true,
             notGroupMessage,
             andGroupMessage,
-            Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
+            Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))),
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
       }
     }
   }
-  
+
   def fullyMatchRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.matches
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotFullyMatchRegex, Resources.rawFullyMatchedRegex, Resources.rawFullyMatchedRegexButNotGroupAtIndex,
                                Resources.rawFullyMatchedRegexButNotGroup, Resources.rawFullyMatchedRegexAndGroup)
   }
-  
+
   def startWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.lookingAt
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotStartWithRegex, Resources.rawStartedWithRegex, Resources.rawStartedWithRegexButNotGroupAtIndex,
       Resources.rawStartedWithRegexButNotGroup, Resources.rawStartedWithRegexAndGroup)
   }
-  
+
   def endWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
-    val found = pMatcher.find
-    val matches = found && pMatcher.end == left.length
+    var end = -1
+    while (!pMatcher.hitEnd && end != left.length) {
+      if (pMatcher.find)
+        end = pMatcher.end
+    }
+
+    val matches = end == left.length
+
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotEndWithRegex, Resources.rawEndedWithRegex, Resources.rawEndedWithRegexButNotGroupAtIndex,
                                Resources.rawEndedWithRegexButNotGroup, Resources.rawEndedWithRegexAndGroup)
   }
-  
+
   def includeRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.find
