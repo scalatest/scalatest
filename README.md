@@ -70,6 +70,26 @@ You can also run different groups generated tests separately:
 
 What it does is simply switch to gentests project and run test.
 
+To run scala-js tests: 
+
+```
+$ sbt scalatestAppJS/clean
+$ sbt scalacticTestJS/test:compile
+$ sbt scalacticTestJS/test
+$ sbt scalatestTestJS/test:compile
+$ sbt scalatestTestJS/test
+```
+
+To run scala-native tests: 
+
+```
+$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestAppNative/clean
+$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalacticTestNative/test:compile
+$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalacticTestNative/test
+$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test:compile
+$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test
+```
+
 ### Building Exmaples
 
 You can build examples project using this command: 
@@ -119,15 +139,15 @@ With Sonatype credentials and GPG file in place, you can now publish to Sonatype
 
 Before publishing any patch release, binary compatibility with previous version should be checked, using Java 6 (for Scala 2.10 and 2.11):
 
-    $ sbt ++2.11.11 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.11.11 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.11.11 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.11.11 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.11.12 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.11.12 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.11.12 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.11.12 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.10.6 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.10.6 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.10.6 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.10.6 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.10.7 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.10.7 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.10.7 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.10.7 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 and using Java 8 (for Scala 2.12 and 2.13): 
 
@@ -148,3 +168,7 @@ To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, versi
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
 
   `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.13.0-M2 clean publishSigned "project scalatestAppJS" clean publishSigned`
+
+To publish scalactic, scalatest and scalatest-app (for Scala-native version 2.11, and make sure you're on Java 8) to Sonatype, use the following command: 
+
+  `$ sbt ++2.11.12 "project scalatestAppNative" clean publishSigned`
