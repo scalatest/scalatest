@@ -31,7 +31,7 @@ import org.scalatest.exceptions.TestFailedException
  *
  * <pre class="stHighlight">
  * either1.right.value should be &gt; 9
- * either2.left.value should be ("Muchas problemas")
+ * either2.left.value should be ("Muchos problemas")
  * </pre>
  *
  * <p>
@@ -40,7 +40,7 @@ import org.scalatest.exceptions.TestFailedException
  *
  * <pre class="stHighlight">
  * assert(either1.right.value &gt; 9)
- * assert(either2.left.value === "Muchas problemas")
+ * assert(either2.left.value === "Muchos problemas")
  * </pre>
  *
  * <p>
@@ -50,7 +50,7 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * val either: Either[String, Int] = Left("Muchas problemas")
+ * val either: Either[String, Int] = Left("Muchos problemas")
  *
  * either.right.get should be &gt; 9 // either.right.get throws NoSuchElementException
  * </pre>
@@ -64,7 +64,7 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * val either: Either[String, Int] = Left("Muchas problemas")
+ * val either: Either[String, Int] = Left("Muchos problemas")
  *
  * either should be ('right) // throws TestFailedException
  * either.right.get should be &gt; 9
@@ -75,7 +75,7 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * val either: Either[String, Int] = Left("Muchas problemas")
+ * val either: Either[String, Int] = Left("Muchos problemas")
  *
  * either.right.value should be &gt; 9 // either.right.value throws TestFailedException
  * </pre>
@@ -175,10 +175,10 @@ trait EitherValues {
  * scala&gt; import EitherValues._
  * import EitherValues._
  * 
- * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
- * e: Either[String,Int] = Left(Muchas problemas)
+ * scala&gt; val e: Either[String, Int] = Left("Muchos problemas")
+ * e: Either[String,Int] = Left(Muchos problemas)
  * 
- * scala&gt; e.left.value should be ("Muchas problemas")
+ * scala&gt; e.left.value should be ("Muchos problemas")
  * 
  * scala&gt; e.right.value should be &lt; 9
  * org.scalatest.TestFailedException: The Either on which rightValue was invoked was not defined.
