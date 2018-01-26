@@ -946,7 +946,7 @@ private[scalatest] class HtmlReporter(
         val (suiteEvents, otherEvents) = extractSuiteEvents(suiteId)
         eventList = otherEvents
         val sortedSuiteEvents = suiteEvents.sorted
-        if (sortedSuiteEvents.length == 0)
+        if (sortedSuiteEvents.isEmpty)
           throw new IllegalStateException("Expected SuiteStarting for completion event: " + event + " in the head of suite events, but we got no suite event at all")
         sortedSuiteEvents.head match {
           case suiteStarting: SuiteStarting => 
@@ -976,7 +976,7 @@ private[scalatest] class HtmlReporter(
         val (suiteEvents, otherEvents) = extractSuiteEvents(suiteId)
         eventList = otherEvents
         val sortedSuiteEvents = suiteEvents.sorted
-        if (sortedSuiteEvents.length == 0)
+        if (sortedSuiteEvents.isEmpty)
           throw new IllegalStateException("Expected SuiteStarting for completion event: " + event + " in the head of suite events, but we got no suite event at all")
         sortedSuiteEvents.head match {
           case suiteStarting: SuiteStarting => 

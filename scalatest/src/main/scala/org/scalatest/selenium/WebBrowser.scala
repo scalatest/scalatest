@@ -2133,7 +2133,7 @@ trait WebBrowser {
 
     private def groupElements = driver.findElements(By.name(groupName)).asScala.toList.filter(e => isRadioButton(TagMeta(e)))
 
-    if (groupElements.length == 0)
+    if (groupElements.isEmpty)
       throw new TestFailedException(
                      (_: StackDepthException) => Some("No radio buttons with group name '" + groupName + "' was found."),
                      None,
