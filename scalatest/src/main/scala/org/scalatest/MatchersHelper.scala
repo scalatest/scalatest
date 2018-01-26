@@ -229,7 +229,7 @@ private[scalatest] object MatchersHelper {
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String],
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
                                  andGroupMessage: => String): MatchResult = {
-    if (groups.size == 0 || !matches)
+    if (groups.isEmpty || !matches)
       MatchResult(
         matches,
         didNotMatchMessage,

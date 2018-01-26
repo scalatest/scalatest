@@ -1462,7 +1462,7 @@ private[scalatest] object Suite {
   // (e.g. DiscoverySuite).
   //
   def formatterForSuiteStarting(suite: Suite): Option[Formatter] =
-    if ((suite.testNames.size == 0) && (suite.nestedSuites.size > 0))
+    if ((suite.testNames.isEmpty) && (suite.nestedSuites.size > 0))
       Some(MotionToSuppress)
     else
       Some(IndentedText(suite.suiteName + ":", suite.suiteName, 0))
