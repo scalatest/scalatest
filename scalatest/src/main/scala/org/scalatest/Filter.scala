@@ -153,7 +153,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
         testName <- includedTestNames(testNamesAsList, tags)
         if !tags.contains(testName) ||
                 (tags(testName).contains(IgnoreTag) && (tags(testName) intersect (tagsToExclude + "org.scalatest.Ignore")).size == 1) ||
-                (tags(testName) intersect tagsToExclude).size == 0
+                (tags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, tags.contains(testName) && tags(testName).contains(IgnoreTag))
 
     filtered
@@ -169,7 +169,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
         testName <- includedTestNames(testNamesAsList, testTags)
         if !testTags.contains(testName) ||
                 (testTags(testName).contains(IgnoreTag) && (testTags(testName) intersect (tagsToExclude + "org.scalatest.Ignore")).size == 1) ||
-                (testTags(testName) intersect tagsToExclude).size == 0
+                (testTags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, testTags.contains(testName) && testTags(testName).contains(IgnoreTag))
 
     filtered
@@ -241,7 +241,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     val runnableTests = 
       for {
         testName <- includedTestNames(testNamesAsList, tags)
-        if !tags.contains(testName) || (!tags(testName).contains(IgnoreTag) && (tags(testName) intersect tagsToExclude).size == 0)
+        if !tags.contains(testName) || (!tags(testName).contains(IgnoreTag) && (tags(testName) intersect tagsToExclude).isEmpty)
       } yield testName
 
     runnableTests.size

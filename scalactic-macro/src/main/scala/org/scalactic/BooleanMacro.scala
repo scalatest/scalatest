@@ -480,7 +480,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 leftTree match {
                   case leftApply: Apply =>
                     leftApply.fun match {
-                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.size == 0 =>
+                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.isEmpty =>
                         /**
                          * support for a.length() == xxx, a.size() == xxxx
                          *
@@ -700,7 +700,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
 
           case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
         }
-      case apply: Apply if apply.args.size == 0 =>
+      case apply: Apply if apply.args.isEmpty =>
         /**
          * For unary operation that takes 0 arguments, for example a.isEmpty
          *

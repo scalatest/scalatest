@@ -360,7 +360,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
 
     val firstFailureOption = results.find(pv => !pv.matches)
 
-    val justOneProperty = propertyMatchers.length == 0
+    val justOneProperty = propertyMatchers.isEmpty
 
     // if shouldBeTrue is false, then it is like "not have ()", and should throw TFE if firstFailureOption.isDefined is false
     // if shouldBeTrue is true, then it is like "not (not have ()), which should behave like have ()", and should throw TFE if firstFailureOption.isDefined is true
