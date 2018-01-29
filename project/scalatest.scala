@@ -36,7 +36,7 @@ object ScalatestBuild extends Build {
   val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
 
-  val githubTag = "release-3.0.4" // for scaladoc source urls
+  val githubTag = "release-3.0.5" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -286,7 +286,10 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
+      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -299,7 +302,10 @@ object ScalatestBuild extends Build {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
-      }
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
@@ -313,6 +319,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
+      publishArtifact := false,
       publish := {},
       publishLocal := {}
     )
@@ -332,6 +339,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
+      publishArtifact := false,
       publish := {},
       publishLocal := {}, 
       deleteJsDependenciesTask <<= (classDirectory in Compile) map { jsDependenciesFile =>
@@ -400,7 +408,8 @@ object ScalatestBuild extends Build {
       },
       resourceGenerators in Compile += {
         Def.task {
-          GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenScalacticJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -1343,9 +1352,9 @@ object ScalatestBuild extends Build {
   // doc task to rebuild scaladocs from scratch each time.
   // Without that it only rebuilds if needed.
   //
-  def docTask(docDir: File, srcDir: File, projectName: String): File = {
+  def docTask(docDir: File, resDir: File, projectName: String): File = {
     val docLibDir = docDir / "lib"
-    val htmlSrcDir = srcDir / "html"
+    val htmlSrcDir = resDir / "html"
     val cssFile = docLibDir / "template.css"
     val addlCssFile = htmlSrcDir / "addl.css"
 
@@ -1419,7 +1428,7 @@ object ScalatestBuild extends Build {
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
-      (sourceManaged in Compile).value,
+      (resourceManaged in Compile).value,
       name.value)
 }
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"
