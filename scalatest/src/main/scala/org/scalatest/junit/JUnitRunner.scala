@@ -70,11 +70,11 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
 
   private var description: Description = createDescription(suiteToRun, None)
 
-  private def extractTestNamesFromDescription(description: Description): Map[String, Map[String, Set[String]]] = {
+  private def extractTestTagsFromDescription(description: Description): Map[String, Map[String, Set[String]]] = {
     for {
       child <- description.getChildren.asScala
       if child.isSuite
-    } yield extractTestNamesFromDescription(child)
+    } yield extractTestTagsFromDescription(child)
 
     val testNameRegEx = """^(.+)\([\w|\.]+\)""".r
     val tests = for {
@@ -127,9 +127,9 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
-      val testTags = extractTestNamesFromDescription(description)
+      val testTags = extractTestTagsFromDescription(description)
       val suiteTags = Map(suiteToRun.suiteName -> Set(dynamicTestTag)) ++
-        suiteToRun.nestedSuites.map(_.suiteName -> Set(dynamicTestTag)).toMap
+                      suiteToRun.nestedSuites.map(_.suiteName -> Set(dynamicTestTag)).toMap
 
       val filter = Filter(tagsToInclude = Some(Set(dynamicTestTag)), dynaTags = DynaTags(suiteTags, testTags))
 

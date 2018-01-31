@@ -24,9 +24,9 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.4"
 
-  val releaseVersion = "3.0.6"
+  val releaseVersion = "3.0.5"
 
-  val previousReleaseVersion = "3.0.5"
+  val previousReleaseVersion = "3.0.4"
 
   val scalacheckVersion = "1.13.5"
   val easyMockVersion = "3.2"
@@ -74,9 +74,9 @@ object ScalatestBuild extends Build {
 
   def getJavaHome(scalaMajorVersion: String): Option[File] = {
     scalaMajorVersion match {
-//      case "2.10" | "2.11" =>  // force to use Java 6
-//        if (!System.getProperty("java.version").startsWith("1.6"))
-//          throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
+      case "2.10" | "2.11" =>  // force to use Java 6
+        if (!System.getProperty("java.version").startsWith("1.6"))
+          throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
 
       case _ =>
     }
