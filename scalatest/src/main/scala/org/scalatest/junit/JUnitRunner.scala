@@ -61,6 +61,8 @@ import org.junit.runner.manipulation.{Filterable, NoTestsRemainException}
  */
 final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner with Filterable {
 
+  private val dynamicTestTag = "SetJUnitFilteredDynamicTestTags"
+
   private val canInstantiate = Suite.checkForPublicNoArgConstructor(suiteClass)
   require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
 
@@ -68,7 +70,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
 
   private var description: Description = createDescription(suiteToRun, None)
 
-  private def extractTestNamesFromDescription(description: Description): Set[String] = {
+  private def extractTestNamesFromDescription(description: Description): Map[String, Map[String, Set[String]]] = {
     for {
       child <- description.getChildren.asScala
       if child.isSuite
@@ -83,15 +85,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
       }
     } yield testName
 
-    tests.toSet
-  }
-
-  private def allTests(suite: Suite): Set[String] = {
-    for {
-      nested <- suite.nestedSuites
-    } yield allTests(nested)
-
-    suite.testNames
+    Map(description.getDisplayName -> tests.map(x => x -> Set(dynamicTestTag)).toMap)
   }
 
   private def createDescription(suite: Suite, junitFilter: Option[org.junit.runner.manipulation.Filter]): Description = {
@@ -133,13 +127,15 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
-      val testsToRun = extractTestNamesFromDescription(description)
-      val excludedTestNames = allTests(suiteToRun) -- testsToRun
-      val junitFilter = Filter(excludedTestNames = excludedTestNames)
+      val testTags = extractTestNamesFromDescription(description)
+      val suiteTags = Map(suiteToRun.suiteName -> Set(dynamicTestTag)) ++
+        suiteToRun.nestedSuites.map(_.suiteName -> Set(dynamicTestTag)).toMap
+
+      val filter = Filter(tagsToInclude = Some(Set(dynamicTestTag)), dynaTags = DynaTags(suiteTags, testTags))
 
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
-                                Stopper.default, junitFilter, ConfigMap.empty, None,
+                                Stopper.default, filter, ConfigMap.empty, None,
                                 new Tracker, Set.empty))
     }
     catch {

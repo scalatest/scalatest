@@ -17,7 +17,6 @@ package org.scalatest
 
 import scala.language.implicitConversions
 import Filter.IgnoreTag
-import org.scalactic.Requirements._
 
 /**
  * Filter whose <code>apply</code> method determines which of the passed tests to run and ignore based on tags to include and exclude passed as
@@ -46,7 +45,7 @@ import org.scalactic.Requirements._
  * @throws NullArgumentException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
-final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags, val excludedTestNames: Set[String]) extends Serializable {
+final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Serializable {
 
   requireNonNull(tagsToInclude, tagsToExclude, dynaTags)
 
@@ -111,9 +110,6 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     mergeTestTags(List(tags, dynaTestTags, dynaSuiteTags))
   }
 
-  private def testNamesFilteredAsList(testNames: Set[String]): List[String] =
-    testNames.toList.filterNot(t => excludedTestNames.contains(t))
-
   /**
    * Filter test names based on their tags.
    *
@@ -151,7 +147,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 
     verifyPreconditionsForMethods(testNames, tags)
 
-    val testNamesAsList = testNamesFilteredAsList(testNames) // to preserve the order
+    val testNamesAsList = testNames // to preserve the order
     val filtered =
       for {
         testName <- includedTestNames(testNamesAsList, tags)
@@ -167,7 +163,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, testTags)
 
-    val testNamesAsList = testNamesFilteredAsList(testNames) // to preserve the order
+    val testNamesAsList = testNames // to preserve the order
     val filtered =
       for {
         testName <- includedTestNames(testNamesAsList, testTags)
@@ -267,8 +263,8 @@ object Filter {
  * @throws NullArgumentException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
-  def apply(tagsToInclude: Option[Set[String]] = None, tagsToExclude: Set[String] = Set(IgnoreTag), excludeNestedSuites: Boolean = false, dynaTags: DynaTags = DynaTags(Map.empty, Map.empty), excludedTestNames: Set[String] = Set.empty) =
-    new Filter(tagsToInclude, tagsToExclude, excludeNestedSuites, dynaTags, excludedTestNames)
+  def apply(tagsToInclude: Option[Set[String]] = None, tagsToExclude: Set[String] = Set(IgnoreTag), excludeNestedSuites: Boolean = false, dynaTags: DynaTags = DynaTags(Map.empty, Map.empty)) =
+    new Filter(tagsToInclude, tagsToExclude, excludeNestedSuites, dynaTags)
 
   /**
    * Factory method for a default <code>Filter</code>, for which <code>tagsToInclude is <code>None</code>, 
