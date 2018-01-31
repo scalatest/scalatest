@@ -7,6 +7,9 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.core.ProblemFilters._
 
 object ScalatestBuild extends Build {
 
@@ -22,6 +25,7 @@ object ScalatestBuild extends Build {
   val buildScalaVersion = "2.12.4"
 
   val releaseVersion = "3.0.6"
+  val previousReleaseVersion = "3.0.5"
 
   val scalacheckVersion = "1.13.5"
   val easyMockVersion = "3.2"
@@ -31,7 +35,7 @@ object ScalatestBuild extends Build {
   val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
 
-  val githubTag = "release-3.0.3" // for scaladoc source urls
+  val githubTag = "release-3.0.4" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -312,12 +316,15 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     )
 
+  lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
+
   lazy val scalacticMacroJS = Project("scalacticMacroJS", file("scalactic-macro.js"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro.js",
       organization := "org.scalactic",
       sourceGenerators in Compile += {
+        // We'll delete JS_DEPENDENCIES in scalactic-macro.js
         Def.task{
           GenScalacticJS.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
@@ -325,7 +332,13 @@ object ScalatestBuild extends Build {
       },
       // Disable publishing macros directly, included in scalactic main jar
       publish := {},
-      publishLocal := {}
+      publishLocal := {}, 
+      deleteJsDependenciesTask <<= (classDirectory in Compile) map { jsDependenciesFile =>
+        (jsDependenciesFile/ "JS_DEPENDENCIES").delete()
+        ()
+        //val loader: ClassLoader = ClasspathUtilities.toLoader(classpath.map(_.data).map(_.getAbsoluteFile))
+        //loader.loadClass("your.class.Here").newInstance()
+      } triggeredBy(compile in Compile)
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
@@ -346,7 +359,9 @@ object ScalatestBuild extends Build {
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
       scalacticDocSourcesSetting,
-      docTaskSetting
+      docTaskSetting,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -386,7 +401,13 @@ object ScalatestBuild extends Build {
         Def.task {
           GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
-      }
+      },
+      // include the macro classes and resources in the main jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalacticMacroJS, Compile, packageBin).value,
+      // include the macro sources in the main source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacroJS, Compile, packageSrc).value,
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -478,7 +499,15 @@ object ScalatestBuild extends Build {
          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
        }.taskValue
      },
-     docTaskSetting
+     docTaskSetting,
+     mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+     mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+     mimaBinaryIssueFilters ++= {
+       Seq(
+         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
+         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser")
+       )
+     }
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -585,8 +614,9 @@ object ScalatestBuild extends Build {
           //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-
-      scalatestJSDocTaskSetting
+      scalatestJSDocTaskSetting,
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -675,7 +705,9 @@ object ScalatestBuild extends Build {
           Seq.empty[File]
         }.taskValue
       },
-      unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "scalatest" / "src" / "main" / "resources" )
+      unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "scalatest" / "src" / "main" / "resources" ),
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -747,7 +779,9 @@ object ScalatestBuild extends Build {
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      }
+      },
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -791,18 +825,24 @@ object ScalatestBuild extends Build {
   def gentestsLibraryDependencies =
     Seq(
 <<<<<<< HEAD
+<<<<<<< HEAD
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
       "org.testng" % "testng" % "6.8.7" % "optional",
       "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
 =======
+=======
+>>>>>>> a65e7a9a514bbf6d5b01a1db652adaf96942233b
       "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
+<<<<<<< HEAD
 >>>>>>> 3.0.x
+=======
+>>>>>>> a65e7a9a514bbf6d5b01a1db652adaf96942233b
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(

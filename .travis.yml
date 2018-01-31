@@ -1,8 +1,3 @@
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
-
 language: scala
 scala:
   - 2.10.6
