@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import scala.language.implicitConversions
 import Filter.IgnoreTag
+import org.scalactic.Requirements._
 
 /**
  * Filter whose <code>apply</code> method determines which of the passed tests to run and ignore based on tags to include and exclude passed as
@@ -147,7 +147,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 
     verifyPreconditionsForMethods(testNames, tags)
 
-    val testNamesAsList = testNames // to preserve the order
+    val testNamesAsList = testNames.toList // to preserve the order
     val filtered =
       for {
         testName <- includedTestNames(testNamesAsList, tags)
@@ -163,7 +163,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, testTags)
 
-    val testNamesAsList = testNames // to preserve the order
+    val testNamesAsList = testNames.toList // to preserve the order
     val filtered =
       for {
         testName <- includedTestNames(testNamesAsList, testTags)
@@ -237,7 +237,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     val tags: Map[String, Set[String]] = mergeTestDynamicTags(testTags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, tags)
 
-    val testNamesAsList = testNamesFilteredAsList(testNames) // to preserve the order
+    val testNamesAsList = testNames.toList // to preserve the order
     val runnableTests = 
       for {
         testName <- includedTestNames(testNamesAsList, tags)
