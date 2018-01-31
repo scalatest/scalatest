@@ -25,6 +25,7 @@ object ScalatestBuild extends Build {
   val buildScalaVersion = "2.12.4"
 
   val releaseVersion = "3.0.6"
+
   val previousReleaseVersion = "3.0.5"
 
   val scalacheckVersion = "1.13.5"
@@ -824,25 +825,11 @@ object ScalatestBuild extends Build {
 
   def gentestsLibraryDependencies =
     Seq(
-<<<<<<< HEAD
-<<<<<<< HEAD
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
-=======
-=======
->>>>>>> a65e7a9a514bbf6d5b01a1db652adaf96942233b
       "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
-<<<<<<< HEAD
->>>>>>> 3.0.x
-=======
->>>>>>> a65e7a9a514bbf6d5b01a1db652adaf96942233b
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
