@@ -60,7 +60,11 @@ object GenCommonTestJS {
     files.map { sourceFileName =>
       val sourceFile = new File(sourceDir, sourceFileName)
       val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
+        copyFile(sourceFile, destFile)
+      }
+
+      destFile
     }
   }
 

@@ -21,6 +21,8 @@ import scala.collection.JavaConversions._
 
 object GenFactories {
 
+  val generatorSource = new File("GenFactories.scala")
+
   val topPart = """
 package org.scalatest.matchers
 
@@ -3011,16 +3013,16 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 */
   }
   
-  def genMain(dir: File, version: String, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, false)
     }
   }
 
-  def genMainJS(dir: File, version: String, scalaVersion: String): Unit = {
+  def genMainJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    for (arity <- 1 to MaxArity) {
+    for (arity <- 1 to MaxArity) yield {
       genMatcherFactory(dir, arity, true)
     }
   }
@@ -3046,7 +3048,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     }.mkString("\n")
   }
 
-  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean) {
+  def genMatcherFactory(targetDir: File, arity: Int, scalaJS: Boolean): File = {
 
     def setCommonOnes(arity: Int, st: org.antlr.stringtemplate.StringTemplate) {
       if (arity == 1)
@@ -3060,68 +3062,72 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
       st.setAttribute("commaSeparatedTCNs", commaSeparatedTCNs);
     }
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "MatcherFactory" + arity + ".scala")))
- 
-    try {
+    val targetFile = new File(targetDir, "MatcherFactory" + arity + ".scala")
+    if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+      val bw = new BufferedWriter(new FileWriter(targetFile))
 
-      val topSt = new org.antlr.stringtemplate.StringTemplate(topPart)
-      setCommonOnes(arity, topSt)
-      val nTypeclassInstances =
-        if (arity == 1) "one typeclass instance"
+      try {
+
+        val topSt = new org.antlr.stringtemplate.StringTemplate(topPart)
+        setCommonOnes(arity, topSt)
+        val nTypeclassInstances =
+          if (arity == 1) "one typeclass instance"
+          else {
+            val numStr =
+              arity match {
+                case 2 => "two"
+                case 3 => "three"
+                case 4 => "four"
+                case 5 => "five"
+                case 6 => "six"
+                case 7 => "seven"
+                case 8 => "eight"
+                case 9 => "nine"
+              }
+            numStr + " typeclass instances"
+          }
+        topSt.setAttribute("nTypeclassInstances", nTypeclassInstances)
+        bw.write(transform(topSt.toString))
+
+        // Now do the and/or methods that take matcher factories of various arities
+        for (passedArity <- 1 to MaxArity - arity) {
+          val resultArity = arity + passedArity
+          val middleSt = new org.antlr.stringtemplate.StringTemplate(middlePart)
+          setCommonOnes(arity, middleSt)
+          middleSt.setAttribute("passedArity", passedArity);
+          middleSt.setAttribute("resultArity", resultArity);
+          val resultColonSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(" : ")
+          middleSt.setAttribute("resultColonSeparatedTCNs", resultColonSeparatedTCNs);
+          val resultCommaSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(", ")
+          middleSt.setAttribute("resultCommaSeparatedTCNs", resultCommaSeparatedTCNs);
+          val passedTypeConstructors = (arity + 1 to resultArity).map("TC" + _ + "[_]").mkString(", ")
+          middleSt.setAttribute("passedTypeConstructors", passedTypeConstructors);
+          val passedCommaSeparatedTCNs = (arity + 1 to resultArity).map("TC" + _).mkString(", ")
+          middleSt.setAttribute("passedCommaSeparatedTCNs", passedCommaSeparatedTCNs);
+          bw.write(transform(middleSt.toString))
+        }
+
+        // Just don't put the and/or DSL under MatcherFactory<MaxArity>, even though the ones that could
+        // return another MatcherFactory<MaxArity> could be implemented. That would mean only *some* of the
+        // DSL is implemented under MatcherFactory<MaxArity>. I'd rather just say none of it is.
+        if (arity < MaxArity) {
+          def doABottomHalf(bottomSt: org.antlr.stringtemplate.StringTemplate) {
+            setCommonOnes(arity, bottomSt)
+            bottomSt.setAttribute("arityPlusOne", arity + 1);
+            bw.write(transform(bottomSt.toString))
+          }
+          doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart1)) // Do in two halves, because hitting class file max string size limit
+          doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart2))
+        }
         else {
-          val numStr =
-            arity match {
-              case 2 => "two"
-              case 3 => "three"
-              case 4 => "four"
-              case 5 => "five"
-              case 6 => "six"
-              case 7 => "seven"
-              case 8 => "eight"
-              case 9 => "nine"
-            }
-           numStr + " typeclass instances"
+          bw.write("}\n")
         }
-      topSt.setAttribute("nTypeclassInstances", nTypeclassInstances)
-      bw.write(transform(topSt.toString))
-
-      // Now do the and/or methods that take matcher factories of various arities
-      for (passedArity <- 1 to MaxArity - arity) {
-        val resultArity = arity + passedArity
-        val middleSt = new org.antlr.stringtemplate.StringTemplate(middlePart)
-        setCommonOnes(arity, middleSt)
-        middleSt.setAttribute("passedArity", passedArity);
-        middleSt.setAttribute("resultArity", resultArity);
-        val resultColonSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(" : ")
-        middleSt.setAttribute("resultColonSeparatedTCNs", resultColonSeparatedTCNs);
-        val resultCommaSeparatedTCNs = (1 to resultArity).map("TC" + _).mkString(", ")
-        middleSt.setAttribute("resultCommaSeparatedTCNs", resultCommaSeparatedTCNs);
-        val passedTypeConstructors = (arity + 1 to resultArity).map("TC" + _ + "[_]").mkString(", ")
-        middleSt.setAttribute("passedTypeConstructors", passedTypeConstructors);
-        val passedCommaSeparatedTCNs = (arity + 1 to resultArity).map("TC" + _).mkString(", ")
-        middleSt.setAttribute("passedCommaSeparatedTCNs", passedCommaSeparatedTCNs);
-        bw.write(transform(middleSt.toString))
       }
-
-      // Just don't put the and/or DSL under MatcherFactory<MaxArity>, even though the ones that could
-      // return another MatcherFactory<MaxArity> could be implemented. That would mean only *some* of the
-      // DSL is implemented under MatcherFactory<MaxArity>. I'd rather just say none of it is.
-      if (arity < MaxArity) {
-        def doABottomHalf(bottomSt: org.antlr.stringtemplate.StringTemplate) {
-          setCommonOnes(arity, bottomSt)
-          bottomSt.setAttribute("arityPlusOne", arity + 1);
-          bw.write(transform(bottomSt.toString))
-        }
-        doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart1)) // Do in two halves, because hitting class file max string size limit
-        doABottomHalf(new org.antlr.stringtemplate.StringTemplate(bottomPart2))
-      }
-      else {
-        bw.write("}\n")
+      finally {
+        bw.close()
       }
     }
-    finally {
-      bw.close()
-    }
+    targetFile
   }
 }
 

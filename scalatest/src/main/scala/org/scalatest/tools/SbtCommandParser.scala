@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+/*import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import scala.util.parsing.combinator.lexical.StdLexical
 
 private[scalatest] class SbtCommandParser extends StandardTokenParsers {
@@ -122,5 +122,5 @@ private[scalatest] object SbtCommandParser {
     (new SbtCommandParser).parseCommand("""st wildcard("a", "b", "c") stdout(config = "dropteststarting droptestpending")""")
 */
   }
-}
+}*/
 

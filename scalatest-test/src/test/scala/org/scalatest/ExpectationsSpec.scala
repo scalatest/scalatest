@@ -423,6 +423,22 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
       }
+
+      it("should return No with correct fact message when the code compiles with implicit view in scope ") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact = expectDoesNotCompile("arrayList.asScala".stripMargin)
+
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isNo)
+        assert(fact.factMessage == Resources.expectedCompileErrorButGotNone("arrayList.asScala"))
+        assert(!fact.isVacuousYes)
+      }
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -474,6 +490,26 @@ class ExpectationsSpec extends FunSpec with Expectations {
         ))
         assert(!fact.isVacuousYes)
       }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope ") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact =
+          expectDoesNotCompile(
+            """
+              |arrayList.asScala
+              |""".stripMargin)
+
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isNo)
+        assert(fact.factMessage == Resources.expectedCompileErrorButGotNone(NEWLINE + "arrayList.asScala" + NEWLINE))
+        assert(!fact.isVacuousYes)
+      }
     }
   }
 
@@ -507,6 +543,21 @@ class ExpectationsSpec extends FunSpec with Expectations {
         else
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
 
+        assert(!fact.isVacuousYes)
+      }
+
+      it("should return Yes with correct fact message when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact = expectCompiles("arrayList.asScala")
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isYes)
+        assert(fact.factMessage == Resources.compiledSuccessfully("arrayList.asScala"))
         assert(!fact.isVacuousYes)
       }
     }
@@ -569,6 +620,26 @@ class ExpectationsSpec extends FunSpec with Expectations {
           ))
         assert(!fact.isVacuousYes)
       }
+
+      it("should return Yes with correct fact message when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact =
+          expectCompiles(
+            """
+              |arrayList.asScala
+              |""".stripMargin)
+
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isYes)
+        assert(fact.factMessage == Resources.compiledSuccessfully(NEWLINE + "arrayList.asScala" + NEWLINE))
+        assert(!fact.isVacuousYes)
+      }
     }
   }
 
@@ -592,7 +663,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
-      it("should return No with correct fact message when parse failed") {
+      it("should return No with correct fact message when parse failed ") {
         val fact = expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
@@ -600,6 +671,30 @@ class ExpectationsSpec extends FunSpec with Expectations {
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        assert(!fact.isVacuousYes)
+      }
+
+      it("should return Yes with correct fact message when used with 'val i: Int = null'") {
+        val fact = expectTypeError("val i: Int = null")
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isYes)
+        assert(fact.factMessage == Resources.gotTypeErrorAsExpected("val i: Int = null"))
+        assert(!fact.isVacuousYes)
+      }
+
+      it("should return No with correct fact message when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact = expectTypeError("arrayList.asScala")
+
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isNo)
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotNone("arrayList.asScala"))
         assert(!fact.isVacuousYes)
       }
     }
@@ -659,6 +754,38 @@ class ExpectationsSpec extends FunSpec with Expectations {
               |println("test)
               |""".stripMargin
           ))
+        assert(!fact.isVacuousYes)
+      }
+
+      it("should return Yes with correct fact message when used with 'val i: Int = null'") {
+        val fact =
+          expectTypeError(
+            """
+              |val i: Int = null
+              |""".stripMargin)
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isYes)
+        assert(fact.factMessage == Resources.gotTypeErrorAsExpected(NEWLINE + "val i: Int = null" + NEWLINE))
+        assert(!fact.isVacuousYes)
+      }
+
+      it("should return No with correct fact message when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val fact =
+          expectTypeError(
+            """
+              |arrayList.asScala
+              |""".stripMargin)
+
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isNo)
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotNone(NEWLINE + "arrayList.asScala" + NEWLINE))
         assert(!fact.isVacuousYes)
       }
     }

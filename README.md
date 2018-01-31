@@ -44,12 +44,14 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
-To run generated all tests, you'll need to increase maximum heap size to -Xmx5000M, and use this command instead:
+To run generated all tests, you'll need to increase maximum heap size to at least -Xmx5000M, and use this command instead:
 
-  `$ sbt gentests/test`
+    $ rm -rf gentests
+    $ sbt gentests/test
   
 You can also run different groups generated tests separately: 
-  
+    
+    $ rm -rf gentests
     $ sbt genMustMatchersTests1/test
     $ sbt genMustMatchersTests2/test
     $ sbt genMustMatchersTests3/test
@@ -65,7 +67,6 @@ You can also run different groups generated tests separately:
     $ sbt genSortedTests/test
     $ sbt genLoneElementTests/test
     $ sbt genEmptyTests/test
-    $ sbt genSafeStyleTests/test
 
 What it does is simply switch to gentests project and run test.
 
@@ -118,8 +119,8 @@ With Sonatype credentials and GPG file in place, you can now publish to Sonatype
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.10.6 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt clean publishSigned ++2.11.11 "project scalatestAppJS" clean publishSigned ++2.10.6 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
 
-To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12, and make sure you're on Java 8) to Sonatype, use the following command:
+To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
 
-  `$ sbt ++2.12.0 clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.13.0-M2 clean publishSigned "project scalatestAppJS" clean publishSigned`

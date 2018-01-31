@@ -888,7 +888,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       else
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
@@ -904,7 +904,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       else
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
@@ -1797,6 +1797,7 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'))
         """.stripMargin)
     }
+
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assert(x + 1 == 2) eq Succeeded)
@@ -2331,7 +2332,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       else
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
@@ -2347,7 +2348,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       else
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
@@ -3767,7 +3768,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3})
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       else
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
@@ -3783,7 +3784,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5)
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       else
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
@@ -5210,7 +5211,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       else
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
@@ -5226,7 +5227,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       else
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
@@ -6152,6 +6153,26 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError("val i: Int = null")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError("arrayList.asScala")
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -6191,7 +6212,36 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError(
+          """
+            |val i: Int = null
+            |""".stripMargin
+        )
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError(
+            """
+              |arrayList.asScala
+              |""".stripMargin
+          )
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
+      }
     }
+
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertTypeError("val x: String = 1") eq Succeeded)
     }
@@ -6224,6 +6274,22 @@ class AssertionsSpec extends FunSpec {
 
       it("should do nothing when used with 'val i: Int = null'") {
         assertDoesNotCompile("val i: Int = null")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertDoesNotCompile("arrayList.asScala".stripMargin)
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
     }
@@ -6273,6 +6339,25 @@ class AssertionsSpec extends FunSpec {
             |""".stripMargin
         )
       }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertDoesNotCompile(
+            """
+              |arrayList.asScala
+              |""".stripMargin)
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+      }
     }
   }
 
@@ -6304,6 +6389,17 @@ class AssertionsSpec extends FunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+
+      it("should do nothing when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        assertCompiles("arrayList.asScala")
       }
     }
 
@@ -6345,6 +6441,20 @@ class AssertionsSpec extends FunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
+      }
+
+      it("should do nothing when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        assertCompiles(
+          """
+            |arrayList.asScala
+            |""".stripMargin)
       }
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
