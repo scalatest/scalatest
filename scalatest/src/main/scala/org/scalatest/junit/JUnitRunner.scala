@@ -61,7 +61,7 @@ import org.junit.runner.manipulation.{Filterable, NoTestsRemainException}
  */
 final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner with Filterable {
 
-  private val dynamicTestTag = "SetJUnitFilteredDynamicTestTags"
+  private val excludedTestTag = "org.scalatest.junit.JUnitExcludedWithDynaTags"
 
   private val canInstantiate = Suite.checkForPublicNoArgConstructor(suiteClass)
   require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
@@ -70,11 +70,11 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
 
   private var description: Description = createDescription(suiteToRun, None)
 
-  private def extractTestTagsFromDescription(description: Description): Map[String, Map[String, Set[String]]] = {
+  private def extractTestNamesFromDescription(description: Description): Set[String] = {
     for {
       child <- description.getChildren.asScala
       if child.isSuite
-    } yield extractTestTagsFromDescription(child)
+    } yield extractTestNamesFromDescription(child)
 
     val testNameRegEx = """^(.+)\([\w|\.]+\)""".r
     val tests = for {
@@ -85,7 +85,15 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
       }
     } yield testName
 
-    Map(description.getDisplayName -> tests.map(x => x -> Set(dynamicTestTag)).toMap)
+    tests.toSet
+  }
+
+  private def allTests(suite: Suite): Set[String] = {
+     for {
+       nested <- suite.nestedSuites
+     } yield allTests(nested)
+
+    suite.testNames
   }
 
   private def createDescription(suite: Suite, junitFilter: Option[org.junit.runner.manipulation.Filter]): Description = {
@@ -127,11 +135,11 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
-      val testTags = extractTestTagsFromDescription(description)
-      val suiteTags = Map(suiteToRun.suiteName -> Set(dynamicTestTag)) ++
-                      suiteToRun.nestedSuites.map(_.suiteName -> Set(dynamicTestTag)).toMap
+      val testsToRun = extractTestNamesFromDescription(description)
+      val excludedTestNames = allTests(suiteToRun) -- testsToRun
+      val excludedTestsByTag = Map(suiteToRun.suiteId -> excludedTestNames.map(testName => testName -> Set(excludedTestTag)).toMap)
 
-      val filter = Filter(tagsToInclude = Some(Set(dynamicTestTag)), dynaTags = DynaTags(suiteTags, testTags))
+      val filter = Filter(tagsToExclude = Set(excludedTestTag), dynaTags = DynaTags(Map.empty, excludedTestsByTag))
 
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
