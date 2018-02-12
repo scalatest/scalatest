@@ -20,7 +20,7 @@ package org
  */
 package object scalatest {
 
-   // SKIP-SCALATESTJS-START
+   // SKIP-SCALATESTJS,NATIVE-START
   private val defaultShell = ShellImpl()
 
   /**
@@ -67,7 +67,7 @@ package object scalatest {
    * Returns a copy of this <code>Shell</code> with <code>statsPassed</code> configuration parameter set to <code>false</code>.
    */
   lazy val nostats: Shell = defaultShell.nostats
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * The version number of ScalaTest.
@@ -88,7 +88,7 @@ package object scalatest {
    */
   type Assertion = compatible.Assertion
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * <strong>The name <code>org.scalatest.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.refspec.RefSpecLike</code>, instead.</strong>
@@ -114,7 +114,7 @@ package object scalatest {
    */
   @deprecated("Please use org.scalatest.refspec.RefSpec instead")
   type Spec = refspec.RefSpec
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   @deprecated("Please use org.scalatest.funsuite.FunSuiteLike instead")
   type FunSuiteLike = funsuite.FunSuiteLike

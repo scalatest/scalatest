@@ -21,9 +21,9 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
@@ -272,9 +272,9 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pfloat: NegFiniteFloat) =>
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         pfloat.round.toFloat shouldEqual pfloat.toFloat.round
-        // SKIP-SCALATESTJS-END
+        // SKIP-SCALATESTJS,NATIVE-END
         pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
         pfloat.floor.toFloat shouldEqual pfloat.toFloat.floor
       }
@@ -286,7 +286,7 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -298,7 +298,7 @@ class NegFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NegFiniteFloat(-33.0f).ensuringValid(_ + 1.0f) shouldEqual NegFiniteFloat(-32.0f)

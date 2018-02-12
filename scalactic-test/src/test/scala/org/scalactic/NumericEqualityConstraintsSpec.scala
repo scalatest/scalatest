@@ -36,10 +36,10 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       val aFloat: Float = 99.0F
       val aDouble: Double = 99.0
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val aBigInt: BigInt = BigInt(99)
       val aBigDecimal: BigDecimal = BigDecimal(99.0)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // val aJavaBigInteger: java.math.BigInteger = new java.math.BigInteger("99")
       // val aJavaBigDecimal: java.math.BigDecimal = new java.math.BigDecimal(99.0)
 
@@ -50,7 +50,7 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       assert(aChar === aFloat)
       assert(aChar === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aChar === aBigInt)
       assert(aChar === aBigDecimal)
       // assert(aChar == aJavaBigInteger)
@@ -62,10 +62,10 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       assert(aByte === aFloat)
       assert(aByte === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aByte === aBigInt)
       assert(aByte === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aByte == aJavaBigInteger)
       // assert(aByte == aJavaBigDecimal)
 
@@ -74,10 +74,10 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       assert(aShort === aFloat)
       assert(aShort === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aShort === aBigInt)
       assert(aShort === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aShort == aJavaBigInteger)
       // assert(aShort == aJavaBigDecimal)
 
@@ -85,44 +85,44 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       assert(anInt === aFloat)
       assert(anInt === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(anInt === aBigInt)
       assert(anInt === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(anInt == aJavaBigInteger)
       // assert(anInt == aJavaBigDecimal)
 
       assert(aLong === aFloat)
       assert(aLong === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aLong === aBigInt)
       assert(aLong === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aLong == aJavaBigInteger)
       // assert(aLong == aJavaBigDecimal)
 
       assert(aFloat === aDouble)
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aFloat === aBigInt)
       assert(aFloat === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aFloat == aJavaBigInteger)
       // assert(aFloat == aJavaBigDecimal)
 
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aDouble === aBigInt)
       assert(aDouble === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aDouble == aJavaBigInteger)
       // assert(aDouble == aJavaBigDecimal)
 
       // TODO: To re-enable this once scala.js support big numbers
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(aBigInt === aBigDecimal)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       // assert(aBigInt == aJavaBigInteger)
       // assert(aBigInt == aJavaBigDecimal)
       // assert(aBigDecimal == aJavaBigInteger)

@@ -43,11 +43,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assertThrows[java.lang.Exception] {
             whenever (true) { throw new java.lang.Exception; expect(x == 1) }
           }
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1); expect(x == 1) }
           }
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
         }*/
       }
       describe("when the Boolean condition is false") {
@@ -76,11 +76,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assertThrows[java.lang.Exception] {
             whenever (true) { throw new java.lang.Exception; succeed }
           }
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1); succeed }
           }
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
           assertThrows[TestFailedException] {
             whenever (true) { fail() }
           }
@@ -120,11 +120,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assert(res3 == ())
           val res4 = whenever (true) { 1 == 1 }
           assert(res2 == ())
-          // SKIP-SCALATESTJS-START
+          // SKIP-SCALATESTJS,NATIVE-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
           }
-          // SKIP-SCALATESTJS-END
+          // SKIP-SCALATESTJS,NATIVE-END
           assertThrows[TestFailedException] {
             whenever (true) { fail() }
           }

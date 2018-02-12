@@ -215,7 +215,7 @@ class AnMatcherSpec extends FunSpec {
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("when used with java list") {
 
       val oddSizeList = AnMatcher[java.util.List[Int]]("odd size list") { _.size % 2 != 0 }
@@ -332,7 +332,7 @@ class AnMatcherSpec extends FunSpec {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     describe("when used with custom object") {
 

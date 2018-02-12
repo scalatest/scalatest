@@ -17,9 +17,9 @@ package org.scalatest
 
 import org.scalatest.events.Event
 import org.scalatest.prop.Tables
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedOrderExpectedResults extends EventHelpers {
   def assertOrderTest(events: List[Event])
@@ -27,10 +27,10 @@ trait DeprecatedOrderExpectedResults extends EventHelpers {
 
 object DeprecatedParallelTestExecutionOrderExamples extends Tables {
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def orderSpec = new DeprecatedExampleParallelTestExecutionOrderSpec
   def orderFixtureSpec = new DeprecatedExampleParallelTestExecutionOrderFixtureSpec
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def orderFunSuite = new DeprecatedExampleParallelTestExecutionOrderFunSuite
   def orderFixtureFunSuite = new DeprecatedExampleParallelTestExecutionOrderFixtureFunSuite
   def orderFunSpec = new DeprecatedExampleParallelTestExecutionOrderFunSpec
@@ -49,10 +49,10 @@ object DeprecatedParallelTestExecutionOrderExamples extends Tables {
   def orderExamples =
     Table(
       "suite1",
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       orderSpec,
       orderFixtureSpec,
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
       orderFunSuite, 
       orderFixtureFunSuite, 
       orderFunSpec, 
@@ -70,7 +70,7 @@ object DeprecatedParallelTestExecutionOrderExamples extends Tables {
     )
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderSpec extends RefSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   def `test 1`: Unit = {}
@@ -104,7 +104,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureSpe
     checkTestSucceeded(events(5), "test 3")
   }
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSuite extends FunSuite with DeprecatedOrderExpectedResults with ParallelTestExecution {
@@ -120,7 +120,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSuite e
     checkTestStarting(events(4), "Test 3")
     checkTestSucceeded(events(5), "Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSuite
 }
 
 @DoNotDiscover
@@ -137,7 +137,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFun
     checkTestStarting(events(4), "Fixture Test 3")
     checkTestSucceeded(events(5), "Fixture Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSuite
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSuite
 }
 
 @DoNotDiscover
@@ -165,7 +165,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSpec ex
     checkTestSucceeded(events(10), "Scope 2 Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSpec
 }
 
 @DoNotDiscover
@@ -193,7 +193,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFun
     checkTestSucceeded(events(10), "Fixture Scope 2 Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSpec
 }
 
 @DoNotDiscover
@@ -221,7 +221,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFeatureSpe
     checkTestSucceeded(events(10), "Feature: Scope 2 Scenario: Test 4")
     checkScopeClosed(events(11), "Feature: Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFeatureSpec
 }
 
 @DoNotDiscover
@@ -249,7 +249,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFea
     checkTestSucceeded(events(10), "Feature: Fixture Scope 2 Scenario: Fixture Test 4")
     checkScopeClosed(events(11), "Feature: Fixture Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFeatureSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFeatureSpec
 }
 
 @DoNotDiscover
@@ -277,7 +277,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFlatSpec e
     checkTestSucceeded(events(10), "Scope 2 should Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFlatSpec
 }
 
 @DoNotDiscover
@@ -305,7 +305,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFla
     checkTestSucceeded(events(10), "Fixture Scope 2 should Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFlatSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFlatSpec
 }
 
 @DoNotDiscover
@@ -335,7 +335,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFreeSpec e
     checkTestSucceeded(events(10), "Scope 2 Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFreeSpec
 }
 
 @DoNotDiscover
@@ -365,7 +365,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFre
     checkTestSucceeded(events(10), "Fixture Scope 2 Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFreeSpec
 }
 
 @DoNotDiscover
@@ -383,7 +383,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderPropSpec e
     checkTestStarting(events(4), "Test 3")
     checkTestSucceeded(events(5), "Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderPropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderPropSpec
 }
 
 @DoNotDiscover
@@ -401,7 +401,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixturePro
     checkTestStarting(events(4), "Fixture Test 3")
     checkTestSucceeded(events(5), "Fixture Test 3")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixturePropSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixturePropSpec
 }
 
 @DoNotDiscover
@@ -431,7 +431,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderWordSpec e
     checkTestSucceeded(events(10), "Scope 2 should Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderWordSpec
 }
 
 @DoNotDiscover
@@ -461,5 +461,5 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureWor
     checkTestSucceeded(events(10), "Fixture Scope 2 should Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
-  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureWordSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureWordSpec
 }

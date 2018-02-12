@@ -17,9 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import java.io.File
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
 
@@ -27,18 +27,18 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val tempDir = createTempDirectory()
   val readableFile = File.createTempFile("delete", "me", tempDir)
   readableFile.setReadable(true)
   
   val secretFile = new File(tempDir, "imaginary")
   secretFile.setReadable(false)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
-  //SCALATESTJS-ONLY trait File { def isReadable: Boolean }
-  //SCALATESTJS-ONLY val readableFile = new File { val isReadable = true }
-  //SCALATESTJS-ONLY val secretFile = new File { val isReadable = false }
+  //SCALATESTJS,NATIVE-ONLY trait File { def isReadable: Boolean }
+  //SCALATESTJS,NATIVE-ONLY val readableFile = new File { val isReadable = true }
+  //SCALATESTJS,NATIVE-ONLY val secretFile = new File { val isReadable = false }
   
   val fileName: String = "ShouldBeReadableSpec.scala"
     
@@ -49,12 +49,12 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
     FailureMessages.wasReadable(prettifier, left)
   
   it("readableFile should be readable, secretFile should not be readable") {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     assert(readableFile.canRead === true)
     assert(secretFile.canRead === false)
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY assert(readableFile.isReadable === true)
-    //SCALATESTJS-ONLY assert(secretFile.isReadable === false)
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY assert(readableFile.isReadable === true)
+    //SCALATESTJS,NATIVE-ONLY assert(secretFile.isReadable === false)
   }
 
   def allError(left: Any, message: String, lineNumber: Int): String = {

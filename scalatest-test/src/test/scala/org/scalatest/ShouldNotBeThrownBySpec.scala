@@ -69,9 +69,9 @@ class ShouldNotBeThrownBySpec extends FunSpec {
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       // TODO:  Re-enable after the line number in scala-js stack depth for multi-lines expression is fixed.
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       assert(e.failedCodeLineNumber === Some(offendingLine))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

@@ -152,7 +152,7 @@ class ScalaTestFramework extends SbtFramework {
             spanScaleFactors, 
             testSortingReporterTimeouts,
             slowpokeArgs
-          ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
+          ) = parseArgs(args)
           
           if (!runpathArgs.isEmpty)
             throw new IllegalArgumentException("-R (runpath) is not supported when runs in SBT.")
@@ -200,8 +200,26 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionDelay.getAndSet(60000L)
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
-          
-          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+          val runnerInstance =
+            if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+              val runnerCompanionClass = testLoader.loadClass("org.scalatest.tools.Runner$")
+              val module = runnerCompanionClass.getField("MODULE$")
+              val obj = module.get(runnerCompanionClass)
+              obj.asInstanceOf[Runner.type]
+            }
+            else {
+              // We need to use the following code to set Runner object instance for different Runner using different class loader.
+              import scala.reflect.runtime._
+
+              val runtimeMirror = universe.runtimeMirror(testLoader)
+
+              val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+              val obj = runtimeMirror.reflectModule(module)
+              obj.instance.asInstanceOf[Runner.type]
+            }
+
+          runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")

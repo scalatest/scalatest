@@ -18,15 +18,15 @@ package org.scalatest.events
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.AllSuiteProp
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class ScopePendingProp extends AllSuiteProp {
 
   type FixtureServices = ScopePendingFixtureServices
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def suite = new ExampleScopePendingSuite
   def fixtureSuite = new ExampleScopePendingFixtureSuite
   def spec = new ExampleScopePendingSpec
@@ -34,7 +34,7 @@ class ScopePendingProp extends AllSuiteProp {
   def junit3Suite = new ExampleScopePendingJUnit3Suite
   def junitSuite = new ExampleScopePendingJUnitSuite
   def testngSuite = new ExampleScopePendingTestNGSuite
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new ExampleScopePendingFunSuite
   def fixtureFunSuite = new ExampleScopePendingFixtureFunSuite
   def funSpec = new ExampleScopePendingFunSpec
@@ -81,7 +81,7 @@ trait ScopePendingFixtureServices {
   val expectedTestNames: Set[String] = Set.empty
 }
 
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 @DoNotDiscover
 class ExampleScopePendingSuite extends Suite with ScopePendingFixtureServices {
   override val supportScope = false
@@ -146,7 +146,7 @@ class ExampleScopePendingJUnitSuite extends junit.JUnitSuite with ScopePendingFi
 class ExampleScopePendingTestNGSuite extends testng.TestNGSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
 protected[events] class ExampleScopePendingFunSuite extends FunSuite with ScopePendingFixtureServices {
@@ -340,7 +340,7 @@ protected[events] class ExampleScopePendingFixtureWordSpec extends fixture.WordS
 
 @DoNotDiscover
 protected[events] class ExampleScopePendingPathFreeSpec extends path.FreeSpec with ScopePendingFixtureServices {
-  //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFreeSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new ExampleScopePendingPathFreeSpec
   "scope 1" - {
     "test 1" in {}
     "test 2" in {}
@@ -361,7 +361,7 @@ protected[events] class ExampleScopePendingPathFreeSpec extends path.FreeSpec wi
 
 @DoNotDiscover
 protected[events] class ExampleScopePendingPathFunSpec extends path.FunSpec with ScopePendingFixtureServices {
-  //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFunSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new ExampleScopePendingPathFunSpec
   describe("scope 1") {
     it("test 1") {}
     it("test 2") {}

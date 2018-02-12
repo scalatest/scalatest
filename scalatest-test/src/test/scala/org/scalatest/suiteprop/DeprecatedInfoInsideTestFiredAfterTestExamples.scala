@@ -17,9 +17,9 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.TableDrivenPropertyChecks
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
@@ -54,7 +54,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   class SpecExample extends RefSpec with Services  {
     def `test method` = {
       info(msg)
@@ -68,7 +68,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     }
     override val theTestName = "testMethod(FixtureParam, Informer)"
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   class FunSuiteExample extends FunSuite with Services {
     test(theTestName) {
@@ -134,7 +134,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     it(theTestName) {
       info(msg)
     }
-    //SCALATESTJS-ONLY override def newInstance = new PathFunSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new PathFunSpecExample
   }
     
   class NestedPathFunSpecExample extends path.FunSpec with NestedTestName {
@@ -143,7 +143,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         info(msg)
       }
     }
-    //SCALATESTJS-ONLY override def newInstance = new NestedPathFunSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new NestedPathFunSpecExample
   }
 
   class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestName {
@@ -154,7 +154,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         }
       }
     }
-    //SCALATESTJS-ONLY override def newInstance = new DeeplyNestedPathFunSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
   class WordSpecExample extends WordSpec with Services {
@@ -446,7 +446,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "test name" in {
       info(msg)
     }
-    //SCALATESTJS-ONLY override def newInstance = new PathFreeSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new PathFreeSpecExample
   }
     
   class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestName {
@@ -455,7 +455,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         info(msg)
       }
     }
-    //SCALATESTJS-ONLY override def newInstance = new NestedPathFreeSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new NestedPathFreeSpecExample
   }
 
   class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestName {
@@ -466,7 +466,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         }
       }
     }
-    //SCALATESTJS-ONLY override def newInstance = new DeeplyNestedPathFreeSpecExample
+    //SCALATESTJS,NATIVE-ONLY override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
@@ -513,10 +513,10 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     }
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   lazy val spec = new SpecExample
   lazy val fixtureSpec = new FixtureSpecExample
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample

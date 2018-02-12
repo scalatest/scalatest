@@ -20,7 +20,7 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.time.{Span, Millis}
 
-class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces {
+class TimeLimitedTestsSpec extends FunSpec with Matchers {
   describe("A time-limited test") {
     describe("when it does not timeout") {
       describe("when it succeeds") {

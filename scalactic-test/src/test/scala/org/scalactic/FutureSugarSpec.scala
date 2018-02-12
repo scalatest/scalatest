@@ -16,10 +16,10 @@
 package org.scalactic
 
 import scala.concurrent.Future
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.concurrent.ExecutionContext.Implicits.global
-// SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+// SKIP-SCALATESTJS,NATIVE-END
+//SCALATESTJS,NATIVE-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
 import org.scalatest.exceptions.TestFailedException

@@ -16,12 +16,12 @@
 package org.scalatest
 
 import org.scalatest.events.Ordinal
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
 import org.scalatest.testng.TestNGSuite
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 
 class FilterProp extends SuiteProp {
@@ -30,19 +30,19 @@ class FilterProp extends SuiteProp {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
       suite.run(None, Args(reporter, Stopper.default, Filter(None, Set[String](), true), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       if (!suite.isInstanceOf[TestNGSuite])
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
         reporter.suiteStartingEventsReceived.length should be (0)
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       else Succeeded
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
   
   type FixtureServices = AnyRef
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   def suite = new Suite {
     override def nestedSuites = Vector(new Suite {})
   }
@@ -64,7 +64,7 @@ class FilterProp extends SuiteProp {
   def fixtureSpec = new fixture.Spec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new FunSuite {
     override def nestedSuites = Vector(new Suite {})
   }

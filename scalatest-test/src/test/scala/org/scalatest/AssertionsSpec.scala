@@ -206,11 +206,11 @@ class AssertionsSpec extends FunSpec {
       val trappedString = trap { "12" }
       assert(trappedString == NormalResult("12"))
       assert(trappedString.toString == Resources.resultWas("\"12\""))
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       intercept[OutOfMemoryError] {
         trap { throw new OutOfMemoryError }
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 

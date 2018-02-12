@@ -21,9 +21,9 @@ import org.scalatest.events.LineInFile
 import scala.concurrent.Future
 import events.InfoProvided
 import events.Ordinal
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import concurrent.Eventually._
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic._
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
@@ -122,7 +122,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     engine.testPath("Given an empty list when 2 is inserted then the list has only 2 in it") should be (List(0, 1, 0))
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
     val ex = new OutOfMemoryError("I meant to do that!")
     class MySpec extends AsyncFunSuite {
@@ -135,7 +135,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     myReporter.suiteCompletedEventsReceived should have size 0
     eventually { status.unreportedException shouldBe defined }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
     
 /*
     // THings like OutOfMemoryError in a test didn't cause a suite abort, it killed the thread all the
@@ -143,10 +143,10 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     // in async of what do we do when a test dies with OutOfMemoryError. Can't just propagate it back.
     // Unless there's someplace we can throw it, maybe have to report SuiteAborted. 
     class SuiteThatAborts extends AsyncFunSuite {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
       test("should abort this suite") {
         Future.failed(ex)
       }
@@ -161,8 +161,8 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     eventually { assert(mySecondReporter.suiteAbortedWasFiredAndHadADuration) }
 */
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
 }

@@ -1140,7 +1140,7 @@ class FunSuiteSpec extends FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FunSuite {
@@ -1150,7 +1150,7 @@ class FunSuiteSpec extends FunSpec {
         a.run(None, Args(SilentReporter))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     describe("(when a nesting rule has been violated)") {
 
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {

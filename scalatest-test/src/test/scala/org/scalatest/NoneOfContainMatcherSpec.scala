@@ -38,11 +38,11 @@ class NoneOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3, 4, 5) should contain noneOf (6, 7, 8)
       Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3, 4, 5) should contain noneOf (6, 7, 8)
       javaSet(1, 2, 3, 4, 5) should contain noneOf (6, 7, 8)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five")) should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should succeed when left list contains none of right list") {
@@ -51,11 +51,11 @@ class NoneOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should contain noneOf (7, 8)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain noneOf (7 -> "seven", 8 -> "eight")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should contain noneOf (7, 8)
       javaSet(1, 2, 3) should contain noneOf (7, 8)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain noneOf (Entry(7, "seven"), Entry(8, "eight"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw NotAllowedException when noneOf contains duplicate element") {
@@ -94,7 +94,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Array(0 -> "zero", 3 -> "three", 8 -> "eight"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain noneOf (0, 3, 8)
@@ -106,7 +106,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
         left5 should contain noneOf (Entry(0, "zero"), Entry(3, "three"), Entry(8, "eight"))
       }
       checkStackDepth(e5, left5, Array(Entry(0, "zero"), Entry(3, "three"), Entry(8, "eight")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
   
@@ -125,11 +125,11 @@ class NoneOfContainMatcherSpec extends FunSpec {
       Set(1, 2, 3) should not contain noneOf (0, 2, 8)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (0 -> "zero", 2 -> "two", 8 -> "eight")
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       javaList(1, 2, 3) should not contain noneOf (0, 2, 8)
       javaSet(1, 2, 3) should not contain noneOf (0, 2, 8)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain noneOf (Entry(0, "zero"), Entry(2, "two"), Entry(8, "eight"))
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order") {
@@ -151,7 +151,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
       }
       checkStackDepth(e3, left3, Array(7 -> "seven", 8 -> "eight", 9 -> "nine"), thisLineNumber - 2)
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain noneOf (7, 8, 9)
@@ -163,7 +163,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
         left5 should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
       checkStackDepth(e5, left5, Array(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }

@@ -250,7 +250,7 @@ class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions 
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 4))
       }
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java Collection") {
 
       val javaSet123: java.util.Set[Int] = new java.util.HashSet
@@ -371,7 +371,7 @@ class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions 
         javaMap123 should === (javaMap124)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     describe("for Seq") {
       it("with default equality") {
@@ -462,7 +462,7 @@ class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions 
       Array(1, 2, 3) should !== (Array(1, 2, 3))
       Array(1, 2, 3) should === (Array(1, 2, 4))
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java List") {
 
       val javaList123: java.util.List[Int] = new java.util.ArrayList
@@ -519,7 +519,7 @@ class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions 
         javaList123 should === (javaList124)
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 

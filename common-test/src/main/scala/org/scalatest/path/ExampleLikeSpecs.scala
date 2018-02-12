@@ -21,10 +21,10 @@ class ExampleBaseClass
 
 @DoNotDiscover
 protected class ExampleFreeSpecLike extends ExampleBaseClass with FreeSpecLike {
-  //SCALATESTJS-ONLY override def newInstance: FreeSpecLike = new ExampleFreeSpecLike
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: FreeSpecLike = new ExampleFreeSpecLike
 }
 
 @DoNotDiscover
 protected class ExampleFunSpecLike extends ExampleBaseClass with FunSpecLike {
-  //SCALATESTJS-ONLY override def newInstance: FunSpecLike = new ExampleFunSpecLike
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: FunSpecLike = new ExampleFunSpecLike
 }

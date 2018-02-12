@@ -275,7 +275,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should not invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       @Ignore
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
@@ -297,7 +297,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
@@ -322,7 +322,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
@@ -346,7 +346,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     // Test exceptions
     it("should, if any invocation of beforeAll completes abruptly with an exception, run " +

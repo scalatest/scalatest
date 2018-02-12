@@ -24,13 +24,13 @@ class StatusSpec extends fixture.FunSpec {
   protected type FixtureParam = { 
     def setCompleted()
     def isCompleted: Boolean
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     def succeeds(): Boolean
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     def setFailed()
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     def waitUntilCompleted()
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
   
    override protected def withFixture(test: OneArgTest): Outcome = {
@@ -55,7 +55,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(status.isCompleted)
     }
     
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
     it("should return true for succeeds() after completes() is called without fails()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
@@ -74,7 +74,7 @@ class StatusSpec extends fixture.FunSpec {
       status.setCompleted()
       status.waitUntilCompleted()
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     it("should throw IllegalStateException when setFailed() is called after setCompleted() is set") { status =>
       import scala.language.reflectiveCalls
@@ -94,7 +94,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(status.isCompleted)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
     }
@@ -150,7 +150,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(returnedStatus.unreportedException.get.getCause eq e)
     }
 
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
       val status1 = new StatefulStatus
@@ -250,7 +250,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(true)))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = SucceededStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
@@ -261,7 +261,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(t eq e)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("FailedStatus ") {
@@ -325,7 +325,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(false)))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = FailedStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
@@ -336,7 +336,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(t eq e)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("CompositeStatus ") {
@@ -436,7 +436,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future3.isCompleted)
       assert(future3.value == Some(Failure(e)))
     }
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("waitUntilCompleted should throw unreportedException if set") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new IllegalArgumentException("test")
@@ -487,6 +487,6 @@ class StatusSpec extends fixture.FunSpec {
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
       assert(returnedStatus.unreportedException.get.getCause eq e)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }

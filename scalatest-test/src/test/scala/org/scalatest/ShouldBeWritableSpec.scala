@@ -25,17 +25,17 @@ class ShouldBeWritableSpec extends FunSpec {
 
   private val prettifier = Prettifier.default
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val tempDir = createTempDirectory()
   val writableFile = File.createTempFile("writable", "me", tempDir)
   writableFile.setWritable(true)
   
   val secretFile = new File(tempDir, "secret")
   secretFile.setWritable(false)
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY trait File { def canWrite: Boolean; def isWritable: Boolean = canWrite }
-  //SCALATESTJS-ONLY val writableFile = new File { val canWrite: Boolean = true }
-  //SCALATESTJS-ONLY val secretFile = new File { val canWrite: Boolean = false }
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY trait File { def canWrite: Boolean; def isWritable: Boolean = canWrite }
+  //SCALATESTJS,NATIVE-ONLY val writableFile = new File { val canWrite: Boolean = true }
+  //SCALATESTJS,NATIVE-ONLY val secretFile = new File { val canWrite: Boolean = false }
   
   val fileName: String = "ShouldBeWritableSpec.scala"
     

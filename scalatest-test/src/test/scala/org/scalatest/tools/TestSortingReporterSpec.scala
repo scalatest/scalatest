@@ -159,7 +159,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       recordedEvents(16) should be (s3t3Succeeded)
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should wait and fire blocking event when timeout, and just fire the missing event directly without waiting when received later.") {
     
       val recordingReporter = new EventRecordingReporter()
@@ -199,7 +199,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       recordedEvents(8) should be (scope2Closed)
       recordedEvents(9) should be (scope1Closed)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should throw an IAE from completedTest if no tests have been passed to distributingTest") {
       val recordingReporter = new EventRecordingReporter()
@@ -277,7 +277,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       a [NullArgumentException] should be thrownBy { tsr.apply(null, null) }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     it("should timeout if a test with no event fired is blocking") {
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
@@ -314,7 +314,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       recordedEvents(8) should be (scope2Closed)
       recordedEvents(9) should be (scope1Closed)
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     class RecordingDistributedSuiteSorter extends DistributedSuiteSorter {
       val distributingTestsList = new ListBuffer[String]()

@@ -142,7 +142,7 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   def codePointAt(index: Int): Int = value.codePointAt(index)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Returns the integer value of the Unicode code point immediately prior to the zero-based `index` within the `NumericString`.
    *
@@ -152,7 +152,7 @@ final class NumericString private (val value: String) extends AnyVal {
    * @return      Unicode code point found immediately prior to 'index'
    */
   def codePointBefore(index: Int): Int = value.codePointBefore(index)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Returns the count of complete Unicode code points beginning at zero-based `beginIndex` and ending at (but not including) zero-based `endIndex`.
@@ -214,7 +214,7 @@ final class NumericString private (val value: String) extends AnyVal {
   def contains(s: CharSequence): Boolean =
     value.contains(s)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Returns `true` if the `NumericString` content is the same as the supplied character sequence `cs`, otherwise returns `false`.
    *
@@ -226,7 +226,7 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   def contentEquals(cs: CharSequence): Boolean =
     value.contentEquals(cs)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   // We are missing contentEquals(StringBuffer)
 
@@ -433,7 +433,7 @@ final class NumericString private (val value: String) extends AnyVal {
   def matches(regex: String): Boolean =
     value.matches(regex)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   // This method returns the index of the character that is sitting at the position 
   // computed by starting at index, and hopping over to the right codePointOffset code points.
 
@@ -449,7 +449,7 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   def offsetByCodePoints(index: Int, codePointOffset: Int): Int =
     value.offsetByCodePoints(index, codePointOffset)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Returns `true` if the given region of text matches completely for the `len` characters beginning at `toffset` in the `NumericString` text
@@ -629,7 +629,7 @@ final class NumericString private (val value: String) extends AnyVal {
   def toCharArray: Array[Char] =
     value.toCharArray
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   // These should stay because we'll use them in other String AnyVals, but
   // they don't make sense to invoke on NumericString because they would have no effect.
   // So I commmented them out. Please leave the comments here so we can use these as
@@ -679,7 +679,7 @@ final class NumericString private (val value: String) extends AnyVal {
   def toUpperCase(locale: Locale): String =
     value.toUpperCase(locale: Locale)
    */
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * Return new string resulting from removing any whitespace characters from the start and end of the `NumericString`.
@@ -1668,14 +1668,14 @@ final class NumericString private (val value: String) extends AnyVal {
   def padTo(len: Int, elem: Char): String =
     value.padTo(len, elem)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /** Returns a parallel implementation of this collection.
    *
    *  @return  a parallel implementation of this collection
    */
   /*def par: ParSeq[Char] =
     value.par*/
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /** Partitions this `NumericString` in two strings according to a predicate.
    *

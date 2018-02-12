@@ -36,5 +36,5 @@ protected[scalatest] class ExampleTimeoutParallelSpec extends FunSpec with Paral
   
   override protected def sortingTimeout: Span = Span(1, Second)
 
-  //SCALATESTJS-ONLY override def newInstance = new ExampleTimeoutParallelSpec
+  //SCALATESTJS,NATIVE-ONLY override def newInstance = new ExampleTimeoutParallelSpec
 }

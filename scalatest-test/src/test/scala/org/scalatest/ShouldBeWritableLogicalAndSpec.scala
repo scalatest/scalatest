@@ -50,17 +50,17 @@ class ShouldBeWritableLogicalAndSpec extends FunSpec {
     FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   val tempDir = createTempDirectory()
   val writableFile = File.createTempFile("writable", "me", tempDir)
   writableFile.setWritable(true)
   
   val secretFile = new File(tempDir, "imaginary")
   secretFile.setWritable(false)
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY trait File { def isWritable: Boolean }
-  //SCALATESTJS-ONLY val writableFile = new File { val isWritable: Boolean = true }
-  //SCALATESTJS-ONLY val secretFile = new File { val isWritable: Boolean = false }
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY trait File { def isWritable: Boolean }
+  //SCALATESTJS,NATIVE-ONLY val writableFile = new File { val isWritable: Boolean = true }
+  //SCALATESTJS,NATIVE-ONLY val secretFile = new File { val isWritable: Boolean = false }
   
   describe("Readability matcher") {
     

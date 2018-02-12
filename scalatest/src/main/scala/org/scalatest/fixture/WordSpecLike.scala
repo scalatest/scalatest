@@ -47,7 +47,7 @@ StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
@@ -100,18 +100,18 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
@@ -135,12 +135,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
     engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
@@ -168,12 +168,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
@@ -558,10 +558,10 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * @param f the function which is the body of the scope
      */
     def when(f: => Unit)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
 
@@ -608,10 +608,10 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * @param f the function which is the body of the scope
      */
     def that(f: => Unit)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)
     }
 
@@ -634,10 +634,10 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * @param f the function which is the body of the scope
      */
     def which(f: => Unit)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)
     }
 
@@ -810,10 +810,10 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected def afterWord(text: String) = new AfterWord(text)
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   private[scalatest] val stackDepth = 3
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth: Int = 10
+  // SKIP-SCALATESTJS,NATIVE-END
+  //SCALATESTJS,NATIVE-ONLY private[scalatest] val stackDepth: Int = 10
 
   /**
    * Class that supports shorthand scope registration via the instance referenced from <code>WordSpecLike</code>'s <code>it</code> field.
@@ -1165,16 +1165,16 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
         val afterWordFunction =
           () => {
-            // SKIP-SCALATESTJS-START
+            // SKIP-SCALATESTJS,NATIVE-START
             val stackDepth = 10
-            // SKIP-SCALATESTJS-END
-            //SCALATESTJS-ONLY val stackDepth = 15
+            // SKIP-SCALATESTJS,NATIVE-END
+            //SCALATESTJS,NATIVE-ONLY val stackDepth = 15
             registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, pos, resultOfAfterWordApplication.f)
           }
-        // SKIP-SCALATESTJS-START
+        // SKIP-SCALATESTJS,NATIVE-START
         val stackDepth = 7
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 9
+        // SKIP-SCALATESTJS,NATIVE-END
+        //SCALATESTJS,NATIVE-ONLY val stackDepth = 9
         registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, pos, afterWordFunction)
       }
     }

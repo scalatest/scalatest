@@ -202,16 +202,17 @@ object Prettifier {
             case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+            case anArrayOps: mutable.ArrayOps[_] => "Array(" + (anArrayOps map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
               aGenMap.stringPrefix + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            // SKIP-SCALATESTJS-START
+            // SKIP-SCALATESTJS,NATIVE-START
             case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
             case anXMLNodeBuffer: xml.NodeBuffer =>
               xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
-            // SKIP-SCALATESTJS-END
+            // SKIP-SCALATESTJS,NATIVE-END
             case aGenTraversable: GenTraversable[_] =>
               val isSelf =
                 if (aGenTraversable.size == 1) {
@@ -226,7 +227,7 @@ object Prettifier {
                 aGenTraversable.toString
               else
                 aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-            // SKIP-SCALATESTJS-START
+            // SKIP-SCALATESTJS,NATIVE-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
               // let's do our best to prettify its element when it is not overriden
@@ -247,7 +248,7 @@ object Prettifier {
                 }.mkString(", ") + "}"
               else
                 theToString
-            // SKIP-SCALATESTJS-END
+            // SKIP-SCALATESTJS,NATIVE-END
             case anythingElse => anythingElse.toString
           }
         }

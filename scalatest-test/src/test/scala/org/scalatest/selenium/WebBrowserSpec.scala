@@ -39,7 +39,7 @@ import org.scalatest.time.Seconds
 import org.scalatest.time.Span
 import org.scalatest.time.SpanSugar
 import scala.reflect.ClassTag
-
+import org.scalatest.SharedHelpers.thisLineNumber
 
 trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
   def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int): Unit = {
@@ -157,19 +157,6 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
       fn("secret1").value should be ("first secret! second secret! third secret!")                   
     }
 
-  }
-
-  private[this] def myLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    st.foreach(s => println("--" + s.toString()))
-
-    if (!st(2).getMethodName.contains("myLineNumber"))
-      st(3).getLineNumber
-    else if (!st(3).getMethodName.contains("myLineNumber"))
-      st(4).getLineNumber
-    else
-      st(5).getLineNumber
   }
 
 }
@@ -1317,7 +1304,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
   
     it("should support capturing screenshot", Slow) {
-      go to "http://www.artima.com"
+      go to "http://www.scalatest.org"
       try {
         capture
         capture to ("MyScreenShot.png")
@@ -1330,7 +1317,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
     
     it("should support setting capture target directory", Slow) {
-      go to "http://www.artima.com"
+      go to "http://www.scalatest.org"
       val tempDir = new File(System.getProperty("java.io.tmpdir"))
       val targetDir1 = new File(tempDir, "scalatest-test-target1")
       val targetDir2 = new File(tempDir, "scalatest-test-target2")
@@ -2029,17 +2016,6 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       }
       """ should compile
     }
-  }
-  
-  def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNumber"))
-      st(2).getLineNumber
-    else if (!st(3).getMethodName.contains("thisLineNumber"))
-      st(3).getLineNumber
-    else
-      st(4).getLineNumber
   }
 }
 // class ParallelWebBrowserSpec extends WebBrowserSpec with ParallelTestExecution

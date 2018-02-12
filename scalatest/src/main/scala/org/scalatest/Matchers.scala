@@ -29,10 +29,10 @@ import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import TripleEqualsSupport.TripleEqualsInvocationOnSpread
-// SKIP-SCALATESTJS-START
+// SKIP-SCALATESTJS,NATIVE-START
 import MatchersHelper.accessProperty
 import MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 import scala.language.experimental.macros
 import scala.language.higherKinds
 import MatchersHelper.endWithRegexWithGroups
@@ -1796,7 +1796,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   import scala.language.implicitConversions
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))
@@ -1933,7 +1933,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol)(implicit prettifier: Prettifier, pos: source.Position): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol, prettifier, pos)
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2007,7 +2007,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     }
     */
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -2022,7 +2022,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     // TODO: Check the shouldBeTrues, are they sometimes always false or true?
     /**
@@ -2041,7 +2041,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       } else indicateSuccess(shouldBeTrue, FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
@@ -2057,7 +2057,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -3500,7 +3500,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -3554,7 +3554,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax:
@@ -4995,7 +4995,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -5055,7 +5055,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -5155,7 +5155,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     override def toString: String = "ResultOfBeWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
-  // SKIP-SCALATESTJS-START
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -5186,7 +5186,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedArray(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
-  // SKIP-SCALATESTJS-END
+  // SKIP-SCALATESTJS,NATIVE-END
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5680,7 +5680,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
     /**
      * This method enables the following syntax:
      *
@@ -5733,7 +5733,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
 
     /**
      * This method enables the following syntax:
@@ -7218,7 +7218,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       else indicateSuccess(FailureMessages.wasSameInstanceAs(prettifier, leftSideValue, resultOfSameInstanceAsApplication.right))
     }
 
-    // SKIP-SCALATESTJS-START
+    // SKIP-SCALATESTJS,NATIVE-START
 // TODO: Remember to write tests for inspector shorthands uncovering the bug below, always a empty because always true true passed to matchSym
     /**
      * This method enables the following syntax:
@@ -7274,7 +7274,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
       else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
-    // SKIP-SCALATESTJS-END
+    // SKIP-SCALATESTJS,NATIVE-END
     
     /**
      * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
