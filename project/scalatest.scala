@@ -36,11 +36,11 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.4"
 
-  val releaseVersion = "3.1.0"
+  val releaseVersion = "3.1.0-SNAP6"
   val previousReleaseVersion = "3.0.5"
 
   val scalacheckVersion = "1.13.5"
-  val nativeScalacheckVersion = "1.14.0-native-SNAPSHOT"
+  val nativeScalacheckVersion = "1.14.0-18db189-SNAPSHOT"
 
   val easyMockVersion = "3.2"
   val jmockVersion = "2.8.3"
@@ -88,7 +88,7 @@ object ScalatestBuild extends Build {
   def getJavaHome(scalaMajorVersion: String): Option[File] = {
     scalaMajorVersion match {
       case "2.10" | "2.11" =>  // force to use Java 6
-        if (!System.getProperty("java.version").startsWith("1.6") && false)
+        if (!System.getProperty("java.version").startsWith("1.6") && System.getProperty("scalatest.skip.jdk.check") != "true")
           throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
 
       case _ =>
@@ -346,7 +346,10 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value)
+      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -359,7 +362,10 @@ object ScalatestBuild extends Build {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
-      }
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
     lazy val commonTestNative = Project("commonTestNative", file("common-test.native"))
@@ -371,7 +377,10 @@ object ScalatestBuild extends Build {
           Def.task{
             GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
           }.taskValue
-        }
+        },
+        publishArtifact := false,
+        publish := {},
+        publishLocal := {}
       ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
@@ -386,6 +395,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
+      publishArtifact := false,
       publish := {},
       publishLocal := {}
     )
@@ -406,6 +416,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
+      publishArtifact := false,
       publish := {},
       publishLocal := {}, 
       deleteJsDependenciesTask <<= (classDirectory in Compile) map { jsDependenciesFile =>
@@ -429,6 +440,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
+      publishArtifact := false,
       publish := {},
       publishLocal := {}
     ).enablePlugins(ScalaNativePlugin)
@@ -491,7 +503,8 @@ object ScalatestBuild extends Build {
       },
       resourceGenerators in Compile += {
         Def.task {
-          GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenScalacticJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -1856,9 +1869,9 @@ object ScalatestBuild extends Build {
   // doc task to rebuild scaladocs from scratch each time.
   // Without that it only rebuilds if needed.
   //
-  def docTask(docDir: File, srcDir: File, projectName: String): File = {
+  def docTask(docDir: File, resDir: File, projectName: String): File = {
     val docLibDir = docDir / "lib"
-    val htmlSrcDir = srcDir / "html"
+    val htmlSrcDir = resDir / "html"
     val cssFile = docLibDir / "template.css"
     val addlCssFile = htmlSrcDir / "addl.css"
 
@@ -1932,7 +1945,7 @@ object ScalatestBuild extends Build {
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
-      (sourceManaged in Compile).value,
+      (resourceManaged in Compile).value,
       name.value)
 }
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"
