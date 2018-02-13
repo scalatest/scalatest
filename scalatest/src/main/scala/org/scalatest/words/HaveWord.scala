@@ -157,7 +157,7 @@ final class HaveWord {
 
         val firstFailureOption = results.find(pv => !pv.matches)
 
-        val justOneProperty = propertyMatchers.length == 0
+        val justOneProperty = propertyMatchers.isEmpty
 
         firstFailureOption match {
 
