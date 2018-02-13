@@ -163,12 +163,12 @@ and using Java 8 (for Scala 2.12 and 2.13):
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned ++2.11.12 "project scalatestAppJS" clean publishSigned ++2.10.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned ++2.10.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.13.0-M2 clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt ++2.12.4 clean publishSigned "project scalatestAppJS" clean publishSigned ++2.13.0-M2 clean publishSigned "project scalatestAppJS" clean publishSigned`
 
 To publish scalactic, scalatest and scalatest-app (for Scala-native version 2.11, and make sure you're on Java 8) to Sonatype, use the following command: 
 
-  `$ sbt ++2.11.12 "project scalatestAppNative" clean publishSigned`
+  `$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 "project scalatestAppNative" clean publishSigned`
