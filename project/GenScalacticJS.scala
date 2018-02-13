@@ -16,6 +16,7 @@
 
 import io.Source
 import java.io.{BufferedWriter, File, FileWriter}
+import sbt.IO
 
 import GenCompatibleClasses.generatorSource
 
@@ -79,11 +80,27 @@ object GenScalacticJS {
     }
   }
 
+  def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        IO.copyFile(sourceFile, destFile)
+      destFile
+    }
+  }
+
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
     copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
     GenVersions.genScalacticVersions(new File(targetDir, "org/scalactic"), version, scalaVersion)
+
+  def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
+  }
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
