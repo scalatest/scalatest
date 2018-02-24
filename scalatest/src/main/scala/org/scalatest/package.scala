@@ -118,4 +118,9 @@ package object scalatest {
 
   @deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
   type FunSuiteLike = funsuite.AnyFunSuite
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.funsuite.AsyncFunSuite instead")
+  type AsyncFunSuiteLike = funsuite.AsyncFunSuite
+  // SKIP-SCALATESTNATIVE-END
 }
