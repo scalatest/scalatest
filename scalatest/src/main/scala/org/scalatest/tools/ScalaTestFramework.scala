@@ -183,6 +183,12 @@ class ScalaTestFramework extends SbtFramework {
           if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
             throw new IllegalArgumentException("Property name '" + Suite.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
           configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)))
+
+          chosenStyleSet.foreach { chosenStyle =>
+            if (Suite.deprecatedStyles.contains(chosenStyle))
+              println(Resources.deprecatedChosenStyleWarning(chosenStyle, Suite.deprecatedStyles(chosenStyle).mkString(Resources.spaceOrSpace)))
+          }
+
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))

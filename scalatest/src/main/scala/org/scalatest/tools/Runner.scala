@@ -942,6 +942,11 @@ object Runner {
       else
         propertiesMap + (CHOSEN_STYLES -> chosenStyleSet)
 
+    chosenStyleSet.foreach { chosenStyle =>
+      if (Suite.deprecatedStyles.contains(chosenStyle))
+        println(Resources.deprecatedChosenStyleWarning(chosenStyle, Suite.deprecatedStyles(chosenStyle).mkString(Resources.spaceOrSpace)))
+    }
+
     val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
       slowpokeConfig match {
         case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)

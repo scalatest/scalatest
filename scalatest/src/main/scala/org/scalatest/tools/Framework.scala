@@ -976,6 +976,11 @@ import java.net.{ServerSocket, InetAddress}
         propertiesMap
       else
         propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)
+
+    chosenStyleSet.foreach { chosenStyle =>
+      if (Suite.deprecatedStyles.contains(chosenStyle))
+        println(Resources.deprecatedChosenStyleWarning(chosenStyle, Suite.deprecatedStyles(chosenStyle).mkString(Resources.spaceOrSpace)))
+    }
       
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")

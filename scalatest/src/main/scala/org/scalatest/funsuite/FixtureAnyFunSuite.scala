@@ -559,7 +559,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     *
     * @return <code>org.scalatest.fixture.FunSuite</code>
     */
-  final override val styleName: String = "org.scalatest.fixture.FunSuite"
+  final override val styleName: String = oldStyleName.getOrElse("org.scalatest.funsuite.FixtureAnyFunSuite")
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
