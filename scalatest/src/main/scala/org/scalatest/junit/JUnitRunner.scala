@@ -137,7 +137,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
     try {
       val testsToRun = extractTestNamesFromDescription(description)
       val excludedTestNames = allTests(suiteToRun) -- testsToRun
-      val excludedTestsByTag = Map(suiteToRun.suiteId -> excludedTestNames.map(testName => testName -> Set(excludedTestTag)).toMap)
+      val excludedTestsByTag = Map(suiteToRun.suiteName -> excludedTestNames.map(testName => testName -> Set(excludedTestTag)).toMap)
 
       val filter = Filter(tagsToExclude = Set(excludedTestTag, Filter.IgnoreTag), dynaTags = DynaTags(Map.empty, excludedTestsByTag))
 
