@@ -249,7 +249,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 }
 
 object Filter {
-  private final val IgnoreTag = "org.scalatest.Ignore"
+  final val IgnoreTag = "org.scalatest.Ignore"
 
 /**
  * Factory method for a <code>Filter</code> initialized with the passed <code>tagsToInclude</code>

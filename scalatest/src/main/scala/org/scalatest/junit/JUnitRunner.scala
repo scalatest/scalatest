@@ -89,9 +89,9 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
   }
 
   private def allTests(suite: Suite): Set[String] = {
-     for {
-       nested <- suite.nestedSuites
-     } yield allTests(nested)
+   for {
+     nested <- suite.nestedSuites
+   } yield allTests(nested)
 
     suite.testNames
   }
@@ -139,7 +139,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
       val excludedTestNames = allTests(suiteToRun) -- testsToRun
       val excludedTestsByTag = Map(suiteToRun.suiteId -> excludedTestNames.map(testName => testName -> Set(excludedTestTag)).toMap)
 
-      val filter = Filter(tagsToExclude = Set(excludedTestTag), dynaTags = DynaTags(Map.empty, excludedTestsByTag))
+      val filter = Filter(tagsToExclude = Set(excludedTestTag, Filter.IgnoreTag), dynaTags = DynaTags(Map.empty, excludedTestsByTag))
 
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
