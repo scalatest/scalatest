@@ -1360,8 +1360,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * Suite style name.
    */
   val styleName: String = "org.scalatest.Suite"
-
-  private[scalatest] lazy val oldStyleName: Option[String] = None
   
   /**
    * Provides a <code>TestData</code> instance for the passed test name, given the passed config map.
@@ -2039,11 +2037,6 @@ used for test events like succeeded/failed, etc.
     else
       None
   }
-
-  private[scalatest] val deprecatedStyles =
-    Map(
-      "org.scalatest.FunSuite" -> Set("org.scalatest.funsuite.AnyFunSuite", "org.scalatest.funsuite.AsyncFunSuite")
-    )
 
   def checkChosenStyles(configMap: ConfigMap, styleName: String): Unit = {
 

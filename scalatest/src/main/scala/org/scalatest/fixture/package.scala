@@ -21,14 +21,10 @@ package org.scalatest
 package object fixture {
 
   @deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSuite instead")
-  trait FunSuiteLike extends org.scalatest.funsuite.FixtureAnyFunSuite {
-    private[scalatest] override lazy val oldStyleName: Option[String] = Some("org.scalatest.fixture.FunSuite")
-  }
+  type FunSuiteLike = org.scalatest.funsuite.FixtureAnyFunSuite
 
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.funsuite.FixtureAsyncFunSuite instead")
-  trait AsyncFunSuiteLike extends org.scalatest.funsuite.FixtureAsyncFunSuite {
-    private[scalatest] override lazy val oldStyleName: Option[String] = Some("org.scalatest.fixture.FunSuite")
-  }
+  type AsyncFunSuiteLike = org.scalatest.funsuite.FixtureAsyncFunSuite
   // SKIP-SCALATESTNATIVE-END
 }

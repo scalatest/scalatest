@@ -117,14 +117,10 @@ package object scalatest {
   // SKIP-SCALATESTJS,NATIVE-END
 
   @deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
-  trait FunSuiteLike extends funsuite.AnyFunSuite {
-    private[scalatest] override lazy val oldStyleName: Option[String] = Some("org.scalatest.FunSuite")
-  }
+  type FunSuiteLike = funsuite.AnyFunSuite
 
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.funsuite.AsyncFunSuite instead")
-  trait AsyncFunSuiteLike extends funsuite.AsyncFunSuite {
-    private[scalatest] override lazy val oldStyleName: Option[String] = Some("org.scalatest.FunSuite")
-  }
+  type AsyncFunSuiteLike = funsuite.AsyncFunSuite
   // SKIP-SCALATESTNATIVE-END
 }

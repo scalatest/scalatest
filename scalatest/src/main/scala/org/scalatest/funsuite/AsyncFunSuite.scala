@@ -15,7 +15,7 @@
  */
 package org.scalatest.funsuite
 
-import org.scalactic._
+import org.scalactic.source
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
@@ -2390,7 +2390,8 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
   /**
     * Suite style name.
     */
-  final override val styleName: String = oldStyleName.getOrElse("org.scalatest.funsuite.AsyncFunSuite")
+  @deprecated("styleName is deprecated and will be removed in the future version of ScalaTest, because FunSuite will be refactored as its own module.")
+  final override val styleName: String = "org.scalatest.FunSuite"
 
   // Inherits scaladoc
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)

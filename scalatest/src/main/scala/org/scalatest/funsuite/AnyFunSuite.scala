@@ -1778,7 +1778,8 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
   /**
    * Suite style name.
    */
-  final override val styleName: String = oldStyleName.getOrElse("org.scalatest.funsuite.AnyFunSuite")
+  @deprecated("styleName is deprecated and will be removed in the future version of ScalaTest, because FunSuite will be refactored as its own module.")
+  final override val styleName: String = "org.scalatest.FunSuite"
     
   // Inherits scaladoc
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
