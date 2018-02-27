@@ -22,14 +22,14 @@ import Suite.autoTagClassAnnotations
 
 /**
   * Enables testing of asynchronous code without blocking,
-  * using a style consistent with traditional <code>FunSuite</code> tests.
+  * using a style consistent with traditional <code>AnyFunSuite</code> tests.
   *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
-  * <code>AsyncFunSuite</code> is intended to enable users of <a href="FunSuite.html"><code>FunSuite</code></a>
-  * to write non-blocking asynchronous tests that are consistent with their traditional <code>FunSuite</code> tests.
+  * <code>AsyncFunSuite</code> is intended to enable users of <a href="AnyFunSuite.html"><code>AnyFunSuite</code></a>
+  * to write non-blocking asynchronous tests that are consistent with their traditional <code>AnyFunSuite</code> tests.
   * <em>Note: <code>AsyncFunSuite</code> is intended for use in special situations where non-blocking asynchronous
-  * testing is needed, with class <code>FunSuite</code> used for general needs.</em>
+  * testing is needed, with class <code>AnyFunSuite</code> used for general needs.</em>
   * </td></tr></table>
   *
   * <p>
@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.asyncfunsuite
 
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import scala.concurrent.Future
   *
   * class AddSuite extends AsyncFunSuite {
@@ -251,7 +251,7 @@ import Suite.autoTagClassAnnotations
   * consistently hang every time you run it. (If a test is hanging, and you're not sure which one it is,
   * enable <a href="Runner.scala#slowpokeNotifications">slowpoke notifications</a>.) If you really do
   * want to block in your tests, you may wish to just use a
-  * traditional <a href="FunSuite.html"><code>FunSuite</code></a> with
+  * traditional <a href="AnyFunSuite.html"><code>AnyFunSuite</code></a> with
   * <a href="concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead. Alternatively, you could override
   * the <code>executionContext</code> and use a traditional <code>ExecutionContext</code> backed by a thread pool. This
   * will enable you to block in an asynchronous-style test on the JVM, but you'll need to worry about synchronizing access to
@@ -307,7 +307,7 @@ import Suite.autoTagClassAnnotations
   * parallel execution is enabled in the build, tests in an async-style suite will be started in parallel, using threads from
   * the <a href="Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
   * <code>executionContext</code>. If you are using ScalaTest's serial execution context, the JVM default, asynchronous tests will
-  * run in parallel very much like traditional (such as <a href="FunSuite.html"><code>FunSuite</code></a>) tests run in
+  * run in parallel very much like traditional (such as <a href="AnyFunSuite.html"><code>AnyFunSuite</code></a>) tests run in
   * parallel: 1) Because <code>ParallelTestExecution</code> extends
   * <code>OneInstancePerTest</code>, each test will run in its own instance of the test class, you need not worry about synchronizing
   * access to mutable instance state shared by different tests in the same suite.
@@ -513,7 +513,7 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.asyncfunsuite.ignoreall
   *
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import scala.concurrent.Future
   * import org.scalatest.Ignore
   *
@@ -592,7 +592,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends AsyncFunSuite with GivenWhenThen {
+  * class SetSuite extends funsuite.AsyncFunSuite with GivenWhenThen {
   *
   *   test("An element can be added to an empty mutable Set") {
   *
@@ -647,7 +647,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends AsyncFunSuite with GivenWhenThen {
+  * class SetSuite extends funsuite.AsyncFunSuite with GivenWhenThen {
   *
   *   markup { """
   *
@@ -725,7 +725,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends AsyncFunSuite {
+  * class SetSuite extends funsuite.AsyncFunSuite {
   *
   *   test("An element can be added to an empty mutable Set") {
   *
@@ -800,7 +800,7 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.asyncfunsuite.pending
   *
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import scala.concurrent.Future
   *
   * class AddSuite extends AsyncFunSuite {
@@ -889,7 +889,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import org.scalatest.tagobjects.Slow
   * import scala.concurrent.Future
   *
@@ -1074,7 +1074,7 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.asyncfunsuite.getfixture
 
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import collection.mutable.ListBuffer
   * import scala.concurrent.Future
   *
@@ -1195,7 +1195,7 @@ import Suite.autoTagClassAnnotations
   * import org.scalatest._
   * import scala.concurrent.Future
   *
-  * class ExampleSuite extends AsyncFunSuite {
+  * class ExampleSuite extends funsuite.AsyncFunSuite {
   *
   *   override def withFixture(test: NoArgAsyncTest) = {
   *
@@ -1328,7 +1328,7 @@ import Suite.autoTagClassAnnotations
   * import DbServer._
   * import java.util.UUID.randomUUID
   *
-  * class ExampleSuite extends AsyncFunSuite {
+  * class ExampleSuite extends funsuite.AsyncFunSuite {
   *
   *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
   *     val dbName = randomUUID.toString // generate a unique db name
@@ -1464,7 +1464,7 @@ import Suite.autoTagClassAnnotations
   *     }
   * }
   *
-  * class ExampleSuite extends fixture.AsyncFunSuite {
+  * class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
   *
   *   type FixtureParam = StringActor
   *
@@ -1501,7 +1501,7 @@ import Suite.autoTagClassAnnotations
   * In this example, the tests required one fixture object, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
   * simply define the <code>FixtureParam</code> type to be a tuple containing the objects or, alternatively, a case class containing
   * the objects.  For more information on the <code>withFixture(OneArgAsyncTest)</code> technique, see
-  * the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
+  * the <a href="FixtureAsyncFunSuite.html">documentation for <code>FixtureAsyncFunSuite</code></a>.
   * </p>
   *
   * <a name="beforeAndAfter"></a>
@@ -1519,7 +1519,7 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.asyncfunsuite.beforeandafter
   *
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   * import org.scalatest.BeforeAndAfter
   * import collection.mutable.ListBuffer
   * import scala.concurrent.Future
@@ -1688,7 +1688,7 @@ import Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
+  * class ExampleSuite extends funsuite.AsyncFunSuite with Builder with Buffer {
   *
   *   test("Testing should be easy") {
   *     builderActor ! Append("easy!")
@@ -1726,7 +1726,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * class Example2Suite extends AsyncFunSuite with Buffer with Builder
+  * class Example2Suite extends funsuite.AsyncFunSuite with Buffer with Builder
   * </pre>
   *
   * <p>
@@ -1734,7 +1734,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * class Example3Suite extends AsyncFunSuite with Builder
+  * class Example3Suite extends funsuite.AsyncFunSuite with Builder
   * </pre>
   *
   * <p>
@@ -1817,7 +1817,7 @@ import Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
+  * class ExampleSuite extends funsuite.AsyncFunSuite with Builder with Buffer {
   *
   *   test("Testing should be easy") {
   *     builderActor ! Append("easy!")
@@ -1950,7 +1950,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * import org.scalatest.AsyncFunSuite
+  * import org.scalatest.funsuite.AsyncFunSuite
   *
   * trait AsyncFunSuiteStackBehaviors { this: AsyncFunSuite =&gt;
   *
@@ -2212,7 +2212,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>AsyncFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -2222,7 +2222,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>AsyncFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -2251,7 +2251,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * Register a test with the specified name, optional tags, and function value that takes no arguments.
     * This method will register the test for later execution via an invocation of one of the <code>run</code>
     * methods. The passed test name must not have been registered previously on
-    * this <code>FunSuite</code> instance.
+    * this <code>AsyncFunSuite</code> instance.
     *
     * @param testName the name of the test
     * @param testTags the optional list of tags for this test
@@ -2271,7 +2271,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
     * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
     * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-    * this <code>FunSuite</code> instance.
+    * this <code>AsyncFunSuite</code> instance.
     *
     * @param testName the name of the test
     * @param testTags the optional list of tags for this test
@@ -2285,7 +2285,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
   }
 
   /**
-    * An immutable <code>Set</code> of test names. If this <code>FunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
+    * An immutable <code>Set</code> of test names. If this <code>AsyncFunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
     *
     * <p>
     * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -2303,7 +2303,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * @param args the <code>Args</code> for this run
     * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
     *
-    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FunSuite</code>
+    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>AsyncFunSuite</code>
     * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
     *     is <code>null</code>.
     */
@@ -2331,7 +2331,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
 
   /**
     * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-    * the <code>Set</code> of tags for the test. If this <code>FunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
+    * the <code>Set</code> of tags for the test. If this <code>AsyncFunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
     *
     * <p>
     * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -2347,7 +2347,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-    * Run zero to many of this <code>FunSuite</code>'s tests.
+    * Run zero to many of this <code>AsyncFunSuite</code>'s tests.
     *
     * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
     *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -2370,7 +2370,7 @@ trait AsyncFunSuite extends AsyncTestSuite with AsyncTestRegistration with Infor
     * Registers shared tests.
     *
     * <p>
-    * This method enables the following syntax for shared tests in a <code>FunSuite</code>:
+    * This method enables the following syntax for shared tests in a <code>AsyncFunSuite</code>:
     * </p>
     *
     * <pre class="stHighlight">

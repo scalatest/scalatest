@@ -20,8 +20,8 @@ import org.scalatest._
 /**
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.FixtureAnyFunSuite instead.
   */
-@deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSuite instead")
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
+@deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSuite instead")
 abstract class FunSuite extends FunSuiteLike {
 
   /**

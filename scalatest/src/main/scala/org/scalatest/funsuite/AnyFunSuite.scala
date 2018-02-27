@@ -20,24 +20,24 @@ import org.scalatest._
 import Suite.autoTagClassAnnotations
 
 /**
-  * A suite of tests in which each test is represented as a function value. The &ldquo;<code>Fun</code>&rdquo; in <code>FunSuite</code> stands
+  * A suite of tests in which each test is represented as a function value. The &ldquo;<code>Fun</code>&rdquo; in <code>AnyFunSuite</code> stands
   * for &ldquo;function.&rdquo;
   *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
-  * For teams coming from xUnit, <code>FunSuite</code> feels comfortable and familiar while still giving some benefits of BDD: <code>FunSuite</code> makes it easy to
+  * For teams coming from xUnit, <code>AnyFunSuite</code> feels comfortable and familiar while still giving some benefits of BDD: <code>AnyFunSuite</code> makes it easy to
   * write descriptive test names, natural to write focused tests, and generates specification-like output that can facilitate communication among
   * stakeholders.
   * </td></tr></table>
   *
-  * Here's an example <code>FunSuite</code>:
+  * Here's an example <code>AnyFunSuite</code>:
   *
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   *
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends AnyFunSuite {
   *
   *   test("An empty Set should have size 0") {
   *     assert(Set.empty.size === 0)
@@ -52,7 +52,7 @@ import Suite.autoTagClassAnnotations
   * </pre>
   *
   * <p>
-  * &ldquo;<code>test</code>&rdquo; is a method, defined in <code>FunSuite</code>, which will be invoked
+  * &ldquo;<code>test</code>&rdquo; is a method, defined in <code>AnyFunSuite</code>, which will be invoked
   * by the primary constructor of <code>SetSuite</code>. You specify the name of the test as
   * a string between the parentheses, and the test code itself between curly braces.
   * The test code is a function passed as a by-name parameter to <code>test</code>, which registers
@@ -60,23 +60,23 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <p>
-  * A <code>FunSuite</code>'s lifecycle has two phases: the <em>registration</em> phase and the
+  * An <code>AnyFunSuite</code>'s lifecycle has two phases: the <em>registration</em> phase and the
   * <em>ready</em> phase. It starts in registration phase and enters ready phase the first time
   * <code>run</code> is called on it. It then remains in ready phase for the remainder of its lifetime.
   * </p>
   *
   * <p>
-  * Tests can only be registered with the <code>test</code> method while the <code>FunSuite</code> is
-  * in its registration phase. Any attempt to register a test after the <code>FunSuite</code> has
-  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>FunSuite</code>,
+  * Tests can only be registered with the <code>test</code> method while the <code>AnyFunSuite</code> is
+  * in its registration phase. Any attempt to register a test after the <code>AnyFunSuite</code> has
+  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AnyFunSuite</code>,
   * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
-  * of using <code>FunSuite</code> is to register tests during object construction as is done in all
+  * of using <code>AnyFunSuite</code> is to register tests during object construction as is done in all
   * the examples shown here. If you keep to the recommended style, you should never see a
   * <code>TestRegistrationClosedException</code>.
   * </p>
   *
   * <p>
-  * <em>Note: <code>FunSuite</code> was in part inspired by <a href="http://rehersal.sourceforge.net/documentation.shtml" target="_blank">Rehersal</a>,
+  * <em>Note: <code>AnyFunSuite</code> was in part inspired by <a href="http://rehersal.sourceforge.net/documentation.shtml" target="_blank">Rehersal</a>,
   * an early test framework for Scala.</em>
   * </p>
   *
@@ -84,16 +84,16 @@ import Suite.autoTagClassAnnotations
   *
   * <p>
   * To support the common use case of temporarily disabling a test, with the
-  * good intention of resurrecting the test at a later time, <code>FunSuite</code> provides registration
+  * good intention of resurrecting the test at a later time, <code>AnyFunSuite</code> provides registration
   * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
   * </p>
   *
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.ignore
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   *
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends AnyFunSuite {
   *
   *   ignore("An empty Set should have size 0") {
   *     assert(Set.empty.size === 0)
@@ -132,11 +132,11 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.ignoreall
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   * import org.scalatest.Ignore
   *
   * @Ignore
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends AnyFunSuite {
   *
   *   test("An empty Set should have size 0") {
   *     assert(Set.empty.size === 0)
@@ -173,11 +173,11 @@ import Suite.autoTagClassAnnotations
   * <a name="informers"></a><h2>Informers</h2>
   *
   * <p>
-  * One of the parameters to <code>FunSuite</code>'s <code>run</code> method is a <code>Reporter</code>, which
+  * One of the parameters to <code>AnyFunSuite</code>'s <code>run</code> method is a <code>Reporter</code>, which
   * will collect and report information about the running suite of tests.
   * Information about suites and tests that were run, whether tests succeeded or failed,
   * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
-  * Most often the reporting done by default by <code>FunSuite</code>'s methods will be sufficient, but
+  * Most often the reporting done by default by <code>AnyFunSuite</code>'s methods will be sufficient, but
   * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
   * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information
   * to the current <code>Reporter</code> is provided via the <code>info</code> parameterless method.
@@ -193,7 +193,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends FunSuite with GivenWhenThen {
+  * class SetSuite extends funsuite.AnyFunSuite with GivenWhenThen {
   *
   *   test("An element can be added to an empty mutable Set") {
   *
@@ -215,7 +215,7 @@ import Suite.autoTagClassAnnotations
   * </pre>
   *
   *
-  * If you run this <code>FunSuite</code> from the interpreter, you will see the following output:
+  * If you run this <code>AnyFunSuite</code> from the interpreter, you will see the following output:
   *
   * <pre class="stREPL">
   * scala&gt; org.scalatest.run(new SetSuite)
@@ -231,14 +231,14 @@ import Suite.autoTagClassAnnotations
   * <a name="documenters"></a><h2>Documenters</h2>
   *
   * <p>
-  * <code>FunSuite</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+  * <code>AnyFunSuite</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
   * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
   * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
   * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
   * </p>
   *
   * <p>
-  * Here's an example <code>FunSuite</code> that uses <code>markup</code>:
+  * Here's an example <code>AnyFunSuite</code> that uses <code>markup</code>:
   * </p>
   *
   * <pre class="stHighlight">
@@ -247,7 +247,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends FunSuite with GivenWhenThen {
+  * class SetSuite extends funsuite.AnyFunSuite with GivenWhenThen {
   *
   *   markup { """
   *
@@ -324,7 +324,7 @@ import Suite.autoTagClassAnnotations
   * import collection.mutable
   * import org.scalatest._
   *
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends funsuite.AnyFunSuite {
   *
   *   test("An element can be added to an empty mutable Set") {
   *
@@ -398,7 +398,7 @@ import Suite.autoTagClassAnnotations
   *
   * <p>
   * Although pending tests may be used more often in specification-style suites, such as
-  * <code>org.scalatest.FunSpec</code>, you can also use it in <code>FunSuite</code>, like this:
+  * <code>org.scalatest.funspec.AnyFunSpec</code>, you can also use it in <code>AnyFunSuite</code>, like this:
   * </p>
   *
   * <pre class="stHighlight">
@@ -406,7 +406,7 @@ import Suite.autoTagClassAnnotations
   *
   * import org.scalatest._
   *
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends funsuite.AnyFunSuite {
   *
   *   test("An empty Set should have size 0") (pending)
   *
@@ -464,9 +464,9 @@ import Suite.autoTagClassAnnotations
   * <a name="taggingTests"></a><h2>Tagging tests</h2>
   *
   * <p>
-  * A <code>FunSuite</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
-  * As with any suite, when executing a <code>FunSuite</code>, groups of tests can
-  * optionally be included and/or excluded. To tag a <code>FunSuite</code>'s tests,
+  * A <code>AnyFunSuite</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
+  * As with any suite, when executing a <code>AnyFunSuite</code>, groups of tests can
+  * optionally be included and/or excluded. To tag a <code>AnyFunSuite</code>'s tests,
   * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
   * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
   * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
@@ -474,7 +474,7 @@ import Suite.autoTagClassAnnotations
   * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
   * defined a tag annotation interface with fully qualified name,
   * <code>com.mycompany.tags.DbTest</code>, then you could
-  * create a matching tag for <code>FunSuite</code>s like this:
+  * create a matching tag for <code>AnyFunSuite</code>s like this:
   * </p>
   *
   * <pre class="stHighlight">
@@ -486,14 +486,14 @@ import Suite.autoTagClassAnnotations
   * </pre>
   *
   * <p>
-  * Given these definitions, you could place <code>FunSuite</code> tests into groups with tags like this:
+  * Given these definitions, you could place <code>AnyFunSuite</code> tests into groups with tags like this:
   * </p>
   *
   * <pre class="stHighlight">
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   * import org.scalatest.tagobjects.Slow
   *
-  * class SetSuite extends FunSuite {
+  * class SetSuite extends AnyFunSuite {
   *
   *   test("An empty Set should have size 0", Slow) {
   *     assert(Set.empty.size === 0)
@@ -525,7 +525,7 @@ import Suite.autoTagClassAnnotations
   *
   * <p>
   * It is recommended, though not required, that you create a corresponding tag annotation when you
-  * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>FunSuite</code> in
+  * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>AnyFunSuite</code> in
   * one stroke by annotating the class. For more information and examples, see the
   * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
   * tag each test individually at the test site.
@@ -673,10 +673,10 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.getfixture
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   * import collection.mutable.ListBuffer
   *
-  * class ExampleSuite extends FunSuite {
+  * class ExampleSuite extends AnyFunSuite {
   *
   *   class Fixture {
   *     val builder = new StringBuilder("ScalaTest is ")
@@ -731,9 +731,9 @@ import Suite.autoTagClassAnnotations
   * package org.scalatest.examples.funsuite.fixturecontext
   *
   * import collection.mutable.ListBuffer
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   *
-  * class ExampleSuite extends FunSuite {
+  * class ExampleSuite extends AnyFunSuite {
   *
   *   trait Builder {
   *     val builder = new StringBuilder("ScalaTest is ")
@@ -830,7 +830,7 @@ import Suite.autoTagClassAnnotations
   * import java.io.File
   * import org.scalatest._
   *
-  * class ExampleSuite extends FunSuite {
+  * class ExampleSuite extends funsuite.AnyFunSuite {
   *
   *   override def withFixture(test: NoArgTest) = {
   *
@@ -908,12 +908,12 @@ import Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   * import DbServer._
   * import java.util.UUID.randomUUID
   * import java.io._
   *
-  * class ExampleSuite extends FunSuite {
+  * class ExampleSuite extends AnyFunSuite {
   *
   *   def withDatabase(testCode: Db =&gt; Any) {
   *     val dbName = randomUUID.toString
@@ -1011,10 +1011,10 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.oneargtest
   *
-  * import org.scalatest.fixture
+  * import org.scalatest.funsuite
   * import java.io._
   *
-  * class ExampleSuite extends fixture.FunSuite {
+  * class ExampleSuite extends funsuite.FixtureAnyFunSuite {
   *
   *   case class FixtureParam(file: File, writer: FileWriter)
   *
@@ -1049,7 +1049,7 @@ import Suite.autoTagClassAnnotations
   * <p>
   * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
   * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
-  * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/FunSuite.html">documentation for <code>fixture.FunSuite</code></a>.
+  * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="FixtureAnyFunSuite.html">documentation for <code>funsuite.FixtureAnyFunSuite</code></a>.
   * </p>
   *
   * <a name="beforeAndAfter"></a>
@@ -1067,11 +1067,11 @@ import Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.beforeandafter
   *
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   * import org.scalatest.BeforeAndAfter
   * import collection.mutable.ListBuffer
   *
-  * class ExampleSuite extends FunSuite with BeforeAndAfter {
+  * class ExampleSuite extends AnyFunSuite with BeforeAndAfter {
   *
   *   val builder = new StringBuilder
   *   val buffer = new ListBuffer[String]
@@ -1155,7 +1155,7 @@ import Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends FunSuite with Builder with Buffer {
+  * class ExampleSuite extends funsuite.AnyFunSuite with Builder with Buffer {
   *
   *   test("Testing should be easy") {
   *     builder.append("easy!")
@@ -1181,7 +1181,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * class Example2Suite extends FunSuite with Buffer with Builder
+  * class Example2Suite extends AnyFunSuite with Buffer with Builder
   * </pre>
   *
   * <p>
@@ -1189,7 +1189,7 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * class Example3Suite extends FunSuite with Builder
+  * class Example3Suite extends AnyFunSuite with Builder
   * </pre>
   *
   * <p>
@@ -1238,7 +1238,7 @@ import Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends FunSuite with Builder with Buffer {
+  * class ExampleSuite extends funsuite.AnyFunSuite with Builder with Buffer {
   *
   *   test("Testing should be easy") {
   *     builder.append("easy!")
@@ -1277,10 +1277,10 @@ import Suite.autoTagClassAnnotations
   * <p>
   * Sometimes you may want to run the same test code on different fixture objects. In other words, you may want to write tests that are "shared"
   * by different fixture objects.
-  * To accomplish this in a <code>FunSuite</code>, you first place shared tests in
+  * To accomplish this in a <code>AnyFunSuite</code>, you first place shared tests in
   * <em>behavior functions</em>. These behavior functions will be
-  * invoked during the construction phase of any <code>FunSuite</code> that uses them, so that the tests they contain will
-  * be registered as tests in that <code>FunSuite</code>.
+  * invoked during the construction phase of any <code>AnyFunSuite</code> that uses them, so that the tests they contain will
+  * be registered as tests in that <code>AnyFunSuite</code>.
   * For example, given this stack class:
   * </p>
   *
@@ -1326,23 +1326,23 @@ import Suite.autoTagClassAnnotations
   * <em>etc</em>. You may find you have several tests that make sense any time the stack is non-empty. Thus you'd ideally want to run
   * those same tests for three stack fixture objects: a full stack, a stack with a one item, and a stack with one item less than
   * capacity. With shared tests, you can factor these tests out into a behavior function, into which you pass the
-  * stack fixture to use when running the tests. So in your <code>FunSuite</code> for stack, you'd invoke the
+  * stack fixture to use when running the tests. So in your <code>AnyFunSuite</code> for stack, you'd invoke the
   * behavior function three times, passing in each of the three stack fixtures so that the shared tests are run for all three fixtures.
   * </p>
   *
   * <p>
-  * You can define a behavior function that encapsulates these shared tests inside the <code>FunSuite</code> that uses them. If they are shared
-  * between different <code>FunSuite</code>s, however, you could also define them in a separate trait that is mixed into
-  * each <code>FunSuite</code> that uses them.
+  * You can define a behavior function that encapsulates these shared tests inside the <code>AnyFunSuite</code> that uses them. If they are shared
+  * between different <code>AnyFunSuite</code>s, however, you could also define them in a separate trait that is mixed into
+  * each <code>AnyFunSuite</code> that uses them.
   * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStack</code> behavior function (in this case, a
   * behavior <em>method</em>) is defined in a trait along with another
   * method containing shared tests for non-full stacks:
   * </p>
   *
   * <pre class="stHighlight">
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   *
-  * trait FunSuiteStackBehaviors { this: FunSuite =&gt;
+  * trait FunSuiteStackBehaviors { this: AnyFunSuite =&gt;
   *
   *   def nonEmptyStack(createNonEmptyStack: =&gt; Stack[Int], lastItemAdded: Int) {
   *
@@ -1385,7 +1385,7 @@ import Suite.autoTagClassAnnotations
   * </pre>
   *
   * <p>
-  * Given these behavior functions, you could invoke them directly, but <code>FunSuite</code> offers a DSL for the purpose,
+  * Given these behavior functions, you could invoke them directly, but <code>AnyFunSuite</code> offers a DSL for the purpose,
   * which looks like this:
   * </p>
   *
@@ -1411,9 +1411,9 @@ import Suite.autoTagClassAnnotations
   * </p>
   *
   * <pre class="stHighlight">
-  * import org.scalatest.FunSuite
+  * import org.scalatest.funsuite.AnyFunSuite
   *
-  * class StackFunSuite extends FunSuite with FunSuiteStackBehaviors {
+  * class StackFunSuite extends AnyFunSuite with FunSuiteStackBehaviors {
   *
   *   // Stack fixture creation methods
   *   def emptyStack = new Stack[Int]
@@ -1513,10 +1513,10 @@ import Suite.autoTagClassAnnotations
   * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
   * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
   * complaining that multiple tests are being registered with the same test name.
-  * In a <code>FunSuite</code> there is no nesting construct analogous to <code>FunSpec</code>'s <code>describe</code> clause.
+  * In a <code>AnyFunSuite</code> there is no nesting construct analogous to <code>AnyFunSpec</code>'s <code>describe</code> clause.
   * Therefore, you need to do a bit of
   * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in a
-  * <code>FunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can pass this string
+  * <code>AnyFunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can pass this string
   * the same way you pass any other data needed by the shared tests, or just call <code>toString</code> on the shared fixture object.
   * This is the approach taken by the previous <code>FunSuiteStackBehaviors</code> example.
   * </p>
@@ -1581,7 +1581,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -1591,7 +1591,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -1628,7 +1628,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * Register a test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
    * methods. The passed test name must not have been registered previously on
-   * this <code>FunSuite</code> instance.
+   * this <code>AnyFunSuite</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -1654,7 +1654,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
    * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
    * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-   * this <code>FunSuite</code> instance.
+   * this <code>AnyFunSuite</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -1674,7 +1674,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-  * An immutable <code>Set</code> of test names. If this <code>FunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
+  * An immutable <code>Set</code> of test names. If this <code>AnyFunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
   *
   * <p>
   * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -1692,7 +1692,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FunSuite</code>
+   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>AnyFunSuite</code>
    * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
@@ -1719,7 +1719,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AnyFunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
@@ -1735,7 +1735,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-   * Run zero to many of this <code>FunSuite</code>'s tests.
+   * Run zero to many of this <code>AnyFunSuite</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -1758,7 +1758,7 @@ trait AnyFunSuite extends TestSuite with TestRegistration with Informing with No
    * Registers shared tests.
    *
    * <p>
-   * This method enables the following syntax for shared tests in a <code>FunSuite</code>:
+   * This method enables the following syntax for shared tests in a <code>AnyFunSuite</code>:
    * </p>
    *
    * <pre class="stHighlight">

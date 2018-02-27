@@ -18,6 +18,6 @@ package org.scalatest
 /**
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.AnyFunSuite instead.
   */
-@deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
+@deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
 class FunSuite extends FunSuiteLike

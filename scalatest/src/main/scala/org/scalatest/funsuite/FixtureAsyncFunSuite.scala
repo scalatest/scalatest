@@ -21,18 +21,18 @@ import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
-  * A sister class to <code>org.scalatest.AsyncFunSuite</code> that can pass a fixture object into its tests.
+  * A sister class to <code>org.scalatest.funsuite.AsyncFunSuite</code> that can pass a fixture object into its tests.
   *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
-  * Use class <code>fixture.AsyncFunSuite</code> in situations for which <a href="../AsyncFunSuite.html"><code>AsyncFunSuite</code></a>
+  * Use class <code>FixtureAsyncFunSuite</code> in situations for which <a href="AsyncFunSuite.html"><code>AsyncFunSuite</code></a>
   * would be a good choice, when all or most tests need the same fixture objects
-  * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncFunSuite</code> is intended for use in special situations, with class <code>AsyncFunSuite</code> used for general needs. For
-  * more insight into where <code>fixture.AsyncFunSuite</code> fits in the big picture, see the <a href="../AsyncFunSuite.html#withFixtureOneArgAsyncTest"><code>withFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFunSuite.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFunSuite</code>.</em>
+  * that must be cleaned up afterwards. <em>Note: <code>FixtureAsyncFunSuite</code> is intended for use in special situations, with class <code>AsyncFunSuite</code> used for general needs. For
+  * more insight into where <code>FixtureAsyncFunSuite</code> fits in the big picture, see the <a href="AsyncFunSuite.html#withFixtureOneArgAsyncTest"><code>withFixture(OneArgAsyncTest)</code></a> subsection of the <a href="AsyncFunSuite.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFunSuite</code>.</em>
   * </td></tr></table>
   *
   * <p>
-  * Class <code>fixture.AsyncFunSuite</code> behaves similarly to class <code>org.scalatest.AsyncFunSuite</code>, except that tests may have a
+  * Class <code>FixtureAsyncFunSuite</code> behaves similarly to class <code>org.scalatest.funsuite.AsyncFunSuite</code>, except that tests may have a
   * fixture parameter. The type of the
   * fixture parameter is defined by the abstract <code>FixtureParam</code> type, which is a member of this class.
   * This class also contains an abstract <code>withFixture</code> method. This <code>withFixture</code> method
@@ -45,7 +45,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   * </p>
   *
   * <p>
-  * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.AsyncFunSuite</code>:
+  * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.funsuite.AsyncFunSuite</code>:
   * </p>
   *
   * <ol>
@@ -111,7 +111,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   *     }
   * }
   *
-  * class ExampleSuite extends fixture.AsyncFunSuite {
+  * class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
   *
   *   type FixtureParam = StringActor
   *
@@ -205,7 +205,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends fixture.AsyncFunSuite with DbFixture {
+  * class ExampleSuite extends funsuite.FixtureAsyncFunSuite with DbFixture {
   *
   *   override def populateDb(db: Db) { // setup the fixture
   *     db.append("ScalaTest is ")
@@ -284,7 +284,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>FixtureAsyncFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -294,7 +294,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>FixtureAsyncFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -333,7 +333,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * Register a test with the specified name, optional tags, and function value that takes no arguments.
     * This method will register the test for later execution via an invocation of one of the <code>run</code>
     * methods. The passed test name must not have been registered previously on
-    * this <code>FunSuite</code> instance.
+    * this <code>FixtureAsyncFunSuite</code> instance.
     *
     * @param testName the name of the test
     * @param testTags the optional list of tags for this test
@@ -395,7 +395,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
   */
 
   /**
-    * An immutable <code>Set</code> of test names. If this <code>fixture.FunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
+    * An immutable <code>Set</code> of test names. If this <code>FixtureAsyncFunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
     *
     * <p>
     * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -414,7 +414,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * @param testName the name of one test to run.
     * @param args the <code>Args</code> for this run
     * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>fixture.FunSuite</code>
+    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FixtureAsyncFunSuite</code>
     * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
     */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -443,8 +443,8 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
   }
 
   /**
-    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>fixture.FunSuite</code> belong, and values
-    * the <code>Set</code> of test names that belong to each tag. If this <code>fixture.FunSuite</code> contains no tags, this method returns an empty
+    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAsyncFunSuite</code> belong, and values
+    * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAsyncFunSuite</code> contains no tags, this method returns an empty
     * <code>Map</code>.
     *
     * <p>
@@ -461,7 +461,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
 
   /**
     * <p>
-    * Run zero to many of this <code>fixture.FunSuiteLike</code>'s tests.
+    * Run zero to many of this <code>FixtureAsyncFunSuite</code>'s tests.
     * </p>
     *
     * <p>
@@ -493,7 +493,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * </p>
     *
     * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
+    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAsyncFunSuite</code>.
     * @param args the <code>Args</code> to which results will be reported
     * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
     * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
@@ -510,7 +510,7 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * Registers shared tests.
     *
     * <p>
-    * This method enables the following syntax for shared tests in a <code>fixture.FunSuite</code>:
+    * This method enables the following syntax for shared tests in a <code>FixtureAsyncFunSuite</code>:
     * </p>
     *
     * <pre class="stHighlight">
@@ -522,8 +522,8 @@ trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTest
     * Because the parameter passed to it is
     * type <code>Unit</code>, the expression will be evaluated before being passed, which
     * is sufficient to register the shared tests. For examples of shared tests, see the
-    * <a href="../FunSuite.html#SharedTests">Shared tests section</a> in the main documentation for
-    * trait <code>FunSuite</code>.
+    * <a href="AnyFunSuite.html#SharedTests">Shared tests section</a> in the main documentation for
+    * trait <code>AnyFunSuite</code>.
     * </p>
     */
   protected def testsFor(unit: Unit): Unit = {}

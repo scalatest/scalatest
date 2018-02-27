@@ -24,14 +24,14 @@ import org.scalatest.Suite.autoTagClassAnnotations
   *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
-  * Use class <code>fixture.FunSuite</code> in situations for which <a href="../FunSuite.html"><code>FunSuite</code></a>
+  * Use class <code>FixtureAnyFunSuite</code> in situations for which <a href="AnyFunSuite.html"><code>AnyFunSuite</code></a>
   * would be a good choice, when all or most tests need the same fixture objects
-  * that must be cleaned up afterwards. <em>Note: <code>fixture.FunSuite</code> is intended for use in special situations, with class <code>FunSuite</code> used for general needs. For
-  * more insight into where <code>fixture.FunSuite</code> fits in the big picture, see the <a href="../FunSuite.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="../FunSuite.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>FunSuite</code>.</em>
+  * that must be cleaned up afterwards. <em>Note: <code>FixtureAnyFunSuite</code> is intended for use in special situations, with class <code>AnyFunSuite</code> used for general needs. For
+  * more insight into where <code>FixtureAnyFunSuite</code> fits in the big picture, see the <a href="AnyFunSuite.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="AnyFunSuite.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AnyFunSuite</code>.</em>
   * </td></tr></table>
   *
   * <p>
-  * Class <code>fixture.FunSuite</code> behaves similarly to class <code>org.scalatest.FunSuite</code>, except that tests may have a
+  * Class <code>FixtureAnyFunSuite</code> behaves similarly to class <code>org.scalatest.funsuite.AnyFunSuite</code>, except that tests may have a
   * fixture parameter. The type of the
   * fixture parameter is defined by the abstract <code>FixtureParam</code> type, which is a member of this class.
   * This class also contains an abstract <code>withFixture</code> method. This <code>withFixture</code> method
@@ -44,7 +44,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   * </p>
   *
   * <p>
-  * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.FunSuite</code>:
+  * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.funsuite.AnyFunSuite</code>:
   * </p>
   *
   * <ol>
@@ -84,10 +84,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
   * <pre class="stHighlight">
   * package org.scalatest.examples.funsuite.oneargtest
   *
-  * import org.scalatest.fixture
+  * import org.scalatest.funsuite
   * import java.io._
   *
-  * class ExampleSuite extends fixture.FunSuite {
+  * class ExampleSuite extends funsuite.FixtureAnyFunSuite {
   *
   *   case class FixtureParam(file: File, writer: FileWriter)
   *
@@ -138,7 +138,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   * package org.scalatest.examples.fixture.funsuite.sharing
   *
   * import java.util.concurrent.ConcurrentHashMap
-  * import org.scalatest.fixture
+  * import org.scalatest.funsuite
   * import DbServer._
   * import java.util.UUID.randomUUID
   *
@@ -174,7 +174,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * class ExampleSuite extends fixture.FunSuite with DbFixture {
+  * class ExampleSuite extends funsuite.FixtureAnyFunSuite with DbFixture {
   *
   *   override def populateDb(db: Db) { // setup the fixture
   *     db.append("ScalaTest is ")
@@ -249,7 +249,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>fixture.FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>FixtureAnyFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -259,7 +259,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
     * <code>apply</code> method to the current reporter. If invoked in a constructor, it
     * will register the passed string for forwarding later during test execution. If invoked while this
-    * <code>fixture.FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
+    * <code>FixtureAnyFunSuite</code> is being executed, such as from inside a test function, it will forward the information to
     * the current reporter immediately. If invoked at any other time, it will
     * print to the standard output. This method can be called safely by any thread.
     */
@@ -318,7 +318,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * Register a test with the specified name, optional tags, and function value that takes no arguments.
     * This method will register the test for later execution via an invocation of one of the <code>run</code>
     * methods. The passed test name must not have been registered previously on
-    * this <code>FunSuite</code> instance.
+    * this <code>FixtureAnyFunSuite</code> instance.
     *
     * @param testName the name of the test
     * @param testTags the optional list of tags for this test
@@ -369,7 +369,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
     * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
     * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-    * this <code>FunSuite</code> instance.
+    * this <code>FixtureAnyFunSuite</code> instance.
     *
     * @param testName the name of the test
     * @param testTags the optional list of tags for this test
@@ -392,7 +392,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
   */
 
   /**
-    * An immutable <code>Set</code> of test names. If this <code>fixture.FunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
+    * An immutable <code>Set</code> of test names. If this <code>FixtureAnyFunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
     *
     * <p>
     * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -411,7 +411,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * @param testName the name of one test to run.
     * @param args the <code>Args</code> for this run
     * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>fixture.FunSuite</code>
+    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FixtureAnyFunSuite</code>
     * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
     */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -437,8 +437,8 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
   }
 
   /**
-    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>fixture.FunSuite</code> belong, and values
-    * the <code>Set</code> of test names that belong to each tag. If this <code>fixture.FunSuite</code> contains no tags, this method returns an empty
+    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFunSuite</code> belong, and values
+    * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAnyFunSuite</code> contains no tags, this method returns an empty
     * <code>Map</code>.
     *
     * <p>
@@ -455,7 +455,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
 
   /**
     * <p>
-    * Run zero to many of this <code>fixture.FunSuiteLike</code>'s tests.
+    * Run zero to many of this <code>FixtureAnyFunSuite</code>'s tests.
     * </p>
     *
     * <p>
@@ -487,7 +487,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * </p>
     *
     * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
+    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>AnyFunSpec</code>.
     * @param args the <code>Args</code> to which results will be reported
     * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
     * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
@@ -504,7 +504,7 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * Registers shared tests.
     *
     * <p>
-    * This method enables the following syntax for shared tests in a <code>fixture.FunSuite</code>:
+    * This method enables the following syntax for shared tests in a <code>FixtureAnyFunSuite</code>:
     * </p>
     *
     * <pre class="stHighlight">
@@ -516,8 +516,8 @@ trait FixtureAnyFunSuite extends fixture.TestSuite with fixture.TestRegistration
     * Because the parameter passed to it is
     * type <code>Unit</code>, the expression will be evaluated before being passed, which
     * is sufficient to register the shared tests. For examples of shared tests, see the
-    * <a href="../FunSuite.html#SharedTests">Shared tests section</a> in the main documentation for
-    * trait <code>FunSuite</code>.
+    * <a href="AnyFunSuite.html#SharedTests">Shared tests section</a> in the main documentation for
+    * trait <code>AnyFunSuite</code>.
     * </p>
     */
   protected def testsFor(unit: Unit): Unit = {}
