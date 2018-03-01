@@ -1037,11 +1037,11 @@ private[scalatest] object StringReporter {
     Vector.empty ++ resultAsList
   }
 
-  final val ansiReset = "\033[0m"
-  final val ansiGreen = "\033[32m"
-  final val ansiCyan = "\033[36m"
-  final val ansiYellow = "\033[33m"
-  final val ansiRed = "\033[31m"
+  final val ansiReset = "\u001b[0m"
+  final val ansiGreen = "\u001b[32m"
+  final val ansiCyan = "\u001b[36m"
+  final val ansiYellow = "\u001b[33m"
+  final val ansiRed = "\u001b[31m"
 
   def makeDurationString(duration: Long) = {
 

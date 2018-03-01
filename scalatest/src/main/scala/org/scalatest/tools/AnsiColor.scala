@@ -19,15 +19,15 @@ private[scalatest] sealed trait AnsiColor extends Product with Serializable {
   val code: String
 }
 private[scalatest] case object AnsiGreen extends AnsiColor {
-  val code: String =  "\033[32m"
+  val code: String =  "\u001b[32m"
 }
 private[scalatest] case object AnsiCyan extends AnsiColor {
-  val code: String =  "\033[36m"
+  val code: String =  "\u001b[36m"
 }
 private[scalatest] case object AnsiYellow extends AnsiColor {
-  val code: String =  "\033[33m"
+  val code: String =  "\u001b[33m"
 }
 private[scalatest] case object AnsiRed extends AnsiColor {
-  val code: String =  "\033[31m"
+  val code: String =  "\u001b[31m"
 }
 
