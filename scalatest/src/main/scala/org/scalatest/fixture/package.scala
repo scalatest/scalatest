@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2018 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,15 @@
 package org.scalatest
 
 /**
-  * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.AnyFunSuite instead.
-  */
-@Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-@deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
-class FunSuite extends FunSuiteLike
+ * Package fixture deprecated types.
+ */
+package object fixture {
+
+  @deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSuite instead")
+  type FunSuiteLike = org.scalatest.funsuite.FixtureAnyFunSuite
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.funsuite.FixtureAsyncFunSuiteLike instead")
+  type AsyncFunSuiteLike = org.scalatest.funsuite.FixtureAsyncFunSuiteLike
+  // SKIP-SCALATESTNATIVE-END
+}
