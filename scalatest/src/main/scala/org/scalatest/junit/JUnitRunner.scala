@@ -70,37 +70,29 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
 
   private var description: Description = createDescription(suiteToRun, None)
 
-  private def extractTestNamesFromDescription(description: Description): Set[String] = {
-    for {
-      child <- description.getChildren.asScala
-      if child.isSuite
-    } yield extractTestNamesFromDescription(child)
+  private val testNameRegEx = """^(.+)\([\w|\.]+\)""".r
 
-    val testNameRegEx = """^(.+)\([\w|\.]+\)""".r
-    val tests = for {
-      child <- description.getChildren.asScala
-      if child.isTest
-      testName = child.getDisplayName match {
+  private def extractTestNamesFromDescription(description: Description): String = description match {
+    case d if d.isSuite =>
+      extractTestNamesFromDescription(d)
+    case t if t.isTest =>
+      t.getDisplayName match {
         case testNameRegEx(name) => name
       }
-    } yield testName
-
-    tests.toSet
   }
 
-  private def allTests(suite: Suite): Set[String] = {
-   for {
-     nested <- suite.nestedSuites
-   } yield allTests(nested)
-
-    suite.testNames
+  private def excludedDynaTags(suite: Suite, testsToRun: Set[String]): Map[String, Map[String, Set[String]]] = suite match {
+    case s if s.nestedSuites.nonEmpty =>
+      suite.nestedSuites.flatMap(excludedDynaTags(_, testsToRun)).toMap
+    case _ =>
+      Map(suite.suiteId -> suite.testNames.diff(testsToRun).map(_ -> Set(excludedTestTag)).toMap)
   }
 
   private def createDescription(suite: Suite, junitFilter: Option[org.junit.runner.manipulation.Filter]): Description = {
     val description = Description.createSuiteDescription(suite.getClass)
     // If we don't add the testNames and nested suites in, we get
     // Unrooted Tests show up in Eclipse
-    for (name <- suite.testNames) {
+    for (name <- suite.testNames.toList.sorted) {
       junitFilter match {
         case Some(filter) =>
           val tempDescription = Description.createTestDescription(suite.getClass, name)
@@ -135,11 +127,10 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
-      val testsToRun = extractTestNamesFromDescription(description)
-      val excludedTestNames = allTests(suiteToRun) -- testsToRun
-      val excludedTestsByTag = Map(suiteToRun.suiteName -> excludedTestNames.map(testName => testName -> Set(excludedTestTag)).toMap)
+      val testsToRun = description.getChildren.asScala.map(extractTestNamesFromDescription).toSet
 
-      val filter = Filter(tagsToExclude = Set(excludedTestTag, Filter.IgnoreTag), dynaTags = DynaTags(Map.empty, excludedTestsByTag))
+      val filter = Filter(tagsToExclude = Set(excludedTestTag),
+        dynaTags = DynaTags(Map.empty, excludedDynaTags(suiteToRun, testsToRun)))
 
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
