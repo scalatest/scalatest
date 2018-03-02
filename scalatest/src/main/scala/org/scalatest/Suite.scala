@@ -2039,11 +2039,12 @@ used for test events like succeeded/failed, etc.
   }
 
   def checkChosenStyles(configMap: ConfigMap, styleName: String): Unit = {
-    val chosenStyleSet = 
-        if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
-          configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
-        else
-          Set.empty[String]
+
+    val chosenStyleSet =
+      if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
+        configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
+      else
+        Set.empty[String]
     if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
       val e =
         if (chosenStyleSet.size == 1)

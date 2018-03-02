@@ -37,6 +37,7 @@ object ScalatestBuild extends Build {
   val buildScalaVersion = "2.12.4"
 
   val releaseVersion = "3.2.0-SNAP10"
+
   val previousReleaseVersion = "3.0.5"
 
   val scalacheckVersion = "1.13.5"
@@ -702,6 +703,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.funsuite",
         "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
@@ -814,6 +816,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.funsuite",
         "org.scalatest.matchers",
         "org.scalatest.path",
         "org.scalatest.prop",
@@ -932,6 +935,7 @@ object ScalatestBuild extends Build {
       "org.scalatest.events",
       "org.scalatest.exceptions",
       "org.scalatest.fixture",
+      "org.scalatest.funsuite",
       "org.scalatest.matchers",
       "org.scalatest.path",
       "org.scalatest.prop",
@@ -1035,6 +1039,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.funsuite",
         "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
@@ -1108,6 +1113,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.funsuite",
         "org.scalatest.matchers",
         "org.scalatest.path",
         "org.scalatest.prop",
@@ -1172,6 +1178,7 @@ object ScalatestBuild extends Build {
           "org.scalatest.events",
           "org.scalatest.exceptions",
           "org.scalatest.fixture",
+          "org.scalatest.funsuite",
           "org.scalatest.matchers",
           "org.scalatest.path",
           "org.scalatest.prop",

@@ -115,4 +115,12 @@ package object scalatest {
   @deprecated("Please use org.scalatest.refspec.RefSpec instead")
   type Spec = refspec.RefSpec
   // SKIP-SCALATESTJS,NATIVE-END
+
+  @deprecated("Please use org.scalatest.funsuite.AnyFunSuiteLike instead")
+  type FunSuiteLike = funsuite.AnyFunSuiteLike
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.funsuite.AsyncFunSuiteLike instead")
+  type AsyncFunSuiteLike = funsuite.AsyncFunSuiteLike
+  // SKIP-SCALATESTNATIVE-END
 }
