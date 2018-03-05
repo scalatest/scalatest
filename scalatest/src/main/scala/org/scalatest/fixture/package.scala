@@ -27,4 +27,12 @@ package object fixture {
   @deprecated("Please use org.scalatest.funsuite.FixtureAsyncFunSuiteLike instead")
   type AsyncFunSuiteLike = org.scalatest.funsuite.FixtureAsyncFunSuiteLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSpec instead")
+  type FunSpecLike = org.scalatest.funspec.FixtureAnyFunSpec
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.funspec.FixtureAsyncFunSpecLike instead")
+  type AsyncFunSpecLike = org.scalatest.funspec.FixtureAsyncFunSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }
