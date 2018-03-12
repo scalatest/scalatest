@@ -35,6 +35,11 @@ object GenLogicStyles {
   def translateTestLine(traitName: String)(line: String): String =
     line.replaceAllLiterally(traitName, "Logic" + traitName)
     .replaceAllLiterally("/* ASSERTION_SUCCEED */", "succeed")
+    .replaceAllLiterally("new LogicFunSuite", "new funsuite.LogicFunSuite")
+    .replaceAllLiterally("new fixture.LogicFunSuite", "new funsuite.FixtureLogicFunSuite")
+    .replaceAllLiterally("extends LogicFunSuite", "extends funsuite.LogicFunSuite")
+    .replaceAllLiterally("extends fixture.LogicFunSuite", "extends funsuite.FixtureLogicFunSuite")
+    .replaceAllLiterally("this: LogicFunSuite =>", "this: funsuite.LogicFunSuite =>")
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
