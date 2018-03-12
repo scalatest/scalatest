@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2014 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,42 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.featurespec
 
-import org.scalactic._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
+import org.scalatest._
+import org.scalatest.exceptions._
+import org.scalactic.{source, Prettifier}
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
-import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
- * Implementation trait for class <code>FeatureSpec</code>, which represents
- * a suite of tests in which each test represents one <em>scenario</em> of a
- * <em>feature</em>.
- * 
+ * Implementation trait for class <code>FixtureAnyFeatureSpec</code>, which is
+ * a sister class to <a href="AnyFeatureSpec.html"><code>org.scalatest.featurespec.AnyFeatureSpec</code></a> that can pass a
+ * fixture object into its tests.
+ *
  * <p>
- * <a href="FeatureSpec.html"><code>FeatureSpec</code></a> is a class, not a
- * trait, to minimize compile time given there is a slight compiler overhead to
- * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FeatureSpec</code> into some other class, you can use this
- * trait instead, because class <code>FeatureSpec</code> does nothing more than
- * extend this trait and add a nice <code>toString</code> implementation.
+ * <a href="FixtureAnyFeatureSpec.html"><code>FixtureAnyFeatureSpec</code></a> is a class,
+ * not a trait, to minimize compile time given there is a slight compiler
+ * overhead to mixing in traits compared to extending classes. If you need
+ * to mix the behavior of <code>FixtureAnyFeatureSpec</code> into some other
+ * class, you can use this trait instead, because class
+ * <code>FixtureAnyFeatureSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FeatureSpec.html">detailed
- * overview of <code>FeatureSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAnyFeatureSpec.html">detailed
+ * overview of <code>FixtureAnyFeatureSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait FeatureSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+@Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
+trait FixtureAnyFeatureSpecLike extends fixture.TestSuite with fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
+
   import engine._
+
+  private[scalatest] val sourceFileName = "FixtureAnyFeatureSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -65,7 +69,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -75,7 +79,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -92,25 +96,45 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(Resources.scenario(testText.trim), fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(testText.trim), fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+  }
+
+  class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+      engine.registerTest(Resources.scenario(specText.trim), fixture.Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    }
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+      engine.registerTest(Resources.scenario(specText.trim), fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    }
   }
 
   @deprecated("use Scenario instead", "ScalaTest 3.1.1")
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit =
-    Scenario(specText, testTags: _*)(testFun)(pos)
+  protected def scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation = Scenario(specText, testTags: _*)
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -120,7 +144,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>FixtureAnyFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -130,14 +154,28 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def Scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(() => testFun), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+  protected def Scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation =
+    new ResultOfScenarioInvocation(specText, testTags: _*)
+
+  class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -3
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+      engine.registerIgnoredTest(Resources.scenario(specText), fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    }
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -3
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+      engine.registerIgnoredTest(Resources.scenario(specText), fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    }
   }
 
   /**
@@ -148,7 +186,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>FixtureAnyFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -158,24 +196,19 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(() => testFun), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
-  }
+  protected def ignore(specText: String, testTags: Tag*): ResultOfIgnoreInvocation =
+    new ResultOfIgnoreInvocation(specText, testTags: _*)
 
   @deprecated("use Feature instead", "ScalaTest 3.1.1")
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
-  
+
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
+   *
+   * @param description the description text
    */
   protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
 
@@ -187,34 +220,33 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, None, pos)
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, pos)
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, stackDepthAdjustment, None, Some(pos))
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, Some(pos))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
-      case nae: exceptions.NotAllowedException => throw nae
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
+      case nae: NotAllowedException => throw nae
+      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
       case other: Throwable => throw other
     }
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tag names for the test. If this <code>FeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFeatureSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAnyFeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
-   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
-   * methods <code>scenario</code> and <code>ignore</code>. 
+   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
+   * methods <code>test</code> and <code>ignore</code>.
    * </p>
-   * 
+   *
    * <p>
-   * In addition, this trait's implementation will also auto-tag tests with class level annotations.  
-   * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
-   * <code>org.scalatest.Ignore</code>.
+   * In addition, this trait's implementation will also auto-tag tests with class level annotations.
+   * For example, if you annotate @Ignore at the class level, all test methods in the class will be auto-annotated with @Ignore.
    * </p>
    */
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
@@ -228,50 +260,45 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-   *
-   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws NullArgumentException if <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
     def invokeWithFixture(theTest: TestLeaf): Outcome = {
-      val theConfigMap = args.configMap
-      val testData = testDataFor(testName, theConfigMap)
-      withFixture(
-        new NoArgTest {
-          val name = testData.name
-          def apply(): Outcome = { theTest.testFun() }
-          val configMap = testData.configMap
-          val scopes = testData.scopes
-          val text = testData.text
-          val tags = testData.tags
-          val pos = testData.pos
-        }
-      )
+
+      theTest.testFun match {
+        case transformer: org.scalatest.fixture.Transformer[_] =>
+          transformer.exceptionalTestFun match {
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
+              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+          }
+        case other =>
+          other match {
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
+              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+          }
+      }
     }
 
     runTestImpl(thisSuite, testName, args, false, invokeWithFixture)
   }
 
   /**
-   * Run zero to many of this <code>FeatureSpec</code>'s tests.
+   * <p>
+   * Run zero to many of this <code>FixtureAnyFeatureSpec</code>'s tests.
+   * </p>
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
    * If <code>testName</code> is <code>Some</code>, this trait's implementation of this method
-   * invokes <code>runTest</code> on this object, passing in:
+   * invokes <code>runTest</code> on this object with passed <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> value of the <code>testName</code> <code>Option</code> passed
-   *   to this method</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * <p>
-   * This method takes a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
+   * This method takes an <code>args</code> that contains a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
    * that should be excluded (<code>tagsToExclude</code>), when deciding which of this <code>Suite</code>'s tests to execute.
    * If <code>tagsToInclude</code> is empty, all tests will be executed
    * except those those belonging to tags listed in the <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is non-empty, only tests
@@ -289,62 +316,33 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> with passed in <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
-   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
-   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAnyFeatureSpec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
-   *
-   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
-   * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
-   *     exists in this <code>Suite</code>
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, false, runTest)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FeatureSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAnyFeatureSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FeatureSpec</code>:
+   * example itself, with all components separated by a space.
    * </p>
    *
-   * <pre class="stHighlight">
-   * import org.scalatest.FeatureSpec
-   *
-   * class StackSpec extends FeatureSpec {
-   *   Feature("A Stack") {
-   *     Scenario("(when not empty) must allow me to pop") {}
-   *     Scenario("(when not full) must allow me to push") {}
-   *   }
-   * }
-   * </pre>
-   *
-   * <p>
-   * Invoking <code>testNames</code> on this <code>FeatureSpec</code> will yield a set that contains the following
-   * two test name strings:
-   * </p>
-   *
-   * <pre>
-   * "A Stack (when not empty) must allow me to pop"
-   * "A Stack (when not full) must allow me to push"
-   * </pre>
+   * @return the <code>Set</code> of test names
    */
-  // override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
+  //override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
   override def testNames: Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
@@ -360,7 +358,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Registers shared scenarios.
    *
    * <p>
-   * This method enables the following syntax for shared scenarios in a <code>FeatureSpec</code>:
+   * This method enables the following syntax for shared scenarios in a <code>FixtureAnyFeatureSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
@@ -372,15 +370,53 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Because the parameter passed to it is
    * type <code>Unit</code>, the expression will be evaluated before being passed, which
    * is sufficient to register the shared scenarios. For examples of shared scenarios, see the
-   * <a href="#sharedScenarios">Shared scenarios section</a> in the main documentation for this trait.
+   * <a href="AnyFeatureSpec.html#SharedScenarios">Shared scenarios section</a> in the main documentation for
+   * trait <code>AnyFeatureSpec</code>.
    * </p>
    */
   protected def ScenariosFor(unit: Unit): Unit = {}
-  
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts a function that takes no parameters and results in <code>PendingStatement</code> to
+   * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
+   * by methods that require a test function that takes a <code>FixtureParam</code>.
+   *
+   * <p>
+   * This method makes it possible to write pending tests as simply <code>(pending)</code>, without needing
+   * to write <code>(fixture => pending)</code>.
+   * </p>
+   *
+   * @param f a function
+   * @return a function of <code>FixtureParam => Any</code>
+   */
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any /* Assertion */ = {
+    fixture => { f; Succeeded }
+  }
+
+  // I need this implicit because the function is passed to scenario as the 2nd parameter list, and
+  // I can't overload on that. I could if I took the ScenarioWord approach, but that has possibly a worse
+  // downside of people could just say scenario("...") and nothing else.
+  /**
+   * Implicitly converts a function that takes no parameters and results in <code>Any</code> to
+   * a function from <code>FixtureParam</code> to <code>Any</code>, to enable no-arg tests to registered
+   * by methods that require a test function that takes a <code>FixtureParam</code>.
+   *
+   * @param fun a function
+   * @return a function of <code>FixtureParam => Any</code>
+   */
+/*
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
+    new NoArgTestWrapper(fun)
+*/
+
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FeatureSpec</code>
    */
-  final override val styleName: String = "org.scalatest.FeatureSpec"
-    
+  final override val styleName: String = "org.scalatest.fixture.FeatureSpec"
+
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
