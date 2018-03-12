@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.funspec
 
 import org.scalatest._
 import org.scalatest.exceptions._
@@ -26,35 +26,35 @@ import words.BehaveWord
 
 
 /**
- * Implementation trait for class <code>fixture.FunSpec</code>, which is
- * a sister class to <code>org.scalatest.FunSpec</code> that can pass a
+ * Implementation trait for class <code>FixtureAnyFunSpec</code>, which is
+ * a sister class to <code>org.scalatest.funspec.AnyFunSpec</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FunSpec.html"><code>fixture.FunSpec</code></a> is a class,
+ * <a href="FixtureAnyFunSpec.html"><code>FixtureAnyFunSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FunSpec</code> into some other
+ * to mix the behavior of <code>FixtureAnyFunSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>FixtureAnyFunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSpec.html">detailed
- * overview of <code>fixture.FunSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAnyFunSpec.html">detailed
+ * overview of <code>FixtureAnyFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFunSpecLike extends fixture.TestSuite with fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FunSpecLike.scala"
+  private[scalatest] val sourceFileName = "FixtureAnyFunSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -71,7 +71,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -81,7 +81,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -103,7 +103,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -111,12 +111,12 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -2
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>FixtureAnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following:
@@ -133,7 +133,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="FixtureAnyFunSpec.html">main documentation for <code>FixtureAnyFunSpec</code></a>.
    * </p>
    */
   protected final class ItWord {
@@ -147,7 +147,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, fixture.Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
 
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -157,7 +157,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
     }
 
@@ -169,7 +169,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>FixtureAnyFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -196,7 +196,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAnyFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -217,7 +217,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAnyFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -226,7 +226,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>FixtureAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -244,14 +244,14 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    *
    * <p>
    * For more information and examples of the use of the <code>it</code> field, see
-   * the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * the <a href="FixtureAnyFunSpec.html">main documentation for <code>FixtureAnyFunSpec</code></a>.
    * </p>
    */
   protected val it = new ItWord
 
   /**
    * Class that, via an instance referenced from the <code>they</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>FixtureAnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following:
@@ -268,7 +268,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="FixtureAnyFunSpec.html">main documentation for <code>FixtureAnyFunSpec</code></a>.
    * </p>
    */
   protected final class TheyWord {
@@ -279,14 +279,14 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, fixture.Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS,NATIVE-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
     }
 
@@ -298,7 +298,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>FixtureAnyFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -325,7 +325,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAnyFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -346,7 +346,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAnyFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -355,7 +355,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>FixtureAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -373,7 +373,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    *
    * <p>
    * For more information and examples of the use of the <code>it</code> field, see
-   * the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * the <a href="FixtureAnyFunSpec.html">main documentation for <code>FixtureAnyFunSpec</code></a>.
    * </p>
    */
   protected val they = new TheyWord
@@ -386,7 +386,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(specText, fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
@@ -395,7 +395,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(specText, fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
   }
 
@@ -407,7 +407,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>FixtureAnyFunSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -428,7 +428,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>FixtureAnyFunSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -465,8 +465,8 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FunSpec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>FunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFunSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAnyFunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -497,13 +497,13 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       theTest.testFun match {
         case transformer: org.scalatest.fixture.Transformer[_] =>
           transformer.exceptionalTestFun match {
-            case wrapper: NoArgTestWrapper[_, _] =>
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
               withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
             case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
           }
         case other =>
           other match {
-            case wrapper: NoArgTestWrapper[_, _] =>
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
               withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
             case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
           }
@@ -515,7 +515,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
 
   /**
    * <p>
-   * Run zero to many of this <code>FunSpec</code>'s tests.
+   * Run zero to many of this <code>FixtureAnyFunSpec</code>'s tests.
    * </p>
    *
    * <p>
@@ -547,7 +547,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </p>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAnyFunSpec</code>.
    * @param args the <code>Args</code> to which results will be reported
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
@@ -558,7 +558,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAnyFunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -579,7 +579,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * Supports shared test registration in <code>FunSpec</code>s.
+   * Supports shared test registration in <code>FixtureAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -591,8 +591,8 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of <cod>behave</code>, see the <a href="../FunSpec.html#SharedTests">Shared tests section</a>
-   * in the main documentation for trait <code>FunSpec</code>.
+   * For more information and examples of the use of <cod>behave</code>, see the <a href="FixtureAnyFunSpec.html#SharedTests">Shared tests section</a>
+   * in the main documentation for trait <code>FixtureAnyFunSpec</code>.
    * </p>
    */
   protected val behave = new BehaveWord
