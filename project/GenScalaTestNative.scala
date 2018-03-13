@@ -208,6 +208,9 @@ object GenScalaTestNative {
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir,
       asyncs("scalatest/src/main/scala/org/scalatest/featurespec")
     ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir,
+      asyncs("scalatest/src/main/scala/org/scalatest/funspec")
+    ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,

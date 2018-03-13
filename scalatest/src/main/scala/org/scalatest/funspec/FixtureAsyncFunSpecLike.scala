@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.funspec
 
 import org.scalatest._
 import org.scalatest.exceptions._
@@ -27,29 +27,29 @@ import words.BehaveWord
 
 
 /**
- * Implementation trait for class <code>fixture.AsyncFunSpec</code>, which is
- * a sister class to <code>org.scalatest.AsyncFunSpec</code> that can pass a
+ * Implementation trait for class <code>FixtureAsyncFunSpec</code>, which is
+ * a sister class to <code>org.scalatest.funspec.AsyncFunSpec</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="AsyncFunSpec.html"><code>fixture.AsyncFunSpec</code></a> is a class,
+ * <a href="FixtureAsyncFunSpec.html"><code>FixtureAsyncFunSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.AsyncFunSpec</code> into some other
+ * to mix the behavior of <code>FixtureAsyncFunSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.AsyncFunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>FixtureAsyncFunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="AsyncFunSpec.html">detailed
- * overview of <code>fixture.AsyncFunSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAsyncFunSpec.html">detailed
+ * overview of <code>FixtureAsyncFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFunSpecLike extends fixture.AsyncTestSuite with fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
@@ -70,7 +70,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAsyncFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -80,7 +80,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAsyncFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -107,7 +107,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>FixtureAsyncFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following:
@@ -124,7 +124,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="FixtureAsycnFunSpec.html">main documentation for <code>FixtureAsyncFunSpec</code></a>.
    * </p>
    */
   protected final class ItWord {
@@ -136,7 +136,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
       }
 
       def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-        engine.registerAsyncTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
+        engine.registerAsyncTest(specText, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
       }
     }
 
@@ -148,7 +148,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>FixtureAsyncFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -175,7 +175,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAsyncFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -196,7 +196,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAsyncFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -205,7 +205,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>FixtureAsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -223,14 +223,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    *
    * <p>
    * For more information and examples of the use of the <code>it</code> field, see
-   * the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * the <a href="FixtureAsyncFunSpec.html">main documentation for <code>FixtureAsyncFunSpec</code></a>.
    * </p>
    */
   protected val it = new ItWord
 
   /**
    * Class that, via an instance referenced from the <code>they</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>FixtureAsyncFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following:
@@ -247,7 +247,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="FixtureAsyncFunSpec.html">main documentation for <code>FixtureAsyncFunSpec</code></a>.
    * </p>
    */
   protected final class TheyWord {
@@ -257,7 +257,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
         engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
       }
       def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-        engine.registerAsyncTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
+        engine.registerAsyncTest(specText, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
       }
     }
 
@@ -269,7 +269,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>FixtureAsyncFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -296,7 +296,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAsyncFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -317,7 +317,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      *
      * <p>
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * in the main documentation for trait <code>FixtureAsyncFunSpec</code>.
      * </p>
      *
      * @param behaveWord the <code>BehaveWord</code>
@@ -326,7 +326,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>FixtureAsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -344,7 +344,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    *
    * <p>
    * For more information and examples of the use of the <code>it</code> field, see
-   * the <a href="../FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * the <a href="FixtureAsyncFunSpec.html">main documentation for <code>FixtureAsyncFunSpec</code></a>.
    * </p>
    */
   protected val they = new TheyWord
@@ -354,7 +354,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
       engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, None, pos, testTags: _*)
     }
     def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      engine.registerIgnoredAsyncTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, None, pos, testTags: _*)
+      engine.registerIgnoredAsyncTest(specText, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, None, pos, testTags: _*)
     }
   }
 
@@ -366,7 +366,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>FixtureAsyncFunSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -387,7 +387,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>FixtureAsyncFunSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -420,8 +420,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FunSpec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>FunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAsyncFunSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAsyncFunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -473,7 +473,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * <p>
-   * Run zero to many of this <code>FunSpec</code>'s tests.
+   * Run zero to many of this <code>FixtureAsyncFunSpec</code>'s tests.
    * </p>
    *
    * <p>
@@ -505,7 +505,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </p>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAsyncFunSpec</code>.
    * @param args the <code>Args</code> to which results will be reported
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
@@ -516,7 +516,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAsyncFunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -537,7 +537,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * Supports shared test registration in <code>FunSpec</code>s.
+   * Supports shared test registration in <code>FixtureAsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -549,8 +549,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of <cod>behave</code>, see the <a href="../FunSpec.html#SharedTests">Shared tests section</a>
-   * in the main documentation for trait <code>FunSpec</code>.
+   * For more information and examples of the use of <cod>behave</code>, see the <a href="FixtureAsyncFunSpec.html#SharedTests">Shared tests section</a>
+   * in the main documentation for trait <code>FixtureAsyncFunSpec</code>.
    * </p>
    */
   protected val behave = new BehaveWord
