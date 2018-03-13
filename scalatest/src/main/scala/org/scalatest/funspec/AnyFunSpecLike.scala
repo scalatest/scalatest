@@ -13,43 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funspec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
+import org.scalatest._
 import Suite.autoTagClassAnnotations
 import words.BehaveWord
 
 /**
- * Implementation trait for class <code>FunSpec</code>, which 
+ * Implementation trait for class <code>AnyFunSpec</code>, which
  * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
  * in which tests are combined with text that specifies the behavior the tests
  * verify.
  * 
  * <p>
- * <a href="FunSpec.html"><code>FunSpec</code></a> is a class, not a trait,
+ * <a href="AnyFunSpec.html"><code>AnyFunSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FunSpec</code> into some other class, you can use this
- * trait instead, because class <code>FunSpec</code> does nothing more than
+ * behavior of <code>AnyFunSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AnyFunSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSpec.html">detailed
- * overview of <code>FunSpec</code></a>.
+ * See the documentation of the class for a <a href="AnyFunSpec.html">detailed
+ * overview of <code>AnyFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait FunSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "FunSpec")
   import engine._
 
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
-  private[scalatest] val sourceFileName = "FunSpecLike.scala"
+  private[scalatest] val sourceFileName = "AnyFunSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -66,7 +67,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -76,7 +77,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -111,7 +112,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>AnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -132,7 +133,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="AnyFunSpec.html">main documentation for <code>AnyFunSpec</code></a>.
    * </p>
    */
   protected class ItWord {
@@ -145,7 +146,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>AnyFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -178,8 +179,8 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AnyFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -197,15 +198,15 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AnyFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>AnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -229,7 +230,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   
   /**
    * Class that, via an instance referenced from the <code>they</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>AnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -250,7 +251,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="AnyFunSpec.html">main documentation for <code>AnyFunSpec</code></a>.
    * </p>
    */
   protected class TheyWord {
@@ -263,7 +264,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>AnyFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -290,8 +291,8 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AnyFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -309,15 +310,15 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AnyFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>AnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -347,7 +348,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>AnyFunSpec</code> instance.
    *
    * @param testText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -391,20 +392,20 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AnyFunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FunSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>AnyFunSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.FunSpec
+   * import org.scalatest.funspec.AnyFunSpec
    *
-   * class StackSpec extends FunSpec {
+   * class StackSpec extends AnyFunSpec {
    *   describe("A Stack") {
    *     describe("(when not empty)") {
    *       it("must allow me to pop") {}
@@ -417,7 +418,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>FunSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AnyFunSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -466,7 +467,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AnyFunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
@@ -482,7 +483,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-   * Run zero to many of this <code>FunSpec</code>'s tests.
+   * Run zero to many of this <code>AnyFunSpec</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -502,7 +503,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   }
 
   /**
-   * Supports shared test registration in <code>FunSpec</code>s.
+   * Supports shared test registration in <code>AnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:

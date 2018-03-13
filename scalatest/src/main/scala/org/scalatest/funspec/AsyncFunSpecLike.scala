@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funspec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
+import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 import words.BehaveWord
@@ -102,7 +103,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>AsyncFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -123,7 +124,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="AsyncFunSpec.html">main documentation for <code>AsyncFunSpec</code></a>.
    * </p>
    */
   protected class ItWord {
@@ -136,7 +137,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>AsyncFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -163,8 +164,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -182,15 +183,15 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>AsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -214,7 +215,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * Class that, via an instance referenced from the <code>they</code> field,
-   * supports test (and shared test) registration in <code>FunSpec</code>s.
+   * supports test (and shared test) registration in <code>AsyncFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -235,7 +236,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="FunSpec.html">main documentation for <code>FunSpec</code></a>.
+   * For more information and examples, see the <a href="AsyncFunSpec.html">main documentation for <code>AsyncFunSpec</code></a>.
    * </p>
    */
   protected class TheyWord {
@@ -248,7 +249,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
      * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
      * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-     * this <code>FunSpec</code> instance.
+     * this <code>AsyncFunSpec</code> instance.
      *
      * @param specText the specification text, which will be combined with the descText of any surrounding describers
      * to form the test name
@@ -275,8 +276,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -294,15 +295,15 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FunSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FunSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFunSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FunSpec</code>s.
+   * Supports test (and shared test) registration in <code>AsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -332,7 +333,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FunSpec</code> instance.
+   * this <code>AsyncFunSpec</code> instance.
    *
    * @param testText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -366,20 +367,20 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AsyncFunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FunSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>AsyncFunSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.FunSpec
+   * import org.scalatest.funspec.AsyncFunSpec
    *
-   * class StackSpec extends FunSpec {
+   * class StackSpec extends AsyncFunSpec {
    *   describe("A Stack") {
    *     describe("(when not empty)") {
    *       it("must allow me to pop") {}
@@ -392,7 +393,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>FunSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AsyncFunSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -443,7 +444,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AsyncFunSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -459,7 +460,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-   * Run zero to many of this <code>FunSpec</code>'s tests.
+   * Run zero to many of this <code>AsyncFunSpec</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -479,7 +480,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   }
 
   /**
-   * Supports shared test registration in <code>FunSpec</code>s.
+   * Supports shared test registration in <code>AsyncFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
