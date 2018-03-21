@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2018 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.flatspec
 
-import org.scalactic._
+import org.scalactic.source
+import org.scalatest._
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
@@ -81,7 +82,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AsyncFlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -91,7 +92,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AsyncFlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -124,7 +125,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FlatSpec</code> instance.
+   * this <code>AsyncFlatSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -157,7 +158,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
-   * instance referenced from <code>FlatSpec</code>'s <code>behavior</code> field.
+   * instance referenced from <code>AsyncFlatSpec</code>'s <code>behavior</code> field.
    *
    * <p>
    * This field enables syntax such as the following subject registration:
@@ -169,15 +170,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>behavior</code> field, see the <a href="FlatSpec.html">main documentation</a>
-   * for trait <code>FlatSpec</code>.
+   * For more information and examples of the use of the <code>behavior</code> field, see the <a href="AsyncFlatSpec.html">main documentation</a>
+   * for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class BehaviorWord {
 
     /**
      * Supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
-     * instance referenced from <code>FlatSpec</code>'s <code>behavior</code> field.
+     * instance referenced from <code>AsyncFlatSpec</code>'s <code>behavior</code> field.
      *
      * <p>
      * This method enables syntax such as the following subject registration:
@@ -189,8 +190,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of the use of this method, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For more information and examples of the use of this method, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def of(description: String)(implicit pos: source.Position): Unit = {
@@ -219,7 +220,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports the registration of tagged tests via the <code>ItWord</code> instance
-   * referenced from <code>FlatSpec</code>'s <code>it</code> field.
+   * referenced from <code>AsyncFlatSpec</code>'s <code>it</code> field.
    *
    * <p>
    * This class enables syntax such as the following tagged test registration:
@@ -250,15 +251,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <p>
    * For more information and examples of the use of the <code>it</code> field to register tagged tests, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+   * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
    * For examples of tagged test registration, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+   * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class ItVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
     /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -271,7 +272,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <p>
      * For examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -279,7 +280,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of pending, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of pending, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -291,9 +292,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  And for examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -301,7 +302,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -313,9 +314,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  And for examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -324,7 +325,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   }
 
   /**
-   * Class that supports test registration via the <code>ItWord</code> instance referenced from <code>FlatSpec</code>'s <code>it</code> field.
+   * Class that supports test registration via the <code>ItWord</code> instance referenced from <code>AsyncFlatSpec</code>'s <code>it</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -363,14 +364,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the <a href="FlatSpec.html">main documentation</a>
-   * for trait <code>FlatSpec</code>.
+   * For more information and examples of the use of the <code>it</code> field, see the <a href="AsyncFlatSpec.html">main documentation</a>
+   * for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class ItVerbString(verb: String, name: String) {
 
     /**
-     * Supports the registration of tests in a <code>FlatSpec</code>.
+     * Supports the registration of tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -382,8 +383,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -391,7 +392,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of pending tests in a <code>FlatSpec</code>.
+     * Supports the registration of pending tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -403,8 +404,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -412,7 +413,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -424,8 +425,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -433,7 +434,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -445,8 +446,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -456,7 +457,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   }
 
   /**
-   * Class that supports test (and shared test) registration via the instance referenced from <code>FlatSpec</code>'s <code>it</code> field.
+   * Class that supports test (and shared test) registration via the instance referenced from <code>AsyncFlatSpec</code>'s <code>it</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -484,7 +485,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected final class ItWord {
 
     /**
-     * Supports the registration of tests with <code>should</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>should</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -496,14 +497,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def should(string: String) = new ItVerbString("should", string)
 
     /**
-     * Supports the registration of tests with <code>must</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>must</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -515,14 +516,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def must(string: String) = new ItVerbString("must", string)
 
     /**
-     * Supports the registration of tests with <code>can</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>can</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -534,14 +535,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def can(string: String) = new ItVerbString("can", string)
 
     /**
-     * Supports the registration of shared tests with <code>should</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>should</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -553,14 +554,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
-     * Supports the registration of shared tests with <code>must</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>must</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -572,14 +573,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
-     * Supports the registration of shared tests with <code>can</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>can</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -591,15 +592,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FlatSpec</code>s.
+   * Supports test (and shared test) registration in <code>AsyncFlatSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following test registration:
@@ -628,7 +629,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports registration of ignored, tagged tests via the <code>IgnoreWord</code> instance referenced
-   * from <code>FlatSpec</code>'s <code>ignore</code> field.
+   * from <code>AsyncFlatSpec</code>'s <code>ignore</code> field.
    *
    * <p>
    * This class enables syntax such as the following registration of an ignored, tagged test:
@@ -655,15 +656,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </p>
    *
    * <p>
-   * For more information and examples of the use of the <code>ignore</code> field, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-   * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+   * For more information and examples of the use of the <code>ignore</code> field, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+   * in the main documentation for trait <code>AsyncFlatSpec</code>. For examples of tagged test registration, see
+   * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class IgnoreVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
     /**
-     * Supports the registration of ignored, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -675,9 +676,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of the registration of ignored tests, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of the registration of ignored tests, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>. For examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -685,7 +686,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored, tagged, pending tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, tagged, pending tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -703,11 +704,11 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  For examples of the registration of ignored tests,
-     * see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  For examples of the registration of ignored tests,
+     * see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>. For examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -718,7 +719,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports registration of ignored tests via the <code>IgnoreWord</code> instance referenced
-   * from <code>FlatSpec</code>'s <code>ignore</code> field.
+   * from <code>AsyncFlatSpec</code>'s <code>ignore</code> field.
    *
    * <p>
    * This class enables syntax such as the following registration of an ignored test:
@@ -754,14 +755,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>ignore</code> field, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-   * in the main documentation for trait <code>FlatSpec</code>.
+   * For more information and examples of the use of the <code>ignore</code> field, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+   * in the main documentation for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class IgnoreVerbString(verb: String, name: String) {
 
     /**
-     * Supports the registration of ignored tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -773,8 +774,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of the registration of ignored tests, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of the registration of ignored tests, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -782,7 +783,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored, pending tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, pending tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -800,10 +801,10 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  For examples of the registration of ignored tests,
-     * see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  For examples of the registration of ignored tests,
+     * see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -811,7 +812,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -823,10 +824,10 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  For examples of the registration of ignored tests,
-     * see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  For examples of the registration of ignored tests,
+     * see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -837,7 +838,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports registration of ignored tests via the <code>ItWord</code> instance
-   * referenced from <code>FlatSpec</code>'s <code>ignore</code> field.
+   * referenced from <code>AsyncFlatSpec</code>'s <code>ignore</code> field.
    *
    * <p>
    * This class enables syntax such as the following registration of an ignored test:
@@ -849,14 +850,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>ignore</code> field, see <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
+   * For more information and examples of the use of the <code>ignore</code> field, see <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
    * in the main documentation for this trait.
    * </p>
    */
   protected final class IgnoreWord {
 
     /**
-     * Supports the registration of ignored tests with <code>should</code> in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests with <code>should</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -868,14 +869,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of the use of the <code>ignore</code> field, see <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For more information and examples of the use of the <code>ignore</code> field, see <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def should(string: String) = new IgnoreVerbString("should", string)
 
     /**
-     * Supports the registration of ignored tests with <code>must</code> in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests with <code>must</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -887,14 +888,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of the use of the <code>ignore</code> field, see <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For more information and examples of the use of the <code>ignore</code> field, see <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def must(string: String) = new IgnoreVerbString("must", string)
 
     /**
-     * Supports the registration of ignored tests with <code>can</code> in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests with <code>can</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -906,15 +907,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of the use of the <code>ignore</code> field, see <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For more information and examples of the use of the <code>ignore</code> field, see <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def can(string: String) = new IgnoreVerbString("can", string)
   }
 
   /**
-   * Supports registration of ignored tests in <code>FlatSpec</code>s.
+   * Supports registration of ignored tests in <code>AsyncFlatSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following registration of an ignored test:
@@ -934,7 +935,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   /**
    * Class that supports the registration of tagged tests via the <code>TheyWord</code> instance
-   * referenced from <code>FlatSpec</code>'s <code>they</code> field.
+   * referenced from <code>AsyncFlatSpec</code>'s <code>they</code> field.
    *
    * <p>
    * This class enables syntax such as the following tagged test registration:
@@ -965,15 +966,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <p>
    * For more information and examples of the use of the <code>they</code> field to register tagged tests, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+   * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
    * For examples of tagged test registration, see
-   * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+   * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class TheyVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
     /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -986,7 +987,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <p>
      * For examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -994,7 +995,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of pending, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of pending, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1006,9 +1007,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  And for examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -1016,7 +1017,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored, tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored, tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1028,9 +1029,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
-     * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.  And for examples of tagged test registration, see
+     * the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1039,7 +1040,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   }
 
   /**
-   * Class that supports test registration via the <code>TheyWord</code> instance referenced from <code>FlatSpec</code>'s <code>they</code> field.
+   * Class that supports test registration via the <code>TheyWord</code> instance referenced from <code>AsyncFlatSpec</code>'s <code>they</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -1078,14 +1079,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the <a href="FlatSpec.html">main documentation</a>
-   * for trait <code>FlatSpec</code>.
+   * For more information and examples of the use of the <code>it</code> field, see the <a href="AsyncFlatSpec.html">main documentation</a>
+   * for trait <code>AsyncFlatSpec</code>.
    * </p>
    */
   protected final class TheyVerbString(verb: String, name: String) {
 
     /**
-     * Supports the registration of tests in a <code>FlatSpec</code>.
+     * Supports the registration of tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1097,8 +1098,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1106,7 +1107,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of pending tests in a <code>FlatSpec</code>.
+     * Supports the registration of pending tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1118,8 +1119,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of pending test registration, see the <a href="FlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of pending test registration, see the <a href="AsyncFlatSpec.html#pendingTests">Pending tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
@@ -1127,7 +1128,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of ignored tests in a <code>FlatSpec</code>.
+     * Supports the registration of ignored tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1139,8 +1140,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1148,7 +1149,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
 
     /**
-     * Supports the registration of tagged tests in a <code>FlatSpec</code>.
+     * Supports the registration of tagged tests in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1160,8 +1161,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
-     * for trait <code>FlatSpec</code>.
+     * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -1171,7 +1172,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   }
 
   /**
-   * Class that supports test (and shared test) registration via the instance referenced from <code>FlatSpec</code>'s <code>it</code> field.
+   * Class that supports test (and shared test) registration via the instance referenced from <code>AsyncFlatSpec</code>'s <code>it</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -1199,7 +1200,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected final class TheyWord {
 
     /**
-     * Supports the registration of tests with <code>should</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>should</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1211,14 +1212,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def should(string: String) = new ItVerbString("should", string)
 
     /**
-     * Supports the registration of tests with <code>must</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>must</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1230,14 +1231,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def must(string: String) = new ItVerbString("must", string)
 
     /**
-     * Supports the registration of tests with <code>can</code> in a <code>FlatSpec</code>.
+     * Supports the registration of tests with <code>can</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1249,14 +1250,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def can(string: String) = new ItVerbString("can", string)
 
     /**
-     * Supports the registration of shared tests with <code>should</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>should</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1268,14 +1269,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
-     * Supports the registration of shared tests with <code>must</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>must</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1287,14 +1288,14 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
-     * Supports the registration of shared tests with <code>can</code> in a <code>FlatSpec</code>.
+     * Supports the registration of shared tests with <code>can</code> in a <code>AsyncFlatSpec</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -1306,15 +1307,15 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="FlatSpec.html#sharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of shared tests, see the <a href="AsyncFlatSpec.html#sharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>FlatSpec</code>s.
+   * Supports test (and shared test) registration in <code>AsyncFlatSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following test registration:
@@ -1368,12 +1369,12 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * This class is used via an implicit conversion (named <code>convertToInAndIgnoreMethods</code>)
    * from <code>ResultOfStringPassedToVerb</code>. The <code>ResultOfStringPassedToVerb</code> class
    * does not declare any methods named <code>in</code>, because the
-   * type passed to <code>in</code> differs in a <code>FlatSpec</code> and a <code>fixture.FlatSpec</code>.
-   * A <code>fixture.FlatSpec</code> needs two <code>in</code> methods, one that takes a no-arg
+   * type passed to <code>in</code> differs in a <code>AsyncFlatSpec</code> and a <code>FixtureAsyncFlatSpec</code>.
+   * A <code>FixtureAsyncFlatSpec</code> needs two <code>in</code> methods, one that takes a no-arg
    * test function and another that takes a one-arg test function (a test that takes a
-   * <code>Fixture</code> as its parameter). By constrast, a <code>FlatSpec</code> needs
+   * <code>Fixture</code> as its parameter). By constrast, a <code>AsyncFlatSpec</code> needs
    * only one <code>in</code> method that takes a by-name parameter. As a result,
-   * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> each provide an implicit conversion
+   * <code>AsyncFlatSpec</code> and <code>FixtureAsyncFlatSpec</code> each provide an implicit conversion
    * from <code>ResultOfStringPassedToVerb</code> to a type that provides the appropriate
    * <code>in</code> methods.
    * </p>
@@ -1398,8 +1399,8 @@ import resultOfStringPassedToVerb.verb
      * </pre>
      *
      * <p>
-     * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
-     * for trait <code>FlatSpec</code>.
+     * For examples of test registration, see the <a href="AsyncFlatSpec.html">main documentation</a>
+     * for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1419,8 +1420,8 @@ import resultOfStringPassedToVerb.verb
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1465,12 +1466,12 @@ import resultOfStringPassedToVerb.verb
    * This class is used via an implicit conversion (named <code>convertToInAndIgnoreMethodsAfterTaggedAs</code>)
    * from <code>ResultOfTaggedAsInvocation</code>. The <code>ResultOfTaggedAsInvocation</code> class
    * does not declare any methods named <code>in</code>, because the
-   * type passed to <code>in</code> differs in a <code>FlatSpec</code> and a <code>fixture.FlatSpec</code>.
-   * A <code>fixture.FlatSpec</code> needs two <code>in</code> methods, one that takes a no-arg
+   * type passed to <code>in</code> differs in a <code>AsyncFlatSpec</code> and a <code>FixtureAsyncFlatSpec</code>.
+   * A <code>FixtureAsyncFlatSpec</code> needs two <code>in</code> methods, one that takes a no-arg
    * test function and another that takes a one-arg test function (a test that takes a
-   * <code>Fixture</code> as its parameter). By constrast, a <code>FlatSpec</code> needs
+   * <code>Fixture</code> as its parameter). By constrast, a <code>AsyncFlatSpec</code> needs
    * only one <code>in</code> method that takes a by-name parameter. As a result,
-   * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> each provide an implicit conversion
+   * <code>AsyncFlatSpec</code> and <code>FixtureAsyncFlatSpec</code> each provide an implicit conversion
    * from <code>ResultOfTaggedAsInvocation</code> to a type that provides the appropriate
    * <code>in</code> methods.
    * </p>
@@ -1496,8 +1497,8 @@ import resultOfStringPassedToVerb.verb
      * </pre>
      *
      * <p>
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1517,10 +1518,10 @@ import resultOfStringPassedToVerb.verb
      * </pre>
      *
      * <p>
-     * For examples of ignored test registration, see the <a href="FlatSpec.html#ignoredTests">Ignored tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
-     * For examples of tagged test registration, see the <a href="FlatSpec.html#taggingTests">Tagging tests section</a>
-     * in the main documentation for trait <code>FlatSpec</code>.
+     * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
+     * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+     * in the main documentation for trait <code>AsyncFlatSpec</code>.
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
@@ -1624,7 +1625,7 @@ import resultOfStringPassedToVerb.verb
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FlatSpec</code> instance.
+   * this <code>AsyncFlatSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -1658,7 +1659,7 @@ import resultOfStringPassedToVerb.verb
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FlatSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AsyncFlatSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -1710,7 +1711,7 @@ import resultOfStringPassedToVerb.verb
   }
 
   /**
-   * Run zero to many of this <code>FlatSpec</code>'s tests.
+   * Run zero to many of this <code>AsyncFlatSpec</code>'s tests.
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
@@ -1756,7 +1757,7 @@ import resultOfStringPassedToVerb.verb
    * </ul>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FlatSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>AsyncFlatSpec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
@@ -1768,7 +1769,7 @@ import resultOfStringPassedToVerb.verb
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FlatSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AsyncFlatSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -1779,9 +1780,9 @@ import resultOfStringPassedToVerb.verb
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.FlatSpec
+   * import org.scalatest.flatspec.AsyncFlatSpec
    *
-   * class StackSpec extends FlatSpec {
+   * class StackSpec extends AsyncFlatSpec {
    *
    *   "A Stack (when not empty)" must "allow me to pop" in {}
    *   it must "not be empty" in {}
@@ -1792,7 +1793,7 @@ import resultOfStringPassedToVerb.verb
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>FlatSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AsyncFlatSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -1813,7 +1814,7 @@ import resultOfStringPassedToVerb.verb
   }
 
   /**
-   * Supports shared test registration in <code>FlatSpec</code>s.
+   * Supports shared test registration in <code>AsyncFlatSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:

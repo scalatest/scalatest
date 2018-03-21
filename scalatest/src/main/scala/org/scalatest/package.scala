@@ -131,4 +131,12 @@ package object scalatest {
   @deprecated("Please use org.scalatest.funspec.AsyncFunSpecLike instead")
   type AsyncFunSpecLike = funspec.AsyncFunSpecLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.flatspec.AnyFlatSpecLike instead")
+  type FlatSpecLike = flatspec.AnyFlatSpecLike
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.flatspec.AsyncFlatSpecLike instead")
+  type AsyncFlatSpecLike = flatspec.AsyncFlatSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }
