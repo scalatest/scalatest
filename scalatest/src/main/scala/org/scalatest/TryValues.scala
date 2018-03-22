@@ -130,8 +130,8 @@ trait TryValues {
     def success: Success[T] = {
       theTry match {
         case success: Success[T] => success
-        case _ => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotASuccess), None, pos)
+        case Failure(cause) =>
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotASuccess), Some(cause), pos)
       }
     }
   }

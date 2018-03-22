@@ -60,6 +60,7 @@ class TryValuesSpec extends FunSpec {
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
       caught.message.value should be (Resources.tryNotASuccess)
+      caught.cause.value shouldBe an[Exception]
     }
   } 
 }
