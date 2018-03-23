@@ -12,6 +12,7 @@ addons:
 jdk:
   - openjdk6
   - oraclejdk8
+  - oraclejdk9
 
 dist: trusty
 sudo: true
@@ -60,8 +61,12 @@ matrix:
       jdk: openjdk6
     - scala: "2.11.12"
       jdk: oraclejdk8
+    - scala: "2.11.12"
+      jdk: oraclejdk9
     - scala: "2.10.7"
       jdk: oraclejdk8
+    - scala: "2.10.7"
+      jdk: oraclejdk9
 
 branches:
   only:
