@@ -76,7 +76,6 @@ branches:
     - 3.1.x
     - 3.2.x
 
-#before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
 
 notifications:
