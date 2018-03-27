@@ -128,6 +128,7 @@ if [[ $MODE = 'genGenTests' ]] ; then
   echo "Doing 'sbt genGenTests/test'"
   export SBT_OPTS="-server -Xms1G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
+  while :; do echo -n ...; sleep 300; done &
   sbt ++$TRAVIS_SCALA_VERSION genGenTests/test
 fi
 
