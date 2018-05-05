@@ -252,6 +252,22 @@ class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMat
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
+    it("should work with AnMatcher") {
+      val x: Any = 40
+      x shouldBe an [Int]
+
+      val y: Int = 40
+      y shouldBe an [Int]
+    }
+
+    it("should work with AMatcher") {
+      val x: Any = 40L
+      x shouldBe a [Long]
+
+      val y: Long = 40
+      y shouldBe a [Long]
+    }
+
     it("should with +-") {
 
       val sevenDotOh = 7.0
