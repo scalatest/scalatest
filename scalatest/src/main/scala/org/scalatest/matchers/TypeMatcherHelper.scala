@@ -45,7 +45,7 @@ object TypeMatcherHelper {
       def apply(left: Any): MatchResult = {
         val clazz = aType.clazz
         MatchResult(
-          clazz.isAssignableFrom(left.getClass),
+          conform(clazz, left),
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
