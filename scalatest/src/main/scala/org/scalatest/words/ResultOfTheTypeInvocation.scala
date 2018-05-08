@@ -31,6 +31,8 @@ final class ResultOfTheTypeInvocation[T](clazzTag: ClassTag[T], pos: source.Posi
 
   val clazz: Class[T] = clazzTag.runtimeClass.asInstanceOf[Class[T]]
 
+  def this(c: Class[_], pos: source.Position) = this(ClassTag(c).asInstanceOf[ClassTag[T]], pos)
+
   /**
    * This method enables the following syntax: 
    *

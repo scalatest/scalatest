@@ -1139,7 +1139,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(ClassTag(clazz))
+      val resultOfAType = new ResultOfATypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = be (resultOfAType)
       
@@ -1197,7 +1197,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(ClassTag(clazz))
+      val resultOfAnType = new ResultOfAnTypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = be (resultOfAnType)
       
