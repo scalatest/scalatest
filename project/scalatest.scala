@@ -39,8 +39,7 @@ object ScalatestBuild extends Build {
   val releaseVersion = "3.1.0-SNAP7"
   val previousReleaseVersion = "3.0.5"
 
-  val scalacheckVersion = "1.13.5"
-  val nativeScalacheckVersion = "1.14.0-18db189-SNAPSHOT"
+  val scalacheckVersion = "1.14.0"
 
   val easyMockVersion = "3.2"
   val jmockVersion = "2.8.3"
@@ -207,10 +206,10 @@ object ScalatestBuild extends Build {
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
           //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
-          "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional"
+          "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional")
+        Seq("org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional")
     }
   }
 
@@ -372,7 +371,7 @@ object ScalatestBuild extends Build {
       .settings(sharedSettings: _*)
       .settings(
         projectTitle := "Common test classes used by scalactic.native and scalatest.native",
-        libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
+        libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
         sourceGenerators in Compile += {
           Def.task{
             GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -630,7 +629,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.native",
       organization := "org.scalactic",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       nativeOptimizerDriver in NativeTest := {
@@ -890,7 +889,7 @@ object ScalatestBuild extends Build {
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.6",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -972,7 +971,7 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
       nativeOptimizerDriver in NativeTest := {
