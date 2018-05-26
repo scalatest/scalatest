@@ -114,30 +114,19 @@ trait Aggregating[-A] {
   def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
 }
 
-/**
- * Companion object for <code>Aggregating</code> that provides implicit implementations for the following types:
- *
- * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
- * <li><code>String</code></li>
- * <li><code>Array</code></li>
- * <li><code>java.util.Collection</code></li>
- * <li><code>java.util.Map</code></li>
- * </ul>
- */
-object Aggregating {
+trait LowPriorityAggregatingImplicits {
 
   // TODO: Throwing exceptions is slow. Just do a pattern match and test the type before trying to cast it.
-  private[scalatest] def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
+  private[scalatest] def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean =
     try equality.areEqual(left.asInstanceOf[T], right)
-      catch {
-        case cce: ClassCastException => false
+    catch {
+      case cce: ClassCastException => false
     }
-  
+
   private[scalatest] def checkTheSameElementsAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
     object ZipNoMatch
-    
+
     def leftNewCount(next: Any, count: IndexedSeq[ElementCount]): IndexedSeq[ElementCount] = {
       val idx = count.indexWhere(ec => tryEquality(next, ec.element, equality))
       if (idx >= 0) {
@@ -147,7 +136,7 @@ object Aggregating {
       else
         count :+ ElementCount(next, 1, 0)
     }
-    
+
     def rightNewCount(next: Any, count: IndexedSeq[ElementCount]): IndexedSeq[ElementCount] = {
       val idx = count.indexWhere(ec => tryEquality(next, ec.element, equality))
       if (idx >= 0) {
@@ -157,39 +146,39 @@ object Aggregating {
       else
         count :+ ElementCount(next, 0, 1)
     }
-    
-    val counts = right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch).aggregate(IndexedSeq.empty[ElementCount])( 
-      { case (count, (nextLeft, nextRight)) => 
-          if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
-            return false  // size not match, can fail early
-          rightNewCount(nextRight, leftNewCount(nextLeft, count))
-      }, 
+
+    val counts = right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch).aggregate(IndexedSeq.empty[ElementCount])(
+      { case (count, (nextLeft, nextRight)) =>
+        if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
+          return false  // size not match, can fail early
+        rightNewCount(nextRight, leftNewCount(nextLeft, count))
+      },
       { case (count1, count2) =>
-          count2.foldLeft(count1) { case (count, next) => 
-            val idx = count.indexWhere(ec => tryEquality(next.element, ec.element, equality))
-            if (idx >= 0) {
-              val currentElementCount = count(idx)
-              count.updated(idx, ElementCount(currentElementCount.element, currentElementCount.leftCount + next.leftCount, currentElementCount.rightCount + next.rightCount))
-            }
-            else
-              count :+ next
+        count2.foldLeft(count1) { case (count, next) =>
+          val idx = count.indexWhere(ec => tryEquality(next.element, ec.element, equality))
+          if (idx >= 0) {
+            val currentElementCount = count(idx)
+            count.updated(idx, ElementCount(currentElementCount.element, currentElementCount.leftCount + next.leftCount, currentElementCount.rightCount + next.rightCount))
           }
+          else
+            count :+ next
+        }
       }
     )
-    
+
     !counts.exists(e => e.leftCount != e.rightCount)
   }
-  
+
   private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean =
     left.forall(l => right.find(r => tryEquality(l, r, equality)).isDefined) &&
-    right.forall(r => left.find(l => tryEquality(l, r, equality)).isDefined)
-  
+      right.forall(r => left.find(l => tryEquality(l, r, equality)).isDefined)
+
   private[scalatest] def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
     def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
-        if (left.exists(t => equality.areEqual(t, nextRight))) 
+        if (left.exists(t => equality.areEqual(t, nextRight)))
           checkEqual(left, rightItr)
         else
           false // Element not found, let's fail early
@@ -199,39 +188,37 @@ object Aggregating {
     }
     checkEqual(left, right.toIterator)
   }
-  
+
   private[scalatest] def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
-    
-    def countElements: Int = 
+
+    def countElements: Int =
       right.aggregate(0)(
-        { case (count, nextRight) => 
-            if (left.exists(l => equality.areEqual(l, nextRight))) {
-              val newCount = count + 1
-              if (newCount > 1)
-                return newCount
-              else
-                newCount
-            }
+        { case (count, nextRight) =>
+          if (left.exists(l => equality.areEqual(l, nextRight))) {
+            val newCount = count + 1
+            if (newCount > 1)
+              return newCount
             else
-              count
-        }, 
+              newCount
+          }
+          else
+            count
+        },
         { case (count1, count2) => count1 + count2 }
       )
     val count = countElements
-    count <= 1      
+    count <= 1
   }
 
-  import scala.language.higherKinds
-
   /**
-   * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
-   * @tparam E the type of the element in the <code>GenTraversable</code>
-   * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
-   */
-  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
+    * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
+    * @tparam E the type of the element in the <code>GenTraversable</code>
+    * @tparam TRAV any subtype of <code>GenTraversable</code>
+    * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
+    */
+  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] =
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         trav.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -250,27 +237,94 @@ object Aggregating {
       }
     }
 
+  /**
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * (List("hi") should contain ("HI")) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * @tparam E type of elements in the <code>GenTraversable</code>
+    * @tparam TRAV subtype of <code>GenTraversable</code>
+    * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
+    */
+  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] =
+    aggregatingNatureOfGenTraversable(equality)
+
+}
+
+/**
+ * Companion object for <code>Aggregating</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>String</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li><code>java.util.Map</code></li>
+ * </ul>
+ */
+object Aggregating extends LowPriorityAggregatingImplicits {
+
+  import scala.language.higherKinds
   import scala.language.implicitConversions
 
   /**
-   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
-   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-   *
-   * <pre class="stHighlight">
-   * (List("hi") should contain ("HI")) (after being lowerCased)
-   * </pre>
-   *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-   * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * @tparam E type of elements in the <code>GenTraversable</code>
-   * @tparam TRAV subtype of <code>GenTraversable</code>
-   * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
-   */
-  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] =
-    aggregatingNatureOfGenTraversable(equality)
+    * Implicit to support <code>Aggregating</code> nature of <code>scala.collection.GenMap</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>scala.collection.GenMap</code>
+    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+    * @return <code>Aggregating[MAP[K, V]]</code> that supports <code>scala.collection.GenMap</code> in relevant <code>contain</code> syntax
+    */
+  implicit def aggregatingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
+    new Aggregating[MAP[K, V]] {
+      def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        map.exists((e: (K, V)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
+      }
+      def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsAs(map, elements, equality)
+      }
+      def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkOnly(map, elements, equality)
+      }
+      def containsAllOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAllOf(map, elements, equality)
+      }
+      def containsAtMostOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(map, elements, equality)
+      }
+    }
+
+  /**
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * into <code>Aggregating</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * val map = Map(1 -> "one")
+    * // lowerCased needs to be implemented as Normalization[Tuple2[K, V]]
+    * (map should contain ((1, "ONE"))) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Tuple2[Int, String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[scala.collection.GenMap[Int, String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+    * @return <code>Aggregating</code> of type <code>MAP[K, V]</code>
+    */
+  implicit def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[scala.collection.GenMap[K, V]] =
+    aggregatingNatureOfMap(equality)
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
