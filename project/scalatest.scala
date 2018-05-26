@@ -757,7 +757,8 @@ object ScalatestBuild extends Build {
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions += "-Ypartial-unification"
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
@@ -1234,7 +1235,7 @@ object ScalatestBuild extends Build {
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := buildScalaVersion,
-    scalacOptions ++= Seq("-feature"),
+    scalacOptions ++= Seq("-feature", "-Ypartial-unification"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies.value,
     libraryDependencies ++= gentestsLibraryDependencies,
