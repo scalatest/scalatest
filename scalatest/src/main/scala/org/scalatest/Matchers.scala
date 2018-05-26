@@ -6406,6 +6406,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
+    * This method enables the following syntax for <code>scala.collection.GenMap</code>:
+    *
+    * <pre class="stHighlight">
+    * all(map) should fullymatch regex ("Hel*o world".r)
+    * ^
+    * </pre>
+    */
+  def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+
+  /**
    * This method enables the following syntax for <code>java.util.Map</code>:
    *
    * <pre class="stHighlight">
@@ -6436,6 +6447,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+
+  /**
+    * This method enables the following syntax for <code>scala.collection.GenMap</code>:
+    *
+    * <pre class="stHighlight">
+    * atLeast(1, map) should fullymatch regex ("Hel*o world".r)
+    * ^
+    * </pre>
+    */
+  def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6472,6 +6494,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
+    * This method enables the following syntax for <code>scala.collection.GenMap</code>:
+    *
+    * <pre class="stHighlight">
+    * every(map) should fullymatch regex ("Hel*o world".r)
+    * ^
+    * </pre>
+    */
+  def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+
+  /**
    * This method enables the following syntax for <code>java.util.Map</code>:
    *
    * <pre class="stHighlight">
@@ -6502,6 +6535,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+
+  /**
+    * This method enables the following syntax for <code>scala.collection.GenMap</code>:
+    *
+    * <pre class="stHighlight">
+    * exactly(map) should fullymatch regex ("Hel*o world".r)
+    * ^
+    * </pre>
+    */
+  def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6601,6 +6645,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+
+  /**
+    * This method enables the following syntax for <code>scala.collection.GenMap</code>:
+    *
+    * <pre class="stHighlight">
+    * atMost(3, map) should fullymatch regex ("Hel*o world".r)
+    * ^
+    * </pre>
+    */
+  def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**

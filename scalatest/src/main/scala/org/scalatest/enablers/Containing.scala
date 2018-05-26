@@ -116,6 +116,100 @@ trait Containing[-C] {
   }
 */
 
+trait LowPriorityContainingImplicits {
+
+  private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean =
+    try equality.areEqual(left.asInstanceOf[T], right)
+    catch {
+      case cce: ClassCastException => false
+    }
+
+  private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
+    // aggregate version is more verbose, but it allows parallel execution.
+    right.aggregate(Set.empty[Any])(
+      { case (fs, r) =>
+        if (left.exists(t => equality.areEqual(t, r))) {
+          // r is in the left
+          if (fs.size != 0) // This .size should be safe, it won't go > 1
+            return fs + r // fail early by returning early, hmm..  not so 'functional'??
+          else
+            fs + r
+        }
+        else
+          fs // r is not in the left
+      },
+      { case (fs1, fs2) =>
+        val fs = fs1 + fs2
+        if (fs.size > 1)
+          return fs // fail early by returning early
+        else
+          fs
+      }
+    )
+  }
+
+  private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
+    right.aggregate(None)(
+      { case (f, r) =>
+        if (left.exists(t => equality.areEqual(t, r)))
+          return Some(r) // r is in the left, fail early by returning.
+        else
+          None // r is not in the left
+      },
+      { case (f1, f2) => None }
+    )
+  }
+
+  /**
+    * Implicit to support <code>Containing</code> nature of <code>GenTraversable</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
+    * @tparam E the type of the element in the <code>GenTraversable</code>
+    * @tparam TRAV any subtype of <code>GenTraversable</code>
+    * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
+    */
+  implicit def containingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Containing[TRAV[E]] =
+    new Containing[TRAV[E]] {
+      def contains(trav: TRAV[E], ele: Any): Boolean = {
+        equality match {
+          case normEq: NormalizingEquality[_] =>
+            val normRight = normEq.normalizedOrSame(ele)
+            trav.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
+          case _ => trav.exists((e: E) => equality.areEqual(e, ele))
+        }
+      }
+      def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val foundSet = checkOneOf[E](trav, elements, equality)
+        foundSet.size == 1
+      }
+      def containsNoneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val found = checkNoneOf[E](trav, elements, equality)
+        !found.isDefined
+      }
+    }
+
+  /**
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * into <code>Containing</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * (List("hi") should contain oneOf ("HI")) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+    * and this implicit conversion will convert it into <code>Containing[List[String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * @tparam E type of elements in the <code>GenTraversable</code>
+    * @tparam TRAV subtype of <code>GenTraversable</code>
+    * @return <code>Containing</code> of type <code>TRAV[E]</code>
+    */
+  implicit def convertEqualityToGenTraversableContaining[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Containing[TRAV[E]] =
+    containingNatureOfGenTraversable(equality)
+
+}
+
 /**
  * Companion object for <code>Containing</code> that provides implicit implementations for the following types:
  *
@@ -128,51 +222,57 @@ trait Containing[-C] {
  * <li><code>java.util.Map</code></li>
  * </ul>
  */
-object Containing {
-  
-  private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
-    try equality.areEqual(left.asInstanceOf[T], right)
-      catch {
-        case cce: ClassCastException => false
-    }
-  
-  private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
-    // aggregate version is more verbose, but it allows parallel execution.
-    right.aggregate(Set.empty[Any])( 
-      { case (fs, r) => 
-          if (left.exists(t => equality.areEqual(t, r))) {
-            // r is in the left
-            if (fs.size != 0) // This .size should be safe, it won't go > 1
-              return fs + r // fail early by returning early, hmm..  not so 'functional'??
-            else
-              fs + r
-          }
-          else 
-            fs // r is not in the left
-      }, 
-      { case (fs1, fs2) => 
-        val fs = fs1 + fs2
-        if (fs.size > 1)
-          return fs // fail early by returning early
-        else
-          fs
-      }
-    )
-  }
-  
-  private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
-    right.aggregate(None)( 
-      { case (f, r) => 
-          if (left.exists(t => equality.areEqual(t, r))) 
-            return Some(r) // r is in the left, fail early by returning.
-          else 
-            None // r is not in the left
-      }, 
-      { case (f1, f2) => None }
-    )
-  }
+object Containing extends LowPriorityContainingImplicits {
 
   import scala.language.higherKinds
+  import scala.language.implicitConversions
+
+  /**
+    * Implicit to support <code>Containing</code> nature of <code>scala.collection.GenMap</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>scala.collection.GenMap</code>
+    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+    * @return <code>Containing[MAP[K, V]]</code> that supports <code>scala.collection.GenMap</code> in relevant <code>contain</code> syntax
+    */
+  implicit def containingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] =
+    new Containing[MAP[K, V]] {
+      def contains(map: MAP[K, V], ele: Any): Boolean = {
+        map.exists((e: (K, V)) => equality.areEqual(e, ele))
+      }
+      def containsOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        val foundSet = checkOneOf[(K, V)](map, elements, equality)
+        foundSet.size == 1
+      }
+      def containsNoneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        val found = checkNoneOf[(K, V)](map, elements, equality)
+        !found.isDefined
+      }
+    }
+
+  /**
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * into <code>Containing</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * val map = Map(1 -> "one")
+    * // lowerCased needs to be implemented as Normalization[Tuple2[K, V]]
+    * (map should contain ((1, "ONE"))) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Tuple2[Int, String]</code></a>
+    * and this implicit conversion will convert it into <code>Containing[scala.collection.GenMap[Int, String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+    * @return <code>Containing</code> of type <code>MAP[K, V]</code>
+    */
+  implicit def convertEqualityToMapContaining[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Containing[MAP[K, V]] =
+    containingNatureOfMap(equality)
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>java.util.Collection</code>.
@@ -204,8 +304,6 @@ object Containing {
       }
     }
 
-  import scala.language.implicitConversions
-
   /**
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
@@ -227,54 +325,6 @@ object Containing {
    */
   implicit def convertEqualityToJavaCollectionContaining[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Containing[JCOL[E]] = 
     containingNatureOfJavaCollection(equality)
-
-  /**
-   * Implicit to support <code>Containing</code> nature of <code>GenTraversable</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
-   * @tparam E the type of the element in the <code>GenTraversable</code>
-   * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
-   */
-  implicit def containingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
-    new Containing[TRAV[E]] {
-      def contains(trav: TRAV[E], ele: Any): Boolean = {
-        equality match {
-          case normEq: NormalizingEquality[_] => 
-            val normRight = normEq.normalizedOrSame(ele)
-            trav.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
-          case _ => trav.exists((e: E) => equality.areEqual(e, ele))
-        }
-      }
-      def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[E](trav, elements, equality)
-        foundSet.size == 1
-      }
-      def containsNoneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](trav, elements, equality)
-        !found.isDefined
-      }
-    }
-
-  /**
-   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * into <code>Containing</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
-   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-   *
-   * <pre class="stHighlight">
-   * (List("hi") should contain oneOf ("HI")) (after being lowerCased)
-   * </pre>
-   *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-   * and this implicit conversion will convert it into <code>Containing[List[String]]</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * @tparam E type of elements in the <code>GenTraversable</code>
-   * @tparam TRAV subtype of <code>GenTraversable</code>
-   * @return <code>Containing</code> of type <code>TRAV[E]</code>
-   */
-  implicit def convertEqualityToGenTraversableContaining[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Containing[TRAV[E]] = 
-    containingNatureOfGenTraversable(equality)
 
   // OPT so that it will work with Some also, but it doesn't work with None
   /**
