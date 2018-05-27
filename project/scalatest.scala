@@ -449,7 +449,8 @@ object ScalatestBuild extends Build {
       libraryDependencies += scalacheckDependency("test"),
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
@@ -473,7 +474,8 @@ object ScalatestBuild extends Build {
       },
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
@@ -579,7 +581,7 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions += "-Ypartial-unification"
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
@@ -682,6 +684,7 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification")),
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -845,7 +848,7 @@ object ScalatestBuild extends Build {
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := buildScalaVersion,
-    scalacOptions ++= Seq("-feature", "-Ypartial-unification"),
+    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
