@@ -16,10 +16,12 @@
 package org.scalatest.matchers
 
 import org.scalactic.source
-import org.scalatest.{UnquotedString, Suite, FailureMessages, Resources}
+import org.scalatest.{FailureMessages, Resources, Suite, UnquotedString}
 import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
-import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
+import org.scalatest.words.{ResultOfATypeInvocation, ResultOfAnTypeInvocation}
+
+import scala.reflect.ClassTag
 //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 
 /**
@@ -43,7 +45,7 @@ object TypeMatcherHelper {
       def apply(left: Any): MatchResult = {
         val clazz = aType.clazz
         MatchResult(
-          clazz.isAssignableFrom(left.getClass),
+          conform(clazz, left),
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
@@ -64,7 +66,7 @@ object TypeMatcherHelper {
       def apply(left: Any): MatchResult = {
         val clazz = anType.clazz
         MatchResult(
-          clazz.isAssignableFrom(left.getClass),
+          conform(clazz, left),
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
@@ -85,7 +87,7 @@ object TypeMatcherHelper {
       def apply(left: Any): MatchResult = {
         val clazz = aType.clazz
         MatchResult(
-          !clazz.isAssignableFrom(left.getClass),
+          !conform(clazz, left),
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
@@ -106,7 +108,7 @@ object TypeMatcherHelper {
       def apply(left: Any): MatchResult = {
         val clazz = anType.clazz
         MatchResult(
-          !clazz.isAssignableFrom(left.getClass),
+          !conform(clazz, left),
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
@@ -115,6 +117,24 @@ object TypeMatcherHelper {
       }
       override def toString: String = "not be " + Prettifier.default(anType)
     }
+
+  // This method is inspired from ClassTag's unapply method starting Scala 2.11,
+  // we can't use ClassTag's unapply directly because in Scala 2.10 it wasn't
+  // written this way and it can't meet our purpose.
+  private def conform[T](runtimeClass: Class[T], x: Any): Boolean =
+    if (null != x && (
+      (runtimeClass.isInstance(x))
+        || (x.isInstanceOf[Byte]    && runtimeClass.isAssignableFrom(classOf[Byte]))
+        || (x.isInstanceOf[Short]   && runtimeClass.isAssignableFrom(classOf[Short]))
+        || (x.isInstanceOf[Char]    && runtimeClass.isAssignableFrom(classOf[Char]))
+        || (x.isInstanceOf[Int]     && runtimeClass.isAssignableFrom(classOf[Int]))
+        || (x.isInstanceOf[Long]    && runtimeClass.isAssignableFrom(classOf[Long]))
+        || (x.isInstanceOf[Float]   && runtimeClass.isAssignableFrom(classOf[Float]))
+        || (x.isInstanceOf[Double]  && runtimeClass.isAssignableFrom(classOf[Double]))
+        || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(classOf[Boolean]))
+        || (x.isInstanceOf[Unit]    && runtimeClass.isAssignableFrom(classOf[Unit])))
+    ) true
+    else false
 
   /**
    * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
@@ -125,7 +145,7 @@ object TypeMatcherHelper {
    */
   def assertAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
-    if (!clazz.isAssignableFrom(left.getClass)) {
+    if (!conform(clazz, left)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
@@ -141,7 +161,7 @@ object TypeMatcherHelper {
    */
   /*private[scalatest] def expectAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier): org.scalatest.Fact = {
     val clazz = aType.clazz
-    if (!clazz.isAssignableFrom(left.getClass)) {
+    if (!conform(clazz, left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(aType.prettifier)
     }
@@ -157,7 +177,7 @@ object TypeMatcherHelper {
    */
   def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
-    if (!clazz.isAssignableFrom(left.getClass)) {
+    if (!conform(clazz, left)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
@@ -173,7 +193,7 @@ object TypeMatcherHelper {
    */
   /*private[scalatest] def expectAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Fact = {
     val clazz = anType.clazz
-    if (!clazz.isAssignableFrom(left.getClass)) {
+    if (!conform(clazz, left)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(anType.prettifier)
     } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName)))(anType.prettifier)
@@ -189,7 +209,7 @@ object TypeMatcherHelper {
    */
   def assertATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+    if (conform(clazz, left) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
@@ -211,7 +231,7 @@ object TypeMatcherHelper {
    */
   /*def expectATypeWillBeTrue(left: Any, aType: FactResultOfATypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
     val clazz = aType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+    if (conform(clazz, left) != shouldBeTrue) {
       org.scalatest.Fact.No(
         if (shouldBeTrue)
           FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
@@ -238,7 +258,7 @@ object TypeMatcherHelper {
    */
   def assertAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+    if (conform(clazz, left) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
@@ -260,7 +280,7 @@ object TypeMatcherHelper {
    */
   /*def expectAnTypeWillBeTrue(left: Any, anType: FactResultOfAnTypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
     val clazz = anType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+    if (conform(clazz, left) != shouldBeTrue) {
       org.scalatest.Fact.No(
         if (shouldBeTrue)
           FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
