@@ -20,13 +20,19 @@ import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
 import org.scalactic._
 
+import scala.reflect.ClassTag
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
  */
-final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
+final class ResultOfAnTypeInvocation[T](val clazzTag: ClassTag[T]) {
+
+  val clazz: Class[T] = clazzTag.runtimeClass.asInstanceOf[Class[T]]
+
+  def this(c: Class[_]) = this(ClassTag(c).asInstanceOf[ClassTag[T]])
 
   /**
    * This method enables the following syntax: 

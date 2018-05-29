@@ -18,14 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import org.scalatest.exceptions.NotAllowedException
 import Matchers._
-import matchers.{BePropertyMatcher, 
-                 BePropertyMatchResult, 
-                 AMatcher, 
-                 AnMatcher, 
-                 BeMatcher, 
-                 MatchResult}
+import matchers.{AMatcher, AnMatcher, BeMatcher, BePropertyMatchResult, BePropertyMatcher, MatchResult}
 import org.scalactic._
 import org.scalatest.UnquotedString
+
+import scala.reflect.ClassTag
 
 class BeWordSpec extends FunSpec with FileMocks {
   
@@ -1142,7 +1139,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = be (resultOfAType)
       
@@ -1200,7 +1197,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = be (resultOfAnType)
       

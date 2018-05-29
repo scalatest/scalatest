@@ -19,12 +19,14 @@ import org.scalatest._
 import Matchers._
 import org.scalactic._
 
+import scala.reflect.ClassTag
+
 class ResultOfTheTypeInvocationSpec extends FunSpec {
   
   describe("ResultOfTheTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfTheTypeInvocation(classOf[FunSpec], source.Position.here)
+      val result = new ResultOfTheTypeInvocation(ClassTag[FunSpec](classOf[FunSpec]), source.Position.here)
       result.toString should be ("the [org.scalatest.FunSpec]")
     }
   }

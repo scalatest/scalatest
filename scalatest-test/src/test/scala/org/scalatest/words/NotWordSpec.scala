@@ -18,15 +18,10 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 import SharedHelpers.createTempDirectory
-import matchers.{BePropertyMatcher, 
-                 BePropertyMatchResult, 
-                 AMatcher, 
-                 AnMatcher, 
-                 BeMatcher, 
-                 MatchResult}
-import matchers.{NegatedFailureMessage, 
-                 MidSentenceFailureMessage, 
-                 MidSentenceNegatedFailureMessage}
+import matchers.{AMatcher, AnMatcher, BeMatcher, BePropertyMatchResult, BePropertyMatcher, MatchResult}
+import matchers.{MidSentenceFailureMessage, MidSentenceNegatedFailureMessage, NegatedFailureMessage}
+
+import scala.reflect.ClassTag
 
 // SKIP-SCALATESTJS-START
 import java.io.File
@@ -1708,7 +1703,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = not be (resultOfAType)
       
@@ -1766,7 +1761,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(ClassTag[MyFile](clazz))
       
       val mt = not be (resultOfAnType)
       
