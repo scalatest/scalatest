@@ -43,13 +43,13 @@ object TypeMatcherHelper {
   def aTypeMatcher(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val clazz = aType.clazz
+        val clazzTag = aType.clazzTag
         MatchResult(
-          conform(clazz, left),
+          conform(clazzTag, left),
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazzTag.toString), UnquotedString(left.getClass.getName)),
+          Vector(left, UnquotedString(clazzTag.toString))
         )
       }
       override def toString: String = "be (" + Prettifier.default(aType) + ")"
@@ -64,13 +64,13 @@ object TypeMatcherHelper {
   def anTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val clazz = anType.clazz
+        val clazzTag = anType.clazzTag
         MatchResult(
-          conform(clazz, left),
+          conform(clazzTag, left),
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazzTag.toString), UnquotedString(left.getClass.getName)),
+          Vector(left, UnquotedString(clazzTag.toString))
         )
       }
       override def toString: String = "be (" + Prettifier.default(anType) + ")"
@@ -85,13 +85,13 @@ object TypeMatcherHelper {
   def notATypeMatcher(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val clazz = aType.clazz
+        val clazzTag = aType.clazzTag
         MatchResult(
-          !conform(clazz, left),
+          !conform(clazzTag, left),
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
-          Vector(left, UnquotedString(clazz.getName)),
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          Vector(left, UnquotedString(clazzTag.toString)),
+          Vector(left, UnquotedString(clazzTag.toString), UnquotedString(left.getClass.getName))
         )
       }
       override def toString: String = "not be " + Prettifier.default(aType)
@@ -106,35 +106,47 @@ object TypeMatcherHelper {
   def notAnTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val clazz = anType.clazz
+        val clazzTag = anType.clazzTag
         MatchResult(
-          !conform(clazz, left),
+          !conform(clazzTag, left),
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
-          Vector(left, UnquotedString(clazz.getName)),
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          Vector(left, UnquotedString(clazzTag.toString)),
+          Vector(left, UnquotedString(clazzTag.toString), UnquotedString(left.getClass.getName))
         )
       }
       override def toString: String = "not be " + Prettifier.default(anType)
     }
 
-  // This method is inspired from ClassTag's unapply method starting Scala 2.11,
-  // we can't use ClassTag's unapply directly because in Scala 2.10 it wasn't
-  // written this way and it can't meet our purpose.
-  private def conform[T](runtimeClass: Class[T], x: Any): Boolean =
-    if (null != x && (
-      (runtimeClass.isInstance(x))
-        || (x.isInstanceOf[Byte]    && runtimeClass.isAssignableFrom(classOf[Byte]))
-        || (x.isInstanceOf[Short]   && runtimeClass.isAssignableFrom(classOf[Short]))
-        || (x.isInstanceOf[Char]    && runtimeClass.isAssignableFrom(classOf[Char]))
-        || (x.isInstanceOf[Int]     && runtimeClass.isAssignableFrom(classOf[Int]))
-        || (x.isInstanceOf[Long]    && runtimeClass.isAssignableFrom(classOf[Long]))
-        || (x.isInstanceOf[Float]   && runtimeClass.isAssignableFrom(classOf[Float]))
-        || (x.isInstanceOf[Double]  && runtimeClass.isAssignableFrom(classOf[Double]))
-        || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(classOf[Boolean]))
-        || (x.isInstanceOf[Unit]    && runtimeClass.isAssignableFrom(classOf[Unit])))
-    ) true
-    else false
+  private def conform[T](classTag: ClassTag[T], x: Any): Boolean =
+    if (classTag == ClassTag.AnyVal)
+      x.isInstanceOf[Byte] ||
+      x.isInstanceOf[Short] ||
+      x.isInstanceOf[Char] ||
+      x.isInstanceOf[Int] ||
+      x.isInstanceOf[Long] ||
+      x.isInstanceOf[Float] ||
+      x.isInstanceOf[Double] ||
+      x.isInstanceOf[Boolean]
+    else {
+      val runtimeClass = classTag.runtimeClass
+      // This part of code is inspired from ClassTag's unapply method starting Scala 2.11,
+      // we can't use ClassTag's unapply directly because in Scala 2.10 it wasn't
+      // written this way and it can't meet our purpose.
+      if (null != x && (
+        (runtimeClass.isInstance(x))
+          || (x.isInstanceOf[Byte]    && runtimeClass.isAssignableFrom(classOf[Byte]))
+          || (x.isInstanceOf[Short]   && runtimeClass.isAssignableFrom(classOf[Short]))
+          || (x.isInstanceOf[Char]    && runtimeClass.isAssignableFrom(classOf[Char]))
+          || (x.isInstanceOf[Int]     && runtimeClass.isAssignableFrom(classOf[Int]))
+          || (x.isInstanceOf[Long]    && runtimeClass.isAssignableFrom(classOf[Long]))
+          || (x.isInstanceOf[Float]   && runtimeClass.isAssignableFrom(classOf[Float]))
+          || (x.isInstanceOf[Double]  && runtimeClass.isAssignableFrom(classOf[Double]))
+          || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(classOf[Boolean]))
+          || (x.isInstanceOf[Unit]    && runtimeClass.isAssignableFrom(classOf[Unit])))
+      ) true
+      else false
+    }
 
   /**
    * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
@@ -145,9 +157,9 @@ object TypeMatcherHelper {
    */
   def assertAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
-    if (!conform(clazz, left)) {
-      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
+    if (!conform(aType.clazzTag, left)) {
+      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, aType.clazzTag.toString)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(aType.clazzTag.toString), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded
   }
@@ -177,9 +189,9 @@ object TypeMatcherHelper {
    */
   def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
-    if (!conform(clazz, left)) {
-      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
+    if (!conform(anType.clazzTag, left)) {
+      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, anType.clazzTag.toString)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(anType.clazzTag.toString), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded
   }
@@ -209,12 +221,12 @@ object TypeMatcherHelper {
    */
   def assertATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
-    if (conform(clazz, left) != shouldBeTrue) {
+    if (conform(aType.clazzTag, left) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(aType.clazzTag.toString), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(aType.clazzTag.toString)),
         None,
         pos
       )
@@ -258,12 +270,12 @@ object TypeMatcherHelper {
    */
   def assertAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
-    if (conform(clazz, left) != shouldBeTrue) {
+    if (conform(anType.clazzTag, left) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(anType.clazzTag.toString), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(anType.clazzTag.toString)),
         None,
         pos
       )

@@ -18,12 +18,14 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
+import scala.reflect.ClassTag
+
 class ResultOfAnTypeInvocationSpec extends FunSpec {
   
   describe("ResultOfAnTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfAnTypeInvocation(classOf[Inspectors])
+      val result = new ResultOfAnTypeInvocation(ClassTag[Inspectors](classOf[Inspectors]))
       result.toString should be ("an [org.scalatest.Inspectors]")
     }
   }

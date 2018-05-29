@@ -268,6 +268,14 @@ class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMat
       y shouldBe a [Long]
     }
 
+    /*it("should work correctly with AnyVal") {
+      case class TestModel(value: String)
+
+      val m = TestModel("test")
+
+      m shouldBe an [AnyVal]  // This should fail
+    }*/
+
     it("should with +-") {
 
       val sevenDotOh = 7.0
