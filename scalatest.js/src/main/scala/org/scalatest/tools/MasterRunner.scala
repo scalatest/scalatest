@@ -157,12 +157,17 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, None)
+        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, Some(send))
 
     for {
       taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
       val task = createTask(taskDef)
     } yield task
+  }
+
+  private def send(msg: String): Unit = {
+    receiveMessage(msg)
+    ()
   }
 
   def receiveMessage(msg: String): Option[String] = {
@@ -194,7 +199,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
     new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, None)
+      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, Some(send))
   }
 
 }
