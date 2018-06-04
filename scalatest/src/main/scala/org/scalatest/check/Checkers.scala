@@ -71,7 +71,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <p>
  * For more information on using ScalaCheck properties, see the documentation for ScalaCheck, which is available
- * from <a href="http://code.google.com/p/scalacheck/">http://code.google.com/p/scalacheck/</a>.
+ * from <a href="https://www.scalacheck.org/">https://www.scalacheck.org/</a>.
  * </p>
  *
  * <p>
