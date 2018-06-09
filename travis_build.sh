@@ -3,6 +3,17 @@
 export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
+# Travis switches JDK BEFORE it installs APK packages, so the switch can fail.
+
+function include {
+    [[ -f "$1" ]] && source "$1"
+}
+
+# Locations from https://github.com/travis-ci/travis-ci/issues/8681
+include ~/.jdk_switcher_rc
+include /opt/jdk_switcher/jdk_switcher.sh
+jdk_switcher use $TRAVIS_JDK_VERSION
+
 if [[ $MODE = 'RegularTests1' ]] ; then
   echo "Doing 'sbt genRegularTests1/test'"
 
