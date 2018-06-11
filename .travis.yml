@@ -3,7 +3,7 @@ scala:
   - 2.10.7
   - 2.11.12
   - 2.12.4
-  - 2.13.0-M2
+  - 2.13.0-M4
 addons:
   apt:
     packages:
@@ -55,9 +55,9 @@ env:
 
 matrix:
   exclude:
-    - scala: "2.13.0-M2"
+    - scala: "2.13.0-M4"
       jdk: openjdk6
-    - scala: "2.13.0-M2"
+    - scala: "2.13.0-M4"
       jdk: oraclejdk9
     - scala: "2.12.4"
       jdk: openjdk6
