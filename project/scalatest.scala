@@ -360,7 +360,8 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task{
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -403,7 +404,8 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task {
           GenScalacticJS.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       resourceGenerators in Compile += {
