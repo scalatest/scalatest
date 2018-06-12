@@ -1506,7 +1506,7 @@ object Every {
       case Some(first) =>
         seq.tail.headOption match {
           case None => Some(One(first))
-          case Some(second) => Some(Many(first, second, seq.tail.tail.seq: _*))
+          case Some(second) => Some(Many(first, second, seq.tail.tail.toVector: _*))
         }
     }
 
