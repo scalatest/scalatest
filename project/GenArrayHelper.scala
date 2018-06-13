@@ -50,11 +50,14 @@ object GenArrayHelper {
           |      case x => x
           |    }
           |
-          |    override def stringPrefix = "Array"
+          |    override def className = "Array"
           |  }
           |
           |  def deep[T](a: Array[T]): collection.IndexedSeq[Any] = prettyArray(a)
           |
+          |  def isArrayOps(obj: Any): Boolean = obj.isInstanceOf[scala.collection.ArrayOps[_]]
+          |
+          |  def asArrayOps(obj: Any): scala.collection.ArrayOps[_] = obj.asInstanceOf[scala.collection.ArrayOps[_]]
           |}
         """.stripMargin
       else
@@ -78,6 +81,10 @@ object GenArrayHelper {
           |private[scalactic] object ArrayHelper {
           |
           |  def deep[T](a: Array[T]): collection.IndexedSeq[Any] = a.deep
+          |
+          |  def isArrayOps(obj: Any): Boolean = obj.isInstanceOf[scala.collection.mutable.ArrayOps[_]]
+          |
+          |  def asArrayOps(obj: Any): scala.collection.mutable.ArrayOps[_] = obj.asInstanceOf[scala.collection.mutable.ArrayOps[_]]
           |
           |}
         """.stripMargin
