@@ -20,7 +20,7 @@ private[scalactic] object ArrayHelper {
 
   // The following code is taken from: https://github.com/scala/scala/blob/86e75db7f36bcafdd75302f2c2cca0c68413214d/src/partest/scala/tools/partest/Util.scala
 
-  def prettyArray(a: Array[_]): collection.IndexedSeq[Any] = new collection.AbstractSeq[Any] with collection.IndexedSeq[Any] {
+  /*def prettyArray(a: Array[_]): collection.IndexedSeq[Any] = new collection.AbstractSeq[Any] with collection.IndexedSeq[Any] {
     def length = a.length
 
     def apply(idx: Int): Any = a(idx) match {
@@ -29,8 +29,8 @@ private[scalactic] object ArrayHelper {
     }
 
     override def stringPrefix = "Array"
-  }
+  }*/
 
-  def deep[T](a: Array[T]): collection.IndexedSeq[Any] = prettyArray(a)
+  def deep[T](a: Array[T]): collection.IndexedSeq[Any] = a.deep//prettyArray(a)
 
 }

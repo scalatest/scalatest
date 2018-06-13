@@ -167,17 +167,10 @@ object ScalatestBuild extends Build {
   def scalacheckDependency(config: String) =
     "org.scalacheck" %% "scalacheck" % scalacheckVersion % config
 
-  def crossBuildLibraryDependencies(theScalaVersion: String) =
+  def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      // if scala 2.11+ is used, add dependency on scala-xml module
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.1.0",
-          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
-          scalacheckDependency("optional")
-        )
-      case _ =>
-        Seq(scalacheckDependency("optional"))
+      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
+      case other => Seq.empty
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -357,6 +350,7 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
@@ -490,7 +484,8 @@ object ScalatestBuild extends Build {
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+     libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+     libraryDependencies += scalacheckDependency("optional"),
      libraryDependencies ++= scalatestLibraryDependencies,
      genMustMatchersTask,
      genGenTask,
@@ -571,7 +566,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
@@ -672,7 +668,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       //jsDependencies += RuntimeDOM % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
@@ -702,7 +699,8 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest App",
       name := "scalatest-app",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= scalatestLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
@@ -777,7 +775,8 @@ object ScalatestBuild extends Build {
       name := "scalatest-app",
       organization := "org.scalatest",
       moduleName := "scalatest-app",
-      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticJS, Compile, packageBin).value,
@@ -850,7 +849,8 @@ object ScalatestBuild extends Build {
     scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+    libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+    libraryDependencies += scalacheckDependency("optional"),
     libraryDependencies ++= gentestsLibraryDependencies,
     libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
