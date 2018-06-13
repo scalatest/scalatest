@@ -75,7 +75,7 @@ trait Aggregating[-A] {
    * @param eles elements at least one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at least one of the passed elements
    */
-  def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAtLeastOneOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>theSameElementsAs</code> syntax for aggregations of type <code>A</code>.
@@ -93,7 +93,7 @@ trait Aggregating[-A] {
    * @param eles the only elements that should be contained in the passed aggregation
    * @return true if the passed aggregation contains only the passed elements
    */
-  def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
+  def containsOnly(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>allOf</code> syntax for aggregations of type <code>A</code>.
@@ -102,7 +102,7 @@ trait Aggregating[-A] {
    * @param eles elements all of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains all of the passed elements
    */
-  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAllOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>atMostOneOf</code> syntax for aggregations of type <code>A</code>.
@@ -111,7 +111,7 @@ trait Aggregating[-A] {
    * @param eles elements at most one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at most one of the passed elements
    */
-  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAtMostOneOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 }
 
 /**
