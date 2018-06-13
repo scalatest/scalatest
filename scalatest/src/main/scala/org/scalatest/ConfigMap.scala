@@ -19,7 +19,7 @@ import exceptions.TestCanceledException
 import exceptions.StackDepthException
 
 import reflect.ClassTag
-import collection.immutable.MapLike
+import org.scalatest.ColCompatHelper.MapLike
 import org.scalactic.Equality
 import org.scalactic.source
 import enablers.Containing

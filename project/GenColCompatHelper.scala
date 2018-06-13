@@ -43,6 +43,8 @@ object GenColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqOps[A, IndexedSeq, Repr]
           |
+          |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.MapOps[K, V, Map, This]
+          |
           |}
         """.stripMargin
       else
@@ -66,6 +68,8 @@ object GenColCompatHelper {
           |private[scalatest] object ColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqLike[A, Repr]
+          |
+          |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.immutable.MapLike[K, V, This]
           |
           |}
         """.stripMargin
