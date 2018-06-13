@@ -176,7 +176,7 @@ package prop
 
 val importsForTableForNTemplate = """
 import scala.collection.mutable.Builder
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.ListBuffer
 import org.scalatest.ColCompatHelper.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepth
@@ -297,9 +297,10 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    * Creates a new <code>Builder</code> for <code>TableFor$n$</code>s.
    */
   override protected[this] def newBuilder: Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-    new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+    new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
       new TableFor$n$(heading, buf: _*)
     }
+
 
   /**
    * Applies the passed property check function to each row of this <code>TableFor$n$</code>.
@@ -347,11 +348,11 @@ object TableFor$n$ {
   implicit def canBuildFrom[$alphaUpper$]: CanBuildFrom[TableFor$n$[$alphaUpper$], ($alphaUpper$), TableFor$n$[$alphaUpper$]] =
     new CanBuildFrom[TableFor$n$[$alphaUpper$], ($alphaUpper$), TableFor$n$[$alphaUpper$]] {
       def apply(): Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-        new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
           new TableFor$n$(($argsNamedArg$))
         }
       def apply(from: TableFor$n$[$alphaUpper$]): Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-        new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
           new TableFor$n$(from.heading, buf: _*)
         }
     }
@@ -980,7 +981,7 @@ val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
  * at org.scalatest.prop.TableFor2$$anonfun$apply$4.apply(Table.scala:355)
  * at org.scalatest.prop.TableFor2$$anonfun$apply$4.apply(Table.scala:346)
  * at scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:57)
- * at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:43)
+ * at scala.collection.mutable.ListBuffer.foreach(ListBuffer.scala:43)
  * at org.scalatest.prop.TableFor2.apply(Table.scala:346)
  * at org.scalatest.prop.TableDrivenPropertyChecks$class.forAll(TableDrivenPropertyChecks.scala:133)
  * ...
