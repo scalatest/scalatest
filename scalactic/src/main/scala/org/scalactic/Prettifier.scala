@@ -18,7 +18,9 @@ package org.scalactic
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
+// SKIP-SCALATESTJS-START
 import scala.xml
+// SKIP-SCALATESTJS-END
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
