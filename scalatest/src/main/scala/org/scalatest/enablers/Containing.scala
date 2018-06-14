@@ -140,7 +140,7 @@ object Containing {
     // aggregate version is more verbose, but it allows parallel execution.
     aggregate(right, Set.empty[Any])(
       { case (fs, r) => 
-          if (left.exists(t => equality.areEqual(t, r))) {
+          if (left.toIterable.exists(t => equality.areEqual(t, r))) {
             // r is in the left
             if (fs.size != 0) // This .size should be safe, it won't go > 1
               return fs + r // fail early by returning early, hmm..  not so 'functional'??
@@ -163,7 +163,7 @@ object Containing {
   private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
     aggregate(right, None)(
       { case (f, r) => 
-          if (left.exists(t => equality.areEqual(t, r))) 
+          if (left.toIterable.exists(t => equality.areEqual(t, r)))
             return Some(r) // r is in the left, fail early by returning.
           else 
             None // r is not in the left
