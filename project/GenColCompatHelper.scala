@@ -77,7 +77,7 @@ object GenColCompatHelper {
           |}
         """.stripMargin
     Seq(
-      writeFile(new File(targetDir,"ArrayHelper.scala"), content, scalaVersion)
+      writeFile(new File(targetDir,"ColCompatHelper.scala"), content, scalaVersion)
     )
   }
 
