@@ -166,7 +166,9 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
       presentReminderWithoutCanceledTests,
       presentFilePathname,
       reminderEventsBuf
-   ) foreach printPossiblyInColor
+   ) foreach { e =>
+      printPossiblyInColor(e)
+    }
   }
 
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
@@ -709,7 +711,7 @@ private[scalatest] object StringReporter {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
     presentFilePathname: Boolean,
-    reminderEvents: Seq[ExceptionalEvent]
+    reminderEvents: scala.collection.Seq[ExceptionalEvent]
   ): Vector[Fragment] = {
 
     event match {
