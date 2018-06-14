@@ -43,7 +43,7 @@ object GenColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqOps[A, IndexedSeq, Repr]
           |
-          |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.MapOps[K, V, Map, This]
+          |  type MapLike[K, +V, +This <: scala.collection.MapOps[K, V, Map, This] with scala.collection.Map[K, V]] = scala.collection.MapOps[K, V, Map, This]
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
@@ -71,7 +71,7 @@ object GenColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqLike[A, Repr]
           |
-          |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.immutable.MapLike[K, V, This]
+          |  type MapLike[K, +V, +This <: scala.collection.MapLike[K, V, This] with scala.collection.Map[K, V]] = scala.collection.MapLike[K, V, This]
           |
           |  def aggregate[A, B](col: scala.collection.GenTraversable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.aggregate(z)(seqop, combop)
           |}

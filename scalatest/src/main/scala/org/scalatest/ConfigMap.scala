@@ -99,7 +99,7 @@ import scala.collection.GenTraversable
  * 
  * @author Bill Venners
  */
-class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapLike[String, Any, ConfigMap] with java.io.Serializable {
+class ConfigMap(underlying: scala.collection.Map[String, Any]) extends scala.collection.Map[String, Any] with MapLike[String, Any, ConfigMap] with java.io.Serializable {
 
   def get(key: String): Option[Any] = underlying.get(key)
 
@@ -107,7 +107,7 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
 
   def +[A >: Any](kv: (String, A)): ConfigMap = new ConfigMap(underlying + kv)
 
-  def -(key: String): ConfigMap = new ConfigMap(underlying - key)
+  def -(key: String): ConfigMap = new ConfigMap(underlying.filter(_._1 != key))
 
   override def empty: ConfigMap = new ConfigMap(Map.empty[String, Any])
 
