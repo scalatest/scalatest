@@ -45,6 +45,8 @@ object GenColCompatHelper {
           |
           |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.MapOps[K, V, Map, This]
           |
+          |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
+          |
           |}
         """.stripMargin
       else
@@ -71,6 +73,7 @@ object GenColCompatHelper {
           |
           |  type MapLike[K, +V, +This <: MapLike[K, V, This] with Map[K, V]] = scala.collection.immutable.MapLike[K, V, This]
           |
+          |  def aggregate[A, B](col: scala.collection.GenTraversable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.aggregate(z)(seqop, combop)
           |}
         """.stripMargin
     Seq(

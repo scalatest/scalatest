@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalactic.{Equality, NormalizingEquality, Every}
 import scala.collection.{GenTraversableOnce, GenTraversable}
-
+import org.scalatest.ColCompatHelper.aggregate
 
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
@@ -138,7 +138,7 @@ object Containing {
   
   private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
     // aggregate version is more verbose, but it allows parallel execution.
-    right.aggregate(Set.empty[Any])( 
+    aggregate(right, Set.empty[Any])(
       { case (fs, r) => 
           if (left.exists(t => equality.areEqual(t, r))) {
             // r is in the left
@@ -161,7 +161,7 @@ object Containing {
   }
   
   private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
-    right.aggregate(None)( 
+    aggregate(right, None)(
       { case (f, r) => 
           if (left.exists(t => equality.areEqual(t, r))) 
             return Some(r) // r is in the left, fail early by returning.
