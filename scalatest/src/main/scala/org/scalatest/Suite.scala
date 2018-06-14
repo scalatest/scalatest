@@ -2043,7 +2043,7 @@ used for test events like succeeded/failed, etc.
         if (chosenStyleSet.size == 1)
           new NotAllowedException(Resources.notTheChosenStyle(styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
         else
-          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet.iterator)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
+          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
       throw e
     }
   }
