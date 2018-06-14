@@ -17,6 +17,7 @@ package org.scalatest.events
 
 
 import java.util.Arrays
+import org.scalactic.ArrayHelper.deep
 
 /**
  * Class used to specify a sequential order for events reported during a test run, so they
@@ -271,7 +272,7 @@ final class Ordinal private (val runStamp: Int, private val stamps: Array[Int]) 
     other match {
       case that: Ordinal =>
         runStamp == that.runStamp &&
-        (stamps.deep == that.stamps.deep)
+        (deep(stamps) == deep(that.stamps))
       case _ => false
     }
 
