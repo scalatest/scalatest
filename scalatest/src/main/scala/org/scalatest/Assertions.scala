@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import Requirements._
+import ArrayHelper.deep
 import scala.reflect.ClassTag
 import Assertions.NormalResult
 import Assertions.areEqualComparingArraysStructurally
@@ -1399,12 +1400,12 @@ object Assertions extends Assertions {
     left match {
       case leftArray: Array[_] =>
         right match {
-          case rightArray: Array[_] => leftArray.deep == rightArray.deep
-          case _ => leftArray.deep == right
+          case rightArray: Array[_] => deep(leftArray) == deep(rightArray)
+          case _ => deep(leftArray) == right
         }
       case _ => {
         right match {
-          case rightArray: Array[_] => left == rightArray.deep
+          case rightArray: Array[_] => left == deep(rightArray)
           case _ => left == right
         }
       }

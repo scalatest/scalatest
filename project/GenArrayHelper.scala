@@ -39,7 +39,7 @@ object GenArrayHelper {
           | */
           |package org.scalactic
           |
-          |private[scalactic] object ArrayHelper {
+          |private[org] object ArrayHelper {
           |
           |  // The following code is taken from: https://github.com/scala/scala/blob/86e75db7f36bcafdd75302f2c2cca0c68413214d/src/partest/scala/tools/partest/Util.scala
           |  def prettyArray(a: Array[_]): collection.IndexedSeq[Any] = new collection.AbstractSeq[Any] with collection.IndexedSeq[Any] {
@@ -78,7 +78,7 @@ object GenArrayHelper {
           | */
           |package org.scalactic
           |
-          |private[scalactic] object ArrayHelper {
+          |private[org] object ArrayHelper {
           |
           |  def deep[T](a: Array[T]): collection.IndexedSeq[Any] = a.deep
           |
