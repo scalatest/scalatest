@@ -55,21 +55,19 @@ private[tools] case class ReporterConfigurations(
 ) extends Seq[ReporterConfiguration] {
 
   val reporterConfigurationList =
-    List.concat[ReporterConfiguration](
-      graphicReporterConfiguration.toList,
-      fileReporterConfigurationList,
-      memoryReporterConfigurationList,
-      junitXmlReporterConfigurationList,
-      //dashboardReporterConfigurationList,
-      //xmlReporterConfigurationList,
-      standardOutReporterConfiguration.toList,
-      standardErrReporterConfiguration.toList,
-      htmlReporterConfigurationList,
-      customReporterConfigurationList, 
-      xmlSocketReporterConfigurationList, 
+      graphicReporterConfiguration.toList ++
+      fileReporterConfigurationList ++
+      memoryReporterConfigurationList ++
+      junitXmlReporterConfigurationList ++
+      //dashboardReporterConfigurationList ++
+      //xmlReporterConfigurationList ++
+      standardOutReporterConfiguration.toList ++
+      standardErrReporterConfiguration.toList ++
+      htmlReporterConfigurationList ++
+      customReporterConfigurationList ++
+      xmlSocketReporterConfigurationList ++
       socketReporterConfigurationList
-    )
-
+    
   // Need to add the null pointer checks, or later, NotNull
 
   override def length = reporterConfigurationList.length
