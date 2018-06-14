@@ -20,6 +20,7 @@ import org.scalactic.{Equality, Every}
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import org.scalatest.words.ArrayWrapper
+import org.scalatest.ColCompatHelper.aggregate
 import scala.annotation.tailrec
 
 /**
@@ -158,7 +159,7 @@ object Aggregating {
         count :+ ElementCount(next, 0, 1)
     }
     
-    val counts = right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch).aggregate(IndexedSeq.empty[ElementCount])( 
+    val counts = aggregate(right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch), IndexedSeq.empty[ElementCount])(
       { case (count, (nextLeft, nextRight)) => 
           if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
             return false  // size not match, can fail early
@@ -203,7 +204,7 @@ object Aggregating {
   private[scalatest] def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     
     def countElements: Int = 
-      right.aggregate(0)(
+      aggregate(right, 0)(
         { case (count, nextRight) => 
             if (left.exists(l => equality.areEqual(l, nextRight))) {
               val newCount = count + 1
