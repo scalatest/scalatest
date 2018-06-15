@@ -99,13 +99,13 @@ import scala.collection.GenTraversable
  * 
  * @author Bill Venners
  */
-class ConfigMap(underlying: scala.collection.Map[String, Any]) extends scala.collection.Map[String, Any] with MapLike[String, Any, ConfigMap] with java.io.Serializable {
+class ConfigMap(underlying: scala.collection.Map[String, Any]) extends scala.collection.Map[String, Any] with java.io.Serializable {
 
   def get(key: String): Option[Any] = underlying.get(key)
 
   def iterator: Iterator[(String, Any)] = underlying.iterator
 
-  def +[A >: Any](kv: (String, A)): ConfigMap = new ConfigMap(underlying + kv)
+  override def +[A >: Any](kv: (String, A)): ConfigMap = new ConfigMap(underlying + kv)
 
   def -(key: String): ConfigMap = new ConfigMap(underlying.filter(_._1 != key))
 
