@@ -1284,7 +1284,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    *
    * @return the <code>Set</code> of test names
    */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

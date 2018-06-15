@@ -81,7 +81,7 @@ package org.scalatest
 final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
 
   private lazy val wrappedSuite = {
-    val constructor = clazz.getConstructor(classOf[Map[_, _]])
+    val constructor = clazz.getConstructor(classOf[scala.collection.Map[_, _]])
     constructor.newInstance(Map.empty)
   }
 
@@ -103,7 +103,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
    *
    * @return the result of invoking <code>testNames</code> on an instance of wrapped suite
    */
-  override def testNames: Set[String] = wrappedSuite.testNames
+  override def testNames: scala.collection.Set[String] = wrappedSuite.testNames
 
   /**
    * Returns the result obtained from invoking <code>nestedSuites</code> on an instance of the wrapped
@@ -136,7 +136,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
    *     exists in the <code>Suite</code>
    */
   override def run(testName: Option[String], args: Args): Status = {
-    val constructor = clazz.getConstructor(classOf[Map[_, _]])
+    val constructor = clazz.getConstructor(classOf[scala.collection.Map[_, _]])
     val suite = constructor.newInstance(args.configMap)
     suite.run(testName, args)
   }

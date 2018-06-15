@@ -607,7 +607,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @return the <code>Set</code> of test names
    */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

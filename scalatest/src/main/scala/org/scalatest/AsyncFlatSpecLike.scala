@@ -1803,7 +1803,7 @@ import resultOfStringPassedToVerb.verb
    * "A Stack (when not full) must not be full"
    * </pre>
    */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

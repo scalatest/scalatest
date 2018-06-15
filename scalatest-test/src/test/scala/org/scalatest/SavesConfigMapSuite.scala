@@ -19,7 +19,7 @@ import SavesConfigMapSuite.theConfigMap
 import java.util.UUID
 
 @WrapWith(classOf[ConfigMapWrapperSuite])
-class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
+class SavesConfigMapSuite(configMap: scala.collection.Map[String, Any]) extends FunSuite {
   theConfigMap = Some(configMap)
   test("one test") {}
   test("two test") {}
@@ -33,7 +33,7 @@ class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
 }
 
 object SavesConfigMapSuite {
-  private var theConfigMap: Option[Map[String, Any]] = None
+  private var theConfigMap: Option[scala.collection.Map[String, Any]] = None
   def savedConfigMap = theConfigMap
   def resetConfigMap(): Unit = { theConfigMap = None }
 }

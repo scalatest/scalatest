@@ -401,7 +401,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * "A Stack (when not full) must allow me to push"
    * </pre>
    */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
     InsertionOrderSet(atomic.get.testNamesList)
   }

@@ -160,7 +160,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
   * return those names in the order in which the tests were registered.
   * </p>
   */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

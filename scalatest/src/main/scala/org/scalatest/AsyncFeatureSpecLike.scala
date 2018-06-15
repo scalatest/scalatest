@@ -313,7 +313,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * </pre>
    */
   // override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

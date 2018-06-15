@@ -512,7 +512,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * "A Stack when not full must allow me to push"
    * </pre>
    */
-  override def testNames: Set[String] = {
+  override def testNames: scala.collection.Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 
