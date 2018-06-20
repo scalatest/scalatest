@@ -1673,7 +1673,7 @@ import exceptions.TestFailedException
  * exception, this expression will complete abruptly with a <code>TestFailedException</code>.
  * 
  * <p>
- * If you need to further isnpect an expected exception, you can capture it using this syntax:
+ * If you need to further inspect an expected exception, you can capture it using this syntax:
  * </p>
  * 
  * <pre class="stHighlight">
