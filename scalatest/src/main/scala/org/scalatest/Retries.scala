@@ -16,8 +16,6 @@
 package org.scalatest
 
 import org.scalatest.concurrent.SleepHelper
-import org.scalatest.concurrent.SleepHelper
-import org.scalatest.concurrent.SleepHelper
 import time.Span
 
 /**
