@@ -345,11 +345,15 @@ trait Retries {
     val firstOutcome = blk
     firstOutcome match {
       case Failed(ex) =>
+        if (delay != Span.Zero)
+          SleepHelper.sleep(delay.millisPart)
         blk match {
           case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
         }
       case Canceled(ex) =>
+        if (delay != Span.Zero)
+          SleepHelper.sleep(delay.millisPart)
         blk match {
           case Succeeded => Succeeded
           case failed: Failed => failed // Never hide a failure.
