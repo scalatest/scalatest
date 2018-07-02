@@ -787,7 +787,6 @@ trait Retries {
       case Canceled(ex) =>
         if (delay != Span.Zero)
           SleepHelper.sleep(delay.millisPart)
-        SleepHelper.sleep(delay.millisPart)
         blk match {
           case Succeeded => Succeeded
           case failed: Failed => failed // Never hide a failure.
