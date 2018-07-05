@@ -39,7 +39,7 @@ object ScalatestBuild extends Build {
   val releaseVersion = "3.1.0-SNAP7"
   val previousReleaseVersion = "3.0.5"
 
-  val scalacheckVersion = "1.13.5"
+  val scalacheckVersion = "1.14.0"
   val nativeScalacheckVersion = "1.14.0-18db189-SNAPSHOT"
 
   val easyMockVersion = "3.2"
