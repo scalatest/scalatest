@@ -199,7 +199,9 @@ object ScalatestBuild extends Build {
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
+        // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
+        Seq.empty
+        //Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
 
       case other =>
         Seq.empty
@@ -281,6 +283,11 @@ object ScalatestBuild extends Build {
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
+      sourceGenerators in Compile += {
+        Def.task{
+          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -294,7 +301,8 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
-          GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       publishArtifact := false,
