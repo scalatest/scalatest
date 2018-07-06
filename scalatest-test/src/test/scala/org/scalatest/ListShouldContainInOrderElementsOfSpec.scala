@@ -21,7 +21,6 @@ import org.scalactic.Prettifier
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
 import exceptions.TestFailedException
 
 class ListShouldContainInOrderElementsOfSpec extends FunSpec with Matchers {
