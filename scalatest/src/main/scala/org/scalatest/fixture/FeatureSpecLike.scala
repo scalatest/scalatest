@@ -337,7 +337,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @return the <code>Set</code> of test names
    */
   //override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
-  override def testNames: scala.collection.Set[String] = {
+  override def testNames: Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

@@ -2171,7 +2171,7 @@ import resultOfStringPassedToVerb.verb
    *
    * @return the <code>Set</code> of test names
    */
-  override def testNames: scala.collection.Set[String] = {
+  override def testNames: Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

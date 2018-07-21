@@ -154,7 +154,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   // This seems wrong. Should ask TestNG if possible, but not sure that's even possible. Anyway some tests
   // rely on this behavior that used to be inherited, but is no more.
-  override def testNames: scala.collection.Set[String] = yeOldeTestNames
+  override def testNames: Set[String] = yeOldeTestNames
 
   private def getTags(testName: String) =
     for {

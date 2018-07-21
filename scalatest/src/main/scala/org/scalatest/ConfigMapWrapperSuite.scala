@@ -103,7 +103,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
    *
    * @return the result of invoking <code>testNames</code> on an instance of wrapped suite
    */
-  override def testNames: scala.collection.Set[String] = wrappedSuite.testNames
+  override def testNames: Set[String] = wrappedSuite.testNames
 
   /**
    * Returns the result obtained from invoking <code>nestedSuites</code> on an instance of the wrapped

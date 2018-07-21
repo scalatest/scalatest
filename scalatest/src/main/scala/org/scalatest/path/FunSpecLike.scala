@@ -456,7 +456,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <a href="#sharedFixtures">Shared fixtures</a> section in the main documentation for this trait.
    * </p>
    */
-  final override def testNames: scala.collection.Set[String] = {
+  final override def testNames: Set[String] = {
     ensureTestResultsRegistered(thisSuite)
     InsertionOrderSet(atomic.get.testNamesList)
   }

@@ -277,7 +277,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
    *
    * @return the <code>Set</code> of test names
    */
-  override def testNames: scala.collection.Set[String] = {
+  override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
     InsertionOrderSet(atomic.get.testNamesList)
   }

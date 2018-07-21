@@ -16,11 +16,13 @@
 package org.scalatest
 
 import org.scalactic._
+
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalatest.exceptions.NotAllowedException
 
 /**
@@ -313,7 +315,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * </pre>
    */
   // override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
-  override def testNames: scala.collection.Set[String] = {
+  override def testNames: Set[String] = {
     InsertionOrderSet(atomic.get.testNamesList)
   }
 

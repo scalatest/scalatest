@@ -887,7 +887,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * <p>
    * This trait's implementation of this method returns an empty <code>Set</code>.
    */
-  def testNames: scala.collection.Set[String] = Set.empty
+  def testNames: Set[String] = Set.empty
 
   // SKIP-SCALATESTJS-START
   // Leave this around for a while so can print out a warning if we find testXXX methods.
@@ -1325,7 +1325,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   def expectedTestCount(filter: Filter): Int = {
 
     @tailrec
-    def countNestedSuiteTests(acc: Int, nestedSuitesToCount: scala.collection.Seq[Suite], filter: Filter): Int =
+    def countNestedSuiteTests(acc: Int, nestedSuitesToCount: List[Suite], filter: Filter): Int =
       nestedSuitesToCount match {
         case List() => acc
         case head :: tail => 

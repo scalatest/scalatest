@@ -145,7 +145,7 @@ trait SuiteMixin { this: Suite =>
   * implement this method and return test names in either a defined or undefined order.
   * </p>
   */
-  def testNames: scala.collection.Set[String]
+  def testNames: Set[String]
 
   /**
   * An immutable <code>IndexedSeq</code> of this <code>SuiteMixin</code> object's nested <code>Suite</code>s. If this <code>SuiteMixin</code> contains no nested <code>Suite</code>s,

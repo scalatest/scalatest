@@ -244,7 +244,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
    * "A Stack (when not full) must allow me to push"
    * </pre>
    */
-  override def testNames: scala.collection.Set[String] = {
+  override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
     InsertionOrderSet(atomic.get.testNamesList)
   }
