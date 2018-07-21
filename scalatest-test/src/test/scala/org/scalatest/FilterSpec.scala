@@ -28,7 +28,7 @@ class FilterSpec extends FunSpec {
   describe("A Filter") {
 
     it("should during the deprecation cycle be usable as a particular Function2") {
-      def bippy(fn: Function2[scala.collection.Set[String], scala.collection.Map[String, scala.collection.Set[String]], scala.collection.Seq[(String, Boolean)]]) = fn
+      def bippy(fn: Function2[Set[String], Map[String, Set[String]], scala.collection.Seq[(String, Boolean)]]) = fn
       assertCompiles("bippy(Filter.default)")
     }
 

@@ -56,7 +56,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     case None =>
   }
 
-  private def includedTestNames(testNamesAsList: scala.collection.Seq[String], tags: scala.collection.Map[String, scala.collection.Set[String]]): scala.collection.Seq[String] =
+  private def includedTestNames(testNamesAsList: scala.collection.Seq[String], tags: Map[String, Set[String]]): scala.collection.Seq[String] =
     tagsToInclude match {
       case None => testNamesAsList
       case Some(tagsToInclude) =>
@@ -68,7 +68,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
         } yield testName
     }
 
-  private def verifyPreconditionsForMethods(testNames: scala.collection.Set[String], tags: scala.collection.Map[String, scala.collection.Set[String]]): Unit = {
+  private def verifyPreconditionsForMethods(testNames: Set[String], tags: Map[String, Set[String]]): Unit = {
     val testWithEmptyTagSet = tags.find(tuple => tuple._2.isEmpty)
     testWithEmptyTagSet match {
       case Some((testName, _)) => throw new IllegalArgumentException(testName + " was associated with an empty set in the map passsed as tags")
@@ -76,7 +76,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     }
   }
   
-  private def mergeTestTags(testTagsList: scala.collection.Seq[scala.collection.Map[String, scala.collection.Set[String]]]): scala.collection.Map[String, scala.collection.Set[String]] = {
+  private def mergeTestTags(testTagsList: scala.collection.Seq[scala.collection.Map[String, Set[String]]]): Map[String, Set[String]] = {
     val mergedTags = scala.collection.mutable.Map[String, Set[String]]() ++ testTagsList.head
     for (testTags <- testTagsList.tail) {
       for ((testName, tagSet) <- testTags) {
@@ -92,7 +92,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     mergedTags.toMap
   }
   
-  private[scalatest] def mergeTestDynamicTags(tags: scala.collection.Map[String, scala.collection.Set[String]], suiteId: String, testNames: scala.collection.Set[String]): scala.collection.Map[String, scala.collection.Set[String]] = {
+  private[scalatest] def mergeTestDynamicTags(tags: Map[String, Set[String]], suiteId: String, testNames: Set[String]): Map[String, Set[String]] = {
     val dynaTestTags = 
       if (dynaTags.testTags.isDefinedAt(suiteId))
         dynaTags.testTags(suiteId)
@@ -143,7 +143,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 // TODO: REMOVE THIS DEPRECATED ONCE TESTS PASS, AND AFTER DEPRECATION CYCLE OF THE Function2
 // IMPLICIT, REMOVE THE WHOLE PRIVATE METHOD.
   @deprecated("Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)]")
-  private def apply(testNames: scala.collection.Set[String], tags: scala.collection.Map[String, scala.collection.Set[String]]): scala.collection.Seq[(String, Boolean)] = {
+  private def apply(testNames: Set[String], tags: Map[String, Set[String]]): scala.collection.Seq[(String, Boolean)] = {
 
     verifyPreconditionsForMethods(testNames, tags)
 
@@ -159,8 +159,8 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     filtered
   }
   
-  def apply(testNames: scala.collection.Set[String], tags: scala.collection.Map[String, scala.collection.Set[String]], suiteId: String): scala.collection.Seq[(String, Boolean)] = {
-    val testTags: scala.collection.Map[String, scala.collection.Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
+  def apply(testNames: Set[String], tags: Map[String, Set[String]], suiteId: String): scala.collection.Seq[(String, Boolean)] = {
+    val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, testTags)
 
     val testNamesAsList = testNames.toList // to preserve the order
@@ -207,8 +207,8 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
-  def apply(testName: String, tags: scala.collection.Map[String, scala.collection.Set[String]], suiteId: String): (Boolean, Boolean) = {
-    val testTags: scala.collection.Map[String, scala.collection.Set[String]] = mergeTestDynamicTags(tags, suiteId, Set(testName))
+  def apply(testName: String, tags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean) = {
+    val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, Set(testName))
     val list = apply(Set(testName), testTags)
     if (list.isEmpty)
       (true, false)
@@ -233,8 +233,8 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
-  def runnableTestCount(testNames: scala.collection.Set[String], testTags: scala.collection.Map[String, scala.collection.Set[String]], suiteId: String): Int = {
-    val tags: scala.collection.Map[String, scala.collection.Set[String]] = mergeTestDynamicTags(testTags, suiteId, testNames)
+  def runnableTestCount(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): Int = {
+    val tags: Map[String, Set[String]] = mergeTestDynamicTags(testTags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, tags)
 
     val testNamesAsList = testNames.toList // to preserve the order
@@ -275,5 +275,5 @@ object Filter {
   def default: Filter = apply()
 
   @deprecated("This implicit conversion was added in ScalaTest 3.0.0 because the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]] was dropped. Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)].")
-  implicit def convertFilterToFunction2(filter: Filter): (scala.collection.Set[String], scala.collection.Map[String, scala.collection.Set[String]]) => scala.collection.Seq[(String, Boolean)] = (set, map) => filter.apply(set, map)
+  implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => scala.collection.Seq[(String, Boolean)] = (set, map) => filter.apply(set, map)
 }
