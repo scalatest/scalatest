@@ -19,7 +19,7 @@ import SavesConfigMapSuite.theConfigMap
 import java.util.UUID
 
 @WrapWith(classOf[ConfigMapWrapperSuite])
-class SavesConfigMapSuite(configMap: scala.collection.Map[String, Any]) extends FunSuite {
+class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
   theConfigMap = Some(configMap)
   test("one test") {}
   test("two test") {}

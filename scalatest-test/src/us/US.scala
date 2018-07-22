@@ -48,7 +48,7 @@ trait StateSuite extends Suite {
 
   private val simpleName = getClass.getSimpleName.replaceAll("\\$", "")
 
-  override def testNames: scala.collection.Set[String] = allTestNames.take(testCounts(simpleName)).toSet
+  override def testNames: Set[String] = allTestNames.take(testCounts(simpleName)).toSet
 
   override def tags: Map[String, Set[String]] = Map()
 

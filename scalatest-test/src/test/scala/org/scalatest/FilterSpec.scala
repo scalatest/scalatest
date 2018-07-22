@@ -28,7 +28,7 @@ class FilterSpec extends FunSpec {
   describe("A Filter") {
 
     it("should during the deprecation cycle be usable as a particular Function2") {
-      def bippy(fn: Function2[Set[String], Map[String, Set[String]], scala.collection.Seq[(String, Boolean)]]) = fn
+      def bippy(fn: Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]]) = fn
       assertCompiles("bippy(Filter.default)")
     }
 
@@ -630,7 +630,7 @@ class FilterSpec extends FunSpec {
                                "test method 3" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.FastAsLight"), 
                                "test method 4" -> Set("org.scalatest.FastAsLight"))
     
-    def assertTestTags(testTags: scala.collection.Map[String, scala.collection.Set[String]]): Unit = {
+    def assertTestTags(testTags: Map[String, Set[String]]): Unit = {
       assert(testTags.size == expectedTestTags.size)
       expectedTestTags.foreach { entry => 
         val testName = entry._1

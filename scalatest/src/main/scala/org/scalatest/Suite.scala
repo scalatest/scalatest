@@ -737,7 +737,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     requireNonNull(configMap)
     val SelectedTag = "Selected"
     val SelectedSet = Set(SelectedTag)
-    val desiredTests: scala.collection.Set[String] =
+    val desiredTests: Set[String] =
       if (testName == null) Set.empty
       else {
         testNames.filter { s =>

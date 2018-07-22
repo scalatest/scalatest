@@ -143,7 +143,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 // TODO: REMOVE THIS DEPRECATED ONCE TESTS PASS, AND AFTER DEPRECATION CYCLE OF THE Function2
 // IMPLICIT, REMOVE THE WHOLE PRIVATE METHOD.
   @deprecated("Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)]")
-  private def apply(testNames: Set[String], tags: Map[String, Set[String]]): scala.collection.Seq[(String, Boolean)] = {
+  private def apply(testNames: Set[String], tags: Map[String, Set[String]]): List[(String, Boolean)] = {
 
     verifyPreconditionsForMethods(testNames, tags)
 
@@ -156,10 +156,10 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
                 (tags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, tags.contains(testName) && tags(testName).contains(IgnoreTag))
 
-    filtered
+    filtered.toList
   }
   
-  def apply(testNames: Set[String], tags: Map[String, Set[String]], suiteId: String): scala.collection.Seq[(String, Boolean)] = {
+  def apply(testNames: Set[String], tags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)] = {
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, testTags)
 
@@ -172,7 +172,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
                 (testTags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, testTags.contains(testName) && testTags(testName).contains(IgnoreTag))
 
-    filtered
+    filtered.toList
   }
 
   /**
@@ -275,5 +275,5 @@ object Filter {
   def default: Filter = apply()
 
   @deprecated("This implicit conversion was added in ScalaTest 3.0.0 because the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]] was dropped. Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)].")
-  implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => scala.collection.Seq[(String, Boolean)] = (set, map) => filter.apply(set, map)
+  implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => List[(String, Boolean)] = (set, map) => filter.apply(set, map)
 }

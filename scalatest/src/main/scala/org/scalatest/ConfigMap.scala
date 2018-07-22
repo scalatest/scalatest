@@ -99,7 +99,7 @@ import scala.collection.GenTraversable
  * 
  * @author Bill Venners
  */
-class ConfigMap(underlying: scala.collection.Map[String, Any]) extends scala.collection.Map[String, Any] with java.io.Serializable {
+class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with java.io.Serializable {
 
   def get(key: String): Option[Any] = underlying.get(key)
 

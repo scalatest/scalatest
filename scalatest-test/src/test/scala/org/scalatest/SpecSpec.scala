@@ -1916,7 +1916,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       def `some test name`: Unit = ()
     }
     assert(a.expectedTestCount(Filter()) === 1)
-    val tnResult: scala.collection.Set[String] = a.testNames
+    val tnResult: Set[String] = a.testNames
     val gResult: Map[String, Set[String]] = a.tags
     assert(tnResult.size === 1)
     assert(gResult.keySet.size === 0)
