@@ -56,7 +56,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     case None =>
   }
 
-  private def includedTestNames(testNamesAsList: scala.collection.Seq[String], tags: Map[String, Set[String]]): scala.collection.Seq[String] =
+  private def includedTestNames(testNamesAsList: List[String], tags: Map[String, Set[String]]): List[String] =
     tagsToInclude match {
       case None => testNamesAsList
       case Some(tagsToInclude) =>
@@ -76,7 +76,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     }
   }
   
-  private def mergeTestTags(testTagsList: scala.collection.Seq[Map[String, Set[String]]]): Map[String, Set[String]] = {
+  private def mergeTestTags(testTagsList: List[Map[String, Set[String]]]): Map[String, Set[String]] = {
     val mergedTags = scala.collection.mutable.Map[String, Set[String]]() ++ testTagsList.head
     for (testTags <- testTagsList.tail) {
       for ((testName, tagSet) <- testTags) {
