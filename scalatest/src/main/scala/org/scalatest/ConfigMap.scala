@@ -99,7 +99,7 @@ import scala.collection.GenTraversable
  * 
  * @author Bill Venners
  */
-class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with java.io.Serializable {
+class ConfigMap(underlying: Map[String, Any]) extends org.scalatest.ColCompatHelper.CompatConfigMap with java.io.Serializable {
 
   def get(key: String): Option[Any] = underlying.get(key)
 
@@ -107,7 +107,16 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with java
 
   override def +[A >: Any](kv: (String, A)): ConfigMap = new ConfigMap(underlying + kv)
 
-  def -(key: String): ConfigMap = new ConfigMap(underlying.filter(_._1 != key))
+  //def -(key: String): ConfigMap = new ConfigMap(underlying.filter(_._1 != key))
+  //def remove(key: String): ConfigMap = new ConfigMap(underlying.filter(_._1 != key))
+
+  //override def updated[V1 >: Any](key: String, value: V1): ConfigMap = new ConfigMap(underlying.updated(key, value))//super.updated(key, value)
+
+  //override def filter[V1 >: Any](key: String, value: V1): ConfigMap = new ConfigMap(underlying.filter(key, value))
+
+  //override def filter(p: (String, Any) => Boolean): ConfigMap = new ConfigMap(underlying.filter(p))
+
+  //override def updated[V1 >: Any](key: String, value: V1): ConfigMap = new ConfigMap(underlying.updated(key, value))
 
   override def empty: ConfigMap = new ConfigMap(Map.empty[String, Any])
 
@@ -187,6 +196,8 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with java
       case None => throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryNotFound(key)), None, pos, None)
     }
   }
+
+  def toMap: Map[String, Any] = underlying
 }
 
 /**

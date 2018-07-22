@@ -47,6 +47,12 @@ object GenColCompatHelper {
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
+          |  trait CompatConfigMap extends Map[String, Any] {
+          |    def toMap: Map[String, Any]
+          |    def remove(key: String): ConfigMap = new ConfigMap(toMap.remove(key))
+          |    def updated[V1 >: Any](key: String, value: V1): ConfigMap = new ConfigMap(toMap.updated(key, value))
+          |  }
+          |
           |}
         """.stripMargin
       else
@@ -74,6 +80,11 @@ object GenColCompatHelper {
           |  type MapLike[K, +V, +This <: scala.collection.MapLike[K, V, This] with scala.collection.Map[K, V]] = scala.collection.MapLike[K, V, This]
           |
           |  def aggregate[A, B](col: scala.collection.GenTraversable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.aggregate(z)(seqop, combop)
+          |
+          |  trait CompatConfigMap extends Map[String, Any] {
+          |    def toMap: Map[String, Any]
+          |    def -(key: String): ConfigMap =  new ConfigMap(toMap.filter(_._1 != key))
+          |  }
           |}
         """.stripMargin
     Seq(
