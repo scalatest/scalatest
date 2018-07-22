@@ -31,7 +31,7 @@ import org.scalatest.events.TopOfMethod
 import exceptions._
 
   private[junit] class MyRunListener(report: Reporter,
-                                     config: scala.collection.Map[String, Any],
+                                     config: Map[String, Any],
                                      theTracker: Tracker, 
                                      status: ScalaTestStatefulStatus)
   extends RunListener {
