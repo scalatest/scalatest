@@ -76,7 +76,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     }
   }
   
-  private def mergeTestTags(testTagsList: scala.collection.Seq[scala.collection.Map[String, Set[String]]]): Map[String, Set[String]] = {
+  private def mergeTestTags(testTagsList: scala.collection.Seq[Map[String, Set[String]]]): Map[String, Set[String]] = {
     val mergedTags = scala.collection.mutable.Map[String, Set[String]]() ++ testTagsList.head
     for (testTags <- testTagsList.tail) {
       for ((testName, tagSet) <- testTags) {
