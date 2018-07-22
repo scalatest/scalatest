@@ -33,7 +33,7 @@ class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
 }
 
 object SavesConfigMapSuite {
-  private var theConfigMap: Option[scala.collection.Map[String, Any]] = None
+  private var theConfigMap: Option[Map[String, Any]] = None
   def savedConfigMap = theConfigMap
   def resetConfigMap(): Unit = { theConfigMap = None }
 }
