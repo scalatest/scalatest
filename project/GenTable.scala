@@ -281,7 +281,7 @@ $columnsOfIndexes$
 """
 
 val tableTemplateRaw = """
-class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*) extends scala.collection.IndexedSeq[($alphaUpper$)] with scala.collection.IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]] {
+class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*) extends IndexedSeq[($alphaUpper$)] with scala.collection.IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]] {
 
   /**
    * Selects a row of data by its index.
