@@ -295,6 +295,8 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
 
   override def filter(p: (($alphaUpper$)) => Boolean): TableFor$n$[$alphaUpper$] = new TableFor$n$[$alphaUpper$](heading, rows.filter(p): _*)
 
+  def ++(others: Iterable[($alphaUpper$)]): TableFor$n$[$alphaUpper$] = new TableFor$n$[$alphaUpper$](heading, (rows ++ others): _*)
+
   $$CLASS_BUILDER_METHODS$$
 
   /**
