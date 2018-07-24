@@ -16,7 +16,7 @@ object GenChain {
                                |  Chain(l.head, l.tail: _ *)
                                |}
                              """.stripMargin)
-        .replaceAllLiterally("def ++[U >: T](other: GenTraversableOnce[U]): Chain[U]", "def ++[U >: T](other: scala.collection.Iterable[U]): Chain[U]")
+        .replaceAllLiterally("def ++[U >: T](other: GenTraversableOnce[U]): Chain[U]", "def ++[U >: T](other: scala.collection.IterableOnce[U]): Chain[U]")
         .replaceAllLiterally("final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toList.to[Col](cbf)",
                              "final def to[C1](factory: scala.collection.Factory[T, C1]): C1 = toList.to(factory)")
     else

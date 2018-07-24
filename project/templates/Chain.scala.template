@@ -185,7 +185,7 @@ final class Chain[+T] private (val toList: List[T]) extends AnyVal {
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
   def ++[U >: T](other: GenTraversableOnce[U]): Chain[U] =
-    if (other.isEmpty) this else new Chain(toList ++ other)
+    if (other.isEmpty) this else new Chain(toList ++ other.toIterable)
 
   /**
    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>Chain</code>, going left to right.
