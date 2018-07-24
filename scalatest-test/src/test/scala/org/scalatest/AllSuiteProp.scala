@@ -15,9 +15,11 @@
  */
 package org.scalatest
 
+import org.scalatest.prop.TableFor1
+
 trait AllSuiteProp extends MethodSuiteProp with FunctionSuiteProp {
 
-  override def examples =
+  override def examples: TableFor1[Suite with FixtureServices] =
     Table[Suite with FixtureServices](
       "suite",
       // SKIP-SCALATESTJS-START
