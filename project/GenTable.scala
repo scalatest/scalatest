@@ -293,6 +293,8 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    */
   def length: Int = rows.length
 
+  override def filter(p: (($alphaUpper$)) => Boolean): TableFor$n$[$alphaUpper$] = new TableFor$n$[$alphaUpper$](heading, rows.filter(p): _*)
+
   $$CLASS_BUILDER_METHODS$$
 
   /**
