@@ -365,6 +365,7 @@ def tableTemplate(scalaVersion: String): String =
                       |      def fromSpecificIterable(from: org.scalatest.prop.TableFor$n$[$alphaUpper$])(it: Iterable[($alphaUpper$)]): org.scalatest.prop.TableFor$n$[$alphaUpper$] =
                       |        new TableFor$n$(from.heading, it.toSeq: _*)
                     """.stripMargin)
+                    .replaceAllLiterally("CanBuildFrom", "scala.collection.BuildFrom")
   else
     tableTemplateRaw.replaceAllLiterally("$$CLASS_BUILDER_METHODS$$",
                     """  /**
