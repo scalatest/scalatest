@@ -140,6 +140,45 @@ trait LoneElement {
   implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
 
   /**
+    * Wrapper class that adds a <code>loneElement</code> method to Map for which
+    * an implicit <code>Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]</code> is available.
+    *
+    * <p>
+    * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
+    * </p>
+    *
+    * <pre class="stHighlight">
+    * map.loneElement._1 should be &gt; 9
+    * </pre>
+    *
+    * @tparam K the element type of the Map key on which to add the <code>loneElement</code> method
+    * @tparam V the element type of the Map value on which to add the <code>loneElement</code> method
+    * @tparam MAP the "Map type constructor" for the collection on which to add the <code>loneElement</code> method
+    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+    */
+  final class LoneElementMapWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V], collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position) {
+
+    def loneElement: (K, V) = {
+      collecting.loneElementOf(map) match {
+        case Some(ele) => ele
+        case None =>
+          throw new exceptions.TestFailedException(
+            (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
+              map,
+              collecting.sizeOf(map))),
+            None,
+            pos
+          )
+      }
+    }
+  }
+
+  // Needed for Map to work, any better solution?
+  implicit def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
+    new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
+  }
+
+  /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
    * an implicit <code>Collecting[org.scalatest.Entry, java.util.Map]</code> is available.
    *
