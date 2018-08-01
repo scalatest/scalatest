@@ -167,36 +167,6 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
       }
     }
 
-
-  /*implicit def convertGenTraversableOnceToCombinable2[G, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[Nothing]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[Nothing]], G, TRAVONCE[G]]): Combinable[G, Nothing, TRAVONCE] =
-    new Combinable[G, Nothing, TRAVONCE] {
-
-      def combined: TRAVONCE[G] Or Every[Nothing] = {
-        // So now I have an empty builder
-        val emptyTRAVONCEOfGBuilder: Builder[G, TRAVONCE[G]] = cbf(xs)
-        // So now I want to foldLeft across my TRAVONCE[G Or EVERY[ERR]], starting with an empty TRAVONCEOfGBuilder, and each step along the way, I'll
-        // += into the builder, what? Oh I get it. The result type of my foldLeft needs to be Builder[Seq[G]] Or Every[ERR]
-        val tempOr: Builder[G, TRAVONCE[G]] Or Every[Nothing] =
-          xs.foldLeft((Good(emptyTRAVONCEOfGBuilder): Builder[G, TRAVONCE[G]] Or Every[Nothing])) { (accumulator: Builder[G, TRAVONCE[G]] Or Every[Nothing],  nextElem: G Or Every[Nothing]) =>
-            (accumulator, nextElem) match {
-              case (Good(bldr), Good(ele)) => Good(bldr += ele)
-              case (Good(_), Bad(err)) => Bad(err)
-              case (Bad(errA), Bad(errB)) => Bad(errA ++ errB)
-              case (Bad(errA), Good(_)) => Bad(errA)
-            }
-          }
-        tempOr map (_.result)
-      }
-    }*/
-
-  /**
-   * Implicitly converts a <em>covariant</em> <code>GenTraversableOnce</code> containing accumulating <code>Or</code>s whose inferred <code>Good</code> type
-   * is inferred as <code>Nothing</code> to an instance of
-   * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
-   * enables the <code>combined</code> method to be invoked on it.
-   */
-  //implicit def convertGenTraversableOnceToCombinableNothing[ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Nothing Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[Nothing Or EVERY[ERR]], Nothing, TRAVONCE[Nothing]]): Combinable[Nothing, ERR, TRAVONCE] = convertGenTraversableOnceToCombinable[Nothing, ERR, EVERY, TRAVONCE](xs)(cbf)
-
   // Must have another one for Sets, because they are not covariant. Will need to handle Good/Nothing case specially therefore, and plan to do that
   // with another implicit here. Or just don't support Nothing.
 

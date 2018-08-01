@@ -58,6 +58,8 @@ object GenArrayHelper {
           |  def isArrayOps(obj: Any): Boolean = obj.isInstanceOf[scala.collection.ArrayOps[_]]
           |
           |  def asArrayOps(obj: Any): scala.collection.ArrayOps[_] = obj.asInstanceOf[scala.collection.ArrayOps[_]]
+          |
+          |  def arrayOpsOfInt(a: Array[Int]): scala.collection.ArrayOps[Int] = new scala.collection.ArrayOps(a)
           |}
         """.stripMargin
       else
@@ -85,6 +87,8 @@ object GenArrayHelper {
           |  def isArrayOps(obj: Any): Boolean = obj.isInstanceOf[scala.collection.mutable.ArrayOps[_]]
           |
           |  def asArrayOps(obj: Any): scala.collection.mutable.ArrayOps[_] = obj.asInstanceOf[scala.collection.mutable.ArrayOps[_]]
+          |
+          |  def arrayOpsOfInt(a: Array[Int]): scala.collection.mutable.ArrayOps[Int] = new scala.collection.mutable.ArrayOps.ofInt(a)
           |
           |}
         """.stripMargin
