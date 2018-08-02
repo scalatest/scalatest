@@ -217,7 +217,51 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * <code>GenTraversableOnce</code>s.
    * </p>
    */
-  implicit def convertGenSetToCombinableNothing[ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (Nothing Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (Nothing Or EVERY[ERR])], Nothing, SET[Nothing]]): Combinable[Nothing, ERR, SET] = convertGenSetToCombinable[Nothing, ERR, X, EVERY, SET](xs)(cbf)
+  implicit def convertGenSetOnceToCombinable2[E, SET[e] <: GenSet[e]](xs: SET[Good[E]])(implicit cbf: CanBuildFrom[SET[Good[E]], Good[E], SET[Good[E]]]): Combinable[E, Nothing, SET] =
+    new Combinable[E, Nothing, SET] {
+      override def combined: Or[SET[E], Every[Nothing]] = {
+        // So now I have an empty builder
+        val emptyTRAVONCEOfGBuilder: Builder[Good[E], SET[Good[E]]] = cbf(xs)
+        Or.from(
+          Right(
+            (xs.foldLeft(emptyTRAVONCEOfGBuilder) { case (res, ele) =>
+              res += ele
+            }).mapResult(_.map(_.get)).result().asInstanceOf[SET[E]]
+          )
+        )
+      }
+
+    }
+
+  /**
+    * Implicitly converts a <code>Set</code> containing accumulating <code>Or</code>s whose <code>Bad</code> type is inferred as <code>Nothing</code> to an
+    * instance of <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
+    * enables the <code>combined</code> method to be invoked on it.
+    *
+    * <p>
+    * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>GenTraversableOnce</code>s, they aren't covariant, so
+    * the implicit conversion provided by <code>convertGenSetToCombinableNothing</code> will not be applied, because it only works on <em>covariant</em>
+    * <code>GenTraversableOnce</code>s.
+    * </p>
+    */
+  implicit def convertGenSetOnceToCombinable3[E, SET[e] <: GenSet[e], EVERY[f] <: Every[f]](xs: SET[Bad[EVERY[E]]]): Combinable[Nothing, E, SET] =
+    new Combinable[Nothing, E, SET] {
+      override def combined: Or[SET[Nothing], EVERY[E]] = {
+        val either: Either[EVERY[E], SET[Nothing]] =
+          if (xs.isEmpty)
+            Right(Vector.empty[Nothing].asInstanceOf[SET[Nothing]])
+          else {
+            val i = xs.toIterable
+            Left(
+              (i.tail.foldLeft(i.head.b) { case (res, ele) =>
+                (res ++ ele.b).asInstanceOf[EVERY[E]]
+              })
+            )
+          }
+
+        Or.from(either)
+      }
+    }
 
   /**
    * Implicitly converts an <code>Every</code> containing accumulating <code>Or</code>s to an instance of
