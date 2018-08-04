@@ -865,7 +865,7 @@ object ScalatestBuild extends Build {
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := buildScalaVersion,
-    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification")),
+    scalacOptions ++= Seq("-feature") ++ (if (scalaVersion.value startsWith "2.13") Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
     libraryDependencies += scalacheckDependency("optional"),
@@ -1126,9 +1126,20 @@ object ScalatestBuild extends Build {
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
 
+  lazy val genColCompatTests = Project("genColCompatTests", file("gentests/GenColCompat"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genColCompatTask,
+      sourceGenerators in Test += {
+        Def.task{
+          GenColCompatHelper.genTest((sourceManaged in Test).value / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
-               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/, genColCompatTests)
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
@@ -1296,6 +1307,11 @@ object ScalatestBuild extends Build {
   val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
   val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), theVersion, theScalaVersion)
+  }
+
+  val genColCompat = TaskKey[Unit]("gencolcompat", "Generate collection compatible tests")
+  val genColCompatTask = genColCompat <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenColCompatHelper.genTest(new File(testTargetDir, "scala/gencolcompat"), theVersion, theScalaVersion)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")
