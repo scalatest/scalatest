@@ -17,8 +17,6 @@ jdk:
 dist: trusty
 sudo: true
 
-sbt_args: -J-Xss10m
-
 env:
   #see https://github.com/scalatest/scalatest/pull/245
   #global values should be replaced using http://docs.travis-ci.com/user/encryption-keys/ with valid values
@@ -76,7 +74,11 @@ branches:
     - 3.1.x
     - 3.2.x
 
-script: ./travis_build.sh $MODE
+script:
+  # work around https://github.com/travis-ci/travis-ci/issues/9713
+  - if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
+  - java -version
+  - ./travis_build.sh $MODE
 
 notifications:
   email:
