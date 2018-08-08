@@ -7,6 +7,7 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
@@ -221,7 +222,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.22"
+      "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
   def scalatestTestOptions =
@@ -399,7 +400,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
-      moduleName := "scalactic",
+      // moduleName := "scalactic",
       sourceGenerators in Compile += {
         Def.task {
           GenScalacticJS.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
@@ -459,13 +460,15 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
+      parallelExecution in Test := false,
+      fork in Test := false,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -482,7 +485,7 @@ object ScalatestBuild extends Build {
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
-     moduleName := "scalatest",
+    //  moduleName := "scalatest",
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -586,7 +589,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
-      moduleName := "scalatest",
+      // moduleName := "scalatest",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -671,12 +674,13 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       //jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
-      fork in test := false,
+      parallelExecution in Test := false,
+      fork in Test := false,
       testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
       publish := {},
@@ -772,7 +776,7 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest App",
       name := "scalatest-app",
       organization := "org.scalatest",
-      moduleName := "scalatest-app",
+      // moduleName := "scalatest-app",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
