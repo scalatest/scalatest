@@ -107,7 +107,7 @@ import org.scalactic.Every
   *
   * <p>
   * <code>NonEmptySet</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-  * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptySet</code> to <code>Set</code>
+  * an empty <code>Seq</code>. However, an implicit conversion from <code>NonEmptySet</code> to <code>Set</code>
   * is defined in the <code>NonEmptySet</code> companion object that will be applied if you attempt to call one of the missing methods. As a
   * result, you can invoke <code>filter</code> on an <code>NonEmptySet</code>, even though <code>filter</code> could result
   * in an empty sequence&mdash;but the result type will be <code>Set</code> instead of <code>NonEmptySet</code>:

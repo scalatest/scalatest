@@ -53,7 +53,7 @@ import scala.collection.GenTraversable
  * </ul>
  *
  * <p>
- * In addition to accessing the <code>ConfigMap</code> in overriden implementations of the above methods, you can also transform
+ * In addition to accessing the <code>ConfigMap</code> in overridden implementations of the above methods, you can also transform
  * and pass along a modified <code>ConfigMap</code>.
  * </p>
  *

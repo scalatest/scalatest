@@ -123,7 +123,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    *
    * This method will register the test for later execution via an invocation of one of the <code>execute</code>
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
-   * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
+   * from outside in, and the passed spec text, with one space placed between each item. (See the documentation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
    * this <code>FreeSpec</code> instance.
    *
@@ -151,7 +151,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>it</code>
    * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be executed, but a
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
-   * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
+   * from outside in, and the passed spec text, with one space placed between each item. (See the documentation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
    * this <code>FreeSpec</code> instance.
    *

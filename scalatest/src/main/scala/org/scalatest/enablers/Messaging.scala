@@ -28,7 +28,7 @@ package org.scalatest.enablers
  *
  * <p>
  * ScalaTest provides an implicit <code>Messaging</code> instance for <code>java.lang.Throwable</code> and
- * arbitary object with <code>message()</code>, <code>message</code>, <code>getMessage()</code> or <code>getMessage</code>
+ * arbitrary object with <code>message()</code>, <code>message</code>, <code>getMessage()</code> or <code>getMessage</code>
  * method in the <code>Messaging</code> companion object.
  * </p>
  *
@@ -51,10 +51,10 @@ trait Messaging[T] {
  *
  * <ul>
  * <li><code>java.lang.Throwable</code></li>
- * <li>arbitary object with a <code>message()</code> method that returns <code>String</code></li>
- * <li>arbitary object with a parameterless <code>message</code> method that returns <code>String</code></li>
- * <li>arbitary object with a <code>getMessage()</code> method that returns <code>String</code></li>
- * <li>arbitary object with a parameterless <code>getMessage</code> method that returns <code>String</code></li>
+ * <li>arbitrary object with a <code>message()</code> method that returns <code>String</code></li>
+ * <li>arbitrary object with a parameterless <code>message</code> method that returns <code>String</code></li>
+ * <li>arbitrary object with a <code>getMessage()</code> method that returns <code>String</code></li>
+ * <li>arbitrary object with a parameterless <code>getMessage</code> method that returns <code>String</code></li>
  * </ul>
  */
 object Messaging {

@@ -297,7 +297,7 @@ import TripleEqualsSupport.TripleEqualsInvocation
  * </pre>
  *
  * <p>
- * At thsi point, however, the error message for the <code>beAsIntsGreaterThan</code>
+ * At this point, however, the error message for the <code>beAsIntsGreaterThan</code>
  * gives no hint that the <code>Int</code>s being compared were parsed from <code>String</code>s:
  * </p>
  *
@@ -491,7 +491,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
       def apply(u: U) = outerInstance.apply(g(u))
     }
 
-// TODO: mention not short circuited, and the precendence is even between and and or
+// TODO: mention not short circuited, and the precedence is even between and and or
 
   /**
    * Returns a matcher whose <code>apply</code> method returns a <code>MatchResult</code>

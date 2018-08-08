@@ -90,7 +90,7 @@ cache:
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node
 #  - |
-#      echo "Succeded on: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}"
+#      echo "Succeeded on: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}"
 #      if [ "${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}" = "scalatest/scalatest/master" ]; then
 #        # temporary for convinience taken outside, todo: grab in repo, also some of steps may be hidden in inside of travis_build
 #        curl -o travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py

@@ -104,7 +104,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    *
    * This method will register the test for later execution via an invocation of one of the <code>execute</code>
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
-   * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
+   * from outside in, and the passed spec text, with one space placed between each item. (See the documentation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
    * this <code>FreeSpec</code> instance.
    *

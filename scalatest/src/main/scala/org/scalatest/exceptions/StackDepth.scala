@@ -65,7 +65,7 @@ trait StackDepth { this: Throwable =>
    *
    * <p>
    * <code>failedCodeFileName</code> and <code>failedCodeLineNumber</code> will fall back to exception stack trace
-   * when <code>Position</code> is not avaiable, this is the reason it is a <code>def</code> instead of a <code>val</code>,
+   * when <code>Position</code> is not available, this is the reason it is a <code>def</code> instead of a <code>val</code>,
    * because exceptions are mutable: their stack trace can be changed after the exception is created. This is done, for example,
    * by the <code>SeveredStackTraces</code> trait.
    * </p>

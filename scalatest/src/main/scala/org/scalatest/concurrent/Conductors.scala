@@ -603,7 +603,7 @@ trait Conductors extends PatienceConfiguration {
     }
 
     /**
-     * A BlockingQueue containing the first exception that occured
+     * A BlockingQueue containing the first exception that occurred
      * in test threads, or that was thrown by the clock thread.
      */
     private val firstExceptionThrown = new ArrayBlockingQueue[Throwable](1)
@@ -624,7 +624,7 @@ trait Conductors extends PatienceConfiguration {
      *
      * <p>
      * This method must be called by the thread that instantiated this <code>Conductor</code>,
-     * and that same thread will invoke <code>conduct</code> and, if it returns noramlly, execute
+     * and that same thread will invoke <code>conduct</code> and, if it returns normally, execute
      * the passed function.
      * </p>
      *

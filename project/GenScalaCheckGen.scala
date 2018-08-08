@@ -53,7 +53,7 @@ import org.scalatest.enablers.CheckerAsserting
 import org.scalactic._
 
 /**
- * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
+ * Trait containing methods that facilitate property checks against generated data using ScalaCheck.
  *
  * <p>
  * This trait contains <code>forAll</code> methods that provide various ways to check properties using

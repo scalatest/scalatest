@@ -107,7 +107,7 @@ import org.scalactic.Every
  *
  * <p>
  * <code>NonEmptyList</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
- * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptyList</code> to <code>List</code>
+ * an empty <code>Seq</code>. However, an implicit converision from <code>NonEmptyList</code> to <code>List</code>
  * is defined in the <code>NonEmptyList</code> companion object that will be applied if you attempt to call one of the missing methods. As a
  * result, you can invoke <code>filter</code> on an <code>NonEmptyList</code>, even though <code>filter</code> could result
  * in an empty sequence&mdash;but the result type will be <code>List</code> instead of <code>NonEmptyList</code>:

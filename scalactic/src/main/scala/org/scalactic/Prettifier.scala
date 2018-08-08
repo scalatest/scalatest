@@ -230,7 +230,7 @@ object Prettifier {
             // SKIP-SCALATESTJS,NATIVE-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
-              // let's do our best to prettify its element when it is not overriden
+              // let's do our best to prettify its element when it is not overridden
               import scala.collection.JavaConverters._
               val theToString = javaCol.toString
               if (theToString.startsWith("[") && theToString.endsWith("]"))
@@ -239,7 +239,7 @@ object Prettifier {
                 theToString
             case javaMap: java.util.Map[_, _] =>
               // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
-              // let's do our best to prettify its element when it is not overriden
+              // let's do our best to prettify its element when it is not overridden
               import scala.collection.JavaConverters._
               val theToString = javaMap.toString
               if (theToString.startsWith("{") && theToString.endsWith("}"))

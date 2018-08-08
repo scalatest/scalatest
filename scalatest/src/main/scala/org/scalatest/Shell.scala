@@ -46,7 +46,7 @@ class ArithmeticSuite extends FunSuite with matchers.Matchers {
  * <li><code>durations</code> - display durations of (<em>i.e.</em>, how long it took to run) tests and suites</li>
  * <li><code>nodurations</code> (the default) - do not display durations of tests and suites</li>
  * <li><code>shortstacks</code> - display short (<em>i.e.</em>, truncated to show just the most useful portion) stack traces for all exceptions</li>
- * <li><code>fullstacks</code> - display full stack trackes for all exceptions</li>
+ * <li><code>fullstacks</code> - display full stack traces for all exceptions</li>
  * <li><code>nostacks</code> (the default) - display no stack trace for <code>StackDepth</code> exceptions and a short stack trace for non-<code>StackDepth</code>
  *   exceptions</li>
  * <li><code>stats</code> - display statistics before and after the run, such as expected test count before the run and tests succeeded, failed, pending,

@@ -33,7 +33,7 @@ final class Present[A] private (val value: A) extends AnyVal {
   /**
     * Builds a new <code>Present</code> by applying a function to the underlying value of this <code>Present</code> that returns type <code>B</code>.
     *
-    * @param f the function to transfrom type <code>A</code> to type <code>B</code>
+    * @param f the function to transform type <code>A</code> to type <code>B</code>
     * @return a <code>Present</code> of <code>B</code>
     */
   def map[B](f: A => B): Present[B] = new Present(f(value))

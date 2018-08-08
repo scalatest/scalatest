@@ -45,7 +45,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
   @volatile var hh = false
   @volatile var ii = false
 
-  // TODO: ignoring this test for now. Need to figure out why it occassionally failes, but
+  // TODO: ignoring this test for now. Need to figure out why it occasionally failes, but
   // until then, may as well ignore it.
   ignore("metronome order") {
 

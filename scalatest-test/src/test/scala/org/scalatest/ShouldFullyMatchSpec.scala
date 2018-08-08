@@ -268,7 +268,7 @@ s should fullyMatch regex t
       }
     }
 
-    describe("(when the regex is specifed by a string and with group)") {
+    describe("(when the regex is specified by a string and with group)") {
       
       describe("(when used with should)") {
       
@@ -918,7 +918,7 @@ s should fullyMatch regex t
       }
     }
     
-    describe("(when the regex is specifed by a actual Regex and with group)") {
+    describe("(when the regex is specified by a actual Regex and with group)") {
       
       describe("(when used with should)") {
       

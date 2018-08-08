@@ -150,7 +150,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         override def newInstance = new InfoInsideTestSpec
       }
       // In a Spec, any InfoProvided's fired during the test should be cached and sent out after the test has
-      // suceeded or failed. This makes the report look nicer, because the info is tucked under the "specifier'
+      // succeeded or failed. This makes the report look nicer, because the info is tucked under the "specifier'
       // text for that test.
       "should, when the info appears in the code of a successful test, report the info in the TestSucceeded" in {
         val spec = new InfoInsideTestSpec

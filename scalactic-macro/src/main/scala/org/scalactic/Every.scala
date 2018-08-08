@@ -89,7 +89,7 @@ import scala.collection.mutable.ArrayBuffer
  *
  * <p>
  * <code>Every</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
- * an empty <code>Seq</code>. However, an implicit converison from <code>Every</code> to <code>collection.immutable.IndexedSeq</code>
+ * an empty <code>Seq</code>. However, an implicit conversion from <code>Every</code> to <code>collection.immutable.IndexedSeq</code>
  * is defined in the <code>Every</code> companion object that will be applied if you attempt to call one of the missing methods. As a
  * result, you can invoke <code>filter</code> on an <code>Every</code>, even though <code>filter</code> could result
  * in an empty sequence&mdash;but the result type will be <code>collection.immutable.IndexedSeq</code> instead of <code>Every</code>:
@@ -1010,7 +1010,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = underlying.reduceRightOption(op)
 
   /**
-   * Returns new <code>Every</code> wih elements in reverse order.
+   * Returns new <code>Every</code> with elements in reverse order.
    *
    * @return a new <code>Every</code> with all elements of this <code>Every</code> in reversed order. 
    */

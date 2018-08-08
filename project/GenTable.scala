@@ -488,7 +488,7 @@ import org.scalatest.enablers.TableAsserting
 import org.scalactic._
 
 /**
- * Trait containing methods that faciliate property checks against tables of data.
+ * Trait containing methods that facilitate property checks against tables of data.
  *
  * <p>
  * This trait contains one <code>exists</code>, <code>forAll</code>, and <code>forEvery</code> method for each <code>TableForN</code> class, <code>TableFor1</code>

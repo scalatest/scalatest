@@ -698,7 +698,7 @@ object Span {
    * <p>
    * This function transforms <code>Duration.MinusInf</code> to <code>Span.Zero</code>, <code>Duration.Inf</code>
    * and <code>Undefined</code> to <code>Span.Max</code>, and all others to a <code>Span</code> containing a
-   * corresponing number of nanoseconds.
+   * corresponding number of nanoseconds.
    * </p>
    */
   implicit def convertDurationToSpan(duration: Duration): Span = {

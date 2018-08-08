@@ -73,7 +73,7 @@ trait Sequencing[-S] {
    * Implements <code>contain</code> <code>inOrderOnly</code> syntax for sequences of type <code>S</code>.
    *
    * @param sequence an sequence about which an assertion is being made
-   * @param eles the only elements that should be contained, in order of appearence in <code>eles</code>, in the passed sequence
+   * @param eles the only elements that should be contained, in order of appearance in <code>eles</code>, in the passed sequence
    * @return true if the passed sequence contains only the passed elements in (iteration) order
    */
   def containsInOrderOnly(sequence: S, eles: Seq[Any]): Boolean

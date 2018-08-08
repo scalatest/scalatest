@@ -763,7 +763,7 @@ trait Assertions extends TripleEquals  {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, pos, Vector.empty)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
 
@@ -1247,7 +1247,7 @@ trait Assertions extends TripleEquals  {
    * tests and functionality that eventually will get your production code to a point where the original test won't fail anymore.
    * At this point the code block marked with <code>pendingUntilFixed</code> will no longer throw an exception (because the
    * problem has been fixed). This will in turn cause <code>pendingUntilFixed</code> to throw <code>TestFailedException</code>
-   * with a detail message explaining you need to go back and remove the <code>pendingUntilFixed</code> call as the problem orginally
+   * with a detail message explaining you need to go back and remove the <code>pendingUntilFixed</code> call as the problem originally
    * causing your test code to fail has been fixed.
    * </p>
    *

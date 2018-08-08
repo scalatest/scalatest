@@ -73,7 +73,7 @@ import org.scalactic.Every
   *
   * <p>
   * <code>NonEmptyMap</code> does <em>not</em> currently define any methods corresponding to <code>Map</code> methods that could result in
-  * an empty <code>Map</code>. However, an implicit converison from <code>NonEmptyMap</code> to <code>Map</code>
+  * an empty <code>Map</code>. However, an implicit conversion from <code>NonEmptyMap</code> to <code>Map</code>
   * is defined in the <code>NonEmptyMap</code> companion object that will be applied if you attempt to call one of the missing methods. As a
   * result, you can invoke <code>filter</code> on an <code>NonEmptyMap</code>, even though <code>filter</code> could result
   * in an empty map&mdash;but the result type will be <code>Map</code> instead of <code>NonEmptyMap</code>:

@@ -111,7 +111,7 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
    * TestNG allows users to programmatically tell it which xml suites to run via the setTestSuites method.
    * This method takes a java.util.List containing java.io.File objects, where each file is a TestNG xml suite. 
    * TestNGWrapperSuite takes xmlSuitesPropertyName in its constructor. This property should contain
-   * the full paths of one or more xml suites, comma seperated. This method simply creates a java.util.List 
+   * the full paths of one or more xml suites, comma sperated. This method simply creates a java.util.List 
    * containing each xml suite contained in xmlSuitesPropertyName and calls the setTestSuites method on the
    * given TestNG object. 
    *

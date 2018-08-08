@@ -32,7 +32,7 @@ import scala.collection.GenTraversable
  * <code>Readability[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides an implicit <code>Readability</code> instance for <code>java.io.File</code> and arbitary
+ * ScalaTest provides an implicit <code>Readability</code> instance for <code>java.io.File</code> and arbitrary
  * object with <code>isReadable()</code> or <code>isReadable</code> in the <code>Readability</code> companion object.
  * </p>
  */
@@ -53,8 +53,8 @@ trait Readability[-T] {
  *
  * <ul>
  * <li><code>java.io.File</code></li>
- * <li>arbitary object with a <code>isReadable()</code> method that returns <code>Boolean</code></li>
- * <li>arbitary object with a parameterless <code>isReadable</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a parameterless <code>isReadable</code> method that returns <code>Boolean</code></li>
  * </ul>
  */
 object Readability {

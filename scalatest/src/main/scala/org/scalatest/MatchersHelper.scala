@@ -314,7 +314,7 @@ private[scalatest] object MatchersHelper {
       case None =>
         val message = exceptionExpectedMessageFun(clazz.getName)
         throw newTestFailedException(message, None, pos)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because iSAssignableFrom succeeded above
     }
   }
 

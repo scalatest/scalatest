@@ -252,7 +252,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
   /**
    * Run a test. This trait's implementation runs the test registered with the name specified by
    * <code>testName</code>. Each test's name is a concatenation of the text of all describers surrounding a test,
-   * from outside in, and the test's  spec text, with one space placed between each item. (See the documenation
+   * from outside in, and the test's  spec text, with one space placed between each item. (See the documentation
    * for <code>testNames</code> for an example.)
    *
    * @param testName the name of one test to execute.

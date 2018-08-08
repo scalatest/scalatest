@@ -685,7 +685,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    *
    * <p>
    * Note:  In ScalaTest, the terms "execute" and "run" basically mean the same thing and
-   * can be used interchangably. The reason this method isn't named <code>run</code> is that it takes advantage of
+   * can be used interchangeably. The reason this method isn't named <code>run</code> is that it takes advantage of
    * default arguments, and you can't mix overloaded methods and default arguments in Scala. (If named <code>run</code>,
    * this method would have the same name but different arguments than the main <a href="#run"><code>run</code> method</a> that
    * takes seven arguments. Thus it would overload and couldn't be used with default argument values.)
@@ -1541,7 +1541,7 @@ private[scalatest] object Suite {
    line up correctly, and the icon is over to the left of that even with the enclosing level.
 
    If a test is at the top level (not nested inside a describe), it's level is 0. So no need to subtract 1
-   to make room for the icon in that case. An info inside such a test will have level 1. And agin, in that
+   to make room for the icon in that case. An info inside such a test will have level 1. And again, in that
    case no need to subtract 1. Such a test is "outermost test" and the info inside is "in outermost test" in:
 
 class ArghSpec extends RefSpec with GivenWhenThen {

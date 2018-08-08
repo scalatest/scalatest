@@ -107,7 +107,7 @@ import org.scalactic.Every
   *
   * <p>
   * <code>NonEmptyArray</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-  * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptyArray</code> to <code>Array</code>
+  * an empty <code>Seq</code>. However, an implicit conversion from <code>NonEmptyArray</code> to <code>Array</code>
   * is defined in the <code>NonEmptyArray</code> companion object that will be applied if you attempt to call one of the missing methods. As a
   * result, you can invoke <code>filter</code> on an <code>NonEmptyArray</code>, even though <code>filter</code> could result
   * in an empty sequence&mdash;but the result type will be <code>Array</code> instead of <code>NonEmptyArray</code>:

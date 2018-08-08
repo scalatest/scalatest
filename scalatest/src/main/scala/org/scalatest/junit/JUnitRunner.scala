@@ -23,7 +23,7 @@ import org.junit.runner.Description
 
 /*
  I think that Stopper really should be a no-op, like it is, because the user has
- no way to stop it. This is wierd, because it will call nested suites. So the tests
+ no way to stop it. This is weird, because it will call nested suites. So the tests
  just pile up. Oh, I see, the darn information about which test it is is in the
  stupid Description displayName. We probably need to add optional test name and
  suite class name to Report, just to satisfy JUnit integration.

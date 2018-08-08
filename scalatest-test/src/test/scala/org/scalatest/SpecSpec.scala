@@ -1835,7 +1835,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
       // In a FlatSpec, any InfoProvided's fired during the test should be cached and sent out after the test has
-      // suceeded or failed. This makes the report look nicer, because the info is tucked under the "specifier'
+      // succeeded or failed. This makes the report look nicer, because the info is tucked under the "specifier'
       // text for that test.
       it("should, when the info appears in the code of a successful test, report the info in the TestSucceeded") {
         val spec = new InfoInsideTestSpec

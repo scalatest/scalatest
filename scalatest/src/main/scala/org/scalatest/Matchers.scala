@@ -178,7 +178,7 @@ import exceptions.TestFailedException
  *
  * <p>
  * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, Scalactic provides a
- * simple "explictly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
+ * simple "explicitly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
  * sides (which must be strings), by transforming them to lowercase:
  * </p>
  *
@@ -197,7 +197,7 @@ import exceptions.TestFailedException
  *
  * <p>
  * The <code>after</code> <code>being</code> <code>lowerCased</code> expression results in an <code>Equality[String]</code>, which is then passed
- * explicitly as the second curried parameter to <code>equal</code>. For more information on the explictly DSL, see the main documentation
+ * explicitly as the second curried parameter to <code>equal</code>. For more information on the explicitly DSL, see the main documentation
  * for trait <a href="../scalactic/Explicitly.html"><code>Explicitly</code></a>.
  * </p>
  *
@@ -921,7 +921,7 @@ import exceptions.TestFailedException
  * <h2>Working with iterators</h2>
  *
  * <p>
- * Althought it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
+ * Although it seems desirable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
  * <code>Seq</code>s, <code>Array</code>, and <code>java.util.List</code>, the
  * ephemeral nature of iterators makes this problematic. Some syntax (such as <code>should</code> <code>contain</code>) is relatively straightforward to
  * support on iterators, but other syntax (such
@@ -1041,7 +1041,7 @@ import exceptions.TestFailedException
  * 
  * <p>
  * Like <a href=""><code>Inspectors</code></a>, objects used with inspector shorthands can be any type <code>T</code> for which a <code>Collecting[T, E]</code>
- * is availabe, which by default includes <code>GenTraversable</code>, 
+ * is available, which by default includes <code>GenTraversable</code>, 
  * Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>s, and <code>String</code>s.
  * Here are some examples:
  * </p>
@@ -1510,7 +1510,7 @@ import exceptions.TestFailedException
  * </p>
  * 
  * <p>
- * When you use this syntax, you must place one or more property values in parentheses after <code>have</code>, seperated by commas, where a <em>property
+ * When you use this syntax, you must place one or more property values in parentheses after <code>have</code>, separated by commas, where a <em>property
  * value</em> is a symbol indicating the name of the property followed by the expected value in parentheses. The only exceptions to this rule is the syntax
  * for checking size and length shown previously, which does not require parentheses. If you forget and put parentheses in, however, everything will
  * still work as you'd expect. Thus instead of writing:

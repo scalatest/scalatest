@@ -32,7 +32,7 @@ import scala.collection.GenTraversable
  * type <code>U</code> by defining a <code>Writability[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides an implicit <code>Writability</code> instance for <code>java.io.File</code> and arbitary
+ * ScalaTest provides an implicit <code>Writability</code> instance for <code>java.io.File</code> and arbitrary
  * object with <code>isWritable()</code> or <code>isWritable</code> in the <a href="Writability$.html"><code>Writability</code> companion object</a>.
  * </p>
  */
@@ -52,8 +52,8 @@ trait Writability[-T] {
  *
  * <ul>
  * <li><code>java.io.File</code></li>
- * <li>arbitary object with a <code>isWritable()</code> method that returns <code>Boolean</code></li>
- * <li>arbitary object with a parameterless <code>isWritable</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a <code>isWritable()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a parameterless <code>isWritable</code> method that returns <code>Boolean</code></li>
  * </ul>
  */
 object Writability {

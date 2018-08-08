@@ -30,7 +30,7 @@ final case class TopOfClass(className: String) extends Location
 
 /**
  * The location in a source file where the method identified by the passed <code>methodId</code> 
- * in the class whose fully qualified name is pased as <code>className</code> is declared.  
+ * in the class whose fully qualified name is passed as <code>className</code> is declared.  
  * The methodId is obtained by calling <code>toGenericString</code> on the <code>java.lang.reflect.Method</code> 
  * object representing the method.
  *

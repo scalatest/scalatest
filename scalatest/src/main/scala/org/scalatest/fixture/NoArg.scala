@@ -26,7 +26,7 @@ package org.scalatest.fixture
  * </p>
  *
  * <p>
- * This trait is somewhat magical and therefore may be challenging for your collegues to understand, so please use it as a last resort only when the
+ * This trait is somewhat magical and therefore may be challenging for your colleagues to understand, so please use it as a last resort only when the
  * simpler options described in the "<a href="../FlatSpec.html#sharedFixtures">shared fixtures</a>" section of your chosen style trait won't do
  * the job. <code>NoArg</code> is
  * intended to address a specific use case that will likely be rare, and is unlikely to be useful outside of its intended use case, but

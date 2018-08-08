@@ -27,7 +27,7 @@ package org.scalatest.matchers
  * <code>arg</code>, and its result transformed by the given function <code>f</code>, <em>only when and if</em>
  * the <code>toString</code> method is invoked on the <code>LazyArg</code>. As a performance optimization, ScalaTest's
  * <a href="MatchResult.html"><code>MatchResult</code></a> avoids invoking <code>toString</code> on objects
- * until and unless an error message is actually needed, to minimize unecessary creation and concatenation
+ * until and unless an error message is actually needed, to minimize unnecessary creation and concatenation
  * of strings. The <code>LazyArg</code> class enables this same performance optimization when composing
  * matchers.
  * </p>

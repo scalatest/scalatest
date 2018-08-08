@@ -1039,7 +1039,7 @@ import org.scalatest.Suite
  *     <a href="#loanFixtureMethods">loan-fixture methods</a>
  *   </td>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
- *     Factor out dupicate code with the <em>loan pattern</em> when different tests need different fixtures <em>that must be cleaned up afterwards</em>.
+ *     Factor out duplicate code with the <em>loan pattern</em> when different tests need different fixtures <em>that must be cleaned up afterwards</em>.
  *   </td>
  * </tr>
  *

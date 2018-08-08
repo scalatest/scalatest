@@ -106,14 +106,14 @@ trait Length[T] {
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
- * <li>arbitary object with a <code>length()</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a parameterless <code>length</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a <code>getLength()</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a parameterless <code>getLength</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a <code>length()</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a parameterless <code>length</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a <code>getLength()</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a parameterless <code>getLength</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a <code>length()</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a parameterless <code>length</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a <code>getLength()</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a parameterless <code>getLength</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a <code>length()</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a parameterless <code>length</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a <code>getLength()</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a parameterless <code>getLength</code> method that returns <code>Long</code></li>
  * </ul>
  */
 object Length {
@@ -166,7 +166,7 @@ object Length {
   import scala.language.reflectiveCalls
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Int</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with <code>length()</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with <code>length()</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -177,7 +177,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Int</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with parameterless <code>length</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with parameterless <code>length</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -188,7 +188,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Int</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with <code>getLength()</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with <code>getLength()</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -199,7 +199,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Int</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with parameterless <code>getLength</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -210,7 +210,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Long</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with <code>length()</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with <code>length()</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -221,7 +221,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Long</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with parameterless <code>length</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with parameterless <code>length</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -232,7 +232,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Long</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with <code>getLength()</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with <code>getLength()</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
@@ -243,7 +243,7 @@ object Length {
     }
 
   /**
-   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Long</code>.
+   * Enable <code>Length</code> implementation for arbitrary object with parameterless <code>getLength</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax

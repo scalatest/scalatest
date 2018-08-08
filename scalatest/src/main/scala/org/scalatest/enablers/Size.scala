@@ -107,14 +107,14 @@ trait Size[T] {
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
- * <li>arbitary object with a <code>size()</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a parameterless <code>size</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a <code>getSize()</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a parameterless <code>getSize</code> method that returns <code>Int</code></li>
- * <li>arbitary object with a <code>size()</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a parameterless <code>size</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a <code>getSize()</code> method that returns <code>Long</code></li>
- * <li>arbitary object with a parameterless <code>getSize</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a <code>size()</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a parameterless <code>size</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a <code>getSize()</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a parameterless <code>getSize</code> method that returns <code>Int</code></li>
+ * <li>arbitrary object with a <code>size()</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a parameterless <code>size</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a <code>getSize()</code> method that returns <code>Long</code></li>
+ * <li>arbitrary object with a parameterless <code>getSize</code> method that returns <code>Long</code></li>
  * </ul>
  */
 object Size {
@@ -178,7 +178,7 @@ object Size {
   import scala.language.reflectiveCalls
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with <code>size()</code> method that returns <code>Int</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with <code>size()</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with <code>size()</code> method that returns <code>Int</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -189,7 +189,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with parameterless <code>size</code> method that returns <code>Int</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with parameterless <code>size</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with parameterless <code>size</code> method that returns <code>Int</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -200,7 +200,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with <code>getSize()</code> method that returns <code>Int</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with <code>getSize()</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with <code>getSize()</code> method that returns <code>Int</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -211,7 +211,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with parameterless <code>getSize</code> method that returns <code>Int</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with parameterless <code>getSize</code> method that returns <code>Int</code>.
    *
    * @tparam T any type with parameterless <code>getSize</code> method that returns <code>Int</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -222,7 +222,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with <code>size()</code> method that returns <code>Long</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with <code>size()</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with <code>size()</code> method that returns <code>Long</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -233,7 +233,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with parameterless <code>size</code> method that returns <code>Long</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with parameterless <code>size</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with parameterless <code>size</code> method that returns <code>Long</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -244,7 +244,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with <code>getSize()</code> method that returns <code>Long</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with <code>getSize()</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with <code>getSize()</code> method that returns <code>Long</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax
@@ -255,7 +255,7 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for arbitary object with <code>getSize</code> method that returns <code>Long</code>.
+   * Enable <code>Size</code> implementation for arbitrary object with <code>getSize</code> method that returns <code>Long</code>.
    *
    * @tparam T any type with <code>getSize</code> method that returns <code>Long</code>
    * @return <code>Size[T]</code> that supports <code>T</code> in <code>have size</code> syntax

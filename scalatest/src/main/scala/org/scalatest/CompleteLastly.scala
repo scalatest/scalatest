@@ -91,7 +91,7 @@ trait CompleteLastly {
     * </p>
     *
     * @param lastlyBlock cleanup code to execute whether the code passed to <code>complete</code>
-    *           throws an exception or succesfully returns a futuristic value.
+    *           throws an exception or successfully returns a futuristic value.
     */
     def lastly(lastlyBlock: => Unit): T = {
       val result: T =
@@ -120,7 +120,7 @@ trait CompleteLastly {
     * </p>
     *
     * @param completeBlock cleanup code to execute whether the code passed to <code>complete</code>
-    *           throws an exception or succesfully returns a futuristic value.
+    *           throws an exception or successfully returns a futuristic value.
    */
   def complete[T](completeBlock: => T)(implicit futuristic: Futuristic[T]): ResultOfCompleteInvocation[T] =
     new ResultOfCompleteInvocation[T](completeBlock, futuristic)

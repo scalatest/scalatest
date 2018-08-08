@@ -27,7 +27,7 @@ package org.scalatest.enablers
  * 
  * <p>
  * ScalaTest provides an implicit <code>Definition</code> instance for <code>scala.Option</code>,
- * arbitary object with <code>isDefined()</code> or <code>isDefined</code> in the <code>Definition</code> companion object.
+ * arbitrary object with <code>isDefined()</code> or <code>isDefined</code> in the <code>Definition</code> companion object.
  * </p>
  */
 trait Definition[-T] {
@@ -46,8 +46,8 @@ trait Definition[-T] {
  *
  * <ul>
  * <li><code>scala.Option</code></li>
- * <li>arbitary object with a <code>isDefined()</code> method that returns <code>Boolean</code></li>
- * <li>arbitary object with a parameterless <code>isDefined</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a <code>isDefined()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitrary object with a parameterless <code>isDefined</code> method that returns <code>Boolean</code></li>
  * </ul>
  */
 object Definition {

@@ -21,7 +21,7 @@ class AsyncFixturesSpec extends FunSpec {
 
   describe("AsyncFixtures") {
 
-    it("should fail tests with NotAllowedException when mixed in classis FunSpec") {
+    it("should fail tests with NotAllowedException when mixed in classic FunSpec") {
       val spec = new FunSpec with AsyncFixtures {
         it("a test") {}
       }
@@ -33,7 +33,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
-    it("should fail tests with NotAllowedException when mixed in classis FunSpecLike") {
+    it("should fail tests with NotAllowedException when mixed in classic FunSpecLike") {
       val spec = new FunSpecLike with AsyncFixtures {
         it("a test") {}
       }
@@ -45,7 +45,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
-    it("should fail tests with NotAllowedException when mixed in classis FunSuite") {
+    it("should fail tests with NotAllowedException when mixed in classic FunSuite") {
       val suite = new FunSuite with AsyncFixtures {
         test("a test") {}
       }
@@ -57,7 +57,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
-    it("should fail tests with NotAllowedException when mixed in classis FunSuiteLike") {
+    it("should fail tests with NotAllowedException when mixed in classic FunSuiteLike") {
       val suite = new FunSuiteLike with AsyncFixtures {
         test("a test") {}
       }
@@ -69,7 +69,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
-    it("should fail tests with NotAllowedException when mixed in classis FeatureSpec") {
+    it("should fail tests with NotAllowedException when mixed in classic FeatureSpec") {
       val spec = new FeatureSpec with AsyncFixtures {
         Scenario("a test") {}
       }
@@ -81,7 +81,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
-    it("should fail tests with NotAllowedException when mixed in classis FeatureSpecLike") {
+    it("should fail tests with NotAllowedException when mixed in classic FeatureSpecLike") {
       val spec = new FeatureSpecLike with AsyncFixtures {
         Scenario("a test") {}
       }

@@ -32,7 +32,7 @@ import scala.util.{Try, Success, Failure}
  *
  * <ul>
  * <li>an activity in which no test failed and no suite aborted is represented by <code>Success(true)</code></li>
- * <li>an activity during which at least one test failed or one suite aborted, but all exceptions that occured
+ * <li>an activity during which at least one test failed or one suite aborted, but all exceptions that occurred
  *     were reported by a ScalaTest events (such as <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>)
  *     is represented by <code>Success(false)</code></li>
  * <li>an activity during which at least one test failed or one suite aborted and at least one exception occurred that was

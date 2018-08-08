@@ -2116,7 +2116,7 @@ class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAss
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
-    // I repeat these with copy and paste, becuase I need to test that each static structural type works, and
+    // I repeat these with copy and paste, because I need to test that each static structural type works, and
     // that makes it hard to pass them to a common "behaves like" method
     describe("on an arbitrary object that has an empty-paren Int size method") {
   

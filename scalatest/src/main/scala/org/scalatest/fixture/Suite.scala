@@ -197,7 +197,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
-  // Can just inheirt the supertrait implementation of runTest that 
+  // Can just inherit the supertrait implementation of runTest that 
 /*
   protected override def runTest(testName: String, args: Args): Status = {
 

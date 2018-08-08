@@ -235,7 +235,7 @@ trait TripleEqualsSupport {
    * result in <code>Boolean</code> and enforce no type constraint.
    *
    * <p>
-   * This method is overridden and made implicit by subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a> and overriden as non-implicit by the other
+   * This method is overridden and made implicit by subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a> and overridden as non-implicit by the other
    * subtraits in this package.
    * </p>
    *
@@ -250,7 +250,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is overridden and made implicit by subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
-   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, and overriden as
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, and overridden as
    * non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -270,7 +270,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -292,7 +292,7 @@ trait TripleEqualsSupport {
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityTypeCheckedConstraint.html"><code>LowPriorityTypeCheckedConstraint</code></a> (extended by
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>), and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equivalenceOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method
@@ -309,7 +309,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
-   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalence[B]</code>, but
    * taking an implicit function that provides evidence that <code>A</code> is a subtype of </code>B</code>.
    * </p>
    *
@@ -322,7 +322,7 @@ trait TripleEqualsSupport {
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityTypeCheckedConstraint.html"><code>LowPriorityTypeCheckedConstraint</code></a> (extended by
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>), and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equivalenceOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method
@@ -345,7 +345,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -361,7 +361,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
-   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalence[B]</code>, but
    * taking an implicit function that provides evidence that <code>A</code> is a subtype of </code>B</code>. For example, under <code>TypeCheckedTripleEquals</code>,
    * this method (as an implicit method), would be used to compile this statement:
    * </p>
@@ -379,7 +379,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -402,7 +402,7 @@ trait TripleEqualsSupport {
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -418,7 +418,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
-   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalence[B]</code>, but
    * taking an implicit function that converts from <code>A</code> to </code>B</code>.
    * </p>
    *
@@ -431,7 +431,7 @@ trait TripleEqualsSupport {
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -453,7 +453,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equivalenceOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -469,7 +469,7 @@ trait TripleEqualsSupport {
    *
    * <p>
    * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
-   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[A]</code>, but
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalence[A]</code>, but
    * taking an implicit function that converts from <code>B</code> to </code>A</code>. For example, under <code>ConversionCheckedTripleEquals</code>,
    * this method (as an implicit method), would be used to compile this statement:
    * </p>
@@ -487,7 +487,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
-   * overriden as non-implicit by the other subtraits in this package.
+   * overridden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equivalenceOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.

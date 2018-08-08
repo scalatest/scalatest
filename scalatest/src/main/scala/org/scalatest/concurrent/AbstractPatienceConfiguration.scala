@@ -20,7 +20,7 @@ import org.scalatest.time.{Span, Millis}
 
 /**
  * Trait that defines an abstract <code>patienceConfig</code> method that is implemented in <a href="PatienceConfiguration.html"><code>PatienceConfiguration</code></a> and can
- * be overriden in stackable modification traits such as <a href="IntegrationPatience.html"><code>IntegrationPatience</code></a>.
+ * be overridden in stackable modification traits such as <a href="IntegrationPatience.html"><code>IntegrationPatience</code></a>.
  *
  * <p>
  * The main purpose of <code>AbstractPatienceConfiguration</code> is to differentiate core <code>PatienceConfiguration</code>

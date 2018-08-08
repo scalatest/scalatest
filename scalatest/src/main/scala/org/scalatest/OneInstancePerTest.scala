@@ -199,7 +199,7 @@ trait's runTest, which will look and see the flag is set. So that means DO run i
 This traits' runTest will create that new instance and call run, leaving the flag set. Reason is that
 in the test-specific instance, this same code will execute, but this time, the flag will be set already
 on entry into runTests. So this time, runTests, knows this is the test-specific instance, so it just
-direclty calls runTest, but sets the flag to false. In runTest, now the flag is false, so it just
+directly calls runTest, but sets the flag to false. In runTest, now the flag is false, so it just
 executes the test in this test-specific instance. So in short,
 
 This instance is the general instance iff:
