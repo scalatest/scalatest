@@ -15,16 +15,18 @@
  */
 package org.scalactic
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 // SKIP-SCALATESTJS-START
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.{global => testExecCtx}
 // SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTJS-ONLY import org.scalatest.concurrent.{RunNowExecutionContext => testExecCtx}
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
 import org.scalatest.exceptions.TestFailedException
 
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with ScalaFutures {
+
+  implicit val execCtx: ExecutionContext = testExecCtx
 
   def isRound(i: Int): Validation[ErrorMessage] =
     if (i % 10 == 0) Pass else Fail(i + " was not a round number")
