@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
@@ -133,38 +134,38 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain allOf (1, 2, 3)
       }
-      checkShouldContainStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left2 = Set(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain allOf (1, 2, 3)
       }
-      checkShouldContainStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left3 = Array(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain allOf (1, 2, 3)
       }
-        checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
+        checkShouldContainStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")
       }
-      checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two", 3 -> "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should contain allOf (1, 2, 3)
       }
-      checkShouldContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e5, left5, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
-      checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e6, left6, deep(Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -178,38 +179,38 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain allOf ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e1, left1, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left2 = Set("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain allOf ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e2, left2, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left3 = Array("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain allOf ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e3, left3, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left4 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")
       }
-      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two ", 3 -> "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should not contain allOf ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e5, left5, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e5, left5, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should not contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
       }
-      checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")).deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e6, left6, deep(Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -251,19 +252,19 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         (left1 should contain allOf (1, 2, 3)) (equality)
       }
-      checkShouldContainStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left2 = Set(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         (left2 should contain allOf (1, 2, 3)) (equality)
       }
-      checkShouldContainStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left3 = Array(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain allOf (1, 2, 3)) (equality)
       }
-      checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val mapEquality = new MapFalseEquality
         
@@ -271,14 +272,14 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         (left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
       }
-      checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two", 3 -> "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should contain allOf (1, 2, 3)) (equality)
       }
-      checkShouldContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e5, left5, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       val javaMapEquality = new JavaMapFalseEquality
       
@@ -286,7 +287,7 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
-      checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e6, left6, deep(Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -297,19 +298,19 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         (left1 should not contain allOf ("1", "2 ", "3")) (trimEquality)
       }
-      checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e1, left1, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left2 = Set("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         (left2 should not contain allOf ("1", "2 ", "3")) (trimEquality)
       }
-      checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e2, left2, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left3 = Array("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain allOf ("1", "2 ", "3")) (trimEquality)
       }
-      checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e3, left3, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val mapTrimEquality = new MapTrimEquality
        
@@ -317,14 +318,14 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         (left4 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
       }
-      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two ", 3 -> "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should not contain allOf ("1", "2 ", "3")) (trimEquality)
       }
-      checkShouldNotContainStackDepth(e5, left5, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e5, left5, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
 
       val javaMapTrimEquality = new JavaMapTrimEquality
       
@@ -332,7 +333,7 @@ class AllOfContainMatcherEqualitySpec extends FunSpec {
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (javaMapTrimEquality)
       }
-      checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")).deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e6, left6, deep(Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
   }

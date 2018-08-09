@@ -19,7 +19,6 @@ import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
 import Matchers._
 import exceptions.TestFailedException
 

@@ -224,6 +224,28 @@ trait Inspectors {
     asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
+  /**
+    * Ensure that all elements in a given <code>scala.collection.GenMap</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+    * without throwing an exception).
+    *
+    * <p>
+    * The difference between <code>forAll</code> and <code>forEvery</code> is that
+    * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to inspect all <code>scala.collection.GenMap</code> entries after the
+    * first failure (and report all failures).
+    * </p>
+    *
+    * @param xs the <code>java.util.Map</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the Map
+    * @tparam V the type of value in the Map
+    * @tparam MAP subtype of <code>java.util.Map</code>
+    *
+    */
+  def forAll[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Ensure that all elements in a given <code>java.util.Map</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
@@ -282,6 +304,22 @@ trait Inspectors {
     asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
+  /**
+    * Ensure that at least <code>min</code> number of elements in a given <code>scala.collection.GenMap</code> pass the given inspection function.
+    *
+    * @param min the minimum number of elements that must pass the inspection function
+    * @param xs the <code>scala.collection.GenMap</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP subtype of <code>scala.collection.GenMap</code>
+    *
+    */
+  def forAtLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](min: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Ensure that at least <code>min</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
@@ -329,6 +367,21 @@ trait Inspectors {
     asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
+  /**
+    * Ensure that at most <code>max</code> number of elements in a given <code>scala.collection.GenMap</code> pass the given inspection function.
+    *
+    * @param max the maximum number of elements in the <code>scala.collection.GenMap</code> that must pass the inspection function
+    * @param xs the <code>scala.collection.GenMap</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP subtype of <code>scala.collection.GenMap</code>
+    */
+  def forAtMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](max: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Ensure that at most <code>max</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
@@ -372,6 +425,21 @@ trait Inspectors {
     asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
+  /**
+    * Ensure that exactly <code>succeededCount</code> number of elements in a given <code>scala.collection.GenMap</code> pass the given inspection function.
+    *
+    * @param succeededCount the number of entries in the <code>scala.collection.GenMap</code> that must pass the inspection function
+    * @param xs the <code>scala.collection.GenMap</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP subtype of <code>scala.collection.GenMap</code>
+    */
+  def forExactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](succeededCount: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Ensure that exactly <code>succeededCount</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
@@ -405,6 +473,10 @@ trait Inspectors {
     asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
+  private[scalatest] def forNo[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
   // SKIP-SCALATESTJS-START
   private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
@@ -427,6 +499,22 @@ trait Inspectors {
    * @tparam C the type of collection
    */
   def forBetween[E, C[_], ASSERTION](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  /**
+    * Ensure the number of elements in a given <code>scala.collection.GenMap</code> that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
+    *
+    * @param from the minimum number of elements in the <code>scala.collection.GenMap</code> that must pass the inspection number
+    * @param upTo the maximum number of elements in the <code>scala.collection.GenMap</code> that must pass the inspection number
+    * @param xs the <code>scala.collection.GenMap</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP subtype of <code>scala.collection.GenMap</code>
+    */
+  def forBetween[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](from: Int, upTo: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
@@ -478,6 +566,27 @@ trait Inspectors {
    * @tparam C the type of collection
    */
   def forEvery[E, C[_], ASSERTION](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  /**
+    * Ensure that every element in a given <code>scala.collection.GenMap</code> passes the given inspection function, where "pass" means returning normally
+    * from the function (<em>i.e.</em>, without throwing an exception).
+    *
+    * <p>
+    * The difference between <code>forEvery</code> and <code>forAll</code> is that
+    * <code>forEvery</code> will continue to inspect all entries in the <code>scala.collection.GenMap</code> after first failure, and report all failures,
+    * whereas <code>forAll</code> will stop on (and only report) the first failure.
+    * </p>
+    *
+    * @param xs the <code>scala.collection.GenMap</code>
+    * @param fun the inspection function
+    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+    * @tparam K the type of key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP subtype of <code>scala.collection.GenMap</code>
+    */
+  def forEvery[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
     asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 

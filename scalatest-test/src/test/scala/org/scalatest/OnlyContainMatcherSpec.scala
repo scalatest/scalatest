@@ -20,6 +20,7 @@ import SharedHelpers._
 import Matchers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 
 class OnlyContainMatcherSpec extends FunSpec {
 
@@ -52,44 +53,44 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         left1 should contain only (1, 2, 3, 4, 5)
       }
-      checkStackDepth(e1, left1, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2, 3, 4, 5)), thisLineNumber - 2)
       
       val left2 = Array(1, 2, 2, 3, 3, 3)
       val e2 = intercept[TestFailedException] {
         left2 should contain only (1, 2, 3, 4, 5)
       }
-      checkStackDepth(e2, left2, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(1, 2, 3, 4, 5)), thisLineNumber - 2)
       
       val left3 = Set(1, 2, 2, 3, 3, 3)
       val e3 = intercept[TestFailedException] {
         left3 should contain only (1, 2, 3, 4, 5)
       }
-      checkStackDepth(e3, left3, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(1, 2, 3, 4, 5)), thisLineNumber - 2)
       
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[TestFailedException] {
         left4 should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
       }
-      checkStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left5 = javaList(1, 2, 2, 3, 3, 3)
       val e5 = intercept[TestFailedException] {
         left5 should contain only (1, 2, 3, 4, 5)
       }
-      checkStackDepth(e5, left5, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, deep(Array(1, 2, 3, 4, 5)), thisLineNumber - 2)
 
       val left6 = javaSet(1, 2, 2, 3, 3, 3)
       val e6 = intercept[TestFailedException] {
         left6 should contain only (1, 2, 3, 4, 5)
       }
-      checkStackDepth(e6, left6, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e6, left6, deep(Array(1, 2, 3, 4, 5)), thisLineNumber - 2)
 
       val left7 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e7 = intercept[TestFailedException] {
         left7 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five"))
       }
-      checkStackDepth(e7, left7, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five")).deep, thisLineNumber - 2)
+      checkStackDepth(e7, left7, deep(Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -115,13 +116,13 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain only (1, 2)
       }
-      checkStackDepth(e1, left1, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2)), thisLineNumber - 2)
 
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain only (1, 2)
       }
-      checkStackDepth(e2, left2, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(1, 2)), thisLineNumber - 2)
 
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -134,7 +135,7 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain only (1, 2)
       }
-      checkStackDepth(e4, left4, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1, 2)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -172,13 +173,13 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain only (1, 2, 3)
       }
-      checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain only (1, 2, 3)
       }
-      checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -191,7 +192,7 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain only (1, 2, 3)
       }
-      checkStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -206,13 +207,13 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain only (3, 2, 1)
       }
-      checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(3, 2, 1)), thisLineNumber - 2)
 
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain only (3, 2, 1)
       }
-      checkStackDepth(e2, left2, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(3, 2, 1)), thisLineNumber - 2)
 
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -225,7 +226,7 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain only (3, 2, 1)
       }
-      checkStackDepth(e4, left4, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(3, 2, 1)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {

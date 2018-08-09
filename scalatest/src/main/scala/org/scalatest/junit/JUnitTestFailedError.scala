@@ -20,6 +20,7 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import org.scalactic.ArrayHelper.deep
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 
@@ -259,7 +260,7 @@ class JUnitTestFailedError(
         message == that.message &&
         cause == that.cause &&
         failedCodeStackDepth == that.failedCodeStackDepth &&
-        getStackTrace.deep == that.getStackTrace.deep
+        deep(getStackTrace) == deep(that.getStackTrace)
       case _ => false
     }
 

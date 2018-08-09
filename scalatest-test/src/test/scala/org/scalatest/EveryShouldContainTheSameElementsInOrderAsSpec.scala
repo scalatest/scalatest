@@ -19,7 +19,7 @@ import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
+import scala.collection.mutable.ListBuffer
 import Matchers._
 import exceptions.TestFailedException
 
@@ -56,30 +56,30 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        fumList should contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee")
+        fumList should contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee")
         val e1 = intercept[TestFailedException] {
-          fumList should contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum")
+          fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))))
+        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        fumList should contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE")
+        fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")
         intercept[TestFailedException] {
-          fumList should contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum")
+          fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
+        (fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
+          (fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ")
+          fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+        (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
       }
     }
 
@@ -87,59 +87,59 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))))
+        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
         intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))
+          fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
     }
 
     describe("when used with not contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        toList should not contain theSameElementsInOrderAs (LinkedList("you", "to", "birthday", "happy"))
+        toList should not contain theSameElementsInOrderAs (ListBuffer("you", "to", "birthday", "happy"))
         val e1 = intercept[TestFailedException] {
-          toList should not contain theSameElementsInOrderAs (LinkedList("happy", "birthday", "to", "you"))
+          toList should not contain theSameElementsInOrderAs (ListBuffer("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, ListBuffer("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        toList should not contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY"))
+        toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))
         intercept[TestFailedException] {
-          toList should not contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU"))
+          toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should not contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -147,29 +147,29 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with (not contain theSameElementsInOrderAs (..))") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        toList should (not contain theSameElementsInOrderAs (LinkedList("you", "to", "birthday", "happy")))
+        toList should (not contain theSameElementsInOrderAs (ListBuffer("you", "to", "birthday", "happy")))
         val e1 = intercept[TestFailedException] {
-          toList should (not contain theSameElementsInOrderAs (LinkedList("happy", "birthday", "to", "you")))
+          toList should (not contain theSameElementsInOrderAs (ListBuffer("happy", "birthday", "to", "you")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, ListBuffer("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        toList should (not contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))
+        toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))
         intercept[TestFailedException] {
-          toList should (not contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))
+          toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         }
-        toList should (not contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
+        toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -177,29 +177,29 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with shouldNot contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        toList shouldNot contain theSameElementsInOrderAs (LinkedList("you", "to", "birthday", "happy"))
+        toList shouldNot contain theSameElementsInOrderAs (ListBuffer("you", "to", "birthday", "happy"))
         val e1 = intercept[TestFailedException] {
-          toList shouldNot contain theSameElementsInOrderAs (LinkedList("happy", "birthday", "to", "you"))
+          toList shouldNot contain theSameElementsInOrderAs (ListBuffer("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, ListBuffer("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        toList shouldNot contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY"))
+        toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))
         intercept[TestFailedException] {
-          toList shouldNot contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU"))
+          toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList shouldNot contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -207,29 +207,29 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with shouldNot (contain theSameElementsInOrderAs (..))") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        toList shouldNot (contain theSameElementsInOrderAs (LinkedList("you", "to", "birthday", "happy")))
+        toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("you", "to", "birthday", "happy")))
         val e1 = intercept[TestFailedException] {
-          toList shouldNot (contain theSameElementsInOrderAs (LinkedList("happy", "birthday", "to", "you")))
+          toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("happy", "birthday", "to", "you")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, toList), decorateToStringValue(prettifier, ListBuffer("happy", "birthday", "to", "you"))))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        toList shouldNot (contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))
+        toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))
         intercept[TestFailedException] {
-          toList shouldNot (contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))
+          toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain theSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         }
-        toList shouldNot (contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
+        toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -245,42 +245,42 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (list1s) should contain theSameElementsInOrderAs LinkedList(1, 2, 3)
-        atLeast (2, lists) should contain theSameElementsInOrderAs LinkedList(1, 2, 3)
-        atMost (2, lists) should contain theSameElementsInOrderAs LinkedList(1, 2, 3)
-        no (lists) should contain theSameElementsInOrderAs LinkedList(3, 4, 5)
+        all (list1s) should contain theSameElementsInOrderAs ListBuffer(1, 2, 3)
+        atLeast (2, lists) should contain theSameElementsInOrderAs ListBuffer(1, 2, 3)
+        atMost (2, lists) should contain theSameElementsInOrderAs ListBuffer(1, 2, 3)
+        no (lists) should contain theSameElementsInOrderAs ListBuffer(3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should contain theSameElementsInOrderAs LinkedList(1, 2, 3)
+          all (lists) should contain theSameElementsInOrderAs ListBuffer(1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(1, 2, 3)) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 2, " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(1, 2, 3)) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
-        all (hiLists) should contain theSameElementsInOrderAs LinkedList("hi", "he")
+        all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should contain theSameElementsInOrderAs LinkedList("hi", "ho")
+          all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain theSameElementsInOrderAs LinkedList("HI", "HE")
+        all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")
         intercept[TestFailedException] {
-          all (hiLists) should contain theSameElementsInOrderAs LinkedList("HI", "HO")
+          all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain theSameElementsInOrderAs LinkedList("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs LinkedList("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain theSameElementsInOrderAs LinkedList("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs LinkedList("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")) (decided by defaultEquality[String])
         }
       }
     }
@@ -288,42 +288,42 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with (contain theSameElementsInOrderAs (..))") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (list1s) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        atLeast (2, lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        atMost (2, lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        no (lists) should (contain theSameElementsInOrderAs LinkedList(3, 4, 5))
+        all (list1s) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        atLeast (2, lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        atMost (2, lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        no (lists) should (contain theSameElementsInOrderAs ListBuffer(3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3))
+          all (lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(1, 2, 3)) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 2, " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(1, 2, 3)) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, lists)))
       }
 
       it("should use the implicit Equality in scope") {
-        all (hiLists) should (contain theSameElementsInOrderAs LinkedList("hi", "he"))
+        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))
         intercept[TestFailedException] {
-          all (hiLists) should (contain theSameElementsInOrderAs LinkedList("he", "hi"))
+          all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HE"))
+        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))
         intercept[TestFailedException] {
-          all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HO"))
+          all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("hi", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("he", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -331,32 +331,32 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with not contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) should not contain theSameElementsInOrderAs (LinkedList("you", "to"))
+        all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("you", "to"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not contain theSameElementsInOrderAs (LinkedList("to", "you"))
+          all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("to", "you"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("to", "you")) +  " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("to", "you")) +  " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not contain theSameElementsInOrderAs (LinkedList("YOU", "TO"))
+        all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))
         intercept[TestFailedException] {
-          all (toLists) should not contain theSameElementsInOrderAs (LinkedList("TO", "YOU"))
+          all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain theSameElementsInOrderAs (LinkedList("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (LinkedList("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU "))
+        all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -364,32 +364,32 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with (not contain theSameElementsInOrderAs (..))") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("you", "to")))
+        all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("you", "to")))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("to", "you")))
+          all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("to", "you")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("to", "you")) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("to", "you")) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("YOU", "TO")))
+        all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))
         intercept[TestFailedException] {
-          all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("TO", "YOU")))
+          all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("YOU", "TO")))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (LinkedList("TO", "YOU")))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU ")))
+        all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -397,32 +397,32 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with shouldNot contain theSameElementsInOrderAs (..)") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("you", "to"))
+        all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("you", "to"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("to", "you"))
+          all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("to", "you"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("to", "you")) +  " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("to", "you")) +  " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("YOU", "TO"))
+        all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))
         intercept[TestFailedException] {
-          all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("TO", "YOU"))
+          all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU "))
+        all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -430,32 +430,32 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
     describe("when used with shouldNot (contain theSameElementsInOrderAs (..))") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("you", "to")))
+        all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("you", "to")))
         val e1 = intercept[TestFailedException] {
-          all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("to", "you")))
+          all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("to", "you")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         val offendingLine = thisLineNumber - 3
         e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("to", "you")) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
+          "  at index 0, " + decorateToStringValue(prettifier, Many("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("to", "you")) + " (EveryShouldContainTheSameElementsInOrderAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(prettifier, toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("YOU", "TO")))
+        all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))
         intercept[TestFailedException] {
-          all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("TO", "YOU")))
+          all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("YOU", "TO")))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList("TO", "YOU")))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (decided by upperCaseStringEquality)
         }
-        all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU ")))
+        all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (LinkedList(" TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
     }

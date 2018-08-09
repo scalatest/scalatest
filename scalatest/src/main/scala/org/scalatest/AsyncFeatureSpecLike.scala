@@ -16,11 +16,13 @@
 package org.scalatest
 
 import org.scalactic._
+
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalatest.exceptions.NotAllowedException
 
 /**

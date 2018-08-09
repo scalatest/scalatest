@@ -23,6 +23,8 @@ package org.scalactic
  */
 private[scalactic] final class DefaultEquality[A] extends Equality[A] {
 
+  import ArrayHelper.deep
+
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by invoking <code>==</code> on <code>a</code>
    * passing in <code>b</code>, treating arrays specially by invoking <code>.deep</code> on <code>a</code> and/or </code>b</code> if they
@@ -35,12 +37,12 @@ private[scalactic] final class DefaultEquality[A] extends Equality[A] {
     a match {
       case arr: Array[_] =>
         b match {
-          case brr: Array[_] => arr.deep == brr.deep
-          case _ => arr.deep == b
+          case brr: Array[_] => deep(arr) == deep(brr)
+          case _ => deep(arr) == b
         }
       case _ => {
         b match {
-          case brr: Array[_] => a == brr.deep
+          case brr: Array[_] => a == deep(brr)
           case _ => a == b
         }
       }

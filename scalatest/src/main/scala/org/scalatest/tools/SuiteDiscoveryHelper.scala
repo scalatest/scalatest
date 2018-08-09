@@ -282,7 +282,7 @@ private[scalatest] object SuiteDiscoveryHelper {
       for (Some(className) <- classNameOptions)
         yield className
 
-    Set[String]() ++ classNames
+    Set[String]() ++ classNames.toIterable
   }
 
   private def getFileNamesSetFromFile(file: File, fileSeparator: Char): Set[String] = {

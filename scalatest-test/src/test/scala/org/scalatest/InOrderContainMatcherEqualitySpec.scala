@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
@@ -74,20 +75,20 @@ class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrder ("3", "2 ", "1")
       }
-      checkShouldContainStackDepth(e1, left1, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e1, left1, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrder ("3", "2 ", "1")
       }
-        checkShouldContainStackDepth(e2, left2, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+        checkShouldContainStackDepth(e2, left2, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder ("3", "2 ", "1")
       }
-      checkShouldContainStackDepth(e3, left3, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e3, left3, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -97,20 +98,20 @@ class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain inOrder ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e1, left1, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain inOrder ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e2, left2, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain inOrder ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e3, left3, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -136,20 +137,20 @@ class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
       val e1 = intercept[exceptions.TestFailedException] {
         (left1 should contain inOrder ("3", "2 ", "1")) (equality)
       }
-      checkShouldContainStackDepth(e1, left1, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e1, left1, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         (left2 should contain inOrder ("3", "2 ", "1")) (equality)
       }
-      checkShouldContainStackDepth(e2, left2, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e2, left2, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain inOrder ("3", "2 ", "1")) (equality)
       }
-      checkShouldContainStackDepth(e3, left3, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e3, left3, deep(Array("3", "2 ", "1")), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
     
@@ -159,20 +160,20 @@ class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
       val e1 = intercept[exceptions.TestFailedException] {
         (left1 should not contain inOrder ("1", "2 ", "3")) (equality)
       }
-      checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e1, left1, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
         (left2 should not contain inOrder ("1", "2 ", "3")) (equality)
       }
-      checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e2, left2, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain inOrder ("1", "2 ", "3")) (equality)
       }
-      checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e3, left3, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
     }
   }

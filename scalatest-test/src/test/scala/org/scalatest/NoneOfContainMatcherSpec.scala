@@ -19,6 +19,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 
 class NoneOfContainMatcherSpec extends FunSpec {
 
@@ -80,13 +81,13 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain noneOf (0, 3, 8)
       }
-      checkStackDepth(e1, left1, Array(0, 3, 8).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(0, 3, 8)), thisLineNumber - 2)
 
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain noneOf (0, 3, 8)
       }
-      checkStackDepth(e2, left2, Array(0, 3, 8).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(0, 3, 8)), thisLineNumber - 2)
 
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -99,7 +100,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain noneOf (0, 3, 8)
       }
-      checkStackDepth(e4, left4, Array(0, 3, 8).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(0, 3, 8)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -137,13 +138,13 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain noneOf (7, 8, 9)
       }
-      checkStackDepth(e1, left1, Array(7, 8, 9).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(7, 8, 9)), thisLineNumber - 2)
 
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain noneOf (7, 8, 9)
       }
-      checkStackDepth(e2, left2, Array(7, 8, 9).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(7, 8, 9)), thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -156,7 +157,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain noneOf (7, 8, 9)
       }
-      checkStackDepth(e4, left4, Array(7, 8, 9).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(7, 8, 9)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
