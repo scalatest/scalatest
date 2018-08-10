@@ -274,7 +274,9 @@ object GenScalaTestJS {
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "SuiteSuite.scala",          // skipped because it depends on java reflection
-        "MatchersSerializableSpec.scala"   // skipped because testing java serialization
+        "MatchersSerializableSpec.scala",   // skipped because testing java serialization
+        "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
+        "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
