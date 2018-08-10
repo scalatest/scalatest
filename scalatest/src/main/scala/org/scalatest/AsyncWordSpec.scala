@@ -314,7 +314,7 @@ package org.scalatest
  * <pre class="stHighlight">
  * // on Scala.js
  * implicit override def executionContext =
- *     org.scalatest.concurrent.RunNowExecutionContext
+ *     org.scalatest.concurrent.TestExecutionContext.runNow
  * </pre>
  *
  * <p>
