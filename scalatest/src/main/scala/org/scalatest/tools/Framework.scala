@@ -19,12 +19,15 @@ import org.scalatest._
 import org.scalatest.events._
 import ArgsParser._
 import SuiteDiscoveryHelper._
+
 import scala.collection.JavaConverters._
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import org.scalatest.time.{Span, Millis}
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
+import java.io.{PrintWriter, StringWriter}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
+import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+
+import org.scalatest.time.{Millis, Seconds, Span}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import StringReporter.fragmentsForEvent
@@ -249,6 +252,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
+    sortingTimeout: Span,
     execService: ExecutorService
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
@@ -301,7 +305,7 @@ class Framework extends SbtFramework {
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
-    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
+    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None, sortingTimeout)
 
     val distributor =
       if (suite.isInstanceOf[ParallelTestExecution])
@@ -391,6 +395,7 @@ class Framework extends SbtFramework {
     presentReminderWithoutCanceledTests: Boolean,
     presentFilePathname: Boolean,
     configSet: Set[ReporterConfigParam],
+    sortingTimeout: Span,
     execService: ExecutorService
   ) extends Task {
     
@@ -504,6 +509,7 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
+          sortingTimeout,
           execService
         )
       }
@@ -638,7 +644,8 @@ class Framework extends SbtFramework {
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long,
-    concurrentConfig: ConcurrentConfig
+    concurrentConfig: ConcurrentConfig,
+    testSortingReporterTimeout: Span
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
     val serverThread = new AtomicReference[Option[Thread]](None)
@@ -652,7 +659,7 @@ class Framework extends SbtFramework {
     val suiteSortingReporter =
       new SuiteSortingReporter(
         dispatchReporter,
-        Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
+        Span(testSortingReporterTimeout.millisPart + 1000, Millis),
         System.err)
 
     if (detectSlowpokes)
@@ -709,6 +716,7 @@ class Framework extends SbtFramework {
           presentReminderWithoutCanceledTests,
           presentFilePathname,
           configSet,
+          testSortingReporterTimeout,
           execSvc
         )
     
@@ -952,8 +960,7 @@ import java.net.{ServerSocket, InetAddress}
     if (!suffixes.isEmpty)
       throw new IllegalArgumentException("Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
 
-    if (!testSortingReporterTimeouts.isEmpty)
-      throw new IllegalArgumentException("Sorting timeouts (-T) is not supported when running ScalaTest from sbt.")
+    val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
     
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
@@ -1095,7 +1102,8 @@ import java.net.{ServerSocket, InetAddress}
       detectSlowpokes,
       slowpokeDetectionDelay,
       slowpokeDetectionPeriod,
-      concurrentConfig
+      concurrentConfig,
+      testSortingReporterTimeout
     )
   }
   

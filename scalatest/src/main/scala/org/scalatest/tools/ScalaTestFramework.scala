@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalatest.Suite.formatterForSuiteAborted
 import org.scalatest.Suite.formatterForSuiteCompleted
 import org.scalatest.Suite.formatterForSuiteStarting
@@ -30,6 +31,7 @@ import org.scalatest.events.SuiteAborted
 import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
+import org.scalatest.time.{Seconds, Span}
 import org.scalatools.testing.{Framework => SbtFramework, _}
 
 /**
@@ -129,6 +131,7 @@ class ScalaTestFramework extends SbtFramework {
     val detectSlowpokes: AtomicBoolean = new AtomicBoolean(false)
     val slowpokeDetectionDelay: AtomicLong = new AtomicLong(60000)
     val slowpokeDetectionPeriod: AtomicLong = new AtomicLong(60000)
+    val testSortingReporterTimeout: AtomicReference[Option[Span]] = new AtomicReference(None)
     val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
@@ -174,10 +177,9 @@ class ScalaTestFramework extends SbtFramework {
           
           if (!suffixes.isEmpty)
             throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
-          
-          if (!testSortingReporterTimeouts.isEmpty)
-            throw new IllegalArgumentException("-T is not supported when runs in SBT.")
-          
+
+          testSortingReporterTimeout.getAndSet(Some(Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)))
+
           val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
           val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
           if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
@@ -264,7 +266,7 @@ class ScalaTestFramework extends SbtFramework {
             
         val dispatchReporter = new SbtDispatchReporter(reporters)
           
-        (dispatchReporter, filter.get.get, configMap.get.get, membersOnly.get.get, wildcard.get.get)
+        (dispatchReporter, filter.get.get, configMap.get.get, membersOnly.get.get, wildcard.get.get, testSortingReporterTimeout.get.get)
       }
     
     private val atomicCount = new AtomicInteger(0)
@@ -395,7 +397,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         val suiteClass = Class.forName(testClassName, true, testLoader)
         //println("sbt args: " + args.toList)
         if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
-          val (reporter, filter, configMap, membersOnly, wildcard) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
+          val (reporter, filter, configMap, membersOnly, wildcard, testSortingReporterTimeout) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
           
           if ((wildcard.isEmpty && membersOnly.isEmpty) || filterWildcard(wildcard, testClassName) || filterMembersOnly(membersOnly, testClassName)) {
           
@@ -422,7 +424,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
+              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None, testSortingReporterTimeout))
 
               val formatter = formatterForSuiteCompleted(suite)
 

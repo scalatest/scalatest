@@ -281,7 +281,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, runTest)
+    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
   }
 
   /**

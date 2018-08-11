@@ -471,7 +471,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

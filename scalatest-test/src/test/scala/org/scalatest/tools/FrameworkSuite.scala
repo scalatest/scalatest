@@ -1142,11 +1142,8 @@ class FrameworkSuite extends FunSuite {
     assert(iae.getMessage === "Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
   }
 
-  test("Framework.runner should throw IllegalArgumentException when -T is passed in") {
-    val iae = intercept[IllegalArgumentException] {
-      framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
-    }
-    assert(iae.getMessage === "Sorting timeouts (-T) is not supported when running ScalaTest from sbt.")
+  test("Framework.runner should be able to pass in test sorting timeout with -T") {
+    framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
   }
   
   private def makeSureDone(runners: Runner*)(fun: => Unit): Unit = {

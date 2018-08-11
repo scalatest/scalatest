@@ -17,9 +17,10 @@ package org.scalatest
 
 import scala.util.Random
 import org.scalatest.events.Event
-import org.scalatest.time.Span
-import org.scalatest.tools.{TestSortingReporter}
-import scala.util.{Success, Failure}
+import org.scalatest.time.{Seconds, Span}
+import org.scalatest.tools.TestSortingReporter
+
+import scala.util.{Failure, Success}
 
 /**
  * Trait that causes tests to be run in pseudo-random order.
@@ -152,7 +153,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    *
    * @return a maximum amount of time to wait for events while resorting them into sequential order
    */
-  protected def sortingTimeout: Span = Suite.testSortingReporterTimeout
+  protected def sortingTimeout: Span = Span(Suite.defaultTestSortingReporterTimeoutInSeconds, Seconds)
 
   /**
    * Modifies the behavior of <code>super.run</code> to facilitate pseudo-random order test execution.
