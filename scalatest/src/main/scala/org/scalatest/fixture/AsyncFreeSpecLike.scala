@@ -567,7 +567,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
   }
 
   /**

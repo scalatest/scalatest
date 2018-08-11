@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Requirements._
+import org.scalatest.time.{Seconds, Span}
 
 /**
  * Arguments bundle passed to four of ScalaTest's lifecycle methods: <code>run</code>, <code>runNestedSuites</code>,
@@ -51,7 +52,7 @@ import org.scalactic.Requirements._
  *                              for the parallel-executed tests of one suite back into sequential order on the fly, with a timeout in case a test takes too long to complete
  * @param distributedSuiteSorter an optional <a href="DistributedSuiteSorter.html"><code>DistributedSuiteSorter</code></a> used by <code>ParallelTestExecution</code> to ensure the events
  *                              for the parallel-executed suites are sorted back into sequential order, with a timeout in case a suite takes to long to complete, even when tests are executed in parallel
- *
+ * @param testSortingTimeout test sorting timeout in case a new TestSortingReporter needs to be created.
  * @throws NullArgumentException if any passed parameter is <code>null</code>.
  *
  */
@@ -65,8 +66,9 @@ case class Args(
   chosenStyles: Set[String] = Set.empty,
   runTestInNewInstance: Boolean = false,
   distributedTestSorter: Option[DistributedTestSorter] = None,
-  distributedSuiteSorter: Option[DistributedSuiteSorter] = None
+  distributedSuiteSorter: Option[DistributedSuiteSorter] = None,
+  testSortingTimeout: Span = Span(Suite.defaultTestSortingReporterTimeoutInSeconds, Seconds)
 ) {
     requireNonNull(reporter, stopper, filter, configMap, distributor, tracker,
-                   chosenStyles, distributedTestSorter, distributedSuiteSorter)
+                   chosenStyles, distributedTestSorter, distributedSuiteSorter, testSortingTimeout)
 }

@@ -20,19 +20,23 @@ import org.scalactic._
 import org.scalatest.Suite._
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
 import org.scalatest.events.SeeStackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 import Suite.IgnoreTagName
+
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.time.Span
 import org.scalatest.tools.TestSortingReporter
 import org.scalatest.tools.TestSpecificReporter
 
@@ -496,6 +500,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     passedInArgs: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
+    sortingTimeout: Span,
     runTest: (String, Args) => Status
   ): Status = {
     requireNonNull(testName, passedInArgs)
@@ -506,7 +511,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           passedInArgs // This is the test-specific instance
         else {
           if (passedInArgs.distributedTestSorter.isEmpty) {
-            val sortingTimeout = Suite.testSortingReporterTimeout // TODO: should pass in this
             val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, sortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
             passedInArgs.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
           }
