@@ -125,9 +125,15 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "DispatchReporter.scala",
+        "Doc.scala",
+        "DocSpec.scala",
+        "DocSpecLike.scala",
         "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
         "JavaClassesWrappers.scala",
         "Shell.scala",
+        "StreamlinedXml.scala",
+        "StreamlinedXmlNormMethods.scala",
+        "StreamlinedXmlEquality.scala",
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
         "run.scala"
