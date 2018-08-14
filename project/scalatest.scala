@@ -605,6 +605,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
+      moduleName := "scalatest",
       // moduleName := "scalatest",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
