@@ -289,16 +289,16 @@ if [[ $MODE = 'genEmptyTests' ]] ; then
   exit $rc
 fi
 
-#if [[ $MODE = 'genSafeStyleTests' ]] ; then
-#  echo "Doing 'sbt genSafeStyleTests/test'"
-#  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-#
-#  while true; do echo "..."; sleep 60; done &
-#  sbt ++$TRAVIS_SCALA_VERSION genSafeStyleTests/test
-#  rc=$?
-#  kill %1
-#  exit $rc
-#fi
+if [[ $MODE = 'genLogicStyleTests' ]] ; then
+  echo "Doing 'sbt genLogicStyleTests/test'"
+  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION genLogicStyleTests/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
 
 if [[ $MODE = 'examples' ]] ; then
   echo "Doing 'sbt examples/test'"

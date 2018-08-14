@@ -35,6 +35,11 @@ object GenLogicStyles {
   def translateTestLine(traitName: String)(line: String): String =
     line.replaceAllLiterally(traitName, "Logic" + traitName)
     .replaceAllLiterally("/* ASSERTION_SUCCEED */", "succeed")
+    .replaceAllLiterally("new LogicFunSuite", "new funsuite.LogicFunSuite")
+    .replaceAllLiterally("new fixture.LogicFunSuite", "new funsuite.FixtureLogicFunSuite")
+    .replaceAllLiterally("extends LogicFunSuite", "extends funsuite.LogicFunSuite")
+    .replaceAllLiterally("extends fixture.LogicFunSuite", "extends funsuite.FixtureLogicFunSuite")
+    .replaceAllLiterally("this: LogicFunSuite =>", "this: funsuite.LogicFunSuite =>")
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
@@ -103,8 +108,8 @@ object GenLogicStyles {
       translateFile(targetDir, "LogicFreeSpecLike.scala", "scalatest/src/main/scala/org/scalatest/FreeSpecLike.scala", scalaVersion, scalaJS, translateLine("FreeSpec")),
       translateFile(targetDir, "LogicFreeSpec.scala", "scalatest/src/main/scala/org/scalatest/FreeSpec.scala", scalaVersion, scalaJS, translateLine("FreeSpec")),
 
-      translateFile(targetDir, "LogicFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/FunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-      translateFile(targetDir, "LogicFunSpec.scala", "scalatest/src/main/scala/org/scalatest/FunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
+      translateFile(targetDir, "LogicFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/funspec/AnyFunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
+      translateFile(targetDir, "LogicFunSpec.scala", "scalatest/src/main/scala/org/scalatest/funspec/AnyFunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
 
       translateFile(targetDir, "LogicPropSpecLike.scala", "scalatest/src/main/scala/org/scalatest/PropSpecLike.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
       translateFile(targetDir, "LogicPropSpec.scala", "scalatest/src/main/scala/org/scalatest/PropSpec.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
@@ -127,8 +132,8 @@ object GenLogicStyles {
       translateFile(fixtureDir, "LogicFreeSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FreeSpecLike.scala", scalaVersion, scalaJS, translateLine("FreeSpec")),
       translateFile(fixtureDir, "LogicFreeSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/FreeSpec.scala", scalaVersion, scalaJS, translateLine("FreeSpec")),
 
-      translateFile(fixtureDir, "LogicFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-      translateFile(fixtureDir, "LogicFunSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
+      translateFile(fixtureDir, "LogicFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/funspec/FixtureAnyFunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
+      translateFile(fixtureDir, "LogicFunSpec.scala", "scalatest/src/main/scala/org/scalatest/funspec/FixtureAnyFunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
 
       translateFile(fixtureDir, "LogicPropSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/PropSpecLike.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
       translateFile(fixtureDir, "LogicPropSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/PropSpec.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
