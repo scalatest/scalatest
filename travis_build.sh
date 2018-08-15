@@ -292,8 +292,9 @@ fi
 
 if [[ $MODE = 'examples' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  echo "Doing 'sbt examples'"
+
   while true; do echo "..."; sleep 60; done &
-  echo "Doing 'sbt examples/test'"
   project examples
   sbt ++$TRAVIS_SCALA_VERSION examples/compile examples/test:compile
   rc=$?
@@ -303,8 +304,10 @@ fi
 
 if [[ $MODE = 'examplesJS' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  echo "Doing 'sbt examplesJS'"
+
   while true; do echo "..."; sleep 60; done &
-  sbt ++$TRAVIS_SCALA_VERSION examplesJS/test:compile
+  sbt ++$TRAVIS_SCALA_VERSION examplesJS/compile examplesJS/test:compile
   rc=$?
   kill %1
   exit $rc
