@@ -19,14 +19,20 @@ import org.scalactic._
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 
+import scala.reflect.ClassTag
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
  */
-final class ResultOfTheTypeInvocation[T](clazz: Class[T], pos: source.Position) {
-  
+final class ResultOfTheTypeInvocation[T](clazzTag: ClassTag[T], pos: source.Position) {
+
+  val clazz: Class[T] = clazzTag.runtimeClass.asInstanceOf[Class[T]]
+
+  def this(c: Class[_], pos: source.Position) = this(ClassTag(c).asInstanceOf[ClassTag[T]], pos)
+
   /**
    * This method enables the following syntax: 
    *

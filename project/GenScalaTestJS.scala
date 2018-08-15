@@ -210,6 +210,7 @@ object GenScalaTestJS {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
@@ -286,8 +287,7 @@ object GenScalaTestJS {
         "SuiteSuite.scala",          // skipped because it depends on java reflection
         "MatchersSerializableSpec.scala",   // skipped because testing java serialization
         "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
-        "SeveredStackTracesFailureSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
-        "NonImplicitAssertionsSuite.scala"  // skipped because a scala-js problem under scala 2.11/2.10, see here: https://github.com/scala-js/scala-js/issues/3228
+        "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(

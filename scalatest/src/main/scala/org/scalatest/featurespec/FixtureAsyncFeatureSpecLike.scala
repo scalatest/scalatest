@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,46 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.featurespec
 
 import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
+import scala.concurrent.Future
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 
+
 /**
- * Implementation trait for class <code>fixture.FeatureSpec</code>, which is
- * a sister class to <a href="../FeatureSpec.html"><code>org.scalatest.FeatureSpec</code></a> that can pass a
+ * Implementation trait for class <code>FixtureAsyncFeatureSpec</code>, which is
+ * a sister class to <a href="AsyncFeatureSpec.html"><code>org.scalatest.featurespec.AsyncFeatureSpec</code></a> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FeatureSpec.html"><code>fixture.FeatureSpec</code></a> is a class,
+ * <a href="FixtureAsyncFeatureSpec.html"><code>FixtureAsyncFeatureSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FeatureSpec</code> into some other
+ * to mix the behavior of <code>FixtureAsyncFeatureSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FeatureSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>FixtureAsyncFeatureSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FeatureSpec.html">detailed
- * overview of <code>fixture.FeatureSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAsyncFeatureSpec.html">detailed
+ * overview of <code>FixtureAsyncFeatureSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFeatureSpecLike extends fixture.AsyncTestSuite with fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 
   import engine._
-
-  private[scalatest] val sourceFileName = "FeatureSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -69,7 +69,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAsyncFeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -79,7 +79,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAsyncFeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -96,40 +96,20 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(Resources.scenario(specText.trim), Transformer(new NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
   }
 
@@ -144,7 +124,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>FixtureAsyncFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -158,23 +138,11 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -3
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -3
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(Resources.scenario(specText), Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
   }
 
@@ -186,7 +154,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>FixtureAsyncFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -211,33 +179,24 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @param description the description text
    */
   protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, pos)
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, None, pos)
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, Some(pos))
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, None, pos)
     }
     catch {
       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
       case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
       case nae: NotAllowedException => throw nae
-      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
       case other: Throwable => throw other
     }
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FeatureSpec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>FeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAsyncFeatureSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAsyncFeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -264,31 +223,33 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
+    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+      val theConfigMap = args.configMap
+      val testData = testDataFor(testName, theConfigMap)
+      InternalFutureOutcome(
+        withFixture(
+          new OneArgAsyncTest {
+            val name = testData.name
 
-    def invokeWithFixture(theTest: TestLeaf): Outcome = {
+            def apply(fixture: FixtureParam): FutureOutcome =
+              theTest.testFun(fixture).toFutureOutcome
 
-      theTest.testFun match {
-        case transformer: org.scalatest.fixture.Transformer[_] =>
-          transformer.exceptionalTestFun match {
-            case wrapper: NoArgTestWrapper[_, _] =>
-              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+            val configMap = testData.configMap
+            val scopes = testData.scopes
+            val text = testData.text
+            val tags = testData.tags
+            val pos = testData.pos
           }
-        case other =>
-          other match {
-            case wrapper: NoArgTestWrapper[_, _] =>
-              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
-          }
-      }
+        ).underlying
+      )
     }
 
-    runTestImpl(thisSuite, testName, args, false, invokeWithFixture)
+    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
   }
 
   /**
    * <p>
-   * Run zero to many of this <code>FeatureSpec</code>'s tests.
+   * Run zero to many of this <code>FixtureAsyncFeatureSpec</code>'s tests.
    * </p>
    *
    * <p>
@@ -320,17 +281,17 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * </p>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FeatureSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAsyncFeatureSpec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, false, runTest)
+    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, runTest)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FeatureSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAsyncFeatureSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -348,7 +309,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
   }
 
   override def run(testName: Option[String], args: Args): Status = {
-    runImpl(thisSuite, testName, args, super.run)
+    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
   @deprecated("use ScenariosFor instead", "ScalaTest 3.1.1")
@@ -358,7 +319,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Registers shared scenarios.
    *
    * <p>
-   * This method enables the following syntax for shared scenarios in a <code>FeatureSpec</code>:
+   * This method enables the following syntax for shared scenarios in a <code>FixtureAsyncFeatureSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
@@ -370,8 +331,8 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * Because the parameter passed to it is
    * type <code>Unit</code>, the expression will be evaluated before being passed, which
    * is sufficient to register the shared scenarios. For examples of shared scenarios, see the
-   * <a href="../FeatureSpec.html#SharedScenarios">Shared scenarios section</a> in the main documentation for
-   * trait <code>FeatureSpec</code>.
+   * <a href="AnyFeatureSpec.html#SharedScenarios">Shared scenarios section</a> in the main documentation for
+   * trait <code>AnyFeatureSpec</code>.
    * </p>
    */
   protected def ScenariosFor(unit: Unit): Unit = {}
@@ -391,7 +352,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any /* Assertion */ = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => compatible.Assertion = {
     fixture => { f; Succeeded }
   }
 
@@ -407,7 +368,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => compatible.Assertion): (FixtureParam => compatible.Assertion) =
     new NoArgTestWrapper(fun)
 */
 

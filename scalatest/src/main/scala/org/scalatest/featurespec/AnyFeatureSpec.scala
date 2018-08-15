@@ -13,99 +13,131 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.funspec
+package org.scalatest.featurespec
 
-import org.scalatest.{Suite, Finders}
+import org.scalatest._
 
 /**
- * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
- * are combined with text that specifies the behavior the tests verify.
+ * A suite of tests in which each test represents one <em>scenario</em> of a <em>feature</em>. 
+ * <code>AnyFeatureSpec</code> is intended for writing tests that are "higher level" than unit tests, for example, integration
+ * tests, functional tests, and acceptance tests. You can use <code>AnyFeatureSpec</code> for unit testing if you prefer, however.
  * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * For teams coming from Ruby's RSpec tool, <code>AnyFunSpec</code> will feel familiar and comfortable; More generally, for any team that prefers BDD, <code>AnyFunSpec</code>'s nesting
- * and gentle guide to structuring text (with <code>describe</code> and <code>it</code>) provide an excellent general-purpose choice for writing specification-style tests. 
+ * Class <code>AnyFeatureSpec</code> is primarily intended for acceptance testing, including facilitating the process of programmers working alongside non-programmers to
+ * define the acceptance requirements.
  * </td></tr></table>
  * 
  * <p>
- * Here's an example <code>AnyFunSpec</code>:
+ * Although not required, <code>AnyFeatureSpec</code> is often used together with <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> to express acceptance requirements
+ * in more detail. Here's an example:
  * </p>
  *
+ * <a name="initialExample"></a>
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec
+ * package org.scalatest.examples.featurespec
  * 
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest._
  * 
- * class SetSpec extends AnyFunSpec {
+ * class TVSet {
+ *   private var on: Boolean = false
+ *   def isOn: Boolean = on
+ *   def pressPowerButton() {
+ *     on = !on
+ *   }
+ * }
  * 
- *   describe("A Set") {
- *     describe("when empty") {
- *       it("should have size 0") {
- *         assert(Set.empty.size === 0)
- *       }
+ * class TVSetSpec extends featurespec.AnyFeatureSpec with GivenWhenThen {
+ * 
+ *   info("As a TV set owner")
+ *   info("I want to be able to turn the TV on and off")
+ *   info("So I can watch TV when I want")
+ *   info("And save energy when I'm not watching TV")
+ * 
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off") {
+ * 
+ *       Given("a TV set that is switched off")
+ *       val tv = new TVSet
+ *       assert(!tv.isOn)
+ * 
+ *       When("the power button is pressed")
+ *       tv.pressPowerButton()
+ * 
+ *       Then("the TV should switch on")
+ *       assert(tv.isOn)
+ *     }
  *     
- *       it("should produce NoSuchElementException when head is invoked") {
- *         assertThrows[NoSuchElementException] {
- *           Set.empty.head
- *         }
- *       }
+ *     Scenario("User presses power button when TV is on") {
+ * 
+ *       Given("a TV set that is switched on")
+ *       val tv = new TVSet
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ * 
+ *       When("the power button is pressed")
+ *       tv.pressPowerButton()
+ * 
+ *       Then("the TV should switch off")
+ *       assert(!tv.isOn)
  *     }
  *   }
  * }
  * </pre>
  *
  * <p>
- * A <code>AnyFunSpec</code> contains <em>describe clauses</em> and tests. You define a describe clause
- * with <code>describe</code>, and a test with either <code>it</code> or <code>they</code>. 
- * <code>describe</code>,  <code>it</code>, and <code>they</code> are methods, defined in
- * <code>AnyFunSpec</code>, which will be invoked
- * by the primary constructor of <code>SetSpec</code>. 
- * A describe clause names, or gives more information about, the <em>subject</em> (class or other entity) you are specifying
- * and testing. In the previous example, <code>"A Set"</code>
- * is the subject under specification and test. With each test you provide a string (the <em>spec text</em>) that specifies
- * one bit of behavior of the subject, and a block of code that tests that behavior.
+ * Note: for more information on the calls to <code>Given</code>, <code>When</code>, and <code>Then</code>, see the documentation 
+ * for trait <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
+ * </p>
+ *
+ * <p>
+ * A <code>AnyFeatureSpec</code> contains <em>feature clauses</em> and <em>scenarios</em>. You define a feature clause
+ * with <code>feature</code>, and a scenario with <code>scenario</code>. Both
+ * <code>feature</code> and <code>scenario</code> are methods, defined in
+ * <code>AnyFeatureSpec</code>, which will be invoked
+ * by the primary constructor of <code>TVSetSpec</code>. 
+ * A feature clause describes a feature of the <em>subject</em> (class or other entity) you are specifying
+ * and testing. In the previous example, 
+ * the subject under specification and test is a TV set. The feature being specified and tested is 
+ * the behavior of a TV set when its power button is pressed. With each scenario you provide a
+ * string (the <em>spec text</em>) that specifies the behavior of the subject for
+ * one scenario in which the feature may be used, and a block of code that tests that behavior.
  * You place the spec text between the parentheses, followed by the test code between curly
  * braces.  The test code will be wrapped up as a function passed as a by-name parameter to
- * <code>it</code> (or <code>they</code>), which will register the test for later execution.
+ * <code>scenario</code>, which will register the test for later execution.
  * </p>
  *
  * <p>
- * Note: the <code>they</code> method is intended for use when the subject is plural, for example:
- * </p>
- *
- * <pre class="stHighlight">
- * describe("The combinators") {
- *   they("should be easy to learn") {}
- *   they("should be efficient") {}
- *   they("should do something cool") {}
- * }
- * </pre>
- *
- * <p>
- * A <code>AnyFunSpec</code>'s lifecycle has two phases: the <em>registration</em> phase and the
+ * A <code>AnyFeatureSpec</code>'s lifecycle has two phases: the <em>registration</em> phase and the
  * <em>ready</em> phase. It starts in registration phase and enters ready phase the first time
  * <code>run</code> is called on it. It then remains in ready phase for the remainder of its lifetime.
  * </p>
  *
  * <p>
- * Tests can only be registered with the <code>it</code> or <code>they</code> methods while the <code>AnyFunSpec</code> is
- * in its registration phase. Any attempt to register a test after the <code>AnyFunSpec</code> has
- * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AnyFunSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
- * of using <code>AnyFunSpec</code> is to register tests during object construction as is done in all
+ * Scenarios can only be registered with the <code>scenario</code> method while the <code>AnyFeatureSpec</code> is
+ * in its registration phase. Any attempt to register a scenario after the <code>AnyFeatureSpec</code> has
+ * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AnyFeatureSpec</code>,
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
+ * of using <code>AnyFeatureSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
  * <p>
- * When you execute a <code>AnyFunSpec</code>, it will send <code>Formatter</code>s in the events it sends to the
- * <code>Reporter</code>. ScalaTest's built-in reporters will report these events in such a way
+ * Each scenario represents one test. The name of the test is the spec text passed to the <code>scenario</code> method.
+ * The feature name does not appear as part of the test name. In a <code>AnyFeatureSpec</code>, therefore, you must take care
+ * to ensure that each test has a unique name (in other words, that each <code>scenario</code> has unique spec text).
+ * </p>
+ *
+ * <p>
+ * When you run a <code>AnyFeatureSpec</code>, it will send <a href="events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
+ * <a href="Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
  * that the output is easy to read as an informal specification of the <em>subject</em> being tested.
- * For example, were you to run <code>SetSpec</code> from within the Scala interpreter:
+ * For example, were you to run <code>TVSetSpec</code> from within the Scala interpreter:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSpec)
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -113,67 +145,83 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stREPL">
- * <span class="stGreen">A Set</span>
- * <span class="stGreen">  when empty</span>
- * <span class="stGreen">  - should have size 0</span>
- * <span class="stGreen">  - should produce NoSuchElementException when head is invoked</span>
+ * <span class="stGreen">TVSetSpec:
+ * As a TV set owner 
+ * I want to be able to turn the TV on and off 
+ * So I can watch TV when I want 
+ * And save energy when I'm not watching TV 
+ * Feature: TV power button
+ *   Scenario: User presses power button when TV is off
+ *     Given a TV set that is switched off 
+ *     When the power button is pressed 
+ *     Then the TV should switch on 
+ *   Scenario: User presses power button when TV is on
+ *     Given a TV set that is switched on 
+ *     When the power button is pressed 
+ *     Then the TV should switch off</span>
  * </pre>
  *
  * <p>
- * Or, to run just the &ldquo;<code>A Set when empty should have size 0</code>&rdquo; test, you could pass that test's name, or any unique substring of the
- * name, such as <code>"size 0"</code> or even just <code>"0"</code>. Here's an example:
+ * Or, to run just the &ldquo;<code>Feature: TV power button Scenario: User presses power button when TV is on</code>&rdquo; method, you could pass that test's name, or any unique substring of the
+ * name, such as <code>"TV is on"</code>. Here's an example:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSuite, "size 0")
- * <span class="stGreen">A Set</span>
- * <span class="stGreen">  when empty</span>
- * <span class="stGreen">  - should have size 0</span>
+ * scala&gt; org.scalatest.run(new TVSetSpec, "TV is on")
+ * <span class="stGreen">TVSetSpec:
+ * As a TV set owner 
+ * I want to be able to turn the TV on and off 
+ * So I can watch TV when I want 
+ * And save energy when I'm not watching TV 
+ * Feature: TV power button
+ *   Scenario: User presses power button when TV is on
+ *     Given a TV set that is switched on 
+ *     When the power button is pressed 
+ *     Then the TV should switch off</span>
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
- * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
- * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
- * <a href="Shell.html">ScalaTest shell</a>.
- * </p>
- *
- * <p>
- * The <code>execute</code> method invokes a <code>run</code> method that takes two
- * parameters. This <code>run</code> method, which actually executes the suite, will usually be invoked by a test runner, such
- * as <a href="run$.html"><code>run</code></a>, <a href="tools/Runner$.html"><code>tools.Runner</code></a>, a build tool, or an IDE.
- * </p>
- * <p>
- * <em>Note: <code>AnyFunSpec</code>'s syntax is in great part inspired by <a href="http://rspec.info/" target="_blank">RSpec</a>, a Ruby BDD framework.</em>
+ * <em>Note: Trait <code>AnyFeatureSpec</code>'s syntax is in part inspired by <a href="http://cukes.info/" target="_blank">Cucumber</a>, a Ruby BDD framework.</em>
  *</p>
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
- * good intention of resurrecting the test at a later time, <code>AnyFunSpec</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>it</code> or <code>they</code>. For example, to temporarily
- * disable the test with the text <code>"should have size 0"</code>, just change &ldquo;<code>it</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
+ * good intention of resurrecting the test at a later time, <code>AnyFeatureSpec</code> provides registration
+ * methods that start with <code>ignore</code> instead of <code>scenario</code>. For example, to temporarily
+ * disable the test named <code>addition</code>, just change &ldquo;<code>scenario</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.ignore
+ * package org.scalatest.examples.featurespec.ignore
  * 
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * 
- * class SetSpec extends AnyFunSpec {
- *   
- *   describe("A Set") {
- *     describe("when empty") {
- *       ignore("should have size 0") {
- *         assert(Set.empty.size === 0)
- *       }
- *       
- *       it("should produce NoSuchElementException when head is invoked") {
- *         assertThrows[NoSuchElementException] {
- *           Set.empty.head
- *         }
- *       }
+ * class TVSet {
+ *   private var on: Boolean = false
+ *   def isOn: Boolean = on
+ *   def pressPowerButton() {
+ *     on = !on
+ *   }
+ * }
+ * 
+ * class TVSetSpec extends AnyFeatureSpec {
+ * 
+ *   Feature("TV power button") {
+ *     ignore("User presses power button when TV is off") {
+ *       val tv = new TVSet
+ *       assert(!tv.isOn)
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ *     }
+ * 
+ *     Scenario("User presses power button when TV is on") {
+ *       val tv = new TVSet
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ *       tv.pressPowerButton()
+ *       assert(!tv.isOn)
  *     }
  *   }
  * }
@@ -184,149 +232,61 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSpec)
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
- * It will run only the second test and report that the first test was ignored:
+ * It will run only the second scenario and report that the first scenario was ignored:
  * </p>
  *
  * <pre class="stREPL">
- * <span class="stGreen">A Set</span>
- * <span class="stGreen">  when empty</span>
- * <span class="stYellow">  - should have size 0 !!! IGNORED !!!</span>
- * <span class="stGreen">  - should produce NoSuchElementException when head is invoked</span>
+ * <span class="stGreen">TVSetSpec:
+ * Feature: TV power button</span>
+ *   <span class="stYellow">Scenario: User presses power button when TV is off !!! IGNORED !!!</span>
+ *   <span class="stGreen">Scenario: User presses power button when TV is on</span>
  * </pre>
- *
- * <p>
- * If you wish to temporarily ignore an entire suite of tests, you can (on the JVM, not Scala.js) annotate the test class with <code>@Ignore</code>, like this:
- * </p>
- *
- * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.ignoreall
- * 
- * import org.scalatest.funsuite.AnyFunSpec
- * import org.scalatest.Ignore
- *
- * @Ignore
- * class SetSpec extends AnyFunSpec {
- *   
- *   describe("A Set") {
- *     describe("when empty") {
- *       it("should have size 0") {
- *         assert(Set.empty.size === 0)
- *       }
- *       
- *       it("should produce NoSuchElementException when head is invoked") {
- *         assertThrows[NoSuchElementException] {
- *           Set.empty.head
- *         }
- *       }
- *     }
- *   }
- * }
- * </pre>
- *
- * <p>
- * When you mark a test class with a tag annotation, ScalaTest will mark each test defined in that class with that tag.
- * Thus, marking the <code>SetSpec</code> in the above example with the <code>@Ignore</code> tag annotation means that both tests
- * in the class will be ignored. If you run the above <code>SetSpec</code> in the Scala interpreter, you'll see:
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSpec)
- * <span class="stGreen">SetSpec:
- * A Set
- *   when empty</span>
- * <span class="stYellow">  - should have size 0 !!! IGNORED !!!</span>
- * <span class="stYellow">  - should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
- * </pre>
- *
- * <p>
- * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
- * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
- * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
- * </p>
  *
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AnyFunSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
+ * One of the parameters to <code>AnyFeatureSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
- * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
- * Most often the reporting done by default by <code>AnyFunSpec</code>'s methods will be sufficient, but
+ * and tests that were ignored will be passed to the <a href="Reporter.html"><code>Reporter</code></a> as the suite runs.
+ * Most often the default reporting done by <code>AnyFeatureSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <code>Informer</code> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
- * You can pass the extra information to the <code>Informer</code> via one of its <code>apply</code> methods.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <code>InfoProvided</code> event.
- * Here's an example in which the <code>Informer</code> returned by <code>info</code> is used implicitly by the
- * <code>Given</code>, <code>When</code>, and <code>Then</code> methods of trait <code>GivenWhenThen</code>:
+ * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
- *
- * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.info
  * 
- * import collection.mutable
- * import org.scalatest._
- * 
- * class SetSpec extends funspec.AnyFunSpec with GivenWhenThen {
- *   
- *   describe("A mutable Set") {
- *     it("should allow an element to be added") {
- *       Given("an empty mutable Set")
- *       val set = mutable.Set.empty[String]
- * 
- *       When("an element is added")
- *       set += "clarity"
- * 
- *       Then("the Set should have size 1")
- *       assert(set.size === 1)
- * 
- *       And("the Set should contain the added element")
- *       assert(set.contains("clarity"))
- * 
- *       info("That's all folks!")
- *     }
- *   }
- * }
- * </pre>
- *
- * If you run this <code>AnyFunSpec</code> from the interpreter, you will see the following output:
- *
- * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSpec)
- * <span class="stGreen">A mutable Set
- * - should allow an element to be added
- *   + Given an empty mutable Set 
- *   + When an element is added 
- *   + Then the Set should have size 1 
- *   + And the Set should contain the added element 
- *   + That's all folks! </span> 
- * </pre>
+ * <p>
+ * One use case for the <code>Informer</code> is to pass more information about a scenario to the reporter. For example,
+ * the <code>GivenWhenThen</code> trait provides methods that use the implicit <code>info</code> provided by <code>AnyFeatureSpec</code>
+ * to pass such information to the reporter. You can see this in action in the <a href="#initialExample">initial example</a> of this trait's documentation.
+ * </p>
  *
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AnyFunSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AnyFeatureSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
  * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
- * Here's an example <code>AnyFunSpec</code> that uses <code>markup</code>:
+ * Here's an example <code>FlatSpec</code> that uses <code>markup</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.markup
+ * package org.scalatest.examples.featurespec.markup
  *
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends funspec.AnyFunSpec with GivenWhenThen {
+ * class SetSpec extends featurespec.AnyFeatureSpec with GivenWhenThen {
  *
  *   markup { """
  *
@@ -342,20 +302,20 @@ import org.scalatest.{Suite, Finders}
  *     def iterator: Iterator[A]
  *     def += (elem: A): this.type
  *     def -= (elem: A): this.type
- *
+
  * If you wish that methods like `take`,
  * `drop`, `filter` return the same kind of set,
  * you should also override:
  *
- *     def empty: This
- *
+ *      def empty: This
+
  * It is also good idea to override methods `foreach` and
  * `size` for efficiency.
  *
  *   """ }
  *
- *   describe("A mutable Set") {
- *     it("should allow an element to be added") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *       Given("an empty mutable Set")
  *       val set = mutable.Set.empty[String]
  *
@@ -380,7 +340,7 @@ import org.scalatest.{Suite, Finders}
  * add nicely formatted text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
  * </p>
  *
- * <img class="stScreenShot" src="../../../lib/funSpec.gif">
+ * <img class="stScreenShot" src="../../../lib/featureSpec.gif">
  *
  * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
@@ -399,15 +359,15 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.note
+ * package org.scalatest.examples.featurespec.note
  *
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends funspec.AnyFunSpec {
+ * class SetSpec extends featurespec.AnyFeatureSpec {
  *
- *   describe("A mutable Set") {
- *     it("should allow an element to be added") {
+ *   Feature("An element can be added to an empty mutable Set") {
+ *     Scenario("When an element is added to an empty mutable Set") {
  *
  *       info("info is recorded")
  *       markup("markup is *also* recorded")
@@ -432,11 +392,11 @@ import org.scalatest.{Suite, Finders}
  * <pre class="stREPL">
  * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
- * A mutable Set
+ * Feature: An element can be added to an empty mutable Set
  *   + notes are sent immediately</span>
  *   <span class="stYellow">+ alerts are also sent immediately</span>
- * <span class="stGreen">- should allow an element to be added
- *   + info is recorded
+ *   <span class="stGreen">Scenario: When an element is added to an empty mutable Set
+ *     info is recorded
  *   + markup is *also* recorded</span>
  * </pre>
  *
@@ -468,7 +428,7 @@ import org.scalatest.{Suite, Finders}
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -477,29 +437,34 @@ import org.scalatest.{Suite, Finders}
  * the code of a pending test is executed just like any other test.) However, because the test completes abruptly
  * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
  * the actual test, and possibly the functionality, has not yet been implemented.
- * </p>
- *
- * <p>
- * You can mark a test as pending in <code>AnyFunSpec</code> by placing "<code>(pending)</code>" after the
- * test name, like this:
+ * You can mark tests as pending in a <code>AnyFeatureSpec</code> like this:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.pending
+ * package org.scalatest.examples.featurespec.pending
  * 
- * import org.scalatest._
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * 
- * class SetSpec extends funspec.AnyFunSpec {
+ * class TVSet {
+ *   private var on: Boolean = false
+ *   def isOn: Boolean = on
+ *   def pressPowerButton() {
+ *     on = !on
+ *   }
+ * }
  * 
- *   describe("A Set") {
- *     describe("when empty") {
- *       it("should have size 0") (pending)
- *       
- *       it("should produce NoSuchElementException when head is invoked") {
- *         assertThrows[NoSuchElementException] {
- *           Set.empty.head
- *         }
- *       }
+ * class TVSetSpec extends AnyFeatureSpec {
+ * 
+ *   Feature("TV power button") {
+ *
+ *     Scenario("User presses power button when TV is off") (pending)
+ *
+ *     Scenario("User presses power button when TV is on") {
+ *       val tv = new TVSet
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ *       tv.pressPowerButton()
+ *       assert(!tv.isOn)
  *     }
  *   }
  * }
@@ -508,42 +473,127 @@ import org.scalatest.{Suite, Finders}
  * <p>
  * (Note: "<code>(pending)</code>" is the body of the test. Thus the test contains just one statement, an invocation
  * of the <code>pending</code> method, which throws <code>TestPendingException</code>.)
- * If you run this version of <code>SetSpec</code> with:
+ * If you run this version of <code>TVSetSpec</code> with:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new SetSpec)
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
- * It will run both tests, but report that the test named "<code>should have size 0</code>" is pending. You'll see:
+ * It will run both tests, but report that <code>When empty should have size 0</code> is pending. You'll see:
  * </p>
  *
  * <pre class="stREPL">
- * <span class="stGreen">A Set</span>
- * <span class="stGreen">  when empty</span>
- * <span class="stYellow">  - should have size 0 (pending)</span>
- * <span class="stGreen">  - should produce NoSuchElementException when head is invoked</span>
+ * <span class="stGreen">TVSetSpec:
+ * Feature: TV power button</span>
+ *   <span class="stYellow">Scenario: User presses power button when TV is off (pending)</span>
+ *   <span class="stGreen">Scenario: User presses power button when TV is on</span>
  * </pre>
  * 
+ * <p>
+ * One difference between an ignored test and a pending one is that an ignored test is intended to be used during a
+ * significant refactorings of the code under test, when tests break and you don't want to spend the time to fix
+ * all of them immediately. You can mark some of those broken tests as ignored temporarily, so that you can focus the red
+ * bar on just failing tests you actually want to fix immediately. Later you can go back and fix the ignored tests.
+ * In other words, by ignoring some failing tests temporarily, you can more easily notice failed tests that you actually
+ * want to fix. By contrast, a pending test is intended to be used before a test and/or the code under test is written.
+ * Pending indicates you've decided to write a test for a bit of behavior, but either you haven't written the test yet, or
+ * have only written part of it, or perhaps you've written the test but don't want to implement the behavior it tests
+ * until after you've implemented a different bit of behavior you realized you need first. Thus ignored tests are designed
+ * to facilitate refactoring of existing code whereas pending tests are designed to facilitate the creation of new code.
+ * </p>
+ *
+ * <p>
+ * One other difference between ignored and pending tests is that ignored tests are implemented as a test tag that is
+ * excluded by default. Thus an ignored test is never executed. By contrast, a pending test is implemented as a
+ * test that throws <code>TestPendingException</code> (which is what calling the <code>pending</code> method does). Thus
+ * the body of pending tests are executed up until they throw <code>TestPendingException</code>. The reason for this difference
+ * is that it enables your unfinished test to send <code>InfoProvided</code> messages to the reporter before it completes
+ * abruptly with <code>TestPendingException</code>, as shown in the previous example on <code>Informer</code>s
+ * that used the <code>GivenWhenThen</code> trait. For example, the following snippet in a <code>AnyFeatureSpec</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.featurespec.infopending
+ * 
+ * import org.scalatest._
+ * 
+ * class TVSet {
+ *   private var on: Boolean = false
+ * 
+ *   def isOn: Boolean = on
+ * 
+ *   def pressPowerButton() {
+ *     on = !on
+ *   }
+ * }
+ * 
+ * class TVSetSpec extends featurespec.AnyFeatureSpec with GivenWhenThen {
+ * 
+ *   info("As a TV set owner")
+ *   info("I want to be able to turn the TV on and off")
+ *   info("So I can watch TV when I want")
+ *   info("And save energy when I'm not watching TV")
+ * 
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off") {
+ *       Given("a TV that is switched off")
+ *       When("the power button is pressed")
+ *       Then("the TV should switch on")
+ *       pending
+ *     }
+ * 
+ *     Scenario("User presses power button when TV is on") {
+ *       Given("a TV that is switched on")
+ *       When("the power button is pressed")
+ *       Then("the TV should switch off")
+ *       pending
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Would yield the following output when run in the interpreter:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; org.scalatest.run(new TVSetSpec)
+ * <span class="stGreen">TVSetSpec:
+ * As a TV set owner 
+ * I want to be able to turn the TV on and off 
+ * So I can watch TV when I want 
+ * And save energy when I'm not watching TV 
+ * Feature: TV power button</span> 
+ *   <span class="stYellow">Scenario: User presses power button when TV is off (pending)
+ *     Given a TV that is switched off 
+ *     When the power button is pressed 
+ *     Then the TV should switch on 
+ *   Scenario: User presses power button when TV is on (pending)
+ *     Given a TV that is switched on 
+ *     When the power button is pressed 
+ *     Then the TV should switch off </span> 
+ * </pre>
+ *
  * <a name="taggingTests"></a><h2>Tagging tests</h2>
  *
  * <p>
- * A <code>AnyFunSpec</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
- * As with any suite, when executing a <code>AnyFunSpec</code>, groups of tests can
- * optionally be included and/or excluded. To tag a <code>AnyFunSpec</code>'s tests,
+ * A <code>AnyFeatureSpec</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
+ * As with any suite, when executing a <code>AnyFeatureSpec</code>, groups of tests can
+ * optionally be included and/or excluded. To tag a <code>AnyFeatureSpec</code>'s tests,
  * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
  * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined a tag annotation interface with fully qualified name,
+ * defined a tag annotation interface with fully qualified name, 
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create a matching tag for <code>AnyFunSpec</code>s like this:
+ * create a matching tag for <code>AnyFeatureSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.tagging
+ * package org.scalatest.examples.featurespec.tagging
  * 
  * import org.scalatest.Tag
  * 
@@ -551,26 +601,37 @@ import org.scalatest.{Suite, Finders}
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>AnyFunSpec</code> tests into groups with tags like this:
+ * Given these definitions, you could place <code>AnyFeatureSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * import org.scalatest.tagobjects.Slow
  * 
- * class SetSpec extends AnyFunSpec {
+ * class TVSet {
+ *   private var on: Boolean = false
+ *   def isOn: Boolean = on
+ *   def pressPowerButton() {
+ *     on = !on
+ *   }
+ * }
  * 
- *   describe("A Set") {
- *     describe("when empty") {
- *       it("should have size 0", Slow) {
- *         assert(Set.empty.size === 0)
- *       }
- *       
- *       it("should produce NoSuchElementException when head is invoked", Slow, DbTest) {
- *         assertThrows[NoSuchElementException] {
- *           Set.empty.head
- *         }
- *       }
+ * class TVSetSpec extends AnyFeatureSpec {
+ * 
+ *   Feature("TV power button") {
+ *     Scenario("User presses power button when TV is off", Slow) {
+ *       val tv = new TVSet
+ *       assert(!tv.isOn)
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ *     }
+ * 
+ *     Scenario("User presses power button when TV is on", Slow, DbTest) {
+ *       val tv = new TVSet
+ *       tv.pressPowerButton()
+ *       assert(tv.isOn)
+ *       tv.pressPowerButton()
+ *       assert(!tv.isOn)
  *     }
  *   }
  * }
@@ -593,7 +654,7 @@ import org.scalatest.{Suite, Finders}
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>AnyFunSpec</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>AnyFeatureSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
  * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
  * tag each test individually at the test site.
@@ -733,39 +794,39 @@ import org.scalatest.{Suite, Finders}
  *
  * <p>
  * If you need to create the same mutable fixture objects in multiple tests, and don't need to clean them up after using them, the simplest approach is to write one or
- * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or an holder object containing
+ * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or a holder object containing
  * multiple fixture objects) each time it is called. You can call a get-fixture method at the beginning of each
  * test that needs the fixture, storing the returned object or objects in local variables. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.getfixture
+ * package org.scalatest.examples.featurespec.getfixture
  * 
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends AnyFunSpec {
+ * class ExampleSpec extends AnyFeatureSpec {
  * 
  *   class Fixture {
- *     val builder = new StringBuilder("ScalaTest is ")
+ *     val builder = new StringBuilder("ScalaTest is designed to ")
  *     val buffer = new ListBuffer[String]
  *   }
- *
+ *  
  *   def fixture = new Fixture
- *   
- *   describe("Testing") {
- *     it("should be easy") {
+ *  
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
  *       val f = fixture
- *       f.builder.append("easy!")
- *       assert(f.builder.toString === "ScalaTest is easy!")
+ *       f.builder.append("encourage clear code!")
+ *       assert(f.builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(f.buffer.isEmpty)
  *       f.buffer += "sweet"
  *     }
  *   
- *     it("should be fun") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       val f = fixture
- *       f.builder.append("fun!")
- *       assert(f.builder.toString === "ScalaTest is fun!")
+ *       f.builder.append("be easy to reason about!")
+ *       assert(f.builder.toString === "ScalaTest is designed to be easy to reason about!")
  *       assert(f.buffer.isEmpty)
  *     }
  *   }
@@ -778,7 +839,7 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <p>
- * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, if you could pass
+ * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, you could pass
  * in an initial value for a mutable fixture object as a parameter to the get-fixture method.
  * </p>
  *
@@ -798,47 +859,46 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.fixturecontext
+ * package org.scalatest.examples.featurespec.fixturecontext
  * 
  * import collection.mutable.ListBuffer
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * 
- * class ExampleSpec extends AnyFunSpec {
+ * class ExampleSpec extends AnyFeatureSpec {
  * 
  *   trait Builder {
- *     val builder = new StringBuilder("ScalaTest is ")
+ *     val builder = new StringBuilder("ScalaTest is designed to ")
  *   }
  * 
  *   trait Buffer {
- *     val buffer = ListBuffer("ScalaTest", "is")
+ *     val buffer = ListBuffer("ScalaTest", "is", "designed", "to")
  *   }
  * 
- *   describe("Testing") {
+ *   Feature("Simplicity") {
  *     // This test needs the StringBuilder fixture
- *     it("should be productive") {
+ *     Scenario("User needs to read test code written by others") {
  *       new Builder {
- *         builder.append("productive!")
- *         assert(builder.toString === "ScalaTest is productive!")
+ *         builder.append("encourage clear code!")
+ *         assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       }
  *     }
- *   }
- * 
- *   describe("Test code") {
+ *     
  *     // This test needs the ListBuffer[String] fixture
- *     it("should be readable") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       new Buffer {
- *         buffer += ("readable!")
- *         assert(buffer === List("ScalaTest", "is", "readable!"))
+ *         buffer += ("be", "easy", "to", "reason", "about!")
+ *         assert(buffer === List("ScalaTest", "is", "designed", "to", "be", "easy", "to", "reason", "about!"))
  *       }
  *     }
  * 
  *     // This test needs both the StringBuilder and ListBuffer
- *     it("should be clear and concise") {
+ *     Scenario("User needs to write tests") {
  *       new Builder with Buffer {
- *         builder.append("clear!")
- *         buffer += ("concise!")
- *         assert(builder.toString === "ScalaTest is clear!")
- *         assert(buffer === List("ScalaTest", "is", "concise!"))
+ *         builder.append("be easy to learn!")
+ *         buffer += ("be", "easy", "to", "remember", "how", "to", "write!")
+ *         assert(builder.toString === "ScalaTest is designed to be easy to learn!")
+ *         assert(buffer === List("ScalaTest", "is", "designed", "to", "be", "easy",
+ *           "to", "remember", "how", "to", "write!"))
  *       }
  *     }
  *   }
@@ -878,7 +938,7 @@ import org.scalatest.{Suite, Finders}
  *
  * <p>
  * The <code>withFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
- * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. That is to say, instead of writing
  * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withFixture(test)</code>&rdquo;, like this:
  * </p>
  *
@@ -899,16 +959,16 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.noargtest
+ * package org.scalatest.examples.featurespec.noargtest
  * 
  * import java.io.File
  * import org.scalatest._
  * 
- * class ExampleSpec extends funspec.AnyFunSpec {
- * 
+ * class ExampleSpec extends featurespec.AnyFeatureSpec {
+ *
  *   override def withFixture(test: NoArgTest) = {
  * 
- *     try super.withFixture(test) match {
+ *     super.withFixture(test) match {
  *       case failed: Failed =&gt;
  *         val currDir = new File(".")
  *         val fileNames = currDir.list()
@@ -918,14 +978,12 @@ import org.scalatest.{Suite, Finders}
  *     }
  *   }
  * 
- *   describe("This test") {
- *     it("should succeed") {
- *       assert(1 + 1 === 2)
- *     }
+ *   Scenario("This scenario should succeed") {
+ *     assert(1 + 1 === 2)
+ *   }
  * 
- *     it("should fail") {
- *       assert(1 + 1 === 3)
- *     }
+ *   Scenario("This scenario should fail") {
+ *     assert(1 + 1 === 3)
  *   }
  * }
  * </pre>
@@ -936,12 +994,11 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new ExampleSuite)
- * <span class="stGreen">ExampleSuite:
- * This test
- * - should succeed</span>
- * <span class="stRed">- should fail *** FAILED ***
- *   2 did not equal 3 (<console>:33)
+ * scala&gt; org.scalatest.run(new ExampleSpec)
+ * <span class="stGreen">ExampleSpec:
+ * Scenario: This scenario should succeed</span>
+ * <span class="stRed">Scenario: This scenario should fail *** FAILED ***
+ *   2 did not equal 3 (<console>:115)
  *   + Dir snapshot: hello.txt, world.txt </span>
  * </pre>
  *
@@ -968,7 +1025,7 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.loanfixture
+ * package org.scalatest.examples.featurespec.loanfixture
  * 
  * import java.util.concurrent.ConcurrentHashMap
  * 
@@ -985,18 +1042,18 @@ import org.scalatest.{Suite, Finders}
  *   }
  * }
  * 
- * import org.scalatest.funspec.AnyFunSpec
+ * import org.scalatest.featurespec.AnyFeatureSpec
  * import DbServer._
  * import java.util.UUID.randomUUID
  * import java.io._
  * 
- * class ExampleSpec extends AnyFunSpec {
+ * class ExampleSpec extends AnyFeatureSpec {
  * 
  *   def withDatabase(testCode: Db =&gt; Any) {
  *     val dbName = randomUUID.toString
  *     val db = createDb(dbName) // create the fixture
  *     try {
- *       db.append("ScalaTest is ") // perform setup
+ *       db.append("ScalaTest is designed to ") // perform setup
  *       testCode(db) // "loan" the fixture to the test
  *     }
  *     finally removeDb(dbName) // clean up the fixture
@@ -1006,41 +1063,37 @@ import org.scalatest.{Suite, Finders}
  *     val file = File.createTempFile("hello", "world") // create the fixture
  *     val writer = new FileWriter(file)
  *     try {
- *       writer.write("ScalaTest is ") // set up the fixture
+ *       writer.write("ScalaTest is designed to ") // set up the fixture
  *       testCode(file, writer) // "loan" the fixture to the test
  *     }
  *     finally writer.close() // clean up the fixture
  *   }
  * 
- *   describe("Testing") {
+ *   Feature("Simplicity") {
  *     // This test needs the file fixture
- *     it("should be productive") {
+ *     Scenario("User needs to read test code written by others") {
  *       withFile { (file, writer) =&gt;
- *         writer.write("productive!")
+ *         writer.write("encourage clear code!")
  *         writer.flush()
- *         assert(file.length === 24)
+ *         assert(file.length === 46)
  *       }
  *     }
- *   }
- *   
- *   describe("Test code") {
  *     // This test needs the database fixture
- *     it("should be readable") {
+ *     Scenario("User needs to understand what the tests are doing") {
  *       withDatabase { db =&gt;
- *         db.append("readable!")
- *         assert(db.toString === "ScalaTest is readable!")
+ *         db.append("be easy to reason about!")
+ *         assert(db.toString === "ScalaTest is designed to be easy to reason about!")
  *       }
  *     }
- * 
  *     // This test needs both the file and the database
- *     it("should be clear and concise") {
+ *     Scenario("User needs to write tests") {
  *       withDatabase { db =&gt;
- *        withFile { (file, writer) =&gt; // loan-fixture methods compose
- *           db.append("clear!")
- *           writer.write("concise!")
+ *         withFile { (file, writer) =&gt; // loan-fixture methods compose
+ *           db.append("be easy to learn!")
+ *           writer.write("be easy to remember how to write!")
  *           writer.flush()
- *           assert(db.toString === "ScalaTest is clear!")
- *           assert(file.length === 21)
+ *           assert(db.toString === "ScalaTest is designed to be easy to learn!")
+ *           assert(file.length === 58)
  *         }
  *       }
  *     }
@@ -1059,13 +1112,14 @@ import org.scalatest.{Suite, Finders}
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
+ * </pre>
  * <a name="withFixtureOneArgTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Suite</code>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <a href="FixtureAnyFeatureSpec.html"><code>FixtureAnyFeatureSpec</code></a>
  * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Suite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * Each test in a <code>FixtureAnyFeatureSpec</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
@@ -1090,40 +1144,40 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.oneargtest
+ * package org.scalatest.examples.featurespec.oneargtest
  * 
- * import org.scalatest.funspec
+ * import org.scalatest.featurespec
  * import java.io._
  * 
- * class ExampleSpec extends funspec.FixtureAnyFunSpec {
+ * class ExampleSpec extends featurespec.FixtureAnyFeatureSpec {
  * 
  *   case class FixtureParam(file: File, writer: FileWriter)
  * 
  *   def withFixture(test: OneArgTest) = {
- *
+ * 
  *     // create the fixture
  *     val file = File.createTempFile("hello", "world")
  *     val writer = new FileWriter(file)
  *     val theFixture = FixtureParam(file, writer)
- *
+ * 
  *     try {
- *       writer.write("ScalaTest is ") // set up the fixture
+ *       writer.write("ScalaTest is designed to be ") // set up the fixture
  *       withFixture(test.toNoArgTest(theFixture)) // "loan" the fixture to the test
  *     }
  *     finally writer.close() // clean up the fixture
  *   }
- *
- *   describe("Testing") {
- *     it("should be easy") { f =&gt;
- *       f.writer.write("easy!")
+ * 
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") { f =&gt;
+ *       f.writer.write("encourage clear code!")
  *       f.writer.flush()
- *       assert(f.file.length === 18)
+ *       assert(f.file.length === 49)
  *     }
  * 
- *     it("should be fun") { f =&gt;
- *       f.writer.write("fun!")
+ *     Scenario("User needs to understand what the tests are doing") { f =&gt;
+ *       f.writer.write("be easy to reason about!")
  *       f.writer.flush()
- *       assert(f.file.length === 17)
+ *       assert(f.file.length === 52)
  *     }
  *   } 
  * }
@@ -1132,7 +1186,7 @@ import org.scalatest.{Suite, Finders}
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="FixtureAnyFunSpec.html">documentation for <code>FixtureAnyFunSpec</code></a>.
+ * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="FixtureAnyFeatureSpec.html">documentation for <code>FixtureAnyFeatureSpec</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>
@@ -1148,19 +1202,18 @@ import org.scalatest.{Suite, Finders}
  * </p>
  * 
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.beforeandafter
+ * package org.scalatest.examples.featurespec.beforeandafter
  * 
- * import org.scalatest.funspec.AnyFunSpec
- * import org.scalatest.BeforeAndAfter
+ * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends AnyFunSpec with BeforeAndAfter {
+ * class ExampleSpec extends featurespec.AnyFeatureSpec with BeforeAndAfter {
  * 
  *   val builder = new StringBuilder
  *   val buffer = new ListBuffer[String]
  * 
  *   before {
- *     builder.append("ScalaTest is ")
+ *     builder.append("ScalaTest is designed to ")
  *   }
  * 
  *   after {
@@ -1168,17 +1221,17 @@ import org.scalatest.{Suite, Finders}
  *     buffer.clear()
  *   }
  * 
- *   describe("Testing") {
- *     it("should be easy") {
- *       builder.append("easy!")
- *       assert(builder.toString === "ScalaTest is easy!")
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
+ *       builder.append("encourage clear code!")
+ *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "sweet"
  *     }
  * 
- *     it("should be fun") {
- *       builder.append("fun!")
- *       assert(builder.toString === "ScalaTest is fun!")
+ *     Scenario("User needs to understand what the tests are doing") {
+ *       builder.append("be easy to reason about!")
+ *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
  *       assert(buffer.isEmpty)
  *     }
  *   }
@@ -1214,7 +1267,7 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.composingwithfixture
+ * package org.scalatest.examples.featurespec.composingwithfixture
  * 
  * import org.scalatest._
  * import collection.mutable.ListBuffer
@@ -1224,7 +1277,7 @@ import org.scalatest.{Suite, Finders}
  *   val builder = new StringBuilder
  * 
  *   abstract override def withFixture(test: NoArgTest) = {
- *     builder.append("ScalaTest is ")
+ *     builder.append("ScalaTest is designed to ")
  *     try super.withFixture(test) // To be stackable, must call super.withFixture
  *     finally builder.clear()
  *   }
@@ -1240,21 +1293,21 @@ import org.scalatest.{Suite, Finders}
  *   }
  * }
  * 
- * class ExampleSpec extends funspec.AnyFunSpec with Builder with Buffer {
+ * class ExampleSpec extends featurespec.AnyFeatureSpec with Builder with Buffer {
  * 
- *   describe("Testing") {
- *     it("should be easy") {
- *       builder.append("easy!")
- *       assert(builder.toString === "ScalaTest is easy!")
- *       assert(buffer.isEmpty)
- *       buffer += "sweet"
- *     }
- * 
- *     it("should be fun") {
- *       builder.append("fun!")
- *       assert(builder.toString === "ScalaTest is fun!")
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
+ *       builder.append("encourage clear code!")
+ *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "clear"
+ *     }
+ * 
+ *     Scenario("User needs to understand what the tests are doing") {
+ *       builder.append("be easy to reason about!")
+ *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "easy"
  *     }
  *   }
  * }
@@ -1268,7 +1321,7 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Spec extends AnyFunSpec with Buffer with Builder
+ * class Example2Spec extends AnyFeatureSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1276,7 +1329,7 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Spec extends AnyFunSpec with Builder
+ * class Example3Spec extends AnyFeatureSpec with Builder
  * </pre>
  *
  * <p>
@@ -1290,10 +1343,9 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.funspec.composingbeforeandaftereach
+ * package org.scalatest.examples.featurespec.composingbeforeandaftereach
  * 
  * import org.scalatest._
- * import org.scalatest.BeforeAndAfterEach
  * import collection.mutable.ListBuffer
  * 
  * trait Builder extends BeforeAndAfterEach { this: Suite =&gt;
@@ -1301,7 +1353,7 @@ import org.scalatest.{Suite, Finders}
  *   val builder = new StringBuilder
  * 
  *   override def beforeEach() {
- *     builder.append("ScalaTest is ")
+ *     builder.append("ScalaTest is designed to ")
  *     super.beforeEach() // To be stackable, must call super.beforeEach
  *   }
  * 
@@ -1321,21 +1373,21 @@ import org.scalatest.{Suite, Finders}
  *   }
  * }
  * 
- * class ExampleSpec extends funspec.AnyFunSpec with Builder with Buffer {
+ * class ExampleSpec extends featurespec.AnyFeatureSpec with Builder with Buffer {
  * 
- *   describe("Testing") {
- *     it("should be easy") {
- *       builder.append("easy!")
- *       assert(builder.toString === "ScalaTest is easy!")
- *       assert(buffer.isEmpty)
- *       buffer += "sweet"
- *     }
- * 
- *     it("should be fun") {
- *       builder.append("fun!")
- *       assert(builder.toString === "ScalaTest is fun!")
+ *   Feature("Simplicity") {
+ *     Scenario("User needs to read test code written by others") {
+ *       builder.append("encourage clear code!")
+ *       assert(builder.toString === "ScalaTest is designed to encourage clear code!")
  *       assert(buffer.isEmpty)
  *       buffer += "clear"
+ *     }
+ * 
+ *     Scenario("User needs to understand what the tests are doing") {
+ *       builder.append("be easy to reason about!")
+ *       assert(builder.toString === "ScalaTest is designed to be easy to reason about!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "easy"
  *     }
  *   }
  * }
@@ -1357,13 +1409,15 @@ import org.scalatest.{Suite, Finders}
  * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
  * 
- * <a name="sharedTests"></a><h2>Shared tests</h2>
+ * <a name="sharedScenarios"></a><h2>Shared scenarios</h2>
  *
  * <p>
  * Sometimes you may want to run the same test code on different fixture objects. In other words, you may want to write tests that are "shared"
  * by different fixture objects.
- * To accomplish this in a <code>AnyFunSpec</code>, you first place shared tests in <em>behavior functions</em>. These behavior functions will be
- * invoked during the construction phase of any <code>AnyFunSpec</code> that uses them, so that the tests they contain will be registered as tests in that <code>AnyFunSpec</code>.
+ * To accomplish this in a <code>AnyFeatureSpec</code>, you first place shared tests (<em>i.e.</em>, shared scenarios) in
+ * <em>behavior functions</em>. These behavior functions will be
+ * invoked during the construction phase of any <code>AnyFeatureSpec</code> that uses them, so that the scenarios they contain will
+ * be registered as scenarios in that <code>AnyFeatureSpec</code>.
  * For example, given this stack class:
  * </p>
  *
@@ -1406,59 +1460,95 @@ import org.scalatest.{Suite, Finders}
  *
  * <p>
  * You may want to test the <code>Stack</code> class in different states: empty, full, with one item, with one item less than capacity,
- * <em>etc</em>. You may find you have several tests that make sense any time the stack is non-empty. Thus you'd ideally want to run
- * those same tests for three stack fixture objects: a full stack, a stack with a one item, and a stack with one item less than
- * capacity. With shared tests, you can factor these tests out into a behavior function, into which you pass the
- * stack fixture to use when running the tests. So in your <code>AnyFunSpec</code> for stack, you'd invoke the
- * behavior function three times, passing in each of the three stack fixtures so that the shared tests are run for all three fixtures. You
- * can define a behavior function that encapsulates these shared tests inside the <code>AnyFunSpec</code> that uses them. If they are shared
- * between different <code>AnyFunSpec</code>s, however, you could also define them in a separate trait that is mixed into each <code>AnyFunSpec</code> that uses them.
+ * <em>etc</em>. You may find you have several scenarios that make sense any time the stack is non-empty. Thus you'd ideally want to run
+ * those same scenarios for three stack fixture objects: a full stack, a stack with a one item, and a stack with one item less than
+ * capacity. With shared tests, you can factor these scenarios out into a behavior function, into which you pass the
+ * stack fixture to use when running the tests. So in your <code>AnyFeatureSpec</code> for stack, you'd invoke the
+ * behavior function three times, passing in each of the three stack fixtures so that the shared scenarios are run for all three fixtures.
  * </p>
  *
  * <p>
- * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStack</code> behavior function (in this case, a behavior <em>method</em>) is defined in a trait along with another
- * method containing shared tests for non-full stacks:
+ * You can define a behavior function that encapsulates these shared scenarios inside the <code>AnyFeatureSpec</code> that uses them. If they are shared
+ * between different <code>AnyFeatureSpec</code>s, however, you could also define them in a separate trait that is mixed into
+ * each <code>AnyFeatureSpec</code> that uses them.
+ * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStack</code> behavior function (in this case, a
+ * behavior <em>method</em>) is defined in a trait along with another
+ * method containing shared scenarios for non-full stacks:
  * </p>
  * 
  * <pre class="stHighlight">
- * trait StackBehaviors { this: AnyFunSpec =&gt;
+ * import org.scalatest.featurespec.AnyFeatureSpec
+ * import org.scalatest.GivenWhenThen
+ * import org.scalatestexamples.helpers.Stack
  * 
- *   def nonEmptyStack(newStack: =&gt; Stack[Int], lastItemAdded: Int) {
- *
- *     it("should be non-empty") {
- *       assert(!newStack.empty)
+ * trait FeatureSpecStackBehaviors { this: AnyFeatureSpec with GivenWhenThen =&gt;
+ * 
+ *   def nonEmptyStack(createNonEmptyStack: =&gt; Stack[Int], lastItemAdded: Int) {
+ * 
+ *     Scenario("empty is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ * 
+ *       Given("a non-empty stack")
+ *       val stack = createNonEmptyStack
+ * 
+ *       When("empty is invoked on the stack")
+ *       Then("empty returns false")
+ *       assert(!stack.empty)
  *     }
- *
- *     it("should return the top item on peek") {
- *       assert(newStack.peek === lastItemAdded)
- *     }
- *
- *     it("should not remove the top item on peek") {
- *       val stack = newStack
+ * 
+ *     Scenario("peek is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ * 
+ *       Given("a non-empty stack")
+ *       val stack = createNonEmptyStack
  *       val size = stack.size
+ * 
+ *       When("peek is invoked on the stack")
+ *       Then("peek returns the last item added")
  *       assert(stack.peek === lastItemAdded)
+ * 
+ *       And("the size of the stack is the same as before")
  *       assert(stack.size === size)
  *     }
- *
- *     it("should remove the top item on pop") {
- *       val stack = newStack
+ * 
+ *     Scenario("pop is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
+ * 
+ *       Given("a non-empty stack")
+ *       val stack = createNonEmptyStack
  *       val size = stack.size
+ * 
+ *       When("pop is invoked on the stack")
+ *       Then("pop returns the last item added")
  *       assert(stack.pop === lastItemAdded)
+ * 
+ *       And("the size of the stack one less than before")
  *       assert(stack.size === size - 1)
  *     }
  *   }
- *
- *   def nonFullStack(newStack: =&gt; Stack[Int]) {
- *
- *     it("should not be full") {
- *       assert(!newStack.full)
+ *   
+ *   def nonFullStack(createNonFullStack: =&gt; Stack[Int]) {
+ *       
+ *     Scenario("full is invoked on this non-full stack: " + createNonFullStack.toString) {
+ * 
+ *       Given("a non-full stack")
+ *       val stack = createNonFullStack
+ * 
+ *       When("full is invoked on the stack")
+ *       Then("full returns false")
+ *       assert(!stack.full)
  *     }
- *
- *     it("should add to the top on push") {
- *       val stack = newStack
+ *       
+ *     Scenario("push is invoked on this non-full stack: " + createNonFullStack.toString) {
+ * 
+ *       Given("a non-full stack")
+ *       val stack = createNonFullStack
  *       val size = stack.size
+ * 
+ *       When("push is invoked on the stack")
  *       stack.push(7)
+ * 
+ *       Then("the size of the stack is one greater than before")
  *       assert(stack.size === size + 1)
+ * 
+ *       And("the top of the stack contains the pushed value")
  *       assert(stack.peek === 7)
  *     }
  *   }
@@ -1466,13 +1556,13 @@ import org.scalatest.{Suite, Finders}
  * </pre>
  *
  * <p>
- * Given these behavior functions, you could invoke them directly, but <code>AnyFunSpec</code> offers a DSL for the purpose,
+ * Given these behavior functions, you could invoke them directly, but <code>AnyFeatureSpec</code> offers a DSL for the purpose,
  * which looks like this:
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStack(stackWithOneItem, lastValuePushed)
- * it should behave like nonFullStack(stackWithOneItem)
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * ScenariosFor(nonFullStack(stackWithOneItem))
  * </pre>
  *
  * <p>
@@ -1483,8 +1573,8 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStack // assuming lastValuePushed is also in scope inside nonEmptyStack
- * it should behave like nonFullStack
+ * ScenariosFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
+ * ScenariosFor(nonFullStack)
  * </pre>
  *
  * <p>
@@ -1492,76 +1582,100 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stHighlight">
- * class SharedTestExampleSpec extends AnyFunSpec with StackBehaviors {
+ * import org.scalatest.featurespec.AnyFeatureSpec
+ * import org.scalatest.GivenWhenThen
+ * import org.scalatestexamples.helpers.Stack
+ * 
+ * class StackFeatureSpec extends AnyFeatureSpec with GivenWhenThen with FeatureSpecStackBehaviors {
  * 
  *   // Stack fixture creation methods
  *   def emptyStack = new Stack[Int]
- * 
+ *  
  *   def fullStack = {
  *     val stack = new Stack[Int]
  *     for (i <- 0 until stack.MAX)
  *       stack.push(i)
  *     stack
  *   }
- * 
+ *  
  *   def stackWithOneItem = {
  *     val stack = new Stack[Int]
  *     stack.push(9)
  *     stack
  *   }
- * 
+ *  
  *   def stackWithOneItemLessThanCapacity = {
  *     val stack = new Stack[Int]
- *     for (i &lt;- 1 to 9)
+ *     for (i <- 1 to 9)
  *       stack.push(i)
  *     stack
  *   }
- * 
+ *  
  *   val lastValuePushed = 9
+ *  
+ *   Feature("A Stack is pushed and popped") {
+ *  
+ *     Scenario("empty is invoked on an empty stack") {
  * 
- *   describe("A Stack") {
+ *       Given("an empty stack")
+ *       val stack = emptyStack
  * 
- *     describe("(when empty)") {
- *       
- *       it("should be empty") {
- *         assert(emptyStack.empty)
- *       }
+ *       When("empty is invoked on the stack")
+ *       Then("empty returns true")
+ *       assert(stack.empty)
+ *     }
+ *  
+ *     Scenario("peek is invoked on an empty stack") {
  * 
- *       it("should complain on peek") {
- *         assertThrows[IllegalStateException] {
- *           emptyStack.peek
- *         }
- *       }
+ *       Given("an empty stack")
+ *       val stack = emptyStack
  * 
- *       it("should complain on pop") {
- *         assertThrows[IllegalStateException] {
- *           emptyStack.pop
- *         }
+ *       When("peek is invoked on the stack")
+ *       Then("peek throws IllegalStateException")
+ *       assertThrows[IllegalStateException] {
+ *         stack.peek
  *       }
  *     }
+ *  
+ *     Scenario("pop is invoked on an empty stack") {
  * 
- *     describe("(with one item)") {
- *       it should behave like nonEmptyStack(stackWithOneItem, lastValuePushed)
- *       it should behave like nonFullStack(stackWithOneItem)
- *     }
- *     
- *     describe("(with one item less than capacity)") {
- *       it should behave like nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed)
- *       it should behave like nonFullStack(stackWithOneItemLessThanCapacity)
- *     }
+ *       Given("an empty stack")
+ *       val stack = emptyStack
  * 
- *     describe("(full)") {
- *       
- *       it("should be full") {
- *         assert(fullStack.full)
+ *       When("pop is invoked on the stack")
+ *       Then("pop throws IllegalStateException")
+ *       assertThrows[IllegalStateException] {
+ *         emptyStack.pop
  *       }
+ *     }
+ *  
+ *     ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItem))
+ *  
+ *     ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ *     ScenariosFor(nonFullStack(stackWithOneItemLessThanCapacity))
+ *  
+ *     Scenario("full is invoked on a full stack") {
  * 
- *       it should behave like nonEmptyStack(fullStack, lastValuePushed)
+ *       Given("an full stack")
+ *       val stack = fullStack
  * 
- *       it("should complain on a push") {
- *         assertThrows[IllegalStateException] {
- *           fullStack.push(10)
- *         }
+ *       When("full is invoked on the stack")
+ *       Then("full returns true")
+ *       assert(stack.full)
+ *     }
+ *  
+ *     ScenariosFor(nonEmptyStack(fullStack, lastValuePushed))
+ *  
+ *     Scenario("push is invoked on a full stack") {
+ * 
+ *       Given("an full stack")
+ *       val stack = fullStack
+ * 
+ *       When("push is invoked on the stack")
+ *       Then("push throws IllegalStateException")
+ *       assertThrows[IllegalStateException] {
+ *         stack.push(10)
  *       }
  *     }
  *   }
@@ -1574,61 +1688,142 @@ import org.scalatest.{Suite, Finders}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; org.scalatest.run(new StackSpec)
- * <span class="stGreen">A Stack (when empty) 
- * - should be empty
- * - should complain on peek
- * - should complain on pop
- * A Stack (with one item) 
- * - should be non-empty
- * - should return the top item on peek
- * - should not remove the top item on peek
- * - should remove the top item on pop
- * - should not be full
- * - should add to the top on push
- * A Stack (with one item less than capacity) 
- * - should be non-empty
- * - should return the top item on peek
- * - should not remove the top item on peek
- * - should remove the top item on pop
- * - should not be full
- * - should add to the top on push
- * A Stack (full) 
- * - should be full
- * - should be non-empty
- * - should return the top item on peek
- * - should not remove the top item on peek
- * - should remove the top item on pop
- * - should complain on a push</span>
+ * scala> (new StackFeatureSpec).execute()
+ * <span class="stGreen">Feature: A Stack is pushed and popped 
+ *   Scenario: empty is invoked on an empty stack
+ *     Given an empty stack 
+ *     When empty is invoked on the stack 
+ *     Then empty returns true 
+ *   Scenario: peek is invoked on an empty stack
+ *     Given an empty stack 
+ *     When peek is invoked on the stack 
+ *     Then peek throws IllegalStateException 
+ *   Scenario: pop is invoked on an empty stack
+ *     Given an empty stack 
+ *     When pop is invoked on the stack 
+ *     Then pop throws IllegalStateException 
+ *   Scenario: empty is invoked on this non-empty stack: Stack(9)
+ *     Given a non-empty stack 
+ *     When empty is invoked on the stack 
+ *     Then empty returns false 
+ *   Scenario: peek is invoked on this non-empty stack: Stack(9)
+ *     Given a non-empty stack 
+ *     When peek is invoked on the stack 
+ *     Then peek returns the last item added 
+ *     And the size of the stack is the same as before 
+ *   Scenario: pop is invoked on this non-empty stack: Stack(9)
+ *     Given a non-empty stack 
+ *     When pop is invoked on the stack 
+ *     Then pop returns the last item added 
+ *     And the size of the stack one less than before 
+ *   Scenario: full is invoked on this non-full stack: Stack(9)
+ *     Given a non-full stack 
+ *     When full is invoked on the stack 
+ *     Then full returns false 
+ *   Scenario: push is invoked on this non-full stack: Stack(9)
+ *     Given a non-full stack 
+ *     When push is invoked on the stack 
+ *     Then the size of the stack is one greater than before 
+ *     And the top of the stack contains the pushed value 
+ *   Scenario: empty is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)
+ *     Given a non-empty stack 
+ *     When empty is invoked on the stack 
+ *     Then empty returns false 
+ *   Scenario: peek is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)
+ *     Given a non-empty stack 
+ *     When peek is invoked on the stack 
+ *     Then peek returns the last item added 
+ *     And the size of the stack is the same as before 
+ *   Scenario: pop is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)
+ *     Given a non-empty stack 
+ *     When pop is invoked on the stack 
+ *     Then pop returns the last item added 
+ *     And the size of the stack one less than before 
+ *   Scenario: full is invoked on this non-full stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)
+ *     Given a non-full stack 
+ *     When full is invoked on the stack 
+ *     Then full returns false 
+ *   Scenario: push is invoked on this non-full stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)
+ *     Given a non-full stack 
+ *     When push is invoked on the stack 
+ *     Then the size of the stack is one greater than before 
+ *     And the top of the stack contains the pushed value 
+ *   Scenario: full is invoked on a full stack
+ *     Given an full stack 
+ *     When full is invoked on the stack 
+ *     Then full returns true 
+ *   Scenario: empty is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+ *     Given a non-empty stack 
+ *     When empty is invoked on the stack 
+ *     Then empty returns false 
+ *   Scenario: peek is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+ *     Given a non-empty stack 
+ *     When peek is invoked on the stack 
+ *     Then peek returns the last item added 
+ *     And the size of the stack is the same as before 
+ *   Scenario: pop is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+ *     Given a non-empty stack 
+ *     When pop is invoked on the stack 
+ *     Then pop returns the last item added 
+ *     And the size of the stack one less than before 
+ *   Scenario: push is invoked on a full stack
+ *     Given an full stack 
+ *     When push is invoked on the stack 
+ *     Then push throws IllegalStateException</span> 
  * </pre>
  * 
  * <p>
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
- * complaining that multiple tests are being registered with the same test name. A good way to solve this problem in a <code>AnyFunSpec</code> is to surround
- * each invocation of a behavior function with a <code>describe</code> clause, which will prepend a string to each test name.
- * For example, the following code in a <code>AnyFunSpec</code> would register a test with the name <code>"A Stack (when empty) should be empty"</code>:
+ * complaining that multiple tests are being registered with the same test name.
+ * Although in a <code>AnyFeatureSpec</code>, the <code>feature</code> clause is a nesting construct analogous to
+ * <code>FunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
+ * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in a
+ * <code>AnyFeatureSpec</code>, you can pass in a prefix or suffix string to add to each test name. You can pass this string
+ * the same way you pass any other data needed by the shared tests, or just call <code>toString</code> on the shared fixture object.
+ * This is the approach taken by the previous <code>AnyFeatureSpecStackBehaviors</code> example.
+ * </p>
+ *
+ * <p>
+ * Given this <code>AnyFeatureSpecStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- *   describe("A Stack") {
- * 
- *     describe("(when empty)") {
- *       
- *       it("should be empty") {
- *         assert(emptyStack.empty)
- *       }
- *       // ...
+ * ScenariosFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
  * </pre>
  *
  * <p>
- * If the <code>"should be empty"</code> test was factored out into a behavior function, it could be called repeatedly so long
- * as each invocation of the behavior function is inside a different set of <code>describe</code> clauses.
+ * yields test names:
+ * </p>
+ *
+ * <ul>
+ * <li><code>empty is invoked on this non-empty stack: Stack(9)</code></li>
+ * <li><code>peek is invoked on this non-empty stack: Stack(9)</code></li>
+ * <li><code>pop is invoked on this non-empty stack: Stack(9)</code></li>
+ * </ul>
+ *
+ * <p>
+ * Whereas calling it with the <code>stackWithOneItemLessThanCapacity</code> fixture, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * ScenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * </pre>
+ *
+ * <p>
+ * yields different test names:
+ * </p>
+ *
+ * <ul>
+ * <li><code>empty is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
+ * <li><code>peek is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
+ * <li><code>pop is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
+ * </ul>
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.FunSpecFinder"))
-class AnyFunSpec extends AnyFunSpecLike {
+@Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
+class AnyFeatureSpec extends AnyFeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
