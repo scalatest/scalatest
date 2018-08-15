@@ -131,8 +131,7 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests1' ]] ; then
   echo "Doing 'sbt genMustMatchersTests1/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-  
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests1/test
   rc=$?
@@ -142,8 +141,7 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests2' ]] ; then
   echo "Doing 'sbt genMustMatchersTests2/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-  
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests2/test
   rc=$?
@@ -153,7 +151,6 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests3' ]] ; then
   echo "Doing 'sbt genMustMatchersTests3/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests3/test
@@ -164,7 +161,6 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests4' ]] ; then
   echo "Doing 'sbt genMustMatchersTests4/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests4/test
@@ -205,7 +201,6 @@ fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests1' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests1/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests1/test
@@ -216,7 +211,6 @@ fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests2' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests2/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests2/test
