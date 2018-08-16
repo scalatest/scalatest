@@ -27,7 +27,7 @@ env:
 
   matrix:
     - MODE=ScalacticTests
-    - MODE=RegularTests1
+    - MODE=ScalaTestTests
     #- MODE=RegularTests1
     #- MODE=RegularTests2
     #- MODE=RegularTests3
