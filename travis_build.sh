@@ -129,6 +129,24 @@ if [[ $MODE = 'ScalacticTests' ]] ; then
 
 fi
 
+if [[ $MODE = 'ScalaTestTests' ]] ; then
+  echo "Doing 'sbt scalatest/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test:compile
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION scalatest-test/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
 if [[ $MODE = 'genMustMatchersTests1' ]] ; then
   echo "Doing 'sbt genMustMatchersTests1/test'"
 
