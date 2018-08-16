@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 dist: trusty
-sudo: true
+sudo: required
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
