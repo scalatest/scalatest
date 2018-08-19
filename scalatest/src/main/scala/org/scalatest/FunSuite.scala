@@ -21,6 +21,7 @@ package org.scalatest
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 @deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
 class FunSuite extends FunSuiteLike {
+
   /**
     * Returns a user friendly string for this suite, composed of the
     * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite

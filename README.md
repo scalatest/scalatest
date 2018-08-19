@@ -1,7 +1,7 @@
 ScalaTest
 =========
 
-[![Build Status](https://travis-ci.org/scalatest/scalatest.png?branch=master)](https://travis-ci.org/scalatest/scalatest)
+[![Build Status](https://travis-ci.org/scalatest/scalatest.png?branch=3.1.x)](https://travis-ci.org/scalatest/scalatest)
 
 ScalaTest is a free, open-source testing toolkit for Scala and
 Java programmers.
@@ -27,14 +27,14 @@ Building ScalaTest
 
 The followings are needed for building ScalaTest:
 
-*   JDK 6, 7 or 8
+*   JDK 6, 7, 8 or 9
 *   [SBT 0.13.2](http://www.scala-sbt.org/0.13.2/docs/Getting-Started/Setup.html)
 
 for JDK 6 or 7, use the following options in your SBT launch file:
 
     SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
 
-for JDK 8, use the following SBT options instead:
+for JDK 8 or 9, use the following SBT options instead:
 
     SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M  -XX:+UseConcMarkSweepGC -XX:NewRatio=8"
 

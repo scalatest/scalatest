@@ -4,6 +4,5 @@
 -Xss10M
 -XX:+CMSClassUnloadingEnabled 
 -XX:+UseConcMarkSweepGC 
--XX:+CMSIncrementalMode 
 -XX:NewRatio=8
 -XX:MaxPermSize=512M

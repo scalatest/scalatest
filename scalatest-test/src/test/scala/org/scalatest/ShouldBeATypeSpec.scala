@@ -26,8 +26,11 @@ class ShouldBeATypeSpec extends FunSpec with Matchers {
   
   case class Book(title: String)
   
-  def wasNotAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
+  def wasNotAnInstanceOf(left: Any, right: Class[_]): String =
+    wasNotAnInstanceOf(left, right.getName)
+
+  def wasNotAnInstanceOf(left: Any, className: String): String =
+    FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(className), UnquotedString(left.getClass.getName))
     
   def wasAnInstanceOf(left: Any, right: Class[_]) = 
     FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(right.getName))
@@ -53,6 +56,11 @@ class ShouldBeATypeSpec extends FunSpec with Matchers {
     it("should do nothing if the LHS is an instance of specified RHS") {
       aTaleOfTwoCities should be (a [Book])
       aTaleOfTwoCities shouldBe a [Book]
+
+      1 should be (a [AnyVal])
+      1 shouldBe a [AnyVal]
+
+      aTaleOfTwoCities should not be a [AnyVal]
     }
 
     it("should throw TestFailedException if LHS is not an instance of specified RHS") { 
@@ -69,6 +77,20 @@ class ShouldBeATypeSpec extends FunSpec with Matchers {
       assert(caught2.message === Some(wasNotAnInstanceOf(aTaleOfTwoCities, classOf[String])))
       assert(caught2.failedCodeFileName === Some(fileName))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught3 = intercept[exceptions.TestFailedException] {
+        aTaleOfTwoCities shouldBe a [AnyVal]
+      }
+      assert(caught3.message === Some(wasNotAnInstanceOf(aTaleOfTwoCities, "AnyVal")))
+      assert(caught3.failedCodeFileName === Some(fileName))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught4 = intercept[exceptions.TestFailedException] {
+        aTaleOfTwoCities should be (a [AnyVal])
+      }
+      assert(caught4.message === Some(wasNotAnInstanceOf(aTaleOfTwoCities, "AnyVal")))
+      assert(caught4.failedCodeFileName === Some(fileName))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
     it("should do nothing if LHS is not an instance of specified RHS, when used with not") { 

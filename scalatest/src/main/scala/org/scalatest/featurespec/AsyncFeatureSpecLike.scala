@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.featurespec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
+import org.scalatest._
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
@@ -115,7 +116,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>AsyncFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -137,7 +138,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FeatureSpec</code> instance.
+   * this <code>AsyncFeatureSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -179,7 +180,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tag names for the test. If this <code>FeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tag names for the test. If this <code>AsyncFeatureSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -230,7 +231,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
   }
 
   /**
-   * Run zero to many of this <code>FeatureSpec</code>'s tests.
+   * Run zero to many of this <code>AsyncFeatureSpec</code>'s tests.
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
@@ -289,29 +290,29 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FeatureSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AsyncFeatureSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FeatureSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>AsyncFeatureSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.FeatureSpec
+   * import org.scalatest.featurespec.AsyncFeatureSpec
    *
-   * class StackSpec extends FeatureSpec {
+   * class StackSpec extends AsyncFeatureSpec {
    *   Feature("A Stack") {
-   *     Scenario("(when not empty) must allow me to pop") {}
-   *     Scenario("(when not full) must allow me to push") {}
+   *     Scenario("(when not empty) must allow me to pop") { succeed }
+   *     Scenario("(when not full) must allow me to push") { succeed }
    *   }
    * }
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>FeatureSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AsyncFeatureSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -336,7 +337,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * Registers shared scenarios.
    *
    * <p>
-   * This method enables the following syntax for shared scenarios in a <code>FeatureSpec</code>:
+   * This method enables the following syntax for shared scenarios in a <code>AsyncFeatureSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
