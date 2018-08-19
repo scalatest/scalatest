@@ -1,6 +1,11 @@
 #!/bin/bash
 
-export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+# Maven Central and Bintray are unreachable over HTTPS
+if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
+  SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
+fi
+
+export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'Compile' ]] ; then
@@ -126,8 +131,7 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests1' ]] ; then
   echo "Doing 'sbt genMustMatchersTests1/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-  
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests1/test
   rc=$?
@@ -137,8 +141,7 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests2' ]] ; then
   echo "Doing 'sbt genMustMatchersTests2/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-  
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests2/test
   rc=$?
@@ -148,7 +151,6 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests3' ]] ; then
   echo "Doing 'sbt genMustMatchersTests3/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests3/test
@@ -159,7 +161,6 @@ fi
 
 if [[ $MODE = 'genMustMatchersTests4' ]] ; then
   echo "Doing 'sbt genMustMatchersTests4/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests4/test
@@ -170,7 +171,6 @@ fi
 
 if [[ $MODE = 'genGenTests' ]] ; then
   echo "Doing 'sbt genGenTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genGenTests/test
@@ -181,7 +181,6 @@ fi
 
 if [[ $MODE = 'genTablesTests' ]] ; then
   echo "Doing 'sbt genTablesTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genTablesTests/test
@@ -192,7 +191,6 @@ fi
 
 if [[ $MODE = 'genInspectorsTests' ]] ; then
   echo "Doing 'sbt genInspectorsTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsTests/test
@@ -203,7 +201,6 @@ fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests1' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests1/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests1/test
@@ -214,7 +211,6 @@ fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests2' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests2/test'"
-  export SBT_OPTS="-server -Xms2G -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests2/test
@@ -225,7 +221,6 @@ fi
 
 if [[ $MODE = 'genTheyTests' ]] ; then
   echo "Doing 'sbt genTheyTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genTheyTests/test
@@ -236,7 +231,6 @@ fi
 
 if [[ $MODE = 'genContainTests1' ]] ; then
   echo "Doing 'sbt genContainTests1/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genContainTests1/test
@@ -247,7 +241,6 @@ fi
 
 if [[ $MODE = 'genContainTests2' ]] ; then
   echo "Doing 'sbt genContainTests2/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genContainTests2/test
@@ -258,7 +251,6 @@ fi
 
 if [[ $MODE = 'genSortedTests' ]] ; then
   echo "Doing 'sbt genSortedTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genSortedTests/test
@@ -269,7 +261,6 @@ fi
 
 if [[ $MODE = 'genLoneElementTests' ]] ; then
   echo "Doing 'sbt genLoneElementTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genLoneElementTests/test
@@ -280,7 +271,6 @@ fi
 
 if [[ $MODE = 'genEmptyTests' ]] ; then
   echo "Doing 'sbt genEmptyTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genEmptyTests/test
@@ -302,6 +292,8 @@ fi
 
 if [[ $MODE = 'examples' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  echo "Doing 'sbt examples'"
+
   while true; do echo "..."; sleep 60; done &
   project examples
   sbt ++$TRAVIS_SCALA_VERSION examples/compile examples/test:compile
@@ -312,6 +304,8 @@ fi
 
 if [[ $MODE = 'examplesJS' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  echo "Doing 'sbt examplesJS'"
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION examplesJS/compile examplesJS/test:compile
   rc=$?

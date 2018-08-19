@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 dist: trusty
-sudo: false
+sudo: true
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
@@ -65,8 +65,11 @@ branches:
   only:
     - 3.0.x
 
-#before_script: ./travis_build.sh Compile
-script: ./travis_build.sh $MODE
+script:
+  # work around https://github.com/travis-ci/travis-ci/issues/9713
+  - if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
+  - java -version
+  - ./travis_build.sh $MODE
 
 notifications:
   email:
