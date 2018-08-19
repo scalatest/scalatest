@@ -2,7 +2,7 @@ language: scala
 scala:
   - 2.10.7
   - 2.11.12
-  - 2.12.4
+  - 2.12.6
   - 2.13.0-M2
 addons:
   apt:
@@ -60,7 +60,7 @@ matrix:
       jdk: openjdk6
     - scala: "2.13.0-M2"
       jdk: oraclejdk9
-    - scala: "2.12.4"
+    - scala: "2.12.6"
       jdk: openjdk6
     - scala: "2.11.12"
       jdk: oraclejdk8
