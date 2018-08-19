@@ -15,16 +15,9 @@
  */
 package org.scalatest
 
-private[scalatest] class InsertionOrderSet[A](elements: List[A]) extends Set[A] {
-
-  val list = elements.distinct
-
-  def contains(key: A): Boolean = list.contains(key)
-  def iterator: Iterator[A] = list.iterator
-  def +(elem: A) = InsertionOrderSet[A](list :+ elem)
-  def -(elem: A) = InsertionOrderSet[A](list.filter(_ != elem))
-}
-
 private[scalatest] object InsertionOrderSet {
-  def apply[A](elements: List[A]): InsertionOrderSet[A] = new InsertionOrderSet(elements)
+  def apply[A](elements: List[A]): Set[A] =
+    scala.collection.immutable.SortedSet(elements: _*)(new Ordering[A] {
+      def compare(x: A, y: A): Int = elements.indexOf(x) compare elements.indexOf(y)
+    })
 }

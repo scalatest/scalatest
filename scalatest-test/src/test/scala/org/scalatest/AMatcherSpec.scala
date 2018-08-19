@@ -195,7 +195,7 @@ class AMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map.empty[Int, String] should be a positiveSizeMap
         }
-        e.message should be (Some(Map.empty[Int, String] + " was not a positive size map"))
+        e.message should be (Some(Map.empty[Int, String].toString + " was not a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

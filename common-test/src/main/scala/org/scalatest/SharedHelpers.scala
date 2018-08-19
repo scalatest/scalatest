@@ -26,6 +26,7 @@ import scala.collection.SortedSet
 import FailureMessages.decorateToStringValue
 import java.util.concurrent.Executors
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper
 
 object SharedHelpers extends Assertions with LineNumberHelper {
 
@@ -855,7 +856,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
+    Array(indexOrKey.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) ArrayHelper.deep(element.asInstanceOf[Array[T]]).toString else element.toString))
   }
 
   def indexLengthElement[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
@@ -865,7 +866,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
+    Array(indexOrKey.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) ArrayHelper.deep(element.asInstanceOf[Array[T]]).toString else element.toString))
   }
 
   def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {

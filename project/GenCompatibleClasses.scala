@@ -75,6 +75,67 @@ object GenCompatibleClasses {
     java6ClassesFiles.toSeq ++ Seq(file)
   }
 
+  def genTest(baseTargetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    val targetDir = new File(baseTargetDir, "scala/org/scalatest")
+    targetDir.mkdirs()
+
+    val file = new File(targetDir, "CompatParColls.scala")
+    if (!file.exists || generatorSource.lastModified > file.lastModified) {
+      val parMethod = if (scalaVersion startsWith "2.13") "def par: T = oriCol" else ""
+
+      /*
+        For recording purpose, this is the original version of CompatParColls that stops working in 2.13.0-M4
+
+        /**
+         * This compatibility workaround is taken from https://github.com/scala/scala-parallel-collections/issues/22
+         */
+private[org] object CompatParColls {
+  val Converters = {
+    import Compat._
+
+    {
+      import scala.collection.parallel._
+
+      CollectionConverters
+    }
+  }
+
+  object Compat {
+    object CollectionConverters
+
+
+  }
+}
+       */
+
+      val content =
+        """package org.scalatest
+          |
+          |private[org] object CompatParColls {
+          |
+          |  object Converters {
+          |    class MockParallelCol[T](oriCol: T) {
+          |      $$PAR_METHOD$$
+          |    }
+          |    implicit def convertToParallel[T](col: T) = new MockParallelCol(col)
+          |  }
+          |}
+          |
+        """.stripMargin.replaceAllLiterally("$$PAR_METHOD$$", parMethod)
+
+      val bw = new BufferedWriter(new FileWriter(file))
+      try {
+        bw.write(content)
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
+    }
+
+    Seq(file)
+  }
+
   def main(args: Array[String]) {
 
     val targetDir = args(0)

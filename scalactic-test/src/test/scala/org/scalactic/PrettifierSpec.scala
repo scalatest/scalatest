@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 import SharedHelpers.{javaList, javaSortedMap}
-import scala.collection.mutable.{WrappedArray, ArrayOps}
+import scala.collection.mutable.WrappedArray
 import scala.util.Success
 
 // SKIP-SCALATESTJS-START
@@ -216,7 +216,7 @@ class PrettifierSpec extends FunSpec with Matchers {
       Prettifier.default(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(\"1\", \"2\", \"3\")")
     }
     it("should pretty print array ops") {
-      Prettifier.default(new ArrayOps.ofInt(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
+      Prettifier.default(ArrayHelper.arrayOpsOfInt(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
     it("should show null as \"null\"") {
       Prettifier.default(null) should be ("null")
@@ -358,7 +358,7 @@ class PrettifierSpec extends FunSpec with Matchers {
         res0: Boolean = true
       */
       class Fred extends Seq[Fred] { thisFred =>
-        override def toIterator: Iterator[Fred] = iterator
+        //override def toIterator: Iterator[Fred] = iterator
         def iterator: Iterator[Fred] = 
           new Iterator[Fred] {
             private var hasNextElement: Boolean = true

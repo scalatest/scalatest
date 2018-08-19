@@ -142,7 +142,7 @@ class GenContainBase {
       "List" -> "Array",
       "listsNil" -> "listsArray",
       "Nil" -> "Array()",
-      "LinkedArray" -> "LinkedList"
+      "ArrayBuffer" -> "ListBuffer"
     )
 
   val sortedSetMapping =
@@ -153,9 +153,9 @@ class GenContainBase {
       "List\\(" -> "sortedSet(",
       "listsNil" -> "listsSortedSet",
       "Nil" -> "SortedSet.empty",
-      "LinkedSortedSet" -> "List",
+      "SortedSetBuffer" -> "List",
       "//ADDITIONAL//" -> "import scala.collection.SortedSet",
-      "LinkedsortedSet" -> "LinkedList"
+      "sortedSetBuffer" -> "ListBuffer"
     )
 
   val javaSortedSetMapping =
@@ -166,9 +166,9 @@ class GenContainBase {
       "List\\(" -> "javaSortedSet(",
       "listsNil" -> "listsJavaSortedSet",
       "Nil" -> "javaSortedSet()",
-      "LinkedSortedSet" -> "List",
+      "SortedSetBuffer" -> "List",
       "//ADDITIONAL//" -> "import java.util.SortedSet",
-      "LinkedjavaSortedSet" -> "LinkedList"
+      "javaSortedSetBuffer" -> "ListBuffer"
     )
 
   val javaColMapping =
@@ -773,7 +773,7 @@ class GenContainBase {
           .replace("java.util.Map[", "java.util.SortedMap["))
     }) ++
       List(
-        "LinkedjavaSortedMap" -> "LinkedList"
+        "javaSortedMapBuffer" -> "ListBuffer"
       )
 
   val stringMapping =
@@ -793,7 +793,7 @@ class GenContainBase {
       "defaultEquality\\[String\\]" -> "defaultEquality[Char]",
       " and trimmed" -> "",
       "//ADDITIONAL//" -> (stringLowerCased),
-      "LinkedList" -> "TempL",
+      "ListBuffer" -> "TempL",
       "List\\[String\\]" -> "String",
       "List\\[Int\\]" -> "String",
       "List\\(\\\"fum\\\"\\)" -> "\"u\"",
@@ -866,7 +866,7 @@ class GenContainBase {
       "List\\(\\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hboy\"",
       "List\\(\\\"happy\\\", \\\"happy\\\", \\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\", \\\"too\\\"\\)" -> "\"hhhboyz\"",
       "List\\(\\\"happy\\\", \\\"happy\\\", \\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hhhboy\"",
-      "TempL" -> "LinkedList",
+      "TempL" -> "ListBuffer",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'u')",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fie\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'i', 'u')",
       "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "('i', 'e', 'u', 'p')",

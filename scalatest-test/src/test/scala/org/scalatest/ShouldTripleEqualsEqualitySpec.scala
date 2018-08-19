@@ -24,6 +24,7 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
+import org.scalactic.ArrayHelper.deep
 import Matchers._
 
 class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {
@@ -457,7 +458,7 @@ class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions 
       Array(1, 2, 3) should === (Array(1, 2, 3))
       Array(1, 2, 3) should !== (Array(1, 2, 4))
       implicit val e = new Equality[Array[Int]] {
-        def areEqual(a: Array[Int], b: Any): Boolean = a.deep != b.asInstanceOf[Array[Int]].deep
+        def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
       }
       Array(1, 2, 3) should !== (Array(1, 2, 3))
       Array(1, 2, 3) should === (Array(1, 2, 4))

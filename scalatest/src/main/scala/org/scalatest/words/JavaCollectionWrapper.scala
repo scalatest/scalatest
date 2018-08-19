@@ -16,13 +16,17 @@
 package org.scalatest.words
 
 import scala.collection.Traversable
+import scala.collection.JavaConverters._
 
 private[scalatest] class JavaCollectionWrapper[T](underlying: java.util.Collection[T]) extends Traversable[T] {
-  def foreach[U](f: (T) => U): Unit = {
+  override def foreach[U](f: (T) => U): Unit = {
     val javaIterator = underlying.iterator
     while (javaIterator.hasNext)
       f(javaIterator.next)
   }
+
+  def iterator: Iterator[T] = underlying.iterator().asScala
+
   override def toString: String = if (underlying == null) "null" else underlying.toString
 }
 

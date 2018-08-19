@@ -15,11 +15,11 @@
  */
 package org.scalactic
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 // SKIP-SCALATESTJS-START
 import scala.concurrent.ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+//SCALATESTJS-ONLY import org.scalatest.concurrent.TestExecutionContext.runNow
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
 import org.scalatest.exceptions.TestFailedException

@@ -20,13 +20,14 @@ import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
 import org.scalatest.refspec.RefSpec
+import org.scalatest.prop.TableFor1
 
 trait InheritedTagFixtureServices
 
 class InheritedTagProp extends SuiteProp {
 
   // JUnit3Suite does not support tagging
-  val filteredExamples =
+  val filteredExamples: TableFor1[Suite with FixtureServices] =
     examples.filter { e =>
       e match {
         case _: JUnit3Suite => false

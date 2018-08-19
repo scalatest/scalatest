@@ -389,7 +389,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
 
 
     private class TestWithConfigMap2 extends fixture.FunSuite {
-      type FixtureParam = Map[String,Any]
+      type FixtureParam = scala.collection.Map[String,Any]
       override def withFixture(test: OneArgTest): Outcome = {
         test(test.configMap)
       }

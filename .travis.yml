@@ -47,6 +47,7 @@ env:
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
+    - MODE=genColCompatTests
     - MODE=examples
     - MODE=examplesJS
 

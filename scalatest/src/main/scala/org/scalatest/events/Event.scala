@@ -21,7 +21,9 @@ import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.Date
+// SKIP-SCALATESTJS-START
 import scala.xml.Elem
+// SKIP-SCALATESTJS-END
 import exceptions.StackDepthException
 
 /**
@@ -77,7 +79,8 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
    * the passed event
    */
   def compare(that: Event): Int = ordinal.compare(that.ordinal)
-  
+
+  // SKIP-SCALATESTJS-START
   /**
    * 
    */
@@ -196,6 +199,7 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       }
     }
   }
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -284,7 +288,8 @@ final case class TestStarting (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestStarting>
@@ -302,6 +307,7 @@ final case class TestStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestStarting>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -381,7 +387,8 @@ final case class TestSucceeded (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestSucceeded>
@@ -401,6 +408,7 @@ final case class TestSucceeded (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestSucceeded>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -486,7 +494,8 @@ final case class TestFailed (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestFailed>
@@ -508,6 +517,7 @@ final case class TestFailed (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestFailed>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -578,7 +588,8 @@ final case class TestIgnored (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestIgnored>
@@ -595,6 +606,7 @@ final case class TestIgnored (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestIgnored>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -664,7 +676,8 @@ final case class TestPending (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestPending>
@@ -683,6 +696,7 @@ final case class TestPending (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestPending>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -763,7 +777,8 @@ final case class TestCanceled (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <TestCanceled>
@@ -785,6 +800,7 @@ final case class TestCanceled (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestCanceled>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -852,7 +868,8 @@ final case class SuiteStarting (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <SuiteStarting>
@@ -868,6 +885,7 @@ final case class SuiteStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteStarting>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -939,7 +957,8 @@ final case class SuiteCompleted (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <SuiteCompleted>
@@ -956,6 +975,7 @@ final case class SuiteCompleted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteCompleted>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1036,7 +1056,8 @@ final case class SuiteAborted (
                  rerunner,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <SuiteAborted>
@@ -1055,6 +1076,7 @@ final case class SuiteAborted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteAborted>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1111,7 +1133,8 @@ final case class RunStarting (
 
   if (testCount < 0)
     throw new IllegalArgumentException("testCount was less than zero: " + testCount)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunStarting>
@@ -1134,6 +1157,7 @@ final case class RunStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunStarting>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1202,7 +1226,8 @@ final case class RunCompleted (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunCompleted>
@@ -1216,6 +1241,7 @@ final case class RunCompleted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunCompleted>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1285,7 +1311,8 @@ final case class RunStopped (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunStopped>
@@ -1299,6 +1326,7 @@ final case class RunStopped (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunStopped>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1365,7 +1393,8 @@ final case class RunAborted (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunAborted>
@@ -1381,6 +1410,7 @@ final case class RunAborted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunAborted>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1441,7 +1471,8 @@ final case class InfoProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <InfoProvided>
@@ -1456,6 +1487,7 @@ final case class InfoProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </InfoProvided>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1526,7 +1558,8 @@ final case class AlertProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <AlertProvided>
@@ -1541,6 +1574,7 @@ final case class AlertProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </AlertProvided>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1611,7 +1645,8 @@ final case class NoteProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <NoteProvided>
@@ -1626,6 +1661,7 @@ final case class NoteProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </NoteProvided>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1682,7 +1718,8 @@ final case class MarkupProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <MarkupProvided>
@@ -1696,6 +1733,7 @@ final case class MarkupProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </MarkupProvided>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1750,7 +1788,8 @@ final case class ScopeOpened (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <ScopeOpened>
@@ -1764,6 +1803,7 @@ final case class ScopeOpened (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopeOpened>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1818,7 +1858,8 @@ final case class ScopeClosed (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <ScopeClosed>
@@ -1832,6 +1873,7 @@ final case class ScopeClosed (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopeClosed>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1884,7 +1926,8 @@ final case class ScopePending (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <ScopePending>
@@ -1898,6 +1941,7 @@ final case class ScopePending (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopePending>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1938,7 +1982,8 @@ final case class DiscoveryStarting (
    */
   val formatter: Option[Formatter] = None
 
-    private [scalatest] def toXml = 
+  // SKIP-SCALATESTJS-START
+  private [scalatest] def toXml =
     <DiscoveryStarting>
       <ordinal>
         <runStamp>{ ordinal.runStamp }</runStamp>
@@ -1956,6 +2001,7 @@ final case class DiscoveryStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </DiscoveryStarting>
+  // SKIP-SCALATESTJS-END
 }
 
 /**
@@ -1995,7 +2041,7 @@ final case class DiscoveryCompleted (
    * <code>Formatter</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
-  
+  // SKIP-SCALATESTJS-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <DiscoveryCompleted>
@@ -2006,5 +2052,6 @@ final case class DiscoveryCompleted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </DiscoveryCompleted>
+  // SKIP-SCALATESTJS-END
 }
 

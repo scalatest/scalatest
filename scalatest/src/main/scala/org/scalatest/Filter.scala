@@ -56,7 +56,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     case None =>
   }
 
-  private def includedTestNames(testNamesAsList: List[String], tags: Map[String, Set[String]]): List[String] = 
+  private def includedTestNames(testNamesAsList: List[String], tags: Map[String, Set[String]]): List[String] =
     tagsToInclude match {
       case None => testNamesAsList
       case Some(tagsToInclude) =>
@@ -156,7 +156,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
                 (tags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, tags.contains(testName) && tags(testName).contains(IgnoreTag))
 
-    filtered
+    filtered.toList
   }
   
   def apply(testNames: Set[String], tags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)] = {
@@ -172,7 +172,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
                 (testTags(testName) intersect tagsToExclude).isEmpty
       } yield (testName, testTags.contains(testName) && testTags(testName).contains(IgnoreTag))
 
-    filtered
+    filtered.toList
   }
 
   /**

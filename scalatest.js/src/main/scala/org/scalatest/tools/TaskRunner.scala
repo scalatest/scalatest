@@ -60,7 +60,7 @@ final class TaskRunner(task: TaskDef,
   def taskDef(): TaskDef = task
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
-    implicit val execCtx = JSExecutionContext.runNow
+    implicit val execCtx = JSExecutionContext.queue
     val future = executionFuture(eventHandler, loggers)
     future.recover { case t =>
 println("GOT TO THIS RECOVER CALL")
@@ -77,7 +77,7 @@ println("GOT TO THIS RECOVER CALL")
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
+    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl, Seq.empty)(Seq.empty).asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,
