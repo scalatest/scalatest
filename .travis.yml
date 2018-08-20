@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 dist: trusty
-sudo: true
+sudo: required
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
@@ -26,29 +26,31 @@ env:
     - SCALATEST_GPG_PASSPHASE=tbd
 
   matrix:
-    - MODE=RegularTests1
-    - MODE=RegularTests2
-    - MODE=RegularTests3
-    - MODE=RegularTests4
-    - MODE=RegularTests5
     - MODE=ScalacticTests
-    - MODE=genMustMatchersTests1
-    - MODE=genMustMatchersTests2
-    - MODE=genMustMatchersTests3
-    - MODE=genMustMatchersTests4
-    - MODE=genGenTests
-    - MODE=genTablesTests
-    - MODE=genInspectorsTests
-    - MODE=genInspectorsShorthandsTests1
-    - MODE=genInspectorsShorthandsTests2
-    - MODE=genTheyTests
-    - MODE=genContainTests1
-    - MODE=genContainTests2
-    - MODE=genSortedTests
-    - MODE=genLoneElementTests
-    - MODE=genEmptyTests
-    - MODE=examples
-    - MODE=examplesJS
+    - MODE=ScalaTestTests
+    #- MODE=RegularTests1
+    #- MODE=RegularTests2
+    #- MODE=RegularTests3
+    #- MODE=RegularTests4
+    #- MODE=RegularTests5
+    #- MODE=ScalacticTests
+    #- MODE=genMustMatchersTests1
+    #- MODE=genMustMatchersTests2
+    #- MODE=genMustMatchersTests3
+    #- MODE=genMustMatchersTests4
+    #- MODE=genGenTests
+    #- MODE=genTablesTests
+    #- MODE=genInspectorsTests
+    #- MODE=genInspectorsShorthandsTests1
+    #- MODE=genInspectorsShorthandsTests2
+    #- MODE=genTheyTests
+    #- MODE=genContainTests1
+    #- MODE=genContainTests2
+    #- MODE=genSortedTests
+    #- MODE=genLoneElementTests
+    #- MODE=genEmptyTests
+    #- MODE=examples
+    #- MODE=examplesJS
 
 matrix:
   exclude:

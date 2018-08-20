@@ -5,7 +5,7 @@ if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
   SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
 fi
 
-export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export SBT_OPTS="$SBT_OPTS -server -Xms2048m -Xmx6000m -Xss10m -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'Compile' ]] ; then
@@ -121,6 +121,24 @@ if [[ $MODE = 'ScalacticTests' ]] ; then
   echo first try, exitcode $rc
   if [[ $rc != 0 ]] ; then
     sbt ++$TRAVIS_SCALA_VERSION scalactic/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
+if [[ $MODE = 'ScalaTestTests' ]] ; then
+  echo "Doing 'sbt scalatest/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test:compile
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION scalatest-test/testQuick
     rc=$?
     echo second try, exitcode $rc
   fi
