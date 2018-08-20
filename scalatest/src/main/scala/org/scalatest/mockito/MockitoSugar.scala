@@ -15,6 +15,7 @@
  */
 package org.scalatest.mockito
 
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.{mock => mockitoMock}
 import reflect.ClassTag
 import org.mockito.stubbing.Answer
@@ -143,6 +144,29 @@ trait MockitoSugar {
    */
   def mock[T <: AnyRef](name: String)(implicit classTag: ClassTag[T]): T = {
     mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]], name)
+  }
+
+  /**
+   * Creates an <code>org.mockito.ArgumentCaptor</code> for a given class.
+   *
+   * <p>
+   * Using the Mockito API directly, you create a captor with:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val argumentCaptor = ArgumentCaptor.forClass(classOf[Collaborator]).asInstanceOf[ArgumentCaptor[Collaborator]]
+   * </pre>
+   *
+   * <p>
+   * Using this method, you can shorten that to:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val argumentCaptor = captor[Collaborator]
+   * </pre>
+   */
+  def captor[T <: AnyRef](implicit classTag: ClassTag[T]): ArgumentCaptor[T] = {
+    ArgumentCaptor.forClass(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
 }
 
