@@ -112,21 +112,25 @@ fi
 if [[ $MODE = 'genMustMatchersTests1' ]] ; then
   echo "Doing 'sbt genMustMatchersTests1/test'"
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests1/test
+  exit $?
 fi
 
 if [[ $MODE = 'genMustMatchersTests2' ]] ; then
   echo "Doing 'sbt genMustMatchersTests2/test'"
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests2/test
+  exit $?
 fi
 
 if [[ $MODE = 'genMustMatchersTests3' ]] ; then
   echo "Doing 'sbt genMustMatchersTests3/test'"
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests3/test
+  exit $?
 fi
 
 if [[ $MODE = 'genMustMatchersTests4' ]] ; then
   echo "Doing 'sbt genMustMatchersTests4/test'"
   sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests4/test
+  exit $?
 fi
 
 if [[ $MODE = 'genGenTests' ]] ; then
@@ -134,64 +138,75 @@ if [[ $MODE = 'genGenTests' ]] ; then
 
   while :; do echo -n ...; sleep 300; done &
   sbt ++$TRAVIS_SCALA_VERSION genGenTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genTablesTests' ]] ; then
   echo "Doing 'sbt genTablesTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genTablesTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genInspectorsTests' ]] ; then
   echo "Doing 'sbt genInspectorsTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests1' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests1/test'"
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests1/test
+  exit $?
 fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests2' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests2/test'"
   sbt ++$TRAVIS_SCALA_VERSION genInspectorsShorthandsTests2/test
+  exit $?
 fi
 
 if [[ $MODE = 'genTheyTests' ]] ; then
   echo "Doing 'sbt genTheyTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genTheyTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genContainTests1' ]] ; then
   echo "Doing 'sbt genContainTests1/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genContainTests1/test
+  exit $?
 fi
 
 if [[ $MODE = 'genContainTests2' ]] ; then
   echo "Doing 'sbt genContainTests2/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genContainTests2/test
+  exit $?
 fi
 
 if [[ $MODE = 'genSortedTests' ]] ; then
   echo "Doing 'sbt genSortedTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genSortedTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genLoneElementTests' ]] ; then
   echo "Doing 'sbt genLoneElementTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genLoneElementTests/test
+  exit $?
 fi
 
 if [[ $MODE = 'genEmptyTests' ]] ; then
   echo "Doing 'sbt genEmptyTests/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION genEmptyTests/test
+  exit $?
 fi
 
 #if [[ $MODE = 'genSafeStyleTests' ]] ; then
@@ -205,15 +220,18 @@ if [[ $MODE = 'examples' ]] ; then
 
   project examples
   sbt ++$TRAVIS_SCALA_VERSION examples/test:compile
+  exit $?
 fi
 
 if [[ $MODE = 'examplesJS' ]] ; then
   echo "Doing 'sbt examplesJS/test'"
 
   sbt ++$TRAVIS_SCALA_VERSION examplesJS/test:compile
+  exit $?
 fi
 
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
   sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
+  exit $?
 fi
