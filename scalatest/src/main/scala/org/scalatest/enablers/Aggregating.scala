@@ -20,6 +20,7 @@ import org.scalactic.{Equality, Every}
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import org.scalatest.words.ArrayWrapper
+import org.scalatest.ColCompatHelper.aggregate
 import scala.annotation.tailrec
 
 /**
@@ -75,7 +76,7 @@ trait Aggregating[-A] {
    * @param eles elements at least one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at least one of the passed elements
    */
-  def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAtLeastOneOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>theSameElementsAs</code> syntax for aggregations of type <code>A</code>.
@@ -93,7 +94,7 @@ trait Aggregating[-A] {
    * @param eles the only elements that should be contained in the passed aggregation
    * @return true if the passed aggregation contains only the passed elements
    */
-  def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
+  def containsOnly(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>allOf</code> syntax for aggregations of type <code>A</code>.
@@ -102,7 +103,7 @@ trait Aggregating[-A] {
    * @param eles elements all of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains all of the passed elements
    */
-  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAllOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>atMostOneOf</code> syntax for aggregations of type <code>A</code>.
@@ -111,7 +112,7 @@ trait Aggregating[-A] {
    * @param eles elements at most one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at most one of the passed elements
    */
-  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAtMostOneOf(aggregation: A, eles: scala.collection.Seq[Any]): Boolean
 }
 
 trait AggregatingImpls {
@@ -145,13 +146,13 @@ trait AggregatingImpls {
       else
         count :+ ElementCount(next, 0, 1)
     }
-
-    val counts = right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch).aggregate(IndexedSeq.empty[ElementCount])(
-      { case (count, (nextLeft, nextRight)) =>
-        if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
-          return false  // size not match, can fail early
-        rightNewCount(nextRight, leftNewCount(nextLeft, count))
-      },
+    
+    val counts = aggregate(right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch), IndexedSeq.empty[ElementCount])(
+      { case (count, (nextLeft, nextRight)) => 
+          if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
+            return false  // size not match, can fail early
+          rightNewCount(nextRight, leftNewCount(nextLeft, count))
+      }, 
       { case (count1, count2) =>
         count2.foldLeft(count1) { case (count, next) =>
           val idx = count.indexWhere(ec => tryEquality(next.element, ec.element, equality))
@@ -189,19 +190,19 @@ trait AggregatingImpls {
   }
 
   private[scalatest] def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
-
-    def countElements: Int =
-      right.aggregate(0)(
-        { case (count, nextRight) =>
-          if (left.exists(l => equality.areEqual(l, nextRight))) {
-            val newCount = count + 1
-            if (newCount > 1)
-              return newCount
+    
+    def countElements: Int = 
+      aggregate(right, 0)(
+        { case (count, nextRight) => 
+            if (left.exists(l => equality.areEqual(l, nextRight))) {
+              val newCount = count + 1
+              if (newCount > 1)
+                return newCount
+              else
+                newCount
+            }
             else
-              newCount
-          }
-          else
-            count
+              count
         },
         { case (count1, count2) => count1 + count2 }
       )

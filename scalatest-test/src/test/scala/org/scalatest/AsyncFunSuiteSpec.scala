@@ -31,7 +31,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         val a = 1
 
@@ -92,7 +92,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         val a = 1
 
@@ -144,7 +144,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {
@@ -190,7 +190,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           SleepHelper.sleep(30)
@@ -358,7 +358,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {
@@ -403,7 +403,7 @@ class AsyncFunSuiteSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           SleepHelper.sleep(60)
@@ -460,7 +460,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           info("hi there")
@@ -489,7 +489,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {
@@ -539,7 +539,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           note("hi there")
@@ -561,7 +561,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {
@@ -604,7 +604,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           alert("hi there")
@@ -626,7 +626,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {
@@ -669,7 +669,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           markup("hi there")
@@ -698,7 +698,7 @@ class AsyncFunSuiteSpec extends FunSpec {
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends AsyncFunSuite  {
 
-        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         test("test 1") {
           Future {

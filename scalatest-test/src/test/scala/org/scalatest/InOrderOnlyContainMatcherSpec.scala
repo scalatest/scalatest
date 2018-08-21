@@ -21,6 +21,7 @@ import SharedHelpers._
 import Matchers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 
 class InOrderOnlyContainMatcherSpec extends FunSpec {
 
@@ -87,14 +88,14 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderOnly (1, 2)
       }
-      checkStackDepth(e1, left1, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrderOnly (1, 2)
       }
-      checkStackDepth(e2, left2, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(1, 2)), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
@@ -115,7 +116,7 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should contain inOrderOnly (1, 2)
       }
-      checkStackDepth(e5, left5, Array(1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, deep(Array(1, 2)), thisLineNumber - 2)
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List contains only element in right List, but in different order") {
@@ -123,14 +124,14 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderOnly (3, 2, 1)
       }
-      checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(3, 2, 1)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrderOnly (3, 2, 1)
       }
-      checkStackDepth(e2, left2, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(3, 2, 1)), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
@@ -151,7 +152,7 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should contain inOrderOnly (3, 2, 1)
       }
-      checkStackDepth(e5, left5, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, deep(Array(3, 2, 1)), thisLineNumber - 2)
     }
   }
   
@@ -191,14 +192,14 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain inOrderOnly (1, 2, 3)
       }
-      checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain inOrderOnly (1, 2, 3)
       }
-      checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
       // SKIP-SCALATESTJS-END
 
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
@@ -219,7 +220,7 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
       val e5 = intercept[exceptions.TestFailedException] {
         left5 should not contain inOrderOnly (1, 2, 3)
       }
-      checkStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, deep(Array(1, 2, 3)), thisLineNumber - 2)
     }
   }
 }

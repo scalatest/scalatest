@@ -1224,12 +1224,6 @@ class ChainSpec extends UnitSpec {
     scala> Vector(1).takeWhile(_ > 10)
     res18: scala.collection.immutable.Vector[Int] = Vector()
 */
-  it should "have a to method" in {
-    Chain(1).to[List] shouldBe List(1)
-    Chain(1, 2, 3).to[List] shouldBe List(1, 2, 3)
-    Chain(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(1, 2, 3)
-    Chain(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
-  }
   it should "have a toArray method" in {
     Chain(1, 2, 3).toArray should === (Array(1, 2, 3))
     Chain("a", "b").toArray should === (Array("a", "b"))
@@ -1287,11 +1281,6 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3).toString should === ("Chain(1, 2, 3)")
     Chain(1, 2, 3).toString should === ("Chain(1, 2, 3)")
     Chain(1).toString should === ("Chain(1)")
-  }
-  it should "have a toTraversable method" in {
-    Chain(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    Chain("a", "b").toTraversable should === (Traversable("a", "b"))
-    Chain(1).toTraversable should === (Traversable(1))
   }
   it should "have a toVector method" in {
     Chain(1, 2, 3).toVector should === (Vector(1, 2, 3))

@@ -67,7 +67,7 @@ trait Sequencing[-S] {
    * @param eles elements all of which should be contained, in order of appearance in <code>eles</code>, in the passed sequence
    * @return true if the passed sequence contains all of the passed elements in (iteration) order
    */
-  def containsInOrder(sequence: S, eles: Seq[Any]): Boolean
+  def containsInOrder(sequence: S, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>inOrderOnly</code> syntax for sequences of type <code>S</code>.
@@ -76,7 +76,7 @@ trait Sequencing[-S] {
    * @param eles the only elements that should be contained, in order of appearence in <code>eles</code>, in the passed sequence
    * @return true if the passed sequence contains only the passed elements in (iteration) order
    */
-  def containsInOrderOnly(sequence: S, eles: Seq[Any]): Boolean
+  def containsInOrderOnly(sequence: S, eles: scala.collection.Seq[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>theSameElementsInOrderAs</code> syntax for sequences of type <code>S</code>.

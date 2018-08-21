@@ -176,8 +176,8 @@ package prop
 
 val importsForTableForNTemplate = """
 import scala.collection.mutable.Builder
-import scala.collection.mutable.ArrayBuffer
-import scala.collection.IndexedSeqLike
+import scala.collection.mutable.ListBuffer
+import org.scalatest.ColCompatHelper.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
@@ -280,8 +280,8 @@ $columnsOfIndexes$
  */
 """
 
-val tableTemplate = """
-class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*) extends IndexedSeq[($alphaUpper$)] with IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]] {
+val tableTemplateRaw = """
+class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*) extends IndexedSeq[($alphaUpper$)] with scala.collection.IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]] {
 
   /**
    * Selects a row of data by its index.
@@ -293,13 +293,11 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    */
   def length: Int = rows.length
 
-  /**
-   * Creates a new <code>Builder</code> for <code>TableFor$n$</code>s.
-   */
-  override protected[this] def newBuilder: Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-    new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
-      new TableFor$n$(heading, buf: _*)
-    }
+  override def filter(p: (($alphaUpper$)) => Boolean): TableFor$n$[$alphaUpper$] = new TableFor$n$[$alphaUpper$](heading, rows.filter(p): _*)
+
+  def ++(others: Iterable[($alphaUpper$)]): TableFor$n$[$alphaUpper$] = new TableFor$n$[$alphaUpper$](heading, (rows ++ others): _*)
+
+  $$CLASS_BUILDER_METHODS$$
 
   /**
    * Applies the passed property check function to each row of this <code>TableFor$n$</code>.
@@ -347,16 +345,44 @@ object TableFor$n$ {
   implicit def canBuildFrom[$alphaUpper$]: CanBuildFrom[TableFor$n$[$alphaUpper$], ($alphaUpper$), TableFor$n$[$alphaUpper$]] =
     new CanBuildFrom[TableFor$n$[$alphaUpper$], ($alphaUpper$), TableFor$n$[$alphaUpper$]] {
       def apply(): Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-        new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
           new TableFor$n$(($argsNamedArg$))
         }
-      def apply(from: TableFor$n$[$alphaUpper$]): Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
-        new ArrayBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
-          new TableFor$n$(from.heading, buf: _*)
-        }
+      $$OBJECT_BUILDER_METHODS$$
     }
 }
 """
+
+def tableTemplate(scalaVersion: String): String =
+  if (scalaVersion startsWith "2.13")
+    tableTemplateRaw.replaceAllLiterally("scala.collection.IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]]", "scala.collection.IndexedSeqOps[($alphaUpper$), scala.collection.IndexedSeq, scala.collection.IndexedSeq[($alphaUpper$)]]")
+                    .replaceAllLiterally("$$CLASS_BUILDER_METHODS$$", "")
+                    .replaceAllLiterally("$$OBJECT_BUILDER_METHODS$$",
+                    """      def newBuilder(from: org.scalatest.prop.TableFor$n$[$alphaUpper$]): scala.collection.mutable.Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
+                      |        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+                      |          new TableFor$n$(from.heading, buf: _*)
+                      |        }
+                      |      def fromSpecificIterable(from: org.scalatest.prop.TableFor$n$[$alphaUpper$])(it: Iterable[($alphaUpper$)]): org.scalatest.prop.TableFor$n$[$alphaUpper$] =
+                      |        new TableFor$n$(from.heading, it.toSeq: _*)
+                    """.stripMargin)
+                    .replaceAllLiterally("CanBuildFrom", "scala.collection.BuildFrom")
+  else
+    tableTemplateRaw.replaceAllLiterally("$$CLASS_BUILDER_METHODS$$",
+                    """  /**
+                      |   * Creates a new <code>Builder</code> for <code>TableFor$n$</code>s.
+                      |   */
+                      |  override protected[this] def newBuilder: Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
+                      |    new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+                      |      new TableFor$n$(heading, buf: _*)
+                      |    }
+                      |
+                    """.stripMargin)
+                    .replaceAllLiterally("$$OBJECT_BUILDER_METHODS$$",
+                    """      def apply(from: TableFor$n$[$alphaUpper$]): Builder[($alphaUpper$), TableFor$n$[$alphaUpper$]] =
+                      |        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
+                      |          new TableFor$n$(from.heading, buf: _*)
+                      |        }
+                    """.stripMargin)
 
 val tableObjectPreamble = """
 /**
@@ -980,7 +1006,7 @@ val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
  * at org.scalatest.prop.TableFor2$$anonfun$apply$4.apply(Table.scala:355)
  * at org.scalatest.prop.TableFor2$$anonfun$apply$4.apply(Table.scala:346)
  * at scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:57)
- * at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:43)
+ * at scala.collection.mutable.ListBuffer.foreach(ListBuffer.scala:43)
  * at org.scalatest.prop.TableFor2.apply(Table.scala:346)
  * at org.scalatest.prop.TableDrivenPropertyChecks$class.forAll(TableDrivenPropertyChecks.scala:133)
  * ...
@@ -1165,7 +1191,7 @@ $columnsOfIndexes$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genTableForNs(targetDir: File, scalaJS: Boolean): Seq[File] = {
+  def genTableForNs(targetDir: File, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
 
     val targetFile = new File(targetDir, "TableFor1.scala")
 
@@ -1181,7 +1207,7 @@ $columnsOfIndexes$
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 22) {
           val st = new org.antlr.stringtemplate.StringTemplate(
-            (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate
+            (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate(scalaVersion)
           )
           val alphaLower = alpha.take(i).mkString(", ")
           val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
@@ -2002,7 +2028,7 @@ $columnsOfIndexes$
     val enablersDir = new File(dir, "enablers")
     enablersDir.mkdirs()
 
-    genTableForNs(propDir, false) ++
+    genTableForNs(propDir, scalaVersion, false) ++
     genPropertyChecks(propDir) ++
     genTables(propDir) ++
     genTableAsserting(enablersDir, false)
@@ -2010,7 +2036,7 @@ $columnsOfIndexes$
 
   def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    genTableForNs(dir, true) ++
+    genTableForNs(dir, scalaVersion, true) ++
     genPropertyChecks(dir) ++
     genTables(dir) ++
     genTableAsserting(dir, true)

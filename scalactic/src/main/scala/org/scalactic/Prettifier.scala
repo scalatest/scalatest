@@ -18,7 +18,9 @@ package org.scalactic
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
+// SKIP-SCALATESTJS-START
 import scala.xml
+// SKIP-SCALATESTJS-END
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -198,7 +200,7 @@ object Prettifier {
             case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
-            case anArrayOps: mutable.ArrayOps[_] => "Array(" + (anArrayOps map apply).mkString(", ") + ")"
+            case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
               aGenMap.stringPrefix + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering

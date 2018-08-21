@@ -19,6 +19,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import org.scalactic.Prettifier
+import org.scalactic.ArrayHelper.deep
 
 class AllOfContainMatcherSpec extends FunSpec {
 
@@ -90,7 +91,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain allOf (2, 5, 3)
       }
-      checkStackDepth(e1, left1, Array(2, 5, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(2, 5, 3)), thisLineNumber - 2)
       
       val left2 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e2 = intercept[exceptions.TestFailedException] {
@@ -102,14 +103,14 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain allOf (2, 5, 3)
       }
-      checkStackDepth(e3, left3, Array(2, 5, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(2, 5, 3)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (2, 5, 3)
       }
-      checkStackDepth(e4, left4, Array(2, 5, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(2, 5, 3)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -124,7 +125,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain allOf (1, 2, 3, 4)
       }
-      checkStackDepth(e1, left1, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2, 3, 4)), thisLineNumber - 2)
       
       val left2 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e2 = intercept[exceptions.TestFailedException] {
@@ -136,14 +137,14 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain allOf (1, 2, 3, 4)
       }
-      checkStackDepth(e3, left3, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(1, 2, 3, 4)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (1, 2, 3, 4)
       }
-      checkStackDepth(e4, left4, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1, 2, 3, 4)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -158,7 +159,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain allOf (1, 5)
       }
-      checkStackDepth(e1, left1, Array(1, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 5)), thisLineNumber - 2)
       
       val left2 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e2 = intercept[exceptions.TestFailedException] {
@@ -170,14 +171,14 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain allOf (1, 5)
       }
-      checkStackDepth(e3, left3, Array(1, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(1, 5)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (1, 5)
       }
-      checkStackDepth(e4, left4, Array(1, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1, 5)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -213,7 +214,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain allOf (2, 1, 3)
       }
-      checkStackDepth(e1, left1, Array(2, 1, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(2, 1, 3)), thisLineNumber - 2)
       
       val left2 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e2 = intercept[exceptions.TestFailedException] {
@@ -225,14 +226,14 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain allOf (2, 1, 3)
       }
-      checkStackDepth(e3, left3, Array(2, 1, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(2, 1, 3)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain allOf (2, 1, 3)
       }
-      checkStackDepth(e4, left4, Array(2, 1, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(2, 1, 3)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
@@ -247,7 +248,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain allOf (1, 2, 3)
       }
-      checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
       
       val left2 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e2 = intercept[exceptions.TestFailedException] {
@@ -259,14 +260,14 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain allOf (1, 2, 3)
       }
-      checkStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain allOf (1, 2, 3)
       }
-      checkStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e4, left4, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {

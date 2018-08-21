@@ -1024,12 +1024,6 @@ class EverySpec extends UnitSpec {
     scala> Vector(1).takeWhile(_ > 10)
     res18: scala.collection.immutable.Vector[Int] = Vector()
 */
-  it should "have a to method" in {
-    Every(1).to[List] shouldBe List(1)
-    Every(1, 2, 3).to[List] shouldBe List(1, 2, 3)
-    Every(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(1, 2, 3)
-    Every(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
-  }
   it should "have a toArray method" in {
     Every(1, 2, 3).toArray should === (Array(1, 2, 3))
     Many("a", "b").toArray should === (Array("a", "b"))
@@ -1087,11 +1081,6 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3).toString should === ("Many(1, 2, 3)")
     Many(1, 2, 3).toString should === ("Many(1, 2, 3)")
     One(1).toString should === ("One(1)")
-  }
-  it should "have a toTraversable method" in {
-    Every(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    Many("a", "b").toTraversable should === (Traversable("a", "b"))
-    One(1).toTraversable should === (Traversable(1))
   }
   it should "have a toVector method" in {
     Every(1, 2, 3).toVector should === (Vector(1, 2, 3))

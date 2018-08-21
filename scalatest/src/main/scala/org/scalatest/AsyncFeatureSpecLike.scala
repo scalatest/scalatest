@@ -16,11 +16,13 @@
 package org.scalatest
 
 import org.scalactic._
+
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalatest.exceptions.NotAllowedException
 
 /**
@@ -44,7 +46,7 @@ import org.scalatest.exceptions.NotAllowedException
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 

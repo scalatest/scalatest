@@ -45,7 +45,7 @@ import words.BehaveWord
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait FreeSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
