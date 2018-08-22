@@ -39,7 +39,7 @@ object ScalatestBuild extends Build {
   val releaseVersion = "3.1.0-SNAP7"
   val previousReleaseVersion = "3.0.5"
 
-  val scalacheckVersion = "1.13.5"
+  val scalacheckVersion = "1.14.0"
   val nativeScalacheckVersion = "1.14.0-18db189-SNAPSHOT"
 
   val easyMockVersion = "3.2"
@@ -192,7 +192,7 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+          "org.scala-lang.modules" %% "scala-xml" % "1.1.0",
           scalacheckDependency("optional")
         )
       case _ =>
@@ -239,7 +239,9 @@ object ScalatestBuild extends Build {
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
+        // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
+        Seq.empty
+        //Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
 
       case other =>
         Seq.empty
