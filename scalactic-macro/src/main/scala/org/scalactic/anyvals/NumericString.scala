@@ -2262,15 +2262,6 @@ final class NumericString private (val value: String) extends AnyVal {
   def takeWhile(p: (Char) ⇒ Boolean): String =
     value.takeWhile(p)
 
-  /** Converts this `NumericString` into another collection by
-   * copying all elements.
-   *
-   *  @tparam Col  The collection type to build.
-   *  @return a new collection containing all elements of this `NumericString`.
-   */
-  def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, Char, Col[Char]]): Col[Char] =
-    value.to[Col]
-
   /** Converts this `NumericString` to an array.
    *
    *  @return    an array containing all elements of this `NumericString`.

@@ -1808,12 +1808,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.takeWhile(isEven)
       }
     }
-    it("should offer a to method consistent with StringOps") {
-      forAll { (numStr: NumericString) =>
-        numStr.to[Array] shouldEqual
-          numStr.value.to[Array]
-      }
-    }
     it("should offer a toArray method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.toArray shouldEqual
