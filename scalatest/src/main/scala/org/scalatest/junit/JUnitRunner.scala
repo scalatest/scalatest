@@ -16,10 +16,13 @@
  */
 package org.scalatest.junit
 
+import collection.JavaConverters._
+
 import org.scalatest._
 import org.junit.runner.notification.RunNotifier
 import org.junit.runner.notification.Failure
 import org.junit.runner.Description
+import org.junit.runner.manipulation.{Filterable, NoTestsRemainException}
 
 /*
  I think that Stopper really should be a no-op, like it is, because the user has
@@ -56,32 +59,61 @@ import org.junit.runner.Description
  * @author Jon-Anders Teigen
  * @author Colin Howe
  */
-final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner {
+final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner with Filterable {
+
+  private val excludedTestTag = "org.scalatest.junit.JUnitExcludedWithDynaTags"
 
   private val canInstantiate = Suite.checkForPublicNoArgConstructor(suiteClass)
   require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
 
   private val suiteToRun = suiteClass.newInstance
 
-  /**
-   * Get a JUnit <code>Description</code> for this ScalaTest <code>Suite</code> of tests.
-   *
-   * return a <code>Description</code> of this suite of tests
-   */
-  val getDescription = createDescription(suiteToRun)
+  private var description: Description = createDescription(suiteToRun, None)
 
-  private def createDescription(suite: Suite): Description = {
+  private val testNameRegEx = """^(.+)\([\w|\.]+\)""".r
+
+  private def extractTestNamesFromDescription(description: Description): String = description match {
+    case d if d.isSuite =>
+      extractTestNamesFromDescription(d)
+    case t if t.isTest =>
+      t.getDisplayName match {
+        case testNameRegEx(name) => name
+      }
+  }
+
+  private def excludedDynaTags(suite: Suite, testsToRun: Set[String]): Map[String, Map[String, Set[String]]] = suite match {
+    case s if s.nestedSuites.nonEmpty =>
+      suite.nestedSuites.flatMap(excludedDynaTags(_, testsToRun)).toMap
+    case _ =>
+      Map(suite.suiteId -> suite.testNames.diff(testsToRun).map(_ -> Set(excludedTestTag)).toMap)
+  }
+
+  private def createDescription(suite: Suite, junitFilter: Option[org.junit.runner.manipulation.Filter]): Description = {
     val description = Description.createSuiteDescription(suite.getClass)
     // If we don't add the testNames and nested suites in, we get
     // Unrooted Tests show up in Eclipse
-    for (name <- suite.testNames) {
-      description.addChild(Description.createTestDescription(suite.getClass, name))
+    for (name <- suite.testNames.toList.sorted) {
+      junitFilter match {
+        case Some(filter) =>
+          val tempDescription = Description.createTestDescription(suite.getClass, name)
+          if (filter.shouldRun(tempDescription))
+            description.addChild(tempDescription)
+        case _ =>
+          description.addChild(Description.createTestDescription(suite.getClass, name))
+      }
     }
     for (nestedSuite <- suite.nestedSuites) {
-      description.addChild(createDescription(nestedSuite))
+      description.addChild(createDescription(nestedSuite, junitFilter))
     }
     description
   }
+
+  /**
+    * Get a JUnit <code>Description</code> for this ScalaTest <code>Suite</code> of tests.
+    *
+    * @return a <code>Description</code> of this suite of tests
+    */
+  def getDescription: Description = description
 
   /**
    * Run this <code>Suite</code> of tests, reporting results to the passed <code>RunNotifier</code>.
@@ -95,9 +127,14 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
+      val testsToRun = description.getChildren.asScala.map(extractTestNamesFromDescription).toSet
+
+      val filter = Filter(tagsToExclude = Set(excludedTestTag),
+        dynaTags = DynaTags(Map.empty, excludedDynaTags(suiteToRun, testsToRun)))
+
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
-                                Stopper.default, Filter(), ConfigMap.empty, None,
+                                Stopper.default, filter, ConfigMap.empty, None,
                                 new Tracker, Set.empty))
     }
     catch {
@@ -112,6 +149,17 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    *
    *  @return the expected number of tests that will run when this suite is run
    */
-  override def testCount() = suiteToRun.expectedTestCount(Filter())
-}
+  override def testCount(): Int = description.testCount()
 
+  /**
+   * Called by the JUnit Runner to filter the tests in the <code>Suite</code>
+   *
+   * @param the JUnit filter to call <code>shouldRun</code> for the test
+   */
+  @throws(classOf[NoTestsRemainException])
+  override def filter(filter: org.junit.runner.manipulation.Filter): Unit = {
+    description = createDescription(suiteToRun, Some(filter))
+    if (description.testCount() == 0)
+      throw new NoTestsRemainException
+  }
+}
