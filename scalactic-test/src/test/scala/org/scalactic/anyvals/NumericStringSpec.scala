@@ -54,6 +54,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
   implicit val posIntArb: Arbitrary[PosInt] = Arbitrary(posIntGen)
 
+  val numericCharGen: Gen[NumericChar] =
+    for {i <- choose(0, 9)} yield NumericChar.from(i.toString.charAt(0)).get
+
+  implicit val arbNumericChar: Arbitrary[NumericChar] = Arbitrary(numericCharGen)
+
   describe("A NumericString") {
 
     describe("should offer a from factory method that") {
@@ -1060,7 +1065,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def fooIt(c: Char): String = "foo" + c
 
       forAll { (numStr: NumericString) =>
-        numStr.flatMap(fooIt) shouldEqual
+        numStr.flatMap(fooIt).mkString shouldEqual
           numStr.value.flatMap(fooIt)
       }
     }
@@ -1238,12 +1243,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       forAll { (numStr: NumericString, pint: PosInt) =>
         numStr.isDefinedAt(pint) shouldEqual
           numStr.value.isDefinedAt(pint)
-      }
-    }
-    it("should offer an isTraversableAgain method consistent with StringOps") {
-      forAll { (numStr: NumericString, pint: PosInt) =>
-        numStr.isTraversableAgain shouldEqual
-          numStr.value.isTraversableAgain
       }
     }
     it("should offer an iterator method consistent with StringOps") {
@@ -1548,12 +1547,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.replaceAllLiterally("0+", "1")
       }
     }
-    it("should offer a repr method that is consistent with StringOps") {
-      forAll { (numStr: NumericString) =>
-        numStr.repr shouldEqual
-          numStr.value.repr
-      }
-    }
     it("should offer a reverse method that is consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.reverse shouldEqual
@@ -1564,7 +1557,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def plus1(ch: Char) = (ch + 1).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.reverseMap(plus1) shouldEqual
+        numStr.reverseMap(plus1).mkString shouldEqual
           numStr.value.reverseMap(plus1)
       }
     }
@@ -1572,7 +1565,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def sum(c1: Char, c2: Char) = (c1 + c2).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.scan('0')(sum) shouldEqual
+        numStr.scan('0')(sum).mkString shouldEqual
           numStr.value.scan('0')(sum)
       }
     }
@@ -1580,7 +1573,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def sum(c1: Char, c2: Char) = (c1 + c2).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.scanLeft('0')(sum) shouldEqual
+        numStr.scanLeft('0')(sum).mkString shouldEqual
           numStr.value.scanLeft('0')(sum)
       }
     }
@@ -1588,7 +1581,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def sum(c1: Char, c2: Char) = (c1 + c2).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.scanRight('0')(sum) shouldEqual
+        numStr.scanRight('0')(sum).mkString shouldEqual
           numStr.value.scanRight('0')(sum)
       }
     }
@@ -1927,12 +1920,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toStream
       }
     }
-    it("should offer a toTraversable method consistent with StringOps") {
-      forAll { (numStr: NumericString) =>
-        numStr.toTraversable shouldEqual
-          numStr.value.toTraversable
-      }
-    }
     it("should offer a toVector method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.toVector shouldEqual
@@ -1941,38 +1928,26 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     }
     it("should offer a union method consistent with StringOps") {
       forAll { (numStr: NumericString, that: NumericString) =>
-        numStr.union(that.value) shouldEqual
+        numStr.union(that.value).mkString shouldEqual
           numStr.value.union(that.value)
       }
     }
     it("should offer a updated method consistent with StringOps") {
-      forAll { (numStr: NumericString, pint: PosInt, c: Char) =>
+      forAll { (numStr: NumericString, pint: PosInt, c: NumericChar) =>
         whenever (numStr.length > 0) {
           val index = pint % numStr.length
 
-          numStr.updated(index, c) shouldEqual
-            numStr.value.updated(index, c)
+          numStr.updated(index, c).value shouldEqual
+            numStr.value.updated(index, c.value)
         }
       }
     }
     it("should offer view methods consistent with StringOps") {
-      forAll { (numStr: NumericString, p1: PosInt, p2: PosInt) =>
-        numStr.view(p1, p2) shouldEqual
-          numStr.value.view(p1, p2)
+      forAll { (numStr: NumericString) =>
 
         numStr.view shouldEqual
           numStr.value.view
 
-        whenever (numStr.length > 0) {
-          val idx1 = p1 % numStr.length
-          val idx2 = p2 % numStr.length
-
-          val beginIndex = math.min(idx1, idx2)
-          val endIndex = math.max(idx1, idx2) + 1
-
-          numStr.view(beginIndex, endIndex) shouldEqual
-            numStr.value.view(beginIndex, endIndex)
-        }
       }
     }
     it("should offer a withFilter method consistent with StringOps") {

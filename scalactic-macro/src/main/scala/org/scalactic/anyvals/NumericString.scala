@@ -25,7 +25,7 @@ import scala.collection.SeqView
 import scala.collection.GenIterable
 import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
-import scala.collection.generic.FilterMonadic
+import org.scalactic.ColCompatHelper
 //import scala.collection.parallel.ParSeq
 import scala.util.matching.Regex
 import scala.language.higherKinds
@@ -896,7 +896,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *               partition
    */
   def aggregate[B](z: ⇒ B)(seqop: (B, Char) ⇒ B, combop: (B, B) ⇒ B): B =
-    value.aggregate[B](z)(seqop, combop)
+    ColCompatHelper.aggregate(value, z)(seqop, combop)
 
   /**
    * Return character at index `index`.
@@ -1036,7 +1036,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @param  xs     the array to fill.
    */
   def copyToArray(xs: Array[Char]): Unit =
-    value.copyToArray(xs)
+    value.copyToArray(xs, 0)
 
   /** Copies the elements of this `NumericString` to an array.
    *  Fills the given array `xs` with values of this
@@ -1208,7 +1208,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  element of this `NumericString` and
    *                  concatenating the results.
    */
-  def flatMap[B, That](f: (Char) ⇒ GenTraversableOnce[B])(implicit bf: CanBuildFrom[String, B, That]): That =
+  def flatMap[B](f: (Char) => org.scalactic.ColCompatHelper.IterableOnce[B]): IndexedSeq[B] =
     value.flatMap(f)
 
   /** Folds the elements of this `NumericString` using the specified associative
@@ -1439,14 +1439,6 @@ final class NumericString private (val value: String) extends AnyVal {
    */
   def isDefinedAt(idx: Int): Boolean =
     value.isDefinedAt(idx)
-
-  /** Tests whether this `NumericString` can be repeatedly traversed.  Always
-   *  true for `NumericString`.
-   *
-   *  @return   `true` if it is repeatedly traversable, `false` otherwise.
-   */
-  final def isTraversableAgain: Boolean =
-    value.isTraversableAgain
 
   /** Creates a new iterator over all elements contained in this
    * iterable object.
@@ -1860,9 +1852,6 @@ final class NumericString private (val value: String) extends AnyVal {
   def replaceAllLiterally(literal: String, replacement: String): String =
     value.replaceAllLiterally(literal, replacement)
 
-  def repr: String =
-    value.repr
-
   /** Returns new string with elements in reversed order.
    *
    *  @return A new string with all elements of this `NumericString` in
@@ -1894,7 +1883,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                `NumericString` and collecting the results
    *                in reversed order.
    */
-  def reverseMap[B, That](f: (Char) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+  def reverseMap[B](f: (Char) => B): IndexedSeq[B] =
     value.reverseMap(f)
 
   /** Checks if the other iterable collection contains the same
@@ -1912,7 +1901,6 @@ final class NumericString private (val value: String) extends AnyVal {
    *  Note: The neutral element `z` may be applied more than once.
    *
    *  @tparam B         element type of the resulting collection
-   *  @tparam That      type of the resulting collection
    *  @param z          neutral element for the operator `op`
    *  @param op         the associative operator for the scan
    *  @param cbf        combiner factory which provides a combiner
@@ -1920,23 +1908,19 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @return a new string containing the prefix scan of the
    *          elements in this `NumericString`
    */
-  def scan[B >: Char, That](z: B)(op: (B, B) ⇒ B)(implicit cbf: CanBuildFrom[String, B, That]): That =
+  def scan[B >: Char](z: B)(op: (B, B) ⇒ B): IndexedSeq[B] =
     value.scan(z)(op)
 
   /** Produces a collection containing cumulative results of applying the
    *  operator going left to right.
    *
    *  @tparam B      the type of the elements in the resulting collection
-   *  @tparam That   the actual type of the resulting collection
    *  @param z       the initial value
    *  @param op      the binary operator applied to the intermediate
    *                 result and the element
-   *  @param bf      an implicit value of class CanBuildFrom which
-   *                 determines the result class That from the current
-   *                 representation type Repr and the new element type B.
    *  @return        collection with intermediate results
    */
-  def scanLeft[B, That](z: B)(op: (B, Char) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+  def scanLeft[B](z: B)(op: (B, Char) ⇒ B): IndexedSeq[B] =
     value.scanLeft(z)(op)
 
   /** Produces a collection containing cumulative results of
@@ -1944,16 +1928,12 @@ final class NumericString private (val value: String) extends AnyVal {
    *  the collection is the last cumulative result.
    *
    *  @tparam B      the type of the elements in the resulting collection
-   *  @tparam That   the actual type of the resulting collection
    *  @param z       the initial value
    *  @param         op the binary operator applied to the intermediate
    *                 result and the element
-   *  @param         bf an implicit value of class CanBuildFrom which
-   *                 determines the result class That from the current
-   *                 representation type Repr and the new element type B.
    *  @return        collection with intermediate results
    */
-  def scanRight[B, That](z: B)(op: (Char, B) ⇒ B)(implicit bf: CanBuildFrom[String, B, That]): That =
+  def scanRight[B](z: B)(op: (Char, B) ⇒ B): IndexedSeq[B] =
     value.scanRight(z)(op)
                     
 
@@ -2402,13 +2382,6 @@ final class NumericString private (val value: String) extends AnyVal {
   def toStream: Stream[Char] =
     value.toStream
 
-  /** Converts this `NumericString` to an unspecified Traversable.
-   *
-   *  @return a Traversable containing all elements of this `NumericString`.
-   */
-  def toTraversable: collection.Traversable[Char] =
-    value.toTraversable
-
   /** Converts this `NumericString` to a Vector.
    *
    *  @return a vector containing all elements of this `NumericString`.
@@ -2429,7 +2402,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  `NumericString` followed by all elements
    *                  of `that`.
    */
-  def union[B >: Char, That](that: GenSeq[B])(implicit bf: CanBuildFrom[String, B, That]): That =
+  def union[B >: Char](that: Seq[B]): IndexedSeq[B] =
     value.union(that)
 
   /** A copy of this `NumericString` with one single replaced element.
@@ -2441,32 +2414,14 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @throws IndexOutOfBoundsException if `index` does not
    *    satisfy `0 <= index < length`.
    */
-  def updated[B >: Char, That](index: Int, elem: B)(implicit bf: CanBuildFrom[String, B, That]): That =
-    value.updated(index, elem)
-
-  /** Creates a non-strict view of a slice of this `NumericString`.
-   *
-   *  Note: the difference between `view` and `slice` is that
-   *        `view` produces a view of the current
-   *        `NumericString`, whereas `slice` produces a new
-   *        string.
-   *
-   *  Note: `view(from, to)` is equivalent to `view.slice(from, to)`
-   *
-   *  @param from   the index of the first element of the view
-   *  @param until  the index of the element following the view
-   *  @return a non-strict view of a slice of this
-   *    `NumericString`, starting at index `from` and extending up
-   *    to (but not including) index `until`.
-   */
-  def view(from: Int, until: Int): SeqView[Char, String] =
-    value.view(from, until)
+  def updated(index: Int, elem: NumericChar): NumericString =
+    NumericString.ensuringValid(value.updated(index, elem.value))
 
   /** Creates a non-strict view of this `NumericString`.
    *
    *  @return a non-strict view of this `NumericString`.
    */
-  def view: SeqView[Char, String] =
+  def view =
     value.view
 
   /** Creates a non-strict filter of this `NumericString`.
@@ -2483,10 +2438,10 @@ final class NumericString private (val value: String) extends AnyVal {
    *             those elements of this `NumericString` which
    *             satisfy the predicate `p`.
    */
-  def withFilter(p: (Char) ⇒ Boolean): FilterMonadic[Char, String] =
+  def withFilter(p: (Char) ⇒ Boolean) =
     value.withFilter(p)
 
-  /** Returns a collection of pairs formed from this `NumericString`
+  /** Returns a <code>Iterable</code> of pairs formed from this `NumericString`
    *  and another iterable collection by combining corresponding
    *  elements in pairs.  If one of the two collections is
    *  longer than the other, its remaining elements are ignored.
@@ -2500,7 +2455,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                 the lengths of this `NumericString` and
    *                 `that`.
    */
-  def zip[A1 >: Char, B, That](that: GenIterable[B])(implicit bf: CanBuildFrom[String, (A1, B), That]): That =
+  def zip[B](that: Iterable[B]): Iterable[(Char, B)] =
     value.zip(that)
 
   /** Returns a collection of pairs formed from this
@@ -2516,7 +2471,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  result if this `NumericString` is shorter than `that`.
    *  @param thatElem the element to be used to fill up the
    *                  result if `that` is shorter than this `NumericString`.
-   *  @return   a new collection consisting of corresponding
+   *  @return   a new <code>Iterable</code> consisting of corresponding
    *            elements of this `NumericString` and
    *            `that`. The length of the returned
    *            collection is the maximum of the lengths
@@ -2527,13 +2482,13 @@ final class NumericString private (val value: String) extends AnyVal {
    *            this `NumericString`, `thatElem` values
    *            are used to pad the result.
    */
-  def zipAll[B, A1 >: Char, That](that: GenIterable[B], thisElem: A1, thatElem: B)(implicit bf: CanBuildFrom[String, (A1, B), That]): That =
+  def zipAll[A1 >: Char, B](that: Iterable[B], thisElem: A1, thatElem: B): Iterable[(A1, B)] =
     value.zipAll(that, thisElem, thatElem)
 
   /** Zips this `NumericString` with its indices.
    *
-   *    @return A new collection containing pairs
-   *                   consisting of all elements of this
+   *    @return A new <code>Iterable</code> containing pairs
+   *                   consisting of all characters of this
    *                   `NumericString` paired with their
    *                   index. Indices start at `0`.
    *    @example {{{
@@ -2541,7 +2496,7 @@ final class NumericString private (val value: String) extends AnyVal {
    * res41: scala.collection.immutable.IndexedSeq[(Char, Int)] = Vector((1,0), (2,1), (3,2))
    * }}}
    */
-  def zipWithIndex[A1 >: Char, That](implicit bf: CanBuildFrom[String, (A1, Int), That]): That =
+  def zipWithIndex: Iterable[(Char, Int)] =
     value.zipWithIndex
 
   /**
