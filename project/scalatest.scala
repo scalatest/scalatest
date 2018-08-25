@@ -187,14 +187,18 @@ object ScalatestBuild extends Build {
   def scalacheckDependency(config: String) =
     "org.scalacheck" %% "scalacheck" % scalacheckVersion % config
 
+  def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
+    CrossVersion.partialVersion(theScalaVersion) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
+      case other => Seq.empty
+    }
+
   lazy val crossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.1.0",
-          scalacheckDependency("optional")
-        )
+        scalaXmlDependency(scalaVersion.value) ++
+        Seq(scalacheckDependency("optional"))
       case _ =>
         Seq(scalacheckDependency("optional"))
     }
@@ -460,6 +464,7 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
