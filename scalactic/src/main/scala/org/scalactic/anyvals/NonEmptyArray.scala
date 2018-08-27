@@ -185,8 +185,8 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param other the <code>GenTraversableOnce</code> to append
     * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
     */
-  def ++[U >: T](other: GenTraversableOnce[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
-    new NonEmptyArray((toArray ++ other).toArray)
+  def ++[U >: T](other: org.scalactic.ColCompatHelper.IterableOnce[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    new NonEmptyArray((toArray ++ other.toStream).toArray)
 
   /**
     * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyArray</code>, going left to right.
@@ -307,7 +307,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return an <code>Option</code> containing <code>pf</code> applied to the first element for which it is defined, or <code>None</code> if
     *    the partial function was not defined for any element.
     */
-  final def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = toArray.collectFirst(pf)
+  final def collectFirst[U](pf: PartialFunction[T, U])(implicit classTagOfU: ClassTag[U]): Option[U] = toArray.collectFirst(pf)
 
   /**
     * Indicates whether this <code>NonEmptyArray</code> contains a given value as an element.
@@ -347,7 +347,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     *
     * @param arr the array to fill
     */
-  final def copyToArray[U >: T](arr: Array[U]): Unit = toArray.copyToArray(arr)
+  final def copyToArray[U >: T](arr: Array[U]): Unit = toArray.copyToArray(arr, 0)
 
   /**
     * Copies values of this <code>NonEmptyArray</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptyArray</code>, beginning at
@@ -447,7 +447,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param that the <code>NonEmptyArray</code> to test
     * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
     */
-  final def endsWith[B](that: NonEmptyArray[B]): Boolean = toArray.endsWith(that.toArray)
+  final def endsWith[B](that: NonEmptyArray[B]): Boolean = toArray.endsWith(that.toArray.asInstanceOf[Array[_]])
 
   /*
     override def equals(o: Any): Boolean =
@@ -590,7 +590,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     */
   final def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
     val mapKToArray = toArray.toList.groupBy(f) // toList and implicit ClassTag is required to compile in scala 2.10.
-    mapKToArray.mapValues{ list => new NonEmptyArray(list.toArray) }
+    (mapKToArray.mapValues{ list => new NonEmptyArray(list.toArray) }).toMap
   }
 
   /**
@@ -1331,7 +1331,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param that the <code>NonEmptyArray</code> to test
     * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
     */
-  final def startsWith[B](that: NonEmptyArray[B]): Boolean = toArray.startsWith(that.toArray)
+  final def startsWith[B](that: NonEmptyArray[B]): Boolean = toArray.startsWith(that.toArray.asInstanceOf[Array[_]])
 
   /**
     * Indicates whether this <code>NonEmptyArray</code> starts with the given <code>Every</code> at the given index. 
@@ -1349,7 +1349,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param offset the index at which this <code>NonEmptyArray</code> is searched.
     * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
     */
-  final def startsWith[B](that: NonEmptyArray[B], offset: Int): Boolean = toArray.startsWith(that.toArray, offset)
+  final def startsWith[B](that: NonEmptyArray[B], offset: Int): Boolean = toArray.startsWith(that.toArray.asInstanceOf[Array[_]], offset)
 
   /**
     * Returns <code>"NonEmptyArray"</code>, the prefix of this object's <code>toString</code> representation.
@@ -1370,14 +1370,6 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
   final def sum[U >: T](implicit num: Numeric[U]): U = toArray.sum(num)
 
   import scala.language.higherKinds
-
-  /**
-    * Converts this <code>NonEmptyArray</code> into a collection of type <code>Col</code> by copying all elements.
-    *
-    * @tparam Col the collection type to build.
-    * @return a new collection containing all elements of this <code>NonEmptyArray</code>. 
-    */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toArray.to[Col](cbf)
 
   /**
     * Converts this <code>NonEmptyArray</code> to a list.
@@ -1469,72 +1461,11 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     */
   override def toString: String = "NonEmptyArray(" + toArray.mkString(", ") + ")"
 
-  /**
-    * Converts this <code>NonEmptyArray</code> to an unspecified Traversable.
-    *
-    * @return a <code>Traversable</code> containing all elements of this <code>NonEmptyArray</code>. 
-    */
-  final def toTraversable: Traversable[T] = toArray.toTraversable
-
   final def transpose[U](implicit ev: T <:< NonEmptyArray[U], classTag: ClassTag[U]): NonEmptyArray[NonEmptyArray[U]] = {
     val asArrays = toArray.map(ev)
     val list = asArrays.toList.transpose // toList and implicit ClassTag is required to compile in scala 2.10.
     new NonEmptyArray(list.map(l => new NonEmptyArray(l.toArray)).toArray)
   }
-
-  /**
-    * Produces a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> and also all elements of a given <code>Every</code>.
-    *
-    * <p>
-    * <code>nonEmptyArrayX</code> <code>union</code> <code>everyY</code> is equivalent to <code>nonEmptyArrayX</code> <code>++</code> <code>everyY</code>.
-    * </p>
-    *
-    * <p>
-    * Another way to express this is that <code>nonEmptyArrayX</code> <code>union</code> <code>everyY</code> computes the order-presevring multi-set union
-    * of <code>nonEmptyArrayX</code> and <code>everyY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
-    * also work on multi-sets.
-    * </p>
-    *
-    * @param that the <code>Every</code> to add.
-    * @return a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> followed by all elements of <code>that</code> <code>Every</code>.
-    */
-  final def union[U >: T](that: Every[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = new NonEmptyArray(toArray.union(that.toVector).toArray)
-
-  /**
-    * Produces a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> and also all elements of a given <code>NonEmptyArray</code>.
-    *
-    * <p>
-    * <code>nonEmptyArrayX</code> <code>union</code> <code>nonEmptyArrayY</code> is equivalent to <code>nonEmptyArrayX</code> <code>++</code> <code>nonEmptyArrayY</code>.
-    * </p>
-    *
-    * <p>
-    * Another way to express this is that <code>nonEmptyArrayX</code> <code>union</code> <code>nonEmptyArrayY</code> computes the order-presevring multi-set union
-    * of <code>nonEmptyArrayX</code> and <code>nonEmptyArrayY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
-    * also work on multi-sets.
-    * </p>
-    *
-    * @param that the <code>NonEmptyArray</code> to add.
-    * @return a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> followed by all elements of <code>that</code>.
-    */
-  final def union[U >: T](that: NonEmptyArray[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = new NonEmptyArray(toArray.union(that.toArray).toArray)
-
-  /**
-    * Produces a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> and also all elements of a given <code>GenSeq</code>.
-    *
-    * <p>
-    * <code>nonEmptyArrayX</code> <code>union</code> <code>ys</code> is equivalent to <code>nonEmptyArrayX</code> <code>++</code> <code>ys</code>.
-    * </p>
-    *
-    * <p>
-    * Another way to express this is that <code>nonEmptyArrayX</code> <code>union</code> <code>ys</code> computes the order-presevring multi-set union
-    * of <code>nonEmptyArrayX</code> and <code>ys</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
-    * also work on multi-sets.
-    * </p>
-    *
-    * @param that the <code>GenSeq</code> to add.
-    * @return a new <code>NonEmptyArray</code> that contains all elements of this <code>NonEmptyArray</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
-    */
-  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[Array[T], U, Array[U]]): NonEmptyArray[U] = new NonEmptyArray(toArray.union(that)(cbf))
 
   /**
     * Converts this <code>NonEmptyArray</code> of pairs into two <code>NonEmptyArray</code>s of the first and second half of each pair. 

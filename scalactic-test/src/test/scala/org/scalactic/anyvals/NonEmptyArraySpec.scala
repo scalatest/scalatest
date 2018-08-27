@@ -1442,30 +1442,6 @@ class NonEmptyArraySpec extends UnitSpec {
     //NonEmptyArray(NonEmptyArray(1, 2), NonEmptyArray(3, 4), NonEmptyArray(5, 6), NonEmptyArray(7, 8)).transpose.transpose shouldBe NonEmptyArray(NonEmptyArray(1, 2), NonEmptyArray(3, 4), NonEmptyArray(5, 6), NonEmptyArray(7, 8))
     //NonEmptyArray(NonEmptyArray(1, 2, 3), NonEmptyArray(4, 5, 6), NonEmptyArray(7, 8, 9)).transpose.transpose shouldBe NonEmptyArray(NonEmptyArray(1, 2, 3), NonEmptyArray(4, 5, 6), NonEmptyArray(7, 8, 9))
   }
-  it should "have a union method that takes a GenSeq" in {
-    NonEmptyArray(1) union Array(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union Array(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union Array(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union Array(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union Array(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union Array(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
-  }
-  it should "have a union method that takes an Every" in {
-    NonEmptyArray(1) union Every(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union Every(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union Every(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union Every(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union Every(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union Every(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
-  }
-  it should "have a union method that takes a NonEmptyArray" in {
-    NonEmptyArray(1) union NonEmptyArray(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union NonEmptyArray(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union NonEmptyArray(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union NonEmptyArray(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union NonEmptyArray(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union NonEmptyArray(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
-  }
   it should "have an unzip method" in {
     val r1 = NonEmptyArray((1, 2)).unzip
     r1._1 shouldBe NonEmptyArray(1)
