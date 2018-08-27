@@ -447,7 +447,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param that the <code>NonEmptyArray</code> to test
     * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
     */
-  final def endsWith[B](that: NonEmptyArray[B]): Boolean = toArray.endsWith(that.toArray.asInstanceOf[Array[_]])
+  final def endsWith[B](that: NonEmptyArray[B]): Boolean = toArray.endsWith(that.toArray.toSeq)
 
   /*
     override def equals(o: Any): Boolean =
@@ -1331,7 +1331,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param that the <code>NonEmptyArray</code> to test
     * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
     */
-  final def startsWith[B](that: NonEmptyArray[B]): Boolean = toArray.startsWith(that.toArray.asInstanceOf[Array[_]])
+  final def startsWith[B](that: NonEmptyArray[B]): Boolean = toArray.startsWith(that.toArray.toSeq)
 
   /**
     * Indicates whether this <code>NonEmptyArray</code> starts with the given <code>Every</code> at the given index. 
@@ -1349,7 +1349,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param offset the index at which this <code>NonEmptyArray</code> is searched.
     * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
     */
-  final def startsWith[B](that: NonEmptyArray[B], offset: Int): Boolean = toArray.startsWith(that.toArray.asInstanceOf[Array[_]], offset)
+  final def startsWith[B](that: NonEmptyArray[B], offset: Int): Boolean = toArray.startsWith(that.toArray.toSeq, offset)
 
   /**
     * Returns <code>"NonEmptyArray"</code>, the prefix of this object's <code>toString</code> representation.
