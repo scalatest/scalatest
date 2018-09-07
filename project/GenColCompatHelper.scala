@@ -39,6 +39,8 @@ object GenColCompatHelper {
           | */
           |package org.scalactic
           |
+          |import scala.annotation.unchecked.{ uncheckedVariance => uV }
+          |
           |private[org] object ColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqOps[A, IndexedSeq, Repr]
@@ -49,7 +51,10 @@ object GenColCompatHelper {
           |
           |  type IterableOnce[+A] = scala.collection.IterableOnce[A]
           |
+          |  type Factory[-A, +C] = scala.collection.Factory[A, C]
+          |
           |}
+          |
         """.stripMargin
       else
         """/*
@@ -69,6 +74,8 @@ object GenColCompatHelper {
           | */
           |package org.scalactic
           |
+          |import scala.annotation.unchecked.{ uncheckedVariance => uV }
+          |
           |private[org] object ColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqLike[A, Repr]
@@ -79,7 +86,30 @@ object GenColCompatHelper {
           |
           |  type IterableOnce[+A] = scala.collection.GenTraversableOnce[A]
           |
+          |  type Factory[-A, +C] = scala.collection.generic.CanBuildFrom[Nothing, A, C] // Ideally, this would be an opaque type
+          |
+          |  object Factory {
+          |
+          |    def simpleCBF[A, C](f: => scala.collection.mutable.Builder[A, C]): scala.collection.generic.CanBuildFrom[Any, A, C] =
+          |      new scala.collection.generic.CanBuildFrom[Any, A, C] {
+          |        def apply(from: Any): scala.collection.mutable.Builder[A, C] = apply()
+          |        def apply(): scala.collection.mutable.Builder[A, C]          = f
+          |      }
+          |
+          |    implicit def fromCanBuildFrom[A, C](implicit cbf: scala.collection.generic.CanBuildFrom[Nothing, A, C]): Factory[A, C] =
+          |      cbf.asInstanceOf[Factory[A, C]]
+          |
+          |    implicit def fromCanBuildFromConversion[X, A, C](x: X)(
+          |      implicit toCanBuildFrom: X => scala.collection.generic.CanBuildFrom[Nothing, A, C]): Factory[A, C] =
+          |      fromCanBuildFrom(toCanBuildFrom(x))
+          |
+          |    implicit def genericCompanionToCBF[A, CC[X] <: scala.collection.GenTraversable[X]](
+          |      fact: scala.collection.generic.GenericCompanion[CC]): scala.collection.generic.CanBuildFrom[Any, A, CC[A]] =
+          |      simpleCBF(fact.newBuilder[A])
+          |  }
+          |
           |}
+          |
         """.stripMargin
     Seq(
       writeFile(new File(targetDir,"ColCompatHelper.scala"), content)

@@ -185,8 +185,8 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * @param other the <code>GenTraversableOnce</code> to append
    * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
    */
-  def ++[U >: T](other: GenTraversableOnce[U]): NonEmptyList[U] =
-    if (other.isEmpty) this else new NonEmptyList(toList ++ other)
+  def ++[U >: T](other: org.scalactic.ColCompatHelper.IterableOnce[U]): NonEmptyList[U] =
+    if (other.isEmpty) this else new NonEmptyList(toList ++ other.toStream)
 
   /**
    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyList</code>, going left to right.
@@ -632,7 +632,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    */
   final def groupBy[K](f: T => K): Map[K, NonEmptyList[T]] = {
     val mapKToList = toList.groupBy(f)
-    mapKToList.mapValues { list => new NonEmptyList(list) }
+    mapKToList.mapValues { list => new NonEmptyList(list) }.toMap
   }
 
   /**
@@ -1413,13 +1413,29 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
 
   import scala.language.higherKinds
 
+  //import scala.collection.compat._
+
   /**
    * Converts this <code>NonEmptyList</code> into a collection of type <code>Col</code> by copying all elements.
    *
    * @tparam Col the collection type to build.
    * @return a new collection containing all elements of this <code>NonEmptyList</code>. 
    */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toList.to[Col](cbf)
+  /*final def to[Col[_]](implicit cbf: org.scalactic.ColCompatHelper.BuildFrom[Nothing, T, Col[T @ uV]]): Col[T @ uV] = {
+    toList.to(Col[T])
+  }*/
+
+  final def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] = /*{
+    toList.to(
+      new scala.collection.generic.CanBuildFrom[Nothing, T, Col[T @ uV]] {
+        def apply(): scala.collection.mutable.Builder[T, Col[T @ uV]] = factory.newBuilder
+        def apply(from: Nothing): scala.collection.mutable.Builder[T, Col[T @ uV]] = factory.newBuilder
+      }
+    )
+  }*/
+  //toList.to(factory)
+  //org.scalactic.ColCompatHelper.toImpl(toList, factory)
+  toList.to(factory)
 
   /**
    * Converts this <code>NonEmptyList</code> to an array.
@@ -1511,13 +1527,6 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    */
   override def toString: String = "NonEmptyList(" + toList.mkString(", ") + ")"
 
-  /**
-   * Converts this <code>NonEmptyList</code> to an unspecified Traversable.
-   *
-   * @return a <code>Traversable</code> containing all elements of this <code>NonEmptyList</code>. 
-   */ 
-  final def toTraversable: Traversable[T] = toList.toTraversable
-
   final def transpose[U](implicit ev: T <:< NonEmptyList[U]): NonEmptyList[NonEmptyList[U]] = {
     val asLists = toList.map(ev)
     val list = asLists.transpose
@@ -1576,7 +1585,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * @param that the <code>GenSeq</code> to add.
    * @return a new <code>NonEmptyList</code> that contains all elements of this <code>NonEmptyList</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
    */
-  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[List[T], U, List[U]]): NonEmptyList[U] = new NonEmptyList(toList.union(that)(cbf))
+  final def union[U >: T](that: GenSeq[U]): NonEmptyList[U] = new NonEmptyList(toList.union(that))
 
   /**
    * Converts this <code>NonEmptyList</code> of pairs into two <code>NonEmptyList</code>s of the first and second half of each pair. 
