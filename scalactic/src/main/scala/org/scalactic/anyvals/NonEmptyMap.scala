@@ -138,7 +138,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @param other the <code>GenTraversableOnce</code> to append
     * @return a new <code>NonEmptyMap</code> that contains all the elements of this <code>NonEmptyMap</code> followed by all elements of <code>other</code>.
     */
-  def ++[V1 >: V](other: GenTraversableOnce[(K, V1)]): NonEmptyMap[K, V1] =
+  def ++[V1 >: V](other: org.scalactic.ColCompatHelper.IterableOnce[(K, V1)]): NonEmptyMap[K, V1] =
     if (other.isEmpty) this else new NonEmptyMap(toMap ++ other.toMap)
 
   /**
