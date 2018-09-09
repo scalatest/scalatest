@@ -739,8 +739,9 @@ class NonEmptyMapSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(2 -> "2", 3 -> "3", 1 -> "1")
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to[Vector] shouldBe Vector(2 -> "2", 3 -> "3", 1 -> "1")
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer(2 -> "2", 3 -> "3", 1 -> "1")
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to(Vector) shouldBe Vector(2 -> "2", 3 -> "3", 1 -> "1")
   }
   it should "have a toArray method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toArray should === (Array(2 -> "2", 3 -> "3", 1 -> "1"))

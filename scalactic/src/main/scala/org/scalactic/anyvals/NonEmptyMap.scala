@@ -139,7 +139,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @return a new <code>NonEmptyMap</code> that contains all the elements of this <code>NonEmptyMap</code> followed by all elements of <code>other</code>.
     */
   def ++[V1 >: V](other: GenTraversableOnce[(K, V1)]): NonEmptyMap[K, V1] =
-    if (other.isEmpty) this else new NonEmptyMap(toMap ++ other)
+    if (other.isEmpty) this else new NonEmptyMap(toMap ++ other.toMap)
 
   /**
     * Fold left: applies a binary operator to a start value, <code>z</code>, and all entries of this <code>NonEmptyMap</code>, going left to right.
@@ -234,8 +234,8 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @param other the <code>GenTraversableOnce</code> to append
     * @return a new <code>NonEmptyMap</code> that contains all the elements of this <code>NonEmptyMap</code> followed by all elements of <code>other</code>.
     */
-  def ++:[V1 >: V](other: GenTraversableOnce[(K, V1)]): NonEmptyMap[K, V1] =
-    if (other.isEmpty) this else new NonEmptyMap(toMap ++ other)
+  def ++:[V1 >: V](other: org.scalactic.ColCompatHelper.IterableOnce[(K, V1)]): NonEmptyMap[K, V1] =
+    if (other.isEmpty) this else new NonEmptyMap(toMap ++ other.toMap)
 
   /**
     * Returns a new <code>NonEmptyMap</code> with the given entry added.
@@ -478,7 +478,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     */
   final def groupBy(f: ((K, V)) => K): Map[K, NonEmptyMap[K, V]] = {
     val mapKToMap = toMap.groupBy(f)
-    mapKToMap.mapValues { list => new NonEmptyMap(list) }
+    mapKToMap.mapValues { list => new NonEmptyMap(list) }.toMap
   }
 
   /**
@@ -754,7 +754,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @param op a binary operator that must be associative
     * @return a new <code>NonEmptyMap</code> containing the prefix scan of the elements in this <code>NonEmptyMap</code> 
     */
-  final def scan[V1 >: V](z: (K, V1))(op: ((K, V1), (K, V1)) => (K, V1)): NonEmptyMap[K, V1] = new NonEmptyMap(toMap.scan(z)(op))
+  final def scan[V1 >: V](z: (K, V1))(op: ((K, V1), (K, V1)) => (K, V1)): NonEmptyMap[K, V1] = new NonEmptyMap(toMap.scan(z)(op).toMap)
 
   /**
     * Groups entries in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
@@ -813,7 +813,9 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @tparam Col the collection type to build.
     * @return a new collection containing all entries of this <code>NonEmptyMap</code>.
     */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, (K, V), Col[(K, V) @uV]]): Col[(K, V) @uV] = toMap.to[Col](cbf)
+  //final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, (K, V), Col[(K, V) @uV]]): Col[(K, V) @uV] = toMap.to[Col](cbf)
+  final def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[(K, V), Col[(K, V) @ uV]]): Col[(K, V) @ uV] =
+    toMap.to(factory)
 
   /**
     * Converts this <code>NonEmptyMap</code> to an array.
@@ -887,13 +889,6 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
   override def toString: String = "NonEmptyMap(" + toMap.mkString(", ") + ")"
 
   /**
-    * Converts this <code>NonEmptyMap</code> to an unspecified Traversable.
-    *
-    * @return a <code>Traversable</code> containing all entries of this <code>NonEmptyMap</code>.
-    */
-  final def toTraversable: Traversable[(K, V)] = toMap.toTraversable
-
-  /**
     * Converts this <code>NonEmptyMap</code> of pairs into two <code>Iterable</code>s of the first and second half of each pair.
     *
     * @tparam L the type of the first half of the element pairs
@@ -940,14 +935,14 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     *     <code>NonEmptyMap</code>, <code>thatElem</code> values are used to pad the result. 
     */
   final def zipAll[O, V1 >: V](other: collection.Iterable[O], thisElem: (K, V1), otherElem: O): NonEmptyMap[(K, V1), O] =
-    new NonEmptyMap(toMap.zipAll(other, thisElem, otherElem))
+    new NonEmptyMap(toMap.zipAll(other, thisElem, otherElem).toMap)
 
   /**
     * Zips this <code>NonEmptyMap</code>  with its indices.
     *
     * @return A new <code>NonEmptyMap</code> containing pairs consisting of all elements of this <code>NonEmptyMap</code> paired with their index. Indices start at 0.
     */
-  final def zipWithIndex[V1 >: V]: NonEmptyMap[(K, V1), Int] = new NonEmptyMap(toMap.zipWithIndex)
+  final def zipWithIndex[V1 >: V]: NonEmptyMap[(K, V1), Int] = new NonEmptyMap(toMap.zipWithIndex.toMap)
 }
 
 /**
