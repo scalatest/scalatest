@@ -346,7 +346,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     *
     * @param arr the array to fill
     */
-  final def copyToArray(arr: Array[Char]): Unit = theString.copyToArray(arr)
+  final def copyToArray(arr: Array[Char]): Unit = theString.copyToArray(arr, 0)
 
   /**
     * Copies characters of this <code>NonEmptyString</code> to an array. Fills the given array <code>arr</code> with characters of this <code>NonEmptyString</code>, beginning at
@@ -570,7 +570,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     */
   final def groupBy[K](f: Char => K): Map[K, NonEmptyString] = {
     val mapKToString = theString.groupBy(f)
-    mapKToString.mapValues { list => new NonEmptyString(list) }
+    mapKToString.mapValues { list => new NonEmptyString(list) }.toMap
   }
 
   /**
@@ -1157,7 +1157,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param op a binary operator that must be associative
     * @return a new <code>NonEmptyString</code> containing the prefix scan of the elements in this <code>NonEmptyString</code> 
     */
-  final def scan(z: Char)(op: (Char, Char) => Char): NonEmptyString = new NonEmptyString(theString.scan(z)(op))
+  final def scan(z: Char)(op: (Char, Char) => Char): NonEmptyString = new NonEmptyString(theString.scan(z)(op).mkString)
 
   /**
     * Produces a <code>NonEmptyString</code> containing cumulative results of applying the operator going left to right.
@@ -1354,7 +1354,8 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @tparam Col the collection type to build.
     * @return a new collection containing all elements of this <code>NonEmptyString</code>. 
     */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, Char, Col[Char @uV]]): Col[Char @uV] = theString.to[Col](cbf)
+  final def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[Char, Col[Char @ uV]]): Col[Char @ uV] =
+    theString.to(factory)
 
   /**
     * Converts this <code>NonEmptyString</code> to an array.
@@ -1440,13 +1441,6 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
   override def toString: String = stringPrefix + "(" + theString + ")"
 
   /**
-    * Converts this <code>NonEmptyString</code> to an unspecified Traversable.
-    *
-    * @return a <code>Traversable</code> containing all characters of this <code>NonEmptyString</code>.
-    */
-  final def toTraversable: Traversable[Char] = theString.toTraversable
-
-  /**
     * Produces a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> and also all characters of a given <code>Every</code>.
     *
     * <p>
@@ -1462,7 +1456,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param that the <code>Every</code> to add.
     * @return a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> followed by all characters of <code>that</code> <code>Every</code>.
     */
-  final def union(that: Every[Char]): NonEmptyString = new NonEmptyString(theString union that.toVector)
+  final def union(that: Every[Char]): NonEmptyString = new NonEmptyString((theString union that.toVector).mkString)
 
   /**
     * Produces a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> and also all characters of a given <code>NonEmptyString</code>.
@@ -1480,7 +1474,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param that the <code>NonEmptyString</code> to add.
     * @return a new <code>NonEmptyString</code> that contains all elements of this <code>NonEmptyString</code> followed by all characters of <code>that</code>.
     */
-  final def union(that: NonEmptyString): NonEmptyString = new NonEmptyString(theString union that.theString)
+  final def union(that: NonEmptyString): NonEmptyString = new NonEmptyString((theString union that.theString).mkString)
 
   /**
     * Produces a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> and also all characters of a given <code>GenSeq</code>.
@@ -1498,7 +1492,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param that the <code>GenSeq</code> to add.
     * @return a new <code>NonEmptyString</code> that contains all elements of this <code>NonEmptyString</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
     */
-  final def union(that: GenSeq[Char]): NonEmptyString = new NonEmptyString(theString.union(that))
+  final def union(that: GenSeq[Char]): NonEmptyString = new NonEmptyString((theString.union(that)).mkString)
 
   /**
     * Converts this <code>NonEmptyString</code> of pairs into two <code>NonEmptyString</code>s of the first and second half of each pair. 

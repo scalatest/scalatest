@@ -1099,10 +1099,11 @@ class NonEmptyStringSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyString("1").to[List] shouldBe List('1')
-    NonEmptyString("123").to[List] shouldBe List('1', '2', '3')
-    NonEmptyString("123").to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer('1', '2', '3')
-    NonEmptyString("123").to[Vector] shouldBe Vector('1', '2', '3')
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyString("1").to(List) shouldBe List('1')
+    NonEmptyString("123").to(List) shouldBe List('1', '2', '3')
+    NonEmptyString("123").to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer('1', '2', '3')
+    NonEmptyString("123").to(Vector) shouldBe Vector('1', '2', '3')
   }
   it should "have a toArray method" in {
     NonEmptyString("123").toArray should === (Array('1', '2', '3'))

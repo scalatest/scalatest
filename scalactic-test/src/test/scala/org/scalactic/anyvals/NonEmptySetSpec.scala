@@ -654,7 +654,7 @@ class NonEmptySetSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    import org.scalactic.ColCompatHelper._
+    import org.scalactic.ColCompatHelper.Factory._
     NonEmptySet(1).to(Set) shouldBe Set(1)
     NonEmptySet(1, 2, 3).to(Set) shouldBe Set(1, 2, 3)
     NonEmptySet(1, 2, 3).to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer(2, 3, 1)
