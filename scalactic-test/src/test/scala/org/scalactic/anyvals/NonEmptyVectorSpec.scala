@@ -1202,10 +1202,11 @@ class NonEmptyVectorSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyVector(1).to[Vector] shouldBe Vector(1)
-    NonEmptyVector(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
-    NonEmptyVector(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(1, 2, 3)
-    NonEmptyVector(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyVector(1).to(Vector) shouldBe Vector(1)
+    NonEmptyVector(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
+    NonEmptyVector(1, 2, 3).to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer(1, 2, 3)
+    NonEmptyVector(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
   }
   it should "have a toArray method" in {
     NonEmptyVector(1, 2, 3).toArray should === (Array(1, 2, 3))
