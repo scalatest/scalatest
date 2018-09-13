@@ -29,6 +29,7 @@ import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import TripleEqualsSupport.TripleEqualsInvocationOnSpread
+import ArrayHelper.deep
 // SKIP-SCALATESTJS,NATIVE-START
 import MatchersHelper.accessProperty
 import MatchersHelper.matchSymbolToPredicateMethod
@@ -5176,7 +5177,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def apply(right: Symbol): Matcher[Array[T]] =
       new Matcher[Array[T]] {
-        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false, prettifier, pos)
+        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(deep(left), right, false, false, prettifier, pos)
       }
 
     /**
