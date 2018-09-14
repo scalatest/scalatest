@@ -19,6 +19,7 @@ import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic.ArrayHelper.deep
 
 /**
  * Exception class that encapsulates information about the stack depth at which the line of code that failed resides,
@@ -209,7 +210,7 @@ abstract class StackDepthException(
         message == that.message &&
         cause == that.cause &&
         failedCodeStackDepth == that.failedCodeStackDepth &&
-        getStackTrace.deep == that.getStackTrace.deep
+        deep(getStackTrace) == deep(that.getStackTrace)
       case _ => false
     }
 
