@@ -54,7 +54,7 @@ private[scalatest] class JavaMapWrapper[K, V](val underlying: java.util.Map[K, V
     newJavaMap.put(key, value)
     new JavaMapWrapper[K, W](newJavaMap)
   }
-  override def - (key: K): scala.collection.Map[K, V] = {
+  def - (key: K): scala.collection.Map[K, V] = {
     val newJavaMap = new java.util.LinkedHashMap[K, V](underlying)
     newJavaMap.remove(key)
     new JavaMapWrapper[K, V](underlying)
