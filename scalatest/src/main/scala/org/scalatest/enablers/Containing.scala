@@ -18,6 +18,8 @@ package org.scalatest.enablers
 import org.scalactic.{Equality, NormalizingEquality, Every}
 import scala.collection.{GenTraversableOnce, GenTraversable}
 
+import org.scalactic.ColCompatHelper.aggregate
+
 
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
@@ -126,9 +128,9 @@ trait ContainingImpls {
 
   private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
     // aggregate version is more verbose, but it allows parallel execution.
-    right.aggregate(Set.empty[Any])(
+    aggregate(right, Set.empty[Any])(
       { case (fs, r) =>
-        if (left.exists(t => equality.areEqual(t, r))) {
+        if (left.toIterable.exists(t => equality.areEqual(t, r))) {
           // r is in the left
           if (fs.size != 0) // This .size should be safe, it won't go > 1
             return fs + r // fail early by returning early, hmm..  not so 'functional'??
@@ -149,9 +151,9 @@ trait ContainingImpls {
   }
 
   private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
-    right.aggregate(None)(
+    aggregate(right, None)(
       { case (f, r) =>
-        if (left.exists(t => equality.areEqual(t, r)))
+        if (left.toIterable.exists(t => equality.areEqual(t, r)))
           return Some(r) // r is in the left, fail early by returning.
         else
           None // r is not in the left
