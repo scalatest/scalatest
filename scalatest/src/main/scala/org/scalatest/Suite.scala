@@ -1676,10 +1676,12 @@ used for test events like succeeded/failed, etc.
     lines.map(line => line.split("\n").map(indentation(level) + _).mkString("\n"))
     
   def substituteHtmlSpace(value: String) = value.replaceAll(" ", "&nbsp;")
-    
+
+  // SKIP-SCALATESTJS,NATIVE-START
   def unparsedXml(value: String) = scala.xml.Unparsed(value)
   
   def xmlContent(value: String) = unparsedXml(substituteHtmlSpace(value))
+  // SKIP-SCALATESTJS,NATIVE-END
 
   def analysisFromThrowable(throwable: Throwable): scala.collection.immutable.IndexedSeq[String] =
     throwable match {
@@ -2050,7 +2052,7 @@ used for test events like succeeded/failed, etc.
         if (chosenStyleSet.size == 1)
           new NotAllowedException(Resources.notTheChosenStyle(styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
         else
-          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet.iterator)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
+          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
       throw e
     }
   }
