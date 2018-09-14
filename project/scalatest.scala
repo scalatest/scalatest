@@ -210,7 +210,6 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
-          //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",   This is needed only by SbtCommandParser, but we are not support it currently.
           "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional"
         )
       case _ =>
@@ -239,13 +238,18 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
-  def crossBuildTestLibraryDependencies(theScalaVersion: String) = {
-    CrossVersion.partialVersion(theScalaVersion) match {
+  def crossBuildTestLibraryDependencies = Def.setting {
+    CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
-        Seq.empty
-        //Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2")
+        Seq(
+          // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
+          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
+          "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1"
+        )
+
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
 
       case other =>
         Seq.empty
@@ -352,7 +356,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -363,7 +367,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies ++= crossBuildTestLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value)
