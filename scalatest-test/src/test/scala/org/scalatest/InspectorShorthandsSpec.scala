@@ -30,9 +30,6 @@ import matchers.BePropertyMatchResult
 import matchers.BePropertyMatcher
 import matchers.HavePropertyMatchResult
 import matchers.HavePropertyMatcher
-// SKIP-SCALATESTJS-START
-import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
 

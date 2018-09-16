@@ -25,9 +25,6 @@ import org.scalatest.prop.Checkers
 import Integer.MIN_VALUE
 import org.scalatest.enablers.Size
 import org.scalatest.exceptions.TestFailedException
-// SKIP-SCALATESTJS-START
-import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 

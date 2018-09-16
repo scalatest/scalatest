@@ -21,9 +21,6 @@ import scala.collection.mutable.ArrayBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
-// SKIP-SCALATESTJS-START
-import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class NonEmptyArraySpec extends UnitSpec {
   "A NonEmptyArray" can "be constructed with one element" in {
