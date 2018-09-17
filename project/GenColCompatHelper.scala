@@ -53,6 +53,8 @@ object GenColCompatHelper {
           |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
+          |  object Factory {}
+          |
           |}
           |
         """.stripMargin
