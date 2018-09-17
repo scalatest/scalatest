@@ -334,7 +334,7 @@ trait GenInspectorsShorthandsBase {
         new FailEarlySucceededIndexesHelperMethodTemplate +*/
         new JavaColHelperMethodTemplate("javaArrayList", "java.util.ArrayList") +
         new JavaColHelperMethodTemplate("javaHashSet", "java.util.HashSet") +
-        new JavaColHelperMethodTemplate("javaLinkedList", "java.util.LinkedList") +
+        new JavaColHelperMethodTemplate("javaListBuffer", "java.util.ListBuffer") +
         new JavaColHelperMethodTemplate("javaStack", "java.util.Stack") +
         new JavaColHelperMethodTemplate("javaTreeSet", "java.util.TreeSet") +
         new JavaColHelperMethodTemplate("javaVector", "java.util.Vector") +
@@ -487,7 +487,7 @@ trait GenInspectorsShorthandsBase {
     List[(String, String)](
       (colTexts.map("javaArrayList(" + _ + ")").mkString(", ") , "xs"),
       (colTexts.map("javaHashSet(" + _ + ")").mkString(", ") , "xs"),
-      (colTexts.map("javaLinkedList(" + _ + ")").mkString(", ") , "xs"),
+      (colTexts.map("javaListBuffer(" + _ + ")").mkString(", ") , "xs"),
       (colTexts.map("javaStack(" + _ + ")").mkString(", ") , "xs"),
       (colTexts.map("javaTreeSet(" + _ + ")").mkString(", ") , "xs"),
       (colTexts.map("javaVector(" + _ + ")").mkString(", ") , "xs"),
@@ -508,7 +508,7 @@ trait GenInspectorsShorthandsBase {
     List[(String, String)](
       ("javaArrayList(List(" + mapText + "))", "xs"),
       ("javaHashSet(List(" + mapText + "))", "xs"),
-      ("javaLinkedList(List(" + mapText + "))", "xs"),
+      ("javaListBuffer(List(" + mapText + "))", "xs"),
       ("javaVector(List(" + mapText + "))", "xs"),
       ("javaArrayDeque(List(" + mapText + "))", "xs"),
       ("javaConcurrentLinkedQueue(List(" + mapText + "))", "xs"),

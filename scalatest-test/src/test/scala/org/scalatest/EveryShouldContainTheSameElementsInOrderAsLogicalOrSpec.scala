@@ -19,7 +19,7 @@ import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
+import scala.collection.mutable.ListBuffer
 import Matchers._
 import exceptions.TestFailedException
 
@@ -68,242 +68,242 @@ class EveryShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec {
     "when used with (contain theSameElementsInOrderAs xx or contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee") or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum") or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee") or contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or contain theSameElementsInOrderAs LinkedList("happy", "birthday", "to", "you"))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum") or contain theSameElementsInOrderAs ListBuffer("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or (contain theSameElementsInOrderAs LinkedList("FIE", "FEE", "FAM", "FOE")))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or (contain theSameElementsInOrderAs ListBuffer("FIE", "FEE", "FAM", "FOE")))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs LinkedList("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ") or contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
 
     "when used with (equal xx and contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (equal (fumList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (equal (toList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (equal (fumList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+        fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (equal (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (equal (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (equal (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))
+        fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) or (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM")))
+          fumList should (equal (toList) or (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) or contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs LinkedList(" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer(" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
 
     "when used with (be xx and contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) or (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM")))
+          fumList should (be (toList) or (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
     }
 
     "when used with (contain theSameElementsInOrderAs xx and be xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or be (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or be (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or be (toList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("fum", "foe", "fie", "fee") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or be (toList))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fee", "fie", "foe", "fum"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (toList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (toList))
+          fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (toList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (after being lowerCased and trimmed)
       }
     }
 
     "when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         val e1 = intercept[TestFailedException] {
-          fumList should (not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+          fumList should (not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fum", "foe", "fie", "fee"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fum", "foe", "fie", "fee"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))
         val e1 = intercept[TestFailedException] {
-          fumList should (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))
+          fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))
         }
-        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
     }
 
     "when used with (not equal xx and not contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         val e1 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+          fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))
+        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))
         val e2 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) or (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE"))))
+          fumList should (not equal (fumList) or (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE"))))
         }
-        checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
     }
 
     "when used with (not be xx and not contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not be (fumList) or not contain theSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
-        fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+        fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("fee", "fie", "foe", "fum")))
+        fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or not contain theSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
+          fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not be (fumList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
-        fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))
+        fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or (not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE"))))
+          fumList should (not be (fumList) or (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE"))))
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
+        (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
         (fumList should (not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) or not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -325,156 +325,156 @@ class EveryShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec {
     "when used with (contain theSameElementsInOrderAs xx and contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        all (list1s) should (contain theSameElementsInOrderAs LinkedList(3, 2, 5) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        all (list1s) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3) or contain theSameElementsInOrderAs LinkedList(2, 3, 4))
+        all (list1s) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        all (list1s) should (contain theSameElementsInOrderAs ListBuffer(3, 2, 5) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        all (list1s) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3) or contain theSameElementsInOrderAs ListBuffer(2, 3, 4))
 
-        atLeast (2, lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        atLeast (2, lists) should (contain theSameElementsInOrderAs LinkedList(3, 6, 5) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        atLeast (2, lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3) or contain theSameElementsInOrderAs LinkedList(8, 3, 4))
+        atLeast (2, lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        atLeast (2, lists) should (contain theSameElementsInOrderAs ListBuffer(3, 6, 5) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        atLeast (2, lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3) or contain theSameElementsInOrderAs ListBuffer(8, 3, 4))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (contain theSameElementsInOrderAs LinkedList(1, 2, 3) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
+          all (lists) should (contain theSameElementsInOrderAs ListBuffer(1, 2, 3) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(1, 2, 3)) + ", and " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(1, 2, 3)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(1, 2, 3)) + ", and " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(1, 2, 3)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HELLO") or contain theSameElementsInOrderAs LinkedList("hi", "hello"))
-        all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HELLO", "HO") or contain theSameElementsInOrderAs LinkedList("hi", "hello"))
-        all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HELLO") or contain theSameElementsInOrderAs LinkedList("hello", "ho"))
+        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))
+        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))
+        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HELLO", "HO") or contain theSameElementsInOrderAs LinkedList("hello", "ho"))
+          all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HELLO", "HO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HELLO") or contain theSameElementsInOrderAs LinkedList("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HELLO", "HO") or contain theSameElementsInOrderAs LinkedList("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HI", "HELLO") or contain theSameElementsInOrderAs LinkedList("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs LinkedList("HELLO", "HO") or contain theSameElementsInOrderAs LinkedList("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HELLO", "HO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
 
     "when used with (be xx and contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (be (Many(1, 2, 3)) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        all (list1s) should (be (Many(2, 3, 4)) or contain theSameElementsInOrderAs LinkedList(1, 2, 3))
-        all (list1s) should (be (Many(1, 2, 3)) or contain theSameElementsInOrderAs LinkedList(2, 3, 4))
+        all (list1s) should (be (Many(1, 2, 3)) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        all (list1s) should (be (Many(2, 3, 4)) or contain theSameElementsInOrderAs ListBuffer(1, 2, 3))
+        all (list1s) should (be (Many(1, 2, 3)) or contain theSameElementsInOrderAs ListBuffer(2, 3, 4))
 
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (be (Many(2, 3, 4)) or contain theSameElementsInOrderAs LinkedList(2, 3, 4))
+          all (list1s) should (be (Many(2, 3, 4)) or contain theSameElementsInOrderAs ListBuffer(2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(1, 2, 3)) + " was not equal to " + decorateToStringValue(prettifier, Many(2, 3, 4)) + ", and " + decorateToStringValue(prettifier, Many(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(2, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(1, 2, 3)) + " was not equal to " + decorateToStringValue(prettifier, Many(2, 3, 4)) + ", and " + decorateToStringValue(prettifier, Many(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(2, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs LinkedList("HI", "HELLO"))
-        all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs LinkedList("HI", "HELLO"))
-        all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs LinkedList("HELLO", "HI"))
+        all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))
+        all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))
+        all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs LinkedList("HELLO", "HI"))
+          all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs LinkedList("HI", "HELLO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs LinkedList("HI", "HELLO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs LinkedList("HELLO", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs LinkedList("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
 
     "when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (not contain theSameElementsInOrderAs (LinkedList(3, 2, 8)) or not contain theSameElementsInOrderAs (LinkedList(8, 3, 4)))
-        all (list1s) should (not contain theSameElementsInOrderAs (LinkedList(1, 2, 3)) or not contain theSameElementsInOrderAs (LinkedList(8, 3, 4)))
-        all (list1s) should (not contain theSameElementsInOrderAs (LinkedList(3, 2, 8)) or not contain theSameElementsInOrderAs (LinkedList(1, 2, 3)))
+        all (list1s) should (not contain theSameElementsInOrderAs (ListBuffer(3, 2, 8)) or not contain theSameElementsInOrderAs (ListBuffer(8, 3, 4)))
+        all (list1s) should (not contain theSameElementsInOrderAs (ListBuffer(1, 2, 3)) or not contain theSameElementsInOrderAs (ListBuffer(8, 3, 4)))
+        all (list1s) should (not contain theSameElementsInOrderAs (ListBuffer(3, 2, 8)) or not contain theSameElementsInOrderAs (ListBuffer(1, 2, 3)))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not contain theSameElementsInOrderAs (LinkedList(2, 3, 4)) or not contain theSameElementsInOrderAs (LinkedList(2, 3, 4)))
+          all (lists) should (not contain theSameElementsInOrderAs (ListBuffer(2, 3, 4)) or not contain theSameElementsInOrderAs (ListBuffer(2, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(2, 3, 4)) + ", and " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(2, 3, 4)) + ", and " + decorateToStringValue(prettifier, Many(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not contain theSameElementsInOrderAs (LinkedList("hello", "hi")))
-        all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")) or not contain theSameElementsInOrderAs (LinkedList("hello", "hi")))
-        all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not contain theSameElementsInOrderAs (LinkedList("hi", "hello")))
+        all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))
+        all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))
+        all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")) or not contain theSameElementsInOrderAs (LinkedList("hi", "hello")))
+          all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HI", "HELLO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not contain theSameElementsInOrderAs (LinkedList("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")) or not contain theSameElementsInOrderAs (LinkedList("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not contain theSameElementsInOrderAs (LinkedList("hi", "hello")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")) or not contain theSameElementsInOrderAs (LinkedList("hi", "hello")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HI", "HELLO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
 
     "when used with (not be xx and not contain theSameElementsInOrderAs xx)" - {
 
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (not be (One(2)) or not contain theSameElementsInOrderAs (LinkedList(8, 3, 4)))
-        all (list1s) should (not be (Many(1, 2, 3)) or not contain theSameElementsInOrderAs (LinkedList(8, 3, 4)))
-        all (list1s) should (not be (One(2)) or not contain theSameElementsInOrderAs (LinkedList(1, 2, 3)))
+        all (list1s) should (not be (One(2)) or not contain theSameElementsInOrderAs (ListBuffer(8, 3, 4)))
+        all (list1s) should (not be (Many(1, 2, 3)) or not contain theSameElementsInOrderAs (ListBuffer(8, 3, 4)))
+        all (list1s) should (not be (One(2)) or not contain theSameElementsInOrderAs (ListBuffer(1, 2, 3)))
 
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (not be (Many(1, 2, 3)) or not contain theSameElementsInOrderAs (LinkedList(1, 2, 3)))
+          all (list1s) should (not be (Many(1, 2, 3)) or not contain theSameElementsInOrderAs (ListBuffer(1, 2, 3)))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(1, 2, 3)) + " was equal to " + decorateToStringValue(prettifier, Many(1, 2, 3)) + ", and " + decorateToStringValue(prettifier, Many(1, 2, 3)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList(1, 2, 3)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(1, 2, 3)) + " was equal to " + decorateToStringValue(prettifier, Many(1, 2, 3)) + ", and " + decorateToStringValue(prettifier, Many(1, 2, 3)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer(1, 2, 3)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (LinkedList("HELLO", "HO")))
-        all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (LinkedList("HELLO", "HO")))
-        all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")))
+        all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))
+        all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))
+        all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")))
+          all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (LinkedList("HELLO", "HO")))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (LinkedList("HELLO", "HO")))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (Many("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
   }

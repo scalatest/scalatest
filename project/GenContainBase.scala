@@ -142,7 +142,7 @@ class GenContainBase {
       "List" -> "Array",
       "listsNil" -> "listsArray",
       "Nil" -> "Array()",
-      "LinkedArray" -> "LinkedList"
+      "LinkedArray" -> "ListBuffer"
     )
 
   val sortedSetMapping =
@@ -155,7 +155,7 @@ class GenContainBase {
       "Nil" -> "SortedSet.empty",
       "LinkedSortedSet" -> "List",
       "//ADDITIONAL//" -> "import scala.collection.SortedSet",
-      "LinkedsortedSet" -> "LinkedList"
+      "LinkedsortedSet" -> "ListBuffer"
     )
 
   val javaSortedSetMapping =
@@ -168,7 +168,7 @@ class GenContainBase {
       "Nil" -> "javaSortedSet()",
       "LinkedSortedSet" -> "List",
       "//ADDITIONAL//" -> "import java.util.SortedSet",
-      "LinkedjavaSortedSet" -> "LinkedList"
+      "LinkedjavaSortedSet" -> "ListBuffer"
     )
 
   val javaColMapping =
@@ -180,7 +180,7 @@ class GenContainBase {
       "List\\(" -> "javaList(",
       "listsNil" -> "listsJavaCol",
       "Nil" -> "new java.util.ArrayList",
-      "LinkedjavaList" -> "LinkedList",
+      "LinkedjavaList" -> "ListBuffer",
       "//ADDITIONAL//" -> "import scala.collection.JavaConverters._"
     )
 
@@ -465,7 +465,7 @@ class GenContainBase {
       "\\(1, 3, Nil\\)" -> "(1 -> 1, 3 -> 3, Map())",
       "List\\(" -> "scala.collection.mutable.LinkedHashMap(",
       //"List" -> "Map",
-      "Linkedscala.collection.mutable.LinkedHashMap" -> "scala.collection.mutable.LinkedList",
+      "Linkedscala.collection.mutable.LinkedHashMap" -> "scala.collection.mutable.ListBuffer",
       //"LinkedMap" -> "LinkedHashMap",
       "listsNil" -> "listsMap",
       "Nil" -> "scala.collection.mutable.LinkedHashMap()"
@@ -763,7 +763,7 @@ class GenContainBase {
       "List" -> "javaMap",
       "listsNil" -> "listsMap",
       "Nil" -> "javaMap()",
-      "LinkedjavaMap" -> "LinkedList"
+      "LinkedjavaMap" -> "ListBuffer"
     )
 
   val sortedJavaMapMapping =
@@ -773,7 +773,7 @@ class GenContainBase {
           .replace("java.util.Map[", "java.util.SortedMap["))
     }) ++
       List(
-        "LinkedjavaSortedMap" -> "LinkedList"
+        "LinkedjavaSortedMap" -> "ListBuffer"
       )
 
   val stringMapping =
@@ -793,7 +793,7 @@ class GenContainBase {
       "defaultEquality\\[String\\]" -> "defaultEquality[Char]",
       " and trimmed" -> "",
       "//ADDITIONAL//" -> (stringLowerCased),
-      "LinkedList" -> "TempL",
+      "ListBuffer" -> "TempL",
       "List\\[String\\]" -> "String",
       "List\\[Int\\]" -> "String",
       "List\\(\\\"fum\\\"\\)" -> "\"u\"",
@@ -866,7 +866,7 @@ class GenContainBase {
       "List\\(\\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hboy\"",
       "List\\(\\\"happy\\\", \\\"happy\\\", \\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\", \\\"too\\\"\\)" -> "\"hhhboyz\"",
       "List\\(\\\"happy\\\", \\\"happy\\\", \\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hhhboy\"",
-      "TempL" -> "LinkedList",
+      "TempL" -> "ListBuffer",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'u')",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fie\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'i', 'u')",
       "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "('i', 'e', 'u', 'p')",
