@@ -1290,11 +1290,6 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
     Chain(1).toString should === ("NonEmptyList(1)")
   }
-  it should "have a toTraversable method" in {
-    Chain(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    Chain("a", "b").toTraversable should === (Traversable("a", "b"))
-    Chain(1).toTraversable should === (Traversable(1))
-  }
   it should "have a toVector method" in {
     Chain(1, 2, 3).toVector should === (Vector(1, 2, 3))
     Chain("a", "b").toVector should === (Vector("a", "b"))
