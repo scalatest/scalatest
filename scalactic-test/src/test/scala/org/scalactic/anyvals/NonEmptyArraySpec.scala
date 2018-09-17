@@ -22,6 +22,8 @@ import scala.collection.mutable.ArrayBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+import org.scalatest.CompatParColls.Converters._
+
 class NonEmptyArraySpec extends UnitSpec {
   "A NonEmptyArray" can "be constructed with one element" in {
     val onesie = NonEmptyArray(3)
@@ -1360,10 +1362,11 @@ class NonEmptyArraySpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyArray(1).to[Array] shouldBe Array(1)
-    NonEmptyArray(1, 2, 3).to[Array] shouldBe Array(1, 2, 3)
-    NonEmptyArray(1, 2, 3).to[scala.collection.mutable.ArrayBuffer] shouldBe ArrayBuffer(1, 2, 3)
-    NonEmptyArray(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyArray(1).to(Array) shouldBe Array(1)
+    NonEmptyArray(1, 2, 3).to(Array) shouldBe Array(1, 2, 3)
+    NonEmptyArray(1, 2, 3).to(scala.collection.mutable.ArrayBuffer) shouldBe ArrayBuffer(1, 2, 3)
+    NonEmptyArray(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
   }
   it should "have a toList method" in {
     NonEmptyArray(1, 2, 3).toList should === (List(1, 2, 3))
@@ -1422,11 +1425,6 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3).toString should === ("NonEmptyArray(1, 2, 3)")
     NonEmptyArray(1, 2, 3).toString should === ("NonEmptyArray(1, 2, 3)")
     NonEmptyArray(1).toString should === ("NonEmptyArray(1)")
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyArray(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    NonEmptyArray("a", "b").toTraversable should === (Traversable("a", "b"))
-    NonEmptyArray(1).toTraversable should === (Traversable(1))
   }
   it should "have a toVector method" in {
     NonEmptyArray(1, 2, 3).toVector should === (Vector(1, 2, 3))

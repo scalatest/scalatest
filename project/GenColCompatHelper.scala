@@ -108,6 +108,9 @@ object GenColCompatHelper {
           |    implicit def genericCompanionToCBF[A, CC[X] <: scala.collection.GenTraversable[X]](
           |      fact: scala.collection.generic.GenericCompanion[CC]): scala.collection.generic.CanBuildFrom[Any, A, CC[A]] =
           |      simpleCBF(fact.newBuilder[A])
+          |
+          |    implicit def arrayCompanionToCBF[A: scala.reflect.ClassTag](fact: Array.type): scala.collection.generic.CanBuildFrom[Any, A, Array[A]] =
+          |      simpleCBF(Array.newBuilder[A])
           |  }
           |
           |}
