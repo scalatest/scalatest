@@ -19,6 +19,10 @@ import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
+// SKIP-SCALATESTJS,NATIVE-START
+import org.scalatest.CompatParColls.Converters._
+// SKIP-SCALATESTJS,NATIVE-END
+
 class ChainSpec extends UnitSpec {
   "A Chain" can "be constructed with one element" in {
     val onesie = Chain(3)

@@ -21,6 +21,7 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 // SKIP-SCALATESTJS,NATIVE-START
 import SharedHelpers.serializeRoundtrip
+import org.scalatest.CompatParColls.Converters._
 // SKIP-SCALATESTJS,NATIVE-END
 
 class EverySpec extends UnitSpec {

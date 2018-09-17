@@ -357,6 +357,11 @@ object ScalatestBuild extends Build {
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      sourceGenerators in Compile += {
+        Def.task{
+          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -370,7 +375,8 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
-          GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       publishArtifact := false,
@@ -476,6 +482,7 @@ object ScalatestBuild extends Build {
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
@@ -526,6 +533,7 @@ object ScalatestBuild extends Build {
           GenScalacticJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacroJS, Compile, packageBin).value,
       // include the macro sources in the main source jar
@@ -613,7 +621,7 @@ object ScalatestBuild extends Build {
       sourceGenerators in Test += Def.task {
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
       }.taskValue, 
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
@@ -644,7 +652,7 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTestNative = Project("scalacticTestNative", file("scalactic-test.native"))
@@ -705,6 +713,7 @@ object ScalatestBuild extends Build {
          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
        }.taskValue
      },
+     scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
      docTaskSetting,
      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
@@ -779,7 +788,7 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification"))
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification"))
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
@@ -827,6 +836,7 @@ object ScalatestBuild extends Build {
           //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
       scalatestJSDocTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -894,7 +904,7 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification")),
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -1258,7 +1268,7 @@ object ScalatestBuild extends Build {
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := buildScalaVersion,
-    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10") Seq.empty else Seq("-Ypartial-unification")),
+    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")) ++ (if (scalaVersion.value.startsWith("2.13.0-M4")) Seq("-Xsource:2.12") else Seq.empty),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies.value,
     libraryDependencies ++= gentestsLibraryDependencies,
