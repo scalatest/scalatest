@@ -142,7 +142,7 @@ class GenContainBase {
       "List" -> "Array",
       "listsNil" -> "listsArray",
       "Nil" -> "Array()",
-      "LinkedArray" -> "ListBuffer"
+      "ArrayBuffer" -> "ListBuffer"
     )
 
   val sortedSetMapping =
@@ -153,9 +153,9 @@ class GenContainBase {
       "List\\(" -> "sortedSet(",
       "listsNil" -> "listsSortedSet",
       "Nil" -> "SortedSet.empty",
-      "LinkedSortedSet" -> "List",
+      "SortedSetBuffer" -> "List",
       "//ADDITIONAL//" -> "import scala.collection.SortedSet",
-      "LinkedsortedSet" -> "ListBuffer"
+      "sortedSetBuffer" -> "ListBuffer"
     )
 
   val javaSortedSetMapping =
@@ -166,9 +166,9 @@ class GenContainBase {
       "List\\(" -> "javaSortedSet(",
       "listsNil" -> "listsJavaSortedSet",
       "Nil" -> "javaSortedSet()",
-      "LinkedSortedSet" -> "List",
+      "SortedSetBuffer" -> "List",
       "//ADDITIONAL//" -> "import java.util.SortedSet",
-      "LinkedjavaSortedSet" -> "ListBuffer"
+      "javaSortedSetBuffer" -> "ListBuffer"
     )
 
   val javaColMapping =
@@ -773,7 +773,7 @@ class GenContainBase {
           .replace("java.util.Map[", "java.util.SortedMap["))
     }) ++
       List(
-        "LinkedjavaSortedMap" -> "ListBuffer"
+        "javaSortedMapBuffer" -> "ListBuffer"
       )
 
   val stringMapping =
