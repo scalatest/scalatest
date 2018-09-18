@@ -22,6 +22,8 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+import org.scalatest.CompatParColls.Converters._
+
 class NonEmptySetSpec extends UnitSpec {
   "A NonEmptySet" can "be constructed with one element" in {
     val onesie = NonEmptySet(3)

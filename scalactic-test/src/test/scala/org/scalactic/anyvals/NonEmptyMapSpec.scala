@@ -22,6 +22,8 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+import org.scalatest.CompatParColls.Converters._
+
 class NonEmptyMapSpec extends UnitSpec {
   "A NonEmptyMap" can "be constructed with one element" in {
     val onesie = NonEmptyMap(3 -> "three")
@@ -795,11 +797,6 @@ class NonEmptyMapSpec extends UnitSpec {
   it should "have a toString method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toString should === ("NonEmptyMap(2 -> 2, 3 -> 3, 1 -> 1)")
     NonEmptyMap(1 -> "1").toString should === ("NonEmptyMap(1 -> 1)")
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toTraversable should === (Map(2 -> "2", 3 -> "3", 1 -> "1"))
-    NonEmptyMap("a" -> "A", "b" -> "B").toTraversable should === (Map("b" -> "B", "a" -> "A"))
-    NonEmptyMap(1 -> "1").toTraversable should === (Map(1 -> "1"))
   }
   it should "have a toVector method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toVector should === (Vector(2 -> "2", 3 -> "3", 1 -> "1"))

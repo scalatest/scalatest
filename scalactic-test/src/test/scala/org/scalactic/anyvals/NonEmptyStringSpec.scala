@@ -22,6 +22,8 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+import org.scalatest.CompatParColls.Converters._
+
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {
     val onesie = NonEmptyString("3")
@@ -1153,11 +1155,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").toStream should === (Stream('1', '2', '3'))
     NonEmptyString("ab").toStream should === (Stream('a', 'b'))
     NonEmptyString("1").toStream should === (Stream('1'))
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyString("123").toTraversable should === (Traversable('1', '2', '3'))
-    NonEmptyString("ab").toTraversable should === (Traversable('a', 'b'))
-    NonEmptyString("1").toTraversable should === (Traversable('1'))
   }
   it should "have a toVector method" in {
     NonEmptyString("123").toVector should === (Vector('1', '2', '3'))

@@ -22,6 +22,8 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
+import org.scalatest.CompatParColls.Converters._
+
 class NonEmptyListSpec extends UnitSpec {
   "A NonEmptyList" can "be constructed with one element" in {
     val onesie = NonEmptyList(3)
@@ -1288,11 +1290,6 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
     NonEmptyList(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
     NonEmptyList(1).toString should === ("NonEmptyList(1)")
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyList(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    NonEmptyList("a", "b").toTraversable should === (Traversable("a", "b"))
-    NonEmptyList(1).toTraversable should === (Traversable(1))
   }
   it should "have a toVector method" in {
     NonEmptyList(1, 2, 3).toVector should === (Vector(1, 2, 3))
