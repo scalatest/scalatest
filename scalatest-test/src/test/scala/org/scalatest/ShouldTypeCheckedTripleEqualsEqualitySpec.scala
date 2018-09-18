@@ -26,6 +26,8 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
 import Matchers._
 
+import org.scalactic.ArrayHelper.deep
+
 class ShouldTypeCheckedTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {
 
   describe("the === operator should use the appropriate Equality type class") {
@@ -457,7 +459,7 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends FunSpec with NonImplicit
       Array(1, 2, 3) should === (Array(1, 2, 3))
       Array(1, 2, 3) should !== (Array(1, 2, 4))
       implicit val e = new Equality[Array[Int]] {
-        def areEqual(a: Array[Int], b: Any): Boolean = a.deep != b.asInstanceOf[Array[Int]].deep
+        def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
       }
       Array(1, 2, 3) should !== (Array(1, 2, 3))
       Array(1, 2, 3) should === (Array(1, 2, 4))
