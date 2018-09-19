@@ -40,7 +40,7 @@ trait GenInspectorsShorthandsBase {
 
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
+      "\" + decorateToStringValue(prettifier, deep(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + "))) + \""
   }
 
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -71,7 +71,7 @@ trait GenInspectorsShorthandsBase {
 
   class DynamicNextArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + " + errorFun + "[" + colType + "](itr, " + errorValue + ").deep + \""
+      "\" + deep(" + errorFun + "[" + colType + "](itr, " + errorValue + ")) + \""
   }
 
   class DynamicNextElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -1062,7 +1062,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAllSucceededSpec"
@@ -1099,7 +1101,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1140,7 +1144,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAtLeastSucceededSpec"
@@ -1358,7 +1364,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1398,7 +1406,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForEverySucceededSpec"
@@ -1617,7 +1627,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1657,7 +1669,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForExactlySucceededSpec"
@@ -1877,7 +1891,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1917,7 +1933,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForNoSucceededSpec"
@@ -2135,7 +2153,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -2175,7 +2195,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForBetweenSucceededSpec"
@@ -2395,7 +2417,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -2435,7 +2459,9 @@ trait GenInspectorsShorthandsBase {
               "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
               "collection.GenTraversable",
               "collection.GenMap",
-              "org.scalatest.refspec.RefSpec"
+              "org.scalatest.refspec.RefSpec",
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAtMostSucceededSpec"
@@ -2665,7 +2691,9 @@ trait GenInspectorsShorthandsBase {
                 "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
                 "collection.GenTraversable",
                 "collection.GenMap",
-                "org.scalatest.refspec.RefSpec"
+                "org.scalatest.refspec.RefSpec",
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
