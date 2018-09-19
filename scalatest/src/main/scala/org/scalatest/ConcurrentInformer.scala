@@ -191,7 +191,7 @@ private[scalatest] object MessageRecorder {
 // (theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, theTest: TestLeaf, includeIcon: Boolean. thread: Thread)
 private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Informer {
 
-  import java.util.concurrent.ConcurrentLinkedQueue
+  import org.scalatest.ConcurrentLinkedQueue
   import scala.collection.JavaConverters._
 
   type Tup = (String, Option[Any], Thread, Boolean)
@@ -223,7 +223,7 @@ private[scalatest] object PathMessageRecordingInformer {
 
 private[scalatest] class PathMessageRecordingNotifier(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => NoteProvided) extends ThreadAwareness with Notifier {
 
-  import java.util.concurrent.ConcurrentLinkedQueue
+  import org.scalatest.ConcurrentLinkedQueue
   import scala.collection.JavaConverters._
   type Tup = (String, Option[Any], Thread, Boolean)
   private val messages = new ConcurrentLinkedQueue[Tup]
@@ -254,7 +254,7 @@ private[scalatest] object PathMessageRecordingNotifier {
 
 private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) extends ThreadAwareness with Alerter {
 
-  import java.util.concurrent.ConcurrentLinkedQueue
+  import org.scalatest.ConcurrentLinkedQueue
   import scala.collection.JavaConverters._
   type Tup = (String, Option[Any], Thread, Boolean)
   private val messages = new ConcurrentLinkedQueue[Tup]
@@ -285,7 +285,7 @@ private[scalatest] object PathMessageRecordingAlerter {
 
 private[scalatest] class PathMessageRecordingDocumenter(eventFun: (String, Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Documenter {
 
-  import java.util.concurrent.ConcurrentLinkedQueue
+  import org.scalatest.ConcurrentLinkedQueue
   import scala.collection.JavaConverters._
   type Tup = (String, Thread, Boolean)
   private val messages = new ConcurrentLinkedQueue[Tup]
