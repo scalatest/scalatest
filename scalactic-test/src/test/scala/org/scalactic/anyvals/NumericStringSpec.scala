@@ -27,6 +27,8 @@ import TryValues._
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
+import org.scalactic.ColCompatHelper.aggregate
+
 class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
 /*
@@ -760,7 +762,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           { (sum, ch) => sum + ch.toInt },
           { (p1, p2) => p1 + p2 }
         ) shouldEqual
-        numStr.value.aggregate(0)(
+        aggregate(numStr.value, 0)(
           { (sum, ch) => sum + ch.toInt },
           { (p1, p2) => p1 + p2 }
         )
@@ -901,7 +903,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         val xs2 = Array.fill[Char](256)(0)
 
         numStr.copyToArray(xs1)
-        numStr.value.copyToArray(xs2)
+        numStr.value.copyToArray(xs2, 0)
 
         xs1 shouldEqual xs2
       }
@@ -1066,7 +1068,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
       forAll { (numStr: NumericString) =>
         numStr.flatMap(fooIt).mkString shouldEqual
-          numStr.value.flatMap(fooIt)
+          numStr.value.flatMap(fooIt _)
       }
     }
     it("should offer a fold method consistent with StringOps") {
@@ -1346,7 +1348,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
       forAll { (numStr: NumericString) =>
         numStr.map(plus1) shouldEqual
-          numStr.value.map(plus1)
+          numStr.value.map(plus1 _)
       }
     }
     it("should offer a max method consistent with StringOps") {
@@ -1949,8 +1951,8 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       def identity(ch: Char) = ch
 
       forAll { (numStr: NumericString) =>
-        numStr.withFilter(lt5).map(identity) shouldEqual
-          numStr.value.withFilter(lt5).map(identity)
+        numStr.withFilter(lt5).map(identity _) shouldEqual
+          numStr.value.withFilter(lt5).map(identity _)
       }
     }
     it("should offer a zip method consistent with StringOps") {

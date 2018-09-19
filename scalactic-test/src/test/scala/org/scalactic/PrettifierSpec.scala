@@ -372,8 +372,8 @@ class PrettifierSpec extends FunSpec with Matchers {
         scala> me eq you
         res0: Boolean = true
       */
-      class Fred extends Seq[Fred] { thisFred =>
-        override def toIterator: Iterator[Fred] = iterator
+      class Fred extends scala.collection.Seq[Fred] { thisFred =>
+        //override def toIterator: Iterator[Fred] = iterator
         def iterator: Iterator[Fred] =
           new Iterator[Fred] {
             private var hasNextElement: Boolean = true
