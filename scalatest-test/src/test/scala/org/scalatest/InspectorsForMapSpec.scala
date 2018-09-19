@@ -23,6 +23,7 @@ import SharedHelpers._
 import FailureMessages._
 import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.CompatParColls.Converters._
 
 class InspectorsForMapSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
 

@@ -30,6 +30,7 @@ import matchers.BePropertyMatchResult
 import matchers.BePropertyMatcher
 import matchers.HavePropertyMatchResult
 import matchers.HavePropertyMatcher
+import org.scalatest.CompatParColls.Converters._
 
 class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
 

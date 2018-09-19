@@ -27,6 +27,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import FailureMessages.decorateToStringValue
+import org.scalatest.CompatParColls.Converters._
 
 class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
 
