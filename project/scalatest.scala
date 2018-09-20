@@ -194,17 +194,17 @@ object ScalatestBuild extends Build {
     }
 
   lazy val crossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
+    Seq("org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional")
+    /*CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        scalaXmlDependency(scalaVersion.value) ++
         Seq(
           "org.scala-lang.modules" %%% "scala-xml" % "1.1.0",
           "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional"
         )
       case _ =>
         Seq("org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional")
-    }
+    }*/
   }
 
   lazy val nativeCrossBuildLibraryDependencies = Def.setting {
@@ -377,7 +377,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
-      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      //libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++

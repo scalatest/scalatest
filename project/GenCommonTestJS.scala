@@ -82,8 +82,7 @@ object GenCommonTestJS {
         "BookPropertyMatchers.scala",
         "EmptyMocks.scala",
         "FileMocks.scala",
-        "StringFixture.scala",
-        "JSON.scala"
+        "StringFixture.scala"
       ), targetDir) ++
     copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List("ExampleLikeSpecs.scala"), targetDir)
