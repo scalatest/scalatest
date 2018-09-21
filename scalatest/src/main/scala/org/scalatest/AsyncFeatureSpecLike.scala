@@ -277,7 +277,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
+    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, runTest)
   }
 
   /**

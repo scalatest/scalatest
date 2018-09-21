@@ -23,7 +23,7 @@ import scala.annotation.tailrec
 import org.scalatest.time.Span
 import java.io.PrintStream
 
-private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout: Span, val out: PrintStream) extends CatchReporter with DistributedSuiteSorter {
+private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortingTimeout: Span, val out: PrintStream) extends CatchReporter with DistributedSuiteSorter {
 
   case class Slot(suiteId: String, doneEvent: Option[Event], includesDistributedTests: Boolean, testsCompleted: Boolean, ready: Boolean)
 
@@ -249,7 +249,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   }
 
   // Will need a timeout. Hmm. Because can change it. Hmm. This is an issue. I wanted
-  // suite's timeout to be 20% longer than the -T one. If an overridden sortingTimeout timeout is shorter, then
+  // suite's timeout to be 20% longer than the -T one. If an overridden testSortingTimeout timeout is shorter, then
   // that's no prob. But if it is longer, then the suiteTimeout will timeout first. I think that's fine. I'll
   // just document that behavior.
   /**
@@ -287,11 +287,11 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
           if (head.suiteId != task.slot.suiteId) {
             task.cancel()
             timeoutTask = Some(new TimeoutTask(head)) // Replace the old with the new
-            timer.schedule(timeoutTask.get, sortingTimeout.millisPart)
+            timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
           }
         case None => 
           timeoutTask = Some(new TimeoutTask(head)) // Just create a new one
-          timer.schedule(timeoutTask.get, sortingTimeout.millisPart)
+          timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
       }
   }
   
