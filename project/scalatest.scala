@@ -88,8 +88,8 @@ object ScalatestBuild extends Build {
   def getJavaHome(scalaMajorVersion: String): Option[File] = {
     scalaMajorVersion match {
       case "2.10" | "2.11" =>  // force to use Java 6
-        //if (!System.getProperty("java.version").startsWith("1.6") && System.getProperty("scalatest.skip.jdk.check") != "true")
-          //throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
+        if (!System.getProperty("java.version").startsWith("1.6") && System.getProperty("scalatest.skip.jdk.check") != "true")
+          throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
 
       case _ =>
     }
@@ -444,7 +444,7 @@ object ScalatestBuild extends Build {
       // Disable publishing macros directly, included in scalactic main jar
       publishArtifact := false,
       publish := {},
-      publishLocal := {}, 
+      publishLocal := {},
       deleteJsDependenciesTask <<= (classDirectory in Compile) map { jsDependenciesFile =>
         (jsDependenciesFile/ "JS_DEPENDENCIES").delete()
         ()
@@ -626,7 +626,7 @@ object ScalatestBuild extends Build {
       publishLocal := {},
       sourceGenerators in Test += Def.task {
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
-      }.taskValue, 
+      }.taskValue,
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty[String] else if (scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
@@ -722,7 +722,7 @@ object ScalatestBuild extends Build {
      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty[String] else if (scalaVersion.value.startsWith("2.13")) Seq("-Xsource:2.12") else Seq("-Ypartial-unification")),
      docTaskSetting,
      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
-     mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+     mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
      mimaBinaryIssueFilters ++= {
        Seq(
          exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
@@ -936,7 +936,7 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestNative.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
- 
+
           GenScalaTestNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
