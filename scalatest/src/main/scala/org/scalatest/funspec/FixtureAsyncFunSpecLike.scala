@@ -512,7 +512,7 @@ trait FixtureAsyncFunSpecLike extends fixture.AsyncTestSuite with fixture.AsyncT
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
 
-    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
   }
 
   /**

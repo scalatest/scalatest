@@ -287,7 +287,7 @@ trait FixtureAsyncFeatureSpecLike extends fixture.AsyncTestSuite with fixture.As
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, args.testSortingTimeout, runTest)
+    runTestsImpl(thisSuite, testName, args, false, parallelAsyncTestExecution, runTest)
   }
 
   /**

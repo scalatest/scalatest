@@ -230,7 +230,7 @@ class Framework extends SbtFramework {
     rerunSuiteId: String,
     suite: Suite,
     loader: ClassLoader,
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
     eventHandler: EventHandler, 
     tagsToInclude: Set[String],
@@ -252,12 +252,11 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    sortingTimeout: Span,
     execService: ExecutorService
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
-    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, reporter, summaryCounter)
+    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
@@ -305,7 +304,7 @@ class Framework extends SbtFramework {
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
-    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None, sortingTimeout)
+    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, Some(suiteSortingReporter))
 
     val distributor =
       if (suite.isInstanceOf[ParallelTestExecution])
@@ -396,7 +395,6 @@ class Framework extends SbtFramework {
     presentFilePathname: Boolean,
     presentJson: Boolean,
     configSet: Set[ReporterConfigParam],
-    sortingTimeout: Span,
     execService: ExecutorService
   ) extends Task {
     
@@ -511,7 +509,6 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
-          sortingTimeout,
           execService
         )
       }
@@ -674,7 +671,7 @@ class Framework extends SbtFramework {
     val suiteSortingReporter =
       new SuiteSortingReporter(
         dispatchReporter,
-        Span(testSortingReporterTimeout.millisPart + 1000, Millis),
+        Span(testSortingReporterTimeout.millisPart, Millis),
         System.err)
 
     if (detectSlowpokes)
@@ -728,7 +725,6 @@ class Framework extends SbtFramework {
           presentFilePathname,
           presentJson,
           configSet,
-          testSortingReporterTimeout,
           execSvc
         )
     

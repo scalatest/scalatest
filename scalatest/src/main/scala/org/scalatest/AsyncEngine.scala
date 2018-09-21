@@ -36,9 +36,8 @@ import Suite.IgnoreTagName
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.time.Span
-import org.scalatest.tools.TestSortingReporter
-import org.scalatest.tools.TestSpecificReporter
+import org.scalatest.time.{Seconds, Span}
+import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -500,7 +499,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     passedInArgs: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
-    sortingTimeout: Span,
     runTest: (String, Args) => Status
   ): Status = {
     requireNonNull(testName, passedInArgs)
@@ -511,7 +509,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           passedInArgs // This is the test-specific instance
         else {
           if (passedInArgs.distributedTestSorter.isEmpty) {
-            val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, sortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
+            val testSortingTimeout =
+              passedInArgs.distributedSuiteSorter match {
+                case Some(ssr: SuiteSortingReporter) => ssr.testSortingTimeout
+                case _ => Span(Suite.defaultTestSortingReporterTimeoutInSeconds, Seconds)
+              }
+            val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, testSortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
             passedInArgs.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
           }
           else
