@@ -17,6 +17,8 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.NumericRange
 
+import org.scalactic.NumberCompatHelper
+
 /**
  * An <code>AnyVal</code> for non-negative <code>Float</code>s.
  *
@@ -358,15 +360,14 @@ final class PosZFloat private (val value: Float) extends AnyVal {
 
   // adapted from RichInt:
   /**
-  * Create a <code>Range</code> from this <code>PosZFloat</code> value
+  * Create a <code>Range.Partial</code> from this <code>PosZFloat</code> value
   * until the specified <code>end</code> (exclusive) with step value 1.
   *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Float): Range.Partial[Float, NumericRange[Float]] =
-    value.until(end)
+  def until(end: Float) = NumberCompatHelper.floatUntil(value, end)
 
   /**
   * Create a <code>Range</code> from this <code>PosZFloat</code> value
@@ -378,8 +379,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Float]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Float, step: Float): NumericRange.Exclusive[Float] =
-    value.until(end, step)
+  def until(end: Float, step: Float) = NumberCompatHelper.floatUntil(value, end, step)
 
   /**
   * Create an inclusive <code>Range</code> from this <code>PosZFloat</code> value
@@ -389,8 +389,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Float): Range.Partial[Float, NumericRange[Float]] =
-    value.to(end)
+  def to(end: Float) = NumberCompatHelper.floatTo(value, end)
 
   /**
   * Create an inclusive <code>Range</code> from this <code>PosZFloat</code> value
@@ -401,8 +400,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Float]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Float, step: Float): NumericRange.Inclusive[Float] =
-    value.to(end, step)
+  def to(end: Float, step: Float)= NumberCompatHelper.floatTo(value, end, step)
 }
 
 /**
