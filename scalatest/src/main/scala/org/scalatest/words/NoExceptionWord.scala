@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
+import org.scalatest.{MessageBuilder, Resources}
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
 import org.scalactic._
@@ -55,7 +55,7 @@ final class NoExceptionWord(pos: source.Position) {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), pos)
+        indicateFailure(MessageBuilder.of(message), Some(u), pos)
       }
     }
   }
@@ -87,7 +87,7 @@ final class NoExceptionWord(pos: source.Position) {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), pos)
+        indicateFailure(MessageBuilder.of(message), Some(u), pos)
       }
     }
   }

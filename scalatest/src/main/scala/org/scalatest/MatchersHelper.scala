@@ -342,8 +342,13 @@ private[scalatest] object MatchersHelper {
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
-    val message: String = failureMessage
-    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, pos)
+    //val message: String = failureMessage
+    //throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, pos)
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, pos)
+  }
+
+  def indicateFailure(failureMessageBuilder: MessageBuilder, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessageBuilder.build), optionalCause, pos)
   }
 
   def indicateFailure(e: TestFailedException): Assertion =
