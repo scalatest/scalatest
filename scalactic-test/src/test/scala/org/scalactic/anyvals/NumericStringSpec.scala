@@ -1724,7 +1724,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     it("should offer a stringPrefix method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.stringPrefix shouldEqual
-          numStr.value.stringPrefix
+          org.scalactic.ColCompatHelper.className(numStr.value)
       }
     }
     it("should offer a stripLineEnd method consistent with StringOps") {

@@ -55,6 +55,14 @@ object GenColCompatHelper {
           |
           |  object Factory {}
           |
+          |  def className(col: scala.collection.Iterable[_]): String = {
+          |    val s = col.toString
+          |    val idx = s.indexOf("(")
+          |    if (idx >= 0)
+          |      s.substring(0, idx)
+          |    else
+          |      col.getClass.getName
+          |  }
           |}
           |
         """.stripMargin
@@ -112,6 +120,7 @@ object GenColCompatHelper {
           |    implicit def arrayCompanionToCBF[A: scala.reflect.ClassTag](fact: Array.type): scala.collection.generic.CanBuildFrom[Any, A, Array[A]] =
           |      simpleCBF(Array.newBuilder[A])
           |  }
+          |  def className(col: scala.collection.GenTraversable[_]): String = col.stringPrefix
           |
           |}
           |

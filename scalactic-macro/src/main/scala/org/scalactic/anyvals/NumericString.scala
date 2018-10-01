@@ -2161,7 +2161,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *           the collection class `NumericString`.
    */
   def stringPrefix: String =
-    value.stringPrefix
+    org.scalactic.ColCompatHelper.className(value)
 
   /**
    *  Strip trailing line end character from this string if it has one.
