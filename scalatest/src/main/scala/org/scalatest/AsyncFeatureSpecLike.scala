@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
 
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
@@ -23,7 +23,7 @@ import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 
-import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions._
 
 /**
  * Implementation trait for class <code>AsyncFeatureSpec</code>, which represents
@@ -162,11 +162,11 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, None, pos)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
-      case nae: exceptions.NotAllowedException => throw nae
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.position.getOrElse(pos))
+      case nae: NotAllowedException => throw nae
+      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
       case other: Throwable => throw other
     }
   }
