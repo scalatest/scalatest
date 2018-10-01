@@ -15,10 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
+import org.scalactic.{UnquotedString => _, _}
+import org.scalatest.exceptions._
 
 // As it stands, this should not extend Product with Serializable because
 // subclasses exists that anen't case classes.
