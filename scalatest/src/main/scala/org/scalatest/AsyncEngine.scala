@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Requirements._
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.Suite._
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
@@ -31,8 +31,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 import Suite.IgnoreTagName
 import collection.mutable.ListBuffer
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.exceptions._
 import org.scalatest.tools.TestSortingReporter
 import org.scalatest.tools.TestSpecificReporter
 
@@ -298,9 +297,9 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         outcome
       }
       catch {
-        case ex: exceptions.TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-        case _: exceptions.TestPendingException => PastOutcome(Pending)
-        case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
+        case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
+        case _: TestPendingException => PastOutcome(Pending)
+        case tfe: TestFailedException => PastOutcome(Failed(tfe))
         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
       }
 
@@ -392,9 +391,9 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             asyncOutcome
           }
           catch {
-            case ex: exceptions.TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-            case _: exceptions.TestPendingException => PastOutcome(Pending)
-            case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
+            case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
+            case _: TestPendingException => PastOutcome(Pending)
+            case tfe: TestFailedException => PastOutcome(Failed(tfe))
             case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
           }
         case _ => asyncOutcome
@@ -692,7 +691,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       fun // Execute the function
     }
     catch {
-      case e: exceptions.TestPendingException =>
+      case e: TestPendingException =>
         newBranch.pending = true
     }
       
