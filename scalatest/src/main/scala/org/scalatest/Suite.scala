@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.events._
 import Requirements._
 import exceptions._
@@ -28,7 +28,7 @@ import org.scalactic.Prettifier
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import scala.util.control.NonFatal
-import StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted

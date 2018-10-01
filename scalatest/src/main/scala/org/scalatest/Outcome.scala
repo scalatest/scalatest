@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import Requirements._
-import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions._
 
 /**
  * Superclass for the possible outcomes of running a test.
@@ -470,7 +470,7 @@ object Failed {
  *
  * @param ex the <code>TestCanceledException</code> contained in this <code>Exceptional</code>.
  */
-case class Canceled(exception: exceptions.TestCanceledException) extends Exceptional(exception) {
+case class Canceled(exception: TestCanceledException) extends Exceptional(exception) {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that was canceled.
