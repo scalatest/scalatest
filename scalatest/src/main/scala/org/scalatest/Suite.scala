@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.{Resources => _, _}
 import org.scalatest.events._
 import Requirements._
-import exceptions._
+import org.scalatest.exceptions._
 import java.lang.annotation.AnnotationFormatError
 import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
