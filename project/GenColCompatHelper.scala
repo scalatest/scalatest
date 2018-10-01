@@ -37,14 +37,22 @@ object GenColCompatHelper {
           | * See the License for the specific language governing permissions and
           | * limitations under the License.
           | */
-          |package org.scalatest
+          |package org.scalactic
           |
-          |private[scalatest] object ColCompatHelper {
+          |private[org] object ColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqOps[A, IndexedSeq, Repr]
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
+          |  def className(col: scala.collection.Iterable[_]): String = {
+          |    val s = col.toString
+          |    val idx = s.indexOf("(")
+          |    if (idx >= 0)
+          |      s.substring(0, idx)
+          |    else
+          |      col.getClass.getName
+          |  }
           |}
         """.stripMargin
       else
@@ -63,13 +71,15 @@ object GenColCompatHelper {
           | * See the License for the specific language governing permissions and
           | * limitations under the License.
           | */
-          |package org.scalatest
+          |package org.scalactic
           |
-          |private[scalatest] object ColCompatHelper {
+          |private[org] object ColCompatHelper {
           |
           |  type IndexedSeqLike[+A, +Repr] = scala.collection.IndexedSeqLike[A, Repr]
           |
           |  def aggregate[A, B](col: scala.collection.GenTraversable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.aggregate(z)(seqop, combop)
+          |
+          |  def className(col: scala.collection.GenTraversable[_]): String = col.stringPrefix
           |
           |}
         """.stripMargin

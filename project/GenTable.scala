@@ -177,7 +177,7 @@ package prop
 val importsForTableForNTemplate = """
 import scala.collection.mutable.Builder
 import scala.collection.mutable.ListBuffer
-import org.scalatest.ColCompatHelper.IndexedSeqLike
+import org.scalactic.ColCompatHelper.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
