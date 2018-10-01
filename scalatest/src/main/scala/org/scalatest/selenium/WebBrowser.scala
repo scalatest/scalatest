@@ -4150,7 +4150,7 @@ trait WebBrowser {
       driver.manage.addCookie(cookie)
     }
     
-    // Default values determined from http://code.google.com/p/selenium/source/browse/trunk/java/client/src/org/openqa/selenium/Cookie.java
+    // Default values determined from https://github.com/SeleniumHQ/selenium/blob/selenium-2.53.0/java/client/src/org/openqa/selenium/Cookie.java
     /**
      * Add cookie in the web browser.  If the cookie's domain name is left blank (default), it is assumed that the cookie is meant for the domain of the current document.
      * 
