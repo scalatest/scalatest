@@ -66,9 +66,8 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
         def getMethodTags(o: AnyRef, methodName: String) =
           for {
             a <- getMethod(o, methodName).getDeclaredAnnotations
-            annotationClass = a.annotationType
-            if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-          } yield annotationClass.getName
+            tag <- AnnotationClassToTagName(a.annotationType)
+          } yield tag
         
         def getScopeClassName(o: AnyRef): String = {
           val className = o.getClass.getName

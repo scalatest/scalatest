@@ -2070,11 +2070,7 @@ used for test events like succeeded/failed, etc.
 
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
     // SKIP-SCALATESTJS-START
-    val suiteTags = for {
-      a <- theSuite.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
+    val suiteTags = AnnotatedSuiteToTagNames(theSuite)
 
     val autoTestTags =
       if (suiteTags.size > 0)

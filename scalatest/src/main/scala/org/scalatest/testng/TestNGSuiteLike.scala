@@ -159,9 +159,8 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   private def getTags(testName: String) =
     for {
       a <- Suite.getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
+      tag <- AnnotationClassToTagName(a.annotationType)
+    } yield tag
 
   override def tags: Map[String, Set[String]] = {
     val testNameSet = testNames
@@ -174,11 +173,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   }
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
-    val suiteTags = for {
-      a <- this.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
+    val suiteTags = AnnotatedSuiteToTagNames(this)
     val testTags: Set[String] =
       try {
         getTags(testName).toSet

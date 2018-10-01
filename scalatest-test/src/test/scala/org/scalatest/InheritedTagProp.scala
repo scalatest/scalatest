@@ -90,7 +90,7 @@ class InheritedTagProp extends SuiteProp {
       val resultTags = suite.tags
       assert(resultTags.size == 1)
       resultTags.foreach { case (testName, tagSet) =>
-        assert(tagSet.contains("org.scalatest.tags.CPU"))
+        assert(tagSet.contains("cpu"))
       }
     }
   }
@@ -100,7 +100,7 @@ class InheritedTagProp extends SuiteProp {
       val resultTags = suite.tags
       assert(resultTags.size == 1)
       resultTags.foreach { case (testName, tagSet) =>
-        assert(tagSet.contains("org.scalatest.tags.Disk"))
+        assert(tagSet.contains("disk"))
       }
     }
   }
@@ -110,7 +110,7 @@ class InheritedTagProp extends SuiteProp {
       val resultTags = suite.tags
       assert(resultTags.size == 1)
       resultTags.foreach { case (testName, tagSet) =>
-        assert(tagSet.contains("org.scalatest.tags.Network"))
+        assert(tagSet.contains("network"))
       }
     }
   }
@@ -179,7 +179,7 @@ class InheritedTagProp extends SuiteProp {
     forAll(filteredExamples) { suite =>
       assert(suite.testNames.size == 1)
       val resultTestData = suite.testDataFor(suite.testNames.head)
-      assert(resultTestData.tags.contains("org.scalatest.tags.CPU"))
+      assert(resultTestData.tags.contains("cpu"))
     }
   }
 
@@ -187,7 +187,7 @@ class InheritedTagProp extends SuiteProp {
     forAll(filteredExamples) { suite =>
       assert(suite.testNames.size == 1)
       val resultTestData = suite.testDataFor(suite.testNames.head)
-      assert(resultTestData.tags.contains("org.scalatest.tags.Disk"))
+      assert(resultTestData.tags.contains("disk"))
     }
   }
 
@@ -195,7 +195,7 @@ class InheritedTagProp extends SuiteProp {
     forAll(filteredExamples) { suite =>
       assert(suite.testNames.size == 1)
       val resultTestData = suite.testDataFor(suite.testNames.head)
-      assert(resultTestData.tags.contains("org.scalatest.tags.Network"))
+      assert(resultTestData.tags.contains("network"))
     }
   }
 

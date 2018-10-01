@@ -193,11 +193,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
    * @return a <code>TestData</code> instance for the specified test, which includes the specified config map
    */
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
-    val suiteTags = for { 
-      a <- this.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
+    val suiteTags = AnnotatedSuiteToTagNames(this)
     val testTags: Set[String] = 
       try {
         if (hasIgnoreTag(testName))
