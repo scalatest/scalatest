@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 
