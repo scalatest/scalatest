@@ -15,12 +15,9 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest._
+import org.scalatest.{Transformer => _, _}
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
-import java.util.ConcurrentModificationException
-import java.util.concurrent.atomic.AtomicReference
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 
@@ -48,7 +45,7 @@ import words.BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FreeSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 
