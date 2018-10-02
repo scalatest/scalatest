@@ -19,12 +19,15 @@ import org.scalatest._
 import org.scalatest.events._
 import ArgsParser._
 import SuiteDiscoveryHelper._
+
 import scala.collection.JavaConverters._
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import org.scalatest.time.{Span, Millis}
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
+import java.io.{PrintWriter, StringWriter}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
+import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+
+import org.scalatest.time.{Millis, Seconds, Span}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import StringReporter.fragmentsForEvent
@@ -227,7 +230,7 @@ class Framework extends SbtFramework {
     rerunSuiteId: String,
     suite: Suite,
     loader: ClassLoader,
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
     eventHandler: EventHandler, 
     tagsToInclude: Set[String],
@@ -253,7 +256,7 @@ class Framework extends SbtFramework {
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
-    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, reporter, summaryCounter)
+    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
@@ -301,7 +304,7 @@ class Framework extends SbtFramework {
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
-    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
+    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, Some(suiteSortingReporter))
 
     val distributor =
       if (suite.isInstanceOf[ParallelTestExecution])
@@ -638,7 +641,8 @@ class Framework extends SbtFramework {
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long,
-    concurrentConfig: ConcurrentConfig
+    concurrentConfig: ConcurrentConfig,
+    testSortingReporterTimeout: Span
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
     val serverThread = new AtomicReference[Option[Thread]](None)
@@ -652,7 +656,7 @@ class Framework extends SbtFramework {
     val suiteSortingReporter =
       new SuiteSortingReporter(
         dispatchReporter,
-        Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
+        Span(testSortingReporterTimeout.millisPart, Millis),
         System.err)
 
     if (detectSlowpokes)
@@ -952,8 +956,7 @@ import java.net.{ServerSocket, InetAddress}
     if (!suffixes.isEmpty)
       throw new IllegalArgumentException("Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
 
-    if (!testSortingReporterTimeouts.isEmpty)
-      throw new IllegalArgumentException("Sorting timeouts (-T) is not supported when running ScalaTest from sbt.")
+    val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
     
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
@@ -1095,7 +1098,8 @@ import java.net.{ServerSocket, InetAddress}
       detectSlowpokes,
       slowpokeDetectionDelay,
       slowpokeDetectionPeriod,
-      concurrentConfig
+      concurrentConfig,
+      testSortingReporterTimeout
     )
   }
   
