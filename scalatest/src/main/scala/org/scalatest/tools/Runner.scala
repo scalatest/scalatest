@@ -36,7 +36,7 @@ import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
 import org.scalatest.junit.JUnitWrapperSuite
 import org.scalatest.testng.TestNGWrapperSuite
-import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
+import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
 
@@ -905,7 +905,7 @@ object Runner {
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
-    testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
+    val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
 
     // If there's a graphic reporter, we need to leave it out of
     // reporterSpecs, because we want to pass all reporterSpecs except
@@ -985,7 +985,8 @@ object Runner {
             chosenStyleSet,
             detectSlowpokes,
             slowpokeDetectionDelay,
-            slowpokeDetectionPeriod
+            slowpokeDetectionPeriod,
+            testSortingReporterTimeout
           )
           rjf.setLocation(RUNNER_JFRAME_START_X, RUNNER_JFRAME_START_Y)
           rjf.setVisible(true)
@@ -1028,7 +1029,8 @@ object Runner {
             1,
             concurrentConfig,
             suffixes,
-            chosenStyleSet
+            chosenStyleSet,
+            testSortingReporterTimeout
           )
         }
       }
@@ -1096,7 +1098,8 @@ object Runner {
     runStamp: Int,
     concurrentConfig: ConcurrentConfig,
     suffixes: Option[Pattern],
-    chosenStyleSet: Set[String]
+    chosenStyleSet: Set[String],
+    testSortingReporterTimeout: Span
   ): Unit = {
 
     // TODO: add more, and to RunnerThread too
@@ -1281,7 +1284,7 @@ object Runner {
 
             val distributedSuiteSorter = 
               if (concurrentConfig.enableSuiteSortingReporter)
-                Some(new SuiteSortingReporter(dispatch, Span(testSortingReporterTimeout.millisPart + 1000, Millis), System.err))
+                Some(new SuiteSortingReporter(dispatch, Span(testSortingReporterTimeout.millisPart, Millis), System.err))
               else
                 None
               
@@ -1307,7 +1310,7 @@ object Runner {
                 Executors.newCachedThreadPool(threadFactory)
             try {
 
-              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet), execSvc)
+              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet, false, None, None), execSvc)
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
@@ -1340,7 +1343,7 @@ object Runner {
             for (suiteConfig <- suiteInstances) {
               val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
               val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, chosenStyleSet)
+              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, chosenStyleSet, false, None, None)
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()
