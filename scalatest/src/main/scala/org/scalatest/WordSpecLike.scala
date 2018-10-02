@@ -15,12 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, UnquotedString => _, _}
 import org.scalatest.exceptions._
-import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import java.util.ConcurrentModificationException
-import java.util.concurrent.atomic.AtomicReference
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
   MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 
