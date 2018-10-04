@@ -60,7 +60,7 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
 }
 
 // Out is not even being used. Can I not just ignore the whole concept?
-private[scalatest] class WrapperCatchReporter(reporter: Reporter, val out: PrintStream) extends CatchReporter {
+private[scalatest] class WrapperCatchReporter(val reporter: Reporter, val out: PrintStream) extends CatchReporter {
   
   def this(reporter: Reporter) = this(reporter, System.err)
   

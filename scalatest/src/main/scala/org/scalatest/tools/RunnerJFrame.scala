@@ -35,6 +35,7 @@ import java.io.PrintWriter
 import java.net.URL
 import java.util.concurrent.Semaphore
 import java.util.regex.Pattern
+
 import javax.swing.AbstractAction
 import javax.swing.DefaultListModel
 import javax.swing.ImageIcon
@@ -65,6 +66,7 @@ import Runner.usingEventDispatchThread
 import Runner.withClassLoaderAndDispatchReporter
 import Suite.unparsedXml
 import Suite.xmlContent
+import org.scalatest.time.Span
 
 /**
  * The main class for Runner's GUI.
@@ -98,7 +100,8 @@ private[scalatest] class RunnerJFrame(
   chosenStyleSet: Set[String],
   detectSlowpokes: Boolean,
   slowpokeDetectionDelay: Long,
-  slowpokeDetectionPeriod: Long
+  slowpokeDetectionPeriod: Long,
+  testSortingReporterTimeout: Span
 ) extends JFrame(Resources.ScalaTestTitle) with RunDoneListener with RunnerGUI {
   
   // This should only be updated by the event handler thread.
@@ -1576,7 +1579,8 @@ private[scalatest] class RunnerJFrame(
             nextRunStamp,
             concurrentConfig,
             suffixes,
-            chosenStyleSet
+            chosenStyleSet,
+            testSortingReporterTimeout
           )
         }
         finally {
