@@ -42,7 +42,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FunSuiteLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSuiteLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFunSuiteMod, "FixtureFunSuite")
 
@@ -97,7 +97,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -105,7 +105,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
@@ -116,7 +116,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+      engine.registerTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
 
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -126,7 +126,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+      engine.registerTest(testName, org.scalatest.fixture.Transformer(new NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
   }
 
@@ -165,7 +165,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
 
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -175,7 +175,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
   }
 

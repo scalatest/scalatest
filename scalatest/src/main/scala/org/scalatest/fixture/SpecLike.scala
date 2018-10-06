@@ -52,7 +52,7 @@ import org.scalatest.events.{TopOfClass, TopOfMethod}
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 @deprecated("fixture.SpecLike has been deprecated and will be removed in a future version of ScalaTest. Please use org.scalatest.fixture.FunSpecLike instead.")
-trait SpecLike extends TestSuite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
+trait SpecLike extends org.scalatest.fixture.TestSuite with Informing with Notifying with Alerting with Documenting  { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
@@ -177,9 +177,9 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                   2
 
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", registerTestStackDepth, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", registerTestStackDepth, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
             }
           }
         }

@@ -48,7 +48,7 @@ import words.BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
@@ -103,7 +103,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -111,7 +111,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -2
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -147,7 +147,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepth = 5
         //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
 
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -157,7 +157,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepth = 5
         //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, org.scalatest.fixture.Transformer(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
     }
 
@@ -279,14 +279,14 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+        engine.registerTest(specText, org.scalatest.fixture.Transformer(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
     }
 
@@ -386,7 +386,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
@@ -395,7 +395,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(specText, org.scalatest.fixture.Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
   }
 
