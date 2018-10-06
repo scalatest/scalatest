@@ -76,8 +76,8 @@ object ScalatestBuild extends Build {
   def getJavaHome(scalaMajorVersion: String): Option[File] = {
     scalaMajorVersion match {
       case "2.10" | "2.11" =>  // force to use Java 6
-        if (!System.getProperty("java.version").startsWith("1.6"))
-          throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
+        //if (!System.getProperty("java.version").startsWith("1.6"))
+          //throw new IllegalStateException("Please use JDK 6 to build for Scala 2.10 and 2.11.")
 
       case _ =>
     }

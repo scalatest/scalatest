@@ -59,6 +59,13 @@ private[scalatest] class JavaMapWrapper[K, V](val underlying: java.util.Map[K, V
     newJavaMap.remove(key)
     new JavaMapWrapper[K, V](underlying)
   }
+  override def - (key1: K, key2: K, keys: K*): scala.collection.Map[K, V] = {
+    val newJavaMap = new java.util.LinkedHashMap[K, V](underlying)
+    newJavaMap.remove(key1)
+    newJavaMap.remove(key2)
+    keys.foreach(newJavaMap.remove)
+    new JavaMapWrapper[K, V](underlying)
+  }
   override def empty = new JavaMapWrapper[K, V](new java.util.LinkedHashMap[K, V]())
   override def toString: String = if (underlying == null) "null" else underlying.toString
 }
