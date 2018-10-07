@@ -256,7 +256,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncFlatSpec extends AsyncFlatSpecLike {
+abstract class AsyncFlatSpec extends org.scalatest.fixture.AsyncFlatSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
