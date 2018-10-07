@@ -362,7 +362,7 @@ def tableTemplate(scalaVersion: String): String =
                       |        new ListBuffer mapResult { (buf: Seq[($alphaUpper$)]) =>
                       |          new TableFor$n$(from.heading, buf: _*)
                       |        }
-                      |      def fromSpecificIterable(from: org.scalatest.prop.TableFor$n$[$alphaUpper$])(it: Iterable[($alphaUpper$)]): org.scalatest.prop.TableFor$n$[$alphaUpper$] =
+                      |      def fromSpecific(from: org.scalatest.prop.TableFor$n$[$alphaUpper$])(it: IterableOnce[($alphaUpper$)]): org.scalatest.prop.TableFor$n$[$alphaUpper$] =
                       |        new TableFor$n$(from.heading, it.toSeq: _*)
                     """.stripMargin)
                     .replaceAllLiterally("CanBuildFrom", "scala.collection.BuildFrom")
