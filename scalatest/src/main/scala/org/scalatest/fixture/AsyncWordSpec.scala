@@ -261,7 +261,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncWordSpec extends AsyncWordSpecLike {
+abstract class AsyncWordSpec extends org.scalatest.fixture.AsyncWordSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

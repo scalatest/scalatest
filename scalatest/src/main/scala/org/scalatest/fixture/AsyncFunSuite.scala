@@ -256,7 +256,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncFunSuite extends AsyncFunSuiteLike {
+abstract class AsyncFunSuite extends org.scalatest.fixture.AsyncFunSuiteLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

@@ -259,7 +259,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncFeatureSpec extends AsyncFeatureSpecLike {
+abstract class AsyncFeatureSpec extends org.scalatest.fixture.AsyncFeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
