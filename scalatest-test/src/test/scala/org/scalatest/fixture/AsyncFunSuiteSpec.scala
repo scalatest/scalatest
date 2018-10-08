@@ -481,6 +481,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
+
       class MySuite extends funsuite.FixtureAsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
