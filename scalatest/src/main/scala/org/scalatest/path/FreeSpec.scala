@@ -692,7 +692,7 @@ import org.scalatest._
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 // SKIP-SCALATESTJS,NATIVE-START
-class FreeSpec extends FreeSpecLike {
+class FreeSpec extends org.scalatest.path.FreeSpecLike {
 // SKIP-SCALATESTJS,NATIVE-END
 //SCALATESTJS,NATIVE-ONLY abstract class FreeSpec extends FreeSpecLike {
 
