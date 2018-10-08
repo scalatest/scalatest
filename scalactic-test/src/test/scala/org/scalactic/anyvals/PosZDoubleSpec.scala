@@ -523,10 +523,10 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzdouble: PosZDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), pzdouble.toDouble.until(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), pzdouble.toDouble.until(end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), pzdouble.toDouble.to(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), pzdouble.toDouble.to(end, step)) shouldBe true
+        rangeEqual(pzdouble.until(end).by(1f), BigDecimal(pzdouble.toDouble).until(end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.until(end, step), BigDecimal(pzdouble.toDouble).until(end, step)) shouldBe true
+        rangeEqual(pzdouble.to(end).by(1f), BigDecimal(pzdouble.toDouble).to(end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.to(end, step), BigDecimal(pzdouble.toDouble).to(end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS-END

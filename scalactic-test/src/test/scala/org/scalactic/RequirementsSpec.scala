@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import org.scalatest._
+import org.scalatest.{FailureMessages => _, UnquotedString => _, _}
 import java.util.Date
 import Prettifier.lineSeparator
 import org.scalactic.exceptions.NullArgumentException
