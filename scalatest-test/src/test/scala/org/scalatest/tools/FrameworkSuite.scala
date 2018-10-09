@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 import org.scalatest.{FunSuite, Resources, Retries, OptionValues}
-import sbt.testing._
+import sbt.testing.{Framework => _, _}
 import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
