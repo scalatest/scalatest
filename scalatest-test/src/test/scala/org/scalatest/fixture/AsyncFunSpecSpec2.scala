@@ -910,7 +910,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFunSpec {
+      class TestSpec extends fixture.AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
