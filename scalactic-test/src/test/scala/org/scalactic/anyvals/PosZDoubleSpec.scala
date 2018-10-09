@@ -519,7 +519,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
 
     // SKIP-SCALATESTJS-START
     it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzdouble: PosZDouble, end: Double, step: Double) =>

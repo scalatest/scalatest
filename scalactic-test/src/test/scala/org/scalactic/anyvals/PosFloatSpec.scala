@@ -479,7 +479,7 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
 
       // SKIP-SCALATESTJS-START
       it("should offer 'to' and 'until' method that is consistent with Float") {
-        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
 
         forAll { (pfloat: PosFloat, end: Float, step: Float) =>

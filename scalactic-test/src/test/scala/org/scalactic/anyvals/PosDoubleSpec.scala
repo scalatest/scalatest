@@ -503,7 +503,7 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
 
       // SKIP-SCALATESTJS-START
       it("should offer 'to' and 'until' method that is consistent with Double") {
-        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
 
         forAll { (pdouble: PosDouble, end: Double, step: Double) =>
