@@ -992,7 +992,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
   describe("when failure happens") {
     
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends FreeSpec {
+      class TestSpec extends PathFreeSpec {
         "fail scenario" in {
           assert(1 === 2)
         }
@@ -1014,7 +1014,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
     }
     
     it("should generate TestRegistrationClosedException with correct stack depth info when has an in nested inside an in") {
-      class TestSpec extends FreeSpec {
+      class TestSpec extends PathFreeSpec {
         //var registrationClosedThrown = false
         "a feature" - {
           "a scenario" in {
