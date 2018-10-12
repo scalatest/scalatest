@@ -30,6 +30,7 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
+import org.scalactic.NumberCompatHelper
 
 trait NegZFiniteFloatSpecSupport {
 
@@ -314,10 +315,10 @@ class NegZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzfloat: NegZFiniteFloat, end: Float, step: Float) =>
-        rangeEqual(pzfloat.until(end).by(1f), BigDecimal(pzfloat.toFloat).until(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.until(end, step), BigDecimal(pzfloat.toFloat).until(end, step)) shouldBe true
-        rangeEqual(pzfloat.to(end).by(1f), BigDecimal(pzfloat.toFloat).to(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.to(end, step), BigDecimal(pzfloat.toFloat).to(end, step)) shouldBe true
+        rangeEqual(pzfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.until(end, step), NumberCompatHelper.floatUntil(pzfloat.toFloat, end, step)) shouldBe true
+        rangeEqual(pzfloat.to(end).by(1f), NumberCompatHelper.floatTo(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.to(end, step), NumberCompatHelper.floatTo(pzfloat.toFloat, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

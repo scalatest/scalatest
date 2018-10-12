@@ -30,6 +30,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
+import org.scalactic.NumberCompatHelper
 
 trait NonZeroDoubleSpecSupport {
   val nonZeroDoubleGen: Gen[NonZeroDouble] =
@@ -316,10 +317,10 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pdouble: NonZeroDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), BigDecimal(pdouble.toDouble).until(end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), BigDecimal(pdouble.toDouble).until(end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), BigDecimal(pdouble.toDouble).to(end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), BigDecimal(pdouble.toDouble).to(end, step)) shouldBe true
+        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
+        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END
