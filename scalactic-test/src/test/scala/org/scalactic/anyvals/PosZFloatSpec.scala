@@ -26,6 +26,7 @@ import OptionValues._
 import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
+import org.scalactic.NumberCompatHelper
 
 class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -511,10 +512,10 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzfloat: PosZFloat, end: Float, step: Float) =>
-        rangeEqual(pzfloat.until(end).by(1f), BigDecimal(pzfloat.toFloat).until(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.until(end, step), BigDecimal(pzfloat.toFloat).until(end, step)) shouldBe true
-        rangeEqual(pzfloat.to(end).by(1f), BigDecimal(pzfloat.toFloat).to(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.to(end, step), BigDecimal(pzfloat.toFloat).to(end, step)) shouldBe true
+        rangeEqual(pzfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.until(end, step), NumberCompatHelper.floatUntil(pzfloat.toFloat, end, step)) shouldBe true
+        rangeEqual(pzfloat.to(end).by(1f), NumberCompatHelper.floatTo(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.to(end, step), NumberCompatHelper.floatTo(pzfloat.toFloat, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS-END

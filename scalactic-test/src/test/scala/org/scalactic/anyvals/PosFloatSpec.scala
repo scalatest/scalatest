@@ -24,6 +24,7 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
+import org.scalactic.NumberCompatHelper
 
 class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -483,10 +484,10 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
           a.start == b.start && a.end == b.end && a.step == b.step
 
         forAll { (pfloat: PosFloat, end: Float, step: Float) =>
-          rangeEqual(pfloat.until(end).by(1f), BigDecimal(pfloat.toFloat).until(end).by(1f)) shouldBe true
-          rangeEqual(pfloat.until(end, step), BigDecimal(pfloat.toFloat).until(end, step)) shouldBe true
-          rangeEqual(pfloat.to(end).by(1f), BigDecimal(pfloat.toFloat).to(end).by(1f)) shouldBe true
-          rangeEqual(pfloat.to(end, step), BigDecimal(pfloat.toFloat).to(end, step)) shouldBe true
+          rangeEqual(pfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pfloat.toFloat, end).by(1f)) shouldBe true
+          rangeEqual(pfloat.until(end, step), NumberCompatHelper.floatUntil(pfloat.toFloat, end, step)) shouldBe true
+          rangeEqual(pfloat.to(end).by(1f), NumberCompatHelper.floatTo(pfloat.toFloat, end).by(1f)) shouldBe true
+          rangeEqual(pfloat.to(end, step), NumberCompatHelper.floatTo(pfloat.toFloat, end, step)) shouldBe true
         }
       }
       // SKIP-SCALATESTJS-END
