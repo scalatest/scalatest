@@ -15,16 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.StackDepthExceptionHelper
-import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions._
 import org.scalatest.matchers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.StackDepthException
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, UnquotedString => _, _}
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -332,7 +329,7 @@ private[scalatest] object MatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), pos)
+        throw new TestFailedException((sde: StackDepthException) => Some(message), Some(u), pos)
       }
     }
   }
@@ -343,7 +340,7 @@ private[scalatest] object MatchersHelper {
 
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
     val message: String = failureMessage
-    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), optionalCause, pos)
+    throw new TestFailedException((sde: StackDepthException) => Some(message), optionalCause, pos)
   }
 
   def indicateFailure(e: TestFailedException): Assertion =

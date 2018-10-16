@@ -27,6 +27,7 @@ import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import Double.NaN
 import org.scalactic.Equality
+import org.scalactic.NumberCompatHelper
 
 class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -519,14 +520,14 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
 
     // SKIP-SCALATESTJS-START
     it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzdouble: PosZDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), pzdouble.toDouble.until(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), pzdouble.toDouble.until(end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), pzdouble.toDouble.to(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), pzdouble.toDouble.to(end, step)) shouldBe true
+        rangeEqual(pzdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.until(end, step), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end, step)) shouldBe true
+        rangeEqual(pzdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pzdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.to(end, step), NumberCompatHelper.doubleTo(pzdouble.toDouble, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS-END

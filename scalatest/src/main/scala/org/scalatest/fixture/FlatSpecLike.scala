@@ -15,13 +15,9 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest._
+import org.scalatest.{Transformer => _, _}
 import org.scalactic.source
-import java.util.ConcurrentModificationException
-import java.util.concurrent.atomic.AtomicReference
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
@@ -47,7 +43,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FlatSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
 

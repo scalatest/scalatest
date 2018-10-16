@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.events._
 import Requirements._
-import exceptions._
+import org.scalatest.exceptions._
 import java.lang.annotation.AnnotationFormatError
 import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
@@ -28,7 +28,7 @@ import org.scalactic.Prettifier
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import scala.util.control.NonFatal
-import StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper._
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
@@ -2026,7 +2026,7 @@ used for test events like succeeded/failed, etc.
     if(stackDepth >= 0 && stackDepth < stackTraceList.length) {
       val stackTrace = stackTraceList(stackDepth)
       if(stackTrace.getLineNumber >= 0 && stackTrace.getFileName != null)
-        Some(LineInFile(stackTrace.getLineNumber, StackDepthExceptionHelper.getFailedCodeFileName(stackTrace).getOrElse(""), None))
+        Some(LineInFile(stackTrace.getLineNumber, getFailedCodeFileName(stackTrace).getOrElse(""), None))
       else
         None
     }

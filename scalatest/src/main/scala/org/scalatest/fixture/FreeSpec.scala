@@ -229,7 +229,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-abstract class FreeSpec extends FreeSpecLike {
+abstract class FreeSpec extends org.scalatest.fixture.FreeSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

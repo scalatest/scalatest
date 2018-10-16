@@ -694,7 +694,7 @@ import org.scalatest._
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 // SKIP-SCALATESTJS-START
-class FunSpec extends FunSpecLike {
+class FunSpec extends org.scalatest.path.FunSpecLike {
 // SKIP-SCALATESTJS-END
 //SCALATESTJS-ONLY abstract class FunSpec extends FunSpecLike {
 

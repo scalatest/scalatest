@@ -223,7 +223,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-abstract class FlatSpec extends FlatSpecLike {
+abstract class FlatSpec extends org.scalatest.fixture.FlatSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

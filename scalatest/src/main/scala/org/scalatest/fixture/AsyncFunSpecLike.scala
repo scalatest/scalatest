@@ -19,9 +19,6 @@ import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
-import java.util.ConcurrentModificationException
-import java.util.concurrent.atomic.AtomicReference
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 
@@ -49,7 +46,7 @@ import words.BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFunSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 

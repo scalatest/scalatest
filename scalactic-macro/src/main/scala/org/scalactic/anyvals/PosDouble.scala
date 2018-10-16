@@ -18,6 +18,8 @@ package org.scalactic.anyvals
 import scala.collection.immutable.NumericRange
 import scala.language.implicitConversions
 
+import org.scalactic.NumberCompatHelper
+
 /**
  * An <code>AnyVal</code> for positive <code>Double</code>s.
  *
@@ -366,15 +368,14 @@ final class PosDouble private (val value: Double) extends AnyVal {
 
   // adapted from RichInt:
   /**
-  * Create a <code>Range</code> from this <code>PosDouble</code> value
+  * Create a <code>Range.Partial</code> from this <code>PosDouble</code> value
   * until the specified <code>end</code> (exclusive) with step value 1.
   *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Double): Range.Partial[Double, NumericRange[Double]] =
-    value.until(end)
+  def until(end: Double) = NumberCompatHelper.doubleUntil(value, end)
 
   /**
   * Create a <code>Range</code> from this <code>PosDouble</code> value
@@ -386,19 +387,17 @@ final class PosDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Double]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Double, step: Double): NumericRange.Exclusive[Double] =
-    value.until(end, step)
+  def until(end: Double, step: Double) = NumberCompatHelper.doubleUntil(value, end, step)
 
   /**
-  * Create an inclusive <code>Range</code> from this <code>PosDouble</code> value
+  * Create an inclusive <code>Range.Partial</code> from this <code>PosDouble</code> value
   * to the specified <code>end</code> with step value 1.
   *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Double): Range.Partial[Double, NumericRange[Double]] =
-    value.to(end)
+  def to(end: Double) = NumberCompatHelper.doubleTo(value, end)
 
   /**
   * Create an inclusive <code>Range</code> from this <code>PosDouble</code> value
@@ -409,8 +408,7 @@ final class PosDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Double]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Double, step: Double): NumericRange.Inclusive[Double] =
-    value.to(end, step)
+  def to(end: Double, step: Double) = NumberCompatHelper.doubleTo(value, end, step)
 }
 
 /**

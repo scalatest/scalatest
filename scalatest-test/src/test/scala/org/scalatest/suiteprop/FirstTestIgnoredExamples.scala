@@ -20,7 +20,7 @@ import org.scalatest._
 import refspec.RefSpec
 // SKIP-SCALATESTJS-END
 
-class FirstTestIgnoredExamples extends SuiteExamples {
+class FirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteExamples {
 
   trait Services {
     val theTestNames = Vector("first test", "second test")

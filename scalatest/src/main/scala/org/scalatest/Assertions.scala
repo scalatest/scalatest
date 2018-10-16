@@ -15,16 +15,17 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 import ArrayHelper.deep
 import scala.reflect.ClassTag
 import Assertions.NormalResult
 import Assertions.areEqualComparingArraysStructurally
-import exceptions.StackDepthException
-import exceptions.StackDepthException.toExceptionFunction
-import exceptions.TestFailedException
-import exceptions.TestPendingException
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthException.toExceptionFunction
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestPendingException
+import org.scalatest.exceptions.TestCanceledException
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -526,10 +527,10 @@ trait Assertions extends TripleEquals  {
   val assertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
+    new TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
+    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>

@@ -26,6 +26,7 @@ import OptionValues._
 import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
+import org.scalactic.NumberCompatHelper
 
 class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -507,14 +508,14 @@ class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
 
     // SKIP-SCALATESTJS-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzfloat: PosZFloat, end: Float, step: Float) =>
-        rangeEqual(pzfloat.until(end).by(1f), pzfloat.toFloat.until(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.until(end, step), pzfloat.toFloat.until(end, step)) shouldBe true
-        rangeEqual(pzfloat.to(end).by(1f), pzfloat.toFloat.to(end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
+        rangeEqual(pzfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.until(end, step), NumberCompatHelper.floatUntil(pzfloat.toFloat, end, step)) shouldBe true
+        rangeEqual(pzfloat.to(end).by(1f), NumberCompatHelper.floatTo(pzfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.to(end, step), NumberCompatHelper.floatTo(pzfloat.toFloat, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS-END

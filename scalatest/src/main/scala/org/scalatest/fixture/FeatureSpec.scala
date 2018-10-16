@@ -226,7 +226,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-abstract class FeatureSpec extends FeatureSpecLike {
+abstract class FeatureSpec extends org.scalatest.fixture.FeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

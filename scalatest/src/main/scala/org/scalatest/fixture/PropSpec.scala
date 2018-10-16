@@ -243,7 +243,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-abstract class PropSpec extends PropSpecLike {
+abstract class PropSpec extends org.scalatest.fixture.PropSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

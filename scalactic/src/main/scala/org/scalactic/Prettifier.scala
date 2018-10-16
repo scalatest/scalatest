@@ -202,7 +202,7 @@ object Prettifier {
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
-              aGenMap.stringPrefix + "(" +
+              ColCompatHelper.className(aGenMap) + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
@@ -224,7 +224,7 @@ object Prettifier {
               if (isSelf)
                 aGenTraversable.toString
               else
-                aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+                ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
             // SKIP-SCALATESTJS-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()

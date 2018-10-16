@@ -20,7 +20,7 @@ import org.scalactic.{Equality, Every}
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import org.scalatest.words.ArrayWrapper
-import org.scalatest.ColCompatHelper.aggregate
+import org.scalactic.ColCompatHelper.aggregate
 import scala.annotation.tailrec
 
 /**

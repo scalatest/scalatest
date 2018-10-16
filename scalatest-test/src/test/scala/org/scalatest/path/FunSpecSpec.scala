@@ -868,7 +868,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
   
   "when failure happens" - {
     "should fire TestFailed event with correct stack depth info when test failed" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         it("fail scenario") {
           assert(1 === 2)
         }
@@ -890,7 +890,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
     
     "should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           it("a scenario") {
             it("nested scenario") {
@@ -913,7 +913,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           it("a scenario") {
             ignore("nested scenario") {
@@ -936,7 +936,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           they("a scenario") {
             they("nested scenario") {
@@ -959,7 +959,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           they("a scenario") {
             ignore("nested scenario") {
@@ -982,7 +982,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           val a = 1
@@ -1006,7 +1006,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           val a = 1
@@ -1030,7 +1030,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec
         describe("a feature") {
           throw new RuntimeException("on purpose")
@@ -1075,7 +1075,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     // SKIP-SCALATESTJS-START
     "should propagate AnnotationFormatError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new AnnotationFormatError("on purpose")
         }
@@ -1087,7 +1087,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate AWTError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new AWTError("on purpose")
         }
@@ -1099,7 +1099,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate CoderMalfunctionError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new CoderMalfunctionError(new RuntimeException("on purpose"))
         }
@@ -1111,7 +1111,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate FactoryConfigurationError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new FactoryConfigurationError("on purpose")
         }
@@ -1123,7 +1123,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate LinkageError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new LinkageError("on purpose")
         }
@@ -1135,7 +1135,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate ThreadDeath when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new ThreadDeath
         }
@@ -1147,7 +1147,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate TransformerFactoryConfigurationError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
+      class TestSpec extends PathFunSpec {
         describe("a feature") {
           throw new TransformerFactoryConfigurationError("on purpose")
         }
@@ -1159,8 +1159,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 
     "should propagate VirtualMachineError when it is thrown inside scope" in {
-      class TestSpec extends FunSpec {
-        override def newInstance: FunSpecLike = new TestSpec
+      class TestSpec extends PathFunSpec {
+        override def newInstance: org.scalatest.path.FunSpecLike = new TestSpec
         describe("a feature") {
           throw new VirtualMachineError("on purpose") {}
         }

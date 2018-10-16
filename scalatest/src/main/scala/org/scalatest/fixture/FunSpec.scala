@@ -228,7 +228,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-abstract class FunSpec extends FunSpecLike {
+abstract class FunSpec extends org.scalatest.fixture.FunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
