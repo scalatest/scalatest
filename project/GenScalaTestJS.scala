@@ -135,7 +135,7 @@ object GenScalaTestJS {
         "Shell.scala",
         "StreamlinedXml.scala",
         "StreamlinedXmlEquality.scala",
-        "StreamlinedXmlNormMethods.scala", 
+        "StreamlinedXmlNormMethods.scala",
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
         "run.scala",

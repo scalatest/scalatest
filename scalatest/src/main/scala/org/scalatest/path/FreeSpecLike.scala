@@ -52,9 +52,9 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
   import engine._
 
   // SKIP-SCALATESTJS,NATIVE-START
-  override def newInstance: FreeSpecLike = this.getClass.newInstance.asInstanceOf[FreeSpecLike]
+  override def newInstance: org.scalatest.path.FreeSpecLike = this.getClass.newInstance.asInstanceOf[FreeSpecLike]
   // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY override def newInstance: FreeSpecLike
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.path.FreeSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
