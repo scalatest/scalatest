@@ -34,7 +34,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.getEscapedIndentedTextForTest
-import Suite.getSimpleNameOfAnObjectsClass
+import NameUtil.getSimpleNameOfAnObjectsClass
 import Suite.getTopOfMethod
 import Suite.isTestMethodGoodies
 import Suite.reportTestIgnored
@@ -1398,21 +1398,6 @@ private[scalatest] object Suite {
 
   @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 
-  def getSimpleNameOfAnObjectsClass(o: AnyRef) = stripDollars(parseSimpleName(o.getClass.getName))
-
-  // [bv: this is a good example of the expression type refactor. I moved this from SuiteClassNameListCellRenderer]
-  // this will be needed by the GUI classes, etc.
-  def parseSimpleName(fullyQualifiedName: String) = {
-
-    val dotPos = fullyQualifiedName.lastIndexOf('.')
-
-    // [bv: need to check the dotPos != fullyQualifiedName.length]
-    if (dotPos != -1 && dotPos != fullyQualifiedName.length)
-      fullyQualifiedName.substring(dotPos + 1)
-    else
-      fullyQualifiedName
-  }
-
   // SKIP-SCALATESTJS,NATIVE-START
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
     
@@ -1426,29 +1411,6 @@ private[scalatest] object Suite {
     }
   }
   // SKIP-SCALATESTJS,NATIVE-END
-
-  // This attempts to strip dollar signs that happen when using the interpreter. It is quite fragile
-  // and already broke once. In the early days, all funky dollar sign encrusted names coming out of
-  // the interpreter started with "line". Now they don't, but in both cases they seemed to have at
-  // least one "$iw$" in them. So now I leave the string alone unless I see a "$iw$" in it. Worst case
-  // is sometimes people will get ugly strings coming out of the interpreter. -bv April 3, 2012
-  def stripDollars(s: String): String = {
-    val lastDollarIndex = s.lastIndexOf('$')
-    if (lastDollarIndex < s.length - 1)
-      if (lastDollarIndex == -1 || !s.contains("$iw$")) s else s.substring(lastDollarIndex + 1)
-    else {
-      // The last char is a dollar sign
-      val lastNonDollarChar = s.reverse.find(_ != '$')
-      lastNonDollarChar match {
-        case None => s
-        case Some(c) => {
-          val lastNonDollarIndex = s.lastIndexOf(c)
-          if (lastNonDollarIndex == -1) s
-          else stripDollars(s.substring(0, lastNonDollarIndex + 1))
-        }
-      }
-    }
-  }
 
   def diffStrings(s: String, t: String): Tuple2[String, String] = Prettifier.diffStrings(s, t)
   
