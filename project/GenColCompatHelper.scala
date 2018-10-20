@@ -55,7 +55,7 @@ object GenColCompatHelper {
           |
           |  object Factory {}
           |
-          |  def className(col: scala.collection.Iterable[_]): String = scala.runtime.ScalaRunTime.stringOf(col)
+          |  def className(col: scala.collection.Iterable[_]): String = org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
           |}
           |
         """.stripMargin
