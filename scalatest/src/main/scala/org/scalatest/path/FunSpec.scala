@@ -696,7 +696,7 @@ import org.scalatest._
 // SKIP-SCALATESTJS-START
 class FunSpec extends org.scalatest.path.FunSpecLike {
 // SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY abstract class FunSpec extends FunSpecLike {
+//SCALATESTJS-ONLY abstract class FunSpec extends org.scalatest.path.FunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

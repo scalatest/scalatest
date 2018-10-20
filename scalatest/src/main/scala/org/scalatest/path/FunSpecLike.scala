@@ -52,9 +52,9 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   import engine._
 
   // SKIP-SCALATESTJS-START
-  override def newInstance: FunSpecLike = this.getClass.newInstance.asInstanceOf[FunSpecLike]
+  override def newInstance: org.scalatest.path.FunSpecLike = this.getClass.newInstance.asInstanceOf[org.scalatest.path.FunSpecLike]
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY override def newInstance: FunSpecLike
+  //SCALATESTJS-ONLY override def newInstance: org.scalatest.path.FunSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its

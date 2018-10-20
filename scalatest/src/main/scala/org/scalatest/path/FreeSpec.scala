@@ -694,7 +694,7 @@ import org.scalatest._
 // SKIP-SCALATESTJS-START
 class FreeSpec extends org.scalatest.path.FreeSpecLike {
 // SKIP-SCALATESTJS-END
-//SCALATESTJS-ONLY abstract class FreeSpec extends FreeSpecLike {
+//SCALATESTJS-ONLY abstract class FreeSpec extends org.scalatest.path.FreeSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
