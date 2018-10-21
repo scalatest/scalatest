@@ -315,7 +315,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param elem the element to look for
     * @return true if this <code>NonEmptyArray</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
     */
-  final def contains(elem: Any): Boolean = toArray.contains(elem)
+  final def contains(elem: T): Boolean = toArray.contains(elem)
 
   /**
     * Indicates whether this <code>NonEmptyArray</code> contains a given <code>GenSeq</code> as a slice.
@@ -636,7 +636,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return the index of the first element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
     *     or <code>-1</code>, if none exists.
     */
-  final def indexOf[U >: T](elem: U): Int = toArray.indexOf(elem, 0)
+  final def indexOf(elem: T): Int = toArray.indexOf(elem, 0)
 
   /**
     * Finds index of first occurrence of some value in this <code>NonEmptyArray</code> after or at some start index.
@@ -646,7 +646,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
     *     or <code>-1</code>, if none exists.
     */
-  final def indexOf[U >: T](elem: U, from: Int): Int = toArray.indexOf(elem, from)
+  final def indexOf(elem: T, from: Int): Int = toArray.indexOf(elem, from)
 
 
   /**
@@ -775,7 +775,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return the index of the last element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
     *     or <code>-1</code>, if none exists.
     */
-  final def lastIndexOf[U >: T](elem: U): Int = toArray.lastIndexOf(elem)
+  final def lastIndexOf(elem: T): Int = toArray.lastIndexOf(elem)
 
   /**
     * Finds the index of the last occurrence of some value in this <code>NonEmptyArray</code> before or at a given <code>end</code> index.
@@ -785,7 +785,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>)
     *     to <code>elem</code>, or <code>-1</code>, if none exists.
     */
-  final def lastIndexOf[U >: T](elem: U, end: Int): Int = toArray.lastIndexOf(elem, end)
+  final def lastIndexOf(elem: T, end: Int): Int = toArray.lastIndexOf(elem, end)
 
   /**
     * Finds the last index where this <code>NonEmptyArray</code> contains a given <code>GenSeq</code> as a slice. 
