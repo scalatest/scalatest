@@ -16,8 +16,8 @@
 package org.scalatest.prop
 
 import org.scalactic._
+import NameUtil.getSimpleNameOfAnObjectsClass
 import org.scalatest.FailureMessages
-import org.scalatest.Suite.getSimpleNameOfAnObjectsClass
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec

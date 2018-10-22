@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalactic._
+import NameUtil.getSimpleNameOfAnObjectsClass
 import org.scalacheck.Prop
 import org.scalacheck.Prop.Arg
 import org.scalacheck.Test
@@ -23,7 +24,6 @@ import org.scalacheck.util.Pretty
 import org.scalatest.Assertion
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
-import org.scalatest.Suite.getSimpleNameOfAnObjectsClass
 import org.scalatest.Succeeded
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.StackDepthException

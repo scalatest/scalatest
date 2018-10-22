@@ -45,7 +45,7 @@ object GenColCompatHelper {
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
-          |  def className(col: scala.collection.Iterable[_]): String = scala.runtime.ScalaRunTime.stringOf(col)
+          |  def className(col: scala.collection.Iterable[_]): String = org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
           |}
         """.stripMargin
       else
