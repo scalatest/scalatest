@@ -294,10 +294,10 @@ class PosFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with 
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pfloat: PosFiniteFloat, end: Float, step: Float) =>
-        rangeEqual(pfloat.until(end).by(1f), pfloat.toFloat.until(end).by(1f)) shouldBe true
-        rangeEqual(pfloat.until(end, step), pfloat.toFloat.until(end, step)) shouldBe true
-        rangeEqual(pfloat.to(end).by(1f), pfloat.toFloat.to(end).by(1f)) shouldBe true
-        rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
+        rangeEqual(pfloat.until(end).by(1f), BigDecimal(pfloat.toFloat).until(end).by(1f)) shouldBe true
+        rangeEqual(pfloat.until(end, step), BigDecimal(pfloat.toFloat).until(end, step)) shouldBe true
+        rangeEqual(pfloat.to(end).by(1f), BigDecimal(pfloat.toFloat).to(end).by(1f)) shouldBe true
+        rangeEqual(pfloat.to(end, step), BigDecimal(pfloat.toFloat).to(end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

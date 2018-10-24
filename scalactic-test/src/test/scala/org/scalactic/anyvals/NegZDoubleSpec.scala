@@ -413,14 +413,14 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pzdouble: NegZDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), pzdouble.toDouble.until(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), pzdouble.toDouble.until(end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), pzdouble.toDouble.to(end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), pzdouble.toDouble.to(end, step)) shouldBe true
+        rangeEqual(pzdouble.until(end).by(1f), BigDecimal(pzdouble.toDouble).until(end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.until(end, step), BigDecimal(pzdouble.toDouble).until(end, step)) shouldBe true
+        rangeEqual(pzdouble.to(end).by(1f), BigDecimal(pzdouble.toDouble).to(end).by(1f)) shouldBe true
+        rangeEqual(pzdouble.to(end, step), BigDecimal(pzdouble.toDouble).to(end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END
