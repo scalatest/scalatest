@@ -22,13 +22,16 @@ import org.scalactic.Prettifier
  * This wrapper gives better toString (Array(x, x, x)) as compared to Scala default one (WrappedArray(x, x, x)).
  */
 private[scalatest] class ArrayWrapper[T](underlying: Array[T]) extends Traversable[T] {
-  def foreach[U](f: (T) => U): Unit = {
+  override def foreach[U](f: (T) => U): Unit = {
     var index = 0
     while (index < underlying.length) {
       index += 1
       f(underlying(index - 1))
     }
   }
+
+  def iterator: Iterator[T] = underlying.iterator
+
   // Need to prettify the array's toString, because by the time it gets to decorateToStringValue, the array
   // has been wrapped in this Traversable and so it won't get prettified anymore by FailureMessages.decorateToStringValue.
   override def toString: String = FailureMessages.decorateToStringValue(Prettifier.default, underlying)

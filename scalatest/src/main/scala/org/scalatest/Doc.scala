@@ -144,7 +144,7 @@ println("&&&&&&&&&&&")
 
   private[scalatest] def getSnippets(text: String): Vector[Snippet] = {
 //println("text: " + text)
-    val lines = Vector.empty ++ text.lines
+    val lines = Vector.empty ++ text.lines.toIterable
 //println("lines: " + lines)
     val pairs = lines map { line =>
       val trimmed = line.trim

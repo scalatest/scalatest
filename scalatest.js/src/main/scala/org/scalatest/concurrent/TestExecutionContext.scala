@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
 
-import scala.collection.Traversable
-import scala.collection.JavaConverters._
+package org.scalatest.concurrent
 
-private[scalatest] class JavaCollectionWrapper[T](underlying: java.util.Collection[T]) extends Traversable[T] {
-  override def foreach[U](f: (T) => U): Unit = {
-    val javaIterator = underlying.iterator
-    while (javaIterator.hasNext)
-      f(javaIterator.next)
-  }
+import scala.concurrent.ExecutionContextExecutor
 
-  def iterator: Iterator[T] = underlying.iterator().asScala
+object TestExecutionContext {
 
-  override def toString: String = if (underlying == null) "null" else underlying.toString
+  implicit lazy val runNow =
+    new ExecutionContextExecutor {
+      def execute(runnable: Runnable): Unit = {
+        try {
+          runnable.run()
+        } catch {
+          case t: Throwable => reportFailure(t)
+        }
+      }
+
+      def reportFailure(t: Throwable): Unit =
+        t.printStackTrace()
+    }
+
 }
-

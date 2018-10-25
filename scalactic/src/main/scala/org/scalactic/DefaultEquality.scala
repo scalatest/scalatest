@@ -42,6 +42,8 @@ private[scalactic] final class DefaultEquality[A] extends Equality[A] {
 
 object DefaultEquality {
 
+  import ArrayHelper.deep
+
   private[org] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
     // when nearing 2.0.M6 to call .deep if either left or right side is an array.
@@ -50,21 +52,21 @@ object DefaultEquality {
     left match {
       case leftArray: Array[_] =>
         right match {
-          case rightArray: Array[_] => leftArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftArray.deep == right
+          case rightArray: Array[_] => deep(leftArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftArray) == right
         }
       case leftNonEmptyArray: NonEmptyArray[_] =>
         right match {
-          case rightArray: Array[_] => leftNonEmptyArray.toArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftNonEmptyArray.toArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftNonEmptyArray.toArray.deep == right
+          case rightArray: Array[_] => deep(leftNonEmptyArray.toArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftNonEmptyArray.toArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftNonEmptyArray.toArray) == right
         }
 
       case other => {
         right match {
-          case rightArray: Array[_] => left == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => left == rightNonEmptyArray.toArray.deep
+          case rightArray: Array[_] => left == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => left == deep(rightNonEmptyArray.toArray)
           case _ => left == right
         }
       }

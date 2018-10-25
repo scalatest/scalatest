@@ -21,9 +21,8 @@ import scala.collection.mutable.ArrayBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
-// SKIP-SCALATESTJS-START
+
 import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class NonEmptyArraySpec extends UnitSpec {
   "A NonEmptyArray" can "be constructed with one element" in {
@@ -1363,10 +1362,11 @@ class NonEmptyArraySpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyArray(1).to[Array] shouldBe Array(1)
-    NonEmptyArray(1, 2, 3).to[Array] shouldBe Array(1, 2, 3)
-    NonEmptyArray(1, 2, 3).to[scala.collection.mutable.ArrayBuffer] shouldBe ArrayBuffer(1, 2, 3)
-    NonEmptyArray(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyArray(1).to(Array) shouldBe Array(1)
+    NonEmptyArray(1, 2, 3).to(Array) shouldBe Array(1, 2, 3)
+    NonEmptyArray(1, 2, 3).to(scala.collection.mutable.ArrayBuffer) shouldBe ArrayBuffer(1, 2, 3)
+    NonEmptyArray(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
   }
   it should "have a toList method" in {
     NonEmptyArray(1, 2, 3).toList should === (List(1, 2, 3))
@@ -1426,11 +1426,6 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3).toString should === ("NonEmptyArray(1, 2, 3)")
     NonEmptyArray(1).toString should === ("NonEmptyArray(1)")
   }
-  it should "have a toTraversable method" in {
-    NonEmptyArray(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    NonEmptyArray("a", "b").toTraversable should === (Traversable("a", "b"))
-    NonEmptyArray(1).toTraversable should === (Traversable(1))
-  }
   it should "have a toVector method" in {
     NonEmptyArray(1, 2, 3).toVector should === (Vector(1, 2, 3))
     NonEmptyArray("a", "b").toVector should === (Vector("a", "b"))
@@ -1441,30 +1436,6 @@ class NonEmptyArraySpec extends UnitSpec {
     //NonEmptyArray(NonEmptyArray(1, 2), NonEmptyArray(3, 4), NonEmptyArray(5, 6), NonEmptyArray(7, 8)).transpose shouldBe NonEmptyArray(NonEmptyArray(1, 3, 5, 7), NonEmptyArray(2, 4, 6, 8))
     //NonEmptyArray(NonEmptyArray(1, 2), NonEmptyArray(3, 4), NonEmptyArray(5, 6), NonEmptyArray(7, 8)).transpose.transpose shouldBe NonEmptyArray(NonEmptyArray(1, 2), NonEmptyArray(3, 4), NonEmptyArray(5, 6), NonEmptyArray(7, 8))
     //NonEmptyArray(NonEmptyArray(1, 2, 3), NonEmptyArray(4, 5, 6), NonEmptyArray(7, 8, 9)).transpose.transpose shouldBe NonEmptyArray(NonEmptyArray(1, 2, 3), NonEmptyArray(4, 5, 6), NonEmptyArray(7, 8, 9))
-  }
-  it should "have a union method that takes a GenSeq" in {
-    NonEmptyArray(1) union Array(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union Array(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union Array(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union Array(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union Array(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union Array(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
-  }
-  it should "have a union method that takes an Every" in {
-    NonEmptyArray(1) union Every(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union Every(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union Every(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union Every(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union Every(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union Every(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
-  }
-  it should "have a union method that takes a NonEmptyArray" in {
-    NonEmptyArray(1) union NonEmptyArray(1) shouldBe NonEmptyArray(1, 1)
-    NonEmptyArray(1) union NonEmptyArray(1, 2) shouldBe NonEmptyArray(1, 1, 2)
-    NonEmptyArray(1, 2) union NonEmptyArray(1, 2) shouldBe NonEmptyArray(1, 2, 1, 2)
-    NonEmptyArray(1, 2) union NonEmptyArray(1) shouldBe NonEmptyArray(1, 2, 1)
-    NonEmptyArray(1, 2) union NonEmptyArray(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 4, 5)
-    NonEmptyArray(1, 2, 3) union NonEmptyArray(3, 4, 5) shouldBe NonEmptyArray(1, 2, 3, 3, 4, 5)
   }
   it should "have an unzip method" in {
     val r1 = NonEmptyArray((1, 2)).unzip
