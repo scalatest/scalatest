@@ -22,9 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
-// SKIP-SCALATESTJS-START
 import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class NonEmptyMapSpec extends UnitSpec {
   "A NonEmptyMap" can "be constructed with one element" in {
@@ -739,8 +737,9 @@ class NonEmptyMapSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(2 -> "2", 3 -> "3", 1 -> "1")
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to[Vector] shouldBe Vector(2 -> "2", 3 -> "3", 1 -> "1")
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer(2 -> "2", 3 -> "3", 1 -> "1")
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").to(Vector) shouldBe Vector(2 -> "2", 3 -> "3", 1 -> "1")
   }
   it should "have a toArray method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toArray should === (Array(2 -> "2", 3 -> "3", 1 -> "1"))
@@ -798,11 +797,6 @@ class NonEmptyMapSpec extends UnitSpec {
   it should "have a toString method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toString should === ("NonEmptyMap(2 -> 2, 3 -> 3, 1 -> 1)")
     NonEmptyMap(1 -> "1").toString should === ("NonEmptyMap(1 -> 1)")
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toTraversable should === (Map(2 -> "2", 3 -> "3", 1 -> "1"))
-    NonEmptyMap("a" -> "A", "b" -> "B").toTraversable should === (Map("b" -> "B", "a" -> "A"))
-    NonEmptyMap(1 -> "1").toTraversable should === (Map(1 -> "1"))
   }
   it should "have a toVector method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toVector should === (Vector(2 -> "2", 3 -> "3", 1 -> "1"))

@@ -186,7 +186,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     * @return a new <code>NonEmptyVector</code> that contains all the elements of this <code>NonEmptyVector</code> followed by all elements of <code>other</code>.
     */
   def ++[U >: T](other: GenTraversableOnce[U]): NonEmptyVector[U] =
-    if (other.isEmpty) this else new NonEmptyVector(toVector ++ other)
+    if (other.isEmpty) this else new NonEmptyVector(toVector ++ other.toIterable)
 
   /**
     * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyVector</code>, going left to right.
@@ -600,7 +600,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     */
   final def groupBy[K](f: T => K): Map[K, NonEmptyVector[T]] = {
     val mapKToVector = toVector.groupBy(f)
-    mapKToVector.mapValues { list => new NonEmptyVector(list) }
+    mapKToVector.mapValues { list => new NonEmptyVector(list) }.toMap
   }
 
   /**
@@ -1387,7 +1387,8 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     * @tparam Col the collection type to build.
     * @return a new collection containing all elements of this <code>NonEmptyVector</code>. 
     */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toVector.to[Col](cbf)
+  final def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] =
+    toVector.to(factory)
 
   /**
     * Converts this <code>NonEmptyVector</code> to an array.
@@ -1479,13 +1480,6 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     */
   override def toString: String = "NonEmptyVector(" + toVector.mkString(", ") + ")"
 
-  /**
-    * Converts this <code>NonEmptyVector</code> to an unspecified Traversable.
-    *
-    * @return a <code>Traversable</code> containing all elements of this <code>NonEmptyVector</code>. 
-    */
-  final def toTraversable: Traversable[T] = toVector.toTraversable
-
   final def transpose[U](implicit ev: T <:< NonEmptyVector[U]): NonEmptyVector[NonEmptyVector[U]] = {
     val asVectors = toVector.map(ev)
     val list = asVectors.transpose
@@ -1544,7 +1538,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     * @param that the <code>GenSeq</code> to add.
     * @return a new <code>NonEmptyVector</code> that contains all elements of this <code>NonEmptyVector</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
     */
-  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[Vector[T], U, Vector[U]]): NonEmptyVector[U] = new NonEmptyVector(toVector.union(that)(cbf))
+  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[Vector[T], U, Vector[U]]): NonEmptyVector[U] = new NonEmptyVector(toVector.union(that))
 
   /**
     * Converts this <code>NonEmptyVector</code> of pairs into two <code>NonEmptyVector</code>s of the first and second half of each pair. 

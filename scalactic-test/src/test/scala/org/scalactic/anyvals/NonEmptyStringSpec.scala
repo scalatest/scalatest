@@ -22,9 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 
-// SKIP-SCALATESTJS-START
 import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {
@@ -1099,10 +1097,11 @@ class NonEmptyStringSpec extends UnitSpec {
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have a to method" in {
-    NonEmptyString("1").to[List] shouldBe List('1')
-    NonEmptyString("123").to[List] shouldBe List('1', '2', '3')
-    NonEmptyString("123").to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer('1', '2', '3')
-    NonEmptyString("123").to[Vector] shouldBe Vector('1', '2', '3')
+    import org.scalactic.ColCompatHelper.Factory._
+    NonEmptyString("1").to(List) shouldBe List('1')
+    NonEmptyString("123").to(List) shouldBe List('1', '2', '3')
+    NonEmptyString("123").to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer('1', '2', '3')
+    NonEmptyString("123").to(Vector) shouldBe Vector('1', '2', '3')
   }
   it should "have a toArray method" in {
     NonEmptyString("123").toArray should === (Array('1', '2', '3'))
@@ -1156,11 +1155,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").toStream should === (Stream('1', '2', '3'))
     NonEmptyString("ab").toStream should === (Stream('a', 'b'))
     NonEmptyString("1").toStream should === (Stream('1'))
-  }
-  it should "have a toTraversable method" in {
-    NonEmptyString("123").toTraversable should === (Traversable('1', '2', '3'))
-    NonEmptyString("ab").toTraversable should === (Traversable('a', 'b'))
-    NonEmptyString("1").toTraversable should === (Traversable('1'))
   }
   it should "have a toVector method" in {
     NonEmptyString("123").toVector should === (Vector('1', '2', '3'))
