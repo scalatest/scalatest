@@ -1396,7 +1396,7 @@ private[scalatest] object Suite {
   private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
   private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
 
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
+  private[scalatest] val defaultTestSortingReporterTimeoutInSeconds = 2.0
 
   // SKIP-SCALATESTJS,NATIVE-START
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {

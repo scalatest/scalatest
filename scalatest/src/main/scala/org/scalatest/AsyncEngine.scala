@@ -20,20 +20,23 @@ import org.scalactic.{Resources => _, _}
 import org.scalatest.Suite._
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
+
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
 import org.scalatest.events.SeeStackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 import Suite.IgnoreTagName
+
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions._
-import org.scalatest.tools.TestSortingReporter
-import org.scalatest.tools.TestSpecificReporter
+import org.scalatest.time.{Seconds, Span}
+import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -505,8 +508,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           passedInArgs // This is the test-specific instance
         else {
           if (passedInArgs.distributedTestSorter.isEmpty) {
-            val sortingTimeout = Suite.testSortingReporterTimeout // TODO: should pass in this
-            val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, sortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
+            val testSortingTimeout =
+              passedInArgs.distributedSuiteSorter match {
+                case Some(ssr: SuiteSortingReporter) => ssr.testSortingTimeout
+                case _ => Span(Suite.defaultTestSortingReporterTimeoutInSeconds, Seconds)
+              }
+            val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, testSortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
             passedInArgs.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
           }
           else

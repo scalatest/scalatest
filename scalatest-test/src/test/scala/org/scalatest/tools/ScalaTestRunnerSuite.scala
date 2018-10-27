@@ -233,11 +233,8 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       assert(iae.getMessage === "-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
     }
     
-    test("ScalaTestRunner.run should throw IllegalArgumentException when -T is passed in") {
-      val iae = intercept[IllegalArgumentException] {
-        run("org.scalatest.tools.test.SimpleTest", Array("-T", "100"))
-      }
-      assert(iae.getMessage === "-T is not supported when runs in SBT.")
+    test("ScalaTestRunner.run should be able to pass in test sorting timeout with -T") {
+      run("org.scalatest.tools.test.SimpleTest", Array("-T", "100"))
     }
     
     test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
