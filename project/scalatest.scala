@@ -25,7 +25,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.7"
 
-  val releaseVersion = "3.0.6-SNAP4"
+  val releaseVersion = "3.0.6-SNAP5"
 
   val previousReleaseVersion = "3.0.5"
 
@@ -105,7 +105,7 @@ object ScalatestBuild extends Build {
     scalaVersion := buildScalaVersion,
     crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
     version := releaseVersion,
-    scalacOptions ++= Seq("-feature", "-target:jvm-1.6") ++ (if (scalaVersion.value == "2.13.0-M4") Seq("-Xsource:2.12") else Seq.empty),
+    scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
     publishTo <<= version { v: String =>
