@@ -21,7 +21,7 @@ import prop.TableDrivenPropertyChecks
 import refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
-class DeprecatedInfoInsideTestFiredAfterTestExamples extends SuiteExamples {
+class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suiteprop.SuiteExamples {
 
   trait Services {
     val msg = "hi there, dude"

@@ -263,7 +263,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FixtureAsyncFunSuite extends fixture.AsyncTestSuite with fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFunSuite extends funsuite.FixtureAsyncFunSuiteLike with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   /**
     * Returns a user friendly string for this suite, composed of the

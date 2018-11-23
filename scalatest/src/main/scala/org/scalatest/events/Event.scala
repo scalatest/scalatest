@@ -21,7 +21,9 @@ import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.Date
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.xml.Elem
+// SKIP-SCALATESTJS,NATIVE-END
 import exceptions.StackDepthException
 
 /**
@@ -77,14 +79,12 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
    * the passed event
    */
   def compare(that: Event): Int = ordinal.compare(that.ordinal)
-  
-  /**
-   * 
-   */
-  private [scalatest] def toXml: Elem
 
   private [scalatest] def toJson: String
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
+  private [scalatest] def toXml: Elem
+
   private[events] object EventXmlHelper {
     def stringOption(strOption: Option[String]) = strOption.getOrElse("")
     def longOption(longOption: Option[Long]) = if (longOption.isDefined) longOption.get.toString else ""
@@ -198,6 +198,7 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       }
     }
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[events] object EventJsonHelper {
 
@@ -369,6 +370,7 @@ final case class TestStarting (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestStarting>
@@ -387,6 +389,7 @@ final case class TestStarting (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestStarting>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -472,6 +475,7 @@ final case class TestSucceeded (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestSucceeded>
@@ -492,6 +496,7 @@ final case class TestSucceeded (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestSucceeded>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -584,6 +589,7 @@ final case class TestFailed (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestFailed>
@@ -607,6 +613,7 @@ final case class TestFailed (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestFailed>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -683,6 +690,7 @@ final case class TestIgnored (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestIgnored>
@@ -700,6 +708,7 @@ final case class TestIgnored (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestIgnored>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -775,6 +784,7 @@ final case class TestPending (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestPending>
@@ -794,6 +804,7 @@ final case class TestPending (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestPending>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -880,6 +891,7 @@ final case class TestCanceled (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <TestCanceled>
@@ -902,6 +914,7 @@ final case class TestCanceled (
       <timeStamp>{ timeStamp }</timeStamp>
     </TestCanceled>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -975,6 +988,7 @@ final case class SuiteStarting (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <SuiteStarting>
@@ -991,6 +1005,7 @@ final case class SuiteStarting (
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteStarting>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1068,6 +1083,7 @@ final case class SuiteCompleted (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <SuiteCompleted>
@@ -1085,6 +1101,7 @@ final case class SuiteCompleted (
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteCompleted>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1171,6 +1188,7 @@ final case class SuiteAborted (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <SuiteAborted>
@@ -1190,6 +1208,7 @@ final case class SuiteAborted (
       <timeStamp>{ timeStamp }</timeStamp>
     </SuiteAborted>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1251,7 +1270,8 @@ final case class RunStarting (
 
   if (testCount < 0)
     throw new IllegalArgumentException("testCount was less than zero: " + testCount)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunStarting>
@@ -1274,6 +1294,7 @@ final case class RunStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunStarting>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1347,7 +1368,8 @@ final case class RunCompleted (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunCompleted>
@@ -1361,6 +1383,7 @@ final case class RunCompleted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunCompleted>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1435,7 +1458,8 @@ final case class RunStopped (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunStopped>
@@ -1449,6 +1473,7 @@ final case class RunStopped (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunStopped>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1520,7 +1545,8 @@ final case class RunAborted (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <RunAborted>
@@ -1536,6 +1562,7 @@ final case class RunAborted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </RunAborted>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1602,6 +1629,7 @@ final case class InfoProvided (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <InfoProvided>
@@ -1617,6 +1645,7 @@ final case class InfoProvided (
       <timeStamp>{ timeStamp }</timeStamp>
     </InfoProvided>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1692,7 +1721,8 @@ final case class AlertProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <AlertProvided>
@@ -1707,6 +1737,7 @@ final case class AlertProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </AlertProvided>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1782,7 +1813,8 @@ final case class NoteProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <NoteProvided>
@@ -1797,6 +1829,7 @@ final case class NoteProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </NoteProvided>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1858,7 +1891,8 @@ final case class MarkupProvided (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <MarkupProvided>
@@ -1872,6 +1906,7 @@ final case class MarkupProvided (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </MarkupProvided>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1932,6 +1967,7 @@ final case class ScopeOpened (
                  payload,
                  threadName)
 
+  // SKIP-SCALATESTJS,NATIVE-START
   private [scalatest] def toXml = {
     import EventXmlHelper._
     <ScopeOpened>
@@ -1946,6 +1982,7 @@ final case class ScopeOpened (
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopeOpened>
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2005,7 +2042,8 @@ final case class ScopeClosed (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <ScopeClosed>
@@ -2019,6 +2057,7 @@ final case class ScopeClosed (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopeClosed>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2076,7 +2115,8 @@ final case class ScopePending (
                  location,
                  payload,
                  threadName)
-  
+
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <ScopePending>
@@ -2090,6 +2130,7 @@ final case class ScopePending (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </ScopePending>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2135,6 +2176,7 @@ final case class DiscoveryStarting (
    */
   val formatter: Option[Formatter] = None
 
+  // SKIP-SCALATESTJS,NATIVE-START
     private [scalatest] def toXml = 
     <DiscoveryStarting>
       <ordinal>
@@ -2153,6 +2195,7 @@ final case class DiscoveryStarting (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </DiscoveryStarting>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2197,7 +2240,7 @@ final case class DiscoveryCompleted (
    * <code>Formatter</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
-  
+  // SKIP-SCALATESTJS,NATIVE-START
   import EventXmlHelper._
   private [scalatest] def toXml = 
     <DiscoveryCompleted>
@@ -2208,6 +2251,7 @@ final case class DiscoveryCompleted (
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </DiscoveryCompleted>
+  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._

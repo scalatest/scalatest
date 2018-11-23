@@ -15,18 +15,19 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 
 import scala.reflect.ClassTag
 import Assertions.NormalResult
-import DefaultEquality.areEqualComparingArraysStructurally
-import exceptions.StackDepthException
-import exceptions.StackDepthException.toExceptionFunction
-import exceptions.TestFailedException
-import exceptions.TestPendingException
-import org.scalactic.anyvals.NonEmptyArray
+import Assertions.areEqualComparingArraysStructurally
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthException.toExceptionFunction
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestPendingException
+import org.scalatest.exceptions.TestCanceledException
 import ArrayHelper.deep
+import org.scalactic.anyvals.NonEmptyArray
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -469,10 +470,10 @@ trait Assertions extends TripleEquals  {
   def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assert
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
+    new org.scalatest.exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
+    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>

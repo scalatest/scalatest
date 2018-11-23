@@ -30,6 +30,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
+import org.scalactic.NumberCompatHelper
 
 trait FiniteDoubleSpecSupport {
 
@@ -372,14 +373,14 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pdouble: FiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), pdouble.toDouble.until(end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), pdouble.toDouble.until(end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), pdouble.toDouble.to(end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), pdouble.toDouble.to(end, step)) shouldBe true
+        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
+        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
+        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

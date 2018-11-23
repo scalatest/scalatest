@@ -26,15 +26,11 @@ import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
 import org.scalatest.events.SeeStackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper.posOrElseStackDepthFun
-import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
+import org.scalatest.exceptions._
+import org.scalatest.exceptions.StackDepthExceptionHelper._
 import scala.annotation.tailrec
 import Suite.IgnoreTagName
 import collection.mutable.ListBuffer
-import exceptions.TestCanceledException
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestPendingException
-import org.scalatest.exceptions.TestRegistrationClosedException
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -595,7 +591,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       fun // Execute the function
     }
     catch {
-      case e: exceptions.TestPendingException =>
+      case e: TestPendingException =>
         newBranch.pending = true
     }
       

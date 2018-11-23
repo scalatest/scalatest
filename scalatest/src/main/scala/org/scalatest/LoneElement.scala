@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, _}
 import enablers.Collecting
-import exceptions.StackDepthException
+import org.scalatest.exceptions._
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -115,7 +115,7 @@ trait LoneElement {
       collecting.loneElementOf(collection) match {
         case Some(ele) => ele
         case None =>
-          throw new exceptions.TestFailedException(
+          throw new TestFailedException(
             (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  collection,
                  collecting.sizeOf(collection))),
@@ -162,7 +162,7 @@ trait LoneElement {
       collecting.loneElementOf(map) match {
         case Some(ele) => ele
         case None =>
-          throw new exceptions.TestFailedException(
+          throw new TestFailedException(
             (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
               map,
               collecting.sizeOf(map))),
@@ -201,7 +201,7 @@ trait LoneElement {
       collecting.loneElementOf(jmap) match {
         case Some(ele) => ele
         case None =>
-          throw new exceptions.TestFailedException(
+          throw new TestFailedException(
             (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  jmap,
                  collecting.sizeOf(jmap))), 
@@ -238,7 +238,7 @@ trait LoneElement {
       if (s.length == 1)
         s.charAt(0)
       else
-        throw new exceptions.TestFailedException(
+        throw new TestFailedException(
           (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
             s,
             s.length)),

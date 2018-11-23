@@ -20,7 +20,6 @@ import scala.collection.{GenTraversableOnce, GenTraversable}
 
 import org.scalactic.ColCompatHelper.aggregate
 
-
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
  *

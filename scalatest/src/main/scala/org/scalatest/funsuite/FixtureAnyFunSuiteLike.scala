@@ -42,7 +42,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFunSuiteLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFunSuiteMod, "FixtureFunSuite")
 
@@ -97,7 +97,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -105,7 +105,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
@@ -116,7 +116,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, fixture.Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+      engine.registerTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
 
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -126,7 +126,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(testName, fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+      engine.registerTest(testName, org.scalatest.fixture.Transformer(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
   }
 
@@ -153,7 +153,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
   */
 
@@ -165,7 +165,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
 
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -175,7 +175,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
   }
 
@@ -203,7 +203,7 @@ trait FixtureAnyFunSuiteLike extends fixture.TestSuite with fixture.TestRegistra
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   */
 

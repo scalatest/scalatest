@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 import org.scalatest.enablers._
 import org.scalatest.matchers._
 import org.scalatest.words._
@@ -43,8 +43,7 @@ import MatchersHelper.indicateFailure
 import MatchersHelper.indicateSuccess
 import MatchersHelper.newTestFailedException
 import MatchersHelper.startWithRegexWithGroups
-import exceptions.NotAllowedException
-import exceptions.TestFailedException
+import org.scalatest.exceptions._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.

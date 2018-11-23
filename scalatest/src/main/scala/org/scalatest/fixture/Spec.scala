@@ -46,7 +46,7 @@ import org.scalatest.events.{TopOfClass, TopOfMethod}
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 @deprecated("fixture.Spec has been deprecated and will be removed in a future version of ScalaTest. Please use org.scalatest.fixture.FunSpec instead.")
-abstract class Spec extends SpecLike {
+abstract class Spec extends org.scalatest.fixture.SpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
