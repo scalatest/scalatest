@@ -368,6 +368,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `this` up to but
   * not including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's until function instead")
   def until(end: Double) = NumberCompatHelper.doubleUntil(value, end)
 
   /**
@@ -380,6 +381,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Double]]] from `this` up to but
   * not including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's until function instead")
   def until(end: Double, step: Double) = NumberCompatHelper.doubleUntil(value, end, step)
 
   /**
@@ -390,6 +392,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `'''this'''` up to
   * and including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's to function instead")
   def to(end: Double) = NumberCompatHelper.doubleTo(value, end)
 
   /**
@@ -401,6 +404,7 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Double]]] from `'''this'''` up to
   * and including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's to function instead")
   def to(end: Double, step: Double) = NumberCompatHelper.doubleTo(value, end, step)
 }
 
