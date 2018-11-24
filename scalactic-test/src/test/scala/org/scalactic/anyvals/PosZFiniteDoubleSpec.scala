@@ -30,7 +30,6 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait PosZFiniteDoubleSpecSupport {
 
@@ -325,20 +324,6 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         pzdouble.toRadians shouldEqual pzdouble.toDouble.toRadians
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzdouble: PosZFiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), NumberCompatHelper.doubleTo(pzdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZFiniteDouble) =>

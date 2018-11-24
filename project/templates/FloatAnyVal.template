@@ -20,7 +20,6 @@ import scala.language.implicitConversions
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
-import org.scalactic.NumberCompatHelper
 
 /**
  * An <code>AnyVal</code> for $typeDesc$ <code>Float</code>s.
@@ -364,50 +363,6 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   * @return the measurement of the angle x in degrees.
   */
   def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
-
-  // adapted from RichInt:
-  /**
-  * Create a <code>Range.Partial</code> from this <code>$typeName$</code> value
-  * until the specified <code>end</code> (exclusive) with step value 1.
-  *
-  * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `this` up to but
-  * not including `end`.
-  */
-  def until(end: Float) = NumberCompatHelper.floatUntil(value, end)
-
-  /**
-  * Create a <code>Range</code> (exclusive) from this <code>$typeName$</code> value
-  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
-  *
-  * @param end The final bound of the range to make.
-  * @param end The final bound of the range to make.
-  * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Float]]] from `this` up to but
-  * not including `end`.
-  */
-  def until(end: Float, step: Float) = NumberCompatHelper.floatUntil(value, end, step)
-
-  /**
-  * Create an inclusive <code>Range.Partial</code> from this <code>$typeName$</code> value
-  * to the specified <code>end</code> with step value 1.
-  *
-  * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range.Partial[Float], NumericRange[Float]]] from `'''this'''` up to
-  * and including `end`.
-  */
-  def to(end: Float) = NumberCompatHelper.floatTo(value, end)
-
-  /**
-  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
-  * to the specified <code>end</code> with the specified <code>step</code> value.
-  *
-  * @param end The final bound of the range to make.
-  * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Float]]] from `'''this'''` up to
-  * and including `end`.
-  */
-  def to(end: Float, step: Float) = NumberCompatHelper.floatUntil(value, end, step)
 
   /**
    * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
