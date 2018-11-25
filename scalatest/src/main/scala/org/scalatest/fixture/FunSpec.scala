@@ -22,7 +22,7 @@ import org.scalatest._
   */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 @deprecated("Please use org.scalatest.funspec.FixtureAnyFunSpec instead")
-abstract class FunSpec extends FunSpecLike {
+abstract class FunSpec extends org.scalatest.fixture.FunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

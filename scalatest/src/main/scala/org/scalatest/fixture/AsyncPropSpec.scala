@@ -15,7 +15,7 @@
  */
 /*package org.scalatest.fixture
 
-abstract class AsyncPropSpec extends AsyncPropSpecLike {
+abstract class AsyncPropSpec extends org.scalatest.fixture.AsyncPropSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

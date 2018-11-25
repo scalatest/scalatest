@@ -16,14 +16,13 @@
 package org.scalatest
 
 import scala.collection.GenTraversable
-import scala.annotation.tailrec
 import scala.collection.GenSeq
 import Suite.indentLines
-import FailureMessages.decorateToStringValue
 import enablers.Collecting
 import scala.language.higherKinds
 import enablers.InspectorAsserting
 import org.scalactic._
+import org.scalatest.exceptions._
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -645,9 +644,9 @@ private[scalatest] object InspectorsHelper {
 
   def shouldPropagate(throwable: Throwable): Boolean = 
     throwable match {
-      case _: exceptions.NotAllowedException |
-           _: exceptions.TestPendingException |
-           _: exceptions.TestCanceledException => true
+      case _: NotAllowedException |
+           _: TestPendingException |
+           _: TestCanceledException => true
       case _ if Suite.anExceptionThatShouldCauseAnAbort(throwable) => true
       case _ => false
     }

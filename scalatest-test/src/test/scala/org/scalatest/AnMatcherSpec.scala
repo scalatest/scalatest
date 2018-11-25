@@ -196,7 +196,7 @@ class AnMatcherSpec extends FunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map.empty[Int, String] should be an oddSizeMap
         }
-        e.message should be (Some(Map.empty[Int, String] + " was not an odd size map"))
+        e.message should be (Some(Map.empty[Int, String].toString + " was not an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

@@ -22,6 +22,7 @@ import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import org.scalactic.ArrayHelper.deep
 
 /**
  * Exception that indicates a test failed.
@@ -259,7 +260,7 @@ class JUnitTestFailedError(
         message == that.message &&
         cause == that.cause &&
         failedCodeStackDepth == that.failedCodeStackDepth &&
-        getStackTrace.deep == that.getStackTrace.deep
+        deep(getStackTrace) == deep(that.getStackTrace)
       case _ => false
     }
 

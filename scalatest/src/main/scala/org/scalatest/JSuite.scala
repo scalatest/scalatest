@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import Suite.getSimpleNameOfAnObjectsClass
+import org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass
 
 // Scala version o fwhat I'm thinking JSuite might have in Java
 private[scalatest] trait JSuite { thisSuite =>

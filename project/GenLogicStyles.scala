@@ -24,7 +24,7 @@ object GenLogicStyles {
 
   def translateLine(traitName: String)(line: String): String =
     line.replaceAllLiterally("with TestRegistration", "with LogicTestRegistration")
-        .replaceAllLiterally("with fixture.TestRegistration", "with fixture.LogicTestRegistration")
+        .replaceAllLiterally("with org.scalatest.fixture.TestRegistration", "with org.scalatest.fixture.LogicTestRegistration")
         .replaceAllLiterally("Any /* Assertion */", "org.scalatest.Assertion")
         .replaceAllLiterally(traitName, "Logic" + traitName)
         .replaceAllLiterally("AnyLogic", "Logic")
@@ -43,7 +43,7 @@ object GenLogicStyles {
     .replaceAllLiterally("new Logic" + traitName, "new " + traitName.toLowerCase + ".Logic" + traitName)
     .replaceAllLiterally("new fixture.Logic" + traitName, "new " + traitName.toLowerCase + ".FixtureLogic" + traitName)
     .replaceAllLiterally("extends Logic" + traitName, "extends " + traitName.toLowerCase + ".Logic" + traitName)
-    .replaceAllLiterally("extends fixture.Logic" + traitName, "extends " + traitName.toLowerCase + ".FixtureLogic" + traitName)
+    .replaceAllLiterally("extends org.scalatest.fixture.Logic" + traitName, "extends " + traitName.toLowerCase + ".FixtureLogic" + traitName)
     .replaceAllLiterally("this: Logic" + traitName + " =>", "this: " + traitName.toLowerCase + ".Logic" + traitName + " =>")
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {

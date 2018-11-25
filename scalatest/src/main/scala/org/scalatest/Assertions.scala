@@ -15,16 +15,18 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 
 import scala.reflect.ClassTag
 import Assertions.NormalResult
-import DefaultEquality.areEqualComparingArraysStructurally
-import exceptions.StackDepthException
-import exceptions.StackDepthException.toExceptionFunction
-import exceptions.TestFailedException
-import exceptions.TestPendingException
+import Assertions.areEqualComparingArraysStructurally
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthException.toExceptionFunction
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestPendingException
+import org.scalatest.exceptions.TestCanceledException
+import ArrayHelper.deep
 import org.scalactic.anyvals.NonEmptyArray
 
 /**
@@ -468,10 +470,10 @@ trait Assertions extends TripleEquals  {
   def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assert
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
+    new org.scalatest.exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
+    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -1342,21 +1344,21 @@ object Assertions extends Assertions {
     left match {
       case leftArray: Array[_] =>
         right match {
-          case rightArray: Array[_] => leftArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftArray.deep == right
+          case rightArray: Array[_] => deep(leftArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftArray) == right
         }
       case leftNonEmptyArray: NonEmptyArray[_] =>
         right match {
-          case rightArray: Array[_] => leftNonEmptyArray.toArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftNonEmptyArray.toArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftNonEmptyArray.toArray.deep == right
+          case rightArray: Array[_] => deep(leftNonEmptyArray.toArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftNonEmptyArray.toArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftNonEmptyArray.toArray) == right
         }
 
       case other => {
         right match {
-          case rightArray: Array[_] => left == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => left == rightNonEmptyArray.toArray.deep
+          case rightArray: Array[_] => left == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => left == deep(rightNonEmptyArray.toArray)
           case _ => left == right
         }
       }

@@ -48,7 +48,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FixtureAsyncFeatureSpecLike extends fixture.AsyncTestSuite with fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFeatureSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 

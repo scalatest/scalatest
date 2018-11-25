@@ -22,7 +22,7 @@ import org.scalatest._
   */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 @deprecated("Please use org.scalatest.funsuite.FixtureAnyFunSuite instead")
-abstract class FunSuite extends FunSuiteLike {
+abstract class FunSuite extends org.scalatest.fixture.FunSuiteLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

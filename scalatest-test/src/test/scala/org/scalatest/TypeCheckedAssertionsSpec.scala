@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, _}
 import SharedHelpers.thisLineNumber
-import exceptions.TestFailedException
+import org.scalatest.exceptions.TestFailedException
 
 class TypeCheckedAssertionsSpec extends FunSpec {
 

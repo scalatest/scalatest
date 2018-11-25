@@ -263,7 +263,7 @@ import org.scalatest.{Suite, Finders}
   * <pre class="stHighlight">
   * // on Scala.js
   * implicit override def executionContext =
-  *     scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+  *     org.scalatest.concurrent.TestExecutionContext.runNow
   * </pre>
   *
   * <p>

@@ -15,13 +15,10 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
 import scala.concurrent.Future
-import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import java.util.ConcurrentModificationException
-import java.util.concurrent.atomic.AtomicReference
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import org.scalatest.exceptions._
 import words.BehaveWord
 
 /**
@@ -55,9 +52,9 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
       PastOutcome(
         try { testFun; Succeeded }
         catch {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: TestCanceledException => Canceled(ex)
+          case _: TestPendingException => Pending
+          case tfe: TestFailedException => Failed(tfe)
           case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
         }
       )
@@ -267,11 +264,11 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, None, pos)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
-        case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e.position.getOrElse(pos))
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), pos)
+        case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
+        case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
+        case tgce: TestRegistrationClosedException => throw tgce
+        case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e.position.getOrElse(pos))
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), pos)
         case other: Throwable => throw other
       }
     }

@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalactic._
+import NameUtil.getSimpleNameOfAnObjectsClass
 import org.scalacheck.Prop
 import org.scalacheck.Prop.Arg
 import org.scalacheck.Test

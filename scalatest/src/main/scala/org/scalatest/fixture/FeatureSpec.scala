@@ -22,7 +22,7 @@ import org.scalatest._
   */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 @deprecated("Please use org.scalatest.featurespec.FixtureAnyFeatureSpec instead")
-abstract class FeatureSpec extends FeatureSpecLike {
+abstract class FeatureSpec extends org.scalatest.fixture.FeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

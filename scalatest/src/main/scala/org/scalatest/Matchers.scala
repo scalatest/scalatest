@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 import org.scalatest.enablers._
 import org.scalatest.matchers._
 import org.scalatest.words._
@@ -29,6 +29,7 @@ import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import TripleEqualsSupport.TripleEqualsInvocationOnSpread
+import ArrayHelper.deep
 // SKIP-SCALATESTJS,NATIVE-START
 import MatchersHelper.accessProperty
 import MatchersHelper.matchSymbolToPredicateMethod
@@ -42,8 +43,7 @@ import MatchersHelper.indicateFailure
 import MatchersHelper.indicateSuccess
 import MatchersHelper.newTestFailedException
 import MatchersHelper.startWithRegexWithGroups
-import exceptions.NotAllowedException
-import exceptions.TestFailedException
+import org.scalatest.exceptions._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.
@@ -5182,7 +5182,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def apply(right: Symbol): Matcher[Array[T]] =
       new Matcher[Array[T]] {
-        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false, prettifier, pos)
+        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(deep(left), right, false, false, prettifier, pos)
       }
 
     /**
