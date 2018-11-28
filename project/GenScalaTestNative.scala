@@ -303,6 +303,8 @@ object GenScalaTestNative {
         "EntrySpec.scala",    // skipped because Entry extends java.util.Map
         "ExampleBeforeAfterParallelSpec.scala",
         "EveryShouldContainAllElementsOfSpec.scala", // skipped because causing crash
+        "EveryShouldContainAtLeastOneElementOfSpec.scala", // skipped because causing crash
+        "EveryShouldContainNoneOfSpec.scala", // skipped because causing crash
         "ExampleParallelSpec.scala",
         "ExampleStackSpec.scala",
         "ExampleSuiteTimeoutSpec.scala",
@@ -408,6 +410,7 @@ object GenScalaTestNative {
         "RandomTestOrderSpec.scala",
         "RecoverMethodsSpec.scala",
         "RefSpecSpec.scala",          // skipped because depends on java reflections.
+        "ResultOfAtLeastOneOfApplication.scala", // skipped because causing crash
         "RetriesSpec.scala",
         "RunningTestSpec.scala",
         "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
@@ -594,6 +597,8 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
+        "DeprecatedLocationFunctionSuiteProp.scala",
+        "DeprecatedScopePendingProp.scala", 
         "TestLocationJUnit3Suite.scala",
         "TestLocationJUnitSuite.scala",
         "TestLocationTestNGSuite.scala",
@@ -607,15 +612,23 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
-        "SuiteSpec.scala"    // skipped because depends on java reflections,
+        "SuiteSpec.scala"    // skipped because depends on java reflections
       ) ++ asyncs("scalatest-test/src/test/scala/org/scalatest/fixture")) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir,
+      List(
+        "AsyncGeneratorDrivenPropertyChecksSpec.scala"
+      )
+    ) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir,
+      List(
+        "ResultOfNotWordForAnySpec.scala"
+      )
+    ) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "DashboardReporterSpec.scala",
@@ -637,7 +650,8 @@ object GenScalaTestNative {
         "StringReporterSuite.scala",
         "StringReporterSummarySpec.scala",
         "SuiteDiscoveryHelperSuite.scala",
-        "XmlSocketReporterSpec.scala"
+        "XmlSocketReporterSpec.scala",
+        "ArgsParserSpec.scala"   // skipped because it is causing crash
       )
     )
   }

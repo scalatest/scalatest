@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -33,16 +31,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.NumberCompatHelper
 
 trait PosFiniteDoubleSpecSupport {
-
-  val posZFiniteDoubleGen: Gen[PosZFiniteDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZFiniteDouble.ensuringValid(i)
-
-  implicit val arbPosZFiniteDouble: Arbitrary[PosZFiniteDouble] = Arbitrary(posZFiniteDoubleGen)
-
-  val posFiniteDoubleGen: Gen[PosFiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosFiniteDouble.ensuringValid(i)
-
-  implicit val arbPosFiniteDouble: Arbitrary[PosFiniteDouble] = Arbitrary(posFiniteDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

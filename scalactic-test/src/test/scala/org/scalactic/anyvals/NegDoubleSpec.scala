@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -33,16 +31,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.NumberCompatHelper
 
 trait NegDoubleSpecSupport {
-
-  val negZDoubleGen: Gen[NegZDouble] =
-    for {i <- choose(Double.MinValue, 0.0)} yield NegZDouble.ensuringValid(i)
-
-  implicit val arbNegZDouble: Arbitrary[NegZDouble] = Arbitrary(negZDoubleGen)
-
-  val negDoubleGen: Gen[NegDouble] =
-    for {i <- choose(Double.MinValue, -Double.MinPositiveValue)} yield NegDouble.ensuringValid(i)
-
-  implicit val arbNegDouble: Arbitrary[NegDouble] = Arbitrary(negDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

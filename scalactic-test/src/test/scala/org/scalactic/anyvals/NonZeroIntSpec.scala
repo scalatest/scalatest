@@ -15,37 +15,16 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.check.ScalaCheckGenerators
 import OptionValues._
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Failure, Success, Try}
 
 trait NonZeroIntSpecSupport {
-
-  val nonZeroIntGen: Gen[NonZeroInt] =
-    for {i <- choose(Int.MinValue, Int.MaxValue)} yield {
-      if (i == 1)
-        NonZeroInt.ensuringValid(1)
-      else
-        NonZeroInt.ensuringValid(i)
-    }
-
-  val nonZeroLongGen: Gen[NonZeroLong] =
-    for {i <- choose(Long.MinValue, Long.MaxValue)} yield {
-      if (i == 1L)
-        NonZeroLong.ensuringValid(1)
-      else
-        NonZeroLong.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroInt: Arbitrary[NonZeroInt] = Arbitrary(nonZeroIntGen)
-
-  implicit val arbNonZeroLong: Arbitrary[NonZeroLong] = Arbitrary(nonZeroLongGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

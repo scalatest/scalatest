@@ -21,7 +21,7 @@ import org.scalactic.anyvals._
 /*
 It looks like sizeRange = maxSize - minSize
 */
-class SizeParamSpec extends WordSpec with Matchers {
+class SizeParamSpec extends WordSpec with Matchers with PropertyChecks {
   "A SizeParam" should {
     "have a minimum, range, and size" in {
       val sp = SizeParam(33, 20, 35)
@@ -34,12 +34,29 @@ class SizeParamSpec extends WordSpec with Matchers {
       noException should be thrownBy SizeParam(0, 10, 10)
       noException should be thrownBy SizeParam(1, 10, 1)
       noException should be thrownBy SizeParam(1, 10, 11)
-      an [IllegalArgumentException] should be thrownBy SizeParam(0, 10, 11) // minSize 0, maxSize 10 
-      an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 0) // minSize 1, maxSize 11, 
+      an [IllegalArgumentException] should be thrownBy SizeParam(0, 10, 11) // minSize 0, maxSize 10
+      an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 0) // minSize 1, maxSize 11,
       an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 12)
+    }
+    "offer a maxSize methods" in {
+     
+       val params =
+        for {
+          minSz <- posZInts
+          maxSz <- posZIntsBetween(minSz, PosZInt.MaxValue)
+          sz <- posZIntsBetween(minSz, maxSz)
+        } yield (minSz, maxSz, sz)
+  
+      forAll (params) { case (minSize, sizeRange, size) => 
+        whenever(minSize + sizeRange >= 0) {
+          val sp = SizeParam(minSize, sizeRange, size)
+          sp.sizeRange shouldBe PosZInt.ensuringValid(sp.maxSize - sp.minSize)
+        }
+      }
     }
   }
 }
+
 
 
 

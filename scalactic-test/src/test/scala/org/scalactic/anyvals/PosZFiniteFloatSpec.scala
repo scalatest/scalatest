@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS,NATIVE-START
@@ -33,11 +31,6 @@ import scala.util.{Try, Success, Failure}
 import org.scalactic.NumberCompatHelper
 
 trait PosZFiniteFloatSpecSupport {
-
-  val posZFiniteFloatGen: Gen[PosZFiniteFloat] =
-    for {i <- choose(0, Float.MaxValue)} yield PosZFiniteFloat.from(i).get
-
-  implicit val arbPosZFiniteFloat: Arbitrary[PosZFiniteFloat] = Arbitrary(posZFiniteFloatGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -65,6 +58,11 @@ trait PosZFiniteFloatSpecSupport {
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case Success(double: Double) if double.isNaN => 
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
         }
       case _: Success[_] => a == b
