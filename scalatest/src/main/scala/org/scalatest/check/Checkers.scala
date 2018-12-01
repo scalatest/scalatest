@@ -223,7 +223,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * @author Bill Venners
  */
-trait Checkers extends Configuration {
+trait Checkers extends ScalaCheckConfiguration {
 
   private val asserting: CheckerAsserting[Assertion] { type Result = Assertion }  = CheckerAsserting.assertingNatureOfAssertion
 

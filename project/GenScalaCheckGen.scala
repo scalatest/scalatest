@@ -448,7 +448,7 @@ import org.scalactic._
  * 
  * @author Bill Venners
  */
-trait ScalaCheckDrivenPropertyChecks extends Whenever with Configuration {
+trait ScalaCheckDrivenPropertyChecks extends Whenever with org.scalatest.check.ScalaCheckConfiguration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments

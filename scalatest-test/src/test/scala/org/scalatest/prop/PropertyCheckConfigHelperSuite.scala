@@ -21,7 +21,7 @@ import org.scalactic.anyvals._
 @deprecated("Remove when removing PropertyCheckConfig")
 class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
 
-  import Configuration._
+  import org.scalatest.check.ScalaCheckConfiguration._
 
   val DefaultMinSuccessful: PosInt = 9
   val PassedMinSuccessful: PosInt = 3
