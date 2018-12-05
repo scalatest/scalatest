@@ -219,7 +219,6 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
@@ -334,7 +333,6 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++

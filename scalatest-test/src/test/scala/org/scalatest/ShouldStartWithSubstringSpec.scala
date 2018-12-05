@@ -15,14 +15,14 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
+import org.scalatest.prop.PropertyChecks
 import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStartWithSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The startWith substring syntax") {
 
@@ -31,15 +31,15 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       "1.78" should startWith ("1.7")
       "21.7" should startWith ("2")
       "21.78" should startWith ("21.78")
-      check((s: String, t: String) => returnsNormally(s + t should startWith (s)))
+      forAll((s: String, t: String) => s + t should startWith (s))
     }
 
     it("should do nothing if the string does not start with the specified substring when used with not") {
 
       "eight" should not { startWith ("1.7") }
       "eight" should not startWith ("1.7")
-      check((s: String, t: String) => (s + t).indexOf(t) != 0 ==> returnsNormally(s + t should not (startWith (t))))
-      check((s: String, t: String) => (s + t).indexOf(t) != 0 ==> returnsNormally(s + t should not startWith (t)))
+      forAll((s: String, t: String) => if ((s + t).indexOf(t) != 0) s + t should not (startWith (t)) else succeed)
+      forAll((s: String, t: String) => if ((s + t).indexOf(t) != 0) s + t should not startWith (t) else succeed)
     }
 
     it("should do nothing if the string does not start with the specified substring when used in a logical-and expression") {
@@ -48,7 +48,7 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       "1.7b" should ((startWith ("1.7")) and (startWith ("1.7b")))
       "1.7b" should (startWith ("1.7") and startWith ("1.7b"))
 
-      check((s: String, t: String) => returnsNormally(s + t should (startWith (s) and startWith (s))))
+      forAll((s: String, t: String) => s + t should (startWith (s) and startWith (s)))
     }
 
     it("should do nothing if the string does not start with the specified substring when used in a logical-or expression") {
@@ -61,21 +61,21 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       "1.7" should ((startWith ("hello")) or (startWith ("1.7")))
       "1.7" should (startWith ("hello") or startWith ("1.7"))
 
-      check((s: String, t: String) => returnsNormally(s + t should (startWith ("hi") or startWith (s))))
+      forAll((s: String, t: String) => s + t should (startWith ("hi") or startWith (s)))
     }
 
     it("should do nothing if the string does not start with the specified substring when used in a logical-and expression with not") {
       "fred" should (not (startWith ("red")) and not (startWith ("1.7")))
       "fred" should ((not startWith ("red")) and (not startWith ("1.7")))
       "fred" should (not startWith ("red") and not startWith ("1.7"))
-      check((s: String) => s.indexOf("bob") != 0 && s.indexOf("1.7") != 0 ==> returnsNormally(s should (not startWith ("bob") and not startWith ("1.7"))))
+      forAll((s: String) => if (s.indexOf("bob") != 0 && s.indexOf("1.7") != 0) s should (not startWith ("bob") and not startWith ("1.7")) else succeed)
     }
 
     it("should do nothing if the string does not start with the specified substring when used in a logical-or expression with not") {
       "fred" should (not (startWith ("fred")) or not (startWith ("1.7")))
       "fred" should ((not startWith ("fred")) or (not startWith ("1.7")))
       "fred" should (not startWith ("fred") or not startWith ("1.7"))
-      check((s: String) => s.indexOf("a") != 0 || s.indexOf("b") != 0 ==> returnsNormally(s should (not startWith ("a") or not startWith ("b"))))
+      forAll((s: String) => if (s.indexOf("a") != 0 || s.indexOf("b") != 0) s should (not startWith ("a") or not startWith ("b")) else succeed)
     }
 
     it("should throw TestFailedException if the string does not match substring specified as a string") {
@@ -115,7 +115,7 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught9.getMessage === "\"***\" did not start with substring \"1.7\"")
 
-      check((s: String) => s.indexOf("1.7") == -1 ==> throwsTestFailedException(s should startWith ("1.7")))
+      forAll((s: String) => if (s.indexOf("1.7") == -1) assertThrows[TestFailedException](s should startWith ("1.7")) else succeed)
     }
 
     it("should throw TestFailedException if the string does matches substring specified as a string when used with not") {
@@ -180,7 +180,7 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught23.getMessage === "\"a-1.8b\" started with substring \"a-1.8\"")
 
-      check((s: String) => s.length != 0 ==> throwsTestFailedException(s should not startWith (s.substring(0, 1))))
+      forAll((s: String) => if (s.length != 0) assertThrows[TestFailedException](s should not startWith (s.substring(0, 1))) else succeed)
     }
 
     it("should throw TestFailedException if the string starts with the specified substring when used in a logical-and expression") {
@@ -216,7 +216,7 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught6.getMessage === "\"one.eight\" did not start with substring \"1.7\"")
 
-      check((s: String, t: String, u: String) => (s + u).indexOf(t) != 0 ==> throwsTestFailedException(s + u should (startWith (s) and startWith (t))))
+      forAll((s: String, t: String, u: String) => if ((s + u).indexOf(t) != 0) assertThrows[TestFailedException](s + u should (startWith (s) and startWith (t))) else succeed)
     }
 
     it("should throw TestFailedException if the string starts with the specified substring when used in a logical-or expression") {
@@ -236,10 +236,12 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught3.getMessage === "\"one.seven\" did not start with substring \"1.7\", and \"one.seven\" did not start with substring \"1.8\"")
 
-      check(
+      forAll(
         (s: String, t: String, u: String, v: String) => {
-          (t.length != 0 && v.length != 0 && (s + u).indexOf(t) != 0 && (s + u).indexOf(v) != 0) ==>
-            throwsTestFailedException(s + u should (startWith (t) or startWith (v)))
+          if (t.length != 0 && v.length != 0 && (s + u).indexOf(t) != 0 && (s + u).indexOf(v) != 0)
+            assertThrows[TestFailedException](s + u should (startWith (t) or startWith (v)))
+          else
+            succeed
         }
       )
     }
@@ -276,10 +278,12 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught6.getMessage === "\"a1.7b\" did not start with substring \"1.8\", but \"a1.7b\" started with substring \"a1.7\"")
 
-      check(
+      forAll(
         (s: String, t: String, u: String) =>
-          (s + t + u).indexOf("hi") != 0 ==>
-            throwsTestFailedException(s + t + u should (not startWith ("hi") and not startWith (s)))
+          if ((s + t + u).indexOf("hi") != 0)
+            assertThrows[TestFailedException](s + t + u should (not startWith ("hi") and not startWith (s)))
+          else
+            succeed
       )
     }
 
@@ -325,9 +329,9 @@ class ShouldStartWithSubstringSpec extends FunSpec with Checkers with ReturnsNor
       }
       assert(caught8.getMessage === "\"a1.7b\" started with substring \"a1.7\", and \"a1.7b\" started with substring \"a1\"")
 
-      check(
+      forAll(
         (s: String, t: String) =>
-          throwsTestFailedException(s + t should (not startWith (s) or not startWith ("")))
+          assertThrows[TestFailedException](s + t should (not startWith (s) or not startWith ("")))
       )
     }
   }
