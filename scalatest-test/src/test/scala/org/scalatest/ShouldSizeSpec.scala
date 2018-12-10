@@ -15,11 +15,8 @@
  */
 package org.scalatest
 
-import org.scalacheck._
-import Arbitrary._
 import FailureMessages._
 import Matchers._
-import Prop._
 import org.scalactic.Prettifier
 import org.scalatest.prop.PropertyChecks
 import Integer.MIN_VALUE

@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -33,11 +31,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.NumberCompatHelper
 
 trait FiniteDoubleSpecSupport {
-
-  val finiteDoubleGen: Gen[FiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield FiniteDouble.ensuringValid(i)
-
-  implicit val arbFiniteDouble: Arbitrary[FiniteDouble] = Arbitrary(finiteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {

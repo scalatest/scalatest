@@ -17,9 +17,6 @@ package org.scalatest.events
 
 import org.scalatest._
 import org.scalatest.prop.PropertyChecks
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 
 class OrdinalSpec extends FunSpec with Matchers with PropertyChecks {
 
