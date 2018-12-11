@@ -28,7 +28,6 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait NegZFloatSpecSupport {
 
@@ -398,20 +397,6 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         pzfloat.toDegrees.toFloat shouldEqual pzfloat.toFloat.toDegrees
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzfloat: NegZFloat, end: Float, step: Float) =>
-        rangeEqual(pzfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pzfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.until(end, step), NumberCompatHelper.floatUntil(pzfloat.toFloat, end, step)) shouldBe true
-        rangeEqual(pzfloat.to(end).by(1f), NumberCompatHelper.floatTo(pzfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.to(end, step), NumberCompatHelper.floatTo(pzfloat.toFloat, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
       NegZFloat(-33.0f).ensuringValid(_ + 1.0f) shouldEqual NegZFloat(-32.0f)
