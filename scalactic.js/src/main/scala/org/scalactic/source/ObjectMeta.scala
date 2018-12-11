@@ -1,4 +1,4 @@
-/*
+  /*
  * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,7 +49,7 @@ object ObjectMeta {
         value
     }
 
-    val dict = v.asInstanceOf[scala.scalajs.js.Dictionary[Any]].flatMap { case (key, value) =>
+    val dict: Map[String, Any] = v.asInstanceOf[scala.scalajs.js.Dictionary[Any]].map { case (key, value) =>
       val decodedKey =
         scala.reflect.NameTransformer.decode(key).
           replaceAllLiterally("$$und", "_").
@@ -58,7 +58,7 @@ object ObjectMeta {
           replaceAllLiterally("$f", "")
 
       Some((filterDollarNumberAtTheEnd(decodedKey), value))
-    }
+    }.flatten.toMap
 
     new ObjectMeta {
 

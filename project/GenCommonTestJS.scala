@@ -82,49 +82,10 @@ object GenCommonTestJS {
         "BookPropertyMatchers.scala",
         "EmptyMocks.scala",
         "FileMocks.scala",
-        "StringFixture.scala",
-        "JSON.scala"
+        "StringFixture.scala"
       ), targetDir) ++
     copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
-      List("ExampleLikeSpecs.scala"), targetDir) ++
-    copyDir("common-test/src/main/scala/scala/util/parsing/combinator", "scala/util/parsing/combinator",
-      List(
-        "ImplicitConversions.scala",
-        "JavaTokenParsers.scala",
-        "PackratParsers.scala",
-        "Parsers.scala",
-        "RegexParsers.scala",
-        "SubSequence.scala"
-      ), targetDir) ++
-    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/lexical", "scala/util/parsing/combinator/lexical",
-      List(
-        "Lexical.scala",
-        "Scanners.scala",
-        "StdLexical.scala"
-      ), targetDir) ++
-    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/syntactical", "scala/util/parsing/combinator/syntactical",
-      List(
-        "StandardTokenParsers.scala",
-        "StdTokenParsers.scala",
-        "TokenParsers.scala"
-      ), targetDir) ++
-    copyDir("common-test/src/main/scala/scala/util/parsing/combinator/token", "scala/util/parsing/combinator/token",
-      List(
-        "StdTokens.scala",
-        "Tokens.scala"
-      ), targetDir) ++
-    copyDir("common-test/src/main/scala/scala/util/parsing/input", "scala/util/parsing/input",
-      List(
-        "CharArrayReader.scala",
-        "CharSequenceReader.scala",
-        "NoPosition.scala",
-        "OffsetPosition.scala",
-        "PagedSeqReader.scala",
-        "Position.scala",
-        "Positional.scala",
-        "Reader.scala",
-        "StreamReader.scala"
-      ), targetDir)
+      List("ExampleLikeSpecs.scala"), targetDir)
   }
 
 }

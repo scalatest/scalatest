@@ -184,8 +184,8 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     * @param other the <code>GenTraversableOnce</code> to append
     * @return a new <code>NonEmptySet</code> that contains all the elements of this <code>NonEmptySet</code> followed by all elements of <code>other</code>.
     */
-  def ++(other: GenTraversableOnce[T]): NonEmptySet[T] =
-    if (other.isEmpty) this else new NonEmptySet(toSet ++ other)
+  def ++(other: org.scalactic.ColCompatHelper.IterableOnce[T]): NonEmptySet[T] =
+    if (other.isEmpty) this else new NonEmptySet(toSet ++ other.toSet)
 
   /**
     * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptySet</code>, going left to right.
@@ -485,7 +485,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     */
   final def groupBy[K](f: T => K): Map[K, NonEmptySet[T]] = {
     val mapKToSet = toSet.groupBy(f)
-    mapKToSet.mapValues { Set => new NonEmptySet(Set) }
+    mapKToSet.mapValues { Set => new NonEmptySet(Set) }.toMap
   }
 
   /**
@@ -861,7 +861,8 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     * @tparam Col the collection type to build.
     * @return a new collection containing all elements of this <code>NonEmptySet</code>. 
     */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toSet.to[Col](cbf)
+  final def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] =
+    toSet.to(factory)
 
   /**
     * Converts this <code>NonEmptySet</code> to an array.
@@ -952,13 +953,6 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     *   this <code>NonEmptySet</code>'s elements, surrounded by parentheses.
     */
   override def toString: String = "NonEmptySet(" + toSet.mkString(", ") + ")"
-
-  /**
-    * Converts this <code>NonEmptySet</code> to an unspecified Traversable.
-    *
-    * @return a <code>Traversable</code> containing all elements of this <code>NonEmptySet</code>. 
-    */
-  final def toTraversable: Traversable[T] = toSet.toTraversable
 
   final def transpose[U](implicit ev: T <:< NonEmptySet[U]): NonEmptySet[NonEmptySet[U]] = {
     val asSets = toSet.map(ev)

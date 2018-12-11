@@ -61,7 +61,7 @@ final class TaskRunner(task: TaskDef,
   def taskDef(): TaskDef = task
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
-    implicit val execCtx = JSExecutionContext.runNow
+    implicit val execCtx = JSExecutionContext.queue
     val future = executionFuture(eventHandler, loggers)
     future.recover { case t =>
 println("GOT TO THIS RECOVER CALL")

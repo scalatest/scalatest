@@ -21,7 +21,7 @@ import org.scalactic.Prettifier
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
+import scala.collection.mutable.ListBuffer
 import Matchers._
 import exceptions.TestFailedException
 

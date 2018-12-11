@@ -19,7 +19,7 @@ package org.scalatest.fixture
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.FixtureAsyncFunSuite instead.
   */
 @deprecated("Please use org.scalatest.funsuite.FixtureAsyncFunSuite instead")
-abstract class AsyncFunSuite extends AsyncFunSuiteLike {
+abstract class AsyncFunSuite extends org.scalatest.funsuite.FixtureAsyncFunSuiteLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

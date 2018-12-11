@@ -15,11 +15,13 @@
  */
 package org.scalatest
 
+import org.scalactic.NameUtil
+
 private[scalatest] case class DeferredAbortedSuite(suiteClassName: String, t: Throwable) extends Suite {
 
   override def run(testName: Option[String], args: Args): Status = {
     throw t
   }
 
-  override def suiteName: String = Suite.stripDollars(Suite.parseSimpleName(suiteClassName))
+  override def suiteName: String = NameUtil.stripDollars(NameUtil.parseSimpleName(suiteClassName))
 }

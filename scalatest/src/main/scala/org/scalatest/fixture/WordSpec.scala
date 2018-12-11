@@ -229,7 +229,7 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-abstract class WordSpec extends WordSpecLike {
+abstract class WordSpec extends org.scalatest.fixture.WordSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

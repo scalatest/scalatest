@@ -19,6 +19,7 @@ import org.scalatest._
 import org.scalatest.events._
 import exceptions._
 import org.scalactic.Requirements._
+import org.scalactic.NameUtil
 import Suite.getIndentedTextForTest
 import Suite.wrapReporterIfNecessary
 import _root_.junit.framework.AssertionFailedError
@@ -290,7 +291,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
   private def getSuiteNameForTestCase(testCase: Test) =
     testCase match {
       case junit3Suite: JUnit3Suite => junit3Suite.suiteName
-      case _ => Suite.getSimpleNameOfAnObjectsClass(testCase) // Should never happen, but just in case
+      case _ => NameUtil.getSimpleNameOfAnObjectsClass(testCase) // Should never happen, but just in case
     }
 
   def getMessageGivenThrowable(throwable: Throwable, isAssertionFailedError: Boolean) =

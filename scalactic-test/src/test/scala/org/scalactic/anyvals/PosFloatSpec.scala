@@ -26,6 +26,7 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
+import org.scalactic.NumberCompatHelper
 
 trait PosFloatSpecSupport {
 
@@ -374,14 +375,14 @@ specifying floats so long as it is in the valid range for floats.
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
       forAll { (pfloat: PosFloat, end: Float, step: Float) =>
-        rangeEqual(pfloat.until(end).by(1f), pfloat.toFloat.until(end).by(1f)) shouldBe true
-        rangeEqual(pfloat.until(end, step), pfloat.toFloat.until(end, step)) shouldBe true
-        rangeEqual(pfloat.to(end).by(1f), pfloat.toFloat.to(end).by(1f)) shouldBe true
-        rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
+        rangeEqual(pfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pfloat.until(end, step), NumberCompatHelper.floatUntil(pfloat.toFloat, end, step)) shouldBe true
+        rangeEqual(pfloat.to(end).by(1f), NumberCompatHelper.floatTo(pfloat.toFloat, end).by(1f)) shouldBe true
+        rangeEqual(pfloat.to(end, step), NumberCompatHelper.floatTo(pfloat.toFloat, end, step)) shouldBe true
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

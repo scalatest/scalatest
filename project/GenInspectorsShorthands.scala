@@ -28,7 +28,7 @@ trait GenInspectorsShorthandsBase {
   }
 
   class DynamicFirstIndexErrorDetailTemplate(colType: String, errorFun: String, errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template) extends
-  ErrorDetailTemplate("\" + getIndex(xs, " + errorFun + "(xs, " + errorValue + ")) + \"", fileName, lineNumber, messageTemplate)
+    ErrorDetailTemplate("\" + getIndex(xs, " + errorFun + "(xs, " + errorValue + ")) + \"", fileName, lineNumber, messageTemplate)
 
   class DynamicFirstElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
@@ -40,7 +40,7 @@ trait GenInspectorsShorthandsBase {
 
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
+      "\" + decorateToStringValue(prettifier, deep(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + "))) + \""
   }
 
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -54,12 +54,12 @@ trait GenInspectorsShorthandsBase {
   }
 
   class DynamicFirstElementGetKeyTemplate(colType: String, colText: String, errorFun: String, errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template) extends
-  ErrorDetailTemplate("\" + " + errorFun + "(xs, " + errorValue + ")." + (if (colText.contains("java")) "getKey" else "_1") + " + \"", fileName, lineNumber, messageTemplate) {
+    ErrorDetailTemplate("\" + " + errorFun + "(xs, " + errorValue + ")." + (if (colText.contains("java")) "getKey" else "_1") + " + \"", fileName, lineNumber, messageTemplate) {
     override val at: String = "key"
   }
 
   class DynamicNextIndexErrorDetailTemplate(errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template, messageValuesFunName: String, useIndex: Boolean) extends
-  DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")", useIndex)
+    DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")", useIndex)
 
   class DynamicNextElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
@@ -71,7 +71,7 @@ trait GenInspectorsShorthandsBase {
 
   class DynamicNextArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + " + errorFun + "[" + colType + "](itr, " + errorValue + ").deep + \""
+      "\" + deep(" + errorFun + "[" + colType + "](itr, " + errorValue + ")) + \""
   }
 
   class DynamicNextElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -91,7 +91,7 @@ trait GenInspectorsShorthandsBase {
                                                          fileName: String, colType: String, errorFun: String,
                                                          errorValue: String, causeErrMsg: String, xsText: String,
                                                          useIndex: Boolean
-                                                         ) extends Template {
+                                                       ) extends Template {
 
     val causeErrorMessage = new SimpleMessageTemplate(causeErrMsg)
     val errorMessage = new ForAllErrMsgTemplate("'all' inspection",
@@ -1063,7 +1063,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAllSucceededSpec"
@@ -1101,7 +1102,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1143,7 +1145,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAtLeastSucceededSpec"
@@ -1230,14 +1233,14 @@ trait GenInspectorsShorthandsBase {
           val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, "Int", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
         }
-      }) ++ 
+      }) ++
         (nullStringCol flatMap { case (colText, xsText) =>
           nullStringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
             val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
           }
-        }) ++ 
+        }) ++
         (propertyCheckCol flatMap { case (colText, xsText) =>
           propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, "")
@@ -1362,7 +1365,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1403,7 +1407,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForEverySucceededSpec"
@@ -1623,7 +1628,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1664,7 +1670,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForExactlySucceededSpec"
@@ -1885,7 +1892,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -1926,7 +1934,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForNoSucceededSpec"
@@ -2145,7 +2154,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -2186,7 +2196,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForBetweenSucceededSpec"
@@ -2407,7 +2418,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -2448,7 +2460,8 @@ trait GenInspectorsShorthandsBase {
               "collection.GenTraversable",
               "collection.GenMap",
               "org.scalatest.refspec.RefSpec",
-              "org.scalatest.CompatParColls.Converters._"
+              "org.scalatest.CompatParColls.Converters._",
+              "org.scalactic.ArrayHelper.deep"
             ),
             classTemplate = new ClassTemplate {
               val name = "InspectorShorthandsForAtMostSucceededSpec"
@@ -2468,7 +2481,7 @@ trait GenInspectorsShorthandsBase {
       ) ++
         (stdInt123Types(simpleMessageFun, 3, "indexElement", false).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           condition != "'should equal' failed" &&
-          condition != "'should be' failed"
+            condition != "'should be' failed"
         })
 
     val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
@@ -2509,7 +2522,7 @@ trait GenInspectorsShorthandsBase {
     val stringTypes =
       stdStringTypes(simpleMessageFun, '3', "indexElement", true, true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-        condition != "'should be' failed"
+          condition != "'should be' failed"
       }
 
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5"))
@@ -2679,7 +2692,8 @@ trait GenInspectorsShorthandsBase {
                 "collection.GenTraversable",
                 "collection.GenMap",
                 "org.scalatest.refspec.RefSpec",
-                "org.scalatest.CompatParColls.Converters._"
+                "org.scalatest.CompatParColls.Converters._",
+                "org.scalactic.ArrayHelper.deep"
               ),
               classTemplate = new ClassTemplate {
                 val name = className
@@ -2711,9 +2725,9 @@ object GenInspectorsShorthands1 extends GenInspectorsShorthandsBase {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"), scalaVersion) ++
-    genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"), scalaVersion) ++
-    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"), scalaVersion) ++
-    genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"), scalaVersion)
+      genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"), scalaVersion) ++
+      genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"), scalaVersion) ++
+      genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"), scalaVersion)
   }
 }
 

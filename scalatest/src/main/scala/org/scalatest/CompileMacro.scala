@@ -18,8 +18,7 @@ package org.scalatest
 import org.scalactic._
 import org.scalatest.words.{TypeCheckWord, CompileWord}
 import scala.reflect.macros.{ Context, TypecheckException, ParseException }
-import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper
+import org.scalatest.exceptions._
 import scala.language.experimental.macros
 
 private[scalatest] object CompileMacro {
@@ -80,7 +79,7 @@ private[scalatest] object CompileMacro {
         // If reach here, type check passes, let's generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
         reify {
-          throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
       }
       else {
@@ -99,7 +98,7 @@ private[scalatest] object CompileMacro {
         // parse error, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
     }
   }
@@ -178,7 +177,7 @@ private[scalatest] object CompileMacro {
         // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
         reify {
-          throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
       }
       else
@@ -223,7 +222,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty
           )(prettifier.splice)
-          //throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          //throw new TestFailedException(messageExpr.splice, stackDepth)
         }
       }
       else {
@@ -284,13 +283,13 @@ private[scalatest] object CompileMacro {
         // type check error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
     }
   }
@@ -354,7 +353,7 @@ private[scalatest] object CompileMacro {
           // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
           reify {
-            throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+            throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
         }
         else
@@ -557,7 +556,7 @@ private[scalatest] object CompileMacro {
           // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
           reify {
-            throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+            throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
         }
         else {
@@ -576,7 +575,7 @@ private[scalatest] object CompileMacro {
           // expect type check error but got parse error, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+            throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
       }
     }
@@ -765,13 +764,13 @@ private[scalatest] object CompileMacro {
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+            throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
+            throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
       }
     }

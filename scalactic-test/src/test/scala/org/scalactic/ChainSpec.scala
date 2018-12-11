@@ -18,9 +18,10 @@ package org.scalactic
 import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
-// SKIP-SCALATESTJS-START
+
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.CompatParColls.Converters._
-// SKIP-SCALATESTJS-END
+// SKIP-SCALATESTJS,NATIVE-END
 
 class ChainSpec extends UnitSpec {
   "A Chain" can "be constructed with one element" in {
@@ -1225,10 +1226,11 @@ class ChainSpec extends UnitSpec {
     res18: scala.collection.immutable.Vector[Int] = Vector()
 */
   it should "have a to method" in {
-    Chain(1).to[List] shouldBe List(1)
-    Chain(1, 2, 3).to[List] shouldBe List(1, 2, 3)
-    Chain(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(1, 2, 3)
-    Chain(1, 2, 3).to[Vector] shouldBe Vector(1, 2, 3)
+    import org.scalactic.ColCompatHelper.Factory._
+    Chain(1).to(List) shouldBe List(1)
+    Chain(1, 2, 3).to(List) shouldBe List(1, 2, 3)
+    Chain(1, 2, 3).to(scala.collection.mutable.ListBuffer) shouldBe ListBuffer(1, 2, 3)
+    Chain(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
   }
   it should "have a toArray method" in {
     Chain(1, 2, 3).toArray should === (Array(1, 2, 3))
@@ -1287,11 +1289,6 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
     Chain(1, 2, 3).toString should === ("NonEmptyList(1, 2, 3)")
     Chain(1).toString should === ("NonEmptyList(1)")
-  }
-  it should "have a toTraversable method" in {
-    Chain(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))
-    Chain("a", "b").toTraversable should === (Traversable("a", "b"))
-    Chain(1).toTraversable should === (Traversable(1))
   }
   it should "have a toVector method" in {
     Chain(1, 2, 3).toVector should === (Vector(1, 2, 3))
