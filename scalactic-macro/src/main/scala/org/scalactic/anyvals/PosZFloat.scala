@@ -367,6 +367,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `this` up to but
   * not including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's until function instead")
   def until(end: Float) = NumberCompatHelper.floatUntil(value, end)
 
   /**
@@ -379,6 +380,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Float]]] from `this` up to but
   * not including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's until function instead")
   def until(end: Float, step: Float) = NumberCompatHelper.floatUntil(value, end, step)
 
   /**
@@ -389,6 +391,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `'''this'''` up to
   * and including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's to function instead")
   def to(end: Float) = NumberCompatHelper.floatTo(value, end)
 
   /**
@@ -400,6 +403,7 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Float]]] from `'''this'''` up to
   * and including `end`.
   */
+  @deprecated("This function will be removed in future version of Scalactic, use BigDecimal's to function instead")
   def to(end: Float, step: Float)= NumberCompatHelper.floatTo(value, end, step)
 }
 
