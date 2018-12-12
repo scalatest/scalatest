@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
@@ -30,11 +28,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
 trait NegLongSpecSupport {
-
-  val negLongGen: Gen[NegLong] =
-    for {i <- choose(Long.MinValue, -1L)} yield NegLong.from(i).get
-
-  implicit val arbNegLong: Arbitrary[NegLong] = Arbitrary(negLongGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

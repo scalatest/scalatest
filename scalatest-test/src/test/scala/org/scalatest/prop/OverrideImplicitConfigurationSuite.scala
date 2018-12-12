@@ -1,5 +1,6 @@
-package org.scalatest
-package prop
+package org.scalatest.prop
+
+import org.scalatest._
 
 trait GetImplicitConfig { self: Configuration =>
   def getImplicitConfig()(implicit config: PropertyCheckConfigurable): PropertyCheckConfiguration = config.asPropertyCheckConfiguration

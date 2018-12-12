@@ -18,6 +18,8 @@ package org.scalactic.anyvals
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop._
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen.choose
 import OptionValues._
 import java.nio.charset.Charset
 import scala.collection.mutable.ArrayBuffer
@@ -31,7 +33,6 @@ import org.scalactic.ColCompatHelper.aggregate
 
 class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
-/*
   import prop._
 
   implicit val numericStringGen: Generator[NumericString] =
@@ -39,22 +40,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       if (cs.isEmpty) NumericString("000")
       else NumericString.ensuringValid(cs.mkString)
     }
-*/
-
-  import org.scalacheck.Gen._
-  import org.scalacheck.{Arbitrary, Gen}
-
-  val numericStringGen: Gen[NumericString] =
-    for (cs <- Gen.containerOf[List, Char](Gen.oneOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))) yield {
-      if (cs.isEmpty) NumericString("000")
-      else NumericString.ensuringValid(cs.mkString)
-    }
-
-  implicit val numericStringArb: Arbitrary[NumericString] = Arbitrary(numericStringGen)
-
-  val posIntGen: Gen[PosInt] = Gen.posNum[Int].map(i => PosInt.ensuringValid(i))
-
-  implicit val posIntArb: Arbitrary[PosInt] = Arbitrary(posIntGen)
 
   val numericCharGen: Gen[NumericChar] =
     for {i <- choose(0, 9)} yield NumericChar.from(i.toString.charAt(0)).get

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2001-2015 Artima, Inc.
  *
@@ -16,22 +15,18 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals._
+class PrettyFunction0[A](private val result: A) extends (() => A) {
+  def apply(): A = result
+  override def toString = s"() => $result"
+  override def hashCode: Int = result.hashCode
+  override def equals(o: Any): Boolean = {
+    o match {
+      case that: PrettyFunction0[_] => that.result == this.result
+      case _ => false
+    }
+  }
+}
 
-private[prop] case class Edges(
-  byteEdges: List[Byte],
-  shortEdges: List[Short],
-  charEdges: List[Char],
-  intEdges: List[Int],
-  longEdges: List[Long],
-  floatEdges: List[Float],
-  doubleEdges: List[Double],
-  posIntEdges: List[PosInt],
-  posZIntEdges: List[PosZInt],
-  posLongEdges: List[PosLong],
-  posZLongEdges: List[PosZLong],
-  posFloatEdges: List[PosFloat],
-  posZFloatEdges: List[PosZFloat],
-  posDoubleEdges: List[PosDouble],
-  posZDoubleEdges: List[PosZDouble]
-)
+object PrettyFunction0 {
+  def apply[A](a: A): PrettyFunction0[A] = new PrettyFunction0[A](a)
+}

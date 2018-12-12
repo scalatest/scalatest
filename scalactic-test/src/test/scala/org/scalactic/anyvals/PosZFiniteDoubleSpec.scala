@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -32,16 +30,6 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 trait PosZFiniteDoubleSpecSupport {
-
-  val posZFiniteDoubleGen: Gen[PosZFiniteDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZFiniteDouble.from(i).get
-
-  implicit val arbPosZFiniteDouble: Arbitrary[PosZFiniteDouble] = Arbitrary(posZFiniteDoubleGen)
-
-  val posFiniteDoubleGen: Gen[PosFiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosFiniteDouble.from(i).get
-
-  implicit val arbPosFiniteDouble: Arbitrary[PosFiniteDouble] = Arbitrary(posFiniteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
