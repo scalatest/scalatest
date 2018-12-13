@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -32,16 +30,6 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 trait NegZFiniteDoubleSpecSupport {
-
-  val negZFiniteDoubleGen: Gen[NegZFiniteDouble] =
-    for {i <- choose(Double.MinValue, 0.0)} yield NegZFiniteDouble.from(i).get
-
-  implicit val arbNegZFiniteDouble: Arbitrary[NegZFiniteDouble] = Arbitrary(negZFiniteDoubleGen)
-
-  val negFiniteDoubleGen: Gen[NegFiniteDouble] =
-    for {i <- choose(Double.MinValue, -Double.MinPositiveValue)} yield NegFiniteDouble.from(i).get
-
-  implicit val arbNegFiniteDouble: Arbitrary[NegFiniteDouble] = Arbitrary(negFiniteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2017 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,20 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals.{PosInt,PosZInt}
-import org.scalactic.Requirements._
 
-// 0 + 10 is 10
-// sizeRange = maxSize - minSize
-case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
-  require(size >= minSize, s"the passed size ($size.value) must be greater than or equal to the passed minSize ($minSize.value)")
-  require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
-  val maxSize: PosZInt = PosZInt.ensuringValid(minSize + sizeRange)
+case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
+
+  def portions: Map[String, Double] =
+    totals.mapValues(count => count.toDouble / totalGenerated.toDouble)
+
+  def percentages: Map[String, PosZInt] =
+    totals mapValues { count =>
+      PosZInt.ensuringValid((count * 100.0 / totalGenerated).round.toInt)
+    }
+
+  override def toString = {
+    val lines = percentages map { case (classification, percentage) => s"${percentage.value}% $classification" }
+    lines.mkString("\n")
+  }
 }
 

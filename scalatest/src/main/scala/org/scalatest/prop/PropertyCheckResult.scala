@@ -15,14 +15,14 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals.{PosInt,PosZInt}
-import org.scalactic.Requirements._
+sealed trait PropertyCheckResult
 
-// 0 + 10 is 10
-// sizeRange = maxSize - minSize
-case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
-  require(size >= minSize, s"the passed size ($size.value) must be greater than or equal to the passed minSize ($minSize.value)")
-  require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
-  val maxSize: PosZInt = PosZInt.ensuringValid(minSize + sizeRange)
+object PropertyCheckResult {
+
+  case class Success(args: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
+
+  case class Exhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
+
+  case class Failure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
+
 }
-

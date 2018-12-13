@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
@@ -31,16 +29,6 @@ import org.scalactic.Equality
 
 trait PosFiniteFloatSpecSupport {
 
-  val posZFiniteFloatGen: Gen[PosZFiniteFloat] =
-    for {i <- choose(0, Float.MaxValue)} yield PosZFiniteFloat.ensuringValid(i)
-
-  implicit val arbPosZFiniteFloat: Arbitrary[PosZFiniteFloat] = Arbitrary(posZFiniteFloatGen)
-
-  val posFiniteFloatGen: Gen[PosFiniteFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield PosFiniteFloat.ensuringValid(i)
-
-  implicit val arbPosFiniteFloat: Arbitrary[PosFiniteFloat] = Arbitrary(posFiniteFloatGen)
-
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
       // I needed this because with GenDrivenPropertyChecks, got:
@@ -49,6 +37,11 @@ trait PosFiniteFloatSpecSupport {
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case Success(double: Double) if double.isNaN => 
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
         }
       case _: Success[_] => a == b

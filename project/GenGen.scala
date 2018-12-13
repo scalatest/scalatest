@@ -23,138 +23,7 @@ object GenGen {
 
   val generatorSource = new File("GenGen.scala")
 
-val scaladocForTableFor1VerbatimString = """
-/**
- * A table with 1 column.
- *
- * <p>
- * For an overview of using tables, see the documentation for trait
- * <a href="TableDrivenPropertyChecks.html">TableDrivenPropertyChecks</a>.
- * </p>
- *
- * <p>
- * This table is a sequence of objects, where each object represents one row of the (one-column) table.
- * This table also carries with it a <em>heading</em> tuple that gives a string name to the
- * lone column of the table.
- * </p>
- *
- * <p>
- * A handy way to create a <code>TableFor1</code> is via an <code>apply</code> factory method in the <code>Table</code>
- * singleton object provided by the <code>Tables</code> trait. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * val examples =
- *   Table(
- *     "a",
- *       0,
- *       1,
- *       2,
- *       3,
- *       4,
- *       5,
- *       6,
- *       7,
- *       8,
- *       9
- *   )
- * </pre>
- *
- * <p>
- * Because you supplied a list of non-tuple objects, the type you'll get back will be a <code>TableFor1</code>.
- * </p>
- *
- * <p>
- * The table provides an <code>apply</code> method that takes a function with a parameter list that matches
- * the type of the objects contained in this table. The <code>apply</code> method will invoke the
- * function with the object in each row passed as the lone argument, in ascending order by index. (<em>I.e.</em>,
- * the zeroth object is checked first, then the object with index 1, then index 2, and so on until all the rows
- * have been checked (or until a failure occurs). The function represents a property of the code under test
- * that should succeed for every row of the table. If the function returns normally, that indicates the property
- * check succeeded for that row. If the function completes abruptly with an exception, that indicates the
- * property check failed and the <code>apply</code> method will complete abruptly with a
- * <code>TableDrivenPropertyCheckFailedException</code> that wraps the exception thrown by the supplied property function.
- * </p>
- * 
- * <p>
- * The usual way you'd invoke the <code>apply</code> method that checks a property is via a <code>forAll</code> method
- * provided by trait <code>TableDrivenPropertyChecks</code>. The <code>forAll</code> method takes a <code>TableFor1</code> as its
- * first argument, then in a curried argument list takes the property check function. It invokes <code>apply</code> on
- * the <code>TableFor1</code>, passing in the property check function. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * forAll (examples) { (a) =>
- *   a should equal (a * 1)
- * }
- * </pre>
- *
- * <p>
- * Because <code>TableFor1</code> is a <code>Seq[(A)]</code>, you can use it as a <code>Seq</code>. For example, here's how
- * you could get a sequence of <a href="../Outcome.html"><code>Outcome</code></a>s for each row of the table, indicating whether a property check succeeded or failed
- * on each row of the table:
- * </p>
- *
- * <pre class="stHighlight">
- * for (row <- examples) yield {
- *   outcomeOf { row._1 should not equal (7) }
- * }
- * </pre>
- *
- * <p>
- * Note: the <code>outcomeOf</code> method, contained in the <code>OutcomeOf</code> trait, will execute the supplied code (a by-name parameter) and
- * transform it to an <code>Outcome</code>. If no exception is thrown by the code, <code>outcomeOf</code> will result in a
- * <a href="../Succeeded\$.html"><code>Succeeded</code></a>, indicating the "property check"
- * succeeded. If the supplied code completes abruptly in an exception that would normally cause a test to fail, <code>outcomeOf</code> will result in
- * in a <a href="../Failed.html"><code>Failed</code></a> instance containing that exception. For example, the previous for expression would give you:
- * </p>
- *
- * <pre class="stHighlight">
- * Vector(Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded,
- *     Failed(org.scalatest.TestFailedException: 7 equaled 7), Succeeded, Succeeded)
- * </pre>
- *
- * <p>
- * This shows that all the property checks succeeded, except for the one at index 7.
- * </p>
- *
- * <p>
- * One other way to use a <code>TableFor1</code> is to test subsequent return values
- * of a stateful function. Imagine, for example, you had an object named <code>FiboGen</code>
- * whose <code>next</code> method returned the <em>next</em> fibonacci number, where next
- * means the next number in the series following the number previously returned by <code>next</code>.
- * So the first time <code>next</code> was called, it would return 0. The next time it was called
- * it would return 1. Then 1. Then 2. Then 3, and so on. <code>FiboGen</code> would need to
- * be stateful, because it has to remember where it is in the series. In such a situation,
- * you could create a <code>TableFor1</code> (a table with one column, which you could alternatively
- * think of as one row), in which each row represents
- * the next value you expect.
- * </p>
- *
- * <pre class="stHighlight">
- * val first14FiboNums =
- *   Table("n", 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233)
- * </pre>
- *
- * <p>
- * Then in your <code>forAll</code> simply call the function and compare it with the
- * expected return value, like this:
- * </p>
- *
- * <pre class="stHighlight">
- *  forAll (first14FiboNums) { n =>
- *    FiboGen.next should equal (n)
- *  }
- * </pre>
- *
- * @param heading a string name for the lone column of this table
- * @param rows a variable length parameter list of objects containing the data of this table
- *
- * @author Bill Venners 
- */
-"""
-
-val copyrightTemplate = """/*
+  val copyrightTemplate = """/*
  * Copyright 2001-$year$ Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -171,32 +40,37 @@ val copyrightTemplate = """/*
  */
 package org.scalatest
 package prop
+
+import org.scalactic.anyvals.PosZInt
+
 """
 
-val propertyCheckPreamble = """
-import org.scalacheck.Arbitrary
-import org.scalacheck.Shrink
-import org.scalacheck.Prop
-import org.scalacheck.Gen
-import org.scalacheck.Prop._
-import org.scalatest.exceptions.DiscardedEvaluationException
-import org.scalatest.enablers.CheckerAsserting
+  val propertyCheckPreamble = """
 import org.scalactic._
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
+import org.scalatest.exceptions.StackDepthException
+import scala.annotation.tailrec
+import scala.util.{Try, Failure, Success}
+import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.enablers.PropCheckerAsserting
 
 /**
- * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
+ * Trait containing methods that faciliate property checks against generated data using [[Generator]].
  *
  * <p>
  * This trait contains <code>forAll</code> methods that provide various ways to check properties using
- * generated data. Use of this trait requires that ScalaCheck be on the class path when you compile and run your tests.
- * It also contains a <code>wherever</code> method that can be used to indicate a property need only hold whenever
- * some condition is true.
+ * generated data.  It also contains a <code>wherever</code> method that can be used to indicate a property
+ * need only hold whenever some condition is true.
  * </p>
  *
  * <p>
  * For an example of trait <code>GeneratorDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
  * </p>
- *  
+ *
  * <pre class="stHighlight">
  * class Fraction(n: Int, d: Int) {
  *
@@ -238,26 +112,24 @@ import org.scalactic._
  *
  * <p>
  * Trait <code>GeneratorDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
- * that allow you to check properties using the data provided by a ScalaCheck generator. The simplest form
+ * that allow you to check properties using the data provided by [[Generator]]. The simplest form
  * of <code>forAll</code> method takes two parameter lists, the second of which is implicit. The first parameter list
- * is a "property" function with one to six parameters. An implicit <code>Arbitrary</code> generator and <code>Shrink</code> object needs to be supplied for
- * The <code>forAll</code> method will pass each row of data to
- * each parameter type. ScalaCheck provides many implicit <code>Arbitrary</code> generators for common types such as
- * <code>Int</code>, <code>String</code>, <code>List[Float]</code>, <em>etc.</em>, in its <code>org.scalacheck.Arbitrary</code> companion
- * object. So long as you use types for which ScalaCheck already provides implicit <code>Arbitrary</code> generators, you needn't
- * worry about them. Same for <code>Shrink</code> objects, which are provided by ScalaCheck's <code>org.scalacheck.Shrink</code> companion
- * object. Most often you can simply pass a property function to <code>forAll</code>, and the compiler will grab the implicit
- * values provided by ScalaCheck.
+ * is a "property" function with one to six parameters. An implicit [[Generator]] generator object needs to be supplied for.
+ * The <code>forAll</code> method will pass each row of data to each parameter type. ScalaTest provides many implicit [[Generator]]s for
+ * common types such as <code>Int</code>, <code>String</code>, <code>List[Float]</code>, <em>etc.</em>, in its [[Generator]] companion
+ * object. So long as you use types for which ScalaTest already provides implicit [[Generator]]s, you needn't
+ * worry about them. Most often you can simply pass a property function to <code>forAll</code>, and the compiler will grab the implicit
+ * values provided by ScalaTest.
  * </p>
  *
  * <p>
- * The <code>forAll</code> methods use the supplied <code>Arbitrary</code> generators to generate example
+ * The <code>forAll</code> methods use the supplied [[Generator]]s to generate example
  * arguments and pass them to the property function, and
  * generate a <code>GeneratorDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
  * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
  * <code>DiscardedEvaluationException</code>,
- * which is thrown by the <code>whenever</code> method (defined in trait <code>Whenever</code>, which this trait extends) to indicate
+ * which is thrown by the <code>whenever</code> method (defined in trait [[Whenever]], which this trait extends) to indicate
  * a condition required by the property function is not met by a row
  * of passed data, will simply cause <code>forAll</code> to discard that row of data.
  * </p>
@@ -313,7 +185,7 @@ import org.scalactic._
  * <a name="supplyingGenerators"></a><h2>Supplying generators</h2>
  *
  * <p>
- * ScalaCheck provides a nice library of compositors that makes it easy to create your own custom generators. If you
+ * ScalaTest provides a nice library of compositors that makes it easy to create your own custom generators. If you
  * want to supply custom generators to a property check, place them in parentheses after <code>forAll</code>, before
  * the property check function (a curried form of <code>forAll</code>).
  * </p>
@@ -323,9 +195,9 @@ import org.scalactic._
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalacheck.Gen
+ * import org.scalatest.prop.Generator
  *
- * val evenInts = for (n <- Gen.choose(-1000, 1000)) yield 2 * n
+ * val evenInts = for (n <- Generator.chooseInt(-1000, 1000)) yield 2 * n
  * </pre>
  *
  * <p>
@@ -337,7 +209,7 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * Custom generators are necessary when you want to pass data types not supported by ScalaCheck's arbitrary generators,
+ * Custom generators are necessary when you want to pass data types not supported by ScalaTest's [[Generator]]s,
  * but are also useful when some of the values in the full range for the passed types are not valid. For such values you
  * would use a <code>whenever</code> clause. In the <code>Fraction</code> class shown above, neither the passed numerator or
  * denominator can be <code>Integer.MIN_VALUE</code>, and the passed denominator cannot be zero. This shows up in the
@@ -355,7 +227,7 @@ import org.scalactic._
  *
  * <pre class="stHighlight">
  * val validNumers =
- *   for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield n
+ *   for (n <- Generator.chooseInt(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield n
  * val validDenoms =
  *   for (d <- validNumers if d != 0) yield d
  * </pre>
@@ -383,15 +255,6 @@ import org.scalactic._
  *   }
  * }
  * </pre>
- *
- * <p>
- * Note that even if you use generators that don't produce the invalid values, you still need the
- * <code>whenever</code> clause. The reason is that once a property fails, ScalaCheck will try and shrink
- * the values to the smallest values that still cause the property to fail. During this shrinking process ScalaCheck
- * may pass invalid values. The <code>whenever</code> clause is still needed to guard against those values. (The
- * <code>whenever</code> clause also clarifies to readers of the code exactly what the property is in a succinct
- * way, without requiring that they find and understand the generator definitions.)
- * </p>
  *
  * <a name="supplyingGeneratorsAndArgNames"></a><h2>Supplying both generators and argument names</h2>
  *
@@ -435,7 +298,7 @@ import org.scalactic._
  *
  * <p>
  * The property checks performed by the <code>forAll</code> methods of this trait can be flexibly configured via the services
- * provided by supertrait <code>Configuration</code>.  The five configuration parameters for property checks along with their 
+ * provided by supertrait <code>Configuration</code>.  The five configuration parameters for property checks along with their
  * default values and meanings are described in the following table:
  * </p>
  *
@@ -511,7 +374,7 @@ import org.scalactic._
  * <p>
  * The <code>forAll</code> methods of trait <code>GeneratorDrivenPropertyChecks</code> each take a <code>PropertyCheckConfiguration</code>
  * object as an implicit parameter. This object provides values for each of the five configuration parameters. Trait <code>Configuration</code>
- * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value. 
+ * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value.
  * If you want to set one or more configuration parameters to a different value for all property checks in a suite you can override this
  * val (or hide it, for example, if you are importing the members of the <code>GeneratorDrivenPropertyChecks</code> companion object rather
  * than mixing in the trait.) For example, if
@@ -545,11 +408,11 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * This invocation of <code>forAll</code> will use 500 for <code>minSuccessful</code> and whatever values are specified by the 
+ * This invocation of <code>forAll</code> will use 500 for <code>minSuccessful</code> and whatever values are specified by the
  * implicitly passed <code>PropertyCheckConfiguration</code> object for the other configuration parameters.
  * If you want to set multiple configuration parameters in this way, just list them separated by commas:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * forAll (minSuccessful(500), maxDiscardedFactor(0.6)) { (n: Int, d: Int) => ...
  * </pre>
@@ -558,7 +421,7 @@ import org.scalactic._
  * If you are using an overloaded form of <code>forAll</code> that already takes an initial parameter list, just
  * add the configuration parameters after the list of generators, names, or generator/name pairs, as in:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * // If providing argument names
  * forAll ("n", "d", minSuccessful(500), maxDiscarded(300)) {
@@ -576,14 +439,14 @@ import org.scalactic._
  * <p>
  * For more information, see the documentation for supertrait <a href="Configuration.html"><code>Configuration</code></a>.
  * </p>
- * 
+ *
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
+trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with Configuration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
    * <code>PropertyGenConfig</code> object with explicitly passed parameter values.
    *
    * <p>
@@ -626,7 +489,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
 
   /**
    * Performs a configured property checks by applying property check functions passed to its <code>apply</code> methods to arguments
-   * supplied by implicitly passed generators, modifying the values in the 
+   * supplied by implicitly passed generators, modifying the values in the
    * <code>PropertyGenConfig</code> object passed implicitly to its <code>apply</code> methods with parameter values passed to its constructor.
    *
    * <p>
@@ -688,8 +551,8 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -705,35 +568,20 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, ASSERTION](fun: (A) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check1(fun, genA, param, prettifier, pos, List.empty)
     }
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -749,36 +597,21 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, ASSERTION](fun: (A, B) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check2(fun, genA, genB, param, prettifier, pos, List.empty)
     }
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -794,37 +627,22 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, ASSERTION](fun: (A, B, C) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check3(fun, genA, genB, genC, param, prettifier, pos, List.empty)
     }
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -840,38 +658,23 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D, ASSERTION](fun: (A, B, C, D) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check4(fun, genA, genB, genC, genD, param, prettifier, pos, List.empty)
     }
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -887,39 +690,24 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D, E, ASSERTION](fun: (A, B, C, D, E) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        arbE: Arbitrary[E], shrE: Shrink[E],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        genE: org.scalatest.prop.Generator[E],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D, e: E) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d, e)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check5(fun, genA, genB, genC, genD, genE, param, prettifier, pos, List.empty)
     }
 
   /**
    * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -935,264 +723,157 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D, E, F, ASSERTION](fun: (A, B, C, D, E, F) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        arbE: Arbitrary[E], shrE: Shrink[E],
-        arbF: Arbitrary[F], shrF: Shrink[F],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        genE: org.scalatest.prop.Generator[E],
+        genF: org.scalatest.prop.Generator[F],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D, e: E, f: F) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d, e, f)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          propBoolean(!unmetCondition) ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getScalaCheckParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      asserting.check6(fun, genA, genB, genC, genD, genE, genF, param, prettifier, pos, List.empty)
     }
   }
+
+  import GeneratorDrivenPropertyChecks.prettyArgs
+
 """
 
-val propertyCheckForAllTemplate = """
-  /**
-   * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * forAll { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
+  val propertyCheckForAllTemplate = """
   def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
+  (implicit
+    config: PropertyCheckConfiguration,
+    $gens$,
+    prettifier: Prettifier,
+    pos: source.Position,
+    asserting: PropCheckerAsserting[ASSERTION]
+  ): asserting.Result =
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
+
+  def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
-      config: PropertyCheckConfigurable,
-$arbShrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
+      config: PropertyCheckConfiguration,
+$gens$,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+      asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($alphaLower$))
+
+  def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+$gens$,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+      asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($alphaLower$))
+
+  def forAll[$alphaUpper$, ASSERTION]($gens$)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
+
+  def forAll[$alphaUpper$, ASSERTION]($gens$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
+    ): asserting.Result =
+    asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List.empty)
+
+  def forAll[$alphaUpper$, ASSERTION]($gensAndNames$)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        propBoolean(!unmetCondition) ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll(propF)
-      val params = getScalaCheckParams(Seq(), config)
-      asserting.check(prop, params, prettifier, pos)
+    $tupleBusters$
+    asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($argNameNames$))
   }
 
-  /**
-   * Performs a property check by applying the specified property check function with the specified
-   * argument names to arguments supplied by implicitly passed generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * forAll ($argNames$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+  def forAll[$alphaUpper$, ASSERTION]($gensAndNames$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
-      config: PropertyCheckConfigurable,
-$arbShrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position,
+      asserting: PropCheckerAsserting[ASSERTION]
     ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        propBoolean(!unmetCondition) ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll(propF)
-      val params = getScalaCheckParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
-  }
+      $tupleBusters$
+      asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($argNameNames$))
+    }
 
-  /**
-   * Performs a property check by applying the specified property check function to arguments
-   * supplied by the specified generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * import org.scalacheck.Gen
-   *
-   * // Define your own string generator:
-   * val famousLastWords = for {
-   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
-   * } yield s
-   * 
-   * forAll ($famousArgs$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-      config: PropertyCheckConfigurable,
-$shrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
-    ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        propBoolean(!unmetCondition) ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll($genArgs$)(propF)
-      val params = getScalaCheckParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos)
-  }
-
-  /**
-   * Performs a property check by applying the specified property check function to named arguments
-   * supplied by the specified generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * import org.scalacheck.Gen
-   *
-   * // Define your own string generator:
-   * val famousLastWords = for {
-   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
-   * } yield s
-   * 
-   * forAll ($nameGenTuples$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-      config: PropertyCheckConfigurable,
-$shrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
-    ): asserting.Result = {
-
-$tupleBusters$
-
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        propBoolean(!unmetCondition) ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll($genArgs$)(propF)
-      val params = getScalaCheckParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
-  }
 """
 
-val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
+  val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
+object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks {
+
+  import FailureMessages.decorateToStringValue
+  private def prettyArgs(args: List[Any], prettifier: Prettifier) = {
+    val strs = for((a, i) <- args.zipWithIndex) yield (
+      "    " +
+      (
+        a match {
+          case PropertyArgument(Some(label), value) => label + " = " + decorateToStringValue(prettifier, value)
+          case PropertyArgument(None, value) => "arg" + i + " = " + decorateToStringValue(prettifier, value)
+          case other => "arg" + i + " = " + decorateToStringValue(prettifier, other)
+        }
+      ) +
+      (if (i < args.length - 1) "," else "") // +
+      // (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
+    )
+    strs.mkString("\n")
+  }
+
+}
 """
 
-val generatorSuitePreamble = """
+  val generatorSuitePreamble = """
 
 import org.scalatest.Matchers
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-import org.scalacheck.Gen
 """
 
-val generatorSuitePostamble = """
+  val generatorSuitePostamble = """
   val famousLastWords = for {
-    s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
+    s <- org.scalatest.prop.CommonGenerators.specificValues("the", "program", "compiles", "therefore", "it", "should", "work")
   } yield s
 
-  val sevenEleven: Gen[String] =
-    Gen.sized { (size: Int) =>
-      if (size >= 7 && size <= 11)
-        Gen.const("OKAY")
-      else
-        throw new Exception("expected 7 <= size <= 11 but got " + size)
+  val sevenEleven: Generator[String] =
+    new Generator[String] {
+      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+        if (szp.size.value >= 7 && szp.size.value <= 11)
+          ("OKAY", edges, rnd)
+        else
+          throw new Exception("expected 7 <= size <= 11 but got " + szp.size)
+      }
     }
 
-  val fiveFive: Gen[String] =
-    Gen.sized { (size: Int) =>
-      if (size == 5)
-        Gen.const("OKAY")
-      else
-        throw new Exception("expected size 5 but got " + size)
+
+  val fiveFive: Generator[String] =
+    new Generator[String] {
+      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+        if (szp.size.value == 5)
+          ("OKAY", edges, rnd)
+        else
+          throw new Exception("expected size 5 but got " + szp.size)
+      }
     }
 """
 
-val generatorSuiteTemplate = """
+  val generatorSuiteAssertTemplate = """
 
   it("generator-driven property that takes $n$ args, which succeeds") {
 
@@ -1873,7 +1554,7 @@ $lengthAssertions$
 $lengthAssertions$
     }
   }
- 
+
   // set minSize == maxSize with (param, param) (ensure always passed with that size)
   it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
 
@@ -2031,508 +1712,2241 @@ $okayAssertions$
   }
 """
 
-val checkersSuiteTemplate = """
+  val generatorSuiteFutureAssertTemplate = """
 
-  it("ScalaCheck property that takes $n$ args, which succeeds") {
-
-    check { ($namesAndTypes$) =>
-      $sumOfArgLengths$ == (($sumOfArgs$).length)
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      check { ($namesAndTypes$) =>
-        $sumOfArgLengths$ < 0
+  it("generator-driven property that takes $n$ args, which succeeds") {
+    forAll { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
       }
     }
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
-
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      $sumOfArgLengths$ == (($sumOfArgs$).length)
+  it("generator-driven property that takes $n$ args, which fails in future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
     }
-    check(prop)
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which fails") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        $sumOfArgLengths$ < 0
+  it("generator-driven property that takes $n$ args, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
       }
-      check(prop)
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds") {
+    forAll ($argNames$) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails in future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds") {
+    forAll ($famousArgs$) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails in future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds") {
+    forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
     }
   }
 
   // Same thing, but with config params
-  it("ScalaCheck property that takes $n$ args, which succeeds, with config params") {
-
-    check(
-      ($namesAndTypes$) => $sumOfArgLengths$ == (($sumOfArgs$).length),
-      minSize(10),
-      maxSize(20)
-    )
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails, with config params") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      check(
-        ($namesAndTypes$) => $sumOfArgLengths$ < 0,
-        minSize(10),
-        maxSize(20)
-      )
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with config params") {
-
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      $sumOfArgLengths$ == (($sumOfArgs$).length)
-    }
-    check(prop, minSize(10), maxSize(20))
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which fails, with config params") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        $sumOfArgLengths$ < 0
+  it("generator-driven property that takes $n$ args, which succeeds, with config params") {
+    forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
       }
-      check(prop, minSize(10), maxSize(20))
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails in future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with config params") {
+    forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails in future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with config params") {
+    forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with config params") {
+    forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      Future {
+        assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        Future {
+          assert($sumOfArgLengths$ < 0)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with config params") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+        Future {
+          assert(true)
+        }
+      }
     }
   }
 
   // Same thing, but set minSuccessful to 5 with param, prop fails after 5
-  it("ScalaCheck property that takes $n$ args, which succeeds, with minSuccessful param set to 5") {
-
+  it("generator-driven property that takes $n$ args, which succeeds, with minSuccessful param set to 5") {
     var i = 0
-    check(
-      ($namesAndTypes$) => {
-        val res = i != 5
+    forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+      Future {
         i += 1
-        res
-      },
-      minSuccessful(5)
-    )
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails, with minSuccessful param set to 5") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      check(
-        ($namesAndTypes$) => {
-          val res = i != 4
-          i += 1
-        res
-        },
-        minSuccessful(5)
-      ) 
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5") {
-
-    var i = 0
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      val res = i != 5
-      i += 1
-      res
-    }
-    check(prop, minSuccessful(5))
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which fails, with minSuccessful param set to 5") {
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        val res = i != 4
-        i += 1
-        res
+        assert(i != 6)
       }
-      check(prop, minSuccessful(5))
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails in future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails in future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with minSuccessful param set to 5") {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
     }
   }
 
   // Same thing, but set default minSuccessful to 5, prop fails after 5
-  it("ScalaCheck property that takes $n$ args, which succeeds, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args, which succeeds, with default minSuccessful param set to 5") {
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    forAll { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails in future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
     var i = 0
-    check { ($namesAndTypes$) =>
-      val res = i != 5
-      i += 1
-      res
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails, with default minSuccessful param set to 5") {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      check { ($namesAndTypes$) =>
-        val res = i != 4
+    forAll ($argNames$) { ($namesAndTypes$) =>
+      Future {
         i += 1
-        res
+        assert(i != 6)
       }
     }
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
     var i = 0
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      val res = i != 5
-      i += 1
-      res
+    forAll ($famousArgs$) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
     }
-    check(prop)
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5") {
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        val res = i != 4
-        i += 1
-        res
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
       }
-      check(prop)
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        assert(i != 6)
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          assert(i != 5)
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+        Future {
+          assert(true)
+        }
+      }
     }
   }
 
   // Same thing, but set maxDiscarded to 5 with param, prop fails after 5
-  it("ScalaCheck property that takes $n$ args, which succeeds, with maxDiscarded param set to 5") {
+  it("generator-driven property that takes $n$ args, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
-    check(
-      ($namesAndTypes$) => {
+    forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+      Future {
         i += 1
-        (i > 5) ==> { 1 + 1 == (2) }
-      },
-      maxDiscarded(5)
-    )
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
-
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      check(
-        ($namesAndTypes$) => {
-          i += 1
-          (i > 7) ==> { 1 + 1 == (2) }
-        },
-        maxDiscarded(5)
-      ) 
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5") {
-
-    var i = 0
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      i += 1
-      (i > 5) ==> { 1 + 1 == (2) }
-    }
-    check(prop, maxDiscarded(5))
-  }
-
-  it("ScalaCheck property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
-
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        i += 1
-        (i > 7) ==> { 1 + 1 == (2) }
+        whenever (i > 5) { assert(1 + 1 === (2)) }
       }
-      check(prop, maxDiscarded(5))
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails in future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5") {
+    var i = 0
+    forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails in future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
     }
   }
 
   // Same thing, but set default maxDiscarded to 5, prop fails after 5
-  it("ScalaCheck property that takes $n$ args, which succeeds, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ args, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
 
     var i = 0
-    check { ($namesAndTypes$) =>
-      i += 1
-      (i > 5) ==> { 1 + 1 == (2) }
-    }
-  }
-
-  it("ScalaCheck property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
-
-    // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
-
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
-      var i = 0
-      check { ($namesAndTypes$) =>
+    forAll { ($namesAndTypes$) =>
+      Future {
         i += 1
-        (i > 7) ==> { 1 + 1 == (2) }
+        whenever (i > 5) { assert(1 + 1 === (2)) }
       }
     }
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ args, which fails in future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
 
     var i = 0
-    val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-      i += 1
-      (i > 5) ==> { 1 + 1 == (2) }
+    forAll ($argNames$) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
     }
-    check(prop)
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
+  it("generator-driven property that takes $n$ named args, which fails in future block, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
-    intercept[GeneratorDrivenPropertyCheckFailedException] {
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        i += 1
-        (i > 7) ==> { 1 + 1 == (2) }
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
       }
-      check(prop)
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    forAll ($famousArgs$) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails in future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+      Future {
+        i += 1
+        whenever (i > 5) { assert(1 + 1 === (2)) }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails in future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        Future {
+          i += 1
+          whenever (i > 7) { assert(1 + 1 === (2)) }
+        }
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails before future block, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    recoverToSucceededIf[GeneratorDrivenPropertyCheckFailedException] {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { assert(1 + 1 === (2)) }
+        Future {
+          whenever (i > 7) { assert(true) }
+        }
+      }
     }
   }
 
   // set minSize > maxSize with (param, param) (intercept IAE)
-  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
-
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
     intercept[IllegalArgumentException] {
-      check(
-        ($namesAndTypes$) => {
-          1 + 1 == (2)
-        },
-        minSize(5),
-        maxSize(4)
-      ) 
+      forAll (minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
     }
+    succeed
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
-
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
     intercept[IllegalArgumentException] {
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        1 + 1 == (2)
+      forAll ($argNames$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
       }
-      check(prop, minSize(5), maxSize(4))
     }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
   }
 
   // set minSize > maxSize with (param, default) (intercept IAE)
-  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
 
     intercept[IllegalArgumentException] {
-      check(
-        ($namesAndTypes$) => {
-          1 + 1 == (2)
-        },
-        minSize(5)
-      )
+      forAll (minSize(5)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
     }
+    succeed
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
 
     intercept[IllegalArgumentException] {
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        1 + 1 == (2)
+      forAll ($argNames$, minSize(5)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
       }
-      check(prop, minSize(5))
     }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, minSize(5)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, minSize(5)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
   }
 
   // set minSize > maxSize with (default, param) (intercept IAE)
-  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
 
     intercept[IllegalArgumentException] {
-      check(
-        ($namesAndTypes$) => {
-          1 + 1 == (2)
-        },
-        maxSize(4)
-      )
+      forAll (maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
     }
+    succeed
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
 
     intercept[IllegalArgumentException] {
-      val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
-        1 + 1 == (2)
+      forAll ($argNames$, maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
       }
-      check(prop, maxSize(4))
     }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, maxSize(4)) { ($namesAndTypes$) =>
+        Future {
+          assert(1 + 1 === (2))
+        }
+      }
+    }
+    succeed
   }
 
   // set maxSize with param (ensure always passed with a size less than maxSize)
-  it("ScalaCheck property that takes $n$ args, with maxSize specified as param") {
+  it("generator-driven property that takes $n$ args, with maxSize specified as param") {
 
-    check(
-      ($namesAndTypes$) => {
-$lengthExpressions$
-      },
-      maxSize(5)
-    ) 
+    forAll (maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$lengthAssertions$
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, with maxSize specified as param") {
+
+    forAll ($argNames$, maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$lengthAssertions$
+      }
+    }
   }
 
   // set maxSize with default (ensure always passed with a size less than maxSize)
-  it("ScalaCheck property that takes $n$ args, with maxSize specified as default") {
+  it("generator-driven property that takes $n$ args, with maxSize specified as default") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
 
-    check { ($namesAndTypes$) =>
-$lengthExpressions$
+    forAll { ($namesAndTypes$) =>
+      Future {
+$lengthAssertions$
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, with maxSize specified as default") {
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    forAll ($argNames$) { ($namesAndTypes$) =>
+      Future {
+$lengthAssertions$
+      }
     }
   }
 
   // set minSize == maxSize with (param, param) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
-
-    val prop = forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
+    forAll ($fiveFiveArgs$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, minSize(5), maxSize(5))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, param)") {
+    forAll ($fiveFiveNameGenTuples$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize == maxSize with (param, default) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
 
-    val prop = forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($fiveFiveArgs$, minSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, minSize(5))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    forAll ($fiveFiveNameGenTuples$, minSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize == maxSize with (default, param) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
 
-    val prop = forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($fiveFiveArgs$, maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, maxSize(5))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    forAll ($fiveFiveNameGenTuples$, maxSize(5)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize == maxSize with (default, default) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
 
-    val prop = forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
+
+    forAll ($fiveFiveNameGenTuples$) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize to 7 and maxSize to 11 with (param, param) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
 
-    val prop = forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($sevenElevenArgs$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, minSize(7), maxSize(11))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
+
+    forAll ($sevenElevenNameGenTuples$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize to 7 and maxSize to 11 with (param, default) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
 
-    val prop = forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($sevenElevenArgs$, minSize(7)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, minSize(7))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
+
+    forAll ($sevenElevenNameGenTuples$, minSize(7)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize to 7 and maxSize to 11 with (default, param) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
 
-    val prop = forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($sevenElevenArgs$, maxSize(11)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop, maxSize(11))
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
+
+    forAll ($sevenElevenNameGenTuples$, maxSize(11)) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 
   // set minSize to 7 and maxSize to 11 with (default, default) (ensure always passed with that size)
-  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
 
-    val prop = forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
-$okayExpressions$
+    forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
     }
-    check(prop)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
+
+    forAll ($sevenElevenNameGenTuples$) { ($namesAndTypes$) =>
+      Future {
+$okayAssertions$
+      }
+    }
   }
 """
-// 1712  2205
 
-// For some reason that I don't understand, I need to leave off the stars before the <pre> when 
-// they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
+  val generatorSuiteExpectTemplate = """
+
+  it("generator-driven property that takes $n$ args, which succeeds") {
+    val result =
+      forAll { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails") {
+    val result =
+      forAll { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds") {
+    val result =
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails") {
+    val result =
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds") {
+    val result =
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails") {
+    val result =
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds") {
+    val result =
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails") {
+    val result =
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  // Same thing, but with config params
+  it("generator-driven property that takes $n$ args, which succeeds, with config params") {
+    val result =
+      forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails, with config params") {
+    val result =
+      forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with config params") {
+    val result =
+      forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails, with config params") {
+    val result =
+      forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with config params") {
+    val result =
+      forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails, with config params") {
+    val result =
+      forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with config params") {
+    val result =
+      forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ === (($sumOfArgs$).length))
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails, with config params") {
+    val result =
+      forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        expect($sumOfArgLengths$ < 0)
+      }
+    assert(result.isNo)
+  }
+
+  // Same thing, but set minSuccessful to 5 with param, prop fails after 5
+  it("generator-driven property that takes $n$ args, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll (minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5") {
+    var i = 0
+    val result =
+      forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    assert(result.isNo)
+  }
+
+  // Same thing, but set default minSuccessful to 5, prop fails after 5
+  it("generator-driven property that takes $n$ args, which succeeds, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    val result =
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails, with default minSuccessful param set to 5") {
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+    var i = 0
+    val result =
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    val result =
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    val result =
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    val result =
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 6)
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        expect(i != 5)
+      }
+    }
+    assert(result.isNo)
+  }
+
+  // Same thing, but set maxDiscarded to 5 with param, prop fails after 5
+  it("generator-driven property that takes $n$ args, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    val result =
+      forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    val result =
+      forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    val result =
+      forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5") {
+
+    var i = 0
+    val result =
+      forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  // Same thing, but set default maxDiscarded to 5, prop fails after 5
+  it("generator-driven property that takes $n$ args, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    val result =
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    val result =
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, which fails, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    val result =
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    val result =
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 5) { expect(1 + 1 === (2)) }
+      }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which fails, with default maxDiscarded set to 5") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
+
+    val result = {
+      var i = 0
+      forAll ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 7) { expect(1 + 1 === (2)) }
+      }
+    }
+    assert(result.isNo)
+  }
+
+  // set minSize > maxSize with (param, param) (intercept IAE)
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+    intercept[IllegalArgumentException] {
+      forAll (minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+
+    intercept[IllegalArgumentException] {
+      forAll ($argNames$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
+
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  // set minSize > maxSize with (param, default) (intercept IAE)
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll (minSize(5)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll ($argNames$, minSize(5)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, minSize(5)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 4)
+
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, minSize(5)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  // set minSize > maxSize with (default, param) (intercept IAE)
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll (maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll ($argNames$, maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll ($famousArgs$, maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    intercept[IllegalArgumentException] {
+      forAll ($nameGenTuples$, maxSize(4)) { ($namesAndTypes$) =>
+        expect(1 + 1 === (2))
+      }
+    }
+  }
+
+  // set maxSize with param (ensure always passed with a size less than maxSize)
+  it("generator-driven property that takes $n$ args, with maxSize specified as param") {
+    val result =
+    forAll (maxSize(5)) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, with maxSize specified as param") {
+    val result =
+    forAll ($argNames$, maxSize(5)) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set maxSize with default (ensure always passed with a size less than maxSize)
+  it("generator-driven property that takes $n$ args, with maxSize specified as default") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    val result =
+    forAll { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args, with maxSize specified as default") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    val result =
+    forAll ($argNames$) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize == maxSize with (param, param) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
+
+    val result =
+    forAll ($fiveFiveArgs$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, param)") {
+
+    val result =
+    forAll ($fiveFiveNameGenTuples$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize == maxSize with (param, default) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    val result =
+    forAll ($fiveFiveArgs$, minSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    val result =
+    forAll ($fiveFiveNameGenTuples$, minSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize == maxSize with (default, param) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    val result =
+    forAll ($fiveFiveArgs$, maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    val result =
+    forAll ($fiveFiveNameGenTuples$, maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize == maxSize with (default, default) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
+
+    val result =
+    forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
+
+    val result =
+    forAll ($fiveFiveNameGenTuples$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize to 7 and maxSize to 11 with (param, param) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
+
+    val result =
+    forAll ($sevenElevenArgs$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
+
+    val result =
+    forAll ($sevenElevenNameGenTuples$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize to 7 and maxSize to 11 with (param, default) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
+
+    val result =
+    forAll ($sevenElevenArgs$, minSize(7)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
+
+    val result =
+    forAll ($sevenElevenNameGenTuples$, minSize(7)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize to 7 and maxSize to 11 with (default, param) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
+
+    val result =
+    forAll ($sevenElevenArgs$, maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
+
+    val result =
+    forAll ($sevenElevenNameGenTuples$, maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  // set minSize to 7 and maxSize to 11 with (default, default) (ensure always passed with that size)
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
+
+    val result =
+    forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
+
+    val result =
+    forAll ($sevenElevenNameGenTuples$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+    assert(result.isYes)
+  }
+
+  it("generator-driven property that takes $n$ named args and generators, returns VacuousYes should be considered discarded evaluation") {
+    val result =
+      forAll { ($namesAndTypes$) =>
+        val x = -1
+        expect(x > 0) implies expect(x > -1)
+      }
+    assert(result.isNo)
+  }
+"""
+
+  // 1712  2205
+
+  // For some reason that I don't understand, I need to leave off the stars before the <pre> when
+  // they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
   def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
+
     val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
 
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val bw = new BufferedWriter(new FileWriter(targetFile))
+
       try {
         val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
         st.setAttribute("year", thisYear);
@@ -2551,6 +3965,31 @@ $okayExpressions$
           val shrinks = alpha.take(i).toUpperCase.map(
             c => "      shr" + c + ": Shrink[" + c + "]"
           ).mkString(",\n")
+
+          val gens = alpha.take(i).toUpperCase.map(
+            c => "      gen" + c + ": org.scalatest.prop.Generator[" + c + "]"
+          ).mkString(",\n")
+
+          val genRefs = alpha.take(i).toUpperCase.map(
+            c => "gen" + c
+          ).mkString(", ")
+
+          val gensAndNames = alpha.take(i).toUpperCase.map(
+            c => "      genAndName" + c + ": (org.scalatest.prop.Generator[" + c + "], String)"
+          ).mkString(",\n")
+
+          val stepToStepToResult =
+            "        val (a, ar) = genA.next(10, nextRandomizer)" + "\n" +
+              (if (i > 1)
+                alpha.take(i).sliding(2).map {
+                  ab =>
+                    val a = ab.charAt(0)
+                    val b = ab.charAt(1)
+                    "      val (" + b + ", " + b + "r) = gen" + b.toString.toUpperCase + ".next(10, " + a + "r)"
+                }.mkString("\n")
+              else
+                "")
+
           val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
           val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
           val sumOfArgs = alpha.take(i).mkString(" + ")
@@ -2567,8 +4006,13 @@ $okayExpressions$
           st.setAttribute("argType", argType)
           st.setAttribute("arbShrinks", arbShrinks)
           st.setAttribute("shrinks", shrinks)
+          st.setAttribute("gens", gens)
+          st.setAttribute("genRefs", genRefs)
+          st.setAttribute("gensAndNames", gensAndNames)
+          st.setAttribute("stepToStepToResult", stepToStepToResult)
           st.setAttribute("alphaLower", alphaLower)
           st.setAttribute("alphaUpper", alphaUpper)
+          st.setAttribute("alphaLast", alpha.take(i).last.toString)
           st.setAttribute("strings", strings)
           st.setAttribute("sumOfArgLengths", sumOfArgLengths)
           st.setAttribute("namesAndTypes", namesAndTypes)
@@ -2584,33 +4028,114 @@ $okayExpressions$
           st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
           bw.write(st.toString)
         }
-
         bw.write("}\n")
         bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
       }
       finally {
-        bw.flush()
         bw.close()
-        println("###Generated: " + targetFile.getAbsolutePath)
       }
     }
 
     Seq(targetFile)
   }
 
+  val generatorTemplate =
+    """private[prop] class GeneratorFor$arity$[$alphaUpper$](
+      |  $initToLastName$: $initType$ => $lastType$,
+      |  $lastToInitName$: $lastType$ => $initType$
+      |)(
+      |  $initGensDecls$
+      |) extends Generator[$lastType$] { thisGenerator =>
+      |
+      |  private val underlying: Generator[$lastType$] = {
+      |    for {
+      |      $initGenArrows$
+      |    } yield $initToLastName$($initLower$)
+      |  }
+      |
+      |  def next(szp: SizeParam, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(szp, edges, rnd)
+      |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
+      |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
+      |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
+      |  override def canonicals(rnd: Randomizer): (Iterator[$lastType$], Randomizer) = underlying.canonicals(rnd)
+      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (Iterator[$lastType$], Randomizer) = {
+      |    val ($initLower$) = $lastToInitName$(lastValue)
+      |    $initShrinks$
+      |    $initStreams$
+      |    val streamOf$lastType$: Stream[$lastType$] = // TODO: check about the problem with streams and memory leaks, or do this a different way
+      |      for {
+      |        $initStreamArrows$
+      |      } yield $initToLastName$($initLower$)
+      |    (streamOf$lastType$.iterator, rnd$arity$)
+      |  }
+      |}
+    """.stripMargin
+
+  def genGenerators(targetDir: File): Seq[File] = {
+    targetDir.mkdirs()
+
+    val alphaAll = "abcdefghijklmnopqrstuvw"
+
+    for (i <- 1 to 22) yield {
+
+      val alpha = alphaAll.take(i + 1)
+      val alphaLower = alpha.mkString(", ")
+      val initLower = alpha.init.mkString(", ")
+      val alphaUpper = alpha.toUpperCase.mkString(", ")
+      val initToLastName = alpha.init.head + alpha.init.tail.toUpperCase + "To" + alpha.last.toString.toUpperCase
+      val lastToInitName = alpha.last.toString + "To" + alpha.init.toUpperCase
+      val initType = if (i > 1) "(" + alpha.init.mkString(", ").toUpperCase + ")" else alpha.init.mkString(", ").toUpperCase
+      val lastType = alphaUpper.last.toString
+      val initGensDecls = alpha.init.map(a => "genOf" + a.toString.toUpperCase + ": Generator[" + a.toString.toUpperCase + "]").mkString(", \n")
+      val initGenArrows = alpha.init.map(a => a + " <- genOf" + a.toString.toUpperCase).mkString("\n")
+      val initShrinks = alpha.init.zipWithIndex.map { case (a, idx) =>
+        "val (itOf" + a.toString.toUpperCase + ", rnd" + (idx + 1) + ") = genOf" + a.toString.toUpperCase + ".shrink(" + a + ", rnd" + idx + ")"
+      }.mkString("\n")
+      val initStreams = alpha.init.map(a => "val streamOf" + a.toString.toUpperCase + ": Stream[" + a.toString.toUpperCase + "] = itOf" + a.toString.toUpperCase + ".toStream").mkString("\n")
+      val initStreamArrows = alpha.init.map(a => a + " <- streamOf" + a.toString.toUpperCase).mkString("\n")
+
+      val targetFile = new File(targetDir, "GeneratorFor" + i + ".scala")
+
+      if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+        val bw = new BufferedWriter(new FileWriter(targetFile))
+        val stCopyRight = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
+        stCopyRight.setAttribute("year", thisYear)
+        bw.write(stCopyRight.toString)
+
+        val st = new org.antlr.stringtemplate.StringTemplate(generatorTemplate)
+        st.setAttribute("arity", i)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("initLower", initLower)
+        st.setAttribute("initToLastName", initToLastName)
+        st.setAttribute("lastToInitName", lastToInitName)
+        st.setAttribute("initType", initType)
+        st.setAttribute("lastType", lastType)
+        st.setAttribute("initGensDecls", initGensDecls)
+        st.setAttribute("initGenArrows", initGenArrows)
+        st.setAttribute("initShrinks", initShrinks)
+        st.setAttribute("initStreams", initStreams)
+        st.setAttribute("initStreamArrows", initStreamArrows)
+
+        bw.write(st.toString)
+
+        bw.flush()
+        bw.close()
+      }
+
+      targetFile
+    }
+  }
+
   // Invitation style indicates how GeneratorDrivenPropertyChecks is imported
-  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, doItForCheckers: Boolean): Seq[File] = {
+  def genGeneratorDrivenSuite(targetDir: File, mixinInvitationStyle: Boolean, withTables: Boolean, generatorSuiteTemplate: String, checkMethod: String, async: Boolean): Seq[File] = {
 
     targetDir.mkdirs()
-    
-    val traitOrObjectName =
-      if (doItForCheckers)
-        "Checkers"
-      else {
-        if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
-      }
-    val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite" 
-    val fileName = suiteClassName + ".scala" 
+
+    val traitOrObjectName = if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
+
+    val asyncPrefix = if (async) "Async" else ""
+    val suiteClassName = asyncPrefix + traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite"
+    val fileName = checkMethod.capitalize + suiteClassName + ".scala"
 
     val targetFile = new File(targetDir, fileName)
 
@@ -2622,23 +4147,19 @@ $okayExpressions$
         st.setAttribute("year", thisYear);
         bw.write(st.toString)
         bw.write(generatorSuitePreamble)
-        if (doItForCheckers) {
-          bw.write("import org.scalacheck.Prop.{Exception => _, _}\n")
-        }
         if (!mixinInvitationStyle)
           bw.write("import " + traitOrObjectName + "._\n")
+        bw.write("import org.scalatest.Expectations._\n")
+        if (async)
+          bw.write("import scala.concurrent.Future\n")
         bw.write("\n")
         bw.write(
-          "class " + suiteClassName + " extends FunSpec " +
+          "class " + checkMethod.capitalize + suiteClassName + " extends " + asyncPrefix + "FunSpec " +
             (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
         bw.write(generatorSuitePostamble)
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 6) {
-          val st =
-            if (doItForCheckers)
-              new org.antlr.stringtemplate.StringTemplate(checkersSuiteTemplate)
-            else
-              new org.antlr.stringtemplate.StringTemplate(generatorSuiteTemplate)
+          val st = new org.antlr.stringtemplate.StringTemplate(generatorSuiteTemplate)
           val rowOfOnes = List.fill(i)("  1").mkString(", ")
           val rowOfTwos = List.fill(i)("  2").mkString(", ")
           val listOfIs = List.fill(i)("i").mkString(", ")
@@ -2660,8 +4181,8 @@ $okayExpressions$
           val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
           val fiveFiveNameGenTuples = alpha.take(i).map("(fiveFive, \"" + _ + "\")").mkString(", ")
           val sevenElevenNameGenTuples = alpha.take(i).map("(sevenEleven, \"" + _ + "\")").mkString(", ")
-          val lengthAssertions = alpha.take(i).map("      assert(" + _ + ".length <= 5)").mkString("\n")
-          val okayAssertions = alpha.take(i).map("        assert(" + _ + " === (\"OKAY\"))").mkString("\n")
+          val lengthAssertions = alpha.take(i).map("      " + checkMethod + "(" + _ + ".length <= 5)").mkString("\n")
+          val okayAssertions = alpha.take(i).map("        " + checkMethod + "(" + _ + " === (\"OKAY\"))").mkString("\n")
           val lengthExpressions = alpha.take(i).map("      " + _ + ".length <= 5").mkString("\n")
           val okayExpressions = alpha.take(i).map("        " + _ + " == (\"OKAY\")").mkString("\n")
           st.setAttribute("n", i)
@@ -2688,18 +4209,15 @@ $okayExpressions$
         }
 
         bw.write("}\n")
-
-        println("Generated " + targetFile.getAbsolutePath)
       }
       finally {
-        bw.flush()
         bw.close()
       }
     }
 
     Seq(targetFile)
   }
-  
+
   def main(args: Array[String]) {
     val targetDir = args(0)
     val version = args(1)
@@ -2707,23 +4225,30 @@ $okayExpressions$
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/prop")
     mainDir.mkdirs()
     genMain(mainDir, version, scalaVersion)
-    
+
     val testDir = new File("gentests/" + targetDir + "/test/scala/org/scalatest/prop")
     testDir.mkdirs()
     genTest(testDir, version, scalaVersion)
   }
-  
+
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
-    genPropertyChecks(dir)
+    genPropertyChecks(dir) ++
+    genGenerators(dir)
   }
-  
+
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {
-    genGeneratorDrivenSuite(dir, true, false, false) ++
-    genGeneratorDrivenSuite(dir, false, false, false) ++
-    genGeneratorDrivenSuite(dir, true, true, false) ++
-    genGeneratorDrivenSuite(dir, false, true, false) ++
-    genGeneratorDrivenSuite(dir, true, true, true) ++
-    genGeneratorDrivenSuite(dir, false, true, true)
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteFutureAssertTemplate, "assert", true) /*++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteExpectTemplate, "expect", false)*/
+
   }
 }
-

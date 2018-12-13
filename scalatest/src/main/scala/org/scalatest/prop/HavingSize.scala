@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,11 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
-import org.scalatest.exceptions.TestFailedException
+import org.scalactic.anyvals.PosZInt
 
-class ShrinkerSpec extends FunSpec with Matchers {
-  describe("A shrinker Stream") {
-    it("should be offered by a the default Int Generator") {
-      import Generator._
-      val is = intGenerator.shrink(100)
-      val xs = is.toList
-      xs(0) shouldBe 0
-      xs(1) shouldBe 1
-      xs(2) shouldBe -1
-    }
-  }
+trait HavingSize[T] {
+  def havingSize(len: PosZInt): Generator[T]
+  def havingSizesBetween(from: PosZInt, to: PosZInt): Generator[T]
+  def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[T]
 }
 
