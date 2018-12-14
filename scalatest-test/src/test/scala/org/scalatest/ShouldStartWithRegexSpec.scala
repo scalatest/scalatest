@@ -15,12 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldStartWithRegexSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStartWithRegexSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t

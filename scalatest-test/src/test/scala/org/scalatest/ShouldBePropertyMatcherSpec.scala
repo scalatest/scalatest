@@ -15,14 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
 
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
 import Matchers._
 
-class ShouldBePropertyMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldBePropertyMatcherSpec extends FunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   describe("The be (BePropertyMatcher) syntax") {

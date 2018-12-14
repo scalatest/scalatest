@@ -40,9 +40,6 @@ object ScalatestBuild extends Build {
 
   val previousReleaseVersion = "3.0.5"
 
-  val scalacheckVersion = "1.14.0"
-  val nativeScalacheckVersion = "1.14.0-18db189-SNAPSHOT"
-
   val easyMockVersion = "3.2"
   val jmockVersion = "2.8.3"
   val mockitoVersion = "1.10.19"
@@ -185,39 +182,23 @@ object ScalatestBuild extends Build {
     scalacticDocScalacOptionsSetting
   )
 
-  def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % scalacheckVersion % config
-
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
       case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
       case other => Seq.empty
     }
 
-  lazy val crossBuildLibraryDependencies = Def.setting {
-    Seq("org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional")
-    /*CrossVersion.partialVersion(scalaVersion.value) match {
-      // if scala 2.11+ is used, add dependency on scala-xml module
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(
-          "org.scala-lang.modules" %%% "scala-xml" % "1.1.0",
-          "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional"
-        )
-      case _ =>
-        Seq("org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional")
-    }*/
-  }
+
 
   lazy val nativeCrossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
-          "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional"
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
         )
       case _ =>
-        Seq("org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional")
+        Seq.empty
     }
   }
 
@@ -361,7 +342,6 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional"),
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
@@ -377,7 +357,6 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       //libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
@@ -394,7 +373,6 @@ object ScalatestBuild extends Build {
       .settings(sharedSettings: _*)
       .settings(
         projectTitle := "Common test classes used by scalactic.native and scalatest.native",
-        libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
         sourceGenerators in Compile += {
           Def.task{
             GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
@@ -621,7 +599,6 @@ object ScalatestBuild extends Build {
           "-oDIF",
           "-W", "120", "60")),
       logBuffered in Test := false,
-      libraryDependencies += scalacheckDependency("test"),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -636,7 +613,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
@@ -667,7 +643,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.native",
       organization := "org.scalactic",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "test",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       nativeOptimizerDriver in NativeTest := {
@@ -695,7 +670,6 @@ object ScalatestBuild extends Build {
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-     libraryDependencies ++= crossBuildLibraryDependencies.value,
      libraryDependencies ++= scalatestLibraryDependencies,
      genMustMatchersTask,
      genGenTask,
@@ -708,7 +682,6 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile += {
        Def.task{
          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenScalaCheckGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value) ++
@@ -783,7 +756,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
@@ -808,7 +780,6 @@ object ScalatestBuild extends Build {
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies ++= scalatestJSLibraryDependencies,
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
@@ -836,7 +807,6 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task{
           GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenScalaCheckGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
@@ -892,7 +862,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
       //jsDependencies += RuntimeDOM % "test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       //jsEnv := NodeJSEnv(executable = "node").value,
@@ -932,7 +901,6 @@ object ScalatestBuild extends Build {
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.6",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -961,7 +929,6 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task{
           GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenScalaCheckGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
@@ -1015,7 +982,6 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % nativeScalacheckVersion % "test",
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
       nativeOptimizerDriver in NativeTest := {
@@ -1055,7 +1021,6 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest App",
       name := "scalatest-app",
       organization := "org.scalatest",
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies ++= scalatestLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
@@ -1133,7 +1098,6 @@ object ScalatestBuild extends Build {
       name := "scalatest-app",
       organization := "org.scalatest",
       moduleName := "scalatest-app",
-      libraryDependencies ++= crossBuildLibraryDependencies.value,
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticJS, Compile, packageBin).value,
@@ -1277,7 +1241,6 @@ object ScalatestBuild extends Build {
     scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= crossBuildLibraryDependencies.value,
     libraryDependencies ++= gentestsLibraryDependencies,
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
@@ -1413,14 +1376,6 @@ object ScalatestBuild extends Build {
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genScalaCheckGenTests = Project("genScalaCheckGenTests", file("gentests/GenScalaCheckGen"))
-    .settings(gentestsSharedSettings: _*)
-    .settings(
-      genGenTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genscalacheckgen", "GenScalaCheckGen.scala")(GenScalaCheckGen.genTest)
-    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
-
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
     .settings(
@@ -1548,14 +1503,12 @@ object ScalatestBuild extends Build {
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
-      scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("test")
+      scalaVersion := buildScalaVersion
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       sourceGenerators in Test += {
         Def.task {
           GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -1678,16 +1631,6 @@ object ScalatestBuild extends Build {
         GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
       case "gentests" =>
         GenGen.genTest(new File(testTargetDir, "scala/gengen"), theVersion, theScalaVersion)
-    }
-  }
-
-  val genScalaCheckGen = TaskKey[Unit]("genscalacheckgen", "Generate ScalaCheck driven Property Checks")
-  val genScalaCheckGenTask = genScalaCheckGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
-    projName match {
-      case "scalatest" =>
-        GenGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
-      case "gentests" =>
-        GenGen.genTest(new File(testTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
     }
   }
 
@@ -1835,7 +1778,6 @@ object ScalatestBuild extends Build {
     val theScalaVersion = scalaVersion.value
 
     GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
-    GenScalaCheckGen.genMain(new File(mainTargetDir, "scala/genscalacheckgen"), theVersion, theScalaVersion)
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)

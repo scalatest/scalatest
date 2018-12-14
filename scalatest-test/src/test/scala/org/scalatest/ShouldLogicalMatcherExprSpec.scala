@@ -15,13 +15,12 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSugar with ReturnsNormallyThrowsAssertion {
+class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with ReturnsNormallyThrowsAssertion {
 
   class Clown {
     def hasBigRedNose = true

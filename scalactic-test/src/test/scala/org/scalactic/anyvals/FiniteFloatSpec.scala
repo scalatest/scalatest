@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
@@ -30,11 +28,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
 
 trait FiniteFloatSpecSupport {
-
-  val finiteFloatGen: Gen[FiniteFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield FiniteFloat.ensuringValid(i)
-
-  implicit val arbFiniteFloat: Arbitrary[FiniteFloat] = Arbitrary(finiteFloatGen)
 
   implicit val floatEquality: Equality[Float] =
     new Equality[Float] {

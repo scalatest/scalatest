@@ -19,7 +19,6 @@ import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.check.ScalaCheckGenerators
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
