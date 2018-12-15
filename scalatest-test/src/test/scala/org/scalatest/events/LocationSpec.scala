@@ -15,7 +15,6 @@
  */
 package org.scalatest.events
 
-import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 
 // SKIP-SCALATESTJS,NATIVE-START
@@ -29,7 +28,7 @@ import Inside._
 // SKIP-SCALATESTJS,NATIVE-START
 @RunWith(classOf[JUnitRunner])
 // SKIP-SCALATESTJS,NATIVE-END
-class LocationSpec extends FunSpec with Checkers {
+class LocationSpec extends FunSpec {
   
   class TestLocationFunSuite extends FunSuite {
     test("succeed") {

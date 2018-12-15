@@ -145,31 +145,7 @@ trait Generator[T] { thisGeneratorOfT =>
   }
 }
 
-trait LowerPriorityGeneratorImplicits {
-
-  import org.scalacheck.{Arbitrary, Gen, Shrink}
-  import org.scalacheck.rng.Seed
-
-  implicit def scalaCheckArbitaryGenerator[T](arb: Arbitrary[T], shrk: Shrink[T]): Generator[T] =
-    new Generator[T] {
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            arb.arbitrary.apply(Gen.Parameters.default.withSize(szp.size), Seed(rnd.seed)) match {
-              case Some(nextT) => (nextT, Nil, rnd.nextRandomizer)
-              case None => throw new IllegalStateException("Unable to generate value using ScalaCheck Arbitary.")
-            }
-        }
-      }
-      override def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = {
-        (shrk.shrink(value).take(10000).reverse.toIterator, rnd)
-      }
-    }
-}
-
-object Generator extends LowerPriorityGeneratorImplicits {
+object Generator {
 
   // I don't want to make Generator covariant, because then an implicit search for a Generator[<supertype>] would
   // be satisfied if it finds just a Generator[<subtype>], but that would not generate anything except subtypes.

@@ -15,16 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
+import org.scalatest.prop.PropertyChecks
 import Integer.{MAX_VALUE, MIN_VALUE}
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.anyvals.PosInt
 
-class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldOrderedSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // TODO: Fix these tests. They are wasting a bunch of time with discarded values
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 500.0)
@@ -35,102 +32,102 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
     describe("on Int") {
 
       it("should do nothing if the comparison holds true") {
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should be < (right)))
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should be <= (right)))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should be > (right)))
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should be >= (right)))
+        forAll((left: Int, right: Int) => if (left < right) left should be < (right) else succeed)
+        forAll((left: Int, right: Int) => if (left <= right) left should be <= (right) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should be > (right) else succeed)
+        forAll((left: Int, right: Int) => if (left >= right) left should be >= (right) else succeed)
       }
 
       it("should do nothing if the comparison fails and used with not") {
 
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should not be < (right)))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should not be <= (right)))
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should not be > (right)))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should not be >= (right)))
+        forAll((left: Int, right: Int) => if (left >= right) left should not be < (right) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should not be <= (right) else succeed)
+        forAll((left: Int, right: Int) => if (left <= right) left should not be > (right) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should not be >= (right) else succeed)
 
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should not (be < (right))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should not (be <= (right))))
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should not (be > (right))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should not (be >= (right))))
+        forAll((left: Int, right: Int) => if (left >= right) left should not (be < (right)) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should not (be <= (right)) else succeed)
+        forAll((left: Int, right: Int) => if (left <= right) left should not (be > (right)) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should not (be >= (right)) else succeed)
       }
 
       it("should do nothing when comparison succeeds and used in a logical-and expression") {
 
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be < (right)) and (be < (right + 1)))))
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right) and (be < (right + 1)))))
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right) and be < (right + 1))))
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should ((be < (right)) and (be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should (be < (right) and (be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should (be < (right) and be < (right + 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be <= (right)) and (be <= (right + 1)))))
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be <= (right) and (be <= (right + 1)))))
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be <= (right) and be <= (right + 1))))
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should ((be <= (right)) and (be <= (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should (be <= (right) and (be <= (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should (be <= (right) and be <= (right + 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should ((be > (right)) and (be > (right - 1)))))
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be > (right) and (be > (right - 1)))))
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be > (right) and be > (right - 1))))
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should ((be > (right)) and (be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should (be > (right) and (be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should (be > (right) and be > (right - 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should ((be >= (right)) and (be >= (right - 1)))))
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be >= (right) and (be >= (right - 1)))))
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be >= (right) and be >= (right - 1))))
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should ((be >= (right)) and (be >= (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should (be >= (right) and (be >= (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should (be >= (right) and be >= (right - 1)) else succeed)
       }
 
       it("should do nothing when array size matches and used in a logical-or expression") {
 
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be < (right - 1)) or (be < (right + 1)))))
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right - 1) or (be < (right + 1)))))
-        check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right - 1) or be < (right + 1))))
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should ((be < (right - 1)) or (be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should (be < (right - 1) or (be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left < right) && (right < MAX_VALUE)) left should (be < (right - 1) or be < (right + 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be <= (right - 1)) or (be <= (right + 1)))))
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be <= (right - 1) or (be <= (right + 1)))))
-        check((left: Int, right: Int) => ((left <= right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be <= (right - 1) or be <= (right + 1))))
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should ((be <= (right - 1)) or (be <= (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should (be <= (right - 1) or (be <= (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left <= right) && (right < MAX_VALUE)) left should (be <= (right - 1) or be <= (right + 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should ((be > (right + 1)) or (be > (right - 1)))))
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be > (right + 1) or (be > (right - 1)))))
-        check((left: Int, right: Int) => ((left > right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be > (right + 1) or be > (right - 1))))
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should ((be > (right + 1)) or (be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should (be > (right + 1) or (be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left > right) && (right > MIN_VALUE)) left should (be > (right + 1) or be > (right - 1)) else succeed)
 
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should ((be >= (right + 1)) or (be >= (right - 1)))))
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be >= (right + 1) or (be >= (right - 1)))))
-        check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be >= (right + 1) or be >= (right - 1))))
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should ((be >= (right + 1)) or (be >= (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should (be >= (right + 1) or (be >= (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if ((left >= right) && (right > MIN_VALUE)) left should (be >= (right + 1) or be >= (right - 1)) else succeed)
 
-        check((left: Int, right: Int) => returnsNormally(left should (be >= (right) or be < (right))))
-        check((left: Int, right: Int) => returnsNormally(left should (be > (right) or be <= (right))))
+        forAll((left: Int, right: Int) => left should (be >= (right) or be < (right)))
+        forAll((left: Int, right: Int) => left should (be > (right) or be <= (right)))
       }
 
       it("should do nothing when comparison fails and used in a logical-and expression with not") {
 
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not (be < (right)) and not (be < (right + 1)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should ((not be < (right)) and (not be < (right + 1)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not be < (right) and not be < (right + 1))))
+        forAll((left: Int, right: Int) => if (left > right) left should (not (be < (right)) and not (be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should ((not be < (right)) and (not be < (right + 1))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should (not be < (right) and not be < (right + 1)) else succeed)
 
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not (be <= (right)) and not (be <= (right)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should ((not be <= (right)) and (not be <= (right)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not be <= (right) and not be <= (right))))
+        forAll((left: Int, right: Int) => if (left > right) left should (not (be <= (right)) and not (be <= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should ((not be <= (right)) and (not be <= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should (not be <= (right) and not be <= (right)) else succeed)
 
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not (be > (right)) and not (be > (right - 1)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should ((not be > (right)) and (not be > (right - 1)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not be > (right) and not be > (right - 1))))
+        forAll((left: Int, right: Int) => if (left < right) left should (not (be > (right)) and not (be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should ((not be > (right)) and (not be > (right - 1))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should (not be > (right) and not be > (right - 1)) else succeed)
 
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not (be >= (right)) and not (be >= (right)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should ((not be >= (right)) and (not be >= (right)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not be >= (right) and not be >= (right))))
+        forAll((left: Int, right: Int) => if (left < right) left should (not (be >= (right)) and not (be >= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should ((not be >= (right)) and (not be >= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should (not be >= (right) and not be >= (right)) else succeed)
       }
 
       it("should do nothing when comparison fails and used in a logical-or expression with not") {
 
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not (be >= (right)) or not (be < (right)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should ((not be >= (right)) or (not be < (right)))))
-        check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not be >= (right) or not be < (right))))
+        forAll((left: Int, right: Int) => if (left > right) left should (not (be >= (right)) or not (be < (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should ((not be >= (right)) or (not be < (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left > right) left should (not be >= (right) or not be < (right)) else succeed)
 
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should (not (be > (right)) or not (be <= (right)))))
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should ((not be > (right)) or (not be <= (right)))))
-        check((left: Int, right: Int) => left >= right ==> returnsNormally(left should (not be > (right) or not be <= (right))))
+        forAll((left: Int, right: Int) => if (left >= right) left should (not (be > (right)) or not (be <= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left >= right) left should ((not be > (right)) or (not be <= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left >= right) left should (not be > (right) or not be <= (right)) else succeed)
 
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not (be <= (right)) or not (be > (right)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should ((not be <= (right)) or (not be > (right)))))
-        check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not be <= (right) or not be > (right))))
+        forAll((left: Int, right: Int) => if (left < right) left should (not (be <= (right)) or not (be > (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should ((not be <= (right)) or (not be > (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left < right) left should (not be <= (right) or not be > (right)) else succeed)
 
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should (not (be < (right)) or not (be >= (right)))))
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should ((not be < (right)) or (not be >= (right)))))
-        check((left: Int, right: Int) => left <= right ==> returnsNormally(left should (not be < (right) or not be >= (right))))
+        forAll((left: Int, right: Int) => if (left <= right) left should (not (be < (right)) or not (be >= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left <= right) left should ((not be < (right)) or (not be >= (right))) else succeed)
+        forAll((left: Int, right: Int) => if (left <= right) left should (not be < (right) or not be >= (right)) else succeed)
       }
 
       it("should throw TestFailedException if comparison does not succeed") {
@@ -139,25 +136,25 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
           1 should be < (1)
         }
         assert(caught1.getMessage === "1 was not less than 1")
-        check((left: Int, right: Int) => left >= right ==> throwsTestFailedException(left should be < (right)))
+        forAll((left: Int, right: Int) => if (left >= right) assertThrows[TestFailedException](left should be < (right)) else succeed)
 
         val caught2 = intercept[TestFailedException] {
           2 should be <= (1)
         }
         assert(caught2.getMessage === "2 was not less than or equal to 1")
-        check((left: Int, right: Int) => left > right ==> throwsTestFailedException(left should be <= (right)))
+        forAll((left: Int, right: Int) => if (left > right) assertThrows[TestFailedException](left should be <= (right)) else succeed)
 
         val caught3 = intercept[TestFailedException] {
           1 should be > (1)
         }
         assert(caught3.getMessage === "1 was not greater than 1")
-        check((left: Int, right: Int) => left <= right ==> throwsTestFailedException(left should be > (right)))
+        forAll((left: Int, right: Int) => if (left <= right) assertThrows[TestFailedException](left should be > (right)) else succeed)
 
         val caught4 = intercept[TestFailedException] {
           1 should be >= (2)
         }
         assert(caught4.getMessage === "1 was not greater than or equal to 2")
-        check((left: Int, right: Int) => left < right ==> throwsTestFailedException(left should be >= (right)))
+        forAll((left: Int, right: Int) => if (left < right) assertThrows[TestFailedException](left should be >= (right)) else succeed)
       }
 
       it("should throw TestFailedException if comparison succeeds but used with not") {
@@ -166,25 +163,25 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
           1 should not be < (2)
         }
         assert(caught1.getMessage === "1 was less than 2")
-        check((left: Int, right: Int) => left < right ==> throwsTestFailedException(left should not be < (right)))
+        forAll((left: Int, right: Int) => if (left < right) assertThrows[TestFailedException](left should not be < (right)) else succeed)
 
         val caught2 = intercept[TestFailedException] {
           1 should not be <= (1)
         }
         assert(caught2.getMessage === "1 was less than or equal to 1")
-        check((left: Int, right: Int) => left <= right ==> throwsTestFailedException(left should not be <= (right)))
+        forAll((left: Int, right: Int) => if (left <= right) assertThrows[TestFailedException](left should not be <= (right)) else succeed)
 
         val caught3 = intercept[TestFailedException] {
           2 should not be > (1)
         }
         assert(caught3.getMessage === "2 was greater than 1")
-        check((left: Int, right: Int) => left > right ==> throwsTestFailedException(left should not be > (right)))
+        forAll((left: Int, right: Int) => if (left > right) assertThrows[TestFailedException](left should not be > (right)) else succeed)
 
         val caught4 = intercept[TestFailedException] {
           1 should not be >= (1)
         }
         assert(caught4.getMessage === "1 was greater than or equal to 1")
-        check((left: Int, right: Int) => left >= right ==> throwsTestFailedException(left should not be >= (right)))
+        forAll((left: Int, right: Int) => if (left >= right) assertThrows[TestFailedException](left should not be >= (right)) else succeed)
       }
 
       // Comparison with and
@@ -483,102 +480,102 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
     describe("on String") {
 
       it("should do nothing if the comparison holds true") {
-        check((left: String, right: String) => left < right ==> returnsNormally(left should be < (right)))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should be <= (right)))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should be > (right)))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should be >= (right)))
+        forAll((left: String, right: String) => if (left < right) left should be < (right) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should be <= (right) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should be > (right) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should be >= (right) else succeed)
       }
 
       it("should do nothing if the comparison fails and used with not") {
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should not be < (right)))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should not be <= (right)))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should not be > (right)))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should not be >= (right)))
+        forAll((left: String, right: String) => if (left >= right) left should not be < (right) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should not be <= (right) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should not be > (right) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should not be >= (right) else succeed)
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should not (be < (right))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should not (be <= (right))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should not (be > (right))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should not (be >= (right))))
+        forAll((left: String, right: String) => if (left >= right) left should not (be < (right)) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should not (be <= (right)) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should not (be > (right)) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should not (be >= (right)) else succeed)
       }
 
       it("should do nothing when comparison succeeds and used in a logical-and expression") {
 
-        check((left: String, right: String) => left < right ==> returnsNormally(left should ((be < (right)) and (be < (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) and (be < (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) and be < (right))))
+        forAll((left: String, right: String) => if (left < right) left should ((be < (right)) and (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (be < (right) and (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (be < (right) and be < (right)) else succeed)
 
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should ((be <= (right)) and (be <= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (be <= (right) and (be <= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (be <= (right) and be <= (right))))
+        forAll((left: String, right: String) => if (left <= right) left should ((be <= (right)) and (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (be <= (right) and (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (be <= (right) and be <= (right)) else succeed)
 
-        check((left: String, right: String) => left > right ==> returnsNormally(left should ((be > (right)) and (be > (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (be > (right) and (be > (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (be > (right) and be > (right))))
+        forAll((left: String, right: String) => if (left > right) left should ((be > (right)) and (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (be > (right) and (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (be > (right) and be > (right)) else succeed)
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should ((be >= (right)) and (be >= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (be >= (right) and (be >= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (be >= (right) and be >= (right))))
+        forAll((left: String, right: String) => if (left >= right) left should ((be >= (right)) and (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (be >= (right) and (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (be >= (right) and be >= (right)) else succeed)
       }
 
       it("should do nothing when array size matches and used in a logical-or expression") {
 
-        check((left: String, right: String) => left < right ==> returnsNormally(left should ((be < (right)) or (be < (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) or (be < (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) or be < (right))))
+        forAll((left: String, right: String) => if (left < right) left should ((be < (right)) or (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (be < (right) or (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (be < (right) or be < (right)) else succeed)
 
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should ((be <= (right)) or (be <= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (be <= (right) or (be <= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (be <= (right) or be <= (right))))
+        forAll((left: String, right: String) => if (left <= right) left should ((be <= (right)) or (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (be <= (right) or (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (be <= (right) or be <= (right)) else succeed)
 
-        check((left: String, right: String) => left > right ==> returnsNormally(left should ((be > (right)) or (be > (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (be > (right) or (be > (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (be > (right) or be > (right))))
+        forAll((left: String, right: String) => if (left > right) left should ((be > (right)) or (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (be > (right) or (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (be > (right) or be > (right)) else succeed)
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should ((be >= (right)) or (be >= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (be >= (right) or (be >= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (be >= (right) or be >= (right))))
+        forAll((left: String, right: String) => if (left >= right) left should ((be >= (right)) or (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (be >= (right) or (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (be >= (right) or be >= (right)) else succeed)
 
-        check((left: String, right: String) => returnsNormally(left should (be >= (right) or be < (right))))
-        check((left: String, right: String) => returnsNormally(left should (be > (right) or be <= (right))))
+        forAll((left: String, right: String) => left should (be >= (right) or be < (right)))
+        forAll((left: String, right: String) => left should (be > (right) or be <= (right)))
       }
 
       it("should do nothing when comparison fails and used in a logical-and expression with not") {
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (not (be < (right)) and not (be < (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should ((not be < (right)) and (not be < (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (not be < (right) and not be < (right))))
+        forAll((left: String, right: String) => if (left >= right) left should (not (be < (right)) and not (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should ((not be < (right)) and (not be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (not be < (right) and not be < (right)) else succeed)
 
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (not (be <= (right)) and not (be <= (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should ((not be <= (right)) and (not be <= (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (not be <= (right) and not be <= (right))))
+        forAll((left: String, right: String) => if (left > right) left should (not (be <= (right)) and not (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should ((not be <= (right)) and (not be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (not be <= (right) and not be <= (right)) else succeed)
 
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (not (be > (right)) and not (be > (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should ((not be > (right)) and (not be > (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (not be > (right) and not be > (right))))
+        forAll((left: String, right: String) => if (left <= right) left should (not (be > (right)) and not (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should ((not be > (right)) and (not be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (not be > (right) and not be > (right)) else succeed)
 
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (not (be >= (right)) and not (be >= (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should ((not be >= (right)) and (not be >= (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (not be >= (right) and not be >= (right))))
+        forAll((left: String, right: String) => if (left < right) left should (not (be >= (right)) and not (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should ((not be >= (right)) and (not be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (not be >= (right) and not be >= (right)) else succeed)
       }
 
       it("should do nothing when comparison fails and used in a logical-or expression with not") {
 
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (not (be >= (right)) or not (be < (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should ((not be >= (right)) or (not be < (right)))))
-        check((left: String, right: String) => left > right ==> returnsNormally(left should (not be >= (right) or not be < (right))))
+        forAll((left: String, right: String) => if (left > right) left should (not (be >= (right)) or not (be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should ((not be >= (right)) or (not be < (right))) else succeed)
+        forAll((left: String, right: String) => if (left > right) left should (not be >= (right) or not be < (right)) else succeed)
 
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (not (be > (right)) or not (be <= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should ((not be > (right)) or (not be <= (right)))))
-        check((left: String, right: String) => left >= right ==> returnsNormally(left should (not be > (right) or not be <= (right))))
+        forAll((left: String, right: String) => if (left >= right) left should (not (be > (right)) or not (be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should ((not be > (right)) or (not be <= (right))) else succeed)
+        forAll((left: String, right: String) => if (left >= right) left should (not be > (right) or not be <= (right)) else succeed)
 
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (not (be <= (right)) or not (be > (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should ((not be <= (right)) or (not be > (right)))))
-        check((left: String, right: String) => left < right ==> returnsNormally(left should (not be <= (right) or not be > (right))))
+        forAll((left: String, right: String) => if (left < right) left should (not (be <= (right)) or not (be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should ((not be <= (right)) or (not be > (right))) else succeed)
+        forAll((left: String, right: String) => if (left < right) left should (not be <= (right) or not be > (right)) else succeed)
 
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (not (be < (right)) or not (be >= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should ((not be < (right)) or (not be >= (right)))))
-        check((left: String, right: String) => left <= right ==> returnsNormally(left should (not be < (right) or not be >= (right))))
+        forAll((left: String, right: String) => if (left <= right) left should (not (be < (right)) or not (be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should ((not be < (right)) or (not be >= (right))) else succeed)
+        forAll((left: String, right: String) => if (left <= right) left should (not be < (right) or not be >= (right)) else succeed)
       }
 
       it("should throw TestFailedException if comparison does not succeed") {
@@ -587,25 +584,25 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
           "aaa" should be < ("aaa")
         }
         assert(caught1.getMessage === "\"aaa\" was not less than \"aaa\"")
-        check((left: String, right: String) => left >= right ==> throwsTestFailedException(left should be < (right)))
+        forAll((left: String, right: String) => if (left >= right) assertThrows[TestFailedException](left should be < (right)) else succeed)
 
         val caught2 = intercept[TestFailedException] {
           "bbb" should be <= ("aaa")
         }
         assert(caught2.getMessage === "\"bbb\" was not less than or equal to \"aaa\"")
-        check((left: String, right: String) => left > right ==> throwsTestFailedException(left should be <= (right)))
+        forAll((left: String, right: String) => if (left > right) assertThrows[TestFailedException](left should be <= (right)) else succeed)
 
         val caught3 = intercept[TestFailedException] {
           "aaa" should be > ("aaa")
         }
         assert(caught3.getMessage === "\"aaa\" was not greater than \"aaa\"")
-        check((left: String, right: String) => left <= right ==> throwsTestFailedException(left should be > (right)))
+        forAll((left: String, right: String) => if (left <= right) assertThrows[TestFailedException](left should be > (right)) else succeed)
 
         val caught4 = intercept[TestFailedException] {
           "aaa" should be >= ("bbb")
         }
         assert(caught4.getMessage === "\"aaa\" was not greater than or equal to \"bbb\"")
-        check((left: String, right: String) => left < right ==> throwsTestFailedException(left should be >= (right)))
+        forAll((left: String, right: String) => if (left < right) assertThrows[TestFailedException](left should be >= (right)) else succeed)
       }
 
       it("should throw TestFailedException if comparison succeeds but used with not") {
@@ -614,25 +611,25 @@ class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrows
           "aaa" should not be < ("bbb")
         }
         assert(caught1.getMessage === "\"aaa\" was less than \"bbb\"")
-        check((left: String, right: String) => left < right ==> throwsTestFailedException(left should not be < (right)))
+        forAll((left: String, right: String) => if (left < right) assertThrows[TestFailedException](left should not be < (right)) else succeed)
 
         val caught2 = intercept[TestFailedException] {
           "aaa" should not be <= ("aaa")
         }
         assert(caught2.getMessage === "\"aaa\" was less than or equal to \"aaa\"")
-        check((left: String, right: String) => left <= right ==> throwsTestFailedException(left should not be <= (right)))
+        forAll((left: String, right: String) => if (left <= right) assertThrows[TestFailedException](left should not be <= (right)) else succeed)
 
         val caught3 = intercept[TestFailedException] {
           "bbb" should not be > ("aaa")
         }
         assert(caught3.getMessage === "\"bbb\" was greater than \"aaa\"")
-        check((left: String, right: String) => left > right ==> throwsTestFailedException(left should not be > (right)))
+        forAll((left: String, right: String) => if (left > right) assertThrows[TestFailedException](left should not be > (right)) else succeed)
 
         val caught4 = intercept[TestFailedException] {
           "aaa" should not be >= ("aaa")
         }
         assert(caught4.getMessage === "\"aaa\" was greater than or equal to \"aaa\"")
-        check((left: String, right: String) => left >= right ==> throwsTestFailedException(left should not be >= (right)))
+        forAll((left: String, right: String) => if (left >= right) assertThrows[TestFailedException](left should not be >= (right)) else succeed)
       }
 
       // Comparison with and

@@ -19,8 +19,6 @@ import org.scalatest._
 
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 import org.scalactic.Equality
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 //import org.scalactic.StrictCheckedEquality
@@ -31,11 +29,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
 trait NumericCharSpecSupport {
-
-  val numericCharGen: Gen[NumericChar] =
-    for {i <- choose(0, 9)} yield NumericChar.from(i.toString.charAt(0)).get
-
-  implicit val arbNumericChar: Arbitrary[NumericChar] = Arbitrary(numericCharGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

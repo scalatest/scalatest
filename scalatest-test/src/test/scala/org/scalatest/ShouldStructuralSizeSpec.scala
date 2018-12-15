@@ -16,16 +16,13 @@
 
 package org.scalatest
 
-import prop.Checkers
+import org.scalatest.prop.PropertyChecks
 import Integer.MIN_VALUE
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
 
-class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStructuralSizeSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
   
@@ -53,12 +50,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
   
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
   
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
   
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -90,7 +87,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
   
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -98,7 +95,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
   
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -184,12 +181,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
 
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -221,7 +218,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -229,7 +226,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -315,12 +312,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
 
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -352,7 +349,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -360,7 +357,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -447,12 +444,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
 
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -484,7 +481,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -492,7 +489,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -578,12 +575,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
 
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -615,7 +612,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -623,7 +620,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -709,12 +706,12 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
 
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -746,7 +743,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -754,7 +751,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -843,15 +840,15 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -885,7 +882,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -893,7 +890,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -980,15 +977,15 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -1020,7 +1017,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -1028,7 +1025,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -1115,13 +1112,13 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -1153,7 +1150,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -1161,7 +1158,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.size, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -1248,15 +1245,15 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -1288,7 +1285,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -1296,7 +1293,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -1383,15 +1380,15 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -1423,7 +1420,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -1431,7 +1428,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
@@ -1518,15 +1515,15 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
       it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
-        check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
-        check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
+        forAll((len: Int) => new Sizey(len) should have size (len))
+        forAll((len: Long) => new Sizey(len) should have size (len))
       }
 
       it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not have size (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Sizey(len) should not { have size (wrongLen) } else succeed)
       }
 
       it("should do nothing when object size matches and used in a logical-and expression") {
@@ -1558,7 +1555,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (3)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified size is negative") {
@@ -1566,7 +1563,7 @@ class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormall
           obj should have size (-2)
         }
         assert(caught1.getMessage === hadSizeInsteadOfExpectedSize(obj, obj.getSize, -2))
-        check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {

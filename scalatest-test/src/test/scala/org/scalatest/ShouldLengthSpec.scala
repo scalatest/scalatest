@@ -15,19 +15,16 @@
  */
 package org.scalatest
 
-import org.scalacheck._
-import Arbitrary._
 import Matchers._
-import Prop._
 import org.scalactic.Prettifier
-import org.scalatest.prop.Checkers
+import org.scalatest.prop.PropertyChecks
 import Integer.MIN_VALUE
 import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
 
-class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldLengthSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 
@@ -38,14 +35,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if string length matches specified length") {
         "hi" should have length (2)
-        check((s: String) => returnsNormally(s should have length (s.length)))
+        forAll((s: String) => s should have length (s.length))
       }
 
       it("should do nothing if string length does not match and used with should not") {
         "hi" should not { have length (3) }
         "hi" should not have length (3)
-        check((s: String, i: Int) => i != s.length ==> returnsNormally(s should not { have length (i) }))
-        check((s: String, i: Int) => i != s.length ==> returnsNormally(s should not have length (i)))
+        forAll((s: String, i: Int) => if (i != s.length) s should not { have length (i) } else succeed)
+        forAll((s: String, i: Int) => if (i != s.length) s should not have length (i) else succeed)
       }
 
       it("should do nothing when string length matches and used in a logical-and expression") {
@@ -75,7 +72,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           "hi" should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("\"hi\""), 2, 3))
-        check((s: String) => throwsTestFailedException(s should have length (s.length + 1)))
+        forAll((s: String) => assertThrows[TestFailedException](s should have length (s.length + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -83,7 +80,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           "hi" should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("\"hi\""), 2, -2))
-        check((s: String) => throwsTestFailedException(s should have length (if (s.length == 0) -1 else -s.length)))
+        forAll((s: String) => assertThrows[TestFailedException](s should have length (if (s.length == 0) -1 else -s.length)))
       }
 
       it("should throw an assertion error when string length doesn't match and used in a logical-and expression") {
@@ -307,14 +304,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if list length matches specified length") {
         List(1, 2) should have length (2)
-        check((lst: List[Int]) => returnsNormally(lst should have length (lst.length)))
+        forAll((lst: List[Int]) => lst should have length (lst.length))
       }
 
       it("should do nothing if list length does not match and used with should not") {
         List(1, 2) should not { have length (3) }
         List(1, 2) should not have length (3)
-        check((lst: List[Int], i: Int) => i != lst.length ==> returnsNormally(lst should not { have length (i) }))
-        check((lst: List[Int], i: Int) => i != lst.length ==> returnsNormally(lst should not have length (i)))
+        forAll((lst: List[Int], i: Int) => if (i != lst.length) lst should not { have length (i) } else succeed)
+        forAll((lst: List[Int], i: Int) => if (i != lst.length) lst should not have length (i) else succeed)
       }
 
       it("should do nothing when list length matches and used in a logical-and expression") {
@@ -343,7 +340,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           List(1, 2) should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("List(1, 2)"), 2, 3))
-        check((lst: List[String]) => throwsTestFailedException(lst should have length (lst.length + 1)))
+        forAll((lst: List[String]) => assertThrows[TestFailedException](lst should have length (lst.length + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -351,7 +348,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           List(1, 2) should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("List(1, 2)"), 2, -2))
-        check((lst: List[Int]) => throwsTestFailedException(lst should have length (if (lst.length == 0) -1 else -lst.length)))
+        forAll((lst: List[Int]) => assertThrows[TestFailedException](lst should have length (if (lst.length == 0) -1 else -lst.length)))
       }
 
       it("should throw an assertion error when list length doesn't match and used in a logical-and expression") {
@@ -578,14 +575,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
   
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed )
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed )
       }
   
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -613,7 +610,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
   
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -621,7 +618,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
   
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -712,14 +709,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -747,7 +744,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -755,7 +752,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -846,14 +843,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -881,7 +878,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -889,7 +886,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -980,14 +977,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1015,7 +1012,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1023,7 +1020,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1114,14 +1111,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1149,7 +1146,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1157,7 +1154,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1248,14 +1245,14 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1283,7 +1280,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1291,7 +1288,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1383,8 +1380,8 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
@@ -1392,10 +1389,10 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         obj should not { have length (3L) }
         obj should not have length (3)
         obj should not have length (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1423,7 +1420,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1431,7 +1428,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1523,8 +1520,8 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
@@ -1532,10 +1529,10 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         obj should not { have length (3L) }
         obj should not have length (3)
         obj should not have length (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1563,7 +1560,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1571,7 +1568,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1663,15 +1660,15 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
         obj should not { have length (3) }
         obj should not have length (3)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1699,7 +1696,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1707,7 +1704,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1799,8 +1796,8 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
@@ -1808,10 +1805,10 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         obj should not { have length (3L) }
         obj should not have length (3)
         obj should not have length (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1839,7 +1836,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1847,7 +1844,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -1939,8 +1936,8 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
@@ -1948,10 +1945,10 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         obj should not { have length (3L) }
         obj should not have length (3)
         obj should not have length (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -1979,7 +1976,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -1987,7 +1984,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {
@@ -2079,8 +2076,8 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       it("should do nothing if object length matches specified length") {
         obj should have length (2)
         obj should have length (2L)
-        check((len: Int) => returnsNormally(new Lengthy(len) should have length (len)))
-        check((len: Long) => returnsNormally(new Lengthy(len) should have length (len)))
+        forAll((len: Int) => new Lengthy(len) should have length (len))
+        forAll((len: Long) => new Lengthy(len) should have length (len))
       }
 
       it("should do nothing if object length does not match and used with should not") {
@@ -2088,10 +2085,10 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
         obj should not { have length (3L) }
         obj should not have length (3)
         obj should not have length (3L)
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
-        check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
-        check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not { have length (wrongLen) } else succeed)
+        forAll((len: Int, wrongLen: Int) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
+        forAll((len: Long, wrongLen: Long) => if (len != wrongLen) new Lengthy(len) should not have length (wrongLen) else succeed)
       }
 
       it("should do nothing when object length matches and used in a logical-and expression") {
@@ -2119,7 +2116,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (3)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, 3))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (len + 1)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
       it("should throw TestFailedException with normal error message if specified length is negative") {
@@ -2127,7 +2124,7 @@ class ShouldLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
           obj should have length (-2)
         }
         assert(caught1.getMessage === FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, UnquotedString("lengthy"), 2, -2))
-        check((len: Int) => throwsTestFailedException(new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
+        forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-and expression") {

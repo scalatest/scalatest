@@ -16,45 +16,46 @@
 package org.scalatest.events
 
 import org.scalatest._
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
+import org.scalatest.prop.PropertyChecks
 
-class OrdinalSpec extends FunSpec with Matchers with Checkers {
+class OrdinalSpec extends FunSpec with Matchers with PropertyChecks {
 
   describe("An Ordinal") {
 
     it("should produce a runStamp :: N on nth next") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var ord = new Ordinal(99)
             for (i <- 0 until count)
               ord = ord.next
-            ord.toList == List(99, count)
+            ord.toList shouldBe List(99, count)
           }
+          else
+            succeed
         }
       )
     }
 
     it("should produce a runStamp :: 0 ... n times on nth nextNewOldPair") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var ord = new Ordinal(99)
             for (i <- 0 until count)
               ord = ord.nextNewOldPair._1
-            ord.toList == 99 :: List.fill(count + 1)(0)
+            ord.toList shouldBe 99 :: List.fill(count + 1)(0)
           }
+          else
+            succeed
         }
       )
     }
 
     it("should produce a runStamp :: 0 :: 1 :: 2 :: ... :: n on nth next ad nextNewOldPair") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var ord = new Ordinal(99)
             for (i <- 0 until count) {
               for (j <- 0 until i) {
@@ -69,17 +70,19 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
             // println("COUNT: " + count + " FINAL: " + ord.toList)
             val zeroToCount = for (i <- 0 to count) yield i
             // println("ZERO2COUNT: " + zeroToCount)
-            ord.toList == 99 :: zeroToCount.toList
+            ord.toList shouldBe (99 :: zeroToCount.toList)
           }
+          else
+            succeed
         }
       )
     }
 
    // it("should produce a pair of Ordinals that have the same n and n - 1 element when nextNewOldPair is invoked") {
    it("should produce a pair of Ordinals with _1.toList.length one less than _2.toList.length after nextNewOldPair is invoked") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var failures = List[(Ordinal, Ordinal)]()
             var ord = new Ordinal(99)
             for (i <- 0 until count) {
@@ -91,16 +94,18 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
                 failures = (forOldSuite, forNewSuite) :: failures
               ord = forNewSuite
             }
-            failures.isEmpty
+            failures shouldBe empty
           }
+          else
+            succeed
         }
       )
     }
 
     it("should produce a pair of Ordinals whose n - 1 and n elements are less than by 1 when nextNewOldPair is invoked") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var failures = List[(Ordinal, Ordinal)]()
             var ord = new Ordinal(99)
             for (i <- 0 until count) {
@@ -114,8 +119,10 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
                 failures = (forOldSuite, forNewSuite) :: failures
               ord = forNewSuite
             }
-            failures.isEmpty
+            failures shouldBe empty
           }
+          else
+            succeed
         }
       )
     }
@@ -128,9 +135,9 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
 
 */
     it("should produce an Ordinal that is greater than this when either next or nextNewOldPair is invoked") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var failures = List[(Ordinal, Ordinal)]()
             var ord = new Ordinal(99)
             for (i <- 0 until count) {
@@ -160,16 +167,18 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
               ord = forNewSuite
             }
             // println("FAILURES: " + failures.map((pair) => (pair._1.toList, pair._2.toList)))
-            failures.isEmpty
+            failures shouldBe empty
           }
+          else
+            succeed
         }
       )
     }
 
     it("should produce equal Ordinals given the same series of next and nextNewOldPair calls, unequal otherwise") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var failures = List[Ordinal]()
             var failuresThatEqualedAnOld = List[Ordinal]()
             var tupleFailures = List[(Ordinal, Ordinal)]()
@@ -215,16 +224,20 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
               otherOrd = otherForNewSuite
             }
             // println("FAILURES: " + failures.map((pair) => (pair._1.toList, pair._2.toList)))
-            failures.isEmpty && failuresThatEqualedAnOld.isEmpty && tupleFailures.isEmpty
+            failures shouldBe empty
+            failuresThatEqualedAnOld shouldBe empty
+            tupleFailures shouldBe empty
           }
+          else
+            succeed
         }
       )
     }
 
     it("should produce Ordinals that have equals hashCodes given the same series of next and nextNewOldPair calls") {
-      check(
+      forAll(
         (count: Byte) => {
-          (count >= 0) ==> {
+          if (count >= 0) {
             var failures = List[Ordinal]()
             var tupleFailures = List[(Ordinal, Ordinal)]()
             var ord = new Ordinal(99)
@@ -263,8 +276,11 @@ class OrdinalSpec extends FunSpec with Matchers with Checkers {
               otherOrd = otherForNewSuite
             }
             // println("FAILURES: " + failures.map((pair) => (pair._1.toList, pair._2.toList)))
-            failures.isEmpty && tupleFailures.isEmpty
+            failures shouldBe empty
+            tupleFailures shouldBe empty
           }
+          else
+            succeed
         }
       )
     }
