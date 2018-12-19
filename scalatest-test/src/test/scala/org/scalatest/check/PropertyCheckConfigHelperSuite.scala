@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.scalatest
-package prop
+package check
 
 import org.scalactic.anyvals._
 
 @deprecated("Remove when removing PropertyCheckConfig")
 class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
 
-  import Configuration._
+  import ScalaCheckConfiguration._
 
   val DefaultMinSuccessful: PosInt = 9
   val PassedMinSuccessful: PosInt = 3

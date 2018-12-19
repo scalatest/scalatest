@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.scalatest
-package prop
+package check
 
 import org.scalactic.anyvals._
 
 class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
 
-  import org.scalatest.prop.Configuration._
+  import org.scalatest.check.ScalaCheckConfiguration._
 
   val DefaultMinSuccessful: PosInt = 9
   val PassedMinSuccessful: PosInt = 3
