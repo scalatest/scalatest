@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Length
@@ -23,7 +22,7 @@ import org.scalatest.enablers.Size
 import Matchers._
 import org.scalactic.Prettifier
 
-class ShouldLengthSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldLengthSizeSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

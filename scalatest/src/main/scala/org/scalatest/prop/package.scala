@@ -22,20 +22,6 @@ import scala.reflect.runtime.universe.TypeTag
 // TODO: Get rid of the PosZInt.ensuringValid calls by chosing a PosZInt between 1 and 20 instead of an Int
 package object prop {
 
-  /**
-   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
-   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
-   */
-  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
-  type Checkers = org.scalatest.check.Checkers
-
-  /**
-   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
-   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
-   */
-  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
-  val Checkers: org.scalatest.check.Checkers.type = org.scalatest.check.Checkers 
-
   // The valueOf methods are called by the function generators.
   def valueOf[B](a: Any, multiplier: Int)(implicit genOfB: Generator[B]): B = {
     val seed = a.hashCode.toLong * multiplier

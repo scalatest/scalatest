@@ -15,14 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
+import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The endWith substring syntax") {
 
@@ -31,15 +28,15 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       "1.78" should endWith (".78")
       "21.7" should endWith ("7")
       "21.78" should endWith ("21.78")
-      check((s: String, t: String) => returnsNormally(s + t should endWith (t)))
+      forAll((s: String, t: String) => s + t should endWith (t))
     }
 
     it("should do nothing if the string does not end with the specified substring when used with not") {
 
       "eight" should not { endWith ("1.7") }
       "eight" should not endWith ("1.7")
-      check((s: String, t: String) => !(s + t).endsWith(s) ==> returnsNormally(s + t should not (endWith (s))))
-      check((s: String, t: String) => !(s + t).endsWith(s) ==> returnsNormally(s + t should not endWith (s)))
+      forAll((s: String, t: String) => if (!(s + t).endsWith(s)) s + t should not (endWith (s)) else succeed)
+      forAll((s: String, t: String) => if (!(s + t).endsWith(s)) s + t should not endWith (s) else succeed)
     }
 
     it("should do nothing if the string does not end with the specified substring when used in a logical-and expression") {
@@ -48,7 +45,7 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       "1.7b" should (endWith ("1.7b") and (endWith ("7b")))
       "1.7b" should (endWith ("1.7b") and endWith ("7b"))
 
-      check((s: String, t: String) => returnsNormally(s + t should (endWith (t) and endWith (""))))
+      forAll((s: String, t: String) => s + t should (endWith (t) and endWith ("")))
     }
 
     it("should do nothing if the string does not end with the specified substring when used in a logical-or expression") {
@@ -61,7 +58,7 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       "1.7b" should ((endWith ("hello")) or (endWith ("7b")))
       "1.7b" should (endWith ("hello") or endWith ("7b"))
 
-      check((s: String, t: String) => returnsNormally(s + t should (endWith ("hi") or endWith (t))))
+      forAll((s: String, t: String) => s + t should (endWith ("hi") or endWith (t)))
     }
 
     it("should do nothing if the string does not end with the specified substring when used in a logical-and expression with not") {
@@ -69,14 +66,14 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       "fred" should (not (endWith ("fre")) and not (endWith ("1.7")))
       "fred" should ((not endWith ("fre")) and (not endWith ("1.7")))
       "fred" should (not endWith ("fre") and not endWith ("1.7"))
-      check((s: String) => !(s endsWith "bob") && !(s endsWith "1.7") ==> returnsNormally(s should (not endWith ("bob") and not endWith ("1.7"))))
+      forAll((s: String) => if (!(s endsWith "bob") && !(s endsWith "1.7")) s should (not endWith ("bob") and not endWith ("1.7")) else succeed)
     }
 
     it("should do nothing if the string does not end with the specified substring when used in a logical-or expression with not") {
       "fred" should (not (endWith ("fred")) or not (endWith ("1.7")))
       "fred" should ((not endWith ("fred")) or (not endWith ("1.7")))
       "fred" should (not endWith ("fred") or not endWith ("1.7"))
-      check((s: String) => s.indexOf("a") != 0 || s.indexOf("b") != 0 ==> returnsNormally(s should (not endWith ("a") or not endWith ("b"))))
+      forAll((s: String) => if (s.indexOf("a") != 0 || s.indexOf("b") != 0) s should (not endWith ("a") or not endWith ("b")) else succeed)
     }
 
     it("should throw TestFailedException if the string does not match the specified substring") {
@@ -116,7 +113,7 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught9.getMessage === "\"***\" did not end with substring \"1.7\"")
 
-      check((s: String) => !(s endsWith "1.7") ==> throwsTestFailedException(s should endWith ("1.7")))
+      forAll((s: String) => if (!(s endsWith "1.7")) assertThrows[TestFailedException](s should endWith ("1.7")) else succeed)
     }
 
     it("should throw TestFailedException if the string does matches the specified substring when used with not") {
@@ -181,7 +178,7 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught23.getMessage === "\"ba-1.8\" ended with substring \"a-1.8\"")
 
-      check((s: String) => s.length != 0 ==> throwsTestFailedException(s should not endWith (s.substring(s.length - 1, s.length))))
+      forAll((s: String) => if (s.length != 0) assertThrows[TestFailedException](s should not endWith (s.substring(s.length - 1, s.length))) else succeed)
     }
 
     it("should throw TestFailedException if the string ends with the specified substring when used in a logical-and expression") {
@@ -217,7 +214,7 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught6.getMessage === "\"one.eight\" did not end with substring \"1.7\"")
 
-      check((s: String, t: String, u: String) => !((s + u) endsWith t) ==> throwsTestFailedException(s + u should (endWith (u) and endWith (t))))
+      forAll((s: String, t: String, u: String) => if (!((s + u) endsWith t)) assertThrows[TestFailedException](s + u should (endWith (u) and endWith (t))) else succeed)
     }
 
     it("should throw TestFailedException if the string ends with the specified substring when used in a logical-or expression") {
@@ -237,10 +234,12 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught3.getMessage === "\"one.seven\" did not end with substring \"1.7\", and \"one.seven\" did not end with substring \"1.8\"")
 
-      check(
+      forAll(
         (s: String, t: String, u: String, v: String) => {
-          (t.length != 0 && v.length != 0 && !(s + u).endsWith(t) && !(s + u).endsWith(v)) ==>
-            throwsTestFailedException(s + u should (endWith (t) or endWith (v)))
+          if (t.length != 0 && v.length != 0 && !(s + u).endsWith(t) && !(s + u).endsWith(v))
+            assertThrows[TestFailedException](s + u should (endWith (t) or endWith (v)))
+          else
+            succeed
         }
       )
     }
@@ -277,10 +276,12 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught6.getMessage === "\"a1.7b\" did not end with substring \"1.8\", but \"a1.7b\" ended with substring \"1.7b\"")
 
-      check(
+      forAll(
         (s: String, t: String, u: String) =>
-          (s + t + u).indexOf("hi") != 0 ==>
-            throwsTestFailedException(s + t + u should (not endWith ("hi") and not endWith (u)))
+          if ((s + t + u).indexOf("hi") != 0)
+            assertThrows[TestFailedException](s + t + u should (not endWith ("hi") and not endWith (u)))
+          else
+            succeed
       )
     }
 
@@ -326,9 +327,9 @@ class ShouldEndWithSubstringSpec extends FunSpec with Checkers with ReturnsNorma
       }
       assert(caught8.getMessage === "\"a1.7b\" ended with substring \"1.7b\", and \"a1.7b\" ended with substring \"7b\"")
 
-      check(
+      forAll(
         (s: String, t: String) =>
-          throwsTestFailedException(s + t should (not endWith (t) or not endWith ("")))
+          assertThrows[TestFailedException](s + t should (not endWith (t) or not endWith ("")))
       )
     }
   }

@@ -15,7 +15,6 @@
  */
 package org.scalatest.laws
 
-import org.scalacheck.{Arbitrary, Shrink}
 import org.scalactic.Every
 import org.scalactic.algebra._
 import org.scalatest.Matchers._

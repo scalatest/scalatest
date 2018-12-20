@@ -212,7 +212,6 @@ object GenScalaTestNative {
       asyncs("scalatest/src/main/scala/org/scalatest/funspec")
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
@@ -597,6 +596,8 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
+        "DeprecatedLocationFunctionSuiteProp.scala",
+        "DeprecatedScopePendingProp.scala", 
         "TestLocationJUnit3Suite.scala",
         "TestLocationJUnitSuite.scala",
         "TestLocationTestNGSuite.scala",
@@ -610,14 +611,13 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
-        "SuiteSpec.scala"    // skipped because depends on java reflections,
+        "SuiteSpec.scala"    // skipped because depends on java reflections
       ) ++ asyncs("scalatest-test/src/test/scala/org/scalatest/fixture")) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir,
       List(
         "AsyncGeneratorDrivenPropertyChecksSpec.scala"
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++

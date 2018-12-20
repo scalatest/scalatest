@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestRegistrationClosedException
 
 class ShouldBehaveLikeSpec extends FunSpec {

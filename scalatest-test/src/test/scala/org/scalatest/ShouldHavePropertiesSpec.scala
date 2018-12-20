@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
 import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult
@@ -25,7 +24,7 @@ import enablers.Messaging
 import Matchers._
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
-class ShouldHavePropertiesSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldHavePropertiesSpec extends FunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   describe("The 'have (' syntax") {
