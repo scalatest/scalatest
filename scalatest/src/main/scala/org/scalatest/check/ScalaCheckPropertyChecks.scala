@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.scalatest
-package prop
+package check
+
+import org.scalatest.prop.TableDrivenPropertyChecks
 
 /**
  * Trait that facilitates property checks on data supplied by tables and generators.
@@ -95,7 +97,7 @@ package prop
  *
  * @author Bill Venners
  */
-trait PropertyChecks extends TableDrivenPropertyChecks with GeneratorDrivenPropertyChecks
+trait ScalaCheckPropertyChecks extends TableDrivenPropertyChecks with ScalaCheckDrivenPropertyChecks
 
 /**
  * Companion object that facilitates the importing of <code>PropertyChecks</code> members as 
@@ -104,5 +106,5 @@ trait PropertyChecks extends TableDrivenPropertyChecks with GeneratorDrivenPrope
  *
  * @author Bill Venners
  */
-object PropertyChecks extends PropertyChecks
+object ScalaCheckPropertyChecks extends ScalaCheckPropertyChecks
 

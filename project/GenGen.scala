@@ -170,7 +170,7 @@ val copyrightTemplate = """/*
  * limitations under the License.
  */
 package org.scalatest
-package prop
+package check
 """
 
 val propertyCheckPreamble = """
@@ -182,6 +182,7 @@ import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.enablers.CheckerAsserting
 import org.scalactic._
+import org.scalatest.prop.Whenever
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
@@ -194,7 +195,7 @@ import org.scalactic._
  * </p>
  *
  * <p>
- * For an example of trait <code>GeneratorDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
+ * For an example of trait <code>ScalaCheckDrivenPropertyChecks</code> in action, imagine you want to test this <code>Fraction</code> class:
  * </p>
  *  
  * <pre class="stHighlight">
@@ -212,7 +213,7 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>GeneratorDrivenPropertyChecks</code>
+ * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>ScalaCheckDrivenPropertyChecks</code>
  * (and <code>Matchers</code>) and check a property using a <code>forAll</code> method, like this:
  * </p>
  *
@@ -237,7 +238,7 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * Trait <code>GeneratorDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
+ * Trait <code>ScalaCheckDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
  * that allow you to check properties using the data provided by a ScalaCheck generator. The simplest form
  * of <code>forAll</code> method takes two parameter lists, the second of which is implicit. The first parameter list
  * is a "property" function with one to six parameters. An implicit <code>Arbitrary</code> generator and <code>Shrink</code> object needs to be supplied for
@@ -509,11 +510,11 @@ import org.scalactic._
  * </table>
  *
  * <p>
- * The <code>forAll</code> methods of trait <code>GeneratorDrivenPropertyChecks</code> each take a <code>PropertyCheckConfiguration</code>
+ * The <code>forAll</code> methods of trait <code>ScalaCheckDrivenPropertyChecks</code> each take a <code>PropertyCheckConfiguration</code>
  * object as an implicit parameter. This object provides values for each of the five configuration parameters. Trait <code>Configuration</code>
  * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value. 
  * If you want to set one or more configuration parameters to a different value for all property checks in a suite you can override this
- * val (or hide it, for example, if you are importing the members of the <code>GeneratorDrivenPropertyChecks</code> companion object rather
+ * val (or hide it, for example, if you are importing the members of the <code>ScalaCheckDrivenPropertyChecks</code> companion object rather
  * than mixing in the trait.) For example, if
  * you want all parameters at their defaults except for <code>minSize</code> and <code>maxSize</code>, you can override
  * <code>generatorDrivenConfig</code>, like this:
@@ -534,7 +535,7 @@ import org.scalactic._
  *
  * <p>
  * In addition to taking a <code>PropertyCheckConfiguration</code> object as an implicit parameter, the <code>forAll</code> methods of trait
- * <code>GeneratorDrivenPropertyChecks</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
+ * <code>ScalaCheckDrivenPropertyChecks</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
  * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfiguration</code> for a single <code>forAll</code>
  * invocation. For example, if you want to set <code>minSuccessful</code> to 500 for just one particular <code>forAll</code> invocation,
  * you can do so like this:
@@ -579,7 +580,7 @@ import org.scalactic._
  * 
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
+trait ScalaCheckDrivenPropertyChecks extends Whenever with ScalaCheckConfiguration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -630,7 +631,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    * <code>PropertyGenConfig</code> object passed implicitly to its <code>apply</code> methods with parameter values passed to its constructor.
    *
    * <p>
-   * Instances of this class are returned by trait <code>GeneratorDrivenPropertyChecks</code> <code>forAll</code> method that accepts a variable length
+   * Instances of this class are returned by trait <code>ScalaCheckDrivenPropertyChecks</code> <code>forAll</code> method that accepts a variable length
    * argument list of <code>PropertyCheckConfigParam</code> objects. Thus it is used with functions of all six arities.
    * Here are some examples:
    * </p>
@@ -1160,7 +1161,7 @@ $tupleBusters$
 
 val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
+object ScalaCheckDrivenPropertyChecks extends ScalaCheckDrivenPropertyChecks
 """
 
 val generatorSuitePreamble = """
@@ -2529,7 +2530,7 @@ $okayExpressions$
 
   def genPropertyChecks(targetDir: File): Seq[File] = {
     targetDir.mkdirs()
-    val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
+    val targetFile = new File(targetDir, "ScalaCheckDrivenPropertyChecks.scala")
 
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val bw = new BufferedWriter(new FileWriter(targetFile))
@@ -2607,7 +2608,7 @@ $okayExpressions$
       if (doItForCheckers)
         "Checkers"
       else {
-        if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
+        if (withTables) "ScalaCheckPropertyChecks" else "ScalaCheckDrivenPropertyChecks"
       }
     val suiteClassName = traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite" 
     val fileName = suiteClassName + ".scala" 
@@ -2626,7 +2627,7 @@ $okayExpressions$
           bw.write("import org.scalacheck.Prop.{Exception => _, _}\n")
         }
         if (!mixinInvitationStyle)
-          bw.write("import " + traitOrObjectName + "._\n")
+          bw.write("import org.scalatest.check." + traitOrObjectName + "._\n")
         bw.write("\n")
         bw.write(
           "class " + suiteClassName + " extends FunSpec " +

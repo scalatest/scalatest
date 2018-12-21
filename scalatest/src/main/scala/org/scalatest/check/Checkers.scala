@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.prop
+package org.scalatest.check
 
 import org.scalatest.enablers.CheckerAsserting
 import org.scalacheck.Arbitrary
@@ -221,7 +221,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * @author Bill Venners
  */
-trait Checkers extends Configuration {
+trait Checkers extends ScalaCheckConfiguration {
 
   /**
    * Convert the passed 1-arg function into a property, and check it.
