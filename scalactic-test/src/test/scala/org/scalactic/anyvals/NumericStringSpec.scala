@@ -18,8 +18,6 @@ package org.scalactic.anyvals
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 import OptionValues._
 import java.nio.charset.Charset
 import scala.collection.mutable.ArrayBuffer
@@ -40,11 +38,6 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       if (cs.isEmpty) NumericString("000")
       else NumericString.ensuringValid(cs.mkString)
     }
-
-  val numericCharGen: Gen[NumericChar] =
-    for {i <- choose(0, 9)} yield NumericChar.from(i.toString.charAt(0)).get
-
-  implicit val arbNumericChar: Arbitrary[NumericChar] = Arbitrary(numericCharGen)
 
   describe("A NumericString") {
 

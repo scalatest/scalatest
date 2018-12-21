@@ -18,11 +18,10 @@ package org.scalatest
 import FailureMessages._
 import Matchers._
 import org.scalactic.Prettifier
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
 
-class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldContainValueSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

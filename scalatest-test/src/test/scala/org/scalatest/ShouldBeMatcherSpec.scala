@@ -15,14 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalatest.exceptions.TestFailedException
 
 import matchers.BeMatcher
 import matchers.MatchResult
 import Matchers._
 
-class ShouldBeMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeMatcherSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
 
   class OddMatcher extends BeMatcher[Int] {
     def apply(left: Int): MatchResult = {

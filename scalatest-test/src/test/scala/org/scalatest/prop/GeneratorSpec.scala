@@ -249,20 +249,6 @@ class GeneratorSpec extends FunSpec with Matchers {
           tup21, tup22, tup23, tup24, tup25)
       values should contain theSameElementsAs expectedInitEdges
     }
-    it("should be able to use a ScalaCheck Arbitary and Shrink") {
-      import org.scalacheck.{Arbitrary, Gen, Shrink}
-      import org.scalacheck.rng.Seed
-      val intShrink = implicitly[Shrink[Int]] 
-      val intArbitrary = implicitly[Arbitrary[Int]]
-      val intGen = intArbitrary.arbitrary
-      val intGenerator = Generator.scalaCheckArbitaryGenerator(intArbitrary, intShrink)
-      val (edges, er) = intGenerator.initEdges(100, Randomizer.default)
-      edges should equal (Nil) // A ScalaCheck-backed generator would have no edges
-      val scalaCheckShrinkList = intShrink.shrink(100)
-      val (scalaTestShrinkIt, _) = intGenerator.shrink(100, Randomizer.default)
-      val scalaTestShrinkList = scalaTestShrinkIt.toList
-      scalaTestShrinkList shouldEqual scalaCheckShrinkList.reverse
-    }
 
     describe("for Bytes") {
       it("should produce the same Byte values in the same order given the same Randomizer") {

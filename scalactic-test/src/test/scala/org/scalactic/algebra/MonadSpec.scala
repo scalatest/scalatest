@@ -15,10 +15,11 @@
  */
 package org.scalactic.algebra
 
-import org.scalacheck.Arbitrary
+//import org.scalacheck.Arbitrary
 import org.scalactic.Or.B
 import org.scalactic.{Good, Or, UnitSpec}
 import org.scalatest.laws.MonadLaws
+import org.scalatest.prop.Generator
 
 import scala.language.implicitConversions
 
@@ -35,7 +36,9 @@ class MonadSpec extends UnitSpec {
     MonadLaws[Option].check()
   }
   it should "provide an instance for Or, which abstracts over the Good side" in {
-    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    //implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    // TODO: To check with Bill if it is a right translation to in-house generator.
+    implicit def orGenGood[G, B](implicit genG: Generator[G]): Generator[G Or B] = genG.map(g => Good(g))
     MonadLaws[Or.B[Int]#G].check()
   }
 

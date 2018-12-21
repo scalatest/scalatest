@@ -15,7 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest._
 import org.scalatest.prop._
 import OptionValues._

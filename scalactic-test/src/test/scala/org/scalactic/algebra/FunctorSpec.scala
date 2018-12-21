@@ -15,9 +15,9 @@
  */
 package org.scalactic.algebra
 
-import org.scalacheck.Arbitrary
 import org.scalactic._
 import org.scalatest.laws._
+import org.scalatest.prop.Generator
 
 import scala.language.implicitConversions
 
@@ -33,9 +33,11 @@ class FunctorSpec extends UnitSpec with AssertObeys {
 
   "Option" should "obey the functor laws via its map method" in {
     implicit val optionIntFunctor = new OptionFunctor
-    implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] =
-      Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
-
+    //implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] =
+      //Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
+    // TODO: To check with Bill if it is a right translation to in-house generator.
+    implicit def genOptionSome[G](implicit genG: Generator[G]): Generator[Option[G]] =
+      genG.map(g => Some(g))
     assertObeys(FunctorLaws[Option])
   }
 
@@ -52,9 +54,11 @@ class FunctorSpec extends UnitSpec with AssertObeys {
     }
 
     implicit val orFunctor = new OrFunctor[Int]
-    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] =
-      Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
-
+    //implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] =
+      //Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    // TODO: To check with Bill if it is a right translation to in-house generator.
+    implicit def orGenGood[G, B](implicit genG: Generator[G]): Generator[G Or B] =
+      genG.map(g => Good(g))
     assertObeys(FunctorLaws[Or.B[Int]#G])
   }
 
@@ -65,9 +69,11 @@ class FunctorSpec extends UnitSpec with AssertObeys {
     }
 
     implicit val badOrFunctor = new BadOrFunctor[Int]
-    implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] =
-      Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
-
+    //implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] =
+      //Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
+      // TODO: To check with Bill if it is a right translation to in-house generator.
+    implicit def orGenBad[G, B](implicit genG: Generator[B]): Generator[G Or B] =
+      genG.map(b => Bad(b))
     assertObeys(FunctorLaws[Or.G[Int]#B])
   }
 }
