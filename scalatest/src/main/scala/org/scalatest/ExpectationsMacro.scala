@@ -45,5 +45,4 @@ private[scalatest] object ExpectationsMacro {
       prettifier,
       pos)
   }
-
 }

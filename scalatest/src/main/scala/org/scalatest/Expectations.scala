@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-private[scalatest] trait Expectations {
+trait Expectations {
   
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
