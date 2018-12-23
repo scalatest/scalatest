@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
-package check
+package org.scalatestplus
+package scalacheck
 
 import org.scalactic.anyvals._
+import org.scalatest._
 
-@deprecated("Remove when removing PropertyCheckConfig")
-class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
+class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
 
-  import ScalaCheckConfiguration._
+  import org.scalatestplus.scalacheck.ScalaCheckConfiguration._
 
   val DefaultMinSuccessful: PosInt = 9
   val PassedMinSuccessful: PosInt = 3
 
-  val DefaultMaxDiscarded = 99
-  val PassedMaxDiscarded = 33
-
   val DefaultMinSize: PosZInt = 99
   val PassedMinSize: PosZInt = 33
-
-  val DefaultMaxSize = 99
-  val PassedMaxSize = 33
 
   val DefaultWorkers: PosInt = 99
   val PassedWorkers: PosInt = 33
 
+  val DefaultSizeRange: PosZInt = 0
+  val PassedSizeRange: PosZInt = 10
+
+  val DefaultMaxDiscardedFactor: PosZDouble = 1.0
+  val PassedMaxDiscardedFactor: PosZDouble = 0.5
+
   val defaultConfig =
-    PropertyCheckConfig(
+    PropertyCheckConfiguration(
       minSuccessful = DefaultMinSuccessful,
-      maxDiscarded = DefaultMaxDiscarded,
+      maxDiscardedFactor = DefaultMaxDiscardedFactor,
       minSize = DefaultMinSize,
-      maxSize = DefaultMaxSize,
+      sizeRange = DefaultSizeRange,
       workers = DefaultWorkers
     )
 
@@ -60,7 +60,7 @@ class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams returns default minSuccessful config param if none passed") {
-    val params = getParams(Seq(MaxDiscarded(PassedMaxDiscarded)), defaultConfig)
+    val params = getParams(Seq(Workers(DefaultWorkers)), defaultConfig)
     params.minSuccessfulTests should equal (DefaultMinSuccessful.value)
   }
 
@@ -69,19 +69,19 @@ class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
 
   // maxDiscarded
   test("getParams returns passed maxDiscarded config param") {
-    val params = getParams(Seq(MaxDiscarded(PassedMaxDiscarded)), defaultConfig)
-    params.maxDiscardRatio should equal (maxDiscardRatio(PassedMaxDiscarded + 1, params.minSuccessfulTests))
+    val params = getParams(Seq(MaxDiscardedFactor(PassedMaxDiscardedFactor)), defaultConfig)
+    params.maxDiscardRatio should equal (PassedMaxDiscardedFactor.value)
   }
 
   test("getParams throws IAE if passed multiple maxDiscarded config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(MaxDiscarded(33), MaxDiscarded(34)), defaultConfig)
+      getParams(Seq(MaxDiscardedFactor(33.0), MaxDiscardedFactor(34.0)), defaultConfig)
     }
   }
 
   test("getParams returns default maxDiscarded config param if none passed") {
     val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
-    params.maxDiscardRatio should equal (maxDiscardRatio(DefaultMaxDiscarded + 1, params.minSuccessfulTests))
+    params.maxDiscardRatio should equal (DefaultMaxDiscardedFactor.value)
   }
 
   // minSize
@@ -101,28 +101,32 @@ class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
     params.minSize should equal (DefaultMinSize.value)
   }
 
-  // maxSize
-  test("getParams returns passed maxSize config param") {
-    val params = getParams(Seq(MaxSize(PassedMaxSize)), defaultConfig)
-    params.maxSize should equal (PassedMaxSize)
+  // sizeRange
+  test("getParams returns passed sizeRange config param") {
+    val params = getParams(Seq(SizeRange(PassedSizeRange)), defaultConfig)
+    params.maxSize should equal (DefaultMinSize + PassedSizeRange)
+  }
+
+  test("getParams returns passed minSize and sizeRange config param") {
+    val params = getParams(Seq(MinSize(PassedMinSize), SizeRange(PassedSizeRange)), defaultConfig)
+    params.maxSize should equal (PassedMinSize + PassedSizeRange)
   }
 
   test("getParams throws IAE if passed multiple maxSize config params") {
     intercept[IllegalArgumentException] {
       getParams(Seq(MaxSize(33), MaxSize(34)), defaultConfig)
     }
+    intercept[IllegalArgumentException] {
+      getParams(Seq(MaxSize(33), SizeRange(34)), defaultConfig)
+    }
+    intercept[IllegalArgumentException] {
+      getParams(Seq(SizeRange(33), SizeRange(34)), defaultConfig)
+    }
   }
 
-  test("getParams returns default maxSize config param if none passed") {
+  test("getParams returns default sizeRange config if none passed") {
     val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
-    params.maxSize should equal (DefaultMaxSize)
-  }
-
-  test("getParams returns default maxSize config param if none passed and MinSuccessful changed") {
-    val params = getParams(Seq(MinSize(PassedMinSize)), defaultConfig)
-    println("Params.maxsize: " + params.maxSize)
-    params.maxSize should equal (DefaultMaxSize)
-    params.minSize should equal (PassedMinSize.value)
+    params.maxSize should equal (DefaultMinSize + DefaultSizeRange)
   }
 
   // workers
@@ -145,18 +149,19 @@ class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
   test("getParams returns all default if no config params passed") {
     val params = getParams(Seq(), defaultConfig)
     params.minSuccessfulTests should equal (DefaultMinSuccessful.value)
-    params.maxDiscardRatio should equal (maxDiscardRatio(DefaultMaxDiscarded + 1, params.minSuccessfulTests))
+    params.maxDiscardRatio should equal (DefaultMaxDiscardedFactor.value)
     params.minSize should equal (DefaultMinSize.value)
-    params.maxSize should equal (DefaultMaxSize)
+    params.maxSize should equal (DefaultMinSize.value + DefaultSizeRange.value)
     params.workers should equal (DefaultWorkers.value)
   }
 
   test("getParams returns all passed if all config params passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful), MaxDiscarded(PassedMaxDiscarded), MinSize(PassedMinSize), MaxSize(PassedMaxSize), Workers(PassedWorkers)), defaultConfig)
+    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful), MaxDiscardedFactor(PassedMaxDiscardedFactor), MinSize(PassedMinSize),
+      SizeRange(PassedSizeRange), Workers(PassedWorkers)), defaultConfig)
     params.minSuccessfulTests should equal (PassedMinSuccessful.value)
-    params.maxDiscardRatio should equal (maxDiscardRatio(PassedMaxDiscarded + 1, params.minSuccessfulTests))
+    params.maxDiscardRatio should equal (PassedMaxDiscardedFactor.value)
     params.minSize should equal (PassedMinSize.value)
-    params.maxSize should equal (PassedMaxSize)
+    params.maxSize should equal (PassedMinSize.value + PassedSizeRange.value)
     params.workers should equal (PassedWorkers.value)
   }
 }
