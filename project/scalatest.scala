@@ -25,7 +25,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.7"
 
-  val releaseVersion = "3.0.6-SNAP5"
+  val releaseVersion = "3.0.6-SNAP-for-scalafix"
 
   val previousReleaseVersion = "3.0.5"
 
@@ -245,6 +245,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
+      "-m", "org.scalatestplus.scalacheck",
       "-oDI",
       "-W", "120", "60",
       "-h", "target/html",
@@ -275,6 +276,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
+      "-m", "org.scalatestplus.scalacheck",
       "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
@@ -563,7 +565,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words"
+        "org.scalatest.words",
+        "org.scalatestplus.scalacheck"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -668,7 +671,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words"
+        "org.scalatest.words",
+        "org.scalatestplus.scalacheck"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -772,6 +776,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
+        "org.scalatestplus.scalacheck",
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
@@ -839,6 +844,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
+        "org.scalatestplus.scalacheck", 
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
