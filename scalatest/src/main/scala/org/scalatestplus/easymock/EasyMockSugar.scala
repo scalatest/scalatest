@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.easymock
+package org.scalatestplus.easymock
 
 import org.easymock.IExpectationSetters
 import scala.reflect.ClassTag
