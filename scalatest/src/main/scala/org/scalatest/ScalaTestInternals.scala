@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2018 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,8 @@
  */
 package org.scalatest
 
+private[org] object ScalaTestInternals {
 
-/**
- * Trait containing one abstract method that can capture a screenshot and save it as a file to a given directory.
- */
-private[scalatest] trait ScreenshotCapturer {
+  type ScreenshotCapturer = org.scalatest.ScreenshotCapturer
 
-  /**
-   * Captures a screenshot and saves it as a file in the specified directory.
-   */
-  def captureScreenshot(directory: String)
 }
