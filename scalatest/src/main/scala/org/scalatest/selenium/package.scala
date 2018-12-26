@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
- * ScalaTest's main traits, classes, and other members, including members supporting ScalaTest's DSL for the Scala interpreter.
+ * Package object of mockito that contains deprecated type alias that will be removed in the future version of ScalaTest.
  */
 package object selenium {
 
