@@ -19,7 +19,7 @@ package org.scalatest
 /**
  * Trait containing one abstract method that can capture a screenshot and save it as a file to a given directory.
  */
-trait ScreenshotCapturer {
+private[org] trait ScreenshotCapturer {
 
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
