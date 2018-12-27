@@ -19,4 +19,13 @@ private[org] object ScalaTestInternals {
 
   type ScreenshotCapturer = org.scalatest.ScreenshotCapturer
 
+  lazy val Suite = org.scalatest.Suite
+
+  type ScalaTestStatefulStatus = org.scalatest.ScalaTestStatefulStatus
+
+  lazy val Resources = org.scalatest.Resources
+
+  lazy val StackDepthExceptionHelper = org.scalatest.exceptions.StackDepthExceptionHelper
+
+  lazy val Reporter = org.scalatest.Reporter
 }

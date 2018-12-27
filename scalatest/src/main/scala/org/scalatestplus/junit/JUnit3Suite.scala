@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit
+package org.scalatestplus.junit
 
 import org.scalatest._
 import org.scalatest.events._
 import exceptions._
 import org.scalactic.Requirements._
 import org.scalactic.NameUtil
-import Suite.getIndentedTextForTest
-import Suite.wrapReporterIfNecessary
+import ScalaTestInternals.Suite.getIndentedTextForTest
+import ScalaTestInternals.Suite.wrapReporterIfNecessary
+import ScalaTestInternals.ScalaTestStatefulStatus
+import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test
 import _root_.junit.framework.TestCase
@@ -283,7 +285,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     }
 }
 
-private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener {
+private[junit] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener {
 
   // TODO: worry about threading
   private val failedTestsSet = scala.collection.mutable.Set[Test]()
