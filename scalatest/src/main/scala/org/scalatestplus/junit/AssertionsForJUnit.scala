@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit
+package org.scalatestplus.junit
 
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
-import exceptions.StackDepthExceptionHelper.getStackDepth
 import org.scalactic._
 
 /**
@@ -96,7 +95,7 @@ import org.scalactic._
  */
 trait AssertionsForJUnit extends Assertions {
 
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
+  private[org] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
   

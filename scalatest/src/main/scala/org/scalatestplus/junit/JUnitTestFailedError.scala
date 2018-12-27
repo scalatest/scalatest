@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit
+package org.scalatestplus.junit
 
 import _root_.junit.framework.AssertionFailedError
 import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, ModifiableMessage}
@@ -22,7 +22,7 @@ import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import org.scalactic.ArrayHelper.deep
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import org.scalatest.ScalaTestInternals.StackDepthExceptionHelper.getStackDepth
 
 /**
  * Exception that indicates a test failed.

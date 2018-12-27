@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit;
+package org.scalatestplus.junit;
 
 import org.scalatest._
 import java.lang.reflect
@@ -27,6 +27,7 @@ import org.junit.runner.Result
 import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunListener
 import org.scalatest.Suite
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
 /**
  * <p>
