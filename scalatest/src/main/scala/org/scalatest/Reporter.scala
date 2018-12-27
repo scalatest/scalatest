@@ -129,7 +129,7 @@ private[scalatest] object Reporter {
   }
 
   // In the unlikely event that a message is blank, use the throwable's detail message
-  private[scalatest] def messageOrThrowablesDetailMessage(message: String, throwable: Option[Throwable]): String = {
+  def messageOrThrowablesDetailMessage(message: String, throwable: Option[Throwable]): String = {
     val trimmedMessage = message.trim
     if (!trimmedMessage.isEmpty)
       trimmedMessage

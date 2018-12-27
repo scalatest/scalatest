@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit;
+package org.scalatestplus.junit;
 
 import org.scalatest._
 import java.lang.reflect.{Method, Modifier}
@@ -21,8 +21,10 @@ import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunListener
 import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalactic.source
-import org.scalatest.Suite
-import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalatest.ScalaTestInternals.Suite
+import org.scalatest.ScalaTestInternals.Suite.autoTagClassAnnotations
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
+import org.scalatest.ScalaTestInternals.Resources
 import Suite.wrapReporterIfNecessary
 import collection.immutable.TreeSet
 

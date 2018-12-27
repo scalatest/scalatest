@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.scalatest.junit
+package org.scalatestplus.junit
 
 import org.scalatest._
 import org.scalatest.events._

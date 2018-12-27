@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatestplus.junit
 
 import org.scalactic._
 import reflect.macros.Context
+import org.scalatest.Assertion
 
 /**
   * Macro implementation that provides rich error message for boolean expression assertion.
   */
-private[scalatest] object AssertionsForJUnitMacro {
+private[junit] object AssertionsForJUnitMacro {
 
   /**
     * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean)</code>, with rich error message.

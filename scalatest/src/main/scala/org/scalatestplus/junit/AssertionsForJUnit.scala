@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit
+package org.scalatestplus.junit
 
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
-import exceptions.StackDepthExceptionHelper.getStackDepth
 import org.scalactic._
+import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.exceptions.{StackDepthException, TestCanceledException}
 
 /**
  * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit.
@@ -96,8 +97,23 @@ import org.scalactic._
  */
 trait AssertionsForJUnit extends Assertions {
 
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[String]): Throwable = {
+  private[org] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[String]): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
+  }
+
+  private[org] override def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
+    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
+
+  /**
+    * If message or message contents are null, throw a null exception, otherwise
+    * create a function that returns the option.
+    */
+  def toExceptionFunction(message: Option[String]): StackDepthException => Option[String] = {
+    message match {
+      case null => throw new NullArgumentException("message was null")
+      case Some(null) => throw new NullArgumentException("message was a Some(null)")
+      case _ => { e => message }
+    }
   }
 
   import scala.language.experimental.macros

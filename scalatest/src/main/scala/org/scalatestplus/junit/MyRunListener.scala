@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.junit;
+package org.scalatestplus.junit;
 
 import org.scalatest._
-import org.scalatest.Suite
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
+import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
+import org.scalatest.ScalaTestInternals.Resources
 import org.junit.runner.JUnitCore
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.Failure
@@ -26,7 +28,6 @@ import org.scalatest.events._
 import java.util.Collections
 import java.util.HashSet
 import java.util.regex.Pattern
-import Suite.getIndentedTextForTest
 import org.scalatest.events.TopOfMethod
 import exceptions._
 
