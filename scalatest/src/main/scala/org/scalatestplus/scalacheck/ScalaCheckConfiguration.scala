@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.check
+package org.scalatestplus.scalacheck
 
 import org.scalacheck.Test.Parameters
 import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
@@ -27,9 +27,9 @@ import org.scalatest.prop.Configuration
  *
  * @author Bill Venners
  */
-private[scalatest] trait ScalaCheckConfiguration extends Configuration {
+private[scalacheck] trait ScalaCheckConfiguration extends Configuration {
 
-  private[scalatest] def getParams(
+  private[scalacheck] def getParams(
                                configParams: Seq[Configuration#PropertyCheckConfigParam],
                                c: PropertyCheckConfigurable
                                ): Parameters = {
@@ -133,4 +133,4 @@ private[scalatest] trait ScalaCheckConfiguration extends Configuration {
  * an alternative to mixing it in. One use case is to import <code>Configuration</code> members so you can use
  * them in the Scala interpreter.
  */
-private[scalatest] object ScalaCheckConfiguration extends ScalaCheckConfiguration
+private[scalacheck] object ScalaCheckConfiguration extends ScalaCheckConfiguration
