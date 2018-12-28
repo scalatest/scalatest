@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.testng
+package org.scalatestplus.testng
 
 import org.scalatest._
 import org.scalatest.events._
@@ -21,11 +21,13 @@ import exceptions._
 import org.scalactic.source
 import org.testng.TestListenerAdapter
 import org.testng.TestNG
-import Suite.formatterForSuiteAborted
-import Suite.formatterForSuiteCompleted
-import Suite.formatterForSuiteStarting
-import Suite.getIndentedTextForTest
-import Suite.wrapReporterIfNecessary
+import org.scalatest.ScalaTestInternals.Suite
+import org.scalatest.ScalaTestInternals.Suite.formatterForSuiteAborted
+import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
+import org.scalatest.ScalaTestInternals.Suite.wrapReporterIfNecessary
+import org.scalatest.ScalaTestInternals.Suite.yeOldeTestNames
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
+import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress
 
 /**
@@ -154,7 +156,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   // This seems wrong. Should ask TestNG if possible, but not sure that's even possible. Anyway some tests
   // rely on this behavior that used to be inherited, but is no more.
-  override def testNames: Set[String] = yeOldeTestNames
+  override def testNames: Set[String] = yeOldeTestNames(this)
 
   private def getTags(testName: String) =
     for {
