@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.testng.example
+package org.scalatestplus.testng.example
 
 import org.scalatest.testng._
 import org.scalatest.testng.TestNGWrapperSuite
 
 class ExampleTestNGWrapperSuite extends TestNGWrapperSuite( 
-    List("./tests/org/scalatest/testng/example/testngsuite.xml" )) {}
+    List("./tests/org/scalatestplus/testng/example/testngsuite.xml" )) {}

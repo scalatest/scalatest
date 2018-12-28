@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.testng
+package org.scalatestplus.testng
 
 import org.scalatest._
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 import org.testng.TestNG
 import org.testng.TestListenerAdapter
 
