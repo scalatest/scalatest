@@ -563,7 +563,13 @@ object ScalatestBuild extends Build {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words"
+        "org.scalatest.words",
+        "org.scalatestplus.easymock",
+        "org.scalatestplus.jmock",
+        "org.scalatestplus.mockito",
+        "org.scalatestplus.selenium",
+        "org.scalatestplus.junit",
+        "org.scalatestplus.testng"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -775,7 +781,13 @@ object ScalatestBuild extends Build {
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
-        "org.scalactic.source"
+        "org.scalactic.source",
+        "org.scalatestplus.easymock",
+        "org.scalatestplus.jmock",
+        "org.scalatestplus.mockito",
+        "org.scalatestplus.selenium",
+        "org.scalatestplus.junit",
+        "org.scalatestplus.testng"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
