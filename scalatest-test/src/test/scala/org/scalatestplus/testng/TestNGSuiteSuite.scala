@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.testng {
+package org.scalatestplus.testng {
 
   import org.scalatest._
 import org.scalatest.jmock._
 import org.scalatest.events._
-import testng.testpackage._
+import org.scalatestplus.testng.testpackage._
 import org.scalatest.fixture
 import org.scalatest.jmock.JMockCycleFixture
 import org.hamcrest.core.IsAnything
 import org.jmock.Expectations
 import org.jmock.Mockery
 import org.scalatest.jmock.JMockCycle
+import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
 

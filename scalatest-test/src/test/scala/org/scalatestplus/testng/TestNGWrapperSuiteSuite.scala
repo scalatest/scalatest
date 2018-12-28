@@ -21,7 +21,9 @@ import org.jmock.Expectations
 import org.jmock.Mockery
 import org.scalatest.events.Ordinal
 
-package org.scalatest.testng {
+package org.scalatestplus.testng {
+
+  import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
   class TestNGWrapperSuiteSuite extends FunSuite with SuiteExpectations {
   

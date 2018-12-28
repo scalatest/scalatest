@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.testng {
+package org.scalatestplus.testng {
 
   import org.scalatest._
   import org.scalatest.Suite
   import org.scalatest.jmock.TestReporter
   import org.testng.annotations.Test
-  import testng.test._
+  import org.scalatestplus.testng.test._
+  import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
   //execute(None, new StandardOutReporter, new Stopper {}, Filter(), ConfigMap.empty, None)
   class TestNGSuiteGroupsSuite extends FunSuite {
