@@ -17,8 +17,6 @@ package org.scalatest
 
 private[org] object ScalaTestInternals {
 
-  type ScreenshotCapturer = org.scalatest.ScreenshotCapturer
-
   lazy val Suite = org.scalatest.Suite
 
   type ScalaTestStatefulStatus = org.scalatest.ScalaTestStatefulStatus
