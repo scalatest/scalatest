@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.check
+package org.scalatestplus.scalacheck
 
 import org.scalatest.enablers.CheckerAsserting
 import org.scalacheck.Arbitrary

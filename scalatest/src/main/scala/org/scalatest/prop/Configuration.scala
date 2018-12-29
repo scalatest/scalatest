@@ -31,11 +31,11 @@ trait Configuration {
 
   @deprecated("Use PropertyCheckConfiguration directly instead.")
   trait PropertyCheckConfigurable {
-    private [scalatest] def asPropertyCheckConfiguration: PropertyCheckConfiguration
+    private [org] def asPropertyCheckConfiguration: PropertyCheckConfiguration
    }
 
   object PropertyCheckConfiguration {
-    private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
+    private[org] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
       ((maxDiscarded + 1): Double) / (minSuccessful: Double)
     private[scalatest] def calculateMaxDiscarded(maxDiscardedRatio: Double, minSuccessful: Int): Double =
       (maxDiscardedRatio * minSuccessful) - 1
@@ -47,10 +47,10 @@ trait Configuration {
                                         sizeRange: PosZInt = PosZInt(100),
                                         workers: PosInt = PosInt(1)) extends PropertyCheckConfigurable {
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSuccessful parameters.  Remove with PropertyCheckConfig class")
-    private [scalatest] val legacyMaxDiscarded: Option[Int] = None
+    private [org] val legacyMaxDiscarded: Option[Int] = None
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSize parameters.  Remove with PropertyCheckConfig class")
-    private [scalatest] val legacyMaxSize: Option[Int] = None
-    private [scalatest] def asPropertyCheckConfiguration = this
+    private [org] val legacyMaxSize: Option[Int] = None
+    private [org] def asPropertyCheckConfiguration = this
   }
 
   /**
@@ -131,7 +131,7 @@ trait Configuration {
     require(maxSize >= 0, "maxSize had value " + maxSize + ", but must be greater than or equal to zero")
     require(minSize <= maxSize, "minSize had value " + minSize + ", which must be less than or equal to maxSize, which had value " + maxSize)
     require(workers > 0, "workers had value " + workers + ", but must be greater than zero")
-    private [scalatest] def asPropertyCheckConfiguration = this
+    private [org] def asPropertyCheckConfiguration = this
   }
 
   import scala.language.implicitConversions
@@ -148,8 +148,8 @@ trait Configuration {
         minSize = PosZInt.from(p.minSize).get,
         sizeRange = PosZInt.from(p.maxSize - p.minSize).get,
         workers = PosInt.from(p.workers).get) {
-        override private [scalatest]  val legacyMaxDiscarded = Some(p.maxDiscarded)
-        override private [scalatest]  val legacyMaxSize      = Some(p.maxSize)
+        override private [org]  val legacyMaxDiscarded = Some(p.maxDiscarded)
+        override private [org]  val legacyMaxSize      = Some(p.maxSize)
       }
   }
 

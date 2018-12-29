@@ -139,7 +139,7 @@ object GenScalaTestJS {
         "run.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "Spec.scala",
@@ -302,7 +302,7 @@ object GenScalaTestJS {
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/check", "org/scalatest/check", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,

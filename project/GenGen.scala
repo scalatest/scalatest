@@ -169,8 +169,8 @@ val copyrightTemplate = """/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
-package check
+package org.scalatestplus
+package scalacheck
 """
 
 val propertyCheckPreamble = """
@@ -1166,7 +1166,7 @@ object ScalaCheckDrivenPropertyChecks extends ScalaCheckDrivenPropertyChecks
 
 val generatorSuitePreamble = """
 
-import org.scalatest.Matchers
+import org.scalatest._
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Gen
 """
@@ -2627,7 +2627,7 @@ $okayExpressions$
           bw.write("import org.scalacheck.Prop.{Exception => _, _}\n")
         }
         if (!mixinInvitationStyle)
-          bw.write("import org.scalatest.check." + traitOrObjectName + "._\n")
+          bw.write("import org.scalatestplus.scalacheck." + traitOrObjectName + "._\n")
         bw.write("\n")
         bw.write(
           "class " + suiteClassName + " extends FunSpec " +
