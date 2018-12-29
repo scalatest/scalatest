@@ -1,4 +1,4 @@
-package org.scalatest.selenium
+package org.scalatestplus.selenium
 
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
