@@ -287,10 +287,10 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     // Using reflection because TestNG has a incompatible change, we want to allow people to use the old and the new version of TestNG.
     try {
       val transformerSuperClass = Class.forName("org.testng.IAnnotationTransformer")
-      val transformerSubClass = Class.forName("org.scalatest.testng.SingleTestAnnotationTransformer")
+      val transformerSubClass = Class.forName("org.scalatestplus.testng.SingleTestAnnotationTransformer")
       // Go with TestNG 6
       val transformerInstance = transformerSubClass.getConstructor(classOf[String]).newInstance(testName).asInstanceOf[SingleTestAnnotationTransformer]
-      testng.setGroups("org.scalatest.testng.singlemethodrun.methodname")
+      testng.setGroups("org.scalatestplus.testng.singlemethodrun.methodname")
       val method = testng.getClass.getMethod("setAnnotationTransformer", transformerSuperClass)
       method.invoke(testng, transformerInstance)
     }

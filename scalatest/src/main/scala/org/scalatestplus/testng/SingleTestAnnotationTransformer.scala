@@ -26,6 +26,6 @@ import java.lang.reflect.Constructor
 private[testng] class SingleTestAnnotationTransformer(testName: String) extends IAnnotationTransformer {
   override def transform( annotation: ITestAnnotation, testClass: java.lang.Class[_], testConstructor: Constructor[_], testMethod: Method): Unit = {
     if (testName == testMethod.getName) 
-      annotation.setGroups(Array("org.scalatest.testng.singlemethodrun.methodname"))  
+      annotation.setGroups(Array("org.scalatestplus.testng.singlemethodrun.methodname"))
   }
 }
