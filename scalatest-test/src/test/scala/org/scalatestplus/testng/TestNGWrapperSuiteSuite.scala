@@ -31,9 +31,9 @@ package org.scalatestplus.testng {
       
     val legacySuiteXml = 
       <suite name="Simple Suite">
-        <test verbose="10" name="org.scalatest.testng.test" annotations="JDK">
+        <test verbose="10" name="org.scalatestplus.testng.test" annotations="JDK">
           <classes>
-            <class name="org.scalatest.testng.testpackage.LegacySuite"/>
+            <class name="org.scalatestplus.testng.testpackage.LegacySuite"/>
           </classes>
         </test>
       </suite>
@@ -60,10 +60,10 @@ package org.scalatestplus.testng {
 
     val legacySuiteWithThreeTestsXml = 
       <suite name="Simple Suite">
-        <test verbose="10" name="org.scalatest.testng.test" annotations="JDK">
+        <test verbose="10" name="org.scalatestplus.testng.test" annotations="JDK">
           <classes>
-            <class name="org.scalatest.testng.testpackage.LegacySuite"/>
-            <class name="org.scalatest.testng.testpackage.LegacySuiteWithTwoTests"/>
+            <class name="org.scalatestplus.testng.testpackage.LegacySuite"/>
+            <class name="org.scalatestplus.testng.testpackage.LegacySuiteWithTwoTests"/>
           </classes>
         </test>
       </suite>
