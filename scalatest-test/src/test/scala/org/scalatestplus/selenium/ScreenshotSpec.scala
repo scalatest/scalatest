@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.selenium
+package org.scalatestplus.selenium
 
 import org.scalatest.{FunSpec, FunSuite}
 import java.util.concurrent.TimeUnit
@@ -27,7 +27,6 @@ import org.scalatest.exceptions.TestFailedException
 import java.io.File
 import org.scalatest.TestSuite
 import org.scalatest.Args
-import org.scalatest.ScreenshotOnFailure
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.Ignore
 import org.scalatest.Matchers

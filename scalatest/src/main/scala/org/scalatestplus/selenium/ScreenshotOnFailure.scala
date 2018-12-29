@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatestplus.selenium
 
+import org.scalatest.{TestSuiteMixin, TestSuite, Outcome, Failed}
 
 /**
  * Stackable trait that when mixed into a <code>Suite with ScreenshotCapturer</code> ensures a screenshot
@@ -26,7 +27,7 @@ package org.scalatest
  * To change this, override <code>screenshotDir</code>.
  * </p>
  */
-private[scalatest] trait ScreenshotOnFailure extends TestSuiteMixin { this: TestSuite with ScreenshotCapturer => 
+private[selenium] trait ScreenshotOnFailure extends TestSuiteMixin { this: TestSuite with ScreenshotCapturer => 
   
   /**
    * The name of the directory into which screenshots will be captured.
