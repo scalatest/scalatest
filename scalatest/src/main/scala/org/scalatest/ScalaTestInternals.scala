@@ -23,7 +23,5 @@ private[org] object ScalaTestInternals {
 
   lazy val Resources = org.scalatest.Resources
 
-  lazy val StackDepthExceptionHelper = org.scalatest.exceptions.StackDepthExceptionHelper
-
   lazy val Reporter = org.scalatest.Reporter
 }
