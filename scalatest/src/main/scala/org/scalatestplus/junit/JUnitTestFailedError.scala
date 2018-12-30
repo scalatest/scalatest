@@ -21,7 +21,6 @@ import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.ScalaTestInternals.StackDepthExceptionHelper.getStackDepth
 import org.scalactic.ArrayHelper.deep
 
 /**
@@ -275,4 +274,12 @@ class JUnitTestFailedError(
         ) + cause.hashCode
       ) + failedCodeStackDepth.hashCode
     ) + getStackTrace.hashCode
+
+  def isMatch(ele: StackTraceElement, pos: source.Position): Boolean =
+    ele.getFileName == pos.fileName && ele.getLineNumber == pos.lineNumber
+
+  private def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
+    val idx = stackTrace.indexWhere(e => isMatch(e, pos))
+    if (idx >= 0) idx else 0
+  }
 }
