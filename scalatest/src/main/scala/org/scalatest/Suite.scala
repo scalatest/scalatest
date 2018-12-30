@@ -1311,9 +1311,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
      countNestedSuiteTests(filter.runnableTestCount(testNames, tags, suiteId), nestedSuites.toList, filter)
   }
-
-  // MOVE IT
-  private[scalatest] def createCatchReporter(reporter: Reporter): Reporter = new WrapperCatchReporter(reporter)
   
   /**
    * The fully qualified class name of the rerunner to rerun this suite.  This implementation will look at this.getClass and see if it is
@@ -1361,6 +1358,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val pos = None
     }
   }
+
+  private[scalatest] def wrapperCatchReporterOutputStream: java.io.PrintStream = System.err
 }
 
 private[scalatest] object Suite {
@@ -2078,8 +2077,11 @@ used for test events like succeeded/failed, etc.
   // into error messages on the standard error stream.
   def wrapReporterIfNecessary(theSuite: Suite, reporter: Reporter): Reporter = reporter match {
     case cr: CatchReporter => cr
-    case _ => theSuite.createCatchReporter(reporter)
+    case _ => createCatchReporter(reporter, theSuite.wrapperCatchReporterOutputStream)
   }
+
+  // MOVE IT
+  def createCatchReporter(reporter: Reporter, out: java.io.PrintStream): Reporter = new WrapperCatchReporter(reporter, out)
 
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
   def testMethodTakesAFixture(testName: String) = testName.endsWith(FixtureInParens)

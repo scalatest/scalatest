@@ -387,7 +387,7 @@ class ExampleCatchReporterSpec extends RefSpec with CatchReporterFixtureServices
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -395,7 +395,7 @@ class ExampleCatchReporterFixtureSpec extends fixture.Spec with CatchReporterFix
   def `test 1`(fixture: String): Unit = {}
   def `test 2`(fixture: String): Unit = {}
   def `test 3`(fixture: String): Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -403,7 +403,7 @@ class ExampleCatchReporterJUnit3Suite extends JUnit3Suite with CatchReporterFixt
   def testMethod1(): Unit = {}
   def testMethod2(): Unit = {}
   def testMethod3(): Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -414,7 +414,7 @@ class ExampleCatchReporterJUnitSuite extends JUnitSuite with CatchReporterFixtur
   def testMethod2(): Unit = {}
   @Test 
   def testMethod3(): Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 
@@ -427,7 +427,7 @@ class ExampleCatchReporterTestNGSuite extends TestNGSuite with CatchReporterFixt
   def testMethod2(): Unit = {}
   @TestNG
   def testMethod3(): Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -435,7 +435,7 @@ class ExampleCatchReporterFunSuite extends FunSuite with CatchReporterFixtureSer
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -443,7 +443,7 @@ class ExampleCatchReporterFixtureFunSuite extends fixture.FunSuite with CatchRep
   test("Test 1") {s =>}
   test("Test 2") {s =>}
   test("Test 3") {s =>}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -453,7 +453,7 @@ class ExampleCatchReporterFunSpec extends FunSpec with CatchReporterFixtureServi
     it("Test 2") {}
     it("Test 3") {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -463,7 +463,7 @@ class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchRepor
     it("Test 2") {s =>}
     it("Test 3") {s =>}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -473,7 +473,7 @@ class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixt
     scenario("Scenario 2") {}
     scenario("Scenario 3") {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -483,7 +483,7 @@ class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with Ca
     scenario("Scenario 2") {s =>}
     scenario("Scenario 3") {s =>}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -491,7 +491,7 @@ class ExampleCatchReporterFlatSpec extends FlatSpec with CatchReporterFixtureSer
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {}
   it should "do thing 3" in {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -499,7 +499,7 @@ class ExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec with CatchRep
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>}
   it should "do thing 3" in {s =>}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -509,7 +509,7 @@ class ExampleCatchReporterFreeSpec extends FreeSpec with CatchReporterFixtureSer
     "Test 2" in {}
     "Test 3" in {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -519,7 +519,7 @@ class ExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec with CatchRep
     "Test 2" in {s =>}
     "Test 3" in {s =>}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -527,7 +527,7 @@ class ExampleCatchReporterPropSpec extends PropSpec with CatchReporterFixtureSer
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -535,7 +535,7 @@ class ExampleCatchReporterFixturePropSpec extends fixture.PropSpec with CatchRep
   property("Test 1") {s =>}
   property("Test 2") {s =>}
   property("Test 3") {s =>}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -545,7 +545,7 @@ class ExampleCatchReporterWordSpec extends WordSpec with CatchReporterFixtureSer
     "Test 2" in {}
     "Test 3" in {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -555,7 +555,7 @@ class ExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with CatchRep
     "Test 2" in {s =>}
     "Test 3" in {s =>}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -565,7 +565,7 @@ class ExampleCatchReporterPathFreeSpec extends path.FreeSpec with CatchReporterF
     "Test 2" in {}
     "Test 3" in {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
 
 @DoNotDiscover
@@ -575,5 +575,5 @@ class ExampleCatchReporterPathFunSpec extends path.FunSpec with CatchReporterFix
     it("Test 2") {}
     it("Test 3") {}
   }
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
+  override private[scalatest] def wrapperCatchReporterOutputStream = new PrintStream(new ByteArrayOutputStream)
 }
