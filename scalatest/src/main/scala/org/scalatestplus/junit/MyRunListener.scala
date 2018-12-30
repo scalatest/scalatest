@@ -16,7 +16,6 @@
 package org.scalatestplus.junit;
 
 import org.scalatest._
-import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
 import org.scalatest.ScalaTestInternals.Resources
 import org.junit.runner.JUnitCore
@@ -34,7 +33,7 @@ import exceptions._
   private[junit] class MyRunListener(report: Reporter,
                                      config: Map[String, Any],
                                      theTracker: Tracker, 
-                                     status: ScalaTestStatefulStatus)
+                                     status: StatefulStatus)
   extends RunListener {
     val failedTests = Collections.synchronizedSet(new HashSet[String])
     def getTopOfMethod(className: String, methodName: String) = Some(TopOfMethod(className, "public void " + className + "." + methodName + "()"))

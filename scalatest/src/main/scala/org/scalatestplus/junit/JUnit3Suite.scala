@@ -22,7 +22,6 @@ import org.scalactic.Requirements._
 import org.scalactic.NameUtil
 import ScalaTestInternals.Suite.getIndentedTextForTest
 import ScalaTestInternals.Suite.wrapReporterIfNecessary
-import ScalaTestInternals.ScalaTestStatefulStatus
 import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test
@@ -248,7 +247,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     import args._
 
     theTracker = tracker
-    val status = new ScalaTestStatefulStatus
+    val status = new StatefulStatus
 
     if (!filter.tagsToInclude.isDefined) {
       val testResult = new TestResult
@@ -285,7 +284,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     }
 }
 
-private[junit] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener {
+private[junit] class MyTestListener(report: Reporter, tracker: Tracker, status: StatefulStatus) extends TestListener {
 
   // TODO: worry about threading
   private val failedTestsSet = scala.collection.mutable.Set[Test]()

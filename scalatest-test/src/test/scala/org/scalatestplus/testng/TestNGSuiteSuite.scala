@@ -25,7 +25,6 @@ import org.hamcrest.core.IsAnything
 import org.jmock.Expectations
 import org.jmock.Mockery
 import org.scalatest.jmock.JMockCycle
-import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
 
@@ -38,7 +37,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       }
 
       whenExecuting {
-        val status = new ScalaTestStatefulStatus
+        val status = new StatefulStatus
         (new SuccessTestNGSuite()).runTestNG(reporter, new Tracker, status)
         status.setCompleted()
       }
@@ -53,7 +52,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       }
 
       whenExecuting {
-        val status = new ScalaTestStatefulStatus
+        val status = new StatefulStatus
         (new FailureTestNGSuite()).runTestNG(reporter, new Tracker, status)
         status.setCompleted()
       }
@@ -64,7 +63,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       val testReporter = new TestReporter
 
       // when
-      val status = new ScalaTestStatefulStatus
+      val status = new StatefulStatus
       (new FailureTestNGSuite()).runTestNG(testReporter, new Tracker, status)
       status.setCompleted
 
@@ -87,7 +86,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
       // when runnning the suite with method that has invocationCount = 10")
       whenExecuting {
-        val status = new ScalaTestStatefulStatus
+        val status = new StatefulStatus
         (new TestNGSuiteWithInvocationCount()).runTestNG(reporter, new Tracker, status)
         status.setCompleted()
       }
@@ -108,7 +107,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
       // when runnning the suite with a test that should fail and a test that should be skipped
       whenExecuting {
-        val status = new ScalaTestStatefulStatus
+        val status = new StatefulStatus
         (new SuiteWithSkippedTest()).runTestNG(reporter, new Tracker, status)
         status.setCompleted()
       }
@@ -123,7 +122,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       }
 
       whenExecuting {
-        val status = new ScalaTestStatefulStatus
+        val status = new StatefulStatus
         (new SuiteWithTwoTests()).runTestNG("testThatPasses", reporter, new Tracker, status)
         status.setCompleted()
       }
@@ -134,7 +133,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       val testReporter = new TestReporter
 
       // when - run the failing suite
-      val status = new ScalaTestStatefulStatus
+      val status = new StatefulStatus
       new FailureTestNGSuite().runTestNG(testReporter, new Tracker, status)
       status.setCompleted()
 
@@ -151,7 +150,7 @@ import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
       val testReporter = new TestReporter
 
       // when - run the passing suite
-      val status = new ScalaTestStatefulStatus
+      val status = new StatefulStatus
       new SuccessTestNGSuite().runTestNG(testReporter, new Tracker, status)
       status.setCompleted()
 

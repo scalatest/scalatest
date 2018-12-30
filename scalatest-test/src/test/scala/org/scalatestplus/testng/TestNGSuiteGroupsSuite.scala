@@ -20,7 +20,6 @@ package org.scalatestplus.testng {
   import org.scalatest.jmock.TestReporter
   import org.testng.annotations.Test
   import org.scalatestplus.testng.test._
-  import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
   //execute(None, new StandardOutReporter, new Stopper {}, Filter(), ConfigMap.empty, None)
   class TestNGSuiteGroupsSuite extends FunSuite {
@@ -103,7 +102,7 @@ package org.scalatestplus.testng {
       val testReporter = new TestReporter
 
       val filter = Filter(if (groupsToInclude.isEmpty) None else Some(groupsToInclude), groupsToExclude)
-      val status = new ScalaTestStatefulStatus
+      val status = new StatefulStatus
       // when
       new TestNGSuiteWithGroups().runTestNG(None, testReporter, filter, new Tracker, status)
       status.setCompleted()
