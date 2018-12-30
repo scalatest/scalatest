@@ -98,12 +98,24 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
             case Some(t) => t
             case None => null // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
           }
-        val possiblyEmptyMessage = org.scalatest.ScalaTestInternals.Reporter.messageOrThrowablesDetailMessage(message, throwable)
+        val possiblyEmptyMessage = messageOrThrowablesDetailMessage(message, throwable)
         val description = Description.createSuiteDescription(Resources.runAborted + " " + possiblyEmptyMessage)
         runNotifier.fireTestFailure(new Failure(description, throwableOrNull)) // Best we can do in JUnit, as far as I know
         runNotifier.fireTestFinished(description)
 
       case _ =>
     }
+  }
+
+  // In the unlikely event that a message is blank, use the throwable's detail message
+  def messageOrThrowablesDetailMessage(message: String, throwable: Option[Throwable]): String = {
+    val trimmedMessage = message.trim
+    if (!trimmedMessage.isEmpty)
+      trimmedMessage
+    else
+      throwable match {
+        case Some(t) => t.getMessage.trim
+        case None => ""
+      }
   }
 }
