@@ -23,7 +23,6 @@ import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalactic.source
 import org.scalatest.ScalaTestInternals.Suite
 import org.scalatest.ScalaTestInternals.Suite.autoTagClassAnnotations
-import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 import org.scalatest.ScalaTestInternals.Resources
 import Suite.wrapReporterIfNecessary
 import collection.immutable.TreeSet
@@ -234,7 +233,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
     import args._
 
     theTracker = tracker
-    val status = new ScalaTestStatefulStatus
+    val status = new StatefulStatus
 
     if (!filter.tagsToInclude.isDefined) {
       val jUnitCore = new JUnitCore
