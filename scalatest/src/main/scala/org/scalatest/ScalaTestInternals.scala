@@ -23,5 +23,5 @@ private[org] object ScalaTestInternals {
 
   lazy val Resources = org.scalatest.Resources
 
-  lazy val Reporter = org.scalatest.Reporter
+  //lazy val Reporter = org.scalatest.Reporter
 }
