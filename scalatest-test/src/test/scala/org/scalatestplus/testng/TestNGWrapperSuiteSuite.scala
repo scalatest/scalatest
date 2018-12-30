@@ -23,8 +23,6 @@ import org.scalatest.events.Ordinal
 
 package org.scalatestplus.testng {
 
-  import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
-
   class TestNGWrapperSuiteSuite extends FunSuite with SuiteExpectations {
   
     val XML_SUITES_PROPERTY = "xml_suites"
@@ -51,7 +49,7 @@ package org.scalatestplus.testng {
         }
       )
       
-      val status = new ScalaTestStatefulStatus
+      val status = new StatefulStatus
       (new TestNGWrapperSuite(List(xmlSuiteFile))).runTestNG(reporter, new Tracker, status)
       status.setCompleted()
 
@@ -81,7 +79,7 @@ package org.scalatestplus.testng {
         }
       )
       
-      val status = new ScalaTestStatefulStatus()
+      val status = new StatefulStatus()
       (new TestNGWrapperSuite(List(xmlSuiteFile))).runTestNG(reporter, new Tracker, status)
       status.setCompleted()
 

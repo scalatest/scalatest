@@ -27,7 +27,6 @@ import org.junit.runner.Result
 import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunListener
 import org.scalatest.Suite
-import org.scalatest.ScalaTestInternals.ScalaTestStatefulStatus
 
 /**
  * <p>
@@ -67,7 +66,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
     import args._
 
     theTracker = tracker
-    val status = new ScalaTestStatefulStatus
+    val status = new StatefulStatus
 
     val jUnitCore = new JUnitCore
 

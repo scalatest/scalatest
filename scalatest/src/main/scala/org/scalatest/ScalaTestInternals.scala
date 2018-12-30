@@ -19,9 +19,5 @@ private[org] object ScalaTestInternals {
 
   lazy val Suite = org.scalatest.Suite
 
-  type ScalaTestStatefulStatus = org.scalatest.ScalaTestStatefulStatus
-
   lazy val Resources = org.scalatest.Resources
-
-  //lazy val Reporter = org.scalatest.Reporter
 }
