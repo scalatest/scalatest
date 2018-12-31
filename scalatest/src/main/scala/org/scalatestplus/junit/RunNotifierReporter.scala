@@ -20,7 +20,6 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
 import org.scalatest.events._
-import org.scalatest.ScalaTestInternals.Resources
 
 // TODO: Mention on each Reporter method that it does nothing
 
