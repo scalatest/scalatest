@@ -17,7 +17,6 @@
 package org.scalatestplus.junit
 
 import org.scalatest._
-import ScalaTestInternals.Suite
 import org.junit.runner.notification.RunNotifier
 import org.junit.runner.notification.Failure
 import org.junit.runner.Description
@@ -59,7 +58,7 @@ import org.junit.runner.Description
  */
 final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner {
 
-  private val canInstantiate = Suite.checkForPublicNoArgConstructor(suiteClass)
+  private val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass)
   require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
 
   private val suiteToRun = suiteClass.newInstance
