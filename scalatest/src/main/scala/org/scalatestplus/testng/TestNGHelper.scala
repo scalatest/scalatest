@@ -16,8 +16,6 @@
 package org.scalatestplus.testng
 
 import java.lang.reflect.{Method, Modifier}
-
-import org.scalatest.ScalaTestInternals.Resources
 import org.scalatest._
 import org.scalatest.events.{Formatter, IndentedText}
 import org.scalatest.exceptions.NotAllowedException

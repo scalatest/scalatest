@@ -25,7 +25,6 @@ import TestNGHelper.formatterForSuiteAborted
 import TestNGHelper.getIndentedTextForTest
 import TestNGHelper.yeOldeTestNames
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
-import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress
 
 /**
