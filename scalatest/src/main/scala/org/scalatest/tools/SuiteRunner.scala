@@ -33,7 +33,7 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
     if (!stopper.stopRequested) {
       val rawString = Resources.suiteExecutionStarting
       val formatter = formatterForSuiteStarting(suite)
-      val dispatch = args.reporter
+      val dispatch = Suite.wrapReporterIfNecessary(suite, args.reporter)
       val tracker = args.tracker
 
       val suiteStartTime = System.currentTimeMillis

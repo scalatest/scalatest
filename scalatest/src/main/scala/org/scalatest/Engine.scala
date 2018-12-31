@@ -431,12 +431,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
     if (theSuite.testNames.size > 0)
       checkChosenStyles(configMap, theSuite.styleName)
-
-    // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
-    // so that exceptions are caught and transformed
-    // into error messages on the standard error stream.
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
-    val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
     val statusBuffer = new ListBuffer[Status]()
 
@@ -448,13 +442,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
         if (!filterTest) {
           if (ignoreTest) {
             val theTest = atomic.get.testsMap(tn)
-            reportTestIgnored(theSuite, report, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
+            reportTestIgnored(theSuite, reporter, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
           }
           else {
-            statusBuffer += runTest(tn, newArgs)
+            statusBuffer += runTest(tn, args)
           }
         }
-      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, runTest)
+      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, args, includeIcon, runTest)
     }
     new CompositeStatus(Set.empty ++ statusBuffer)
   }
@@ -475,12 +469,10 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
-
     val informerForThisSuite =
       ConcurrentInformer(
         (message, payload, isConstructingThread, location) => {
-          reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportInfoProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -489,7 +481,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val updaterForThisSuite =
       ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
-          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -498,7 +490,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val alerterForThisSuite =
       ConcurrentAlerter(
         (message, payload, isConstructingThread, location) => {
-          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportAlertProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -507,14 +499,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val documenterForThisSuite =
       ConcurrentDocumenter(
         (message, payload, isConstructingThread, location) => {
-          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+          reportMarkupProvided(theSuite, reporter, tracker, None, message, 1, location, isConstructingThread)
         }
       )
 
     atomicDocumenter.set(documenterForThisSuite)
 
     try {
-      superRun(testName, args.copy(reporter = report))
+      superRun(testName, args.copy(reporter = reporter))
     }
     finally {
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
@@ -1069,13 +1061,10 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
-    val newArgs = if (report eq reporter) args else args.copy(reporter = report)
-
     val informerForThisSuite =
       ConcurrentInformer(
         (message, payload, isConstructingThread, location) => {
-          reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportInfoProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -1084,7 +1073,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     val updaterForThisSuite =
       ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
-          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -1093,7 +1082,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     val alerterForThisSuite =
       ConcurrentAlerter(
         (message, payload, isConstructingThread, location) => {
-          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportAlertProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -1102,14 +1091,14 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     val documenterForThisSuite =
       ConcurrentDocumenter(
         (message, payload, isConstructingThread, location) => {
-          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+          reportMarkupProvided(theSuite, reporter, tracker, None, message, 1, location, isConstructingThread)
         }
       )
 
     atomicDocumenter.set(documenterForThisSuite)
 
     try {
-     runTestsImpl(theSuite, testName, newArgs, info, true, runTest)
+     runTestsImpl(theSuite, testName, args, info, true, runTest)
     }
     finally {
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)

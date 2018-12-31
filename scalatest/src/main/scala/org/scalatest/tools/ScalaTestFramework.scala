@@ -400,8 +400,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
           val (reporter, filter, configMap, membersOnly, wildcard, testSortingReporterTimeout) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
           
           if ((wildcard.isEmpty && membersOnly.isEmpty) || filterWildcard(wildcard, testClassName) || filterMembersOnly(membersOnly, testClassName)) {
-          
-            val report = new SbtReporter(eventHandler, Some(reporter))
+
             val tracker = new Tracker
             val suiteStartTime = System.currentTimeMillis
 
@@ -418,6 +417,8 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
                 }
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
+
+            val report = new SbtReporter(eventHandler, Some(Suite.wrapReporterIfNecessary(suite, reporter)))
 
             val formatter = formatterForSuiteStarting(suite)
 

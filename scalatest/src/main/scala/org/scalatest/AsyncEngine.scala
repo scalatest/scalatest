@@ -531,8 +531,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
-    val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
     val statusList: List[Status] =
       // If a testName is passed to run, just run that, else run the tests returned
@@ -543,17 +541,17 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           if (!filterTest) {
             if (ignoreTest) {
               val theTest = atomic.get.testsMap(tn)
-              reportTestIgnored(theSuite, report, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
+              reportTestIgnored(theSuite, reporter, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
               List.empty
             }
             else {
-              List(runTest(tn, newArgs))
+              List(runTest(tn, args))
             }
           }
           else
             List.empty
 
-        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, List.empty, runTest)
+        case None => runTestsInBranch(theSuite, Trunk, args, includeIcon, parallelAsyncTestExecution, List.empty, runTest)
       }
     new CompositeStatus(Set.empty ++ statusList)
   }
@@ -585,12 +583,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
-
     val informerForThisSuite =
       ConcurrentInformer(
         (message, payload, isConstructingThread, location) => {
-          reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportInfoProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -599,7 +595,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val updaterForThisSuite =
       ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
-          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -608,7 +604,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val alerterForThisSuite =
       ConcurrentAlerter(
         (message, payload, isConstructingThread, location) => {
-          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportAlertProvided(theSuite, reporter, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
@@ -617,13 +613,13 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val documenterForThisSuite =
       ConcurrentDocumenter(
         (message, payload, isConstructingThread, location) => {
-          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+          reportMarkupProvided(theSuite, reporter, tracker, None, message, 1, location, isConstructingThread)
         }
       )
 
     atomicDocumenter.set(documenterForThisSuite)
 
-    val status = superRun(testName, args.copy(reporter = report))
+    val status = superRun(testName, args.copy(reporter = reporter))
 
     // SKIP-SCALATESTJS-START
     status.whenCompleted { r =>

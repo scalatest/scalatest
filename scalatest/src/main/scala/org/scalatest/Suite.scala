@@ -784,7 +784,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val status =
         run(
           None,
-          Args(dispatch,
+          Args(Suite.wrapReporterIfNecessary(thisSuite, dispatch),
           Stopper.default,
           filter,
           configMap,
@@ -1021,9 +1021,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
-    val report = wrapReporterIfNecessary(thisSuite, reporter)
-    val newArgs = args.copy(reporter = report)
-    
+
     val statusBuffer = new ListBuffer[Status]()
 
     // If a testName is passed to run, just run that, else run the tests returned
@@ -1034,18 +1032,18 @@ trait Suite extends Assertions with Serializable { thisSuite =>
         val (filterTest, ignoreTest) = filter(tn, tags, suiteId)
         if (!filterTest) {
           if (ignoreTest)
-            reportTestIgnored(thisSuite, report, tracker, tn, tn, getEscapedIndentedTextForTest(tn, 1, true), Some(getTopOfMethod(thisSuite, tn)))
+            reportTestIgnored(thisSuite, reporter, tracker, tn, tn, getEscapedIndentedTextForTest(tn, 1, true), Some(getTopOfMethod(thisSuite, tn)))
           else
-            statusBuffer += runTest(tn, newArgs)
+            statusBuffer += runTest(tn, args)
         }
 
       case None =>
         for ((tn, ignoreTest) <- filter(theTestNames, tags, suiteId)) {
           if (!stopper.stopRequested) {
             if (ignoreTest)
-              reportTestIgnored(thisSuite, report, tracker, tn, tn, getEscapedIndentedTextForTest(tn, 1, true), Some(getTopOfMethod(thisSuite, tn)))
+              reportTestIgnored(thisSuite, reporter, tracker, tn, tn, getEscapedIndentedTextForTest(tn, 1, true), Some(getTopOfMethod(thisSuite, tn)))
             else
-              statusBuffer += runTest(tn, newArgs)
+              statusBuffer += runTest(tn, args)
           }
       }
     }
@@ -1113,19 +1111,16 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     try {
       Thread.currentThread.setName(SuiteHelpers.augmentedThreadName(originalThreadName, suiteName))
 
-      val report = wrapReporterIfNecessary(thisSuite, reporter)
-      val newArgs = args.copy(reporter = report)
-
       val nestedSuitesStatus = 
         testName match {
-          case None => runNestedSuites(newArgs)
+          case None => runNestedSuites(args)
           case Some(_) => SucceededStatus
         }
-      val testsStatus = runTests(testName, newArgs)
+      val testsStatus = runTests(testName, args)
 
       if (stopper.stopRequested) {
         val rawString = Resources.executeStopping
-        report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
+        reporter(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
       }
       new CompositeStatus(Set(nestedSuitesStatus, testsStatus))
     }
@@ -1169,8 +1164,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
     import args._
 
-    val report = wrapReporterIfNecessary(thisSuite, reporter)
-
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
       if (!stopper.stopRequested) {
@@ -1180,11 +1173,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
         val suiteStartTime = System.currentTimeMillis
 
-        report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+        reporter(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
 
         try { // TODO: pass runArgs down and that will get the chosenStyles passed down
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(reporter, stopper, filter, configMap, distributor, tracker, Set.empty))
 
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
@@ -1193,11 +1186,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
           status.unreportedException match {
             case Some(ue) =>
-              report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
               FailedStatus
 
             case None =>
-              report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+              reporter(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
               SucceededStatus
           }
         }
@@ -1212,7 +1205,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
             val formatter = formatterForSuiteAborted(nestedSuite, rawString)
 
             val duration = System.currentTimeMillis - suiteStartTime
-            report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
             if (NonFatal(e.getCause))
               FailedStatus
             else
@@ -2065,11 +2058,9 @@ used for test events like succeeded/failed, etc.
   // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
 
-    val report = wrapReporterIfNecessary(theSuite, reporter)
-
     val testStartTime = System.currentTimeMillis
 
-    (stopper, report, testStartTime)
+    (stopper, reporter, testStartTime)
   }
 
   // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,

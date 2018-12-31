@@ -24,7 +24,6 @@ import org.scalactic.source
 import org.scalatest.ScalaTestInternals.Suite
 import org.scalatest.ScalaTestInternals.Suite.autoTagClassAnnotations
 import org.scalatest.ScalaTestInternals.Resources
-import Suite.wrapReporterIfNecessary
 import collection.immutable.TreeSet
 
 /**
@@ -237,7 +236,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
 
     if (!filter.tagsToInclude.isDefined) {
       val jUnitCore = new JUnitCore
-      jUnitCore.addListener(new MyRunListener(wrapReporterIfNecessary(thisSuite, reporter), configMap, tracker, status))
+      jUnitCore.addListener(new MyRunListener(reporter, configMap, tracker, status))
       val myClass = this.getClass
       testName match {
         case None => jUnitCore.run(myClass)

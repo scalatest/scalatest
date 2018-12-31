@@ -21,7 +21,6 @@ import exceptions._
 import org.scalactic.Requirements._
 import org.scalactic.NameUtil
 import ScalaTestInternals.Suite.getIndentedTextForTest
-import ScalaTestInternals.Suite.wrapReporterIfNecessary
 import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test
@@ -251,7 +250,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
 
     if (!filter.tagsToInclude.isDefined) {
       val testResult = new TestResult
-      testResult.addListener(new MyTestListener(wrapReporterIfNecessary(thisSuite, reporter), tracker, status))
+      testResult.addListener(new MyTestListener(reporter, tracker, status))
       testName match {
         case None => new TestSuite(this.getClass).run(testResult)
         case Some(tn) =>

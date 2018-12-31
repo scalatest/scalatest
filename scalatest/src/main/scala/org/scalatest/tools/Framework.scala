@@ -256,7 +256,7 @@ class Framework extends SbtFramework {
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
-    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
+    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, Suite.wrapReporterIfNecessary(suite, suiteSortingReporter), summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 

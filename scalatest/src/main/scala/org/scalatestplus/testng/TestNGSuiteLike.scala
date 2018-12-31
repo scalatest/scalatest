@@ -24,7 +24,6 @@ import org.testng.TestNG
 import org.scalatest.ScalaTestInternals.Suite
 import org.scalatest.ScalaTestInternals.Suite.formatterForSuiteAborted
 import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
-import org.scalatest.ScalaTestInternals.Suite.wrapReporterIfNecessary
 import org.scalatest.ScalaTestInternals.Suite.yeOldeTestNames
 import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress
@@ -147,7 +146,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   override def run(testName: Option[String], args: Args): Status = {
     import args._
     val status = new StatefulStatus
-    runTestNG(testName, wrapReporterIfNecessary(thisSuite, reporter), filter, tracker, status)
+    runTestNG(testName, reporter, filter, tracker, status)
     
     status.setCompleted()
     status

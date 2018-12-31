@@ -234,7 +234,7 @@ class CatchReporterProp extends AllSuiteProp {
   test("Well written reporter that does not extend CatchReporter should be wrapped with CatchReporter and execute just fine.") {
     forAll(examples) { s => 
       val rep = new WrapAwareReporter
-      s.run(None, Args(reporter = rep))
+      s.run(None, Args(reporter = Suite.wrapReporterIfNecessary(s, rep)))
       assert(rep.testStartingEventsReceived.length === 3)
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(rep.isWrapped, "rep should be wrapped with CatchReporter, but it does not.")
@@ -255,7 +255,7 @@ class CatchReporterProp extends AllSuiteProp {
   test("Reporter that does not extend CatchReporter should be wrapped with CatchReporter and handle buggy reporter correctly.") {
     forAll(examples) { s => 
       val rep = new BuggyReporter
-      s.run(None, Args(reporter = rep))
+      s.run(None, Args(reporter = Suite.wrapReporterIfNecessary(s, rep)))
       assert(rep.testStartingEventsReceived.length === 2)
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(rep.isWrapped, "rep should be wrapped with CatchReporter, but it does not.")
