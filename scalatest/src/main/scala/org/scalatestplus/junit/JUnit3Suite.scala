@@ -21,7 +21,6 @@ import exceptions._
 import org.scalactic.Requirements._
 import org.scalactic.NameUtil
 import JUnitHelper.getIndentedTextForTest
-import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test
 import _root_.junit.framework.TestCase

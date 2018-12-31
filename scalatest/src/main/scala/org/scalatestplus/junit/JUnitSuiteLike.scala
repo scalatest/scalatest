@@ -22,7 +22,6 @@ import org.junit.runner.notification.RunListener
 import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalactic.source
 import JUnitHelper.autoTagClassAnnotations
-import org.scalatest.ScalaTestInternals.Resources
 import collection.immutable.TreeSet
 
 /**

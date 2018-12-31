@@ -24,7 +24,6 @@ import org.testng.TestNG
 import TestNGHelper.formatterForSuiteAborted
 import TestNGHelper.getIndentedTextForTest
 import TestNGHelper.yeOldeTestNames
-import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress
 
 /**

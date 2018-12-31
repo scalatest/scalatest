@@ -19,7 +19,6 @@ import java.lang.reflect.Modifier
 
 import org.scalatest.events.IndentedText
 import org.scalatest.{Suite, TagAnnotation}
-import org.scalatest.ScalaTestInternals.Resources
 
 private[junit] object JUnitHelper {
 
