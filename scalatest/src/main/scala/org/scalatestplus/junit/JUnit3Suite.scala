@@ -20,7 +20,7 @@ import org.scalatest.events._
 import exceptions._
 import org.scalactic.Requirements._
 import org.scalactic.NameUtil
-import ScalaTestInternals.Suite.getIndentedTextForTest
+import JUnitHelper.getIndentedTextForTest
 import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test

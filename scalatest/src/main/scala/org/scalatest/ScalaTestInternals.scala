@@ -16,8 +16,6 @@
 package org.scalatest
 
 private[org] object ScalaTestInternals {
-
-  lazy val Suite = org.scalatest.Suite
-
+  
   lazy val Resources = org.scalatest.Resources
 }

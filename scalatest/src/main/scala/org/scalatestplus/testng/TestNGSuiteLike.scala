@@ -21,10 +21,9 @@ import exceptions._
 import org.scalactic.source
 import org.testng.TestListenerAdapter
 import org.testng.TestNG
-import org.scalatest.ScalaTestInternals.Suite
-import org.scalatest.ScalaTestInternals.Suite.formatterForSuiteAborted
-import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
-import org.scalatest.ScalaTestInternals.Suite.yeOldeTestNames
+import TestNGHelper.formatterForSuiteAborted
+import TestNGHelper.getIndentedTextForTest
+import TestNGHelper.yeOldeTestNames
 import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress
 
@@ -158,7 +157,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   private def getTags(testName: String) =
     for {
-      a <- Suite.getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
+      a <- TestNGHelper.getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
@@ -170,7 +169,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
       (for (testName <- testNameSet; if !getTags(testName).isEmpty)
         yield testName -> (Set() ++ getTags(testName)))
 
-    Suite.autoTagClassAnnotations(testTags, this)
+    TestNGHelper.autoTagClassAnnotations(testTags, this)
   }
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
