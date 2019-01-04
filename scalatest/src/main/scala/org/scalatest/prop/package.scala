@@ -19,7 +19,6 @@ import org.scalactic.anyvals._
 import scala.annotation.tailrec
 import scala.reflect.runtime.universe.TypeTag
 
-// TODO: Get rid of the PosZInt.ensuringValid calls by chosing a PosZInt between 1 and 20 instead of an Int
 package object prop {
 
   // The valueOf methods are called by the function generators.
