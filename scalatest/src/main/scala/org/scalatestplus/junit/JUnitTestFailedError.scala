@@ -275,7 +275,7 @@ class JUnitTestFailedError(
       ) + failedCodeStackDepth.hashCode
     ) + getStackTrace.hashCode
 
-  def isMatch(ele: StackTraceElement, pos: source.Position): Boolean =
+  private def isMatch(ele: StackTraceElement, pos: source.Position): Boolean =
     ele.getFileName == pos.fileName && ele.getLineNumber == pos.lineNumber
 
   private def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
