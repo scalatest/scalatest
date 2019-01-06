@@ -29,12 +29,64 @@ import org.scalatest.prop.Configuration
  */
 private[scalacheck] trait ScalaCheckConfiguration extends Configuration {
 
+  private def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
+    ((maxDiscarded + 1): Double) / (minSuccessful: Double)
+
+  // Note: We should remove this class once we're fully moved on to PropertyCheckConfiguration
+  private class InternalPropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
+                                                maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
+                                                minSize: PosZInt = PosZInt(0),
+                                                sizeRange: PosZInt = PosZInt(100),
+                                                workers: PosInt = PosInt(1),
+                                                val maxDiscarded: Option[Int] = None,
+                                                val maxSize: Option[Int] = None) extends PropertyCheckConfiguration(minSuccessful, maxDiscardedFactor, minSize, sizeRange, workers)
+
+  override implicit def PropertyCheckConfig2PropertyCheckConfiguration(p: PropertyCheckConfig): PropertyCheckConfiguration = {
+    val maxDiscardedFactor = calculateMaxDiscardedFactor(p.minSuccessful, p.maxDiscarded)
+    new InternalPropertyCheckConfiguration(
+      minSuccessful = PosInt.from(p.minSuccessful).get,
+      maxDiscardedFactor = PosZDouble.from(maxDiscardedFactor).get,
+      minSize = PosZInt.from(p.minSize).get,
+      sizeRange = PosZInt.from(p.maxSize - p.minSize).get,
+      workers = PosInt.from(p.workers).get,
+      Some(p.maxDiscarded),
+      Some(p.maxSize))
+  }
+
   private[scalacheck] def getParams(
                                configParams: Seq[Configuration#PropertyCheckConfigParam],
                                c: PropertyCheckConfigurable
                                ): Parameters = {
 
-    val config: PropertyCheckConfiguration = c.asPropertyCheckConfiguration
+    val config: InternalPropertyCheckConfiguration =
+      c match {
+        case legacyConfig: PropertyCheckConfig =>
+          PropertyCheckConfig2PropertyCheckConfiguration(legacyConfig).asInstanceOf[InternalPropertyCheckConfiguration]  // safe cast
+        case legacyConfig: InternalPropertyCheckConfiguration => legacyConfig
+        case _ =>
+          val config = new PropertyCheckConfiguration(c)
+          new InternalPropertyCheckConfiguration(config.minSuccessful, config.maxDiscardedFactor, config.minSize, config.sizeRange, config.workers)
+          /*println("###c: " + c.getClass.getName)
+          if (c.getClass.getName == "org.scalatest.prop.Configuration$PropertyCheckConfiguration")
+            (new PropertyCheckConfiguration(c), None, None)
+          else {
+            val legacyMaxDiscardedField = c.getClass.getDeclaredField("legacyMaxDiscarded")
+            legacyMaxDiscardedField.setAccessible(true)
+            val legacyMaxDiscardedValue = legacyMaxDiscardedField.get(c).asInstanceOf[Option[Int]]
+            legacyMaxDiscardedField.setAccessible(false)
+            val legacyMaxSizeField = c.getClass.getDeclaredField("legacyMaxSize")
+            legacyMaxSizeField.setAccessible(true)
+            val legacyMaxSizeValue = legacyMaxSizeField.get(c).asInstanceOf[Option[Int]]
+            legacyMaxSizeField.setAccessible(false)
+            (new PropertyCheckConfiguration(c), legacyMaxDiscardedValue, legacyMaxSizeValue)
+          }*/
+      }
+
+    /*val (config: PropertyCheckConfiguration, legacyMaxDiscarded: Option[Int], legacyMaxSize: Option[Int]) = {
+      val config = c.asPropertyCheckConfiguration
+      (config, config.legacyMaxDiscarded, config.legacyMaxSize)
+    }*/
+
     var minSuccessful: Option[Int] = None
     var maxDiscarded: Option[Int] = None
     var maxDiscardedFactor: Option[Double] = None
@@ -95,7 +147,7 @@ private[scalacheck] trait ScalaCheckConfiguration extends Configuration {
     val minSize: Int = pminSize.getOrElse(config.minSize)
 
     val maxSize = {
-      (psizeRange, pmaxSize, config.legacyMaxSize) match {
+      (psizeRange, pmaxSize, config.maxSize) match {
         case (None, None, Some(legacyMaxSize)) =>
           legacyMaxSize
         case (None, Some(maxSize), _) =>
@@ -106,12 +158,12 @@ private[scalacheck] trait ScalaCheckConfiguration extends Configuration {
     }
 
     val maxDiscardRatio: Float = {
-      (maxDiscardedFactor, maxDiscarded, config.legacyMaxDiscarded, minSuccessful) match {
+      (maxDiscardedFactor, maxDiscarded, config.maxDiscarded, minSuccessful) match {
         case (None, None, Some(legacyMaxDiscarded), Some(specifiedMinSuccessful)) =>
-          PropertyCheckConfiguration.calculateMaxDiscardedFactor(specifiedMinSuccessful, legacyMaxDiscarded).toFloat
+          calculateMaxDiscardedFactor(specifiedMinSuccessful, legacyMaxDiscarded).toFloat
         case (None, Some(md), _, _) =>
           if (md < 0) Parameters.default.maxDiscardRatio
-          else PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessfulTests, md).toFloat
+          else calculateMaxDiscardedFactor(minSuccessfulTests, md).toFloat
         case _ =>
           maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
       }
