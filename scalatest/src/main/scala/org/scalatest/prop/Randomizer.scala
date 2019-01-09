@@ -305,6 +305,11 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (FiniteFloat.ensuringValid(finite), rm)
   }
 
+  private def nextFiniteFloatValue: (Float, Randomizer) = {
+    val (ff, r) = nextFiniteFloat
+    (ff.value, r)
+  }
+
   /**
     * Get a random non-infinite Double.
     *
@@ -323,6 +328,11 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL) // The mantissa (52 bits)
     val finite = java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m)
     (FiniteDouble.ensuringValid(finite), rm)
+  }
+
+  private def nextFiniteDoubleValue: (Double, Randomizer) = {
+    val (fd, r) = nextFiniteDouble
+    (fd.value, r)
   }
 
   /**
