@@ -236,8 +236,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (PosZLong.ensuringValid(pos), rb)
   }
 
-  // These next two methods are needed to distinguish negative and positive
-  // zero floats because -0.0 == 0.0
+  // This is needed to distinguish negative and positive
+  // zero floats because -0.0f == 0.0f
   private def isNegativeZeroFloat(f: Float): Boolean = {
     // scala> java.lang.Float.floatToIntBits(-0.0f)
     // res34: Int = -2147483648
@@ -247,12 +247,26 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     bits == NegativeZeroFloatBits
   }
 
+  // This is needed to distinguish negative and positive
+  // zero doubles because -0.0 == 0.0
+  private def isNegativeZeroDouble(d: Double): Boolean = {
+    // scala> java.lang.Double.doubleToLongBits(-0.0)
+    // res46: Long = -9223372036854775808
+    // 
+    val NegativeZeroDoubleBits: Long = -9223372036854775808L
+    val bits: Long = java.lang.Double.doubleToLongBits(d)
+    bits == NegativeZeroDoubleBits
+  }
+
+/*
+  TODO: Delete this if it remains unused
   private def isPositiveZeroFloat(f: Float): Boolean = {
     // scala> java.lang.Float.floatToIntBits(0.0f)
     // res39: Int = 0
     // 
     java.lang.Float.floatToIntBits(f) == 0
   }
+*/
 
   /**
     * Get a random Float greater than zero.
@@ -442,9 +456,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Double, and the next Randomizer to use.
     */
   def nextPosDouble: (PosDouble, Randomizer) = {
-    val (d, r) = nextDouble
-    val candidate = d.abs // 0.0 or greater
-    val pos = if (candidate == 0.0) Double.MinPositiveValue else candidate
+    val (d, r) = nextPosZDouble
+    val candidate = d.value
+    val pos = 
+      // A PosZDouble can be -0.0, but that equals 0.0 also
+      // scala> -0.0 == 0.0
+      // res37: Boolean = true
+      if (candidate == 0.0) Double.MinPositiveValue
+      else candidate
     (PosDouble.ensuringValid(pos), r)
   }
 
@@ -481,8 +500,11 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Double, and the next Randomizer to use.
     */
   def nextNonZeroDouble: (NonZeroDouble, Randomizer) = {
-    val (d, r) = nextDouble
-    val nonZero = if (d == 0.0 || d == -0.0) Double.MinPositiveValue else d
+    val (candidate, r) = nextExtRealFloatValue
+    val nonZero = 
+      if (isNegativeZeroDouble(candidate)) -Double.MinPositiveValue
+      else if (candidate == 0.0) Double.MinPositiveValue
+      else candidate
     (NonZeroDouble.ensuringValid(nonZero), r)
   }
 
@@ -584,14 +606,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Double, and the next Randomizer to use.
     */
   def nextNegDouble: (NegDouble, Randomizer) = {
-    val (d, r) = nextDouble
-    val neg =
-      d match {
-        case 0.0 => -Double.MinPositiveValue
-        case -0.0 => -Double.MinPositiveValue
-        case v if v > 0.0 => -v
-        case _ => d
-      }
+    val (d, r) = nextNegZDouble
+    val candidate = d.value
+    val neg = 
+      // A NegZDouble can be +0.0, but that equals -0.0 also
+      // scala> 0.0 == -0.0
+      // res38: Boolean = true
+      if (candidate == -0.0) -Double.MinPositiveValue
+      else candidate
     (NegDouble.ensuringValid(neg), r)
   }
 
@@ -700,8 +722,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative-or-zero Double, and the next Randomizer to use.
     */
   def nextNegZDouble: (NegZDouble, Randomizer) = {
-    val (d, r) = nextDouble
-    val negZ = if (d > 0.0) -d else d
+    // scala> NegZDouble(0.0)
+    // res0: org.scalactic.anyvals.NegZDouble = NegZDouble(0.0)
+    val (candidate, r) = nextExtRealDoubleValue
+    val negZ =
+      // scala> -0.0 > 0.0
+      // res42: Boolean = false
+      if (candidate > 0.0) -candidate
+      else candidate // This will leave positive zero as positive zero, which is what we want
     (NegZDouble.ensuringValid(negZ), r)
   }
 
@@ -796,9 +824,20 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Double, and the next Randomizer to use.
     */
   def nextPosZDouble: (PosZDouble, Randomizer) = {
-    val (d, r) = nextDouble
-    val pos = d.abs // 0.0 or greater
-    (PosZDouble.ensuringValid(pos), r)
+    // scala> Double.NegativeInfinity.abs
+    // res30: Double = Infinity
+    //
+    // scala> -0.0.abs
+    // res31: Double = 0.0
+    //
+    // scala> PosZDouble(-0.0)
+    // TODO: Re-verify all of these PosZ ones. I am copying and changing the comment.
+    // res0: org.scalactic.anyvals.PosZDouble = PosZDouble(-0.0)
+    val (candidate, r) = nextExtRealDoubleValue
+    val posZ =
+      if (isNegativeZeroDouble(candidate)) candidate // leave it negative zero
+      else candidate.abs // 0.0 or greater
+    (PosZDouble.ensuringValid(posZ), r)
   }
 
   /**
