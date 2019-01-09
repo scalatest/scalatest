@@ -138,6 +138,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Float in that range, and the next Randomizer to use.
     */
   def nextFloatBetween0And1: (Float, Randomizer) = {
+    // TODO: Verify this algo against the spec, and comment it.
     val (i, r) = thisRandomizer.next(24)
     (i / ((1 << 24).toFloat), r)
   }
@@ -258,7 +259,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosFiniteFloat: (PosFiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
+    val (n, r) = nextFiniteFloatValue
     val posFinite =
       n match {
         case 0.0F => Float.MinPositiveValue
@@ -343,7 +344,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosZFiniteFloat: (PosZFiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
+    val (n, r) = nextFiniteFloatValue
     val posZFinite =
       n match {
         case Float.PositiveInfinity => Float.MaxValue
@@ -454,7 +455,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Float, and the next Randomizer to use.
     */
   def nextNonZeroFiniteFloat: (NonZeroFiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
+    val (n, r) = nextFiniteFloatValue
     val nonZeroFinite =
       n match {
         case 0.0F => Float.MinPositiveValue
@@ -564,7 +565,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Float, and the next Randomizer to use.
     */
   def nextNegFiniteFloat: (NegFiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
+    val (n, r) = nextFiniteFloatValue
     val negFinite =
       n match {
         case 0.0 => -Float.MinPositiveValue
@@ -664,7 +665,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative-or-zero Float, and the next Randomizer to use.
     */
   def nextNegZFiniteFloat: (NegZFiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
+    val (n, r) = nextFiniteFloatValue
     val negZFinite =
       n match {
         case Float.PositiveInfinity => Float.MinValue
