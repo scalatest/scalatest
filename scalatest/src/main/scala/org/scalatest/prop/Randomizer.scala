@@ -167,6 +167,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Double in that range, and the next Randomizer to use.
     */
   def nextDoubleBetween0And1: (Double, Randomizer) = {
+    // TODO: Verify this implementation against the spec and comment it.
     val (ia, ra) = thisRandomizer.next(26)
     val (ib, rb) = ra.next(27)
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
@@ -379,7 +380,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Double, and the next Randomizer to use.
     */
   def nextPosFiniteDouble: (PosFiniteDouble, Randomizer) = {
-    val (d, r) = nextDouble
+    val (d, r) = nextFiniteDoubleValue
     val posFinite =
       d match {
         case 0.0 => Double.MinPositiveValue
@@ -417,7 +418,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Double, and the next Randomizer to use.
     */
   def nextNonZeroFiniteDouble: (NonZeroFiniteDouble, Randomizer) = {
-    val (d, r) = nextDouble
+    val (d, r) = nextFiniteDoubleValue
     val nonZeroFinite =
       d match {
         case 0.0 => Double.MinPositiveValue
@@ -523,7 +524,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Double, and the next Randomizer to use.
     */
   def nextNegFiniteDouble: (NegFiniteDouble, Randomizer) = {
-    val (d, r) = nextDouble
+    val (d, r) = nextFiniteDoubleValue
     val negFinite =
       d match {
         case 0.0 => -Double.MinPositiveValue
@@ -632,7 +633,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative-or-zero Double, and the next Randomizer to use.
     */
   def nextNegZFiniteDouble: (NegZFiniteDouble, Randomizer) = {
-    val (d, r) = nextDouble
+    val (d, r) = nextFiniteDoubleValue
     val negFinite =
       d match {
         case Double.PositiveInfinity => Double.MinValue
@@ -720,7 +721,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Double, and the next Randomizer to use.
     */
   def nextPosZFiniteDouble: (PosZFiniteDouble, Randomizer) = {
-    val (d, r) = nextDouble
+    val (d, r) = nextFiniteDoubleValue
     val posZFinite =
       d match {
         case Double.PositiveInfinity => Double.MaxValue
