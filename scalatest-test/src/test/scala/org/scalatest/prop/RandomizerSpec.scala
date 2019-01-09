@@ -113,8 +113,7 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {
 
-      
-      an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextString(-1) }
+      """Randomizer(100).nextString(-1)""" shouldNot compile
 
       val (sa, ra) = Randomizer(100).nextString(0)
       sa should have length 0
@@ -134,7 +133,7 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
     it("should offer a nextList[T] method that produces a List[T] of the requested 0 or greater size") {
 
-      an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextList[Int](-1) }
+      """Randomizer(100).nextList[Int](-1)""" shouldNot compile
 
       val (la, ra) = Randomizer(100).nextList[Int](0)
       la should have length 0
