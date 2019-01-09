@@ -150,11 +150,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     *
     * @return A random Float, and the next Randomizer to use.
     */
-  def nextFloat: (Float, Randomizer) = { // Uses same algorithm as ScalaCheck for this one
-    val (s, rs) = chooseInt(0, 1)
-    val (e, re) = chooseInt(0, 0xfe)
-    val (m, rm) = chooseInt(0, 0x7fffff)
-    (java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m), rm)
+  def nextFloat: (Float, Randomizer) = {
+    // The space of possible Floats
+    // 2 to the power of 32, which is covered by Int.MinValue to Int.MaxValue
+    // - (2 to the power of 23 (23 is the number of mantissa bits))
+    // + (3 for the two infinities and one NaN)
+
+    // scala> Int.MaxValue - math.pow(2, 23).toInt + 2
+    // res13: Int = 2139095042
+    val (x, r) = chooseInt(Int.MinValue, 2139095042) 
+
+    // Pick one lucky number to play the lotto with:
+    if (x == 999) (Float.NaN, r)
+    else r.nextExtRealFloatValue
   }
 
   /**
@@ -173,6 +181,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
   }
 
+   // TODO: Any reason why we have both a next and a nextInt? Should we drop next?
+
   /**
     * Get a random Double.
     *
@@ -181,10 +191,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Double, and the next Randomizer to use.
     */
   def nextDouble: (Double, Randomizer) = { // Uses same algorithm as ScalaCheck for this one
-    val (s, rs) = thisRandomizer.chooseLong(0L, 1L)
-    val (e, re) = rs.chooseLong(0L, 0x7feL)
-    val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL)
-    (java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m), rm)
+    // The space of possible Doubles
+    // 2 to the power of 64, which is covered by Long.MinValue to Long.MaxValue
+    // - (2 to the power of 52 (52 is the number of mantissa bits))
+    // + (3 for the two infinities and one NaN)
+
+    // scala> Long.MaxValue - math.pow(2, 52).toLong + 3
+    // res27: Long = 9218868437227405314
+    val (x, r) = chooseLong(Long.MinValue, 9218868437227405314L) 
+
+    // Pick one lucky number to play the lotto with:
+    if (x == 999L)
+      (Double.NaN, r)
+    else r.nextExtRealDoubleValue
   }
 
   /**
@@ -257,16 +276,6 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val bits: Long = java.lang.Double.doubleToLongBits(d)
     bits == NegativeZeroDoubleBits
   }
-
-/*
-  TODO: Delete this if it remains unused
-  private def isPositiveZeroFloat(f: Float): Boolean = {
-    // scala> java.lang.Float.floatToIntBits(0.0f)
-    // res39: Int = 0
-    // 
-    java.lang.Float.floatToIntBits(f) == 0
-  }
-*/
 
   /**
     * Get a random Float greater than zero.
