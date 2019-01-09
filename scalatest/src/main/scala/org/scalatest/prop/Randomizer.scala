@@ -294,14 +294,15 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random finite Float, and the next Randomizer to use.
     */
   def nextFiniteFloat: (FiniteFloat, Randomizer) = {
-    val (n, r) = nextFloat
-    val finite =
-      n match {
-        case Float.PositiveInfinity => Float.MaxValue
-        case Float.NegativeInfinity => Float.MaxValue
-        case _ => n
-      }
-    (FiniteFloat.ensuringValid(finite), r)
+    // The exponent portion of a Float occupies 8 bits. It can be 0 (which represents an exponent of -127)
+    // to 255 (which is a reserved value for NaN values and +/- inifinity). The highest regular (non-reserved)
+    // exponent therefore is 254, which in hex is 0xfe. THus by chosing the exponent Int between 0 and 0xfe,
+    // we can't get a NaN or an infinity.
+    val (s, rs) = chooseInt(0, 1)        // The sign bit (1 bit)
+    val (e, re) = chooseInt(0, 0xfe)     // The exponent (8 bits)
+    val (m, rm) = chooseInt(0, 0x7fffff) // The mantissa (23 bits)
+    val finite = java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m)
+    (FiniteFloat.ensuringValid(finite), rm)
   }
 
   /**
