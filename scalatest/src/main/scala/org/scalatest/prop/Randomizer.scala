@@ -312,6 +312,28 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (ff.value, r)
   }
 
+  // An extended real float includes all the numeric ones plus positive and negative infinity
+  // In other words, the whole space other than the NaNs. This may be a missing abstraction in anyvals.
+  // Let's think about that.
+  private def nextExtRealFloatValue: (Float, Randomizer) = {
+
+    // The space of possible non-NaN Floats
+    // 2 to the power of 32, which is covered by Int.MinValue to Int.MaxValue
+    // - (2 to the power of 23 (23 is the number of mantissa bits))
+    // + (2 for the two infinities)
+
+    // scala> Int.MaxValue - math.pow(2, 23).toInt + 2
+    // res13: Int = 2139095041
+    val (x, r) = chooseInt(Int.MinValue, 2139095041) 
+
+    // Pick two lucky numbers to play the lotto with:
+    if (x == 777)
+      (Float.NegativeInfinity, r)
+    else if (x == 888)
+      (Float.PositiveInfinity, r)
+    else r.nextFiniteFloatValue
+  }
+
   /**
     * Get a random non-infinite Double.
     *
@@ -335,6 +357,28 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   private def nextFiniteDoubleValue: (Double, Randomizer) = {
     val (fd, r) = nextFiniteDouble
     (fd.value, r)
+  }
+
+  // An extended real float includes all the numeric ones plus positive and negative infinity
+  // In other words, the whole space other than the NaNs. This may be a missing abstraction in anyvals.
+  // Let's think about that.
+  private def nextExtRealDoubleValue: (Double, Randomizer) = {
+
+    // The space of possible non-NaN Doubles
+    // 2 to the power of 64, which is covered by Long.MinValue to Long.MaxValue
+    // - (2 to the power of 52 (52 is the number of mantissa bits))
+    // + (2 for the two infinities)
+
+    // scala> Long.MaxValue - math.pow(2, 52).toLong + 2
+    // res27: Long = 9218868437227405313
+    val (x, r) = chooseLong(Long.MinValue, 9218868437227405313L) 
+
+    // Pick two lucky numbers to play the lotto with:
+    if (x == 777L)
+      (Double.NegativeInfinity, r)
+    else if (x == 888L)
+      (Double.PositiveInfinity, r)
+    else r.nextFiniteDoubleValue
   }
 
   /**
