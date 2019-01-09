@@ -236,6 +236,24 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (PosZLong.ensuringValid(pos), rb)
   }
 
+  // These next two methods are needed to distinguish negative and positive
+  // zero floats because -0.0 == 0.0
+  private def isNegativeZeroFloat(f: Float): Boolean = {
+    // scala> java.lang.Float.floatToIntBits(-0.0f)
+    // res34: Int = -2147483648
+    // 
+    val NegativeZeroFloatBits: Int = -2147483648
+    val bits: Int = java.lang.Float.floatToIntBits(f)
+    bits == NegativeZeroFloatBits
+  }
+
+  private def isPositiveZeroFloat(f: Float): Boolean = {
+    // scala> java.lang.Float.floatToIntBits(0.0f)
+    // res39: Int = 0
+    // 
+    java.lang.Float.floatToIntBits(f) == 0
+  }
+
   /**
     * Get a random Float greater than zero.
     *
@@ -245,9 +263,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosFloat: (PosFloat, Randomizer) = {
-    val (f, r) = nextFloat
-    val candidate = f.abs // 0.0f or greater
-    val pos = if (candidate <= 1.0f) candidate else candidate + 1.0f
+    val (f, r) = nextPosZFloat
+    val candidate = f.value
+    val pos = 
+      // A PosZFloat can be -0.0f, but that equals 0.0f also
+      // scala> -0.0f == 0.0f
+      // res37: Boolean = true
+      if (candidate == 0.0F) Float.MinPositiveValue
+      else candidate
     (PosFloat.ensuringValid(pos), r)
   }
 
@@ -282,9 +305,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosZFloat: (PosZFloat, Randomizer) = {
-    val (f, r) = nextFloat
-    val pos = f.abs // 0.0f or greater
-    (PosZFloat.ensuringValid(pos), r)
+    // scala> Float.NegativeInfinity.abs
+    // res30: Float = Infinity
+    //
+    // scala> -0.0f.abs
+    // res31: Float = 0.0
+    //
+    // scala> PosZFloat(-0.0f)
+    // res0: org.scalactic.anyvals.PosZFloat = PosZFloat(-0.0f)
+    val (candidate, r) = nextExtRealFloatValue
+    val posZ =
+      if (isNegativeZeroFloat(candidate)) candidate // leave it negative zero
+      else candidate.abs // 0.0f or greater
+    (PosZFloat.ensuringValid(posZ), r)
   }
 
   /**
@@ -486,8 +519,11 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Float, and the next Randomizer to use.
     */
   def nextNonZeroFloat: (NonZeroFloat, Randomizer) = {
-    val (f, r) = nextFloat
-    val nonZero = if (f == 0.0F || f == -0.0F) Float.MinPositiveValue else f
+    val (candidate, r) = nextExtRealFloatValue
+    val nonZero = 
+      if (isNegativeZeroFloat(candidate)) -Float.MinPositiveValue
+      else if (candidate == 0.0F) Float.MinPositiveValue
+      else candidate
     (NonZeroFloat.ensuringValid(nonZero), r)
   }
 
@@ -590,14 +626,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Float, and the next Randomizer to use.
     */
   def nextNegFloat: (NegFloat, Randomizer) = {
-    val (f, r) = nextFloat
-    val neg =
-      f match {
-        case 0.0F => -Float.MinPositiveValue
-        case -0.0F => -Float.MinPositiveValue
-        case v if v > 0.0F => -v
-        case _ => f
-      }
+    val (f, r) = nextNegZFloat
+    val candidate = f.value
+    val neg = 
+      // A NegZFloat can be +0.0f, but that equals -0.0f also
+      // scala> 0.0f == -0.0f
+      // res38: Boolean = true
+      if (candidate == -0.0F) -Float.MinPositiveValue
+      else candidate
     (NegFloat.ensuringValid(neg), r)
   }
 
@@ -688,6 +724,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (NegZFiniteDouble.ensuringValid(negFinite), r)
   }
 
+  // TODO: probably mention that NegZ can include posivie 0.0, and that PosZ can 
+  // include -0.0 in the docs.
   /**
     * Get a random Float less than or equal to zero.
     *
@@ -697,8 +735,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative-or-zero Float, and the next Randomizer to use.
     */
   def nextNegZFloat: (NegZFloat, Randomizer) = {
-    val (n, r) = nextFloat
-    val negZ = if (n > 0.0F) -n else n
+    // scala> NegZFloat(0.0f)
+    // res0: org.scalactic.anyvals.NegZFloat = NegZFloat(0.0f)
+    val (candidate, r) = nextExtRealFloatValue
+    val negZ =
+      // scala> -0.0f > 0.0f
+      // res42: Boolean = false
+      if (candidate > 0.0F) -candidate
+      else candidate // This will leave positive zero as positive zero, which is what we want
     (NegZFloat.ensuringValid(negZ), r)
   }
 
