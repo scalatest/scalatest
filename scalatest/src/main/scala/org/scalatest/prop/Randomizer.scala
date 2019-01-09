@@ -289,15 +289,15 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * Get a random non-infinite Float.
     *
     * This can return either a positive or negative value, or zero, but guards against
-    * returning either [[Float.PositiveInfinity]] or [[Float.NegativeInfinity]].
+    * returning either [[Float.PositiveInfinity]], [[Float.NegativeInfinity]], or [[Float.NaN]].
     *
     * @return A random finite Float, and the next Randomizer to use.
     */
   def nextFiniteFloat: (FiniteFloat, Randomizer) = {
     // The exponent portion of a Float occupies 8 bits. It can be 0 (which represents an exponent of -127)
-    // to 255 (which is a reserved value for NaN values and +/- inifinity). The highest regular (non-reserved)
-    // exponent therefore is 254, which in hex is 0xfe. THus by chosing the exponent Int between 0 and 0xfe,
-    // we can't get a NaN or an infinity.
+    // to 255 (which is a reserved value for NaN values and +/- infinity). The highest regular (non-reserved)
+    // exponent therefore is 254, which in hex is 0xfe (which represents an exponent of +127).
+    // Thus by chosing the exponent Int between 0 and 0xfe, we can't get a NaN or an infinity.
     val (s, rs) = chooseInt(0, 1)        // The sign bit (1 bit)
     val (e, re) = chooseInt(0, 0xfe)     // The exponent (8 bits)
     val (m, rm) = chooseInt(0, 0x7fffff) // The mantissa (23 bits)
@@ -309,19 +309,20 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * Get a random non-infinite Double.
     *
     * This can return either a positive or negative value, or zero, but guards against
-    * returning either [[Double.PositiveInfinity]] or [[Double.NegativeInfinity]].
+    * returning either [[Double.PositiveInfinity]], [[Double.NegativeInfinity]], or [[Double.NaN]].
     *
     * @return A random finite Double, and the next Randomizer to use.
     */
   def nextFiniteDouble: (FiniteDouble, Randomizer) = {
-    val (n, r) = nextDouble // TODO: Study nextFloat and nextDouble to see if it produces NaNs or Infinities.
-    val finite =            // See if it produces non-normal (less than max precision) values
-      n match {
-        case Double.PositiveInfinity => Double.MaxValue
-        case Double.NegativeInfinity => Double.MaxValue
-        case _ => n
-      }
-    (FiniteDouble.ensuringValid(finite), r)
+    // The exponent portion of a Double occupies 11 bits. It can be 0 (which represents an exponent of -1023)
+    // to 2047 (which is a reserved value for NaN values and +/- infinity). The highest regular (non-reserved)
+    // exponent therefore is 2046, which in hex is 0x7fe (which represents an exponent of +1023).
+    // Thus by chosing the exponent Int between 0 and 0x7fe, we can't get a NaN or an infinity.
+    val (s, rs) = chooseLong(0L, 1L)                  // The sign bit (1 bit)
+    val (e, re) = rs.chooseLong(0L, 0x7feL)           // The exponent (11 bits)
+    val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL) // The mantissa (52 bits)
+    val finite = java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m)
+    (FiniteDouble.ensuringValid(finite), rm)
   }
 
   /**
