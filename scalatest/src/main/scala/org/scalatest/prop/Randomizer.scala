@@ -153,7 +153,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // The total number of possible images for Float between 0.0, inclusive, and 1.0, exclusive, is:
     // (2 ** 23) * (126) + 1
     // 2 to the power of 23 (0x800000) is how many different mantissas can be represented in 23 bits.
-    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0f, inclusive, and 1.0f, exclusive.
+    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0f, exclusive, and 1.0f, exclusive.
     // 1 is for 0.0f, which we must handle specially, because its mantissas must be all zeros.
 
     // scala> java.lang.Integer.toHexString(0x800000 * 0x7e + 1)
@@ -259,7 +259,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // The total number of possible images for Double between 0.0, inclusive, and 1.0, exclusive, is:
     // (2 ** 52) * (1022) + 1
     // 2 to the power of 52 (0x10000000000000L) is how many different mantissas can be represented in 52 bits.
-    // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0, inclusive, and 1.0, exclusive.
+    // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0, exclusive, and 1.0, exclusive.
     // 1 is for 0.0, which we must handle specially, because its mantissas must be all zeros.
 
     // scala> val twoTo64D = math.pow(2, 64)
