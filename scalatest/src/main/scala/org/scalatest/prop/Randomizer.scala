@@ -147,20 +147,36 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     one, subtract 127.)
 
     So except for 0.0f, which we'll need to handle specially, we can generate
-    a random 23 bits for the manitissa, and for the exponent a number between 1 and 126 (0x7e).
+    a random 23 bits for the mantissa, and for the exponent a number between 1 and 126 (0x7e).
     */
 
-    // The total number of possible images for Float between 0.0, inclusive and 1.0, exclusive is:
+    // The total number of possible images for Float between 0.0, inclusive, and 1.0, exclusive, is:
     // (2 ** 23) * (126) + 1
     // 2 to the power of 23 (0x800000) is how many different mantissas can be represented in 23 bits.
-    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0f and 1.0f, exclusive.
+    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0f, inclusive, and 1.0f, exclusive.
     // 1 is for 0.0f, which we must handle specially, because its mantissas must be all zeros.
+
     // scala> java.lang.Integer.toHexString(0x800000 * 0x7e + 1)
     // res39: String = 3f000001
-    val (x, r) = chooseInt(0, 0x3f000001)
 
-    // Pick one lucky number to play the lotto with:
-    if (x == 333)
+    // scala> val twoTo32D = math.pow(2, 32)
+    // twoTo64D: Double = 1.8446744073709552E19
+    //
+    // scala> val totalPossible0To1Floats = (0x800000 * 0x7e + 1).toDouble
+    // totalPossible0To1Floats: Double = 1.056964609E9
+    //
+    // scala> val percentSpaceUsed = (twoTo32D - totalPossible0To1Floats) / twoTo32D
+    // percentSpaceUsed: Double = 0.7539062497671694
+    //
+    // scala> val eachFloatIsWorth = 1.0 / percentSpaceUsed
+    // eachFloatIsWorth: Double = 1.326424870875964
+
+    // 1.33 means 4 Floats here are worth about 3 Ints, so 1/3 of the time I
+    // want to allow two different Ints to give us a 0.0f.
+    val (x, r) = nextInt
+
+    // Pick one and a third lucky numbers to play the lotto with:
+    if (x == 333 || (x % 3 == 0 && x == 222))
       (0.0f, r)
     else {
       val (e, re) = r.chooseInt(1, 0x7e)     // The exponent (8 bits, value 1 to 126)
@@ -234,16 +250,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     one, subtract 1023.)
 
     So except for 0.0, which we'll need to handle specially, we can generate
-    a random 52 bits for the manitissa, and for the exponent a number between 1 and 1022 (0x3fe).
+    a random 52 bits for the mantissa, and for the exponent a number between 1 and 1022 (0x3fe).
     */
 
     // scala> java.lang.Long.toHexString(math.pow(2, 52).toLong)
     // res17: String = 10000000000000
 
-    // The total number of possible images for Double between 0.0 and 1.0 is:
+    // The total number of possible images for Double between 0.0, inclusive, and 1.0, exclusive, is:
     // (2 ** 52) * (1022) + 1
     // 2 to the power of 52 (0x10000000000000L) is how many different mantissas can be represented in 52 bits.
-    // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0 and 1.0, exclusive.
+    // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0, inclusive, and 1.0, exclusive.
     // 1 is for 0.0, which we must handle specially, because its mantissas must be all zeros.
 
     // scala> val twoTo64D = math.pow(2, 64)
@@ -258,8 +274,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
     // eachDoubleIsWorth: Double = 1.332465842550423
 
-    // 1.33 means 4 Doubles here are worth about 3 Ints, so 1/3 of the time I
-    // want to allow two different Ints to give us a 0.0.
+    // 1.33 means 4 Doubles here are worth about 3 Longs, so 1/3 of the time I
+    // want to allow two different Longs to give us a 0.0.
     val (x, r) = nextLong
 
     // Pick one and a third lucky numbers to play the lotto with:
