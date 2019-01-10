@@ -66,6 +66,10 @@ trait Generator[T] { thisGeneratorOfT =>
               remainingGenOfU match {
                 case head :: tail =>
                   val (listOfU, nnRnd) = head.initEdges(maxLength, nRnd)
+                  val size = listOfU.size
+                  if (size > 1000) {
+                    println(s"looping: maxLength was: $maxLength; Size of listOfU: ${listOfU.size}")
+                  }
                   loop(tail, nnRnd, acc ++ listOfU)
                 case _ => (acc.toList, nRnd)
               }
