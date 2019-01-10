@@ -240,20 +240,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       val f = java.lang.Double.longBitsToDouble((e << 52) | m)
       (f, rm)
     }
-/*
-    // When I replaced it a test failed that says it should be have like java.util.Random,
-    // and there in the Javadoc is the algo:
-    // https://docs.oracle.com/javase/7/docs/api/java/util/Random.html#nextFloat()
-    // I would guess it is correct but I don't understand it, so I'll go with the one
-    // I just wrote. If we can get an explanation, then the Java way is probably more efficient:
-    val (ia, ra) = thisRandomizer.next(26)
-    val (ib, rb) = ra.next(27)
-    (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
-    // I will delete this comment at he next commit.
-*/
   }
-
-   // TODO: Any reason why we have both a next and a nextInt? Should we drop next?
 
   /**
     * Get a random Double.
