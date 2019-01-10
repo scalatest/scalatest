@@ -138,9 +138,48 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Float in that range, and the next Randomizer to use.
     */
   def nextFloatBetween0And1: (Float, Randomizer) = {
-    // TODO: Verify this algo against the spec, and comment it.
+    /*
+    0.0f is 32 zero bits. The sign is 0 for positive. The exponent of 0 is a special
+    case for 0.0 and for subnormal values. It means 0 if the mantissa is also 0.
+    1.0 is represented as 1.00 * (2 ** 0). The 1 to the left of the binary point
+    is implicit, so this means that the mantissa is all zeros again for 1.0. An
+    exponent of 0 is represented by 127 (0x7f). (To get the actual exponent from the biased
+    one, subtract 127.)
+
+    So except for 0.0f and 1.0f, which we'll need to handle specially, we can generate
+    a random 23 bits for the manitissa, and for the exponent a number between 1 and 126 (0x7e).
+    */
+
+    // The total number of possible images for Float between 0.0 and 1.0 is:
+    // (2 ** 23) * (126) + 2
+    // 2 to the power of 32 (0x800000) is how many different mantissas can be represented in 23 bits.
+    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0 and 1.0, exclusive.
+    // 2 is for 0.0 and 1.0, which we must handle specially, because their mantissas must be all zeros.
+    // scala> 0x800000 * 0x7e + 2
+    // res14: Int = 1056964610
+    val (x, r) = chooseInt(0, 1056964610)
+
+    // Pick two lucky numbers to play the lotto with:
+    if (x == 333)
+      (0.0f, r)
+    else if (x == 222)
+      (1.0f, r)
+    else {
+      val (e, re) = r.chooseInt(1, 0x7e)     // The exponent (8 bits, value 1 to 126)
+      val (m, rm) = re.chooseInt(0, 0x7fffff) // The mantissa (23 bits)
+      val f = java.lang.Float.intBitsToFloat((e << 23) | m)
+      (f, rm)
+    }
+/*
+    // When I replaced it a test failed that says it should be have like java.util.Random,
+    // and there in the Javadoc is the algo:
+    // https://docs.oracle.com/javase/7/docs/api/java/util/Random.html#nextFloat()
+    // I would guess it is correct but I don't understand it, so I'll go with the one
+    // I just wrote. If we can get an explanation, then the Java way is probably more efficient:
     val (i, r) = thisRandomizer.next(24)
     (i / ((1 << 24).toFloat), r)
+    // I will delete this comment at he next commit.
+*/
   }
 
   /**
