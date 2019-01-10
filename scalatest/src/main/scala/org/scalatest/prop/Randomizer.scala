@@ -171,8 +171,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> val eachFloatIsWorth = 1.0 / percentSpaceUsed
     // eachFloatIsWorth: Double = 1.326424870875964
 
-    // 1.33 means 4 Floats here are worth about 3 Ints, so 1/3 of the time I
-    // want to allow two different Ints to give us a 0.0f.
+    // 1.33 means 4 Floats here are worth about 3 Ints, so 1/3 of the time we
+    // allow two different Ints to give us a 0.0f.
     val (x, r) = nextInt
 
     // Pick one and a third lucky numbers to play the lotto with:
@@ -274,8 +274,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
     // eachDoubleIsWorth: Double = 1.332465842550423
 
-    // 1.33 means 4 Doubles here are worth about 3 Longs, so 1/3 of the time I
-    // want to allow two different Longs to give us a 0.0.
+    // 1.33 means 4 Doubles here are worth about 3 Longs, so 1/3 of the time we
+    // allow two different Longs to give us a 0.0.
     val (x, r) = nextLong
 
     // Pick one and a third lucky numbers to play the lotto with:
