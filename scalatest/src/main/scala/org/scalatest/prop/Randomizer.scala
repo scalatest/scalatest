@@ -271,12 +271,25 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextDouble: (Double, Randomizer) = { // Uses same algorithm as ScalaCheck for this one
     // The space of possible Doubles
     // 2 to the power of 64, which is covered by Long.MinValue to Long.MaxValue
-    // - (2 to the power of 52 (52 is the number of mantissa bits))
+    // - (2 to the power of 52, where 52 is the number of mantissa bits)
     // + (3 for the two infinities and one NaN)
 
-    // scala> Long.MaxValue - math.pow(2, 52).toLong + 3
-    // res27: Long = 9218868437227405314
-    val (x, r) = chooseLong(Long.MinValue, 9218868437227405314L) 
+    // scala> val twoTo64D = math.pow(2, 64)
+    // twoTo64D: Double = 1.8446744073709552E19
+    // 
+    // scala> val twoTo52D = math.pow(2, 52)
+    // twoTo52D: Double = 4.503599627370496E15
+    // 
+    // What percentage of the total space of Longs is used by Doubles?
+    // scala> val percentSpaceUsed = (twoTo64D - twoTo52D) / twoTo64D
+    // percentSpaceUsed: Double = 0.999755859375
+    // 
+    // Each Double value is worth a little more than an Long but not much:
+    // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
+    // eachDoubleIsWorth: Double = 1.0002442002442002
+
+    // Thus we can randomly pick one number out of the nextLong and decide that's NaN
+    val (x, r) = nextLong
 
     // Pick one lucky number to play the lotto with:
     if (x == 999L)
@@ -493,14 +506,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   // Let's think about that.
   private def nextExtRealDoubleValue: (Double, Randomizer) = {
 
-    // The space of possible non-NaN Doubles
-    // 2 to the power of 64, which is covered by Long.MinValue to Long.MaxValue
-    // - (2 to the power of 52 (52 is the number of mantissa bits))
-    // + (2 for the two infinities)
-
-    // scala> Long.MaxValue - math.pow(2, 52).toLong + 2
-    // res27: Long = 9218868437227405313
-    val (x, r) = chooseLong(Long.MinValue, 9218868437227405313L) 
+    // See the comment in nextDouble for an explanation of why we just
+    // grab nextLong and pick two values out of it for +/- infinity
+    val (x, r) = nextLong
 
     // Pick two lucky numbers to play the lotto with:
     if (x == 777L)
