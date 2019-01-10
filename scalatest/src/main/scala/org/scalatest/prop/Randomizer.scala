@@ -246,12 +246,24 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0 and 1.0, exclusive.
     // 1 is for 0.0, which we must handle specially, because its mantissas must be all zeros.
 
-    // scala> java.lang.Long.toHexString(0x10000000000000L * 0x3fe + 1)
-    // res14: String = 3fe0000000000001
-    val (x, r) = chooseLong(0, 0x3fe0000000000002L)
+    // scala> val twoTo64D = math.pow(2, 64)
+    // twoTo64D: Double = 1.8446744073709552E19
+    // 
+    // scala> val totalPossible0To1Doubles = (0x10000000000000L * 0x3fe + 1).toDouble
+    // totalPossible0To1Doubles: Double = 4.6026788191726469E18
+    // 
+    // scala> val percentSpaceUsed = (twoTo64D - totalPossible0To1Doubles) / twoTo64D
+    // percentSpaceUsed: Double = 0.75048828125
+    // 
+    // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
+    // eachDoubleIsWorth: Double = 1.332465842550423
 
-    // Pick one lucky number to play the lotto with:
-    if (x == 333L)
+    // 1.33 means 4 Doubles here are worth about 3 Ints, so 1/3 of the time I
+    // want to allow two different Ints to give us a 0.0.
+    val (x, r) = nextLong
+
+    // Pick one and a third lucky numbers to play the lotto with:
+    if (x == 333L || (x % 3 == 0 && x == 222L))
       (0.0, r)
     else {
       val (e, re) = r.chooseLong(1, 0x3fe)     // The exponent (8 bits, value 1 to 126)
