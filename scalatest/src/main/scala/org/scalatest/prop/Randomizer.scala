@@ -140,8 +140,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextFloatBetween0And1: (Float, Randomizer) = {
     /*
     0.0f is 32 zero bits. The sign is 0 for positive. The exponent of 0 is a special
-    case for 0.0 and for subnormal values. It means 0 if the mantissa is also 0.
-    1.0 is represented as 1.00 * (2 ** 0). The 1 to the left of the binary point
+    case for 0.0f and for subnormal values. It means 0 if the mantissa is also 0.
+    1.0f is represented as 1.00 * (2 ** 0). The 1 to the left of the binary point
     is implicit, so this means that the mantissa is all zeros again for 1.0. An
     exponent of 0 is represented by 127 (0x7f). (To get the actual exponent from the biased
     one, subtract 127.)
@@ -152,9 +152,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
     // The total number of possible images for Float between 0.0 and 1.0 is:
     // (2 ** 23) * (126) + 2
-    // 2 to the power of 32 (0x800000) is how many different mantissas can be represented in 23 bits.
-    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0 and 1.0, exclusive.
-    // 2 is for 0.0 and 1.0, which we must handle specially, because their mantissas must be all zeros.
+    // 2 to the power of 23 (0x800000) is how many different mantissas can be represented in 23 bits.
+    // 126 (or 0x7e) is how many exponents there are for numbers between 0.0f and 1.0f, exclusive.
+    // 2 is for 0.0f and 1.0f, which we must handle specially, because their mantissas must be all zeros.
     // scala> 0x800000 * 0x7e + 2
     // res14: Int = 1056964610
     val (x, r) = chooseInt(0, 1056964610)
@@ -170,16 +170,6 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       val f = java.lang.Float.intBitsToFloat((e << 23) | m)
       (f, rm)
     }
-/*
-    // When I replaced it a test failed that says it should be have like java.util.Random,
-    // and there in the Javadoc is the algo:
-    // https://docs.oracle.com/javase/7/docs/api/java/util/Random.html#nextFloat()
-    // I would guess it is correct but I don't understand it, so I'll go with the one
-    // I just wrote. If we can get an explanation, then the Java way is probably more efficient:
-    val (i, r) = thisRandomizer.next(24)
-    (i / ((1 << 24).toFloat), r)
-    // I will delete this comment at he next commit.
-*/
   }
 
   /**
@@ -214,10 +204,53 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Double in that range, and the next Randomizer to use.
     */
   def nextDoubleBetween0And1: (Double, Randomizer) = {
-    // TODO: Verify this implementation against the spec and comment it.
+    /*
+    0.0 is 64 zero bits. The sign is 0 for positive. The exponent of 0 is a special
+    case for 0.0 and for subnormal values. It means 0 if the mantissa is also 0.
+    1.0 is represented as 1.00 * (2 ** 0). The 1 to the left of the binary point
+    is implicit, so this means that the mantissa is all zeros again for 1.0. An
+    exponent of 0 is represented by 1023 (0x3ff). (To get the actual exponent from the biased
+    one, subtract 1023.)
+
+    So except for 0.0 and 1.0, which we'll need to handle specially, we can generate
+    a random 52 bits for the manitissa, and for the exponent a number between 1 and 1022 (0x3fe).
+    */
+
+    // scala> java.lang.Long.toHexString(math.pow(2, 52).toLong)
+    // res17: String = 10000000000000
+
+    // The total number of possible images for Double between 0.0 and 1.0 is:
+    // (2 ** 52) * (1022) + 2
+    // 2 to the power of 52 (0x10000000000000L) is how many different mantissas can be represented in 52 bits.
+    // 1022 (or 0x3fe) is how many exponents there are for numbers between 0.0 and 1.0, exclusive.
+    // 2 is for 0.0 and 1.0, which we must handle specially, because their mantissas must be all zeros.
+
+    // scala> 0x10000000000000L * 0x3fe + 2
+    // res20: Long = 4602678819172646914
+    val (x, r) = chooseLong(0, 4602678819172646914L)
+
+    // Pick two lucky numbers to play the lotto with:
+    if (x == 333)
+      (0.0, r)
+    else if (x == 222)
+      (1.0, r)
+    else {
+      val (e, re) = r.chooseLong(1, 0x3fe)     // The exponent (8 bits, value 1 to 126)
+      val (m, rm) = re.chooseLong(0, 0x10000000000000L) // The mantissa (23 bits)
+      val f = java.lang.Double.longBitsToDouble((e << 52) | m)
+      (f, rm)
+    }
+/*
+    // When I replaced it a test failed that says it should be have like java.util.Random,
+    // and there in the Javadoc is the algo:
+    // https://docs.oracle.com/javase/7/docs/api/java/util/Random.html#nextFloat()
+    // I would guess it is correct but I don't understand it, so I'll go with the one
+    // I just wrote. If we can get an explanation, then the Java way is probably more efficient:
     val (ia, ra) = thisRandomizer.next(26)
     val (ib, rb) = ra.next(27)
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
+    // I will delete this comment at he next commit.
+*/
   }
 
    // TODO: Any reason why we have both a next and a nextInt? Should we drop next?
@@ -396,8 +429,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // exponent therefore is 254, which in hex is 0xfe (which represents an exponent of +127).
     // Thus by chosing the exponent Int between 0 and 0xfe, we can't get a NaN or an infinity.
     val (s, rs) = chooseInt(0, 1)        // The sign bit (1 bit)
-    val (e, re) = chooseInt(0, 0xfe)     // The exponent (8 bits)
-    val (m, rm) = chooseInt(0, 0x7fffff) // The mantissa (23 bits)
+    val (e, re) = rs.chooseInt(0, 0xfe)     // The exponent (8 bits)
+    val (m, rm) = re.chooseInt(0, 0x7fffff) // The mantissa (23 bits)
     val finite = java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m)
     (FiniteFloat.ensuringValid(finite), rm)
   }

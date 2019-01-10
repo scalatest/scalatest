@@ -53,22 +53,6 @@ class RandomizerSpec extends FunSpec with Matchers {
       jc shouldEqual ic
     }
 
-    it("should offer a nextDoubleBetween0And1 method that produces the same values as java.util.Random given the same seed") {
-      val jr = new java.util.Random(100)
-      val ja = jr.nextDouble()
-      val jb = jr.nextDouble()
-      val jc = jr.nextDouble()
-
-      val sr = Randomizer(100)
-      val (ia, ra) = sr.nextDoubleBetween0And1
-      val (ib, rb) = ra.nextDoubleBetween0And1
-      val (ic, _) = rb.nextDoubleBetween0And1
-
-      ja shouldEqual ia
-      jb shouldEqual ib
-      jc shouldEqual ic
-    }
-
     it("should offer a chooseInt method that initially produces Int values between from and to") {
       import GeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
