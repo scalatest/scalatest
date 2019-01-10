@@ -178,14 +178,37 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Float, and the next Randomizer to use.
     */
   def nextFloat: (Float, Randomizer) = {
+
     // The space of possible Floats
     // 2 to the power of 32, which is covered by Int.MinValue to Int.MaxValue
-    // - (2 to the power of 23 (23 is the number of mantissa bits))
+    // - (2 to the power of 23, where 23 is the number of mantissa bits)
     // + (3 for the two infinities and one NaN)
 
-    // scala> Int.MaxValue - math.pow(2, 23).toInt + 2
-    // res13: Int = 2139095042
-    val (x, r) = chooseInt(Int.MinValue, 2139095042) 
+    // scala> val twoTo32 = math.pow(2, 32).toLong
+    // twoTo32: Long = 4294967296
+    // 
+    // scala> val twoTo23 = math.pow(2, 23).toLong
+    // twoTo23: Long = 8388608
+    // 
+    // scala> val totalSizeOfSpace = twoTo32 - twoTo23 + 3
+    // totalSizeOfSpace: Long = 4286578691
+
+    // What percentage of the total space of Ints is used by Floats?
+    // scala> val twoTo32D = twoTo32.toDouble
+    // twoTo32D: Double = 4.294967296E9
+    // 
+    // scala> val twoTo23D = twoTo23.toDouble
+    // twoTo23D: Double = 8388608.0
+    // 
+    // scala> val percentSpaceUsed = (twoTo32D - twoTo23D) / twoTo32D
+    // percentSpaceUsed: Double = 0.998046875
+    //
+    // Each float is worth a little more than an Int but not much:
+    // scala> val eachFloatIsWorth = 1.0 / percentSpaceUsed
+    // eachFloatIsWorth: Double = 1.0019569471624266
+
+    // Thus we can randomly pick one number out of the nextInt and decide that's NaN
+    val (x, r) = nextInt
 
     // Pick one lucky number to play the lotto with:
     if (x == 999) (Float.NaN, r)
@@ -428,14 +451,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   // Let's think about that.
   private def nextExtRealFloatValue: (Float, Randomizer) = {
 
-    // The space of possible non-NaN Floats
-    // 2 to the power of 32, which is covered by Int.MinValue to Int.MaxValue
-    // - (2 to the power of 23 (23 is the number of mantissa bits))
-    // + (2 for the two infinities)
-
-    // scala> Int.MaxValue - math.pow(2, 23).toInt + 2
-    // res13: Int = 2139095041
-    val (x, r) = chooseInt(Int.MinValue, 2139095041) 
+    // See the comment in nextFloat for an explanation of why we just
+    // grab nextInt and pick two values out of it for +/- infinity
+    val (x, r) = nextInt
 
     // Pick two lucky numbers to play the lotto with:
     if (x == 777)
