@@ -87,7 +87,6 @@ trait Generator[T] { thisGeneratorOfT =>
               remainingGenOfU match {
                 case head :: tail =>
                   val (listOfU, nnRnd) = head.initEdges(maxLength, nRnd)
-                  val size = listOfU.size
                   loop(tail, nnRnd, acc ++ listOfU)
                 case _ => (acc.toList, nRnd)
               }
