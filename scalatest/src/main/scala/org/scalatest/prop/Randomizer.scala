@@ -750,13 +750,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextNegFloat: (NegFloat, Randomizer) = {
     val (f, r) = nextNegZFloat
     val candidate = f.value
-    val neg = 
-      // A NegZFloat can be +0.0f, but that equals -0.0f also
-      // scala> 0.0f == -0.0f
-      // res38: Boolean = true
-      if (candidate == -0.0F) -Float.MinPositiveValue
-      else candidate
+    val neg = forceNegFloat(candidate)
     (NegFloat.ensuringValid(neg), r)
+  }
+
+  private def forceNegFloat(candidate: Float): Float = {
+    // A NegZFloat can be +0.0f, but that equals -0.0f also
+    // scala> 0.0f == -0.0f
+    // res38: Boolean = true
+    if (candidate == -0.0F) -Float.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -768,16 +771,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Float, and the next Randomizer to use.
     */
   def nextNegFiniteFloat: (NegFiniteFloat, Randomizer) = {
-    val (n, r) = nextFiniteFloatValue
-    val negFinite =
-      n match {
-        case 0.0 => -Float.MinPositiveValue
-        case -0.0 => -Float.MinPositiveValue
-        case Float.PositiveInfinity => Float.MinValue
-        case Float.NegativeInfinity => Float.MinValue
-        case v if v > 0.0 => -v
-        case _ => n
-      }
+    val (f, r) = nextNegZFiniteFloat
+    val candidate = f.value
+    val negFinite = forceNegFloat(candidate)
     (NegFiniteFloat.ensuringValid(negFinite), r)
   }
 
