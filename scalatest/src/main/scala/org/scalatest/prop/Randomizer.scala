@@ -712,13 +712,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextNegDouble: (NegDouble, Randomizer) = {
     val (d, r) = nextNegZDouble
     val candidate = d.value
-    val neg = 
-      // A NegZDouble can be +0.0, but that equals -0.0 also
-      // scala> 0.0 == -0.0
-      // res38: Boolean = true
-      if (candidate == -0.0) -Double.MinPositiveValue
-      else candidate
+    val neg = forceNegDouble(candidate)
     (NegDouble.ensuringValid(neg), r)
+  }
+
+  private def forceNegDouble(candidate: Double): Double = {
+    // A NegZDouble can be +0.0, but that equals -0.0 also
+    // scala> 0.0 == -0.0
+    // res38: Boolean = true
+    if (candidate == -0.0) -Double.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -730,16 +733,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Double, and the next Randomizer to use.
     */
   def nextNegFiniteDouble: (NegFiniteDouble, Randomizer) = {
-    val (d, r) = nextFiniteDoubleValue
-    val negFinite =
-      d match {
-        case 0.0 => -Double.MinPositiveValue
-        case -0.0 => -Double.MinPositiveValue
-        case Double.PositiveInfinity => Double.MinValue
-        case Double.NegativeInfinity => Double.MinValue
-        case v if v > 0.0 => -v
-        case _ => d
-      }
+    val (d, r) = nextNegZFiniteDouble
+    val candidate = d.value
+    val negFinite = forceNegDouble(candidate)
     (NegFiniteDouble.ensuringValid(negFinite), r)
   }
 
