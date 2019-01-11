@@ -576,13 +576,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextPosDouble: (PosDouble, Randomizer) = {
     val (d, r) = nextPosZDouble
     val candidate = d.value
-    val pos = 
-      // A PosZDouble can be -0.0, but that equals 0.0 also
-      // scala> -0.0 == 0.0
-      // res37: Boolean = true
-      if (candidate == 0.0) Double.MinPositiveValue
-      else candidate
+    val pos = forcePosDouble(candidate)
     (PosDouble.ensuringValid(pos), r)
+  }
+
+  private def forcePosDouble(candidate: Double): Double = {
+    // A PosZDouble can be -0.0, but that equals 0.0 also
+    // scala> -0.0 == 0.0
+    // res37: Boolean = true
+    if (candidate == 0.0) Double.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -594,16 +597,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Double, and the next Randomizer to use.
     */
   def nextPosFiniteDouble: (PosFiniteDouble, Randomizer) = {
-    val (d, r) = nextFiniteDoubleValue
-    val posFinite =
-      d match {
-        case 0.0 => Double.MinPositiveValue
-        case -0.0 => Double.MinPositiveValue
-        case Double.PositiveInfinity => Double.MaxValue
-        case Double.NegativeInfinity => Double.MaxValue
-        case v if v < 0.0 => -v
-        case _ => d
-      }
+    val (d, r) = nextPosZFiniteDouble
+    val candidate = d.value
+    val posFinite = forcePosDouble(candidate)
     (PosFiniteDouble.ensuringValid(posFinite), r)
   }
 
