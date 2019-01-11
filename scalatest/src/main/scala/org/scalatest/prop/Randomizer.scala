@@ -409,13 +409,16 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def nextPosFloat: (PosFloat, Randomizer) = {
     val (f, r) = nextPosZFloat
     val candidate = f.value
-    val pos = 
-      // A PosZFloat can be -0.0f, but that equals 0.0f also
-      // scala> -0.0f == 0.0f
-      // res37: Boolean = true
-      if (candidate == 0.0F) Float.MinPositiveValue
-      else candidate
+    val pos = forcePosFloat(candidate)
     (PosFloat.ensuringValid(pos), r)
+  }
+
+  private def forcePosFloat(candidate: Float): Float = {
+    // A PosZFloat cannot be -0.0f, but that equals 0.0f also
+    // scala> -0.0f == 0.0f
+    // res37: Boolean = true
+    if (candidate == 0.0F) Float.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -427,16 +430,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosFiniteFloat: (PosFiniteFloat, Randomizer) = {
-    val (n, r) = nextFiniteFloatValue
-    val posFinite =
-      n match {
-        case 0.0F => Float.MinPositiveValue
-        case -0.0F => -Float.MinPositiveValue
-        case Float.PositiveInfinity => Float.MaxValue
-        case Float.NegativeInfinity => Float.MaxValue
-        case v if v < 0.0F => -v
-        case _ => n
-      }
+    val (f, r) = nextPosZFiniteFloat
+    val candidate = f.value
+    val posFinite = forcePosFloat(candidate)
     (PosFiniteFloat.ensuringValid(posFinite), r)
   }
 
