@@ -165,18 +165,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> val totalPossible0To1Floats = (0x800000 * 0x7e + 1).toDouble
     // totalPossible0To1Floats: Double = 1.056964609E9
     //
-    // scala> val percentSpaceUsed = (twoTo32D - totalPossible0To1Floats) / twoTo32D
-    // percentSpaceUsed: Double = 0.7539062497671694
+    // scala> val percentSpaceUsed = totalPossible0To1Floats / twoTo32D
+    // percentSpaceUsed: Double = 0.24609375023283064
     //
     // scala> val eachFloatIsWorth = 1.0 / percentSpaceUsed
-    // eachFloatIsWorth: Double = 1.326424870875964
+    // eachFloatIsWorth: Double = 4.063492059647571
 
-    // 1.33 means 4 Floats here are worth about 3 Ints, so 1/3 of the time we
-    // allow two different Ints to give us a 0.0f.
+    // Essentially, the Float points between 0.0f and 1.0f consist of around 25%
+    // of the space of all Float points. So we'll give 0.0f four chances to
+    // win each draw.
     val (x, r) = nextInt
 
-    // Pick one and a third lucky numbers to play the lotto with:
-    if (x == 333 || (x % 3 == 0 && x == 222))
+    // Pick four lucky numbers to play the lotto with:
+    if (x == 111 || x == 333 || x == 555 || x == 777)
       (0.0f, r)
     else {
       val (e, re) = r.chooseInt(1, 0x7e)     // The exponent (8 bits, value 1 to 126)
@@ -268,18 +269,19 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> val totalPossible0To1Doubles = (0x10000000000000L * 0x3fe + 1).toDouble
     // totalPossible0To1Doubles: Double = 4.6026788191726469E18
     // 
-    // scala> val percentSpaceUsed = (twoTo64D - totalPossible0To1Doubles) / twoTo64D
-    // percentSpaceUsed: Double = 0.75048828125
+    // scala> val percentSpaceUsed = totalPossible0To1Doubles / twoTo64D
+    // percentSpaceUsed: Double = 0.24951171875
     // 
     // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
-    // eachDoubleIsWorth: Double = 1.332465842550423
+    // eachDoubleIsWorth: Double = 4.007827788649706
 
-    // 1.33 means 4 Doubles here are worth about 3 Longs, so 1/3 of the time we
-    // allow two different Longs to give us a 0.0.
+    // Essentially, the Double points between 0.0 and 1.0 consist of around 25%
+    // of the space of all Double points. So we'll give 0.0 four chances to
+    // win each draw.
     val (x, r) = nextLong
 
     // Pick one and a third lucky numbers to play the lotto with:
-    if (x == 333L || (x % 3 == 0 && x == 222L))
+    if (x == 1111L || x == 3333L || x == 5555L || x == 7777L)
       (0.0, r)
     else {
       val (e, re) = r.chooseLong(1, 0x3fe)     // The exponent (8 bits, value 1 to 126)
