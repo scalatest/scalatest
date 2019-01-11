@@ -458,9 +458,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> PosZFloat(-0.0f)
     // res0: org.scalactic.anyvals.PosZFloat = PosZFloat(-0.0f)
     val (candidate, r) = nextExtRealFloatValue
-    val posZ =
-      if (isNegativeZeroFloat(candidate)) candidate // leave it negative zero
-      else candidate.abs // 0.0f or greater
+    val posZ = forcePosZFloat(candidate)
     (PosZFloat.ensuringValid(posZ), r)
   }
 
@@ -553,6 +551,11 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     else r.nextFiniteDoubleValue
   }
 
+  private def forcePosZFloat(candidate: Float): Float = {
+    if (isNegativeZeroFloat(candidate)) candidate // leave it negative zero
+    else candidate.abs // 0.0f or greater
+  }
+
   /**
     * Get a random Float greater than or equal to zero.
     *
@@ -561,14 +564,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosZFiniteFloat: (PosZFiniteFloat, Randomizer) = {
-    val (n, r) = nextFiniteFloatValue
-    val posZFinite =
-      n match {
-        case Float.PositiveInfinity => Float.MaxValue
-        case Float.NegativeInfinity => Float.MaxValue
-        case v if v < 0.0F => -v
-        case _ => n
-      }
+    val (candidate, r) = nextFiniteFloatValue
+    val posZFinite = forcePosZFloat(candidate)
     (PosZFiniteFloat.ensuringValid(posZFinite), r)
   }
 
@@ -662,11 +659,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def nextNonZeroFloat: (NonZeroFloat, Randomizer) = {
     val (candidate, r) = nextExtRealFloatValue
-    val nonZero = 
-      if (isNegativeZeroFloat(candidate)) -Float.MinPositiveValue
-      else if (candidate == 0.0F) Float.MinPositiveValue
-      else candidate
+    val nonZero = forceNonZeroFloatValue(candidate)
     (NonZeroFloat.ensuringValid(nonZero), r)
+  }
+
+  private def forceNonZeroFloatValue(candidate: Float): Float =  {
+    if (isNegativeZeroFloat(candidate)) -Float.MinPositiveValue
+    else if (candidate == 0.0F) Float.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -679,10 +679,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def nextNonZeroFiniteFloat: (NonZeroFiniteFloat, Randomizer) = {
     val (candidate, r) = nextFiniteFloatValue
-    val nonZero =
-      if (isNegativeZeroFloat(candidate)) -Float.MinPositiveValue
-      else if (candidate == 0.0F) Float.MinPositiveValue
-      else candidate
+    val nonZero = forceNonZeroFloatValue(candidate)
     (NonZeroFiniteFloat.ensuringValid(nonZero), r)
   }
 
