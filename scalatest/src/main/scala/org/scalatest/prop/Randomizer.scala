@@ -837,12 +837,15 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // scala> NegZDouble(0.0)
     // res0: org.scalactic.anyvals.NegZDouble = NegZDouble(0.0)
     val (candidate, r) = nextExtRealDoubleValue
-    val negZ =
+    val negZ = forceNegZDouble(candidate)
+    (NegZDouble.ensuringValid(negZ), r)
+  }
+
+  private def forceNegZDouble(candidate: Double): Double = {
       // scala> -0.0 > 0.0
       // res42: Boolean = false
-      if (candidate > 0.0) -candidate
-      else candidate // This will leave positive zero as positive zero, which is what we want
-    (NegZDouble.ensuringValid(negZ), r)
+    if (candidate > 0.0) -candidate
+    else candidate // This will leave positive zero as positive zero, which is what we want
   }
 
   /**
@@ -853,15 +856,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative-or-zero Double, and the next Randomizer to use.
     */
   def nextNegZFiniteDouble: (NegZFiniteDouble, Randomizer) = {
-    val (d, r) = nextFiniteDoubleValue
-    val negFinite =
-      d match {
-        case Double.PositiveInfinity => Double.MinValue
-        case Double.NegativeInfinity => Double.MinValue
-        case v if v > 0.0 => -v
-        case _ => d
-      }
-    (NegZFiniteDouble.ensuringValid(negFinite), r)
+    val (candidate, r) = nextFiniteDoubleValue
+    val negZFinite = forceNegZDouble(candidate)
+    (NegZFiniteDouble.ensuringValid(negZFinite), r)
   }
 
   // TODO: probably mention that NegZ can include posivie 0.0, and that PosZ can 
