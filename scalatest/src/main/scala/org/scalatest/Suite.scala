@@ -39,7 +39,7 @@ import Suite.getTopOfMethod
 import Suite.isTestMethodGoodies
 import Suite.reportTestIgnored
 import Suite.takesInformer
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
 import collection.GenTraversable
 import collection.mutable.ListBuffer
@@ -2070,14 +2070,6 @@ used for test events like succeeded/failed, etc.
     val testStartTime = System.currentTimeMillis
 
     (stopper, report, testStartTime)
-  }
-
-  // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
-  // so that exceptions are caught and transformed
-  // into error messages on the standard error stream.
-  def wrapReporterIfNecessary(theSuite: Suite, reporter: Reporter): Reporter = reporter match {
-    case cr: CatchReporter => cr
-    case _ => theSuite.createCatchReporter(reporter)
   }
 
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)

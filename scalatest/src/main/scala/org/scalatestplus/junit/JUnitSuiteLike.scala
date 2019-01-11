@@ -24,7 +24,7 @@ import org.scalactic.source
 import org.scalatest.ScalaTestInternals.Suite
 import org.scalatest.ScalaTestInternals.Suite.autoTagClassAnnotations
 import org.scalatest.ScalaTestInternals.Resources
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import collection.immutable.TreeSet
 
 /**
