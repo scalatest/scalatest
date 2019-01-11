@@ -18,6 +18,8 @@ package org.scalatest.prop
 import org.scalactic.anyvals._
 import scala.annotation.tailrec
 import org.scalactic.Requirements._
+import java.lang.Float.{intBitsToFloat, floatToIntBits}
+import java.lang.Double.{longBitsToDouble, doubleToLongBits}
 
 /**
   * Provide random values, of many different types.
@@ -182,7 +184,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     else {
       val (e, re) = r.chooseInt(1, 0x7e)     // The exponent (8 bits, value 1 to 126)
       val (m, rm) = re.chooseInt(0, 0x7fffff) // The mantissa (23 bits)
-      val f = java.lang.Float.intBitsToFloat((e << 23) | m)
+      val f = intBitsToFloat((e << 23) | m)
       (f, rm)
     }
   }
@@ -286,7 +288,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     else {
       val (e, re) = r.chooseLong(1, 0x3fe)     // The exponent (8 bits, value 1 to 126)
       val (m, rm) = re.chooseLong(0, 0x10000000000000L) // The mantissa (23 bits)
-      val f = java.lang.Double.longBitsToDouble((e << 52) | m)
+      val f = longBitsToDouble((e << 52) | m)
       (f, rm)
     }
   }
@@ -383,7 +385,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // res34: Int = -2147483648
     // 
     val NegativeZeroFloatBits: Int = -2147483648
-    val bits: Int = java.lang.Float.floatToIntBits(f)
+    val bits: Int = floatToIntBits(f)
     bits == NegativeZeroFloatBits
   }
 
@@ -394,7 +396,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // res46: Long = -9223372036854775808
     // 
     val NegativeZeroDoubleBits: Long = -9223372036854775808L
-    val bits: Long = java.lang.Double.doubleToLongBits(d)
+    val bits: Long = doubleToLongBits(d)
     bits == NegativeZeroDoubleBits
   }
 
@@ -479,7 +481,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val (s, rs) = nextBit                   // The sign bit (1 bit)
     val (e, re) = rs.chooseInt(0, 0xfe)     // The exponent (8 bits)
     val (m, rm) = re.chooseInt(0, 0x7fffff) // The mantissa (23 bits)
-    val finite = java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m)
+    val finite = intBitsToFloat((s << 31) | (e << 23) | m)
     (FiniteFloat.ensuringValid(finite), rm)
   }
 
@@ -521,7 +523,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     val (s, rs) = nextBit                             // The sign bit (1 bit)
     val (e, re) = rs.chooseLong(0L, 0x7feL)           // The exponent (11 bits)
     val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL) // The mantissa (52 bits)
-    val finite = java.lang.Double.longBitsToDouble((s.toLong << 63) | (e << 52) | m)
+    val finite = longBitsToDouble((s.toLong << 63) | (e << 52) | m)
     (FiniteDouble.ensuringValid(finite), rm)
   }
 
