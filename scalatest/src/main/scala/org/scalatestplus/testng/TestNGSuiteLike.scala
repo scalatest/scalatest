@@ -24,7 +24,7 @@ import org.testng.TestNG
 import org.scalatest.ScalaTestInternals.Suite
 import org.scalatest.ScalaTestInternals.Suite.formatterForSuiteAborted
 import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
-import org.scalatest.ScalaTestInternals.Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import org.scalatest.ScalaTestInternals.Suite.yeOldeTestNames
 import org.scalatest.ScalaTestInternals.Resources
 import events.MotionToSuppress

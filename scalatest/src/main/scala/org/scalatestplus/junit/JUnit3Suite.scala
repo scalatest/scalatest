@@ -21,7 +21,7 @@ import exceptions._
 import org.scalactic.Requirements._
 import org.scalactic.NameUtil
 import ScalaTestInternals.Suite.getIndentedTextForTest
-import ScalaTestInternals.Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import ScalaTestInternals.Resources
 import _root_.junit.framework.AssertionFailedError
 import _root_.junit.framework.Test
