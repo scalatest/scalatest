@@ -946,10 +946,13 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // TODO: Re-verify all of these PosZ ones. I am copying and changing the comment.
     // res0: org.scalactic.anyvals.PosZDouble = PosZDouble(-0.0)
     val (candidate, r) = nextExtRealDoubleValue
-    val posZ =
-      if (isNegativeZeroDouble(candidate)) candidate // leave it negative zero
-      else candidate.abs // 0.0 or greater
+    val posZ = forcePosZDoubleValue(candidate)
     (PosZDouble.ensuringValid(posZ), r)
+  }
+
+  private def forcePosZDoubleValue(candidate: Double): Double = {
+    if (isNegativeZeroDouble(candidate)) candidate // leave it negative zero
+    else candidate.abs // 0.0 or greater
   }
 
   /**
@@ -960,14 +963,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random negative Double, and the next Randomizer to use.
     */
   def nextPosZFiniteDouble: (PosZFiniteDouble, Randomizer) = {
-    val (d, r) = nextFiniteDoubleValue
-    val posZFinite =
-      d match {
-        case Double.PositiveInfinity => Double.MaxValue
-        case Double.NegativeInfinity => Double.MaxValue
-        case v if v < 0.0 => -v
-        case _ => d
-      }
+    val (candidate, r) = nextFiniteDoubleValue
+    val posZFinite = forcePosZDoubleValue(candidate)
     (PosZFiniteDouble.ensuringValid(posZFinite), r)
   }
 
