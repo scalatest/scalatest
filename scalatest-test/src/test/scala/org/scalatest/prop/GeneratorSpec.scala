@@ -868,10 +868,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         val gen = posFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
         val (a1: PosFloat, ae1: List[PosFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (PosFloat.MinPositiveValue)
         edges should contain (PosFloat(1.0f))
         edges should contain (PosFloat.MaxValue)
+        edges should contain (PosFloat.PositiveInfinity)
       }
     }
     describe("for PosFiniteFloat") {
@@ -937,11 +941,17 @@ class GeneratorSpec extends FunSpec with Matchers {
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
         val (a1: PosZFloat, ae1: List[PosZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
+        val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
+        val edges = List(a1, a2, a3, a4, a5, a6)
+        edges should contain (PosZFloat(-0.0f))
         edges should contain (PosZFloat(0.0f))
+        edges should contain (PosZFloat.MinPositiveValue)
         edges should contain (PosZFloat(1.0f))
         edges should contain (PosZFloat.MaxValue)
+        edges should contain (PosZFloat.PositiveInfinity)
       }
     }
     describe("for PosZFiniteFloat") {
