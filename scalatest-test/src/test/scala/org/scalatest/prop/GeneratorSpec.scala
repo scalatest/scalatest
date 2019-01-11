@@ -2560,6 +2560,29 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+    it("should be creatable for recursive types") {
+      // Based on an example from ScalaCheck: The Definitive Guide
+      sealed trait Color extends Product with Serializable
+      case object Red extends Color
+      case object Green extends Color
+
+      sealed trait Shape extends Product with Serializable { def color: Color }
+      case class Line(val color: Color) extends Shape
+      case class Circle(val color: Color) extends Shape
+      case class Box(val color: Color, boxed: Shape) extends Shape
+
+      import CommonGenerators.{evenly, specificValues}
+      val genColor = specificValues(Red, Green)
+      val genLine = for { color <- genColor } yield Line(color)
+      val genCircle = for { color <- genColor } yield Circle(color)
+      """
+      lazy val genShape = evenly(genLine, genCircle, genBox)
+      lazy val genBox: Generator[Box] = for {
+        color <- genColor
+        shape <- genShape
+      } yield Box(color, shape)
+      """ should compile
+    }
   }
 }
 
