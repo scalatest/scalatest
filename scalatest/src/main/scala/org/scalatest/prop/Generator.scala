@@ -57,11 +57,32 @@ trait Generator[T] { thisGeneratorOfT =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
         val listOfGenOfU: List[Generator[U]] = listOfT.map(f)
-        val (listOfU, nextNextRnd): (List[U], Randomizer) = {
+        // We only want at most maxLength edges. In cases where we are composing many generators,
+        // The total space of the combinations can get huge. We want to stop as soon as we reach
+        // maxLength, but we want over time to include points from the entire space of
+        // possible edges. So we shuffle the list of generators before we use them. That way from
+        // run to run, different generators can get used.
+        val (shuffledListOfGenOfU, nextNextRnd): (List[Generator[U]], Randomizer) =
+          if (listOfGenOfU.lengthCompare(1) > 1)
+            Randomizer.shuffle(listOfGenOfU, nextRnd)
+          else
+            (listOfGenOfU, nextRnd)
+        val (listOfU, nextNextNextRnd): (List[U], Randomizer) = {
           @tailrec
           def loop(remainingGenOfU: List[Generator[U]], nRnd: Randomizer, acc: Set[U]): (List[U], Randomizer) = {
-            if (acc.size == maxLength.value)
-              (acc.toList, nRnd)
+            val accSize = acc.size
+            if (accSize >= maxLength.value) {
+              val accList = acc.toList
+              val (shuffledListOfU, nnRnd) =
+                if (accSize > maxLength.value) {
+                  // To try and touch all the possibilities over time, if the List from which we are about
+                  // to take maxLength is greater than maxLength, we will shuffle the list prior to the take.
+                  Randomizer.shuffle(accList, nRnd)
+                }
+                else
+                  (accList, nRnd)
+              (shuffledListOfU.take(maxLength), nnRnd)
+            }
             else
               remainingGenOfU match {
                 case head :: tail =>
@@ -73,7 +94,7 @@ trait Generator[T] { thisGeneratorOfT =>
 
           loop(listOfGenOfU, nextRnd, Set.empty)
         }
-        (listOfU, nextNextRnd)
+        (listOfU, nextNextNextRnd)
       }
 
       def next(szp: SizeParam, edges: List[U], rnd: Randomizer): (U, List[U], Randomizer) = {
@@ -160,6 +181,8 @@ object Generator {
   private[prop] val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private[prop] val floatEdges = List(0.0f)
   private[prop] val doubleEdges = List(0.0)
+  // private[prop] val floatEdges = List(0.0f, -0.0f, -Float.MinPositiveValue, Float.MinPositiveValue, Float.MinValue, Float.MaxValue, Float.NegativeInfinity, Float.PositiveInfinity /*, Float.NaN*/)
+  // private[prop] val doubleEdges = List(0.0, -0.0, -Double.MinPositiveValue, Double.MinPositiveValue, Double.MinValue, Double.MaxValue, Double.NegativeInfinity, Double.PositiveInfinity /*, Double.NaN*/)
   private[prop] val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private[prop] val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
   private[prop] val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
