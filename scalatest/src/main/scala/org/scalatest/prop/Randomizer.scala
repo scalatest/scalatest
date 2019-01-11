@@ -1005,17 +1005,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseChar(from: Char, to: Char): (Char, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextChar
-      val nextBetween = min + (nextValue % (max - min + 1)).abs
-      (nextBetween.toChar, nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.toInt, to.toInt)
+    (i.toChar, nextRnd)
   }
 
   /**
@@ -1031,17 +1022,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseByte(from: Byte, to: Byte): (Byte, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextByte
-      val nextBetween = min + (nextValue % (max - min + 1)).abs
-      (nextBetween.toByte, nextRnd)
-    }
+    val (s, nextRnd) = chooseShort(from.toShort, to.toShort)
+    (s.toByte, nextRnd)
   }
 
   /**
@@ -1057,17 +1039,22 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseShort(from: Short, to: Short): (Short, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
+      // See chooseInt for comments that explain this algo
+      val min: Int = math.min(from, to).toInt // Widen both to next larger type, so max - min will not overflow
+      val max: Int = math.max(from, to).toInt
 
-      val (nextValue, nextRnd) = nextShort
-      val nextBetween = min + (nextValue % (max - min + 1)).abs
-      (nextBetween.toShort, nextRnd)
-    }
+      // The divisor for modulo on the random number will be one more than the absolute value of max - min
+      val divisor: Int = (max - min).abs + 1
+
+      val (dividend, nextRnd) = nextInt
+
+      // When you add this to min, it will be a number between min and max
+      // It won't overflow, because we're using Ints here not Shorts.
+      val remainder: Int = dividend.abs % divisor
+
+      // The max remainder in this case is 2 ** 16 - 1, so this won't
+      // overflow even if min is Short.MinValue and remainder is 2 ** 16 - 1. 
+      ((min + remainder).toShort, nextRnd)
   }
 
   /**
@@ -1083,23 +1070,62 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
-    if (from == to) {
+    if (from == to)
       (from, thisRandomizer)
-    }
     else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
+      // scala> math.min(Int.MinValue, Int.MaxValue)
+      // res0: Int = -2147483648
+      //
+      // scala> math.max(Int.MinValue, Int.MaxValue)
+      // res1: Int = 2147483647
+      //
+      // scala> math.min(Int.MaxValue, Int.MinValue)
+      // res2: Int = -2147483648
+      //
+      // scala> math.max(Int.MaxValue, Int.MinValue)
+      // res3: Int = 2147483647
+      //
+      // Thus I trust math.min and math.max to always work. I widen the result
+      // to the next larger type so that max - min will not overflow. For example:
+      //
+      // scala> Int.MinValue - Int.MaxValue
+      // res4: Int = 1
+      //
+      // scala> Int.MaxValue - Int.MinValue
+      // res5: Int = -1
+      //
+      // But:
+      //
+      // scala> Int.MinValue.toLong - Int.MaxValue.toLong
+      // res8: Long = -4294967295
+      //
+      // scala> Int.MaxValue.toLong - Int.MinValue.toLong
+      // res9: Long = 4294967295
+      val min: Long = math.min(from, to).toLong // Widen both to next larger type, so max - min will not overflow
+      val max: Long = math.max(from, to).toLong
 
-      // generate a positive Int
-      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
-      val nextBetween =
-        // Special case -- we need to guard against this, because it winds up overflowing and throwing in the modulo
-        // in the normal case. This isn't a problem with the smaller types, because they get widened to Int for the math:
-        if ((min == Int.MinValue) && (max == Int.MaxValue))
-          nextValue
-        else
-          (nextValue % (max - min + 1)) + min
-      (nextBetween, nextRnd)
+      // The divisor for modulo on the random number will be one more than the absolute value of max - min
+      // For example:
+      //
+      // scala> Int.MaxValue.toLong - Int.MinValue.toLong + 1
+      // res11: Long = 4294967296
+      //
+      // scala> math.pow(2, 32).toLong
+      // res13: Long = 4294967296
+      val divisor: Long = max - min + 1
+
+      val (dividend, nextRnd) = nextLong
+
+      // When you add this to min, it will be a number between min and max
+      // It won't overflow, because we're using Longs here not Ints.
+      val remainder: Long = dividend.abs % divisor
+
+      // The max remainder in this case is 2 ** 32 - 1, so this won't
+      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1. 
+      //
+      // scala> (Int.MinValue.toLong + 4294967295L).toInt
+      // res15: Int = 2147483647
+      ((min + remainder).toInt, nextRnd)
     }
   }
 
@@ -1330,19 +1356,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosInt(from: PosInt, to: PosInt): (PosInt, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      // generate a positive Int
-      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
-
-      val nextBetween = (nextValue % (max - min + 1)) + min
-      (PosInt.ensuringValid(nextBetween), nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.value, to.value)
+    (PosInt.ensuringValid(i), nextRnd)
   }
 
   /**
@@ -1358,20 +1373,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosZInt(from: PosZInt, to: PosZInt): (PosZInt, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      // generate a positive Int
-      val (nextValue, nextRnd) = next(31) // 31 ensures sign bit is 0
-
-      val nextBetween = (nextValue % (max - min + 1)) + min
-      (PosZInt.ensuringValid(nextBetween), nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.value, to.value)
+    (PosZInt.ensuringValid(i), nextRnd)
   }
 
   /**
@@ -1387,24 +1390,25 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseLong(from: Long, to: Long): (Long, Randomizer) = {
-    if (from == to) {
+    if (from == to)
       (from, thisRandomizer)
-    }
     else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
+      // See the comments in chooseInt for an explanation of this algo
+      val min: BigInt = BigInt(math.min(from, to)) // Widen both to next larger type, so max - min will not overflow
+      val max: BigInt = BigInt(math.max(from, to))
 
-      // Generate a positive Long (positive because we are using it as a kicker to the
-      // modulus below):
-      val (nextValue, nextRnd) = nextPosZLong
+      // The divisor for modulo on the random number will be one more than the absolute value of max - min
+      val divisor: BigInt = max - min + 1
 
-      // See chooseInt():
-      val nextBetween =
-        if ((min == Long.MinValue) && (max == Long.MaxValue))
-          nextValue.value
-        else
-          (nextValue % (max - min + 1)) + min
-      (nextBetween, nextRnd)
+      val (dividend, nextRnd) = nextLong
+
+      // When you add this to min, it will be a number between min and max
+      // It won't overflow, because we're using BigInts here not Longs.
+      val remainder: BigInt = dividend.abs % divisor
+
+      // The max remainder in this case is 2 ** 32 - 1, so this won't
+      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1. 
+      ((min + remainder).toLong, nextRnd)
     }
   }
 
@@ -1421,19 +1425,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosLong(from: PosLong, to: PosLong): (PosLong, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      // Generate a positive Long
-      val (nextValue, nextRnd) = nextPosZLong
-
-      val nextBetween = (nextValue % (max - min + 1)) + min
-      (PosLong.ensuringValid(nextBetween), nextRnd)
-    }
+    val (n, nextRnd) = chooseLong(from.value, to.value)
+    (PosLong.ensuringValid(n), nextRnd)
   }
 
   /**
@@ -1449,19 +1442,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosZLong(from: PosZLong, to: PosZLong): (PosZLong, Randomizer) = {
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      // Generate a positive Long
-      val (nextValue, nextRnd) = nextPosZLong
-
-      val nextBetween = (nextValue % (max - min + 1)) + min
-      (PosZLong.ensuringValid(nextBetween), nextRnd)
-    }
+    val (n, nextRnd) = chooseLong(from.value, to.value)
+    (PosZLong.ensuringValid(n), nextRnd)
   }
 
   /**
@@ -1612,19 +1594,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegInt(from: NegInt, to: NegInt): (NegInt, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNegInt
-
-      val nextBetween = (nextValue % (max - min + 1)).abs + min
-      (NegInt.ensuringValid(nextBetween), nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.value, to.value)
+    (NegInt.ensuringValid(i), nextRnd)
   }
 
     /**
@@ -1640,19 +1611,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       * @return A value from that range, inclusive of the ends.
       */
   def chooseNegLong(from: NegLong, to: NegLong): (NegLong, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNegLong
-
-      val nextBetween = (nextValue % (max - min + 1)).abs + min
-      (NegLong.ensuringValid(nextBetween), nextRnd)
-    }
+    val (n, nextRnd) = chooseLong(from.value, to.value)
+    (NegLong.ensuringValid(n), nextRnd)
   }
 
     /**
@@ -1804,19 +1764,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZInt(from: NegZInt, to: NegZInt): (NegZInt, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNegZInt
-
-      val nextBetween = (nextValue % (max - min + 1)).abs + min
-      (NegZInt.ensuringValid(nextBetween), nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.value, to.value)
+    (NegZInt.ensuringValid(i), nextRnd)
   }
 
   /**
@@ -1832,19 +1781,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZLong(from: NegZLong, to: NegZLong): (NegZLong, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNegZLong
-
-      val nextBetween = (nextValue % (max - min + 1)).abs + min
-      (NegZLong.ensuringValid(nextBetween), nextRnd)
-    }
+    val (n, nextRnd) = chooseLong(from.value, to.value)
+    (NegZLong.ensuringValid(n), nextRnd)
   }
 
   /**
@@ -1983,6 +1921,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     }
   }
 
+
   /**
     * Given a range of Ints (excluding zero), chooses one of them randomly.
     *
@@ -1998,28 +1937,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroInt(from: NonZeroInt, to: NonZeroInt): (NonZeroInt, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNonZeroInt
-
-      // See chooseInt():
-      val nextBetween =
-        if ((min == Int.MinValue) && (max == Int.MaxValue))
-          nextValue.value
-        else
-          (nextValue % (max - min + 1)).abs + min
-
-      if (nextBetween == 0)
-        (NonZeroInt(1), nextRnd)
-      else
-        (NonZeroInt.ensuringValid(nextBetween), nextRnd)
-    }
+    val (i, nextRnd) = chooseInt(from.value, to.value)
+    // If 0 is between min and max, since neither min nor max can be 0 given this from
+    // and two were NonZeroInts, min must be negative and max positive. Thus the minimum
+    // that max can be is 1, which is what we use here if i is 0:
+    val nonZero = if (i == 0) 1 else i
+    (NonZeroInt.ensuringValid(nonZero), nextRnd)
   }
 
   /**
@@ -2037,28 +1960,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroLong(from: NonZeroLong, to: NonZeroLong): (NonZeroLong, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val (nextValue, nextRnd) = nextNonZeroLong
-
-      // See chooseInt():
-      val nextBetween: Long =
-        if ((min == Long.MinValue) && (max == Long.MaxValue))
-          nextValue.value
-        else
-          (nextValue % (max - min + 1)).abs + min
-
-      if (nextBetween == 0L)
-        (NonZeroLong(1L), nextRnd)
-      else
-        (NonZeroLong.ensuringValid(nextBetween), nextRnd)
-    }
+    val (n, nextRnd) = chooseLong(from.value, to.value)
+    // If 0 is between min and max, since neither min nor max can be 0 given this from
+    // and two were NonZeroLongs, min must be negative and max positive. Thus the minimum
+    // that max can be is 1, which is what we use here if n is 0:
+    val nonZero = if (n == 0L) 1L else n
+    (NonZeroLong.ensuringValid(nonZero), nextRnd)
   }
 
   /**
