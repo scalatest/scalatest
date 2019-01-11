@@ -1187,25 +1187,18 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
  def choosePosFloat(from: PosFloat, to: PosFloat): (PosFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextPosFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (PosFloat.ensuringValid(nextBetween), nextNextRnd)
-      }
-    }
+    // The IEEE-754 floating point spec arranges things such that given any two positive Floats (including
+    // positive 0.0), a and b, a < b iff floatToIntBits(a) < floatToIntBits(b).
+    // 
+    // The bits comparison of positive Floats works for +0.0f, +infinity, and +NaN. All of
+    // All of those special values are arranged in a total order that places 0.0f as the smallest, 
+    // positive infinity just higher than the largest (greatest magnitude) representable positive real number,
+    // and all the other left-over values at the positive extreme represents variants of +NaN.
+    //
+    // Thus we can just convert the from and to to bits, get an integral number between those two, and
+    // convert those bits back to PosFloat.
+    val (n, nextRnd) = chooseInt(floatToIntBits(from), floatToIntBits(to))
+    (PosFloat.ensuringValid(intBitsToFloat(n)), nextRnd)
   }
 
   /**
@@ -1221,25 +1214,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosFiniteFloat(from: PosFiniteFloat, to: PosFiniteFloat): (PosFiniteFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextPosFiniteFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        (PosFiniteFloat.ensuringValid(nextBetween), nextNextRnd)
-      }
-    }
+    // See choosePosFloat for a comment that explains this algo
+    val (n, nextRnd) = chooseInt(floatToIntBits(from), floatToIntBits(to))
+    (PosFiniteFloat.ensuringValid(intBitsToFloat(n)), nextRnd)
   }
 
   /**
