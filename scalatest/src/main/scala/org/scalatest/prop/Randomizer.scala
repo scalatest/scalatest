@@ -635,8 +635,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def nextNonZeroFiniteDouble: (NonZeroFiniteDouble, Randomizer) = {
     val (candidate, r) = nextFiniteDoubleValue
-    val nonZero = forceNonZeroDoubleValue(candidate)
-    (NonZeroFiniteDouble.ensuringValid(nonZero), r)
+    val nonZeroFinite = forceNonZeroDoubleValue(candidate)
+    (NonZeroFiniteDouble.ensuringValid(nonZeroFinite), r)
   }
 
   /**
@@ -671,8 +671,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def nextNonZeroFiniteFloat: (NonZeroFiniteFloat, Randomizer) = {
     val (candidate, r) = nextFiniteFloatValue
-    val nonZero = forceNonZeroFloatValue(candidate)
-    (NonZeroFiniteFloat.ensuringValid(nonZero), r)
+    val nonZeroFinite = forceNonZeroFloatValue(candidate)
+    (NonZeroFiniteFloat.ensuringValid(nonZeroFinite), r)
   }
 
   /**
