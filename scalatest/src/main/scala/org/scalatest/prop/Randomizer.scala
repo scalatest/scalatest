@@ -625,12 +625,15 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Double, and the next Randomizer to use.
     */
   def nextNonZeroDouble: (NonZeroDouble, Randomizer) = {
-    val (candidate, r) = nextExtRealFloatValue
-    val nonZero = 
-      if (isNegativeZeroDouble(candidate)) -Double.MinPositiveValue
-      else if (candidate == 0.0) Double.MinPositiveValue
-      else candidate
+    val (candidate, r) = nextExtRealDoubleValue
+    val nonZero = forceNonZeroDoubleValue(candidate)
     (NonZeroDouble.ensuringValid(nonZero), r)
+  }
+
+  private def forceNonZeroDoubleValue(candidate: Double): Double =  {
+    if (isNegativeZeroDouble(candidate)) -Double.MinPositiveValue
+    else if (candidate == 0.0) Double.MinPositiveValue
+    else candidate
   }
 
   /**
@@ -642,17 +645,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random non-zero Double, and the next Randomizer to use.
     */
   def nextNonZeroFiniteDouble: (NonZeroFiniteDouble, Randomizer) = {
-    val (d, r) = nextFiniteDoubleValue
-    val nonZeroFinite =
-      d match {
-        case 0.0 => Double.MinPositiveValue
-        case -0.0 => -Double.MinPositiveValue
-        case Double.PositiveInfinity => Double.MaxValue
-        case Double.NegativeInfinity => Double.MinValue
-        case v if v > 0.0 => -v
-        case _ => d
-      }
-    (NonZeroFiniteDouble.ensuringValid(nonZeroFinite), r)
+    val (candidate, r) = nextFiniteDoubleValue
+    val nonZero = forceNonZeroDoubleValue(candidate)
+    (NonZeroFiniteDouble.ensuringValid(nonZero), r)
   }
 
   /**
