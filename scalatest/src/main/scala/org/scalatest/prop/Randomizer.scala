@@ -1607,25 +1607,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       * @return A value from that range, inclusive of the ends.
       */
   def chooseNegFloat(from: NegFloat, to: NegFloat): (NegFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, nextRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (NegFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    val posFrom: Float = -(from.value)
+    val posTo: Float = -(to.value)
+    val (n, nextRnd) = chooseInt(floatToIntBits(posFrom), floatToIntBits(posTo))
+    val posN: Float = intBitsToFloat(n)
+    val negN: Float = -posN
+    (NegFloat.ensuringValid(negN), nextRnd)
   }
 
   /**
