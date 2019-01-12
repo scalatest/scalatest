@@ -1219,7 +1219,9 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (PosFiniteFloat.ensuringValid(intBitsToFloat(n)), nextRnd)
   }
 
-  // This helper method is shared by choosePosZFloat and choosePosZFiniteFloat.
+  // This helper method is shared by choosePosZFloat, choosePosZFiniteFloat,
+  // chooseNegZFloat, chooseNegZFiniteFloat. That latter two negate their from and
+  // to values before invoking this method, then negate the result that this method returns.
   private def choosePositiveOrZeroFloat(from: Float, to: Float): (Float, Randomizer) = {
 
     // This local method assumes it will never be passed -0.0f for posFrom or posTo.
@@ -1761,25 +1763,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZFloat(from: NegZFloat, to: NegZFloat): (NegZFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegZFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (NegZFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // Use the algo for selecting a PosZFloat by negating from and to before invoking the algo,
+    // then negating its result.
+    val posFrom: Float = -(from.value)
+    val posTo: Float = -(to.value)
+    val (n, nextRnd) = choosePositiveOrZeroFloat(posFrom, posTo)
+    (NegZFloat.ensuringValid(-n), nextRnd)
   }
 
   /**
@@ -1795,25 +1784,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZFiniteFloat(from: NegZFiniteFloat, to: NegZFiniteFloat): (NegZFiniteFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegZFiniteFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        (NegZFiniteFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // Use the algo for selecting a PosZFloat by negating from and to before invoking the algo,
+    // then negating its result.
+    val posFrom: Float = -(from.value)
+    val posTo: Float = -(to.value)
+    val (n, nextRnd) = choosePositiveOrZeroFloat(posFrom, posTo)
+    (NegZFiniteFloat.ensuringValid(-n), nextRnd)
   }
 
   /**
