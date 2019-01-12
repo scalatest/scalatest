@@ -609,8 +609,21 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = floatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
-        a1 shouldEqual 0.0f
+        val (a1: Float, ae1: List[Float], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
+        val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
+        val (a7, e, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7)
+        edges should contain (Float.MinValue)
+        edges should contain (-1.0F)
+        edges should contain (-Float.MinPositiveValue)
+        edges should contain (0.0F)
+        edges should contain (Float.MinPositiveValue)
+        edges should contain (1.0F)
+        edges should contain (Float.MaxValue)
       }
       it("should produce Float canonical values") {
         import Generator._
