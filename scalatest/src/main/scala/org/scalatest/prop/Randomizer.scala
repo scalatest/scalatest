@@ -1133,7 +1133,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
   // Choose a Float that is not a not a number! This method is called by both
   // chooseFloat and chooseFiniteFloat.
-  private def chooseFloatGivenFiniteFloats(from: Float, to: Float): (Float, Randomizer) = {
+  private def chooseExtRealFloat(from: Float, to: Float): (Float, Randomizer) = {
 
     // This will return false for +0.0
     def isNegativeFloat(n: Float): Boolean = {
@@ -1210,15 +1210,6 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
     }
   }
-  // TODO: chooseFloat(), chooseDouble() and at least some of their variants are broken if various edge cases are specified as values.
-  // See Issue: https://github.com/scalatest/scalatest/issues/1473
-  //
-  // Note that those functions likely can and should be simplified (the problem was discovered when I tried to simplify as I've done for
-  // the integral chooseXX() functions, and then realized that it's not so simple), but should generally be rethought, and quite
-  // possibly heavily refactored.
-  //
-  // These functions are scattered throughout the rest of this file -- there are a lot of them. It isn't obvious offhand which
-  // ones need improvement.
 
   /**
     * Given a range of Floats, chooses one of them randomly.
@@ -1233,24 +1224,40 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseFloat(from: Float, to: Float): (Float, Randomizer) = {
-    if (from == to) {
+
+    val fromIsNaN = from.isNaN
+    val toIsNaN = to.isNaN
+
+    if (fromIsNaN && toIsNaN) {
       (from, thisRandomizer)
     }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (nextBetween, nextNextRnd)
-      }
+    else if (fromIsNaN) {
+      // If from is NaN, replace it with PositiveInfinity, which the chooseExtRealFloat can handle.
+      val candidate = chooseExtRealFloat(Float.PositiveInfinity, to)
+      val (n, nextRnd) = candidate
+      // If we get a positive infinity back, return a NaN instead about half of the time.
+      if (n == Float.PositiveInfinity) {
+        val (bit, nextNextRnd) = nextRnd.nextBit
+        if (bit == 0)
+          (Float.NaN, nextNextRnd)
+       else
+          (n, nextNextRnd)
+      } else candidate
     }
+    else if (toIsNaN) {
+      // If to is NaN, replace it with PositiveInfinity, which the chooseExtRealFloat can handle.
+      val candidate = chooseExtRealFloat(from, Float.PositiveInfinity)
+      val (n, nextRnd) = candidate
+      // If we get positive infinity back, return a NaN instead about half of the time.
+      if (n == Float.PositiveInfinity) {
+        val (bit, nextNextRnd) = nextRnd.nextBit
+        if (bit == 0)
+          (Float.NaN, nextNextRnd)
+       else
+          (n, nextNextRnd)
+      } else candidate
+    }
+    else chooseExtRealFloat(from, to)
   }
 
   /**
@@ -2182,7 +2189,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseFiniteFloat(from: FiniteFloat, to: FiniteFloat): (FiniteFloat, Randomizer) = {
-    val (n, nextRnd) = chooseFloatGivenFiniteFloats(from.value, to.value)
+    val (n, nextRnd) = chooseExtRealFloat(from.value, to.value)
     (FiniteFloat.ensuringValid(n), nextRnd)
   }
 
