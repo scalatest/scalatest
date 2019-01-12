@@ -1233,24 +1233,38 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def choosePosZFloat(from: PosZFloat, to: PosZFloat): (PosZFloat, Randomizer) = {
 
-    if (from == to) {
-      (from, thisRandomizer)
+    // This local method assumes it will never be passed PosZFloat(-0.0) for posFrom or posTo.
+    def choosePosPosZFloat(posPosZFrom: PosZFloat, posPosZTo: PosZFloat): (PosZFloat, Randomizer) = {
+      // See the comment for choosePosFloat for an explanation of this algo.
+      val (n, nextRnd) = chooseInt(floatToIntBits(posPosZFrom), floatToIntBits(posPosZTo))
+      (PosZFloat.ensuringValid(intBitsToFloat(n)), nextRnd)
     }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
 
-      val nextPair = nextPosZFloat
-      val (nextValue, nextRnd) = nextPair
+    // We will handle a -0.0 specially, because it is the only one that can't
+    // participate in the technique of converting +0.0 to positive Floats to Int
+    // bits and finding a point that way.
+    val fromIsNegZero = isNegativeZeroFloat(from.value)
+    val toIsNegZero = isNegativeZeroFloat(to.value)
+    if (fromIsNegZero || toIsNegZero) {
+      // See the comment in nextFloat for an explanation of why each Float point (distinct value)
+      // is essentially worth one Int point. Here we are looking at extremely close
+      // to half of the Float point space, because looking at just positive numbers, positive infinity,
+      // and the two zeros, so each PosZFloat point will be worth around two Int points.
 
-      if (nextValue >= min && nextValue <= max)
-        nextPair
+      // Thus we can randomly pick two number out of the nextInt and decide that's -0.0.
+      val (x, r) = nextInt
+
+      // Pick two lucky numbers to play the lotto with:
+      if (x == 111 || x == 555)
+        (PosZFloat(-0.0f), r)
       else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (PosZFloat.ensuringValid(nextBetween), nextNextRnd)
+        // Change the negative zero(s) to positive zero(s)
+        val newFrom = if (fromIsNegZero) PosZFloat(0.0f) else from
+        val newTo = if (toIsNegZero) PosZFloat(0.0f) else to
+        choosePosPosZFloat(newFrom, newTo)
       }
     }
+    else choosePosPosZFloat(from, to)
   }
 
   /**
@@ -1267,25 +1281,38 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def choosePosZFiniteFloat(from: PosZFiniteFloat, to: PosZFiniteFloat): (PosZFiniteFloat, Randomizer) = {
 
-    if (from == to) {
-      (from, thisRandomizer)
+    // This local method assumes it will never be passed PosZFiniteFloat(-0.0) for posFrom or posTo.
+    def choosePosPosZFiniteFloat(posPosZFiniteFrom: PosZFiniteFloat, posPosZFiniteTo: PosZFiniteFloat): (PosZFiniteFloat, Randomizer) = {
+      // See the comment for choosePosFloat for an explanation of this algo.
+      val (n, nextRnd) = chooseInt(floatToIntBits(posPosZFiniteFrom), floatToIntBits(posPosZFiniteTo))
+      (PosZFiniteFloat.ensuringValid(intBitsToFloat(n)), nextRnd)
     }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
 
-      val nextPair = nextPosZFiniteFloat
-      val (nextValue, nextRnd) = nextPair
+    // We will handle a -0.0 specially, because it is the only one that can't
+    // participate in the technique of converting +0.0 to positive Floats to Int
+    // bits and finding a point that way.
+    val fromIsNegZero = isNegativeZeroFloat(from.value)
+    val toIsNegZero = isNegativeZeroFloat(to.value)
+    if (fromIsNegZero || toIsNegZero) {
+      // See the comment in nextFloat for an explanation of why each Float point (distinct value)
+      // is essentially worth one Int point. Here we are looking at extremely close
+      // to half of the Float point space, because looking at just positive numbers and the two zeros,
+      // so each PosZFiniteFloat point will be worth around two Int points.
 
-      if (nextValue >= min && nextValue <= max)
-        nextPair
+      // Thus we can randomly pick two number out of the nextInt and decide that's -0.0.
+      val (x, r) = nextInt
+
+      // Pick two lucky numbers to play the lotto with:
+      if (x == 111 || x == 555)
+        (PosZFiniteFloat(-0.0f), r)
       else {
-        //val nextBetween = min + (nextValue % (max - min)).abs
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        (PosZFiniteFloat.ensuringValid(nextBetween), nextRnd)
+        // Change the negative zero(s) to positive zero(s)
+        val newFrom = if (fromIsNegZero) PosZFiniteFloat(0.0f) else from
+        val newTo = if (toIsNegZero) PosZFiniteFloat(0.0f) else to
+        choosePosPosZFiniteFloat(newFrom, newTo)
       }
     }
+    else choosePosPosZFiniteFloat(from, to)
   }
 
   /**
