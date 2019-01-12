@@ -4,16 +4,12 @@ scala:
   - 2.11.12
   - 2.12.6
   #- 2.13.0-M5
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
 
 jdk:
   - openjdk6
   - oraclejdk8
 
-dist: trusty
+dist: precise
 sudo: true
 
 env:
