@@ -203,25 +203,95 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
 
     it("should offer a '*' method that is consistent with $primitiveType$") {
       forAll { (p: $typeName$, byte: Byte) =>
-        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+        val x = p * byte
+        val y = p.to$primitiveType$ * byte
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
       forAll { (p: $typeName$, short: Short) =>
-        (p * short) shouldEqual (p.to$primitiveType$ * short)
+        val x = p * short
+        val y = p.to$primitiveType$ * short
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
-      forAll { (p: $typeName$, byte: Char) =>
-        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+      forAll { (p: $typeName$, char: Char) =>
+        val x = p * char
+        val y = p.to$primitiveType$ * char
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
       forAll { (p: $typeName$, int: Int) =>
-        (p * int) shouldEqual (p.to$primitiveType$ * int)
+        val x = p * int
+        val y = p.to$primitiveType$ * int
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
       forAll { (p: $typeName$, long: Long) =>
-        (p * long) shouldEqual (p.to$primitiveType$ * long)
+        val x = p * long
+        val y = p.to$primitiveType$ * long
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
       forAll { (p: $typeName$, float: Float) =>
-        (p * float) shouldEqual (p.to$primitiveType$ * float)
+        val x = p * float
+        val y = p.to$primitiveType$ * float
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
       forAll { (p: $typeName$, double: Double) =>
-        (p * double) shouldEqual (p.to$primitiveType$ * double)
+        val x = p * double
+        val y = p.to$primitiveType$ * double
+        (y: AnyVal) match {
+          case _: Float | _: Double =>
+            if (x.isNaN && y.isNaN)
+              succeed
+            else
+              x shouldEqual y
+          case _ =>
+            x shouldEqual y
+        }
       }
     }
 
