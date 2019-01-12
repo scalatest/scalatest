@@ -1131,6 +1131,85 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     }
   }
 
+  // Choose a Float that is not a not a number! This method is called by both
+  // chooseFloat and chooseFiniteFloat.
+  private def chooseFloatGivenFiniteFloats(from: Float, to: Float): (Float, Randomizer) = {
+
+    // This will return false for +0.0
+    def isNegativeFloat(n: Float): Boolean = {
+      // scala> -0.0f < 0.0f
+      // res11: Boolean = false
+      n < 0.0f || isNegativeZeroFloat(n)
+    }
+
+    // This will return false for -0.0
+    def isPositiveFloat(n: Float): Boolean = {
+      n >= 0.0f && !isNegativeZeroFloat(n)
+    }
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else if (isPositiveFloat(from) && isPositiveFloat(to)) {
+      choosePositiveOrZeroFloat(from, to)
+    }
+    else if (isNegativeFloat(from) && isNegativeFloat(to)) {
+      // Use the algo for selecting a positive or zero Float by negating
+      // from and to before invoking the algo, then negating its result.
+      val posFrom = -from
+      val posTo = -to
+      val (n, nextRnd) = choosePositiveOrZeroFloat(posFrom, posTo)
+      (-n, nextRnd)
+    }
+    else {
+      // At this point we know one of from and to is negative and the other positive.
+      // Soon we'll know that max is negative and min is positive.
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      def mantissa(n: Float): Int = {
+        floatToIntBits(n) & 0x7fffff
+      }
+
+      def exponent(n: Float): Int = {
+        val candidate = (floatToIntBits(n) & 0x7f800000) >> 23
+        // If an exponent os 0xff, the value is either +- infinity or NaN
+        // Since that only has 3 points, we'll ignore that one, and force
+        // the exponent down one to 0xfe.
+        if (candidate == 0xff) 0xfe else candidate
+      }
+      val minExp = exponent(from)
+      val maxExp = exponent(to)
+
+      // 2 to the power of 23 (0x800000) is how many different mantissas can be represented in 23 bits.
+      // Compute the number of "points"--the total number of possible values--between -0.0 and the min (which
+      // is negative) and between +0.0 and the max (which is positive).
+      val minRange: Long = minExp.toLong * 0x800000 + mantissa(min)
+      val maxRange: Long = maxExp.toLong * 0x800000 + mantissa(max)
+
+      // Compute the total number of points on both sides of 0. This is the full range of possibilies.
+      val total: Long = minRange + maxRange
+
+      val (n, nextRnd) = nextLong
+
+      // The remainder is a random value between 0 and the total number of possible results of this method.
+      val remainder: Long = n % total
+
+      // If the remainder is less than the maxRange, then we'll pick a number on the positive side. Otherwise
+      // we'll pick a number on the negative side. By doing it this way, if the minRange is, say, four times
+      // larger than the maxRange, the chances we'll pick a negative result is 4 out of 5. The chances we'll
+      // pick a positive result is 1 out of 5.
+      if (remainder < maxRange) {
+        // Do the positive side, +0.0 to max
+        choosePositiveOrZeroFloat(0.0f, max)
+      }
+      else {
+        // Do the negative side, min to -0.0
+         val (n, nextRnd) = choosePositiveOrZeroFloat(0.0f, -min)
+         (-n, nextRnd)
+      }
+    }
+  }
   // TODO: chooseFloat(), chooseDouble() and at least some of their variants are broken if various edge cases are specified as values.
   // See Issue: https://github.com/scalatest/scalatest/issues/1473
   //
@@ -2103,25 +2182,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseFiniteFloat(from: FiniteFloat, to: FiniteFloat): (FiniteFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextFiniteFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        (FiniteFloat.ensuringValid(nextBetween), nextNextRnd)
-      }
-    }
+    val (n, nextRnd) = chooseFloatGivenFiniteFloats(from.value, to.value)
+    (FiniteFloat.ensuringValid(n), nextRnd)
   }
 
   /**
