@@ -1607,6 +1607,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       * @return A value from that range, inclusive of the ends.
       */
   def chooseNegFloat(from: NegFloat, to: NegFloat): (NegFloat, Randomizer) = {
+    // See choosePosFloat for a comment that explains the algo we are using. The algo
+    // works for positive floats, and we have here a negative float. Negative and positive
+    // floats are symmetric. For every negative float value there is a corresponding 
+    // positive float value of the same magnitude. So we negate our from and to, use
+    // the algorithm for positive floats, then negate the result to get a negative float
+    // to return.
     val posFrom: Float = -(from.value)
     val posTo: Float = -(to.value)
     val (n, nextRnd) = chooseInt(floatToIntBits(posFrom), floatToIntBits(posTo))
@@ -1628,25 +1634,13 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegFiniteFloat(from: NegFiniteFloat, to: NegFiniteFloat): (NegFiniteFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, nextRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegFiniteFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        (NegFiniteFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // See chooseNegFloat for a comment that explains this algo
+    val posFrom: Float = -(from.value)
+    val posTo: Float = -(to.value)
+    val (n, nextRnd) = chooseInt(floatToIntBits(posFrom), floatToIntBits(posTo))
+    val posN: Float = intBitsToFloat(n)
+    val negN: Float = -posN
+    (NegFiniteFloat.ensuringValid(negN), nextRnd)
   }
 
   /**
