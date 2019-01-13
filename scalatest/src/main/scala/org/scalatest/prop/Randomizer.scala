@@ -1976,25 +1976,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZFiniteDouble(from: NegZFiniteDouble, to: NegZFiniteDouble): (NegZFiniteDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegZFiniteDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (NegZFiniteDouble.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // Use the algo for selecting a PosZDouble by negating from and to before invoking the algo,
+    // then negating its result.
+    val posFrom: Double = -(from.value)
+    val posTo: Double = -(to.value)
+    val (n, nextRnd) = choosePositiveOrZeroDouble(posFrom, posTo)
+    (NegZFiniteDouble.ensuringValid(-n), nextRnd)
   }
 
 
