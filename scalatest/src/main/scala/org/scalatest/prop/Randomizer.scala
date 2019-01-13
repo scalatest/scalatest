@@ -2118,28 +2118,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroDouble(from: NonZeroDouble, to: NonZeroDouble): (NonZeroDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNonZeroDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        if (nextBetween == 0.0)
-          (NonZeroDouble(1.0), nextRnd)
-        else
-          (NonZeroDouble.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    val (n, nextRnd) = chooseDouble(from.value, to.value)
+    val res =
+      if (isNegativeZeroDouble(n)) from
+      else if (n == 0.0) to
+      else NonZeroDouble.ensuringValid(n)
+    (res, nextRnd)
   }
 
   /**
