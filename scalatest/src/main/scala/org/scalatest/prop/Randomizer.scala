@@ -2010,7 +2010,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def chooseNonZeroFloat(from: NonZeroFloat, to: NonZeroFloat): (NonZeroFloat, Randomizer) = {
     val (n, nextRnd) = chooseFloat(from.value, to.value)
     val res =
-      if (n == -0.0f) from
+      if (isNegativeZeroFloat(n)) from
       else if (n == 0.0f) to
       else NonZeroFloat.ensuringValid(n)
     (res, nextRnd)
@@ -2057,28 +2057,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroFiniteFloat(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): (NonZeroFiniteFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNonZeroFiniteFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = finiteFloatBetweenAlgorithm(between0And1, min, max)
-        if (nextBetween == 0.0f)
-          (NonZeroFiniteFloat(1.0f), nextRnd)
-        else
-          (NonZeroFiniteFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    val (n, nextRnd) = chooseExtRealFloat(from.value, to.value)
+    val res =
+      if (isNegativeZeroFloat(n)) from
+      else if (n == 0.0f) to
+      else NonZeroFiniteFloat.ensuringValid(n)
+    (res, nextRnd)
   }
 
   /**
