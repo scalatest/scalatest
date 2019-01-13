@@ -1830,25 +1830,18 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegDouble(from: NegDouble, to: NegDouble): (NegDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, nextRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNegDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (NegDouble.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // See choosePosDouble for a comment that explains the algo we are using. The algo
+    // works for positive floats, and we have here a negative float. Negative and positive
+    // floats are symmetric. For every negative float value there is a corresponding 
+    // positive float value of the same magnitude. So we negate our from and to, use
+    // the algorithm for positive floats, then negate the result to get a negative float
+    // to return.
+    val posFrom: Double = -(from.value)
+    val posTo: Double = -(to.value)
+    val (n, nextRnd) = chooseLong(doubleToLongBits(posFrom), doubleToLongBits(posTo))
+    val posN: Double = longBitsToDouble(n)
+    val negN: Double = -posN
+    (NegDouble.ensuringValid(negN), nextRnd)
   }
 
   /**
