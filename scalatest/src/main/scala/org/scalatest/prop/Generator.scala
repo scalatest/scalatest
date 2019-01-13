@@ -179,8 +179,7 @@ object Generator {
   private[prop] val charEdges = List(Char.MinValue, Char.MaxValue)
   private[prop] val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private[prop] val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
-  private[prop] val floatEdges = List(Float.MinValue, -1.0F, -Float.MinPositiveValue, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue)
-  // private[prop] val floatEdges = List(Float.NegativeInfinity, Float.MinValue, -1.0F, -Float.MinPositiveValue, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue, Float.PositiveInfinity)
+  private[prop] val floatEdges = List(Float.NegativeInfinity, Float.MinValue, -1.0F, -Float.MinPositiveValue, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue, Float.PositiveInfinity)
   private[prop] val doubleEdges = List(0.0)
   private[prop] val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private[prop] val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
@@ -404,8 +403,33 @@ object Generator {
           if (f == 0.0f) acc
           else if (f <= 1.0f && f >= -1.0f) 0.0f :: acc
           else if (!f.isWhole) {
+            // We need to handle infinity and NaN specially because without it, this method
+            // will go into an infinite loop. The reason is floor and ciel give back the same value
+            // on these values:
+            //
+            // scala> val f = Float.PositiveInfinity
+            // f: Float = Infinity
+            //
+            // scala> f.floor
+            // res1: Float = Infinity
+            //
+            // scala> f.ceil
+            // res3: Float = Infinity
+            //
+            // scala> Float.NaN.floor
+            // res5: Float = NaN
+            //
+            // scala> Float.NaN.ceil
+            // res6: Float = NaN
+            //
+            val n =
+              if (f == Float.PositiveInfinity || f.isNaN)
+                Float.MaxValue
+              else if (f == Float.NegativeInfinity)
+                Float.MinValue
+              else f
             // Nearest whole numbers closer to zero
-            val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
+            val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
             shrinkLoop(nearest, nearestNeg :: nearest :: acc)
           }
           else {

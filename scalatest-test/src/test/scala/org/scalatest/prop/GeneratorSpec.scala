@@ -615,8 +615,11 @@ class GeneratorSpec extends FunSpec with Matchers {
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val (a7, e, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7)
+        val (a7, ae7, ar7) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
+        val (a8, ae8, ar8) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
+        val (a9, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae8, rnd = ar8)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+        edges should contain (Float.NegativeInfinity)
         edges should contain (Float.MinValue)
         edges should contain (-1.0F)
         edges should contain (-Float.MinPositiveValue)
@@ -624,6 +627,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (Float.MinPositiveValue)
         edges should contain (1.0F)
         edges should contain (Float.MaxValue)
+        edges should contain (Float.PositiveInfinity)
       }
       it("should produce Float canonical values") {
         import Generator._
@@ -641,13 +645,19 @@ class GeneratorSpec extends FunSpec with Matchers {
           if (f == 0.0f) {
             shrinks shouldBe empty
           } else {
-            if (f > 1.0f)
+            val n =
+              if (f == Float.PositiveInfinity || f == Float.NaN)
+                Float.MaxValue
+              else if (f == Float.NegativeInfinity)
+                Float.MinValue
+              else f
+            if (n > 1.0f)
               shrinks.last should be > 0.0f
-            else if (f < -1.0f)
+            else if (n < -1.0f)
               shrinks.last should be < 0.0f
             import org.scalatest.Inspectors._
-            if (!f.isWhole) {
-              shrinks.last shouldEqual (if (f > 0.0f) f.floor else f.ceil)
+            if (!n.isWhole) {
+              shrinks.last shouldEqual (if (n > 0.0f) n.floor else n.ceil)
             }
             val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
             forAll (pairs) { case (x, y) =>
