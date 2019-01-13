@@ -1713,25 +1713,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosZDouble(from: PosZDouble, to: PosZDouble): (PosZDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextPosZDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (PosZDouble.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    val (n, nextRnd) = choosePositiveOrZeroDouble(from.value, to.value)
+    (PosZDouble.ensuringValid(n), nextRnd)
   }
 
   /**
