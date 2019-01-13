@@ -198,7 +198,7 @@ object Generator {
   private[prop] val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
   private[prop] val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
   private[prop] val nonZeroFloatEdges = List(NonZeroFloat.NegativeInfinity, NonZeroFloat.MinValue, NonZeroFloat(-1.0F), -NonZeroFloat.MinPositiveValue, NonZeroFloat.MinPositiveValue, NonZeroFloat(1.0F), NonZeroFloat.MaxValue, NonZeroFloat.PositiveInfinity)
-  private[prop] val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
+  private[prop] val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat.ensuringValid(-NonZeroFiniteFloat.MinPositiveValue), NonZeroFiniteFloat.MinPositiveValue, NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
   private[prop] val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
   private[prop] val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
   private[prop] val negDoubleEdges = List(NegDouble.MinValue, NegDouble(-1.0), NegDouble.MaxValue)
