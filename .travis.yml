@@ -12,8 +12,10 @@ jdk:
 dist: precise
 sudo: true
 
-before_install:
-  - sudo hostname "$(hostname | cut -c1-63)"
+addons:
+  hosts:
+    - me
+  hostname: me
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
