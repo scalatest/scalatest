@@ -1668,25 +1668,18 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosDouble(from: PosDouble, to: PosDouble): (PosDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextPosDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (PosDouble.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    // The IEEE-754 floating point spec arranges things such that given any two positive Doubles (including
+    // positive 0.0), a and b, a < b iff doubleToLongBits(a) < doubleToLongBits(b).
+    //
+    // The bits comparison of positive Doubles works for +0.0, +infinity, and +NaN. All of
+    // All of those special values are arranged in a total order that places 0.0 as the smallest, 
+    // positive infinity just higher than the largest (greatest magnitude) representable positive real number,
+    // and all the other left-over values at the positive extreme represents variants of +NaN.
+    //
+    // Thus we can just convert the from and to to bits, get an integral number between those two, and
+    // convert those bits back to PosDouble.
+    val (n, nextRnd) = chooseLong(doubleToLongBits(from), doubleToLongBits(to))
+    (PosDouble.ensuringValid(longBitsToDouble(n)), nextRnd)
   }
 
   /**
