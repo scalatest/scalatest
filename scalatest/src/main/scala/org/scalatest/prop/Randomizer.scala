@@ -1211,6 +1211,90 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     }
   }
 
+  // Choose a Double that is not a not a number! This method is called by both
+  // chooseDouble and chooseFiniteDouble.
+  private def chooseExtRealDouble(from: Double, to: Double): (Double, Randomizer) = {
+
+    // This will return false for +0.0
+    def isNegativeDouble(n: Double): Boolean = {
+      // scala> -0.0 < 0.0
+      // res11: Boolean = false
+      n < 0.0f || isNegativeZeroDouble(n)
+    }
+
+    // This will return false for -0.0
+    def isPositiveDouble(n: Double): Boolean = {
+      n >= 0.0 && !isNegativeZeroDouble(n)
+    }
+
+    if (from == to) {
+      (from, thisRandomizer)
+    }
+    else if (isPositiveDouble(from) && isPositiveDouble(to)) {
+      choosePositiveOrZeroDouble(from, to)
+    }
+    else if (isNegativeDouble(from) && isNegativeDouble(to)) {
+      // Use the algo for selecting a positive or zero Double by negating
+      // from and to before invoking the algo, then negating its result.
+      val posFrom = -from
+      val posTo = -to
+      val (n, nextRnd) = choosePositiveOrZeroDouble(posFrom, posTo)
+      (-n, nextRnd)
+    }
+    else {
+      // At this point we know one of from and to is negative and the other positive.
+      // Soon we'll know that max is negative and min is positive.
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+
+      def mantissa(n: Double): Long = {
+        doubleToLongBits(n) & 0x000fffffffffffffL
+      }
+
+      def exponent(n: Double): Long = {
+        val candidate = (doubleToLongBits(n) & 0x7ff000000000000L) >> 52
+        // If an exponent is 0x7ff, the value is either +- infinity or NaN
+        // Since that only has 3 points, we'll ignore that one, and force
+        // the exponent down one to 0x7fe.
+        if (candidate == 0x7ff) 0x7fe else candidate
+      }
+      val minExp = exponent(from)
+      val maxExp = exponent(to)
+
+      // 2 to the power of 52 (0x800000) is how many different mantissas can be represented in 23 bits.
+      // Compute the number of "points"--the total number of possible values--between -0.0 and the min (which
+      // is negative) and between +0.0 and the max (which is positive).
+      // scala> java.lang.Long.toHexString(math.pow(2, 52).toLong)
+      // res7: String = 10000000000000
+
+      val minRange: BigInt = BigInt(minExp) * 0x10000000000000L + mantissa(min)
+      val maxRange: BigInt = BigInt(maxExp) * 0x10000000000000L + mantissa(max)
+
+      // Compute the total number of points on both sides of 0. This is the full range of possibilies.
+      val total: BigInt = minRange + maxRange
+
+      // TODO: Consider making a nextBigInt, and then using that here.
+      val (n, nextRnd) = nextLong
+
+      // The remainder is a random value between 0 and the total number of possible results of this method.
+      val remainder: BigInt = n % total
+
+      // If the remainder is less than the maxRange, then we'll pick a number on the positive side. Otherwise
+      // we'll pick a number on the negative side. By doing it this way, if the minRange is, say, four times
+      // larger than the maxRange, the chances we'll pick a negative result is 4 out of 5. The chances we'll
+      // pick a positive result is 1 out of 5.
+      if (remainder < maxRange) {
+        // Do the positive side, +0.0 to max
+        choosePositiveOrZeroDouble(0.0, max)
+      }
+      else {
+        // Do the negative side, min to -0.0
+         val (n, nextRnd) = choosePositiveOrZeroDouble(0.0, -min)
+         (-n, nextRnd)
+      }
+    }
+  }
+
   /**
     * Given a range of Floats, chooses one of them randomly.
     *
@@ -1345,6 +1429,46 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     else choosePosOrPlusZero(from, to)
   }
 
+  // This helper method is shared by choosePosZDouble, choosePosZFiniteDouble,
+  // chooseNegZDouble, chooseNegZFiniteDouble. That latter two negate their from and
+  // to values before invoking this method, then negate the result that this method returns.
+  private def choosePositiveOrZeroDouble(from: Double, to: Double): (Double, Randomizer) = {
+
+    // This local method assumes it will never be passed -0.0f for posFrom or posTo.
+    def choosePosOrPlusZero(posOrPlusZeroFrom: Double, posOrPlusZeroTo: Double): (Double, Randomizer) = {
+      // See the comment for choosePosDouble for an explanation of this algo.
+      val (n, nextRnd) = chooseLong(doubleToLongBits(posOrPlusZeroFrom), doubleToLongBits(posOrPlusZeroTo))
+      (longBitsToDouble(n), nextRnd)
+    }
+
+    // We will handle a -0.0 specially, because it is the only one that can't
+    // participate in the technique of converting +0.0 to positive Doubles to Int
+    // bits and finding a point that way.
+    val fromIsNegZero = isNegativeZeroDouble(from)
+    val toIsNegZero = isNegativeZeroDouble(to)
+    if (fromIsNegZero || toIsNegZero) {
+      // See the comment in nextDouble for an explanation of why each Double point (distinct value)
+      // is essentially worth one Int point. Here we are looking at extremely close
+      // to half of the Double point space, because looking at just positive numbers,
+      // positive infinity (if called for PosZFiniteDouble), and the two zeros, so each
+      // positive point will be worth around two Int points.
+
+      // Thus we can randomly pick two number out of the nextInt and decide that's -0.0.
+      val (x, r) = nextInt
+
+      // Pick two lucky numbers to play the lotto with:
+      if (x == 111 || x == 555)
+        (-0.0, r)
+      else {
+        // Change the negative zero(s) to positive zero(s)
+        val nonNegFrom = if (fromIsNegZero) 0.0 else from
+        val nonNegTo = if (toIsNegZero) 0.0 else to
+        choosePosOrPlusZero(nonNegFrom, nonNegTo)
+      }
+    }
+    else choosePosOrPlusZero(from, to)
+  }
+
   /**
     * Given a range of positive Floats (maybe including zero), chooses one of them randomly.
     *
@@ -1393,24 +1517,39 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     */
   def chooseDouble(from: Double, to: Double): (Double, Randomizer) = {
 
-    if (from == to) {
+    val fromIsNaN = from.isNaN
+    val toIsNaN = to.isNaN
+
+    if (fromIsNaN && toIsNaN) {
       (from, thisRandomizer)
     }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (nextBetween, nextNextRnd)
-      }
+    else if (fromIsNaN) {
+      // If from is NaN, replace it with PositiveInfinity, which the chooseExtRealDouble can handle.
+      val candidate = chooseExtRealDouble(Double.PositiveInfinity, to)
+      val (n, nextRnd) = candidate
+      // If we get a positive infinity back, return a NaN instead about half of the time.
+      if (n == Double.PositiveInfinity) {
+        val (bit, nextNextRnd) = nextRnd.nextBit
+        if (bit == 0)
+          (Double.NaN, nextNextRnd)
+       else
+          (n, nextNextRnd)
+      } else candidate
     }
+    else if (toIsNaN) {
+      // If to is NaN, replace it with PositiveInfinity, which the chooseExtRealDouble can handle.
+      val candidate = chooseExtRealDouble(from, Double.PositiveInfinity)
+      val (n, nextRnd) = candidate
+      // If we get positive infinity back, return a NaN instead about half of the time.
+      if (n == Double.PositiveInfinity) {
+        val (bit, nextNextRnd) = nextRnd.nextBit
+        if (bit == 0)
+          (Double.NaN, nextNextRnd)
+       else
+          (n, nextNextRnd)
+      } else candidate
+    }
+    else chooseExtRealDouble(from, to)
   }
 
   /**
@@ -1529,6 +1668,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosDouble(from: PosDouble, to: PosDouble): (PosDouble, Randomizer) = {
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -1562,7 +1702,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosFiniteDouble(from: PosFiniteDouble, to: PosFiniteDouble): (PosFiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -1596,7 +1736,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosZDouble(from: PosZDouble, to: PosZDouble): (PosZDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -1630,7 +1770,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def choosePosZFiniteDouble(from: PosZFiniteDouble, to: PosZFiniteDouble): (PosZFiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -1747,7 +1887,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegDouble(from: NegDouble, to: NegDouble): (NegDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, nextRandomizer)
     }
@@ -1781,7 +1921,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegFiniteDouble(from: NegFiniteDouble, to: NegFiniteDouble): (NegFiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, nextRandomizer)
     }
@@ -1891,7 +2031,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZDouble(from: NegZDouble, to: NegZDouble): (NegZDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -1925,7 +2065,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNegZFiniteDouble(from: NegZFiniteDouble, to: NegZFiniteDouble): (NegZFiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -2080,7 +2220,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroDouble(from: NonZeroDouble, to: NonZeroDouble): (NonZeroDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -2119,7 +2259,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroFiniteDouble(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): (NonZeroFiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
@@ -2174,7 +2314,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseFiniteDouble(from: FiniteDouble, to: FiniteDouble): (FiniteDouble, Randomizer) = {
-
+// XXX
     if (from == to) {
       (from, thisRandomizer)
     }
