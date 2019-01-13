@@ -2008,28 +2008,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseNonZeroFloat(from: NonZeroFloat, to: NonZeroFloat): (NonZeroFloat, Randomizer) = {
-
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextNonZeroFloat
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextFloatBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        if (nextBetween == 0.0f)
-          (NonZeroFloat(1.0f), nextRnd)
-        else
-          (NonZeroFloat.ensuringValid(nextBetween), nextRnd)
-      }
-    }
+    val (n, nextRnd) = chooseFloat(from.value, to.value)
+    val res =
+      if (n == -0.0f) from
+      else if (n == 0.0f) to
+      else NonZeroFloat.ensuringValid(n)
+    (res, nextRnd)
   }
 
   /**
