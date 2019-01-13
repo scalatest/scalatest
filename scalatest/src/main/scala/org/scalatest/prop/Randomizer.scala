@@ -2179,25 +2179,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseFiniteDouble(from: FiniteDouble, to: FiniteDouble): (FiniteDouble, Randomizer) = {
-// XXX
-    if (from == to) {
-      (from, thisRandomizer)
-    }
-    else {
-      val min = math.min(from, to)
-      val max = math.max(from, to)
-
-      val nextPair = nextFiniteDouble
-      val (nextValue, nextRnd) = nextPair
-
-      if (nextValue >= min && nextValue <= max)
-        nextPair
-      else {
-        val (between0And1, nextNextRnd) = nextRnd.nextDoubleBetween0And1
-        val nextBetween = min + (between0And1 * (max - min)).abs
-        (FiniteDouble.ensuringValid(nextBetween), nextNextRnd)
-      }
-    }
+    val (n, nextRnd) = chooseExtRealDouble(from.value, to.value)
+    (FiniteDouble.ensuringValid(n), nextRnd)
   }
 }
 
