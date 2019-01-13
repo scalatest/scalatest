@@ -688,8 +688,27 @@ class GeneratorSpec extends FunSpec with Matchers {
         import Generator._
         val gen = doubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
-        a1 shouldEqual 0.0
+        val (a1: Double, ae1: List[Double], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
+        val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
+        val (a7, ae7, ar7) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
+        val (a8, ae8, ar8) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
+        val (a9, ae9, ar9) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae8, rnd = ar8)
+        val (a10, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae9, rnd = ar9)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+        edges should contain (Double.NegativeInfinity)
+        edges should contain (Double.MinValue)
+        edges should contain (-1.0)
+        edges should contain (-Double.MinPositiveValue)
+        edges should contain (-0.0)
+        edges should contain (0.0)
+        edges should contain (Double.MinPositiveValue)
+        edges should contain (1.0)
+        edges should contain (Double.MaxValue)
+        edges should contain (Double.PositiveInfinity)
       }
       it("should produce Double canonical values") {
         import Generator._
@@ -709,15 +728,21 @@ class GeneratorSpec extends FunSpec with Matchers {
             shrinks shouldBe empty
           }
           else {
-            import org.scalatest.Inspectors._
-            if (d > 1.0)
+            val n =
+              if (d == Double.PositiveInfinity || d == Double.NaN)
+                Double.MaxValue
+              else if (d == Double.NegativeInfinity)
+                Double.MinValue
+              else d
+            if (n > 1.0)
               shrinks.last should be > 0.0
-            else if (d < -1.0)
+            else if (n < -1.0)
               shrinks.last should be < 0.0
-            if (!d.isWhole) {
-              shrinks.last shouldEqual (if (d > 0.0) d.floor else d.ceil)
+            if (!n.isWhole) {
+              shrinks.last shouldEqual (if (n > 0.0) n.floor else n.ceil)
             }
             val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
+            import org.scalatest.Inspectors._
             forAll (pairs) { case (x, y) =>
               assert(x == 0.0 || x == -y || x.abs < y.abs)
             }
