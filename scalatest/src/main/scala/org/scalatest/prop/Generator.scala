@@ -179,7 +179,7 @@ object Generator {
   private[prop] val charEdges = List(Char.MinValue, Char.MaxValue)
   private[prop] val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private[prop] val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
-  private[prop] val floatEdges = List(Float.NegativeInfinity, Float.MinValue, -1.0F, -Float.MinPositiveValue, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue, Float.PositiveInfinity)
+  private[prop] val floatEdges = List(Float.NegativeInfinity, Float.MinValue, -1.0F, -Float.MinPositiveValue, -0.0F, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue, Float.PositiveInfinity)
   private[prop] val doubleEdges = List(0.0)
   private[prop] val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private[prop] val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
