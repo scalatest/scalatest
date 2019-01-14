@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2018 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.tools
 
-private[org] object ScalaTestInternals {
+import org.scalatest.{CatchReporter, Reporter, Suite}
 
-  lazy val Suite = org.scalatest.Suite
+private[org] object Utils {
 
-  lazy val Resources = org.scalatest.Resources
+  // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
+  // so that exceptions are caught and transformed
+  // into error messages on the standard error stream.
+  def wrapReporterIfNecessary(theSuite: Suite, reporter: Reporter): Reporter = reporter match {
+    case cr: CatchReporter => cr
+    case _ => theSuite.createCatchReporter(reporter)
+  }
+
 }

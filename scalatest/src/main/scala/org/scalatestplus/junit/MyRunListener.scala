@@ -16,8 +16,7 @@
 package org.scalatestplus.junit;
 
 import org.scalatest._
-import org.scalatest.ScalaTestInternals.Suite.getIndentedTextForTest
-import org.scalatest.ScalaTestInternals.Resources
+import JUnitHelper.getIndentedTextForTest
 import org.junit.runner.JUnitCore
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.Failure

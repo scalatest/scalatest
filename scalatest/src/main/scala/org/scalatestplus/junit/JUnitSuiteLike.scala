@@ -21,10 +21,8 @@ import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunListener
 import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalactic.source
-import org.scalatest.ScalaTestInternals.Suite
-import org.scalatest.ScalaTestInternals.Suite.autoTagClassAnnotations
-import org.scalatest.ScalaTestInternals.Resources
-import Suite.wrapReporterIfNecessary
+import JUnitHelper.autoTagClassAnnotations
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import collection.immutable.TreeSet
 
 /**

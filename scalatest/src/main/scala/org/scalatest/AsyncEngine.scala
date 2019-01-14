@@ -37,6 +37,7 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions._
 import org.scalatest.time.{Seconds, Span}
 import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -531,7 +532,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
     val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
     val statusList: List[Status] =
@@ -585,7 +586,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
 
     val informerForThisSuite =
       ConcurrentInformer(
