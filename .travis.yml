@@ -10,7 +10,7 @@ jdk:
   - oraclejdk8
 
 dist: precise
-sudo: false
+sudo: true
 
 addons:
   hosts:
@@ -81,13 +81,6 @@ notifications:
 cache:
   directories:
     - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
-
-before_cache:
-  # Tricks to avoid unnecessary cache updates
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
-  - rm -f $HOME/.ivy2/.sbt.ivy.lock
 
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node
