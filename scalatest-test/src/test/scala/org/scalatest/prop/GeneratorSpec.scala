@@ -1074,10 +1074,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         val gen = posDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
         val (a1: PosDouble, ae1: List[PosDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
-        val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
+        val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
+        val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
+        val edges = List(a1, a2, a3, a4)
+        edges should contain (PosDouble.MinPositiveValue)
         edges should contain (PosDouble(1.0))
         edges should contain (PosDouble.MaxValue)
+        edges should contain (PosDouble.PositiveInfinity)
       }
     }
     describe("for PosFiniteDouble") {
