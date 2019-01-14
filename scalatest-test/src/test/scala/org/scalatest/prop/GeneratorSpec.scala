@@ -1899,7 +1899,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         a6 shouldEqual b6
         a7 shouldEqual b7
       }
-      it("should produce finiteFloat edge values first in random order") {
+      it("should produce FiniteFloat edge values first in random order") {
         import Generator._
         val gen = finiteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
@@ -1951,12 +1951,16 @@ class GeneratorSpec extends FunSpec with Matchers {
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
-        val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (FiniteDouble(0.0))
-        edges should contain (FiniteDouble(-1.0))
-        edges should contain (FiniteDouble(1.0))
+        val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
+        val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
+        val (a7, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7)
         edges should contain (FiniteDouble.MinValue)
+        edges should contain (FiniteDouble(-1.0))
+        edges should contain (FiniteDouble.ensuringValid(-FiniteDouble.MinPositiveValue))
+        edges should contain (FiniteDouble(0.0))
+        edges should contain (FiniteDouble.MinPositiveValue)
+        edges should contain (FiniteDouble(1.0))
         edges should contain (FiniteDouble.MaxValue)
       }
     }

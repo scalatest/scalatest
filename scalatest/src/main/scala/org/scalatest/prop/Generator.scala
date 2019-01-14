@@ -191,7 +191,7 @@ object Generator {
   private[prop] val posZFiniteFloatEdges = List(PosZFiniteFloat(-0.0f), PosZFiniteFloat(0.0f), PosZFiniteFloat.MinPositiveValue, PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
   private[prop] val posDoubleEdges = List(PosDouble.MinPositiveValue, PosDouble(1.0f), PosDouble.MaxValue, PosDouble.PositiveInfinity)
   private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble.MinValue, PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
-  private[prop] val finiteDoubleEdges = List(FiniteDouble.MinValue, FiniteDouble(-1.0), FiniteDouble(0.0), FiniteDouble(1.0), FiniteDouble.MaxValue)
+  private[prop] val finiteDoubleEdges = List(FiniteDouble.MinValue, FiniteDouble(-1.0), FiniteDouble.ensuringValid(-FiniteDouble.MinPositiveValue), FiniteDouble(0.0), FiniteDouble.MinPositiveValue, FiniteDouble(1.0), FiniteDouble.MaxValue)
   private[prop] val finiteFloatEdges = List(FiniteFloat.MinValue, FiniteFloat(-1.0F), FiniteFloat.ensuringValid(-FiniteFloat.MinPositiveValue), FiniteFloat(0.0F), FiniteFloat.MinPositiveValue, FiniteFloat(1.0F), FiniteFloat.MaxValue)
   private[prop] val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
   private[prop] val posZFiniteDoubleEdges = List(PosZFiniteDouble(0.0), PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
