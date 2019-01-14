@@ -190,7 +190,7 @@ object Generator {
   private[prop] val posFiniteFloatEdges = List(PosFiniteFloat.MinValue, PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
   private[prop] val posZFiniteFloatEdges = List(PosZFiniteFloat(-0.0f), PosZFiniteFloat(0.0f), PosZFiniteFloat.MinPositiveValue, PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
   private[prop] val posDoubleEdges = List(PosDouble.MinPositiveValue, PosDouble(1.0f), PosDouble.MaxValue, PosDouble.PositiveInfinity)
-  private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
+  private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble.MinValue, PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
   private[prop] val finiteDoubleEdges = List(FiniteDouble.MinValue, FiniteDouble(-1.0), FiniteDouble(0.0), FiniteDouble(1.0), FiniteDouble.MaxValue)
   private[prop] val finiteFloatEdges = List(FiniteFloat.MinValue, FiniteFloat(-1.0F), FiniteFloat.ensuringValid(-FiniteFloat.MinPositiveValue), FiniteFloat(0.0F), FiniteFloat.MinPositiveValue, FiniteFloat(1.0F), FiniteFloat.MaxValue)
   private[prop] val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
