@@ -15,4 +15,13 @@
  */
 package org.scalatest.prop
 
+/**
+  * Describes one argument passed in to a check.
+  *
+  * This is returned as part of [[PropertyCheckResult]], so that you can find out what
+  * arguments were passed in to the check.
+  *
+  * @param label The label provided for that argument, if any.
+  * @param value The value of the argument.
+  */
 case class PropertyArgument(label: Option[String], value: Any)
