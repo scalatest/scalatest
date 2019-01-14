@@ -57,6 +57,14 @@ trait NonZeroFloatSpecSupport {
 
 class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
 
+  // Float on either side should widen correctly.
+  def areEqualForgivingNaNs(x: Double, y: Double): Assertion = {
+    if (x.isNaN && y.isNaN)
+      succeed
+    else
+      x shouldEqual y
+  }
+
   describe("A NonZeroFloat") {
     describe("should offer a from factory method that") {
       it("returns Some[NonZeroFloat] if the passed Float is greater than 0") {
@@ -416,28 +424,12 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
       forAll { (pfloat: NonZeroFloat, float: Float) =>
         val x = pfloat - float
         val y = pfloat.toFloat - float
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
         val x = pfloat - double
         val y = pfloat.toFloat - double
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -445,93 +437,37 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
       forAll { (pfloat: NonZeroFloat, byte: Byte) =>
         val x = pfloat * byte
         val y = pfloat.toFloat * byte
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, short: Short) =>
         val x = pfloat * short
         val y = pfloat.toFloat * short
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, char: Char) =>
         val x = pfloat * char
         val y = pfloat.toFloat * char
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, int: Int) =>
         val x = pfloat * int
         val y = pfloat.toFloat * int
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, long: Long) =>
         val x = pfloat * long
         val y = pfloat.toFloat * long
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
         val x = pfloat * float
         val y = pfloat.toFloat * float
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
         val x = pfloat * double
         val y = pfloat.toFloat * double
-        (y: AnyVal) match {
-          case _: Float | _: Double =>
-            if (x.isNaN && y.isNaN)
-              succeed
-            else
-              x shouldEqual y
-          case _ =>
-            x shouldEqual y
-        }
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -552,10 +488,16 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         pfloat / long shouldEqual pfloat.toFloat / long
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        pfloat / float shouldEqual pfloat.toFloat / float
+        val x = pfloat / float
+        val y = pfloat.toFloat / float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        pfloat / double shouldEqual pfloat.toFloat / double
+        // ecala> Double.NegativeInfinity / Double.NegativeInfinity
+        // res0: Double = NaN
+        val x = pfloat / double
+        val y = pfloat.toFloat / double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
