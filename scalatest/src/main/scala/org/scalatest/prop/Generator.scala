@@ -179,40 +179,40 @@ object Generator {
   private[prop] val charEdges = List(Char.MinValue, Char.MaxValue)
   private[prop] val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private[prop] val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
-  private[prop] val floatEdges = List(0.0f)
-  private[prop] val doubleEdges = List(0.0)
-  // private[prop] val floatEdges = List(0.0f, -0.0f, -Float.MinPositiveValue, Float.MinPositiveValue, Float.MinValue, Float.MaxValue, Float.NegativeInfinity, Float.PositiveInfinity /*, Float.NaN*/)
-  // private[prop] val doubleEdges = List(0.0, -0.0, -Double.MinPositiveValue, Double.MinPositiveValue, Double.MinValue, Double.MaxValue, Double.NegativeInfinity, Double.PositiveInfinity /*, Double.NaN*/)
+  private[prop] val floatEdges = List(Float.NegativeInfinity, Float.MinValue, -1.0F, -Float.MinPositiveValue, -0.0F, 0.0F, Float.MinPositiveValue, 1.0F, Float.MaxValue, Float.PositiveInfinity)
+  private[prop] val doubleEdges = List(Double.NegativeInfinity, Double.MinValue, -1.0, -Double.MinPositiveValue, -0.0, 0.0, Double.MinPositiveValue, 1.0, Double.MaxValue, Double.PositiveInfinity)
   private[prop] val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private[prop] val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
   private[prop] val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
   private[prop] val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
-  private[prop] val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
-  private[prop] val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
-  private[prop] val posFiniteFloatEdges = List(PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
-  private[prop] val posZFiniteFloatEdges = List(PosZFiniteFloat(0.0f), PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
-  private[prop] val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
-  private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
-  private[prop] val finiteDoubleEdges = List(FiniteDouble.MinValue, FiniteDouble(-1.0), FiniteDouble(0.0), FiniteDouble(1.0), FiniteDouble.MaxValue)
-  private[prop] val finiteFloatEdges = List(FiniteFloat.MinValue, FiniteFloat(-1.0F), FiniteFloat(0.0F), FiniteFloat(1.0F), FiniteFloat.MaxValue)
-  private[prop] val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
-  private[prop] val posZFiniteDoubleEdges = List(PosZFiniteDouble(0.0), PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
-  private[prop] val nonZeroDoubleEdges = List(NonZeroDouble.MinValue, NonZeroDouble(-1.0), NonZeroDouble(1.0), NonZeroDouble.MaxValue)
-  private[prop] val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
-  private[prop] val nonZeroFloatEdges = List(NonZeroFloat.MinValue, NonZeroFloat(-1.0F), NonZeroFloat(1.0F), NonZeroFloat.MaxValue)
-  private[prop] val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
+  private[prop] val posFloatEdges = List(PosFloat.MinPositiveValue, PosFloat(1.0f), PosFloat.MaxValue, PosFloat.PositiveInfinity)
+  private[prop] val posZFloatEdges = List(PosZFloat(-0.0f), PosZFloat(0.0f), PosZFloat.MinPositiveValue, PosZFloat(1.0f), PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
+  private[prop] val posFiniteFloatEdges = List(PosFiniteFloat.MinValue, PosFiniteFloat(1.0f), PosFiniteFloat.MaxValue)
+  private[prop] val posZFiniteFloatEdges = List(PosZFiniteFloat(-0.0f), PosZFiniteFloat(0.0f), PosZFiniteFloat.MinPositiveValue, PosZFiniteFloat(1.0f), PosZFiniteFloat.MaxValue)
+  private[prop] val posDoubleEdges = List(PosDouble.MinPositiveValue, PosDouble(1.0f), PosDouble.MaxValue, PosDouble.PositiveInfinity)
+  private[prop] val posFiniteDoubleEdges = List(PosFiniteDouble.MinValue, PosFiniteDouble(1.0), PosFiniteDouble.MaxValue)
+  private[prop] val finiteDoubleEdges = List(FiniteDouble.MinValue, FiniteDouble(-1.0), FiniteDouble.ensuringValid(-FiniteDouble.MinPositiveValue), FiniteDouble(0.0), FiniteDouble.MinPositiveValue, FiniteDouble(1.0), FiniteDouble.MaxValue)
+  private[prop] val finiteFloatEdges = List(FiniteFloat.MinValue, FiniteFloat(-1.0F), FiniteFloat.ensuringValid(-FiniteFloat.MinPositiveValue), FiniteFloat(0.0F), FiniteFloat.MinPositiveValue, FiniteFloat(1.0F), FiniteFloat.MaxValue)
+  private[prop] val posZDoubleEdges = List(PosZDouble(-0.0), PosZDouble(0.0), PosZDouble.MinPositiveValue, PosZDouble(1.0), PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
+  private[prop] val posZFiniteDoubleEdges = List(PosZFiniteDouble(-0.0), PosZFiniteDouble(0.0), PosZFiniteDouble.MinPositiveValue, PosZFiniteDouble(1.0), PosZFiniteDouble.MaxValue)
+  private[prop] val nonZeroDoubleEdges = List(NonZeroDouble.NegativeInfinity, NonZeroDouble.MinValue, NonZeroDouble(-1.0), -NonZeroDouble.MinPositiveValue, NonZeroDouble.MinPositiveValue, NonZeroDouble(1.0), NonZeroDouble.MaxValue, NonZeroDouble.PositiveInfinity)
+  private[prop] val nonZeroFiniteDoubleEdges = List(NonZeroFiniteDouble.MinValue, NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble.ensuringValid(-NonZeroFiniteDouble.MinPositiveValue), NonZeroFiniteDouble.MinPositiveValue, NonZeroFiniteDouble(1.0), NonZeroFiniteDouble.MaxValue)
+  private[prop] val nonZeroFloatEdges = List(NonZeroFloat.NegativeInfinity, NonZeroFloat.MinValue, NonZeroFloat(-1.0F), -NonZeroFloat.MinPositiveValue, NonZeroFloat.MinPositiveValue, NonZeroFloat(1.0F), NonZeroFloat.MaxValue, NonZeroFloat.PositiveInfinity)
+  private[prop] val nonZeroFiniteFloatEdges = List(NonZeroFiniteFloat.MinValue, NonZeroFiniteFloat(-1.0F), NonZeroFiniteFloat.ensuringValid(-NonZeroFiniteFloat.MinPositiveValue), NonZeroFiniteFloat.MinPositiveValue, NonZeroFiniteFloat(1.0F), NonZeroFiniteFloat.MaxValue)
   private[prop] val nonZeroIntEdges = List(NonZeroInt.MinValue, NonZeroInt(-1), NonZeroInt(1), NonZeroInt.MaxValue)
   private[prop] val nonZeroLongEdges = List(NonZeroLong.MinValue, NonZeroLong(-1L), NonZeroLong(1L), NonZeroLong.MaxValue)
-  private[prop] val negDoubleEdges = List(NegDouble.MinValue, NegDouble(-1.0), NegDouble.MaxValue)
-  private[prop] val negFiniteDoubleEdges = List(NegFiniteDouble.MinValue, NegFiniteDouble(-1.0), NegFiniteDouble.MaxValue)
-  private[prop] val negFloatEdges = List(NegFloat.MinValue, NegFloat(-1.0F), NegFloat.MaxValue)
-  private[prop] val negFiniteFloatEdges = List(NegFiniteFloat.MinValue, NegFiniteFloat(-1.0F), NegFiniteFloat.MaxValue)
+  private[prop] val negDoubleEdges = List(NegDouble.MaxValue, NegDouble(-1.0), NegDouble.MinValue, NegDouble.NegativeInfinity)
+  private[prop] val negFiniteDoubleEdges = List(NegFiniteDouble.MaxValue, NegFiniteDouble(-1.0), NegFiniteDouble.MinValue)
+
+  private[prop] val negFloatEdges = List(NegFloat.MaxValue, NegFloat(-1.0f), NegFloat.MinValue, NegFloat.NegativeInfinity)
+  private[prop] val negFiniteFloatEdges = List(NegFiniteFloat.MaxValue, NegFiniteFloat(-1.0f), NegFiniteFloat.MinValue)
+
   private[prop] val negIntEdges = List(NegInt.MinValue, NegInt.MaxValue)
   private[prop] val negLongEdges = List(NegLong.MinValue, NegLong.MaxValue)
-  private[prop] val negZDoubleEdges = List(NegZDouble.MinValue, NegZDouble(-1.0), NegZDouble.ensuringValid(-Double.MinPositiveValue), NegZDouble.MaxValue)
-  private[prop] val negZFiniteDoubleEdges = List(NegZFiniteDouble.MinValue, NegZFiniteDouble(-1.0), NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue), NegZFiniteDouble.MaxValue)
-  private[prop] val negZFloatEdges = List(NegZFloat.MinValue, NegZFloat(-1.0F), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat.MaxValue)
-  private[prop] val negZFiniteFloatEdges = List(NegZFiniteFloat.MinValue, NegZFiniteFloat(-1.0F), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat.MaxValue)
+  private[prop] val negZDoubleEdges = List(NegZDouble(0.0f), NegZDouble(-0.0f), NegZDouble.ensuringValid(-Double.MinPositiveValue), NegZDouble(-1.0), NegZDouble.MinValue, NegZDouble.NegativeInfinity)
+  private[prop] val negZFiniteDoubleEdges = List(NegZFiniteDouble(0.0), NegZFiniteDouble(-0.0), NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue), NegZFiniteDouble(-1.0), NegZFiniteDouble.MinValue)
+  private[prop] val negZFloatEdges = List(NegZFloat(0.0f), NegZFloat(-0.0f), NegZFloat.ensuringValid(-Float.MinPositiveValue), NegZFloat(-1.0F), NegZFloat.MinValue, NegZFloat.NegativeInfinity)
+  private[prop] val negZFiniteFloatEdges = List(NegZFiniteFloat(0.0f), NegZFiniteFloat(-0.0f), NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue), NegZFiniteFloat(-1.0F), NegZFiniteFloat.MinValue)
   private[prop] val negZIntEdges = List(NegZInt.MinValue, NegZInt(-1), NegZInt.MaxValue)
   private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
   private[prop] val numericCharEdges = List(NumericChar('0'), NumericChar('9'))
@@ -403,8 +403,33 @@ object Generator {
           if (f == 0.0f) acc
           else if (f <= 1.0f && f >= -1.0f) 0.0f :: acc
           else if (!f.isWhole) {
+            // We need to handle infinity and NaN specially because without it, this method
+            // will go into an infinite loop. The reason is floor and ciel give back the same value
+            // on these values:
+            //
+            // scala> val f = Float.PositiveInfinity
+            // f: Float = Infinity
+            //
+            // scala> f.floor
+            // res1: Float = Infinity
+            //
+            // scala> f.ceil
+            // res3: Float = Infinity
+            //
+            // scala> Float.NaN.floor
+            // res5: Float = NaN
+            //
+            // scala> Float.NaN.ceil
+            // res6: Float = NaN
+            //
+            val n =
+              if (f == Float.PositiveInfinity || f.isNaN)
+                Float.MaxValue
+              else if (f == Float.NegativeInfinity)
+                Float.MinValue
+              else f
             // Nearest whole numbers closer to zero
-            val (nearest, nearestNeg) = if (f > 0.0f) (f.floor, (-f).ceil) else (f.ceil, (-f).floor)
+            val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
             shrinkLoop(nearest, nearestNeg :: nearest :: acc)
           }
           else {
@@ -445,8 +470,33 @@ object Generator {
           if (d == 0.0) acc
           else if (d <= 1.0 && d >= -1.0) 0.0 :: acc
           else if (!d.isWhole) {
+            // We need to handle infinity and NaN specially because without it, this method
+            // will go into an infinite loop. The reason is floor and ciel give back the same value
+            // on these values:
+            //
+            // scala> val n = Double.PositiveInfinity
+            // n: Double = Infinity
+            //
+            // scala> n.floor
+            // res0: Double = Infinity
+            //
+            // scala> n.ceil
+            // res1: Double = Infinity
+            //
+            // scala> Double.NaN.floor
+            // res3: Double = NaN
+            //
+            // scala> Double.NaN.ceil
+            // res4: Double = NaN
+            val n =
+              if (d == Double.PositiveInfinity || d.isNaN)
+                Double.MaxValue
+              else if (d == Double.NegativeInfinity)
+                Double.MinValue
+              else d
             // Nearest whole numbers closer to zero
-            val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
             shrinkLoop(nearest, nearestNeg :: nearest :: acc)
           }
           else {
