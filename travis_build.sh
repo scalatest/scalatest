@@ -281,8 +281,7 @@ fi
 
 if [[ $MODE = 'genColCompatTests' ]] ; then
   echo "Doing 'sbt genColCompatTests/test'"
-  export SBT_OPTS="-server -Xms1G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
-
+  
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION genColCompatTests/test
   rc=$?
