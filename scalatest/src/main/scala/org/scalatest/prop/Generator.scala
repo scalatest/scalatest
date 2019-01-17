@@ -25,11 +25,150 @@ import CommonGenerators.first1000Primes
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 
+/**
+  * Base type for all Generators.
+  *
+  * A Generator produces a stream of values of a particular type. This is usually a mix of
+  * randomly-created values (generally built using a [[Randomizer]]), as well as some well-known
+  * ''edge cases'' that tend to cause bugs in real-world code.
+  *
+  * For example, consider an ''intGenerator'' that produces a sequence of Ints. Some of these will be taken from
+  * [[Randomizer.nextInt]], which may result in any possible Int, so the values will be a very random
+  * mix of numbers. But it will also produce the known edge cases of Int:
+  *
+  *   - [[Int.MinValue]], the smallest possible Int
+  *   - [[Int.MaxValue]], the largest possible Int
+  *   - -1
+  *   - 0
+  *   - 1
+  *
+  * The list of appropriate edge cases will vary from type to type, but they should be chosen so as
+  * to exercise the type broadly, and at extremes.
+  *
+  * === Building a Generator ===
+  *
+  * [[Generator.intGenerator]], and Generators for many other basic types, are already built into the
+  * system, so you can just use them. You can (and should) define Generators for your own types, as well.
+  *
+  * Each Generator involves a few important concepts:
+  *
+  * First, there is the type parameter '''T'''. This is the type of element that this Generator will
+  * be creating.
+  *
+  * The Generator should do all of its '''"random" data generation''' using the [[Randomizer]] instance passed
+  * in to it, and should return the next Randomizer with its results. [[Randomizer]] produces intentionally
+  * pseudo-random data: it ''looks'' reasonably random, but is actually entirely deterministic based on the
+  * seed used to initialize it. By consistently using Randomizer, the Generator can be re-run, producing the
+  * same values, when given an identically-seeded Randomizer. This can often make debugging much easier,
+  * since it allows you to reproduce your "random" failures.
+  *
+  * The '''edges''' are the edge cases for this type. You may have as many or as few edge cases as seem
+  * appropriate, but most types involve at least a few. Edges are generally values that are particularly
+  * big/full, or particularly small/empty. The test system will prioritize applying the edge cases to
+  * the property, since they are assumed to be the values most likely to cause failures.
+  *
+  * Your Generator may optionally have a concept of '''size'''. What this means varies from type to type:
+  * for a String it might be the number of characters, whereas for a List it might be the number of
+  * elements. The test system will try using the Generator with a variety of sizes; you can control
+  * the maximum and minimum sizes via [[Configuration]].
+  *
+  * Optionally but preferably, your Generator can have a concept of '''shrinking'''. This starts with a value
+  * that is known to cause the property evaluation to fail, and produces a list of smaller/simpler
+  * values, to see if those also fail. So for example, if a String of length 15 causes a failure, its
+  * Generator could try Strings of length 3, and then 1, and then 0, to see if those also cause failure.
+  *
+  * You to ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
+  * the test system will use that to produce smaller, easier-to-debug examples when something fails.
+  *
+  * The Generator's key method is [[Generator.next]]. Note that this is properly functional: it takes parameters
+  * that indicate the state of the test, and returns the next value ''and'' the new state information.
+  *
+  * '''TODO:''' add documentation for composing Generators into higher-level Generators.
+  *
+  * '''TODO:''' add a game plan for the order of implementation of a Generator, with an example.
+  *
+  * @tparam T the type that this Generator produces
+  */
 trait Generator[T] { thisGeneratorOfT =>
 
+  /**
+    * Prepare a list of edge-case values ("edges") for testing this type.
+    *
+    * The contents of this list are entirely up to the Generator. It is allowed to be empty, but it is a good
+    * idea to think about whether there are appropriate edge cases for this type. (By default, this is empty,
+    * so you can get your Generator working first, and think about edge cases after that.)
+    *
+    * It is common, but not required, to randomize the order of the edge cases here. If so, you should
+    * use the [[Randomizer.shuffle]] function for this, so that the order is reproducible if something fails.
+    * If you don't use the [[Randomizer]], just return it unchanged as part of the returned tuple.
+    *
+    * Note the ''maxLength'' parameter. This is the number of tests to be run in total. So the list of
+    * returned edges should be no longer than this.
+    *
+    * @param maxLength the maximum size of the returned List
+    * @param rnd the [[Randomizer]] that should be used if you want randomization of the edges
+    * @return a Tuple: the list of edges, and the next [[Randomizer]]
+    */
   def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
 
+  /**
+    * Produce the next value for this Generator.
+    *
+    * This is the heart and soul of Generator -- it is the one function that you are required to
+    * implement when creating a new one. It takes several fields describing the state of the current
+    * evaluation, and returns the next value to try, along with the new state.
+    *
+    * The state consists of three fields:
+    *
+    *   - The ''size'' to generate, if that is meaningful for this Generator.
+    *   - The ''remaining'' edge cases that need to be generated. In general, if this List
+    *     is non-empty, you should simply return the next item on the List.
+    *   - The current [[Randomizer]]. If you need to generate random information, use this to
+    *     do so.
+    *
+    * This function returns a Tuple of three fields:
+    *
+    *   - The next value of type [[T]] to try evaluating.
+    *   - The remaining edges ''without'' the one that you are using. That is, if this function
+    *     received a non-empty `edges` List, it should usually return the head as the next
+    *     value, and the tail as the remainder after that.
+    *   - If you used the passed-in [[Randomizer]], return the one you got back from that
+    *     function. (Note that all `Randomizer` functions return a new `Randomizer`. If you
+    *     didn't use it, just return the one that was passed in.
+    *
+    * @param szp the size to generate, if that is relevant for this Generator
+    * @param edges the remaining edge cases to be tried
+    * @param rnd the [[Randomizer]] to use if you need "random" data
+    * @return a Tuple of the next value, the remaining edges, and the resulting [[Randomizer]],
+    *         as described above.
+    */
   def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer)
+
+  /**
+    * Given a function from types [[T]] to [[U]], return a new [[Generator]] that produces
+    * values of type [[U]].
+    *
+    * For example, say that you needed a Generator that only creates even Ints. We already
+    * have [[Generator.intGenerator]], so one way to write this would be:
+    * {{{
+    *   val evenGen: Generator[Int] = Generator.intGenerator.map { i =>
+    *     val mod = i % 2
+    *     if ((mod == 1) || (mod == -1))
+    *       // It is odd, so the one before it is even:
+    *       i - 1
+    *     else
+    *       // Already even
+    *       i
+    *   }
+    * }}}
+    *
+    * This often makes it much easier to create a new Generator, if you have an existing
+    * one you can base it on.
+    *
+    * @param f a function from [[T]] to [[U]]
+    * @tparam U the type of Generator you want to create
+    * @return a new Generator, based on this one and the given transformation function
+    */
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU => 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
@@ -51,6 +190,31 @@ trait Generator[T] { thisGeneratorOfT =>
       }
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
+
+  /**
+    * The usual Monad function, to allow Generators to be composed together.
+    *
+    * This is primarily here to support the ability to create new Generators easily using
+    * for comprehensions. For example, say that you needed a Generator that produces a Tuple
+    * of an Int and a Float. You can write that easily:
+    *
+    * {{{
+    *   val tupleGen =
+    *     for {
+    *       a <- Generator.intGenerator
+    *       b <- Generator.floatGenerator
+    *     }
+    *       yield (a, b)
+    * }}}
+    *
+    * That is, flatMap takes a function that returns a Generator, and combines it with ''this''
+    * Generator, to produce a new Generator. That function ''may'' make use of a value from
+    * this Generator (that is part of the standard contract of `flatMap`), but usually does not.
+    *
+    * @param f a function that takes a value from this Generator, and returns another Generator
+    * @tparam U the type produced by the other Generator
+    * @return a Generator that is this one and the other one, composed together
+    */
   def flatMap[U](f: T => Generator[U]): Generator[U] = {
     new Generator[U] {
       thisGeneratorOfU =>
@@ -104,7 +268,43 @@ trait Generator[T] { thisGeneratorOfT =>
       override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
     }
   }
+
+  /**
+    * Support for filtering in for comprehensions.
+    *
+    * This means the same thing is does for all standard Scala Monads: it applies a filter function
+    * to this Generator. If you use an `if` clause in a `for` comprehension, this is the function
+    * that will be called.
+    *
+    * The default implementation of this has a safety check, such that if an enormous number of values
+    * (100000 by default) are rejected by the filter in a row, it aborts in order to prevent infinite loops.
+    * If this occurs, you should probably rewrite your generator to not use a filter.
+    *
+    * You generally should not need to override this.
+    *
+    * @param f the actual filter function, which takes a value of type T and says whether to include it or not
+    * @return a Generator that only produces values that pass this filter.
+    */
   def withFilter(f: T => Boolean): Generator[T] = filter(f)
+
+  /**
+    * Support for filtering in for comprehensions.
+    *
+    * This means the same thing is does for all standard Scala Monads: it applies a filter function
+    * to this Generator. If you use an `if` clause in a `for` comprehension, this is the function
+    * that will be called.
+    *
+    * It is closely related to [[Generator.withFilter]], but is the older form.
+    *
+    * The default implementation of this has a safety check, such that if an enormous number of values
+    * (100000 by default) are rejected by the filter in a row, it aborts in order to prevent infinite loops.
+    * If this occurs, you should probably rewrite your generator to not use a filter.
+    *
+    * You generally should not need to override this.
+    *
+    * @param f the actual filter function, which takes a value of type T and says whether to include it or not
+    * @return a Generator that only produces values that pass this filter.
+    */
   def filter(f: T => Boolean): Generator[T] =
     new Generator[T] { thisFilteredGeneratorOfT =>
       private final val MaxLoopCount: Int = 100000
@@ -121,8 +321,74 @@ trait Generator[T] { thisGeneratorOfT =>
         loop(0, edges, rnd)
       }
     }
+
+  /**
+    * Given a value of type T, produce some smaller/simpler values if that makes sense.
+    *
+    * When a property evaluation fails, the test system tries to simplify the failing case, to make
+    * debugging easier. How this simplification works depends on the type of Generator. For example,
+    * if it is a Generator of Lists, it might try with shorter Lists; if it is a Generator of
+    * Strings, it might try with shorter Strings.
+    *
+    * The critical rule is that the values returned from `shrink` must be smaller/simpler than
+    * the passed-in value, and '''must not''' include the passed-in value. This is to ensure
+    * that the simplification process will always complete, and not go into an infinite loop.
+    *
+    * This function receives a [[Randomizer]], in case there is a random element to the
+    * simplification process. If you use the [[Randomizer]], you should return the next one;
+    * if not, simply return the passed-in one.
+    *
+    * You do not have to implement this function. If you do not, it will return an empty
+    * Iterator, and the test system will not try to simplify failing values of this type.
+    *
+    * This function returns a Tuple. The first element should be an [[Iterator]] that returns
+    * simplified values, and is empty when there are no more. The second element is the
+    * next [[Randomizer]], as discussed above.
+    *
+    * @param value a value that failed property evaluation
+    * @param rnd a [[Randomizer]] to use, if you need random data for the shrinking process
+    * @return a Tuple of the shrunk values and the next [[Randomizer]]
+    */
   def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
+
+  /**
+    * Some simple, "ordinary" values of type [[T]].
+    *
+    * [[canonicals]] are used for certain higher-order functions, mainly during [[shrink]].
+    * For example, when the system is trying to simplify a `List[T]`, it will look for
+    * canonical values of [[T]] to try putting into that simpler list, to see if that still
+    * causes the property to fail.
+    *
+    * For example, a few of the common types provide these canonicals:
+    *
+    *   - `Int`: 0, 1, -1, 2, -2, 3, -3
+    *   - `Char`: the letters and digits
+    *   - `String`: single-charactor Strings of the letter and digits
+    *
+    * You do not have to provide canonicals for a Generator. By default, this simply
+    * returns an empty [[Iterator]].
+    *
+    * This function takes a [[Randomizer]] to use as a parameter, in case canonical generation
+    * for this type has a random element to it. If you use this [[Randomizer]], return the
+    * ''next'' one. If you don't use it, just use the passed-in one.
+    *
+    * @param rnd a [[Randomizer]] to use if this function requires any random data
+    * @return the canonical values for this type (if any), and the next [[Randomizer]]
+    */
   def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
+
+  /**
+    * Fetch a generated value of type [[T]].
+    *
+    * [[sample]] allows you to experiment with this [[Generator]] in a convenient, ad-hoc way.
+    * Each time you call it, it will create a new [[Randomizer]] and a random size, and
+    * then calls [[next]] to generate a value.
+    *
+    * You should not need to override this method; it is here to let you play with your
+    * Generator as you build it, and see what sort of values are actually coming out.
+    *
+    * @return a generated value of type [[T]]
+    */
   def sample: T = {
     val rnd = Randomizer.default
     val maxSize = PosZInt(100)
@@ -130,6 +396,16 @@ trait Generator[T] { thisGeneratorOfT =>
     val (value, _, _) = next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
     value
   }
+
+  /**
+    * Generate a number of values of type [[T]].
+    *
+    * This is essentially the same as [[sample]], and all the same comments apply, but this
+    * will generate as many values as you ask for.
+    *
+    * @param length the number of values to generate
+    * @return a List of size `length`, of randomly-generated values
+    */
   def samples(length: PosInt): List[T] = {
     @tailrec
     def loop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
