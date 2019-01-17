@@ -81,8 +81,6 @@ import PatienceConfiguration._
  */
 trait PatienceConfiguration extends AbstractPatienceConfiguration {
 
-  private val defaultPatienceConfig = PatienceConfig()
-
   /**
    * Implicit <code>PatienceConfig</code> value providing default configuration values.
    *
