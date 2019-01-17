@@ -1241,6 +1241,41 @@ trait CommonGenerators {
                                                                                                                                                                                                                                                 genOfU: Generator[U], genOfV: Generator[V]): Generator[W] =
     new GeneratorFor22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)
 
+  /**
+    * Generate a bunch of values from a [[Generator]], and distribute them into buckets.
+    *
+    * This function mainly exists for the purpose of testing your [[Generator]], and making sure that it is actually
+    * creating data with the sort of distribution you expect. You provide the [[Generator]], the number of values to
+    * create, and a function that "classifies" each value with a String; it returns a [[Classification]] that
+    * collates all of the results. You can then look at the [[Classification]] to see if the proportions match
+    * your expectations.
+    *
+    * For example, consider this simple classification of small numbers:
+    * {{{
+    * val classification: Classification =
+    *   CommonGenerators.classify(10000, CommonGenerators.intsBetween(0, 9))
+    *   {
+    *     case x if (x % 2) == 0 => "even"
+    *     case _ => "odd"
+    *   }
+    * }}}
+    * As expected, the results come out evenly:
+    * {{{
+    * classification: org.scalatest.prop.Classification =
+    * 50% odd
+    * 50% even
+    * }}}
+    *
+    * The options provided in the PartialFunction do not have to be comprehensive; it is legal for some generated
+    * values to not match any of the choices. In this case, those values will not be accounted for in the
+    * resulting [[Classification]].
+    *
+    * @param count the number of values to generate
+    * @param genOfA the [[Generator]] to use
+    * @param pf a [[PartialFunction]] that takes the generated values, and sorts them into "buckets" by String names
+    * @tparam A the type to be generated
+    * @return statistics on how many values wound up in each bucket
+    */
   // classify will need to use the same sizing algo as forAll, and same edges approach
   def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
 
