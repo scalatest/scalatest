@@ -3,8 +3,10 @@ import Keys._
 import java.net.{URL, URLClassLoader}
 import java.io.PrintWriter
 import scala.io.Source
-import com.typesafe.sbt.osgi.SbtOsgi._
-import com.typesafe.sbt.SbtPgp._
+import com.typesafe.sbt.osgi.OsgiKeys
+import com.typesafe.sbt.osgi.SbtOsgi
+import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
+import com.typesafe.sbt.SbtPgp.autoImport._
 /*import org.scalajs.sbtplugin.ScalaJSPlugin.
   autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}*/
 
@@ -23,7 +25,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurre
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
-object ScalatestBuild extends Build {
+object ScalatestBuild {
 
   // To run gentests
   // rm -rf gentests
@@ -36,7 +38,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.7"
 
-  val releaseVersion = "3.1.0-SNAP7"
+  val releaseVersion = "3.1.0-SNAP8"
 
   val previousReleaseVersion = "3.0.5"
 
@@ -416,12 +418,13 @@ object ScalatestBuild extends Build {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      deleteJsDependenciesTask <<= (classDirectory in Compile) map { jsDependenciesFile =>
+      deleteJsDependenciesTask := Def.task {
+        val jsDependenciesFile = (classDirectory in Compile).value
         (jsDependenciesFile/ "JS_DEPENDENCIES").delete()
         ()
         //val loader: ClassLoader = ClasspathUtilities.toLoader(classpath.map(_.data).map(_.getAbsoluteFile))
         //loader.loadClass("your.class.Here").newInstance()
-      } triggeredBy(compile in Compile)
+      }.triggeredBy(compile in Compile)
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticMacroNative = Project("scalacticMacroNative", file("scalactic-macro.native"))
@@ -445,6 +448,7 @@ object ScalatestBuild extends Build {
     ).enablePlugins(ScalaNativePlugin)
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
     .settings(
@@ -492,6 +496,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalacticMacro % "compile-internal, test-internal")  // avoid dependency in pom on non-existent scalactic-macro artifact, per discussion in http://grokbase.com/t/gg/simple-build-tool/133shekp07/sbt-avoid-dependence-in-a-macro-based-project
 
   lazy val scalacticJS = Project("scalacticJS", file("scalactic.js"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic.js",
@@ -541,6 +546,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticNative = Project("scalacticNative", file("scalactic.native"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic.native",
@@ -653,6 +659,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
+   .enablePlugins(SbtOsgi)
    .settings(sharedSettings: _*)
    .settings(scalatestDocSettings: _*)
    .settings(
@@ -763,6 +770,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
@@ -783,8 +791,8 @@ object ScalatestBuild extends Build {
           GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      javaSourceManaged <<= target(t => t / "java"),
-      managedSourceDirectories in Compile <+= javaSourceManaged,
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Compile += javaSourceManaged.value,
       sourceGenerators in Compile += {
         Def.task{
           GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -884,6 +892,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestNative = Project("scalatestNative", file("scalatest.native"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
@@ -905,8 +914,8 @@ object ScalatestBuild extends Build {
           GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      javaSourceManaged <<= target(t => t / "java"),
-      managedSourceDirectories in Compile <+= javaSourceManaged,
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Compile += javaSourceManaged.value,
       sourceGenerators in Compile += {
         Def.task{
           GenScalaTestNative.genJava((javaSourceManaged in Compile).value / "java", version.value, scalaVersion.value)
@@ -1008,6 +1017,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestApp = Project("scalatestApp", file("."))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest App",
@@ -1084,6 +1094,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
 
   lazy val scalatestAppJS = Project("scalatestAppJS", file("scalatest-app.js"))
+    .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest App",
@@ -1152,6 +1163,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").aggregate(scalacticMacroJS, scalacticJS, scalatestJS, commonTestJS, scalacticTestJS, scalatestTestJS).enablePlugins(ScalaJSPlugin)
 
     lazy val scalatestAppNative = Project("scalatestAppNative", file("scalatest-app.native"))
+      .enablePlugins(SbtOsgi)
       .settings(sharedSettings: _*)
       .settings(
         projectTitle := "ScalaTest App",
@@ -1278,8 +1290,8 @@ object ScalatestBuild extends Build {
       genRegularTask4,
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      javaSourceManaged <<= target(t => t / "java"),
-      managedSourceDirectories in Test <+= javaSourceManaged,
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Test += javaSourceManaged.value,
       sourceGenerators in Test += {
         Def.task{
           GenRegularTests4.genJava((javaSourceManaged in Compile).value)
@@ -1299,8 +1311,8 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      javaSourceManaged <<= target(t => t / "java"),
-      managedSourceDirectories in Test <+= javaSourceManaged,
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Test += javaSourceManaged.value,
       sourceGenerators in Test += {
         Def.task{
           GenRegularTests5.genJava((javaSourceManaged in Compile).value)
@@ -1493,12 +1505,12 @@ object ScalatestBuild extends Build {
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
                genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
 
-  lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
+  lazy val examples = Project("examples", file("examples"))
     .settings(
       scalaVersion := buildScalaVersion
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
-  lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
+  lazy val examplesJS = Project("examplesJS", file("examples.js"))
     .settings(
       scalaVersion := buildScalaVersion,
       sourceGenerators in Test += {
