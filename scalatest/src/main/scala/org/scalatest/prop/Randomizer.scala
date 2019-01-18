@@ -27,8 +27,8 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   * This is loosely inspired by [[java.util.Random]] (and is designed to produce the same values in
   * conventional cases), with two major differences:
   *
-  * - It provides random values for many more types;
-  * - In proper Scala fashion, this class is immutable.
+  *  - It provides random values for many more types;
+  *  - In proper Scala fashion, this class is immutable.
   *
   * On the first of those points, this returns many data types, including many of the tightly-defined
   * numeric types from Scalactic. These allow you to put tight constraints on precisely what numbers
@@ -37,7 +37,7 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   *
   * That second point is the more important one. You shouldn't call the same [[Randomizer]] over and
   * over, the way you would do in Java. Instead, each call to a [[Randomizer]] function returns the
-  * *next* [[Randomizer]], which you should use for the next call.
+  * ''next'' [[Randomizer]], which you should use for the next call.
   *
   * @param seed
   */
