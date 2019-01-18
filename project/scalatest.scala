@@ -36,7 +36,7 @@ object ScalatestBuild {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.12.7"
+  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7")
 
   val releaseVersion = "3.1.0-SNAP8"
 
@@ -106,8 +106,7 @@ object ScalatestBuild {
 
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.11.12"),
+    crossScalaVersions := supportedScalaVersions,
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -1242,7 +1241,7 @@ object ScalatestBuild {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := buildScalaVersion,
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= gentestsLibraryDependencies,
@@ -1507,12 +1506,12 @@ object ScalatestBuild {
 
   lazy val examples = Project("examples", file("examples"))
     .settings(
-      scalaVersion := buildScalaVersion
+      crossScalaVersions := supportedScalaVersions
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"))
     .settings(
-      scalaVersion := buildScalaVersion,
+      crossScalaVersions := supportedScalaVersions,
       sourceGenerators in Test += {
         Def.task {
           GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
