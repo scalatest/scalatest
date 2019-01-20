@@ -7,6 +7,7 @@ lazy val scalacticMacroNative = ScalatestBuild.scalacticMacroNative
 lazy val scalactic = ScalatestBuild.scalactic
 lazy val scalacticJS = ScalatestBuild.scalacticJS
 lazy val scalacticNative = ScalatestBuild.scalacticNative
+lazy val scalacticDotty = ScalatestBuild.scalacticDotty
 lazy val scalacticTest = ScalatestBuild.scalacticTest
 lazy val scalacticTestJS = ScalatestBuild.scalacticTestJS
 lazy val scalacticTestNative = ScalatestBuild.scalacticTestNative
