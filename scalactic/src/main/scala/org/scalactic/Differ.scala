@@ -217,7 +217,7 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
 }
 
-private[scalactic] object GenMapDiffer extends GenMapDiffer
+private[scalactic] object GenMapDiffer extends GenMapDiffer[Any, Any]
 
 // SKIP-SCALATESTNATIVE-START
 private[scalactic] trait ObjectDiffer extends Differ {
