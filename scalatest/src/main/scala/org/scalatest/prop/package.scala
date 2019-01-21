@@ -19,6 +19,19 @@ import org.scalactic.anyvals._
 import scala.annotation.tailrec
 import scala.reflect.runtime.universe.TypeTag
 
+// Documentation outline:
+//
+// - Discuss the general concept of property-based testing.
+// - (Bill) Mention the history (QuickCheck, ScalaCheck) and the rationales for having a dependency-free version here.
+// - Describe the concept of a Property, and how it relates to a body of code.
+// - Describe what a Generator is, and how it is used to produce sample data.
+// - Discuss Randomizer, and how it allows you to create reproducible pseudo-random data.
+// - Discuss Configuration, and the switches it lets you throw.
+// - Provide several realistic examples along the way, showing how to use all of this. Ideally,
+//   these should come from the test suites.
+//
+// Note that this documentation in the package should be *outline*, not fully detailed, in the interest
+// of DRY. It should have heavy pointers to the classes and functions, for further details.
 package object prop {
   /**
     * Deterministically generate a value for the given Generator.

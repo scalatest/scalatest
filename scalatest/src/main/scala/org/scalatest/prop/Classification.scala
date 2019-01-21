@@ -17,11 +17,36 @@ package org.scalatest.prop
 
 import org.scalactic.anyvals.{PosInt,PosZInt}
 
+/**
+  * The results of a call to [[CommonGenerators.classify]].
+  *
+  * The `classify` function takes a [[PartialFunction]] and a [[Generator]], and organizes the values created
+  * by the Generator based on the PartialFunction. It returns this data structure, which describes
+  * how many of the values went into each bucket.
+  *
+  * If the PartialFunction did not cover all the possible generated values, then the [[totals]] field will
+  * not include the others, and the numbers in totals will add up to less than [[totalGenerated]].
+  *
+  * @param totalGenerated How many values were actually created by the Generator overall.
+  * @param totals For each of the buckets defined in the PartialFunction, how many values belonged in each one.
+  */
 case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
 
+  /**
+    * For each bucket, what fraction of the generated values fell into it?
+    *
+    * @return Exactly what proportion of the values fell into each bucket.
+    */
   def portions: Map[String, Double] =
     totals.mapValues(count => count.toDouble / totalGenerated.toDouble)
 
+  /**
+    * For each bucket, what percentage of the generated values fell into it?
+    *
+    * This is essentially a lower-precision but easier-to-understand variant of [[portions]].
+    *
+    * @return Approximately what proportion of the values fell into each bucket.
+    */
   def percentages: Map[String, PosZInt] =
     totals mapValues { count =>
       PosZInt.ensuringValid((count * 100.0 / totalGenerated).round.toInt)
