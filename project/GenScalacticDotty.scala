@@ -23,10 +23,10 @@ import GenCompatibleClasses.generatorSource
 object GenScalacticDotty {
 
   private def uncommentJsExport(line: String): String =
-    if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
-      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
-    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-      line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
+    if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else
       line
 
@@ -39,9 +39,9 @@ object GenScalacticDotty {
       val lines = Source.fromFile(sourceFile).getLines.toList
       var skipMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
+        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
           skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
+        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
           skipMode = false
         else if (!skipMode) {
           destWriter.write(transformLine(line))
@@ -98,7 +98,8 @@ object GenScalacticDotty {
     copyFiles("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "AbstractStringUniformity.scala",
-        "Accumulation.scala", 
+        "Accumulation.scala",
+        "Bool.scala",
         "Differ.scala",
         "Prettifier.scala",
         "PrettyPair.scala",
@@ -113,8 +114,7 @@ object GenScalacticDotty {
         "ComposedNormalizingEquivalence.scala",
         "DefaultEquality.scala",
         "CanEqual.scala",
-        "TripleEqualsSupport.scala",
-        "Bool.scala"
+        "TripleEqualsSupport.scala"
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
