@@ -100,6 +100,7 @@ object GenScalacticDotty {
         "AbstractStringUniformity.scala",
         "Accumulation.scala",
         "Bool.scala",
+        "CanEqual.scala",
         "Catcher.scala",
         "ComposedNormalizingEquality.scala",
         "ComposedNormalizingEquivalence.scala",
@@ -110,8 +111,11 @@ object GenScalacticDotty {
         "EitherSugar.scala",
         "Equality.scala",
         "Equivalence.scala",
-        "Explicitly.scala", 
+        "Explicitly.scala",
+        "FutureSugar.scala",
+        "TrySugar.scala", 
         "LowPriorityConversionCheckedConstraint.scala",
+        "package.scala",
         "Prettifier.scala",
         "PrettyPair.scala",
         "UnquotedString.scala",
@@ -119,8 +123,6 @@ object GenScalacticDotty {
         "Normalization.scala",
         "NormalizingEquality.scala",
         "NormalizingEquivalence.scala",
-
-        "CanEqual.scala",
         "TripleEqualsSupport.scala"
       )
     ) ++
@@ -132,7 +134,9 @@ object GenScalacticDotty {
         )) ++
       copyFiles("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
         List(
-          "NonEmptyArray.scala"
+          "NonEmptyArray.scala",
+          "NonEmptyList.scala",
+          "End.scala"
         )
       )
 
