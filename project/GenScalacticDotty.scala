@@ -104,8 +104,10 @@ object GenScalacticDotty {
         "ComposedNormalizingEquality.scala",
         "ComposedNormalizingEquivalence.scala",
         "ConversionCheckedTripleEquals.scala",
-        "LowPriorityConversionCheckedConstraint.scala", 
+        "DefaultEquality.scala",
+        "DeprecatedPrettyMethods.scala", 
         "Differ.scala",
+        "LowPriorityConversionCheckedConstraint.scala",
         "Prettifier.scala",
         "PrettyPair.scala",
         "UnquotedString.scala",
@@ -115,7 +117,7 @@ object GenScalacticDotty {
         "Normalization.scala",
         "NormalizingEquality.scala",
         "NormalizingEquivalence.scala",
-        "DefaultEquality.scala",
+
         "CanEqual.scala",
         "TripleEqualsSupport.scala"
       )
