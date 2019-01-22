@@ -122,7 +122,6 @@ object GenScalacticDotty {
         "NormMethods.scala",
         "NumericEqualityConstraints.scala",
         "OptionSugar.scala",
-        "TrySugar.scala",
         "package.scala",
         "Present.scala",
         "Prettifier.scala",
@@ -132,9 +131,16 @@ object GenScalacticDotty {
         "SetEqualityConstraints.scala",
         //"Snapshots.scala",  // Pending macro re-implementation
         "StringNormalizations.scala",
+        "TimesOnInt.scala",
+        "Tolerance.scala",
+        "TolerantNumerics.scala",
+        "TraversableEqualityConstraints.scala",
+        "TripleEquals.scala",
+        "TripleEqualsSupport.scala",
+        "TrySugar.scala",
+        "TypeCheckedTripleEquals.scala", 
         "UnquotedString.scala",
-        "Uniformity.scala",
-        "TripleEqualsSupport.scala"
+        "Uniformity.scala"
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
