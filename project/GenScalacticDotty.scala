@@ -115,6 +115,7 @@ object GenScalacticDotty {
         "FutureSugar.scala",
         "LowPriorityConversionCheckedConstraint.scala",
         "LowPriorityTypeCheckedConstraint.scala",
+        "MapEqualityConstraints.scala",
         "TrySugar.scala",
         "package.scala",
         "Prettifier.scala",
