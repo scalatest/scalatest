@@ -110,8 +110,9 @@ object GenScalacticDotty {
         "ComposedNormalizingEquality.scala",
         "ComposedNormalizingEquivalence.scala",
         "DefaultEquality.scala",
-        "CanEqual.scala", 
-        "TripleEqualsSupport.scala"
+        "CanEqual.scala",
+        "TripleEqualsSupport.scala",
+        "Bool.scala"
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
