@@ -95,67 +95,26 @@ object GenScalacticDotty {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyFiles("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+    copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "AbstractStringUniformity.scala",
-        "Accumulation.scala",
-        "Bool.scala",
-        "CanEqual.scala",
-        "Catcher.scala",
-        "ComposedNormalizingEquality.scala",
-        "ComposedNormalizingEquivalence.scala",
-        "ConversionCheckedTripleEquals.scala",
-        "DefaultEquality.scala",
-        "DeprecatedPrettyMethods.scala",
-        "Differ.scala",
-        "EitherSugar.scala",
-        "Equality.scala",
-        "Equivalence.scala",
-        "Explicitly.scala",
-        "FutureSugar.scala",
-        "LowPriorityConversionCheckedConstraint.scala",
-        "LowPriorityTypeCheckedConstraint.scala",
-        "MapEqualityConstraints.scala",
-        "Normalization.scala",
-        "NormalizingEquality.scala",
-        "NormalizingEquivalence.scala",
-        "NormMethods.scala",
-        "NumericEqualityConstraints.scala",
-        "OptionSugar.scala",
-        "package.scala",
-        "Present.scala",
-        "Prettifier.scala",
-        "PrettyMethods.scala",
-        "PrettyPair.scala",
-        "SeqEqualityConstraints.scala",
-        "SetEqualityConstraints.scala",
-        //"Snapshots.scala",  // Pending macro re-implementation
-        "StringNormalizations.scala",
-        "TimesOnInt.scala",
-        "Tolerance.scala",
-        "TolerantNumerics.scala",
-        "TraversableEqualityConstraints.scala",
-        "TripleEquals.scala",
-        "TripleEqualsSupport.scala",
-        "TrySugar.scala",
-        "TypeCheckedTripleEquals.scala", 
-        "UnquotedString.scala",
-        "Uniformity.scala"
+        "BooleanMacro.scala", // Re-implemented
+        "Requirements.scala", // Re-implemented
+        "Snapshots.scala"  // Pending macro re-implementation
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
-      copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
-        List(
-          "Position.scala",  // Re-implemented
-          "TypeInfo.scala"  // Pending macro re-implementation.
-        )) ++
-      copyFiles("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
-        List(
-          "NonEmptyArray.scala",
-          "NonEmptyList.scala",
-          "End.scala"
-        )
+    copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
+      List(
+        "Position.scala",  // Re-implemented
+        "TypeInfo.scala"  // Pending macro re-implementation.
+      )) ++
+    copyFiles("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "NonEmptyArray.scala",
+        "NonEmptyList.scala",
+        "End.scala"
       )
+    )
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
