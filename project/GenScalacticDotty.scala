@@ -125,8 +125,7 @@ object GenScalacticDotty {
         List(
           "NonEmptyArray.scala"
         )
-      )/* ++
-      GenVersions.genScalacticVersions(new File(targetDir, "org/scalactic"), version, scalaVersion)*/
+      )
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,

@@ -628,7 +628,7 @@ object ScalatestBuild {
           // end from scalactic-macro
           GenScalacticDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          //ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
