@@ -57,7 +57,7 @@ object GenScalacticDotty {
     }
   }
 
-  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, targetDir: File, files: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -95,7 +95,13 @@ object GenScalacticDotty {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    //copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
+    copyFiles("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "Differ.scala",
+        "Prettifier.scala",
+        "PrettyPair.scala"
+      )
+    ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
       copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
         List(
