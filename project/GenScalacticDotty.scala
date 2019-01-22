@@ -97,6 +97,8 @@ object GenScalacticDotty {
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyFiles("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
+        "AbstractStringUniformity.scala",
+        "Accumulation.scala", 
         "Differ.scala",
         "Prettifier.scala",
         "PrettyPair.scala",
