@@ -116,15 +116,17 @@ object GenScalacticDotty {
         "LowPriorityConversionCheckedConstraint.scala",
         "LowPriorityTypeCheckedConstraint.scala",
         "MapEqualityConstraints.scala",
+        "Normalization.scala",
+        "NormalizingEquality.scala",
+        "NormalizingEquivalence.scala",
+        "NormMethods.scala",
+        "NumericEqualityConstraints.scala", 
         "TrySugar.scala",
         "package.scala",
         "Prettifier.scala",
         "PrettyPair.scala",
         "UnquotedString.scala",
         "Uniformity.scala",
-        "Normalization.scala",
-        "NormalizingEquality.scala",
-        "NormalizingEquivalence.scala",
         "TripleEqualsSupport.scala"
       )
     ) ++
