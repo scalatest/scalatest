@@ -128,6 +128,10 @@ object GenScalacticDotty {
         "Prettifier.scala",
         "PrettyMethods.scala",
         "PrettyPair.scala",
+        "SeqEqualityConstraints.scala",
+        "SetEqualityConstraints.scala",
+        //"Snapshots.scala",  // Pending macro re-implementation
+        "StringNormalizations.scala",
         "UnquotedString.scala",
         "Uniformity.scala",
         "TripleEqualsSupport.scala"
