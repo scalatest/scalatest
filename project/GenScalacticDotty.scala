@@ -99,7 +99,17 @@ object GenScalacticDotty {
       List(
         "Differ.scala",
         "Prettifier.scala",
-        "PrettyPair.scala"
+        "PrettyPair.scala",
+        "UnquotedString.scala",
+        "Equality.scala",
+        "Equivalence.scala",
+        "Uniformity.scala",
+        "Normalization.scala",
+        "NormalizingEquality.scala",
+        "NormalizingEquivalence.scala",
+        "ComposedNormalizingEquality.scala",
+        "ComposedNormalizingEquivalence.scala",
+        "DefaultEquality.scala"
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
@@ -107,8 +117,12 @@ object GenScalacticDotty {
         List(
           "Position.scala",  // Re-implemented
           "TypeInfo.scala"  // Pending macro re-implementation.
-        )) /*++
-      copyDir("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+        )) ++
+      copyFiles("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+        List(
+          "NonEmptyArray.scala"
+        )
+      )/* ++
       GenVersions.genScalacticVersions(new File(targetDir, "org/scalactic"), version, scalaVersion)*/
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
