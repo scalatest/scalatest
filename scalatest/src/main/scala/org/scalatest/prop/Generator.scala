@@ -442,13 +442,52 @@ trait Generator[T] { thisGeneratorOfT =>
   }
 }
 
+/**
+  * Companion to the [[Generator]] trait, which contains many of the standard implicit Generators.
+  *
+  * For the most part, you should not need to use the values and functions in here directly; so long as
+  * [[Generator]] is imported into scope, you will have these values available. But this listing shows
+  * you what types you can generally use in Properties without any further ado, unless you have special
+  * requirements.
+  *
+  * Note that this provides `Generator`s for the common Scalactic types, as well as the common standard
+  * library ones.
+  */
 object Generator {
 
-  // I don't want to make Generator covariant, because then an implicit search for a Generator[<supertype>] would
-  // be satisfied if it finds just a Generator[<subtype>], but that would not generate anything except subtypes.
-  // It would be sound, but you would't get a good variety of supertype values.
   import scala.language.implicitConversions
+
+  /**
+    * Allow Generators of a type to be used as Generators of a supertype.
+    *
+    * Given:
+    *
+    *   - You have a type `T`
+    *   - `T` has a supertype `U`
+    *   - You have a [[Generator]] that produces values of `T`
+    *
+    * This allows you to pass that `Generator[T]` as a `Generator[U]`.
+    *
+    * We do this instead of making [[Generator]] covariant, because then an implicit search for a
+    * `Generator[U]` would always be satisfied if it found just a `Generator[T]`, and would then not
+    * generate anything except the subtype. That would be sound, but you wouldn't get a good variety of
+    * supertype values. This way, the subtype/supertype conversion is somewhat better-controlled.
+    *
+    * @param genOfT a [[Generator]] that produces values of [[T]]
+    * @param ev implicit evidence that [[T]] is a subtype of [[U]]
+    * @tparam T the subtype that we have a [[Generator]] for
+    * @tparam U the supertype that we want a [[Generator]] for
+    * @return a `Generator[U]` derived from the `Generator[T]`
+    */
   implicit def widen[T, U](genOfT: Generator[T])(implicit ev: T <:< U): Generator[U] = genOfT.map(o => (o: U))
+
+  ///////////////////////////////////////
+  //
+  // The edge cases for the standard Generators. If we add more standard Generators, place their edges here.
+  //
+  // TBD: should canonicals also be listed here? It seems a bit asymmetrical that edges and canonicals are
+  // handled differently.
+  //
 
   private[prop] val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private[prop] val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
@@ -493,6 +532,19 @@ object Generator {
   private[prop] val negZLongEdges = List(NegZLong.MinValue, NegZLong(-1L), NegZLong.MaxValue)
   private[prop] val numericCharEdges = List(NumericChar('0'), NumericChar('9'))
 
+  ///////////////////////////////////////
+  //
+  // The standard Generators for central standard library and Scalactic types
+  //
+  // TBD: we might want to refactor these. There's a ton of boilerplate here, and most of it could probably be
+  // reduced to a common function with a type parameter and about half a dozen function parameters, I believe. That would
+  // likely be easier to understand and maintain. It's probably worth trying and seeing how it works. (Note: I'm not
+  // suggesting changing the signatures of any of these, just merging their implementations.)
+  //
+
+  /**
+    * A [[Generator]] that produces [[Byte]] values.
+    */
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
 
@@ -526,6 +578,9 @@ object Generator {
       override def toString = "Generator[Byte]"
     }
 
+  /**
+    * A [[Generator]] that produces [[Short]] values.
+    */
   implicit val shortGenerator: Generator[Short] =
     new Generator[Short] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
@@ -558,6 +613,9 @@ object Generator {
       override def toString = "Generator[Short]"
     }
 
+  /**
+    * A [[Generator]] that produces [[Char]] values.
+    */
   implicit val charGenerator: Generator[Char] =
     new Generator[Char] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
@@ -593,6 +651,9 @@ object Generator {
       override def toString = "Generator[Char]"
     }
 
+  /**
+    * A [[Generator]] that produces [[Int]] values.
+    */
   implicit val intGenerator: Generator[Int] =
     new Generator[Int] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
@@ -625,6 +686,9 @@ object Generator {
       }
     }
 
+  /**
+    * A [[Generator]] that produces [[Long]] values.
+    */
   implicit val longGenerator: Generator[Long] =
     new Generator[Long] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
@@ -657,6 +721,9 @@ object Generator {
       override def toString = "Generator[Long]"
     }
 
+  /**
+    * A [[Generator]] that produces [[Float]] values.
+    */
   implicit val floatGenerator: Generator[Float] =
     new Generator[Float] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
@@ -724,6 +791,9 @@ object Generator {
       override def toString = "Generator[Float]"
     }
 
+  /**
+    * A [[Generator]] that produces [[Double]] values.
+    */
   implicit val doubleGenerator: Generator[Double] =
     new Generator[Double] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
@@ -792,6 +862,9 @@ object Generator {
       override def toString = "Generator[Double]"
     }
 
+  /**
+    * A [[Generator]] that produces positive integers, excluding zero.
+    */
   implicit val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
@@ -810,6 +883,9 @@ object Generator {
       override def toString = "Generator[PosInt]"
     }
 
+  /**
+    * A [[Generator]] that produces positive integers, including zero.
+    */
   implicit val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
@@ -828,6 +904,9 @@ object Generator {
       override def toString = "Generator[PosZInt]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Longs, excluding zero.
+    */
   implicit val posLongGenerator: Generator[PosLong] =
     new Generator[PosLong] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
@@ -846,6 +925,9 @@ object Generator {
       override def toString = "Generator[PosLong]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Longs, including zero.
+    */
   implicit val posZLongGenerator: Generator[PosZLong] =
     new Generator[PosZLong] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
@@ -864,6 +946,9 @@ object Generator {
       override def toString = "Generator[PosZLong]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Floats, excluding zero.
+    */
   implicit val posFloatGenerator: Generator[PosFloat] =
     new Generator[PosFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
@@ -882,6 +967,9 @@ object Generator {
       override def toString = "Generator[PosFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Floats, excluding zero and infinity.
+    */
   implicit val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
     new Generator[PosFiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
@@ -900,6 +988,9 @@ object Generator {
       override def toString = "Generator[PosFiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces Floats, excluding infinity.
+    */
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
     new Generator[FiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteFloat], Randomizer) = {
@@ -918,6 +1009,9 @@ object Generator {
       override def toString = "Generator[FiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces Doubles, excluding infinity.
+    */
   implicit val finiteDoubleGenerator: Generator[FiniteDouble] =
     new Generator[FiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteDouble], Randomizer) = {
@@ -936,6 +1030,9 @@ object Generator {
       override def toString = "Generator[FiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Floats, including zero and infinity.
+    */
   implicit val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
@@ -954,6 +1051,9 @@ object Generator {
       override def toString = "Generator[PosZFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Floats, including zero but excluding infinity.
+    */
   implicit val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
     new Generator[PosZFiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
@@ -972,6 +1072,9 @@ object Generator {
       override def toString = "Generator[PosZFiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Doubles, excluding zero but including infinity.
+    */
   implicit val posDoubleGenerator: Generator[PosDouble] =
     new Generator[PosDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
@@ -990,6 +1093,9 @@ object Generator {
       override def toString = "Generator[PosDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Doubles, excluding zero and infinity.
+    */
   implicit val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
     new Generator[PosFiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
@@ -1008,6 +1114,9 @@ object Generator {
       override def toString = "Generator[PosFiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Doubles, including zero and infinity.
+    */
   implicit val posZDoubleGenerator: Generator[PosZDouble] =
     new Generator[PosZDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
@@ -1026,6 +1135,9 @@ object Generator {
       override def toString = "Generator[PosZDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces positive Doubles, including zero but excluding infinity.
+    */
   implicit val posZFiniteDoubleGenerator: Generator[PosZFiniteDouble] =
     new Generator[PosZFiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
@@ -1044,6 +1156,9 @@ object Generator {
       override def toString = "Generator[PosZFiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces Doubles, excluding zero but including infinity.
+    */
   implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
     new Generator[NonZeroDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
@@ -1062,6 +1177,9 @@ object Generator {
       override def toString = "Generator[NonZeroDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces Doubles, excluding zero and infinity.
+    */
   implicit val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
     new Generator[NonZeroFiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
@@ -1080,6 +1198,9 @@ object Generator {
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces Floats, excluding zero but including infinity.
+    */
   implicit val nonZeroFloatGenerator: Generator[NonZeroFloat] =
     new Generator[NonZeroFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
@@ -1098,6 +1219,9 @@ object Generator {
       override def toString = "Generator[NonZeroFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces Floats, excluding zero and infinity.
+    */
   implicit val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
     new Generator[NonZeroFiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
@@ -1116,6 +1240,9 @@ object Generator {
       override def toString = "Generator[NonZeroFiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces integers, excluding zero.
+    */
   implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
     new Generator[NonZeroInt] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
@@ -1134,6 +1261,9 @@ object Generator {
       override def toString = "Generator[NonZeroInt]"
     }
 
+  /**
+    * A [[Generator]] that produces Longs, excluding zero.
+    */
   implicit val nonZeroLongGenerator: Generator[NonZeroLong] =
     new Generator[NonZeroLong] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
@@ -1152,6 +1282,9 @@ object Generator {
       override def toString = "Generator[NonZeroLong]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Doubles, excluding zero but including infinity.
+    */
   implicit val negDoubleGenerator: Generator[NegDouble] =
     new Generator[NegDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
@@ -1170,6 +1303,9 @@ object Generator {
       override def toString = "Generator[NegDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Doubles, excluding zero and infinity.
+    */
   implicit val negFiniteDoubleGenerator: Generator[NegFiniteDouble] =
     new Generator[NegFiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
@@ -1188,6 +1324,9 @@ object Generator {
       override def toString = "Generator[NegFiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Floats, excluding zero but including infinity.
+    */
   implicit val negFloatGenerator: Generator[NegFloat] =
     new Generator[NegFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
@@ -1206,6 +1345,9 @@ object Generator {
       override def toString = "Generator[NegFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Floats, excluding zero and infinity.
+    */
   implicit val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
     new Generator[NegFiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
@@ -1224,6 +1366,9 @@ object Generator {
       override def toString = "Generator[NegFiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Ints, excluding zero.
+    */
   implicit val negIntGenerator: Generator[NegInt] =
     new Generator[NegInt] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
@@ -1242,6 +1387,9 @@ object Generator {
       override def toString = "Generator[NegInt]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Longs, excluding zero.
+    */
   implicit val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
@@ -1260,6 +1408,9 @@ object Generator {
       override def toString = "Generator[NegLong]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Doubles, including zero and infinity.
+    */
   implicit val negZDoubleGenerator: Generator[NegZDouble] =
     new Generator[NegZDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
@@ -1278,6 +1429,9 @@ object Generator {
       override def toString = "Generator[NegZDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
+    */
   implicit val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
     new Generator[NegZFiniteDouble] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
@@ -1296,6 +1450,9 @@ object Generator {
       override def toString = "Generator[NegZFiniteDouble]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Floats, including zero and infinity.
+    */
   implicit val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
@@ -1314,6 +1471,9 @@ object Generator {
       override def toString = "Generator[NegZFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Floats, including zero but excluding infinity.
+    */
   implicit val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
     new Generator[NegZFiniteFloat] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
@@ -1332,6 +1492,9 @@ object Generator {
       override def toString = "Generator[NegZFiniteFloat]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Ints, including zero.
+    */
   implicit val negZIntGenerator: Generator[NegZInt] =
     new Generator[NegZInt] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
@@ -1350,6 +1513,9 @@ object Generator {
       override def toString = "Generator[NegZInt]"
     }
 
+  /**
+    * A [[Generator]] that produces negative Longs, including zero.
+    */
   implicit val negZLongGenerator: Generator[NegZLong] =
     new Generator[NegZLong] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
@@ -1368,6 +1534,9 @@ object Generator {
       override def toString = "Generator[NegZLong]"
     }
 
+  /**
+    * A [[Generator]] that produces Chars, but only the ones that represent digits.
+    */
   implicit val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
@@ -1387,6 +1556,12 @@ object Generator {
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
+  /**
+    * A [[Generator]] that produces arbitrary Strings.
+    *
+    * Note that this does not confine itself to ASCII! While failed tests will try to shrink to
+    * readable ASCII, this will produce arbitrary Unicode Strings.
+    */
   implicit val stringGenerator: Generator[String] =
     new Generator[String] {
       private val stringEdges = List("")
@@ -1441,6 +1616,13 @@ object Generator {
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
+  /**
+    * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type that we are producing a List of
+    * @return a List of values of type [[T]]
+    */
   implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT =>
       private val listEdges = List(Nil)
@@ -1548,6 +1730,16 @@ object Generator {
         }
     }
 
+  /**
+    * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
+    * a T.
+    *
+    * The functions produced here are nullary -- they take no parameters, they just spew out values of type [[T]].
+    *
+    * @param genOfT a [[Generator]] that produces values of [[T]]
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces functions that return values of type [[T]]
+    */
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
     new Generator[() => T] { thisGeneratorOfFunction0 =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[() => T], Randomizer) = {
@@ -1577,6 +1769,13 @@ object Generator {
     }
   }
 
+  /**
+    * Generate functions that take an [[Int]] and return a modified [[Int]].
+    *
+    * This [[Generator]] is useful for testing edge cases of some higher-order functions. Besides obvious
+    * functions (returning the same Int, returning that Int plus 1), it tests overflow situations such as
+    * adding [[Int.MaxValue]], negation, and other such cases.
+    */
   implicit val function1IntToIntGenerator: Generator[Int => Int] = {
     object IntToIntIdentity extends (Int => Int) {
       def apply(i: Int): Int = i
@@ -1691,6 +1890,38 @@ object Generator {
   // currently practical. But once Scala 3 is real and Scalatest begins porting to it (sometime down the road),
   // we should investigate using its abstraction-over-arity machinery to reduce this boilerplate.
 
+  /**
+    * Create a [[Generator]] of functions from type [[A]] to type [[B]].
+    *
+    * Note that the generated functions are, necessarily, pretty random. In practice, the function you get from a
+    * [[function1Generator]] (and its variations, up through [[function22Generator]]) takes the hashes of its input
+    * values, combines those with a randomly-chosen number, and combines them in order to choose the generated value
+    * [[B]].
+    *
+    * That said, each of the generated functions ''is'' deterministic: given the same input parameters and the same
+    * randomly-chosen number, you will always get the same [[B]] result. And the `toString` function on the generated
+    * function will show the formula you need to use in order to recreate that, which will look something like:
+    *
+    * {{{
+    *   (a: Int, b: String, c: Float) => org.scalatest.prop.valueOf[String](a, b, c)(131)
+    * }}}
+    *
+    * The number and type of the `a`, `b`, `c`, etc, parameters, as well as the type parameter of [[valueOf]], will
+    * on the function type you are generating, but they will always follow this pattern. [[valueOf]] is the underlying
+    * function that takes these parameters and the randomly-chosen number, and returns a value of the specified type.
+    *
+    * So if a property evaluation fails, the display of the generated function will tell you how to call [[valueOf]]
+    * to recreate the failure.
+    *
+    * The `typeInfo` parameters are automatically created via macros; you should generally not try to pass them manually.
+    *
+    * @param genOfB a [[Generator]] for the desired result type [[B]]
+    * @param typeInfoA automatically-created type information for type [[A]]
+    * @param typeInfoB automatically-created type information for type [[B]]
+    * @tparam A the input type for the generated functions
+    * @tparam B the result type for the generated functions
+    * @return a [[Generator]] that produces functions that take values of [[A]] and returns values of [[B]]
+  */
   implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
     new Generator[A => B] {
       def next(szp: SizeParam, edges: List[A => B], rnd: Randomizer): (A => B, List[A => B], Randomizer) = {
@@ -1713,6 +1944,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
     new Generator[(A, B) => C] {
       def next(szp: SizeParam, edges: List[(A, B) => C], rnd: Randomizer): ((A, B) => C, List[(A, B) => C], Randomizer) = {
@@ -1735,6 +1969,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
     new Generator[(A, B, C) => D] {
       def next(szp: SizeParam, edges: List[(A, B, C) => D], rnd: Randomizer): ((A, B, C) => D, List[(A, B, C) => D], Randomizer) = {
@@ -1758,6 +1995,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
     new Generator[(A, B, C, D) => E] {
       def next(szp: SizeParam, edges: List[(A, B, C, D) => E], rnd: Randomizer): ((A, B, C, D) => E, List[(A, B, C, D) => E], Randomizer) = {
@@ -1782,6 +2022,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
     new Generator[(A, B, C, D, E) => F] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E) => F], rnd: Randomizer): ((A, B, C, D, E) => F, List[(A, B, C, D, E) => F], Randomizer) = {
@@ -1807,6 +2050,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
     new Generator[(A, B, C, D, E, F) => G] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F) => G], rnd: Randomizer): ((A, B, C, D, E, F) => G, List[(A, B, C, D, E, F) => G], Randomizer) = {
@@ -1833,6 +2079,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
     new Generator[(A, B, C, D, E, F, G) => H] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G) => H], rnd: Randomizer): ((A, B, C, D, E, F, G) => H, List[(A, B, C, D, E, F, G) => H], Randomizer) = {
@@ -1860,6 +2109,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
     new Generator[(A, B, C, D, E, F, G, H) => I] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H) => I], rnd: Randomizer): ((A, B, C, D, E, F, G, H) => I, List[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
@@ -1888,6 +2140,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
     new Generator[(A, B, C, D, E, F, G, H, I) => J] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I) => J], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I) => J, List[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
@@ -1917,6 +2172,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J) => K], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J) => K, List[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
@@ -1947,6 +2205,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K) => L], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K) => L, List[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
@@ -1978,6 +2239,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L) => M, List[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
@@ -2010,6 +2274,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, List[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
@@ -2043,6 +2310,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
@@ -2077,6 +2347,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
@@ -2112,6 +2385,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
@@ -2148,6 +2424,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
@@ -2185,6 +2464,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
@@ -2223,6 +2505,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
@@ -2262,6 +2547,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
@@ -2302,6 +2590,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
@@ -2343,6 +2634,9 @@ object Generator {
     }
   }
 
+  /**
+    * See [[function1Generator]].
+    */
   implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] {
       def next(szp: SizeParam, edges: List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], rnd: Randomizer): ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, List[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
@@ -2385,6 +2679,13 @@ object Generator {
     }
   }
 
+  /**
+    * Given a [[Generator]] for type [[T]], this provides one for `Option[T]`.
+    *
+    * @param genOfT a [[Generator]] that produces type [[T]]
+    * @tparam T the type to generate
+    * @return a [[Generator]] that produces `Option[T]`
+    */
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
@@ -2409,6 +2710,15 @@ object Generator {
       }
     }
 
+  /**
+    * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
+    *
+    * @param genOfG a [[Generator]] that produces type [[G]]
+    * @param genOfB a [[Generator]] that produces type [[B]]
+    * @tparam G the "good" type for an [[Or]]
+    * @tparam B the "bad" type for an [[Or]]
+    * @return a [[Generator]] that produces `G Or B`
+    */
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
@@ -2446,71 +2756,159 @@ object Generator {
         }
       }
     }
+
+  /**
+    * Given [[Generator]]s for types [[A]] and [[B]], get one that produces Tuples of those types.
+    *
+    * [[tuple2Generator]] (and its variants, up through [[tuple22Generator]]) will create [[Generator]]s on
+    * demand for essentially arbitrary Tuples, so long as you have [[Generator]]s in implicit scope for all
+    * of the component types.
+    *
+    * @param genOfA a [[Generator]] for type [[A]]
+    * @param genOfB a [[Generator]] for type [[B]]
+    * @tparam A the first type in the Tuple
+    * @tparam B the second type in the Tuple
+    * @return a [[Generator]] that produces the desired types, Tupled together.
+    */
   implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] =
     new GeneratorFor2[A, B, (A, B)]((a: A, b: B) => (a, b), (c: (A, B)) => c)(genOfA, genOfB)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple3Generator[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = {
     new GeneratorFor3[A, B, C, (A, B, C)]((a: A, b: B, c: C) => (a, b, c), (d: (A, B, C)) => d)(genOfA, genOfB, genOfC)
   }
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple4Generator[A, B, C, D](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = {
     new GeneratorFor4[A, B, C, D, (A, B, C, D)]((a: A, b: B, c: C, d: D) => (a, b, c, d), (d: (A, B, C, D)) => d)(genOfA, genOfB, genOfC, genOfD)
   }
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple5Generator[A, B, C, D, E](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] =
     new GeneratorFor5[A, B, C, D, E, (A, B, C, D, E)]((a: A, b: B, c: C, d: D, e: E) => (a, b, c, d, e), (f: (A, B, C, D, E)) => f)(genOfA, genOfB, genOfC, genOfD, genOfE)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple6Generator[A, B, C, D, E, F](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] =
     new GeneratorFor6[A, B, C, D, E, F, (A, B, C, D, E, F)]((a: A, b: B, c: C, d: D, e: E, f: F) => (a, b, c, d, e, f), (g: (A, B, C, D, E, F)) => g)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple7Generator[A, B, C, D, E, F, G](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] =
     new GeneratorFor7[A, B, C, D, E, F, G, (A, B, C, D, E, F, G)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G) => (a, b, c, d, e, f, g), (h: (A, B, C, D, E, F, G)) => h)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple8Generator[A, B, C, D, E, F, G, H](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] =
     new GeneratorFor8[A, B, C, D, E, F, G, H, (A, B, C, D, E, F, G, H)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H) => (a, b, c, d, e, f, g, h), (i: (A, B, C, D, E, F, G, H)) => i)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple9Generator[A, B, C, D, E, F, G, H, I](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] =
     new GeneratorFor9[A, B, C, D, E, F, G, H, I, (A, B, C, D, E, F, G, H, I)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I) => (a, b, c, d, e, f, g, h, i), (j: (A, B, C, D, E, F, G, H, I)) => j)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple10Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] =
     new GeneratorFor10[A, B, C, D, E, F, G, H, I, J, (A, B, C, D, E, F, G, H, I, J)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J) => (a, b, c, d, e, f, g, h, i, j), (k: (A, B, C, D, E, F, G, H, I, J)) => k)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple11Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] =
     new GeneratorFor11[A, B, C, D, E, F, G, H, I, J, K, (A, B, C, D, E, F, G, H, I, J, K)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K) => (a, b, c, d, e, f, g, h, i, j, k), (l: (A, B, C, D, E, F, G, H, I, J, K)) => l)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple12Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] =
     new GeneratorFor12[A, B, C, D, E, F, G, H, I, J, K, L, (A, B, C, D, E, F, G, H, I, J, K, L)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L) => (a, b, c, d, e, f, g, h, i, j, k, l), (m: (A, B, C, D, E, F, G, H, I, J, K, L)) => m)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] =
     new GeneratorFor13[A, B, C, D, E, F, G, H, I, J, K, L, M, (A, B, C, D, E, F, G, H, I, J, K, L, M)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M) => (a, b, c, d, e, f, g, h, i, j, k, l, m), (n: (A, B, C, D, E, F, G, H, I, J, K, L, M)) => n)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] =
     new GeneratorFor14[A, B, C, D, E, F, G, H, I, J, K, L, M, N, (A, B, C, D, E, F, G, H, I, J, K, L, M, N)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n), (o: (A, B, C, D, E, F, G, H, I, J, K, L, M, N)) => o)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
     new GeneratorFor15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o), (p: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)) => p)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     new GeneratorFor16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p), (q: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)) => q)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     new GeneratorFor17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q), (r: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)) => r)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     new GeneratorFor18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r), (s: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)) => s)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     new GeneratorFor19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s), (t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)) => t)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     new GeneratorFor20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t), (u: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)) => u)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     new GeneratorFor21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u), (v: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)) => v)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU)
 
+  /**
+    * See [[tuple2Generator]].
+    */
   implicit def tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
     new GeneratorFor22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v), (w: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)) => w)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)
 
+  /**
+    * Given a [[Generator]] for type [[T]], this creates one for a [[Vector]] of [[T]].
+    *
+    * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
+    * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
+    * when you use this [[Generator]].
+    *
+    * The resulting [[Generator]] also has the [[HavingLength]] trait, so you can use it to generate [[Vector]]s
+    * with specific lengths.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces values of type `Vector[T]`
+    */
   implicit def vectorGenerator[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] =
     new Generator[Vector[T]] with HavingLength[Vector[T]] {
 
@@ -2563,6 +2961,20 @@ object Generator {
         }
     }
 
+  /**
+    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
+    *
+    * Note that the [[Set]] type is considered to have a "size", so you can use the configuration parameters
+    * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Set`s
+    * when you use this [[Generator]].
+    *
+    * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Set]]s
+    * with specific sizes.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `Set[T]`.
+    */
   implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
     new Generator[Set[T]] with HavingSize[Set[T]] {
 
@@ -2615,6 +3027,20 @@ object Generator {
         }
     }
 
+  /**
+    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
+    *
+    * Note that the [[SortedSet]] type is considered to have a "size", so you can use the configuration parameters
+    * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `SortedSet`s
+    * when you use this [[Generator]].
+    *
+    * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedSet]]s
+    * with specific sizes.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `SortedSet[T]`.
+    */
   implicit def sortedSetGenerator[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] =
     new Generator[SortedSet[T]] with HavingSize[SortedSet[T]] {
 
@@ -2667,6 +3093,22 @@ object Generator {
         }
     }
 
+  /**
+    * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[Map]]s
+    * with those pairs.
+    *
+    * If you are simply looking for random pairing of the key and value types, this is pretty easy to use:
+    * if both the key and value types have [[Generator]]s, then the Tuple and Map ones will be automatically
+    * and implicitly created when you need them.
+    *
+    * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Map]]s
+    * with specific sizes.
+    *
+    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @tparam K the type of the keys for the [[Map]]
+    * @tparam V the type of the values for the [[Map]]
+    * @return a [[Generator]] of [[Map]]s from [[K]] to [[V]]
+    */
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
     new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
@@ -2720,6 +3162,22 @@ object Generator {
         }
     }
 
+  /**
+    * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[SortedMap]]s
+    * with those pairs.
+    *
+    * If you are simply looking for random pairing of the key and value types, this is pretty easy to use:
+    * if both the key and value types have [[Generator]]s, then the Tuple and SortedMap ones will be automatically
+    * and implicitly created when you need them.
+    *
+    * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedMap]]s
+    * with specific sizes.
+    *
+    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @tparam K the type of the keys for the [[SortedMap]]
+    * @tparam V the type of the values for the [[SortedMap]]
+    * @return a [[Generator]] of [[SortedMap]]s from [[K]] to [[V]]
+    */
   implicit def sortedMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
     new Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] {
 
