@@ -22,8 +22,36 @@ import org.scalactic.Requirements._
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 
+/**
+  * Provides various specialized [[Generator]]s that are often useful.
+  *
+  * This exists as both a trait that you can mix into your classes, and an object
+  * that you can import -- choose whichever better suits your tests.
+  *
+  * This incorporates the standard [[Generator]]s defined in the [[Generator]] object,
+  * so you generally shouldn't need both.
+  */
 trait CommonGenerators {
 
+  // TODO: these <type>Between functions are *extremely* boilerplatey. Their implementations can
+  // and probably should be merged into a common base function that takes a few function
+  // parameters. Heck, that would even be useful to expose publicly, as a utility function
+  // that works for any range-capable type.
+
+  /**
+    * Create a [[Generator]] that returns [[Byte]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def bytesBetween(from: Byte, to: Byte): Generator[Byte] = {
     require(from <= to)
     new Generator[Byte] { thisByteGenerator =>
@@ -44,6 +72,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Short]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def shortsBetween(from: Short, to: Short): Generator[Short] = {
     require(from <= to)
     new Generator[Short] { thisShortGenerator =>
@@ -64,6 +106,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Int]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def intsBetween(from: Int, to: Int): Generator[Int] = {
     require(from <= to)
     new Generator[Int] { thisIntGenerator =>
@@ -84,6 +140,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Long]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def longsBetween(from: Long, to: Long): Generator[Long] = {
     require(from <= to)
     new Generator[Long] { thisLongGenerator =>
@@ -104,6 +174,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Char]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def charsBetween(from: Char, to: Char): Generator[Char] = {
     require(from <= to)
     new Generator[Char] { thisCharGenerator =>
@@ -124,6 +208,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Float]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def floatsBetween(from: Float, to: Float): Generator[Float] = {
     require(from <= to)
     new Generator[Float] { thisFloatGenerator =>
@@ -144,6 +242,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[Double]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def doublesBetween(from: Double, to: Double): Generator[Double] = {
     require(from <= to)
     new Generator[Double] { thisDoubleGenerator =>
@@ -164,6 +276,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosInt]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
     new Generator[PosInt] { thisPosIntGenerator =>
       private val intEdges = Generator.posIntEdges.filter(i => i >= from && i <= to)
@@ -182,6 +308,20 @@ trait CommonGenerators {
       }
     }
 
+  /**
+    * Create a [[Generator]] that returns [[PosLong]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] = {
     require(from <= to)
     new Generator[PosLong] { thisPosLongGenerator =>
@@ -202,6 +342,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] = {
     require(from <= to)
     new Generator[PosFloat] { thisPosFloatGenerator =>
@@ -222,6 +376,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosFiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posFiniteFloatsBetween(from: PosFiniteFloat, to: PosFiniteFloat): Generator[PosFiniteFloat] = {
     require(from <= to)
     new Generator[PosFiniteFloat] { thisPosFiniteFloatGenerator =>
@@ -242,6 +410,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] = {
     require(from <= to)
     new Generator[PosDouble] { thisPosDoubleGenerator =>
@@ -262,6 +444,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosFiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posFiniteDoublesBetween(from: PosFiniteDouble, to: PosFiniteDouble): Generator[PosFiniteDouble] = {
     require(from <= to)
     new Generator[PosFiniteDouble] { thisPosFiniteDoubleGenerator =>
@@ -282,6 +478,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZInt]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
     // Probably disallow from >= to, and if =, then say use some alternative? constantValues(x) ?
     new Generator[PosZInt] { thisPosZIntGenerator =>
@@ -301,6 +511,20 @@ trait CommonGenerators {
       }
     }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZLong]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = {
     require(from <= to)
     new Generator[PosZLong] { thisPosZLongGenerator =>
@@ -321,6 +545,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] = {
     require(from <= to)
     new Generator[PosZFloat] { thisPosZFloatGenerator =>
@@ -341,6 +579,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZFiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZFiniteFloatsBetween(from: PosZFiniteFloat, to: PosZFiniteFloat): Generator[PosZFiniteFloat] = {
     require(from <= to)
     new Generator[PosZFiniteFloat] { thisPosZFiniteFloatGenerator =>
@@ -361,6 +613,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] = {
     require(from <= to)
     new Generator[PosZDouble] { thisPosZDoubleGenerator =>
@@ -381,6 +647,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[PosZFiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def posZFiniteDoublesBetween(from: PosZFiniteDouble, to: PosZFiniteDouble): Generator[PosZFiniteDouble] = {
     require(from <= to)
     new Generator[PosZFiniteDouble] { thisPosZFiniteDoubleGenerator =>
@@ -401,6 +681,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegInt]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] = {
     require(from <= to)
     new Generator[NegInt] {
@@ -425,6 +719,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegLong]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] = {
     require(from <= to)
     new Generator[NegLong] {
@@ -449,6 +757,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] = {
     require(from <= to)
     new Generator[NegFloat] {
@@ -473,6 +795,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegFiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negFiniteFloatsBetween(from: NegFiniteFloat, to: NegFiniteFloat): Generator[NegFiniteFloat] = {
     require(from <= to)
     new Generator[NegFiniteFloat] {
@@ -497,6 +833,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] = {
     require(from <= to)
     new Generator[NegDouble] {
@@ -521,6 +871,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegFiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negFiniteDoublesBetween(from: NegFiniteDouble, to: NegFiniteDouble): Generator[NegFiniteDouble] = {
     require(from <= to)
     new Generator[NegFiniteDouble] {
@@ -545,6 +909,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZInt]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] = {
     require(from <= to)
     new Generator[NegZInt] {
@@ -569,6 +947,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZLong]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] = {
     require(from <= to)
     new Generator[NegZLong] {
@@ -593,6 +985,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] = {
     require(from <= to)
     new Generator[NegZFloat] {
@@ -617,6 +1023,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZFiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZFiniteFloatsBetween(from: NegZFiniteFloat, to: NegZFiniteFloat): Generator[NegZFiniteFloat] = {
     require(from <= to)
     new Generator[NegZFiniteFloat] {
@@ -641,6 +1061,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] = {
     require(from <= to)
     new Generator[NegZDouble] {
@@ -665,6 +1099,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NegZFiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def negZFiniteDoublesBetween(from: NegZFiniteDouble, to: NegZFiniteDouble): Generator[NegZFiniteDouble] = {
     require(from <= to)
     new Generator[NegZFiniteDouble] {
@@ -689,6 +1137,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroInt]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroIntsBetween(from: NonZeroInt, to: NonZeroInt): Generator[NonZeroInt] = {
     require(from <= to)
     new Generator[NonZeroInt] {
@@ -713,6 +1175,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroLong]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroLongsBetween(from: NonZeroLong, to: NonZeroLong): Generator[NonZeroLong] = {
     require(from <= to)
     new Generator[NonZeroLong] {
@@ -737,6 +1213,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroFloatsBetween(from: NonZeroFloat, to: NonZeroFloat): Generator[NonZeroFloat] = {
     require(from <= to)
     new Generator[NonZeroFloat] {
@@ -761,6 +1251,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroFiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroFiniteFloatsBetween(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): Generator[NonZeroFiniteFloat] = {
     require(from <= to)
     new Generator[NonZeroFiniteFloat] {
@@ -785,6 +1289,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroDoublesBetween(from: NonZeroDouble, to: NonZeroDouble): Generator[NonZeroDouble] = {
     require(from <= to)
     new Generator[NonZeroDouble] {
@@ -809,6 +1327,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[NonZeroFiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def nonZeroFiniteDoublesBetween(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): Generator[NonZeroFiniteDouble] = {
     require(from <= to)
     new Generator[NonZeroFiniteDouble] {
@@ -833,6 +1365,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[FiniteFloat]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] = {
     require(from <= to)
     new Generator[FiniteFloat] {
@@ -857,6 +1403,20 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Create a [[Generator]] that returns [[FiniteDouble]]s in the specified range.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * While it is common for ''to'' to be greater than ''from'', this is not required; the
+    * boundaries may be specified in either order.
+    *
+    * @param from one end of the desired range
+    * @param to the other end of the desired range
+    * @return a value within that range, inclusive of the bounds
+    */
   def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] = {
     require(from <= to)
     new Generator[FiniteDouble] {
@@ -881,6 +1441,19 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Given a list of values of type [[T]], this creates a [[Generator]] that will only
+    * produce those values.
+    *
+    * The order in which the values are produced is random, based on the [[Randomizer]] passed
+    * in to the `next` function. It may produce the same value multiple times.
+    *
+    * @param first a value of type [[T]]
+    * @param second another value of type [[T]]
+    * @param rest more values of type [[T]], as many as you wish
+    * @tparam T the type that will be produced by the resulting [[Generator]]
+    * @return a [[Generator]] that produces exactly the specified values
+    */
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
@@ -896,6 +1469,17 @@ trait CommonGenerators {
       }
     }
 
+  /**
+    * Creates a [[Generator]] that will always return exactly the same value.
+    *
+    * This is specialized, but occasionally useful. It is mainly appropriate when you have
+    * a function that requires a [[Generator]], but only one value makes sense for the
+    * Property you are evaluating.
+    *
+    * @param theValue the value to produce
+    * @tparam T the type of that value
+    * @return a [[Generator]] that will always produce that value
+    */
   def specificValue[T](theValue: T): Generator[T] =
     new Generator[T] {
       def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
@@ -912,6 +1496,42 @@ trait CommonGenerators {
   // by moving this to a different method. Then next is just next
   // in the distributed stuff. I could then do the pattern match
   // once and forall in a final method, nextEdge.
+  /**
+    * Given a number of [[Generator]]s, and the weightings for each one, this creates a [[Generator]]
+    * that invokes each of its components according to its weighting.
+    *
+    * For example, consider this:
+    * {{{
+    *   val evens: Generator[Int] = ... // generates even Ints
+    *   val odds: Generator[Int] = ... // generates odd Ints
+    *   val zeros: Generator[Int] = specificValue(0)
+    *
+    *   val mixed: Generator[Int] = frequency(
+    *     (5, evens),
+    *     (4, odds),
+    *     (1, zeros)
+    *   )
+    * }}}
+    * The total weighting is (5 + 4 + 1) = 10. So the resulting [[Generator]] will produce
+    * an even number (10 / 5) = 50% the time, an odd number (10 / 4) = 40% of the time, and zero
+    * (10 / 1) = 10% of the time.
+    *
+    * Keep in mind that the distribution is invoked randomly, so these are rough proportions. As you
+    * invoke the [[Generator]] more times, you should see results that are closer and closer to the
+    * specified proportions, but the random element will generally keep it inexact.
+    *
+    * As usual, the resulting [[Generator]] will use the [[Randomizer]] passed in to [[Generator.next()]] to
+    * choose which of the constituent [[Generator]]s to invoke. So if you use the same seed to initialize
+    * your [[Randomizer]], you should get the same results.
+    *
+    * Note that all of the constituent [[Generator]]s must produce the same type.
+    *
+    * @param first a [[Generator]] and its weight
+    * @param second another [[Generator]] and its weight
+    * @param rest as many more [[Generator]] and weight pairs as you like
+    * @tparam T the type being produced by all of these [[Generator]]s
+    * @return a single [[Generator]], that invokes its constituents according to their weights
+    */
   def frequency[T](first: (Int, Generator[T]), second: (Int, Generator[T]), rest: (Int, Generator[T])*): Generator[T] = {
     val distribution: Vector[(Int, Generator[T])] = (first +: second +: rest).toVector
     // Take Int not PosInt, because Scala won't apply  multiple implicit
@@ -965,6 +1585,37 @@ trait CommonGenerators {
     }
   }
 
+  /**
+    * Given a number of [[Generator]]s, this creates one that invokes each of its constituents with
+    * roughly the same frequency.
+    *
+    * Consider this example:
+    * {{{
+    *   val numbers: Generator[Char] = ... // generates only digits
+    *   val letters: Generator[Char] = ... // generates only letters
+    *   val punct: Generator[Char]   = ... // generates only punctuation
+    *
+    *   val chars: Generator[Char] = evenly(numbers, letters, punct)
+    * }}}
+    * The `chars` [[Generator]] should produce numbers, letters and punctuation, each about a third
+    * of the time.
+    *
+    * Keep in mind that the distribution is invoked randomly, so these are rough proportions. As you
+    * invoke the [[Generator]] more times, you should see results that are closer and closer to an
+    * equal distribution, but the random element will generally keep it inexact.
+    *
+    * As usual, the resulting [[Generator]] will use the [[Randomizer]] passed in to [[Generator.next()]] to
+    * choose which of the constituent [[Generator]]s to invoke. So if you use the same seed to initialize
+    * your [[Randomizer]], you should get the same results.
+    *
+    * Note that all of the constituent [[Generator]]s must produce the same type.
+    *
+    * @param first a [[Generator]] to choose from
+    * @param second another [[Generator]] to choose from
+    * @param rest any number of additional [[Generator]]s to choose from
+    * @tparam T the type to be produced
+    * @return a single [[Generator]] that invokes each of its constituents roughly the same number of times
+    */
   def evenly[T](first: Generator[T], second: Generator[T], rest: Generator[T]*): Generator[T] = {
     val distributees: Vector[Generator[T]] = (first +: second +: rest).toVector
     new Generator[T] {
@@ -1300,6 +1951,18 @@ trait CommonGenerators {
     Classification(count, theMap)
   }
 
+  // TODO: is there any good reason for this to be a def? It seems a good candidate to be a
+  // val instead.
+  /**
+    * Create a [[Generator]] of prime numbers.
+    *
+    * As the name implies, this doesn't try to generate entirely arbitrary prime numbers. Instead,
+    * it takes the simpler and more efficient approach of choosing randomly from a hard-coded
+    * table of the first 1000 primes. As a result, the largest number that can be produced from
+    * this is 7919.
+    *
+    * @return a [[Generator]] that will produce smallish prime numbers
+    */
   def first1000Primes: Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
       def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
