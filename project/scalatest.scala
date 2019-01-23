@@ -632,6 +632,11 @@ object ScalatestBuild {
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalacticDotty.genResource((resourceManaged in Compile).value)
+        }.taskValue
+      },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty[String] else if (scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
@@ -933,6 +938,106 @@ object ScalatestBuild {
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestDotty = Project("scalatestDotty", file("scalatest.dotty"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest",
+      organization := "org.scalatest",
+      moduleName := "scalatest",
+      initialCommands in console := """|import org.scalatest._
+                                       |import org.scalactic._
+                                       |import Matchers._""".stripMargin,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      //jsDependencies += RuntimeDOM % "test",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) /* ++
+          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)*/
+        }.taskValue
+      },
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Compile += javaSourceManaged.value,
+      /*sourceGenerators in Compile += {
+        Def.task{
+          GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },*/
+      /*sourceGenerators in Compile += {
+        Def.task{
+          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+        }.taskValue
+      },*/
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      scalatestJSDocTaskSetting,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
+      mimaBinaryIssueFilters ++= {
+        Seq(
+          exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
+          exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser")
+        )
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest",
+      "org.scalatest.compatible",
+      "org.scalatest.concurrent",
+      "org.scalatest.check",
+      "org.scalatest.easymock",
+      "org.scalatest.enablers",
+      "org.scalatest.events",
+      "org.scalatest.exceptions",
+      "org.scalatest.fixture",
+      "org.scalatest.funsuite",
+      "org.scalatest.featurespec",
+      "org.scalatest.funspec",
+      "org.scalatest.jmock",
+      "org.scalatest.junit",
+      "org.scalatest.matchers",
+      "org.scalatest.mock",
+      "org.scalatest.mockito",
+      "org.scalatest.path",
+      "org.scalatest.prop",
+      "org.scalatest.refspec",
+      "org.scalatest.selenium",
+      "org.scalatest.tags",
+      "org.scalatest.tagobjects",
+      "org.scalatest.testng",
+      "org.scalatest.time",
+      "org.scalatest.tools",
+      "org.scalatest.verb",
+      "org.scalatest.words"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc.",
+      "Main-Class" -> "org.scalatest.tools.Runner"
+    )
+  ).dependsOn(scalacticDotty)
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)

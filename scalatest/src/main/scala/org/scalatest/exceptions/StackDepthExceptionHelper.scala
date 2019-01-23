@@ -2,7 +2,7 @@ package org.scalatest.exceptions
 
 import org.scalactic._
 import Requirements.requireNonNull
-import org.scalactic.exceptions.NullArgumentException
+import _root_.org.scalactic.exceptions.NullArgumentException
 
 /*
 For check methods in Checkers, passed fileName will be "Checkers.scala" and

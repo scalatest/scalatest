@@ -15,6 +15,7 @@ lazy val scalatest = ScalatestBuild.scalatest
 lazy val scalatestTest = ScalatestBuild.scalatestTest
 lazy val scalatestJS = ScalatestBuild.scalatestJS
 lazy val scalatestNative = ScalatestBuild.scalatestNative
+lazy val scalatestDotty = ScalatestBuild.scalatestDotty
 lazy val scalatestTestJS = ScalatestBuild.scalatestTestJS
 lazy val scalatestTestNative = ScalatestBuild.scalatestTestNative
 lazy val scalatestApp = ScalatestBuild.scalatestApp
