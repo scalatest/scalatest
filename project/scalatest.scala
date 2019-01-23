@@ -957,18 +957,18 @@ object ScalatestBuild {
           GenScalaTestDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) /* ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)*/
+          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
+          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Compile += javaSourceManaged.value,
-      /*sourceGenerators in Compile += {
+      sourceGenerators in Compile += {
         Def.task{
-          GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestDotty.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
+      /*resourceGenerators in Compile += {
         Def.task {
           GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue

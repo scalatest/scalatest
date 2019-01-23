@@ -15,9 +15,30 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import Requirements._
-import org.scalatest.Suite._
+import org.scalactic.{source, Requirements}
+import Requirements.requireNonNull
+import org.scalatest.Suite.{
+  reportTestStarting,
+  getIndentedTextForTest,
+  createInfoProvided,
+  reportNoteProvided,
+  createMarkupProvided,
+  reportTestSucceeded,
+  reportTestPending,
+  reportTestCanceled,
+  reportTestFailed,
+  reportScopeOpened,
+  reportScopeClosed,
+  reportScopePending,
+  reportTestIgnored,
+  reportAlertProvided,
+  anExceptionThatShouldCauseAnAbort,
+  reportInfoProvided,
+  reportMarkupProvided,
+  getLineInFile,
+  createNoteProvided,
+  createAlertProvided
+}
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.exceptions.NullArgumentException

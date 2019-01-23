@@ -56,7 +56,7 @@ object GenScalaTestDotty {
     }
   }
 
-  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, targetDir: File, files: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -109,14 +109,14 @@ object GenScalaTestDotty {
   }
 
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
+    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest", targetDir,
       List(
         "Finders.java",
         "TagAnnotation.java",
         "WrapWith.java",
         "DoNotDiscover.java",
         "Ignore.java"
-      ), targetDir)
+      ))
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -124,93 +124,95 @@ object GenScalaTestDotty {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    //copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty)
-    /*copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+    copyFiles("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "DispatchReporter.scala",
-        "Doc.scala",
-        "DocSpec.scala",
-        "DocSpecLike.scala",
-        "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
+        "Outcome.scala",
+        "AppendedClues.scala",
+        "PendingStatement.scala",
+        "Suite.scala",
+        "Reporter.scala", 
+        "DispatchReporter.scala", 
+        "ResourcefulReporter.scala",
+        "CatchReporter.scala",
+        "DistributedSuiteSorter.scala",
         "JavaClassesWrappers.scala",
-        "Shell.scala",
-        "StreamlinedXml.scala",
-        "StreamlinedXmlEquality.scala",
-        "StreamlinedXmlNormMethods.scala",
-        "SuiteRerunner.scala",
-        "SuiteRerunner.scala",
-        "run.scala",
-        "SeveredStackTraces.scala"         // skipped because stack trace isn't really helpful after linked in different js env like node.
+        "SlowpokeDetector.scala",
+        "Slowpoke.scala",
+        "RunningTest.scala",
+        "Informer.scala",
+        "Tracker.scala",
+        "Filter.scala",
+        "DynaTags.scala",
+        "Args.scala",
+        "Stopper.scala",
+        "Distributor.scala",
+        "DistributedTestSorter.scala",
+        "Status.scala",
+        "EncodedOrdering.scala",
+        "TestSuite.scala",
+        "Informing.scala",
+        "Notifying.scala",
+        "Alerting.scala",
+        "Documenting.scala",
+        "Alerter.scala",
+        "Documenter.scala",
+        "Notifier.scala",
+        "SuiteHelpers.scala",
+        "TestData.scala",
+        "DeferredAbortedSuite.scala",
+        "Engine.scala",
+        "ConcurrentInformer.scala",
+        "Tag.scala",
+        "UnquotedString.scala",
+        "OneInstancePerTest.scala",
+        "InsertionOrderSet.scala",
+        "SuiteMixin.scala",
+        "Transformer.scala",
+        "OutcomeOf.scala"
       )
     ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
+      List(
+        "Containing.scala",
+        "Aggregating.scala",
+        "KeyMapping.scala",
+        "ValueMapping.scala"
+      )
+    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+      List(
+        "StringReporter.scala",
+        "SuiteSortingReporter.scala",
+        "StandardOutReporter.scala",
+        "PrintReporter.scala",
+        "SuiteDiscoveryHelper.scala",
+        "Fragment.scala",
+        "AnsiColor.scala",
+        "TestSpec.scala",
+        "SuiteParam.scala",
+        "NestedSuiteParam.scala",
+        "DiscoverySuite.scala"
+      )
+    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
+      List(
+        "ArrayWrapper.scala"
+      )
+    )
+    /*
       copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
         List(
           "Spec.scala",
           "SpecLike.scala"
         )
       ) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
+
       copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-        List(
-          "AboutJDialog.scala",
-          //"AnsiColor.scala",
-          "AnsiReset.scala",
-          "ColorBar.scala",
-          "ConcurrentDistributor.scala",
-          "DashboardReporter.scala",
-          "DiscoverySuite.scala",
-          "Durations.scala",
-          "EventHolder.scala",
-          "EventToPresent.scala",
-          "FileReporter.scala",
-          "FilterReporter.scala",
-          "Framework.scala",
-          "FriendlyParamsTranslator.scala",
-          "HtmlReporter.scala",
-          "IconEmbellishedListCellRenderer.scala",
-          "JUnitXmlReporter.scala",
-          "Memento.scala",
-          "MemoryReporter.scala",
-          "NarrowJOptionPane.scala",
-          "NestedSuiteParam.scala",
-          //"ParsedArgs.scala",
-          "PrintReporter.scala",
-          "ProgressBarPanel.scala",
-          //"ReporterConfigParam.scala",
-          "ReporterConfiguration.scala",
-          "ReporterFactory.scala",
-          "RunDoneListener.scala",
-          "Runner.scala",
-          "RunnerGUI.scala",
-          "RunnerGUIState.scala",
-          "RunnerJFrame.scala",
-          "SbtCommandParser.scala",
-          "SbtDispatchReporter.scala",
-          "ScalaTestAntTask.scala",
-          "ScalaTestFramework.scala",
-          "SocketReporter.scala",
-          "StandardErrReporter.scala",
-          "StandardOutReporter.scala",
-          "StatusJPanel.scala",
-          "SuiteDiscoveryHelper.scala",
-          "SuiteParam.scala",
-          "SuiteResult.scala",
-          "SuiteResultHolder.scala",
-          //"SuiteRunner.scala",
-          "TestSpec.scala",
-          "XmlReporter.scala",
-          "XmlSocketReporter.scala"
-        )
-      ) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-        List(
-          "JavaCollectionWrapper.scala",
-          "JavaMapWrapper.scala"
-        )
-      ) ++
       copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
