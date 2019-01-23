@@ -45,8 +45,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -79,8 +78,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -113,8 +111,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -147,8 +144,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -181,8 +177,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -215,8 +210,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -249,8 +243,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -283,8 +276,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -315,8 +307,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -349,8 +340,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -383,8 +373,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -417,8 +406,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -451,8 +439,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -485,8 +472,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -518,8 +504,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -552,8 +537,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -586,8 +570,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -620,8 +603,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -654,8 +636,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -688,8 +669,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -726,8 +706,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -764,8 +743,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -802,8 +780,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -840,8 +817,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -878,8 +854,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -916,8 +891,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -954,8 +928,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -992,8 +965,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1030,8 +1002,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1068,8 +1039,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1106,8 +1076,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1144,8 +1113,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1182,8 +1150,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1220,8 +1187,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1258,8 +1224,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1296,8 +1261,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1334,8 +1298,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1372,8 +1335,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
@@ -1410,8 +1372,7 @@ trait CommonGenerators {
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
-    * While it is common for ''to'' to be greater than ''from'', this is not required; the
-    * boundaries may be specified in either order.
+    * The value of `from` must be less than or equal to the value of `to`.
     *
     * @param from one end of the desired range
     * @param to the other end of the desired range
