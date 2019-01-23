@@ -33,10 +33,66 @@ import scala.collection.immutable.SortedMap
   */
 trait CommonGenerators {
 
-  // TODO: these <type>Between functions are *extremely* boilerplatey. Their implementations can
-  // and probably should be merged into a common base function that takes a few function
-  // parameters. Heck, that would even be useful to expose publicly, as a utility function
-  // that works for any range-capable type.
+  /**
+    * Create a [[Generator]] that returns values in the specified range.
+    *
+    * This is the general-purpose function that underlies all of the other `xxsBetween()` functions in
+    * CommonGenerators. It works with any type for which there is an [[Ordering]], making it easy to
+    * create [[Generator]]s for ranges within that type.
+    *
+    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * produced in a typical run.
+    *
+    * The value of `from` must be less than or equal to the value of `to`. (However "less than or equal"
+    * is defined for this type.)
+    *
+    * For this general-purpose version, you must also provide the "edges" -- the edge case values -- for
+    * this type. This may be an empty List, but you should think about the interesting edges that are
+    * worth testing for this type. The `from` and `to` values will automatically be added to the edges.
+    * Values within the list of edges that do not fall within the specified range will be automatically
+    * discarded, so you don't need to customize the list based on the range.
+    *
+    * You must also provide a `chooser` function. This should take three parameters -- the lower and upper
+    * bounds of the range (in practice, the values of `from` and `to`), and a [[Randomizer]] -- and return
+    * a random value within that range. If you use the [[Randomizer]] (which you should usually do), you
+    * should return the ''next'' [[Randomizer]], which is returned from all calls into it.
+    *
+    * The parameters are curried, so you can fill in the first parameter list in order to get a
+    * function that only needs the range parameters. For example, `intsBetween` could be defined like:
+    * {{{
+    *   val intsBetween: (Int, Int) => Generator[Int] =
+    *     valuesBetween(Generator.intEdges, (from: Int, to: Int, rnd) => rnd.chooseInt(from, to))
+    * }}}
+    *
+    * @param edges the edge cases to include for [[T]]
+    * @param chooser a function (described above) that chooses a random value within the range
+    * @param from the lower bound of the range to choose from
+    * @param to the upper bound of the range to choose from
+    * @param ord an instance of Ordering[T]`, which should usually be in implicit scope
+    * @tparam T the type to choose a value from
+    * @return a new [[Generator]], that produces values in the specified range
+    */
+  def valuesBetween[T](edges: List[T], chooser: (T, T, Randomizer) => (T, Randomizer))(from: T, to: T)(implicit ord: Ordering[T]): Generator[T] = {
+    import ord.mkOrderingOps
+    require(from <= to)
+    new Generator[T] {
+      private val valueEdges = edges.filter(i => i >= from && i <= to)
+      private val fromToEdges = (from :: to :: valueEdges).distinct // distinct in case from equals to, and/or overlaps a value edge
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextValue, nextRandomizer) = chooser(from, to, rnd)
+            (nextValue, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
 
   /**
     * Create a [[Generator]] that returns [[Byte]]s in the specified range.
@@ -51,25 +107,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def bytesBetween(from: Byte, to: Byte): Generator[Byte] = {
-    require(from <= to)
-    new Generator[Byte] { thisByteGenerator =>
-      private val byteEdges = Generator.byteEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: byteEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Byte], rnd: Randomizer): (Byte, List[Byte], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextByte, nextRandomizer) = rnd.chooseByte(from, to)
-            (nextByte, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def bytesBetween(from: Byte, to: Byte): Generator[Byte] =
+    valuesBetween(Generator.byteEdges, (from: Byte, to: Byte, rnd) => rnd.chooseByte(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Short]]s in the specified range.
@@ -84,25 +123,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def shortsBetween(from: Short, to: Short): Generator[Short] = {
-    require(from <= to)
-    new Generator[Short] { thisShortGenerator =>
-      private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue).filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: shortEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Short], rnd: Randomizer): (Short, List[Short], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextShort, nextRandomizer) = rnd.chooseShort(from, to)
-            (nextShort, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def shortsBetween(from: Short, to: Short): Generator[Short] =
+    valuesBetween(Generator.shortEdges, (from: Short, to: Short, rnd) => rnd.chooseShort(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Int]]s in the specified range.
@@ -117,25 +139,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def intsBetween(from: Int, to: Int): Generator[Int] = {
-    require(from <= to)
-    new Generator[Int] { thisIntGenerator =>
-      private val intEdges = Generator.intEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextInt, nextRandomizer) = rnd.chooseInt(from, to)
-            (nextInt, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def intsBetween(from: Int, to: Int): Generator[Int] =
+    valuesBetween(Generator.intEdges, (from: Int, to: Int, rnd) => rnd.chooseInt(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Long]]s in the specified range.
@@ -150,25 +155,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def longsBetween(from: Long, to: Long): Generator[Long] = {
-    require(from <= to)
-    new Generator[Long] { thisLongGenerator =>
-      private val longEdges = Generator.longEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: longEdges).distinct // distinct in case from equals to, and/or overlaps an edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Long], rnd: Randomizer): (Long, List[Long], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextLong, nextRandomizer) = rnd.chooseLong(from, to)
-            (nextLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def longsBetween(from: Long, to: Long): Generator[Long] =
+    valuesBetween(Generator.longEdges, (from: Long, to: Long, rnd) => rnd.chooseLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Char]]s in the specified range.
@@ -183,25 +171,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def charsBetween(from: Char, to: Char): Generator[Char] = {
-    require(from <= to)
-    new Generator[Char] { thisCharGenerator =>
-      private val charEdges = Generator.charEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: charEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Char], rnd: Randomizer): (Char, List[Char], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextChar, nextRandomizer) = rnd.chooseChar(from, to)
-            (nextChar, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def charsBetween(from: Char, to: Char): Generator[Char] =
+    valuesBetween(Generator.charEdges, (from: Char, to: Char, rnd) => rnd.chooseChar(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Float]]s in the specified range.
@@ -216,25 +187,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def floatsBetween(from: Float, to: Float): Generator[Float] = {
-    require(from <= to)
-    new Generator[Float] { thisFloatGenerator =>
-      private val floatEdges = Generator.floatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Float], rnd: Randomizer): (Float, List[Float], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextFloat, nextRandomizer) = rnd.chooseFloat(from, to)
-            (nextFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def floatsBetween(from: Float, to: Float): Generator[Float] =
+    valuesBetween(Generator.floatEdges, (from: Float, to: Float, rnd) => rnd.chooseFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Double]]s in the specified range.
@@ -249,25 +203,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def doublesBetween(from: Double, to: Double): Generator[Double] = {
-    require(from <= to)
-    new Generator[Double] { thisDoubleGenerator =>
-      private val doubleEdges = Generator.doubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[Double], rnd: Randomizer): (Double, List[Double], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextDouble, nextRandomizer) = rnd.chooseDouble(from, to)
-            (nextDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def doublesBetween(from: Double, to: Double): Generator[Double] =
+    valuesBetween(Generator.doubleEdges, (from: Double, to: Double, rnd) => rnd.chooseDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosInt]]s in the specified range.
@@ -283,22 +220,7 @@ trait CommonGenerators {
     * @return a value within that range, inclusive of the bounds
     */
   def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
-    new Generator[PosInt] { thisPosIntGenerator =>
-      private val intEdges = Generator.posIntEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosInt], rnd: Randomizer): (PosInt, List[PosInt], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosInt, nextRandomizer) = rnd.choosePosInt(from, to)
-            (nextPosInt, Nil, nextRandomizer)
-        }
-      }
-    }
+    valuesBetween(Generator.posIntEdges, (f: PosInt, t: PosInt, rnd) => rnd.choosePosInt(f, t))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosLong]]s in the specified range.
@@ -313,25 +235,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] = {
-    require(from <= to)
-    new Generator[PosLong] { thisPosLongGenerator =>
-      private val posLongEdges = List(PosLong(1L), PosLong.MaxValue).filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosLong], rnd: Randomizer): (PosLong, List[PosLong], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosLong, nextRandomizer) = rnd.choosePosLong(from, to)
-            (nextPosLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] =
+    valuesBetween(Generator.posLongEdges, (from: PosLong, to: PosLong, rnd) => rnd.choosePosLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFloat]]s in the specified range.
@@ -346,25 +251,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] = {
-    require(from <= to)
-    new Generator[PosFloat] { thisPosFloatGenerator =>
-      private val posFloatEdges = Generator.posFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosFloat], rnd: Randomizer): (PosFloat, List[PosFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosFloat, nextRandomizer) = rnd.choosePosFloat(from, to)
-            (nextPosFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] =
+    valuesBetween(Generator.posFloatEdges, (from: PosFloat, to: PosFloat, rnd) => rnd.choosePosFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFiniteFloat]]s in the specified range.
@@ -379,25 +267,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFiniteFloatsBetween(from: PosFiniteFloat, to: PosFiniteFloat): Generator[PosFiniteFloat] = {
-    require(from <= to)
-    new Generator[PosFiniteFloat] { thisPosFiniteFloatGenerator =>
-      private val posFiniteFloatEdges = Generator.posFiniteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posFiniteFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosFiniteFloat], rnd: Randomizer): (PosFiniteFloat, List[PosFiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosFiniteFloat, nextRandomizer) = rnd.choosePosFiniteFloat(from, to)
-            (nextPosFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posFiniteFloatsBetween(from: PosFiniteFloat, to: PosFiniteFloat): Generator[PosFiniteFloat] =
+    valuesBetween(Generator.posFiniteFloatEdges, (from: PosFiniteFloat, to: PosFiniteFloat, rnd) => rnd.choosePosFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosDouble]]s in the specified range.
@@ -412,25 +283,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] = {
-    require(from <= to)
-    new Generator[PosDouble] { thisPosDoubleGenerator =>
-      private val posDoubleEdges = Generator.posDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosDouble], rnd: Randomizer): (PosDouble, List[PosDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosDouble, nextRandomizer) = rnd.choosePosDouble(from, to)
-            (nextPosDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] =
+    valuesBetween(Generator.posDoubleEdges, (from: PosDouble, to: PosDouble, rnd) => rnd.choosePosDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFiniteDouble]]s in the specified range.
@@ -445,25 +299,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFiniteDoublesBetween(from: PosFiniteDouble, to: PosFiniteDouble): Generator[PosFiniteDouble] = {
-    require(from <= to)
-    new Generator[PosFiniteDouble] { thisPosFiniteDoubleGenerator =>
-      private val posFiniteDoubleEdges = Generator.posFiniteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posFiniteDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosFiniteDouble], rnd: Randomizer): (PosFiniteDouble, List[PosFiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosFiniteDouble, nextRandomizer) = rnd.choosePosFiniteDouble(from, to)
-            (nextPosFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posFiniteDoublesBetween(from: PosFiniteDouble, to: PosFiniteDouble): Generator[PosFiniteDouble] =
+    valuesBetween(Generator.posFiniteDoubleEdges, (from: PosFiniteDouble, to: PosFiniteDouble, rnd) => rnd.choosePosFiniteDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZInt]]s in the specified range.
@@ -479,23 +316,7 @@ trait CommonGenerators {
     * @return a value within that range, inclusive of the bounds
     */
   def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
-    // Probably disallow from >= to, and if =, then say use some alternative? constantValues(x) ?
-    new Generator[PosZInt] { thisPosZIntGenerator =>
-      private val intEdges = Generator.posZIntEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZInt], rnd: Randomizer): (PosZInt, List[PosZInt], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZInt, nextRandomizer) = rnd.choosePosZInt(from, to)
-            (nextPosZInt, Nil, nextRandomizer)
-        }
-      }
-    }
+    valuesBetween(Generator.posZIntEdges, (from: PosZInt, to: PosZInt, rnd) => rnd.choosePosZInt(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZLong]]s in the specified range.
@@ -510,25 +331,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = {
-    require(from <= to)
-    new Generator[PosZLong] { thisPosZLongGenerator =>
-      private val posZLongEdges = Generator.posZLongEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posZLongEdges).distinct // distinct in case from equals to, and/or overlaps an edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZLong], rnd: Randomizer): (PosZLong, List[PosZLong], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZLong, nextRandomizer) = rnd.choosePosZLong(from, to)
-            (nextPosZLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] =
+    valuesBetween(Generator.posZLongEdges, (from: PosZLong, to: PosZLong, rnd) => rnd.choosePosZLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFloat]]s in the specified range.
@@ -543,25 +347,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] = {
-    require(from <= to)
-    new Generator[PosZFloat] { thisPosZFloatGenerator =>
-      private val posZFloatEdges = Generator.posZFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posZFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZFloat], rnd: Randomizer): (PosZFloat, List[PosZFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZFloat, nextRandomizer) = rnd.choosePosZFloat(from, to)
-            (nextPosZFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] =
+    valuesBetween(Generator.posZFloatEdges, (from: PosZFloat, to: PosZFloat, rnd) => rnd.choosePosZFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFiniteFloat]]s in the specified range.
@@ -576,25 +363,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFiniteFloatsBetween(from: PosZFiniteFloat, to: PosZFiniteFloat): Generator[PosZFiniteFloat] = {
-    require(from <= to)
-    new Generator[PosZFiniteFloat] { thisPosZFiniteFloatGenerator =>
-      private val posZFiniteFloatEdges = Generator.posZFiniteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posZFiniteFloatEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZFiniteFloat], rnd: Randomizer): (PosZFiniteFloat, List[PosZFiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZFiniteFloat, nextRandomizer) = rnd.choosePosZFiniteFloat(from, to)
-            (nextPosZFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posZFiniteFloatsBetween(from: PosZFiniteFloat, to: PosZFiniteFloat): Generator[PosZFiniteFloat] =
+    valuesBetween(Generator.posZFiniteFloatEdges, (from: PosZFiniteFloat, to: PosZFiniteFloat, rnd) => rnd.choosePosZFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZDouble]]s in the specified range.
@@ -609,25 +379,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] = {
-    require(from <= to)
-    new Generator[PosZDouble] { thisPosZDoubleGenerator =>
-      private val posZDoubleEdges = Generator.posZDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posZDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZDouble], rnd: Randomizer): (PosZDouble, List[PosZDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZDouble, nextRandomizer) = rnd.choosePosZDouble(from, to)
-            (nextPosZDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] =
+    valuesBetween(Generator.posZDoubleEdges, (from: PosZDouble, to: PosZDouble, rnd) => rnd.choosePosZDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFiniteDouble]]s in the specified range.
@@ -642,25 +395,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFiniteDoublesBetween(from: PosZFiniteDouble, to: PosZFiniteDouble): Generator[PosZFiniteDouble] = {
-    require(from <= to)
-    new Generator[PosZFiniteDouble] { thisPosZFiniteDoubleGenerator =>
-      private val posZFiniteDoubleEdges = Generator.posZFiniteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: posZFiniteDoubleEdges).distinct // distinct in case from equals to, and/or overlaps an Int edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[PosZFiniteDouble], rnd: Randomizer): (PosZFiniteDouble, List[PosZFiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextPosZFiniteDouble, nextRandomizer) = rnd.choosePosZFiniteDouble(from, to)
-            (nextPosZFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def posZFiniteDoublesBetween(from: PosZFiniteDouble, to: PosZFiniteDouble): Generator[PosZFiniteDouble] =
+    valuesBetween(Generator.posZFiniteDoubleEdges, (from: PosZFiniteDouble, to: PosZFiniteDouble, rnd) => rnd.choosePosZFiniteDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegInt]]s in the specified range.
@@ -675,29 +411,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] = {
-    require(from <= to)
-    new Generator[NegInt] {
-      thisNegIntGenerator =>
-      private val intEdges = Generator.negIntEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegInt], rnd: Randomizer): (NegInt, List[NegInt], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegInt, nextRandomizer) = rnd.chooseNegInt(from, to)
-            (nextNegInt, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] =
+    valuesBetween(Generator.negIntEdges, (from: NegInt, to: NegInt, rnd) => rnd.chooseNegInt(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegLong]]s in the specified range.
@@ -712,29 +427,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] = {
-    require(from <= to)
-    new Generator[NegLong] {
-      thisNegLongGenerator =>
-      private val longEdges = Generator.negLongEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: longEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegLong], rnd: Randomizer): (NegLong, List[NegLong], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegLong, nextRandomizer) = rnd.chooseNegLong(from, to)
-            (nextNegLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] =
+    valuesBetween(Generator.negLongEdges, (from: NegLong, to: NegLong, rnd) => rnd.chooseNegLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFloat]]s in the specified range.
@@ -749,29 +443,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] = {
-    require(from <= to)
-    new Generator[NegFloat] {
-      thisNegFloatGenerator =>
-      private val floatEdges = Generator.negFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegFloat], rnd: Randomizer): (NegFloat, List[NegFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegFloat, nextRandomizer) = rnd.chooseNegFloat(from, to)
-            (nextNegFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] =
+    valuesBetween(Generator.negFloatEdges, (from: NegFloat, to: NegFloat, rnd) => rnd.chooseNegFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFiniteFloat]]s in the specified range.
@@ -786,29 +459,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFiniteFloatsBetween(from: NegFiniteFloat, to: NegFiniteFloat): Generator[NegFiniteFloat] = {
-    require(from <= to)
-    new Generator[NegFiniteFloat] {
-      thisNegFiniteFloatGenerator =>
-      private val floatEdges = Generator.negFiniteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegFiniteFloat], rnd: Randomizer): (NegFiniteFloat, List[NegFiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegFiniteFloat, nextRandomizer) = rnd.chooseNegFiniteFloat(from, to)
-            (nextNegFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negFiniteFloatsBetween(from: NegFiniteFloat, to: NegFiniteFloat): Generator[NegFiniteFloat] =
+    valuesBetween(Generator.negFiniteFloatEdges, (from: NegFiniteFloat, to: NegFiniteFloat, rnd) => rnd.chooseNegFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegDouble]]s in the specified range.
@@ -823,29 +475,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] = {
-    require(from <= to)
-    new Generator[NegDouble] {
-      thisNegDoubleGenerator =>
-      private val doubleEdges = Generator.negDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegDouble], rnd: Randomizer): (NegDouble, List[NegDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegDouble, nextRandomizer) = rnd.chooseNegDouble(from, to)
-            (nextNegDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] =
+    valuesBetween(Generator.negDoubleEdges, (from: NegDouble, to: NegDouble, rnd) => rnd.chooseNegDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFiniteDouble]]s in the specified range.
@@ -860,29 +491,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFiniteDoublesBetween(from: NegFiniteDouble, to: NegFiniteDouble): Generator[NegFiniteDouble] = {
-    require(from <= to)
-    new Generator[NegFiniteDouble] {
-      thisNegFiniteDoubleGenerator =>
-      private val doubleEdges = Generator.negFiniteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegFiniteDouble], rnd: Randomizer): (NegFiniteDouble, List[NegFiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegFiniteDouble, nextRandomizer) = rnd.chooseNegFiniteDouble(from, to)
-            (nextNegFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negFiniteDoublesBetween(from: NegFiniteDouble, to: NegFiniteDouble): Generator[NegFiniteDouble] =
+    valuesBetween(Generator.negFiniteDoubleEdges, (from: NegFiniteDouble, to: NegFiniteDouble, rnd) => rnd.chooseNegFiniteDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZInt]]s in the specified range.
@@ -897,29 +507,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] = {
-    require(from <= to)
-    new Generator[NegZInt] {
-      thisNegZIntGenerator =>
-      private val intEdges = Generator.negZIntEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZInt], rnd: Randomizer): (NegZInt, List[NegZInt], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZInt, nextRandomizer) = rnd.chooseNegZInt(from, to)
-            (nextNegZInt, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] =
+    valuesBetween(Generator.negZIntEdges, (from: NegZInt, to: NegZInt, rnd) => rnd.chooseNegZInt(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZLong]]s in the specified range.
@@ -934,29 +523,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] = {
-    require(from <= to)
-    new Generator[NegZLong] {
-      thisNegZLongGenerator =>
-      private val longEdges = Generator.negZLongEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: longEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZLong], rnd: Randomizer): (NegZLong, List[NegZLong], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZLong, nextRandomizer) = rnd.chooseNegZLong(from, to)
-            (nextNegZLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] =
+    valuesBetween(Generator.negZLongEdges, (from: NegZLong, to: NegZLong, rnd) => rnd.chooseNegZLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFloat]]s in the specified range.
@@ -971,29 +539,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] = {
-    require(from <= to)
-    new Generator[NegZFloat] {
-      thisNegZFloatGenerator =>
-      private val floatEdges = Generator.negZFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZFloat], rnd: Randomizer): (NegZFloat, List[NegZFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZFloat, nextRandomizer) = rnd.chooseNegZFloat(from, to)
-            (nextNegZFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] =
+    valuesBetween(Generator.negZFloatEdges, (from: NegZFloat, to: NegZFloat, rnd) => rnd.chooseNegZFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFiniteFloat]]s in the specified range.
@@ -1008,29 +555,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFiniteFloatsBetween(from: NegZFiniteFloat, to: NegZFiniteFloat): Generator[NegZFiniteFloat] = {
-    require(from <= to)
-    new Generator[NegZFiniteFloat] {
-      thisNegZFiniteFloatGenerator =>
-      private val floatEdges = Generator.negZFiniteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZFiniteFloat], rnd: Randomizer): (NegZFiniteFloat, List[NegZFiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZFiniteFloat, nextRandomizer) = rnd.chooseNegZFiniteFloat(from, to)
-            (nextNegZFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZFiniteFloatsBetween(from: NegZFiniteFloat, to: NegZFiniteFloat): Generator[NegZFiniteFloat] =
+    valuesBetween(Generator.negZFiniteFloatEdges, (from: NegZFiniteFloat, to: NegZFiniteFloat, rnd) => rnd.chooseNegZFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZDouble]]s in the specified range.
@@ -1045,29 +571,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] = {
-    require(from <= to)
-    new Generator[NegZDouble] {
-      thisNegZDoubleGenerator =>
-      private val doubleEdges = Generator.negZDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZDouble], rnd: Randomizer): (NegZDouble, List[NegZDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZDouble, nextRandomizer) = rnd.chooseNegZDouble(from, to)
-            (nextNegZDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] =
+    valuesBetween(Generator.negZDoubleEdges, (from: NegZDouble, to: NegZDouble, rnd) => rnd.chooseNegZDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFiniteDouble]]s in the specified range.
@@ -1082,29 +587,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFiniteDoublesBetween(from: NegZFiniteDouble, to: NegZFiniteDouble): Generator[NegZFiniteDouble] = {
-    require(from <= to)
-    new Generator[NegZFiniteDouble] {
-      thisNegZFiniteDoubleGenerator =>
-      private val doubleEdges = Generator.negZFiniteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NegZFiniteDouble], rnd: Randomizer): (NegZFiniteDouble, List[NegZFiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNegZFiniteDouble, nextRandomizer) = rnd.chooseNegZFiniteDouble(from, to)
-            (nextNegZFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def negZFiniteDoublesBetween(from: NegZFiniteDouble, to: NegZFiniteDouble): Generator[NegZFiniteDouble] =
+    valuesBetween(Generator.negZFiniteDoubleEdges, (from: NegZFiniteDouble, to: NegZFiniteDouble, rnd) => rnd.chooseNegZFiniteDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroInt]]s in the specified range.
@@ -1119,29 +603,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroIntsBetween(from: NonZeroInt, to: NonZeroInt): Generator[NonZeroInt] = {
-    require(from <= to)
-    new Generator[NonZeroInt] {
-      thisNonZeroIntGenerator =>
-      private val intEdges = Generator.nonZeroIntEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: intEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroInt], rnd: Randomizer): (NonZeroInt, List[NonZeroInt], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroInt, nextRandomizer) = rnd.chooseNonZeroInt(from, to)
-            (nextNonZeroInt, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroIntsBetween(from: NonZeroInt, to: NonZeroInt): Generator[NonZeroInt] =
+    valuesBetween(Generator.nonZeroIntEdges, (from: NonZeroInt, to: NonZeroInt, rnd) => rnd.chooseNonZeroInt(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroLong]]s in the specified range.
@@ -1156,29 +619,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroLongsBetween(from: NonZeroLong, to: NonZeroLong): Generator[NonZeroLong] = {
-    require(from <= to)
-    new Generator[NonZeroLong] {
-      thisNonZeroLongGenerator =>
-      private val longEdges = Generator.nonZeroLongEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: longEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroLong], rnd: Randomizer): (NonZeroLong, List[NonZeroLong], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroLong, nextRandomizer) = rnd.chooseNonZeroLong(from, to)
-            (nextNonZeroLong, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroLongsBetween(from: NonZeroLong, to: NonZeroLong): Generator[NonZeroLong] =
+    valuesBetween(Generator.nonZeroLongEdges, (from: NonZeroLong, to: NonZeroLong, rnd) => rnd.chooseNonZeroLong(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFloat]]s in the specified range.
@@ -1193,29 +635,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFloatsBetween(from: NonZeroFloat, to: NonZeroFloat): Generator[NonZeroFloat] = {
-    require(from <= to)
-    new Generator[NonZeroFloat] {
-      thisNonZeroFloatGenerator =>
-      private val floatEdges = Generator.nonZeroFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroFloat], rnd: Randomizer): (NonZeroFloat, List[NonZeroFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroFloat, nextRandomizer) = rnd.chooseNonZeroFloat(from, to)
-            (nextNonZeroFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroFloatsBetween(from: NonZeroFloat, to: NonZeroFloat): Generator[NonZeroFloat] =
+    valuesBetween(Generator.nonZeroFloatEdges, (from: NonZeroFloat, to: NonZeroFloat, rnd) => rnd.chooseNonZeroFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFiniteFloat]]s in the specified range.
@@ -1230,29 +651,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFiniteFloatsBetween(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): Generator[NonZeroFiniteFloat] = {
-    require(from <= to)
-    new Generator[NonZeroFiniteFloat] {
-      thisNonZeroFiniteFloatGenerator =>
-      private val floatEdges = Generator.nonZeroFiniteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroFiniteFloat], rnd: Randomizer): (NonZeroFiniteFloat, List[NonZeroFiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroFiniteFloat, nextRandomizer) = rnd.chooseNonZeroFiniteFloat(from, to)
-            (nextNonZeroFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroFiniteFloatsBetween(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): Generator[NonZeroFiniteFloat] =
+    valuesBetween(Generator.nonZeroFiniteFloatEdges, (from: NonZeroFiniteFloat, to: NonZeroFiniteFloat, rnd) => rnd.chooseNonZeroFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroDouble]]s in the specified range.
@@ -1267,29 +667,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroDoublesBetween(from: NonZeroDouble, to: NonZeroDouble): Generator[NonZeroDouble] = {
-    require(from <= to)
-    new Generator[NonZeroDouble] {
-      thisNonZeroDoubleGenerator =>
-      private val doubleEdges = Generator.nonZeroDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroDouble], rnd: Randomizer): (NonZeroDouble, List[NonZeroDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroDouble, nextRandomizer) = rnd.chooseNonZeroDouble(from, to)
-            (nextNonZeroDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroDoublesBetween(from: NonZeroDouble, to: NonZeroDouble): Generator[NonZeroDouble] =
+    valuesBetween(Generator.nonZeroDoubleEdges, (from: NonZeroDouble, to: NonZeroDouble, rnd) => rnd.chooseNonZeroDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFiniteDouble]]s in the specified range.
@@ -1304,29 +683,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFiniteDoublesBetween(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): Generator[NonZeroFiniteDouble] = {
-    require(from <= to)
-    new Generator[NonZeroFiniteDouble] {
-      thisNonZeroFiniteDoubleGenerator =>
-      private val doubleEdges = Generator.nonZeroFiniteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[NonZeroFiniteDouble], rnd: Randomizer): (NonZeroFiniteDouble, List[NonZeroFiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextNonZeroFiniteDouble, nextRandomizer) = rnd.chooseNonZeroFiniteDouble(from, to)
-            (nextNonZeroFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def nonZeroFiniteDoublesBetween(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): Generator[NonZeroFiniteDouble] =
+    valuesBetween(Generator.nonZeroFiniteDoubleEdges, (from: NonZeroFiniteDouble, to: NonZeroFiniteDouble, rnd) => rnd.chooseNonZeroFiniteDouble(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[FiniteFloat]]s in the specified range.
@@ -1341,29 +699,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] = {
-    require(from <= to)
-    new Generator[FiniteFloat] {
-      thisFiniteFloatGenerator =>
-      private val floatEdges = Generator.finiteFloatEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: floatEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteFloat], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[FiniteFloat], rnd: Randomizer): (FiniteFloat, List[FiniteFloat], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextFiniteFloat, nextRandomizer) = rnd.chooseFiniteFloat(from, to)
-            (nextFiniteFloat, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] =
+    valuesBetween(Generator.finiteFloatEdges, (from: FiniteFloat, to: FiniteFloat, rnd) => rnd.chooseFiniteFloat(from, to))(from, to)
 
   /**
     * Create a [[Generator]] that returns [[FiniteDouble]]s in the specified range.
@@ -1378,29 +715,8 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] = {
-    require(from <= to)
-    new Generator[FiniteDouble] {
-      thisFiniteDoubleGenerator =>
-      private val doubleEdges = Generator.finiteDoubleEdges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: doubleEdges).distinct
-
-      // distinct in case from equals to
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteDouble], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-
-      def next(szp: SizeParam, edges: List[FiniteDouble], rnd: Randomizer): (FiniteDouble, List[FiniteDouble], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextFiniteDouble, nextRandomizer) = rnd.chooseFiniteDouble(from, to)
-            (nextFiniteDouble, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
+  def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] =
+    valuesBetween(Generator.finiteDoubleEdges, (from: FiniteDouble, to: FiniteDouble, rnd) => rnd.chooseFiniteDouble(from, to))(from, to)
 
   /**
     * Given a list of values of type [[T]], this creates a [[Generator]] that will only
