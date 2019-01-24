@@ -168,20 +168,48 @@ object GenScalaTestDotty {
         "InsertionOrderSet.scala",
         "SuiteMixin.scala",
         "Transformer.scala",
-        "OutcomeOf.scala"
+        "OutcomeOf.scala",
+        "TestRegistration.scala",
+        "AsyncTestSuite.scala",
+        "RecoverMethods.scala",
+        "CompleteLastly.scala",
+        "AsyncOutcome.scala",
+        "FutureOutcome.scala",
+        "ParallelTestExecution.scala",
+        "RandomTestOrder.scala", 
+        "AsyncTestRegistration.scala",
+        "AsyncEngine.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+      List(
+        "SerialExecutionContext.scala"
+      )
+    ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
       List(
         "Containing.scala",
         "Aggregating.scala",
         "KeyMapping.scala",
-        "ValueMapping.scala"
+        "ValueMapping.scala",
+        "Futuristic.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+      List(
+        "Transformer.scala",
+        "NoArgTestWrapper.scala",
+        "Suite.scala",
+        "TestSuite.scala",
+        "TestRegistration.scala",
+        "AsyncTestSuite.scala",
+        "AsyncTestRegistration.scala"
+      )
+    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
@@ -195,51 +223,25 @@ object GenScalaTestDotty {
         "TestSpec.scala",
         "SuiteParam.scala",
         "NestedSuiteParam.scala",
-        "DiscoverySuite.scala"
+        "DiscoverySuite.scala",
+        "TestSortingReporter.scala",
+        "DistributedTestRunnerSuite.scala",
+        "TestSpecificReporter.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
       List(
-        "ArrayWrapper.scala"
+        "ArrayWrapper.scala",
+        "BehaveWord.scala"
       )
     )
     /*
-      copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
-        List(
-          "Spec.scala",
-          "SpecLike.scala"
-        )
-      ) ++
 
       copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-        List(
-          "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
-          "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
-          "ConductorFixture.scala",       // skipped because depends on Conductors
-          "ConductorMethods.scala",       // skipped because depends on Conductors
-          "DoNotInterrupt.scala",         // skipped because no practical way to interrupt in js.
-          "Eventually.scala",             // skipped because js is single thread and does not share memory.
-          "Interruptor.scala",            // skipped because no practical way to interrupt in js.
-          "JavaFutures.scala",            // skipped because depends on java futures.
-          "PimpedReadWriteLock.scala",    // skipped because use java concurrent classes
-          "PimpedThreadGroup.scala",      // skipped because doesn't really make sense under js's single-threaded environment.
-          "SelectorInterruptor.scala",    // skipped because it is for java selector
-          "SleepHelper.scala",            // skipped because scalatest.js has its own version
-          "SocketInterruptor.scala",       // skipped because it is for java socket.
-          "TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
-          "ThreadInterruptor.scala",          // skipped because no interrupt in js.
-          "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-          "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-          "TimeoutTask.scala",            // skipped because timeout is not supported.,
-          "Ultimately.scala"              // skipped because js is single thread and does not share memory.
-        )
-      ) ++
       copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
       copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
         List(
