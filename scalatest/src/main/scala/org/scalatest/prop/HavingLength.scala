@@ -18,6 +18,7 @@ package org.scalatest.prop
 import org.scalactic.anyvals.PosZInt
 import org.scalatest.Resources
 
+// For Generators for types that have .length. Note that this extends HavingSize.
 trait HavingLength[T] extends HavingSize[T] {
   final def havingLength(len: PosZInt): Generator[T] = havingSize(len)
   final def havingLengthsBetween(from: PosZInt, to: PosZInt): Generator[T] = {
