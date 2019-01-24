@@ -377,6 +377,23 @@ object ScalatestBuild {
         publishLocal := {}
       ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
+  lazy val commonTestDotty = Project("commonTestDotty", file("common-test.dotty"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "Common test classes used by scalactic and scalatest",
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      sourceGenerators in Compile += {
+        Def.task{
+          GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
+
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
@@ -1038,6 +1055,31 @@ object ScalatestBuild {
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
   ).dependsOn(scalacticDotty)
+
+  lazy val scalatestTestDotty = Project("scalatestTestDotty", file("scalatest-test.dotty"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
+      testOptions in Test := scalatestTestOptions,
+      logBuffered in Test := false,
+      //fork in Test := true,
+      //parallelExecution in Test := true,
+      //testForkedParallel in Test := true,
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      baseDirectory in Test := file("./"),
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+    ).dependsOn(scalatestDotty % "test", commonTestDotty % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)

@@ -178,7 +178,9 @@ object GenScalaTestDotty {
         "ParallelTestExecution.scala",
         "RandomTestOrder.scala", 
         "AsyncTestRegistration.scala",
-        "AsyncEngine.scala"
+        "AsyncEngine.scala",
+        "Entry.scala",
+        "OptionValues.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
@@ -255,45 +257,11 @@ object GenScalaTestDotty {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
-    //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
-    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
+    copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "BigSuiteSuite.scala",
-        "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
-        "DeprecatedCatchReporterProp.scala",   // skipped because heavily depends on java reflection
-        "ClassTaggingProp.scala",    // skipped because annotation not supported
-        "DeprecatedClassTaggingProp.scala",    // skipped because annotation not supported
-        "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
-        "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
-        "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
-        "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
-        "EntrySpec.scala",    // skipped because Entry extends java.util.Map
-        "FunSuiteSuite.scala",          // skipped because depends on java reflection
-        "InheritedTagProp.scala",         // skipped because depends on java reflection
-        "OldDocSpec.scala",             // Do we still need this?
-        "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
-        "PropertyFunSuite.scala",   // skipped because depends on java reflection
-        "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
-        "ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
-        "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
-        "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
-        "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
-        "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
-        "RefSpecSpec.scala",          // skipped because depends on java reflections.
-        "SpecSpec.scala",          // skipped because depends on java reflections.
-        "StatusProp.scala",        // skipped because uses VirtualMachineError
-        "DeprecatedStatusProp.scala",        // skipped because uses VirtualMachineError
-        "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
-        "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
-        "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
-        "SuiteSuite.scala",          // skipped because it depends on java reflection
-        "MatchersSerializableSpec.scala",   // skipped because testing java serialization
-        "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
-        "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
-      )) ++
+        //"AssertionsSpec.scala"
+      )
+    ) /*++
       copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
           "WaitersSpec.scala",    // skipped because Waiters not supported.
@@ -360,7 +328,7 @@ object GenScalaTestDotty {
           "SuiteDiscoveryHelperSuite.scala",
           "XmlSocketReporterSpec.scala"
         )
-      )
+      )*/
   }
 
 }

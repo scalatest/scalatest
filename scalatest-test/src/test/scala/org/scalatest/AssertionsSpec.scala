@@ -25,8 +25,9 @@ import OptionValues._
 import java.util.Date
 import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
 
-class AssertionsSpec extends FunSpec {
+class AssertionsSpec extends AnyFunSpec {
 
   val fileName: String = "AssertionsSpec.scala"
 
