@@ -25,7 +25,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.7"
 
-  val releaseVersion = "3.0.6-SNAP-for-scalafix"
+  val releaseVersion = "3.0.6-SNAP6"
 
   val previousReleaseVersion = "3.0.5"
 
