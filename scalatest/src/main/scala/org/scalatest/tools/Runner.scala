@@ -34,8 +34,6 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
-import org.scalatest.junit.JUnitWrapperSuite
-import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
@@ -1244,12 +1242,23 @@ object Runner {
           val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
 
           val junitSuiteInstances: List[SuiteConfig] =
-            for (junitClassName <- junitsList)
-              yield SuiteConfig(new JUnitWrapperSuite(junitClassName, loader), emptyDynaTags, false, true) // JUnit suite should exclude nested suites
+            if (junitsList.isEmpty)
+              List.empty
+            else {
+              // TODO: should change the class name to org.scalatestplus.junit.JUnitWrapperSuite after we move junit out.
+              val junitWrapperClass = loader.loadClass("org.scalatest.junit.JUnitWrapperSuite")
+              val junitWrapperClassConstructor = junitWrapperClass.getDeclaredConstructor(classOf[String], classOf[ClassLoader])
+              for (junitClassName <- junitsList)
+                yield SuiteConfig(junitWrapperClassConstructor.newInstance(junitClassName, loader).asInstanceOf[Suite], emptyDynaTags, false, true) // JUnit suite should exclude nested suites
+            }
 
           val testNGWrapperSuiteList: List[SuiteConfig] =
-            if (!testNGList.isEmpty)
-              List(SuiteConfig(new TestNGWrapperSuite(testNGList), emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
+            if (!testNGList.isEmpty) {
+              // TODO: should change the class name to org.scalatestplus.testng.TestNGWrapperSuite after we move junit out.
+              val testngWrapperClass = loader.loadClass("org.scalatest.testng.TestNGWrapperSuite")
+              val testngWrapperClassConstructor = testngWrapperClass.getDeclaredConstructor(classOf[List[String]])
+              List(SuiteConfig(testngWrapperClassConstructor.newInstance(testNGList).asInstanceOf[Suite], emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
+            }
             else
               Nil
 

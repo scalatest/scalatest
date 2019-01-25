@@ -180,7 +180,10 @@ object GenScalaTestDotty {
         "AsyncTestRegistration.scala",
         "AsyncEngine.scala",
         "Entry.scala",
-        "OptionValues.scala"
+        "OptionValues.scala",
+        "Rerunner.scala",
+        "TestRerunner.scala",
+        "SuiteRerunner.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
@@ -213,22 +216,9 @@ object GenScalaTestDotty {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
-        "StringReporter.scala",
-        "SuiteSortingReporter.scala",
-        "StandardOutReporter.scala",
-        "PrintReporter.scala",
-        "SuiteDiscoveryHelper.scala",
-        "Fragment.scala",
-        "AnsiColor.scala",
-        "TestSpec.scala",
-        "SuiteParam.scala",
-        "NestedSuiteParam.scala",
-        "DiscoverySuite.scala",
-        "TestSortingReporter.scala",
-        "DistributedTestRunnerSuite.scala",
-        "TestSpecificReporter.scala"
+        "ScalaTestAntTask.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
