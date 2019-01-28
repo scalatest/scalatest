@@ -220,11 +220,7 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-      List(
-        "ScalaTestAntTask.scala"
-      )
-    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
       List(
