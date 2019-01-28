@@ -128,15 +128,26 @@ object GenScalaTestDotty {
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
+        "Alerter.scala",
+        "Alerting.scala",
         "AppendedClues.scala",
         "Args.scala",
-        "Alerting.scala",
-        "Alerter.scala",
+        "AsyncEngine.scala",
+        "AsyncFeatureSpec.scala",
+        "AsyncFlatSpec.scala",
+        "AsyncFlatSpecLike.scala",
+        "AsyncFreeSpec.scala",
+        "AsyncFreeSpecLike.scala",
         "AsyncTestSuite.scala",
+        "AsyncFunSpec.scala",
+        "AsyncFunSuite.scala",
+        "AsyncPropSpec.scala",
+        "AsyncPropSpecLike.scala",
         "AsyncOutcome.scala",
         "AsyncTestRegistration.scala",
-        "AsyncEngine.scala",
         "AsyncTestSuiteMixin.scala", 
+        "AsyncWordSpec.scala",
+        "AsyncWordSpecLike.scala",
         "CatchReporter.scala",
         "ConcurrentInformer.scala",
         "CompleteLastly.scala",
@@ -194,16 +205,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
-    /*copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-      List(
-        "SerialExecutionContext.scala"
-      )
-    ) ++*/
-    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-      List(
-        //"SerialExecutionContext.scala"
-      )
-    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
       List(
@@ -237,7 +239,17 @@ object GenScalaTestDotty {
     copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
       List(
         "ArrayWrapper.scala",
-        "BehaveWord.scala"
+        "BehaveWord.scala",
+        "StringVerbStringInvocation.scala",
+        "ResultOfStringPassedToVerb.scala",
+        "ShouldVerb.scala",
+        "StringVerbBehaveLikeInvocation.scala",
+        "SubjectWithAfterWordRegistration.scala",
+        "StringVerbBlockRegistration.scala",
+        "ResultOfAfterWordApplication.scala",
+        "ResultOfTaggedAsInvocation.scala",
+        "MustVerb.scala",
+        "CanVerb.scala"
       )
     )
     /*
