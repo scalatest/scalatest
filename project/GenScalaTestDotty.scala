@@ -136,6 +136,7 @@ object GenScalaTestDotty {
         "AsyncOutcome.scala",
         "AsyncTestRegistration.scala",
         "AsyncEngine.scala",
+        "AsyncTestSuiteMixin.scala", 
         "CatchReporter.scala",
         "ConcurrentInformer.scala",
         "CompleteLastly.scala",
@@ -165,7 +166,7 @@ object GenScalaTestDotty {
         "Outcome.scala",
         "PendingStatement.scala",
         "ParallelTestExecution.scala",
-        "package.scala", 
+        "package.scala",
         "Reporter.scala",
         "ResourcefulReporter.scala",
         "RunningTest.scala",
@@ -188,13 +189,19 @@ object GenScalaTestDotty {
         "Transformer.scala",
         "TestRegistration.scala",
         "TestRerunner.scala",
+        "TestSuiteMixin.scala",
         "UnquotedString.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+    /*copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "SerialExecutionContext.scala"
+      )
+    ) ++*/
+    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+      List(
+        //"SerialExecutionContext.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
@@ -204,7 +211,9 @@ object GenScalaTestDotty {
         "Aggregating.scala",
         "KeyMapping.scala",
         "ValueMapping.scala",
-        "Futuristic.scala"
+        "Futuristic.scala",
+        "Timed.scala",
+        "Retrying.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
