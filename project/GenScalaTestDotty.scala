@@ -219,21 +219,11 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    /*copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
-      List(
-        "Transformer.scala",
-        "NoArgTestWrapper.scala",
-        "Suite.scala",
-        "TestSuite.scala",
-        "TestRegistration.scala",
-        "AsyncTestSuite.scala",
-        "AsyncTestRegistration.scala"
-      )
-    ) ++*/
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
