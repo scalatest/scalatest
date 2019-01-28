@@ -217,6 +217,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
