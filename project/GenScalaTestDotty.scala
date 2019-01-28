@@ -145,7 +145,7 @@ object GenScalaTestDotty {
         "AsyncPropSpecLike.scala",
         "AsyncOutcome.scala",
         "AsyncTestRegistration.scala",
-        "AsyncTestSuiteMixin.scala", 
+        "AsyncTestSuiteMixin.scala",
         "AsyncWordSpec.scala",
         "AsyncWordSpecLike.scala",
         "CatchReporter.scala",
@@ -219,7 +219,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+    /*copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "Transformer.scala",
         "NoArgTestWrapper.scala",
@@ -229,7 +229,8 @@ object GenScalaTestDotty {
         "AsyncTestSuite.scala",
         "AsyncTestRegistration.scala"
       )
-    ) ++
+    ) ++*/
+    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
