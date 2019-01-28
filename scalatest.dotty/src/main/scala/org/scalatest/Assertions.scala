@@ -15,12 +15,12 @@
  */
 package org.scalatest
 
-import org.scalactic.{TripleEquals, Prettifier, source, Requirements, Bool}
-import Requirements.requireNonNull
+import org.scalactic._
+import Requirements._
 
 import scala.reflect.ClassTag
 import Assertions.NormalResult
-import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
+import DefaultEquality.areEqualComparingArraysStructurally
 import exceptions.StackDepthException
 import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
@@ -524,7 +524,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ~AssertionsMacro.assert('(condition), '(prettifier), '(pos), '(clue))
 
   /**
@@ -572,7 +572,7 @@ trait Assertions extends TripleEquals  {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  inline def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ~AssertionsMacro.assume('(condition), '(prettifier), '(pos), '(""))
 
   /**
@@ -625,7 +625,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ~AssertionsMacro.assume('(condition), '(prettifier), '(pos), '(clue))
 
   /**

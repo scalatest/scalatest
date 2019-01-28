@@ -968,7 +968,6 @@ object ScalatestBuild {
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies ++= scalatestLibraryDependencies,
-      //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
@@ -985,11 +984,11 @@ object ScalatestBuild {
           GenScalaTestDotty.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      /*resourceGenerators in Compile += {
+      resourceGenerators in Compile += {
         Def.task {
-          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
-      },*/
+      },
       sourceGenerators in Compile += {
         Def.task{
           //GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
@@ -2161,8 +2160,8 @@ object ScalatestBuild {
       name.value)
 
   import dotty.tools.sbtplugin.DottyPlugin.autoImport._
-  lazy val dottyVersion = dottyLatestNightlyBuild.get
-  //lazy val dottyVersion = "0.12.0-RC1"
+  //lazy val dottyVersion = dottyLatestNightlyBuild.get
+  lazy val dottyVersion = "0.13.0-bin-20190125-af9264d-NIGHTLY"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),

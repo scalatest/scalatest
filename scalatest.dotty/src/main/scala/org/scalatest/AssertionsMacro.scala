@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalatest.compatible.Assertion
 import org.scalactic._
 import scala.quoted._
 import scala.tasty._
+import org.scalatest.compatible.Assertion
 
 /**
  * Macro implementation that provides rich error message for boolean expression assertion.
@@ -43,7 +43,7 @@ object AssertionsMacro {
   def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] =
     transform('(Assertions.assertionsHelper.macroAssume), condition, prettifier, pos, clue)
 
-  private def transform(
+  def transform(
     helper:Expr[(Bool, Any, source.Position) => Assertion],
     condition: Expr[Boolean], prettifier: Expr[Prettifier],
     pos: Expr[source.Position], clue: Expr[Any]

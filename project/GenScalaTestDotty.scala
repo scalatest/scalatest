@@ -120,7 +120,9 @@ object GenScalaTestDotty {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty) ++
+    copyResourceDir("scalatest/src/main/resources/images", "images", targetDir, List.empty) ++
+    copyResourceDir("scalatest/src/main/resources/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -249,7 +251,7 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        //"AssertionsSpec.scala"
+        "AssertionsSpec.scala"
       )
     ) /*++
       copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
