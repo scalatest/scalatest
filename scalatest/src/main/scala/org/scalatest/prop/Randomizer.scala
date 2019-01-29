@@ -82,7 +82,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Byte, and the next Randomizer to use.
     */
   def nextByte: (Byte, Randomizer) = {
-    val (i, r) = next(8) 
+    val (i, r) = next(8)
     (i.toByte, r)
   }
 
@@ -92,7 +92,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Short, and the next Randomizer to use.
     */
   def nextShort: (Short, Randomizer) = {
-    val (i, r) = next(16) 
+    val (i, r) = next(16)
     (i.toShort, r)
   }
 
@@ -107,7 +107,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A random Char, and the next Randomizer to use.
     */
   def nextChar: (Char, Randomizer) = {
-    val (i, r) = thisRandomizer.next(16) 
+    val (i, r) = thisRandomizer.next(16)
     if (i >= 0xD800 && i <= 0xDFFF) (((i - 0xD800) & 0xFF).toChar, r)
     else (i.toChar, r)
   }
@@ -205,20 +205,20 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
     // scala> val twoTo32 = math.pow(2, 32).toLong
     // twoTo32: Long = 4294967296
-    // 
+    //
     // scala> val twoTo23 = math.pow(2, 23).toLong
     // twoTo23: Long = 8388608
-    // 
+    //
     // scala> val totalSizeOfSpace = twoTo32 - twoTo23 + 3
     // totalSizeOfSpace: Long = 4286578691
 
     // What percentage of the total space of Ints is used by Floats?
     // scala> val twoTo32D = twoTo32.toDouble
     // twoTo32D: Double = 4.294967296E9
-    // 
+    //
     // scala> val twoTo23D = twoTo23.toDouble
     // twoTo23D: Double = 8388608.0
-    // 
+    //
     // scala> val percentSpaceUsed = (twoTo32D - twoTo23D) / twoTo32D
     // percentSpaceUsed: Double = 0.998046875
     //
@@ -267,13 +267,13 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
     // scala> val twoTo64D = math.pow(2, 64)
     // twoTo64D: Double = 1.8446744073709552E19
-    // 
+    //
     // scala> val totalPossible0To1Doubles = (0x10000000000000L * 0x3fe + 1).toDouble
     // totalPossible0To1Doubles: Double = 4.6026788191726469E18
-    // 
+    //
     // scala> val percentSpaceUsed = totalPossible0To1Doubles / twoTo64D
     // percentSpaceUsed: Double = 0.24951171875
-    // 
+    //
     // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
     // eachDoubleIsWorth: Double = 4.007827788649706
 
@@ -308,14 +308,14 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
     // scala> val twoTo64D = math.pow(2, 64)
     // twoTo64D: Double = 1.8446744073709552E19
-    // 
+    //
     // scala> val twoTo52D = math.pow(2, 52)
     // twoTo52D: Double = 4.503599627370496E15
-    // 
+    //
     // What percentage of the total space of Longs is used by Doubles?
     // scala> val percentSpaceUsed = (twoTo64D - twoTo52D) / twoTo64D
     // percentSpaceUsed: Double = 0.999755859375
-    // 
+    //
     // Each Double value is worth a little more than an Long but not much:
     // scala> val eachDoubleIsWorth = 1.0 / percentSpaceUsed
     // eachDoubleIsWorth: Double = 1.0002442002442002
@@ -383,7 +383,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   private def isNegativeZeroFloat(f: Float): Boolean = {
     // scala> java.lang.Float.floatToIntBits(-0.0f)
     // res34: Int = -2147483648
-    // 
+    //
     val NegativeZeroFloatBits: Int = -2147483648
     val bits: Int = floatToIntBits(f)
     bits == NegativeZeroFloatBits
@@ -394,7 +394,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   private def isNegativeZeroDouble(d: Double): Boolean = {
     // scala> java.lang.Double.doubleToLongBits(-0.0)
     // res46: Long = -9223372036854775808
-    // 
+    //
     val NegativeZeroDoubleBits: Long = -9223372036854775808L
     val bits: Long = doubleToLongBits(d)
     bits == NegativeZeroDoubleBits
@@ -828,8 +828,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   }
 
   private def forceNegZDouble(candidate: Double): Double = {
-      // scala> -0.0 > 0.0
-      // res42: Boolean = false
+    // scala> -0.0 > 0.0
+    // res42: Boolean = false
     if (candidate > 0.0) -candidate
     else candidate // This will leave positive zero as positive zero, which is what we want
   }
@@ -847,7 +847,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (NegZFiniteDouble.ensuringValid(negZFinite), r)
   }
 
-  // TODO: probably mention that NegZ can include posivie 0.0, and that PosZ can 
+  // TODO: probably mention that NegZ can include posivie 0.0, and that PosZ can
   // include -0.0 in the docs.
   /**
     * Get a random Float less than or equal to zero.
@@ -1041,22 +1041,22 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return A value from that range, inclusive of the ends.
     */
   def chooseShort(from: Short, to: Short): (Short, Randomizer) = {
-      // See chooseInt for comments that explain this algo
-      val min: Int = math.min(from, to).toInt // Widen both to next larger type, so max - min will not overflow
-      val max: Int = math.max(from, to).toInt
+    // See chooseInt for comments that explain this algo
+    val min: Int = math.min(from, to).toInt // Widen both to next larger type, so max - min will not overflow
+    val max: Int = math.max(from, to).toInt
 
-      // The divisor for modulo on the random number will be one more than the absolute value of max - min
-      val divisor: Int = (max - min).abs + 1
+    // The divisor for modulo on the random number will be one more than the absolute value of max - min
+    val divisor: Int = (max - min).abs + 1
 
-      val (dividend, nextRnd) = nextInt
+    val (dividend, nextRnd) = nextInt
 
-      // When you add this to min, it will be a number between min and max
-      // It won't overflow, because we're using Ints here not Shorts.
-      val remainder: Int = dividend.abs % divisor
+    // When you add this to min, it will be a number between min and max
+    // It won't overflow, because we're using Ints here not Shorts.
+    val remainder: Int = dividend.abs % divisor
 
-      // The max remainder in this case is 2 ** 16 - 1, so this won't
-      // overflow even if min is Short.MinValue and remainder is 2 ** 16 - 1. 
-      ((min + remainder).toShort, nextRnd)
+    // The max remainder in this case is 2 ** 16 - 1, so this won't
+    // overflow even if min is Short.MinValue and remainder is 2 ** 16 - 1.
+    ((min + remainder).toShort, nextRnd)
   }
 
   /**
@@ -1123,7 +1123,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       val remainder: Long = dividend.abs % divisor
 
       // The max remainder in this case is 2 ** 32 - 1, so this won't
-      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1. 
+      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1.
       //
       // scala> (Int.MinValue.toLong + 4294967295L).toInt
       // res15: Int = 2147483647
@@ -1205,8 +1205,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
       else {
         // Do the negative side, min to -0.0
-         val (n, nextRnd) = choosePositiveOrZeroFloat(0.0f, -min)
-         (-n, nextRnd)
+        val (n, nextRnd) = choosePositiveOrZeroFloat(0.0f, -min)
+        (-n, nextRnd)
       }
     }
   }
@@ -1289,8 +1289,8 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       }
       else {
         // Do the negative side, min to -0.0
-         val (n, nextRnd) = choosePositiveOrZeroDouble(0.0, -min)
-         (-n, nextRnd)
+        val (n, nextRnd) = choosePositiveOrZeroDouble(0.0, -min)
+        (-n, nextRnd)
       }
     }
   }
@@ -1324,7 +1324,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         val (bit, nextNextRnd) = nextRnd.nextBit
         if (bit == 0)
           (Float.NaN, nextNextRnd)
-       else
+        else
           (n, nextNextRnd)
       } else candidate
     }
@@ -1337,7 +1337,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         val (bit, nextNextRnd) = nextRnd.nextBit
         if (bit == 0)
           (Float.NaN, nextNextRnd)
-       else
+        else
           (n, nextNextRnd)
       } else candidate
     }
@@ -1356,12 +1356,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @param to The other end of the range.
     * @return A value from that range, inclusive of the ends.
     */
- def choosePosFloat(from: PosFloat, to: PosFloat): (PosFloat, Randomizer) = {
+  def choosePosFloat(from: PosFloat, to: PosFloat): (PosFloat, Randomizer) = {
     // The IEEE-754 floating point spec arranges things such that given any two positive Floats (including
     // positive 0.0), a and b, a < b iff floatToIntBits(a) < floatToIntBits(b).
-    // 
+    //
     // The bits comparison of positive Floats works for +0.0f, +infinity, and +NaN. All of
-    // All of those special values are arranged in a total order that places 0.0f as the smallest, 
+    // All of those special values are arranged in a total order that places 0.0f as the smallest,
     // positive infinity just higher than the largest (greatest magnitude) representable positive real number,
     // and all the other left-over values at the positive extreme represents variants of +NaN.
     //
@@ -1532,7 +1532,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         val (bit, nextNextRnd) = nextRnd.nextBit
         if (bit == 0)
           (Double.NaN, nextNextRnd)
-       else
+        else
           (n, nextNextRnd)
       } else candidate
     }
@@ -1545,7 +1545,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
         val (bit, nextNextRnd) = nextRnd.nextBit
         if (bit == 0)
           (Double.NaN, nextNextRnd)
-       else
+        else
           (n, nextNextRnd)
       } else candidate
     }
@@ -1616,7 +1616,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
       val remainder: BigInt = dividend.abs % divisor
 
       // The max remainder in this case is 2 ** 32 - 1, so this won't
-      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1. 
+      // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1.
       ((min + remainder).toLong, nextRnd)
     }
   }
@@ -1672,7 +1672,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     // positive 0.0), a and b, a < b iff doubleToLongBits(a) < doubleToLongBits(b).
     //
     // The bits comparison of positive Doubles works for +0.0, +infinity, and +NaN. All of
-    // All of those special values are arranged in a total order that places 0.0 as the smallest, 
+    // All of those special values are arranged in a total order that places 0.0 as the smallest,
     // positive infinity just higher than the largest (greatest magnitude) representable positive real number,
     // and all the other left-over values at the positive extreme represents variants of +NaN.
     //
@@ -1751,39 +1751,39 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (NegInt.ensuringValid(i), nextRnd)
   }
 
-    /**
-      * Given a range of negative Longs, chooses one of them randomly.
-      *
-      * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
-      * will cope appropriately if they are in reverse order.
-      *
-      * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
-      *
-      * @param from One end of the range to select from.
-      * @param to The other end of the range.
-      * @return A value from that range, inclusive of the ends.
-      */
+  /**
+    * Given a range of negative Longs, chooses one of them randomly.
+    *
+    * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
+    * will cope appropriately if they are in reverse order.
+    *
+    * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
+    *
+    * @param from One end of the range to select from.
+    * @param to The other end of the range.
+    * @return A value from that range, inclusive of the ends.
+    */
   def chooseNegLong(from: NegLong, to: NegLong): (NegLong, Randomizer) = {
     val (n, nextRnd) = chooseLong(from.value, to.value)
     (NegLong.ensuringValid(n), nextRnd)
   }
 
-    /**
-      * Given a range of negative Floats, chooses one of them randomly.
-      *
-      * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
-      * will cope appropriately if they are in reverse order.
-      *
-      * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
-      *
-      * @param from One end of the range to select from.
-      * @param to The other end of the range.
-      * @return A value from that range, inclusive of the ends.
-      */
+  /**
+    * Given a range of negative Floats, chooses one of them randomly.
+    *
+    * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
+    * will cope appropriately if they are in reverse order.
+    *
+    * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
+    *
+    * @param from One end of the range to select from.
+    * @param to The other end of the range.
+    * @return A value from that range, inclusive of the ends.
+    */
   def chooseNegFloat(from: NegFloat, to: NegFloat): (NegFloat, Randomizer) = {
     // See choosePosFloat for a comment that explains the algo we are using. The algo
     // works for positive floats, and we have here a negative float. Negative and positive
-    // floats are symmetric. For every negative float value there is a corresponding 
+    // floats are symmetric. For every negative float value there is a corresponding
     // positive float value of the same magnitude. So we negate our from and to, use
     // the algorithm for positive floats, then negate the result to get a negative float
     // to return.
@@ -1832,7 +1832,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
   def chooseNegDouble(from: NegDouble, to: NegDouble): (NegDouble, Randomizer) = {
     // See choosePosDouble for a comment that explains the algo we are using. The algo
     // works for positive floats, and we have here a negative float. Negative and positive
-    // floats are symmetric. For every negative float value there is a corresponding 
+    // floats are symmetric. For every negative float value there is a corresponding
     // positive float value of the same magnitude. So we negate our from and to, use
     // the algorithm for positive floats, then negate the result to get a negative float
     // to return.
