@@ -6,6 +6,27 @@ import scala.util.Try
 
 class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
 
+  def areEqualForgivingNaNs(x: AnyVal, y: AnyVal): Assertion = {
+    def areEqualDoublesForgivingNaNs(xDouble: Double, yDouble: Double): Assertion = {
+      if (xDouble.isNaN && yDouble.isNaN)
+        succeed
+      else
+        xDouble shouldEqual yDouble
+    }
+    (x: AnyVal, y: AnyVal) match {
+      case (a: Float, b: Float) =>
+        areEqualDoublesForgivingNaNs(a, b)
+      case (a: Float, b: Double) =>
+        areEqualDoublesForgivingNaNs(a, b)
+      case (a: Double, b: Float) =>
+        areEqualDoublesForgivingNaNs(a, b)
+      case (a: Double, b: Double) =>
+        areEqualDoublesForgivingNaNs(a, b)
+      case _ =>
+        x shouldEqual y
+    }
+  }
+
   val typeName = "$typeName$"
 
   describe("$typeName$") {
@@ -195,33 +216,53 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
       }
       forAll { (p: $typeName$, float: Float) =>
         (p - float) shouldEqual (p.to$primitiveType$ - float)
+        val x = p - float
+        val y = p.to$primitiveType$ - float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, double: Double) =>
         (p - double) shouldEqual (p.to$primitiveType$ - double)
+        val x = p - double
+        val y = p.to$primitiveType$ - double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
     it("should offer a '*' method that is consistent with $primitiveType$") {
       forAll { (p: $typeName$, byte: Byte) =>
-        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+        val x = p * byte
+        val y = p.to$primitiveType$ * byte
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, short: Short) =>
-        (p * short) shouldEqual (p.to$primitiveType$ * short)
+        val x = p * short
+        val y = p.to$primitiveType$ * short
+        areEqualForgivingNaNs(x, y)
       }
-      forAll { (p: $typeName$, byte: Char) =>
-        (p * byte) shouldEqual (p.to$primitiveType$ * byte)
+      forAll { (p: $typeName$, char: Char) =>
+        val x = p * char
+        val y = p.to$primitiveType$ * char
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, int: Int) =>
-        (p * int) shouldEqual (p.to$primitiveType$ * int)
+        val x = p * int
+        val y = p.to$primitiveType$ * int
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, long: Long) =>
-        (p * long) shouldEqual (p.to$primitiveType$ * long)
+        val x = p * long
+        val y = p.to$primitiveType$ * long
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, float: Float) =>
-        (p * float) shouldEqual (p.to$primitiveType$ * float)
+        val x = p * float
+        val y = p.to$primitiveType$ * float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, double: Double) =>
-        (p * double) shouldEqual (p.to$primitiveType$ * double)
+        val x = p * double
+        val y = p.to$primitiveType$ * double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
