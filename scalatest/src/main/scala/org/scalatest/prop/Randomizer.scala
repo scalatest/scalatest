@@ -2204,12 +2204,10 @@ object Randomizer {
     * @return A Randomizer, ready to begin producing random values.
     */
   def default(): Randomizer =
-    apply(
-      defaultSeed.get() match {
-        case Some(seed) => seed
-        case None => System.currentTimeMillis()
-      }
-    )
+    defaultSeed.get() match {
+      case Some(seed) => new Randomizer(seed)
+      case None => apply(System.currentTimeMillis())
+    }
 
   /**
     * A Randomizer, initialized with the specified seed value.
