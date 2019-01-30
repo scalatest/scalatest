@@ -7106,8 +7106,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeATypeImpl
-    
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = ~TypeMatcherMacro.shouldBeATypeImpl('(this), '(aType))
+
     /**
      * This method enables syntax such as the following:
      *
@@ -7116,8 +7119,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeAnTypeImpl
-    
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = ~TypeMatcherMacro.shouldBeAnTypeImpl('(this), '(anType))
+
     /**
      * This method enables syntax such as the following:
      *
@@ -7588,7 +7594,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ???
 
     /**
      * This method enables syntax such as the following:
@@ -7598,7 +7607,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ???
 
     /**
      * This method enables syntax such as the following:
@@ -7608,7 +7620,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ???
 
 /*
     /**
@@ -7811,4 +7826,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  *
  * @author Bill Venners
  */
+// SKIP-DOTTY-START
 object Matchers extends Matchers
+// SKIP-DOTTY-END
+// Not sure why object Matchers does not compile in Dotty, the error message is empty.
