@@ -217,27 +217,9 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
+    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
       List(
-        "Containing.scala",
-        "Aggregating.scala",
-        "KeyMapping.scala",
-        "ValueMapping.scala",
-        "Futuristic.scala",
-        "Timed.scala",
-        "Retrying.scala",
-        "Length.scala",
-        "Size.scala",
-        "Existence.scala",
-        "Messaging.scala",
-        "Sequencing.scala",
-        "Definition.scala",
-        "Emptiness.scala",
-        "Writability.scala",
-        "Readability.scala",
-        "Sortable.scala",
-        "InspectorAsserting.scala",
-        "Collecting.scala"
+        "PropCheckerAsserting.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
