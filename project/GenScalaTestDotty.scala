@@ -217,7 +217,7 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
+    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
       List(
         "PropCheckerAsserting.scala"
       )
@@ -227,22 +227,11 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir,
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir,
       List(
-        "MatchResult.scala",
-        "MatchPatternHelper.scala",
-        "AMatcher.scala",
-        "AnMatcher.scala",
-        "BePropertyMatcher.scala",
-        "BePropertyMatchResult.scala",
-        "BeMatcher.scala",
-        "HavePropertyMatcher.scala",
-        "HavePropertyMatchResult.scala",
-        "LazyMessage.scala",
-        "LazyArg.scala",
-        "TypeMatcherHelper.scala",
-        "MatchFailed.scala",
-        "MatchSucceeded.scala"
+        "Matcher.scala",           // Re-implemented with new macro
+        "MatchPatternMacro.scala", // Re-implemented with new macro
+        "TypeMatcherMacro.scala"   // Re-implemented with new macro
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
