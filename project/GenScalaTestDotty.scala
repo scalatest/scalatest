@@ -238,103 +238,14 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
-    copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
+    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
       List(
-        "ArrayWrapper.scala",
-        "BehaveWord.scala",
-        "StringVerbStringInvocation.scala",
-        "ResultOfStringPassedToVerb.scala",
-        "ShouldVerb.scala",
-        "StringVerbBehaveLikeInvocation.scala",
-        "SubjectWithAfterWordRegistration.scala",
-        "StringVerbBlockRegistration.scala",
-        "ResultOfAfterWordApplication.scala",
-        "ResultOfTaggedAsInvocation.scala",
-        "MustVerb.scala",
-        "CanVerb.scala",
-        "ExistWord.scala",
-        "EndWithWord.scala",
-        "StartWithWord.scala",
-        "IncludeWord.scala",
-        "FullyMatchWord.scala",
-        "ResultOfNotExist.scala",
-        "ContainWord.scala",
-        "HaveWord.scala",
-        "MatcherWords.scala",
-        "RegexWithGroups.scala",
-        "DefinedWord.scala",
-        "EmptyWord.scala",
-        "WritableWord.scala",
-        "ReadableWord.scala",
-        "ResultOfATypeInvocation.scala",
-        "ResultOfAnTypeInvocation.scala",
-        "ResultOfDefinedAt.scala",
-        "SortedWord.scala",
-        "ResultOfLengthWordApplication.scala",
-        "ResultOfSizeWordApplication.scala",
-        "ResultOfMessageWordApplication.scala",
-        "ResultOfLessThanComparison.scala",
-        "ResultOfTheSameInstanceAsApplication.scala",
-        "ResultOfAnWordToAnMatcherApplication.scala",
-        "ResultOfAnWordToBePropertyMatcherApplication.scala",
-        "ResultOfAnWordToSymbolApplication.scala",
-        "ResultOfAWordToAMatcherApplication.scala",
-        "ResultOfAWordToBePropertyMatcherApplication.scala",
-        "ResultOfAWordToSymbolApplication.scala",
-        "ResultOfGreaterThanOrEqualToComparison.scala",
-        "ResultOfLessThanOrEqualToComparison.scala",
-        "ResultOfGreaterThanComparison.scala",
-        "ResultOfRegexWordApplication.scala",
-        "ResultOfValueWordApplication.scala",
-        "ResultOfKeyWordApplication.scala",
-        "ResultOfAtMostOneElementOfApplication.scala",
-        "ResultOfAtMostOneOfApplication.scala",
-        "ResultOfInOrderElementsOfApplication.scala",
-        "ResultOfInOrderApplication.scala",
-        "ResultOfAllElementsOfApplication.scala",
-        "ResultOfAllOfApplication.scala",
-        "ResultOfInOrderOnlyApplication.scala",
-        "ResultOfOnlyApplication.scala",
-        "ResultOfTheSameElementsInOrderAsApplication.scala",
-        "ResultOfTheSameElementsAsApplication.scala",
-        "ResultOfNoElementsOfApplication.scala",
-        "ResultOfNoneOfApplication.scala",
-        "ResultOfAtLeastOneElementOfApplication.scala",
-        "ResultOfAtLeastOneOfApplication.scala",
-        "ResultOfOneElementOfApplication.scala",
-        "ResultOfOneOfApplication.scala",
-        "LengthWord.scala",
-        "SizeWord.scala",
-        "NoExceptionWord.scala",
-        "CompileWord.scala",
-        "TypeCheckWord.scala",
-        "ResultOfBeWordForAType.scala",
-        "ResultOfOfTypeInvocation.scala",
-        "ResultOfBeThrownBy.scala",
-        "ResultOfThrownByApplication.scala",
-        "PleaseUseNoExceptionShouldSyntaxInstead.scala",
-        "ResultOfBeWordForAnType.scala",
-        "ResultOfBeWordForNoException.scala",
-        "ResultOfTheTypeInvocation.scala",
-        "ResultOfContainWord.scala"
+        "BeWord.scala",
+        "MatchPatternWord.scala",
+        "NotWord.scala",
+        "ResultOfNotWordForAny.scala"
       )
     )
-    /*
-
-      copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-      copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
-        List(
-          "ChromeBrowser.scala",  // skipped because selenium not supported.
-          "FirefoxBrowser.scala",  // skipped because selenium not supported.
-          "HtmlUnitBrowser.scala",  // skipped because selenium not supported.
-          "InternetExplorerBrowser.scala",  // skipped because selenium not supported.
-          "SafariBrowser.scala"  // skipped because selenium not supported.
-        )
-      )*/
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
