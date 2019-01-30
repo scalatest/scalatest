@@ -82,6 +82,15 @@ import scala.reflect.runtime.universe.TypeTag
   *   import org.scalactic.anyvals._
   * }}}
   *
+  * In order to call [[prop.GeneratorDrivenPropertyChecks.forAll())]], the function that actually
+  * performs property checks, you will need to either extend or import GeneratorDrivenPropertyChecks,
+  * like this:
+  * {{{
+  *   class DocExamples extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
+  * }}}
+  * There's nothing special about [[FlatSpec]], though -- you may use any of ScalaTest's styles
+  * with property checks.
+  *
   * ==What Does a Property Look Like?==
   *
   * Let's check a simple property of Strings -- that if you concatenate a String to itself, its
@@ -133,7 +142,7 @@ import scala.reflect.runtime.universe.TypeTag
   *
   * When we write a `forAll` test like the above, ScalaTest has to generate the values to be tested -- the
   * semi-random Strings, Ints and other types that you are testing. It does this by calling on an implicit
-  * [[Generator]] for the desired type. The Generator generates values to test, starting with the edge cases
+  * [[prop.Generator]] for the desired type. The Generator generates values to test, starting with the edge cases
   * and then moving on to randomly-selected values.
   *
   * ScalaTest has built-in Generators for many major types, including String and PosZInt, but these Generators
@@ -151,28 +160,28 @@ import scala.reflect.runtime.universe.TypeTag
   *   }
   * }}}
   * This is using a variant of forAll, which lets you specify the Generators to use instead of
-  * just picking the implicit one. [[CommonGenerators.strings]] is the built-in Generator for
+  * just picking the implicit one. [[prop.CommonGenerators.strings]] is the built-in Generator for
   * Strings, the same one you were getting implicitly. (The other built-ins can be found in
-  * [[CommonGenerators]].)
+  * [[prop.CommonGenerators]].)
   *
-  * But [[CommonGenerators.posZIntsBetween()]] is a function that
+  * But [[prop.CommonGenerators.posZIntsBetween()]] is a function that
   * ''creates'' a Generator that selects from the given values. In this case, it will create
   * a Generator that only creates numbers from 0 to 1000 -- short enough to not blow up our
   * computer's memory. If you try this test, this runs correctly.
   *
   * The moral of the story is that, while using the built-in Generators is very convenient,
   * and works most of the time, you should think about the data you are trying to test, and
-  * pick or create a more-specific [[Generator]] when the test calls for it.
+  * pick or create a more-specific [[prop.Generator]] when the test calls for it.
   *
-  * [[CommonGenerators]] contains many functions that are helpful in common cases. In particular:
+  * [[prop.CommonGenerators]] contains many functions that are helpful in common cases. In particular:
   *
   *   - `xxsBetween` (where `xxs` might be Int, Long, Float or most other significant numeric types)
   *     gives you a value of the desired type in the given range, as in the `posZIntsBetween()` example
   *     above.
-  *   - [[CommonGenerator.specificValue()]] and [[CommonGenerator.specificValues()]] create Generators
+  *   - [[prop.CommonGenerators.specificValue()]] and [[prop.CommonGenerators.specificValues()]] create Generators
   *     that produce either one specific value every time, or one of several values randomly. This is
   *     useful for enumerations and types that behave like enumerations.
-  *   - [[CommonGenerator.evenly()]] and [[CommonGenerator.frequency()]] create higher-level
+  *   - [[prop.CommonGenerators.evenly()]] and [[prop.CommonGenerators.frequency()]] create higher-level
   *     Generators that call other Generators, either more or less equally or with a distribution
   *     you define.
   *
@@ -242,11 +251,11 @@ import scala.reflect.runtime.universe.TypeTag
   * ===Composing Your Own Generators===
   *
   * Doing things as shown above works, but having to generate the parameters and construct a
-  * `Rectangle` every time is a nuisance. What we really want is to create our own [[Generator]]
+  * `Rectangle` every time is a nuisance. What we really want is to create our own [[prop.Generator]]
   * that just hands us Rectangles, the same way we can do for `PosInt`. Fortunately, this
   * is easy.
   *
-  * [[Generator]]s can be ''composed'' in `for` comprehensions. So we can create our own Generator
+  * [[prop.Generator]]s can be ''composed'' in `for` comprehensions. So we can create our own Generator
   * for Rectangle like this:
   * {{{
   *   implicit val rectGenerator = for {
@@ -259,7 +268,7 @@ import scala.reflect.runtime.universe.TypeTag
   * {{{
   *     w <- CommonGenerators.posInts
   * }}}
-  * [[CommonGenerators.posInts]] is the built-in Generator for positive Ints. So this line puts
+  * [[prop.CommonGenerators.posInts]] is the built-in Generator for positive Ints. So this line puts
   * a randomly-generated positive Int in `w`, and
   * {{{
   *     h <- CommonGenerators.posInts
@@ -290,10 +299,10 @@ import scala.reflect.runtime.universe.TypeTag
   *
   * Sometimes, not all of your generated values make sense for the property you want to
   * check -- you know (via external information) that some of these values will never come
-  * up. In cases like this, you ''can'' create a custom [[Generator]] that only creates the
-  * values you do want, but it's often easier to just use [[whenever()]].
+  * up. In cases like this, you ''can'' create a custom [[prop.Generator]] that only creates the
+  * values you do want, but it's often easier to just use [[prop.Whenever.whenever()]].
   *
-  * The [[whenever()]] function can be used inside of [[forAll()]]. It says that only the
+  * The [[prop.Whenever.whenever()]] function can be used inside of [[prop.GeneratorDrivenPropertyChecks.forAll()]]. It says that only the
   * filtered values should be used, and anything else should be discarded. For example,
   * look at this property:
   * {{{
@@ -311,7 +320,7 @@ import scala.reflect.runtime.universe.TypeTag
   *
   * ===Discard Limits===
   *
-  * You shouldn't push [[whenever()]] too far, though. This system is all about trying random
+  * You shouldn't push [[prop.Whenever.whenever()]] too far, though. This system is all about trying random
   * data, but if too much of the random data simply isn't usable, you can't get valid
   * answers, and the system tracks that.
   *
@@ -338,6 +347,71 @@ import scala.reflect.runtime.universe.TypeTag
   *
   * The proportion of how many discards to permit is config-controllable, and will be
   * discussed under '''Configuration'''.
+  *
+  *
+  * ==Randomization==
+  *
+  * The point of [[prop.Generator]] is to create pseudo-random values for checking properties. But
+  * it turns out to be very inconvenient if those values are ''actually'' random -- that
+  * would mean that, when a property check fails occasionally, you have no good way to invoke that
+  * specific set of circumstances again for debugging. We want "randomness", but we also want
+  * it to be deterministic, and reproducible when you need it.
+  *
+  * To support this, all "randomness" in ScalaTest's property checking system uses the
+  * [[prop.Randomizer]] class. You start by creating a [[prop.Randomizer]] using an initial
+  * seed value, and call that to get your "random" value. Each call to [[prop.Randomizer]]
+  * returns a new [[prop.Randomizer]], which you should use to fetch the next value.
+  *
+  * Since [[prop.Randomizer]] is actually deterministic (the "random" values are unobvious, but
+  * will always be the same given the same initial seed), this means that re-running a test
+  * with the same seed will produce the same values.
+  *
+  * If you need random data for your own [[prop.Generator]]s and property checks, you should
+  * use [[prop.Randomizer]] in the same way; that way, your tests will also be re-runnable,
+  * when needed for debugging.
+  *
+  * ==Debugging, and Re-running a Failed Property Check==
+  *
+  * In '''Testing Your Own Types''' above, we found to our surprise that the property check
+  * failed with this error:
+  * {{{
+  * [info] Rectangles
+  * [info] - should have a positive area *** FAILED ***
+  * [info]   GeneratorDrivenPropertyCheckFailedException was thrown during property evaluation.
+  * [info]    (DocExamples.scala:42)
+  * [info]     Falsified after 2 successful property evaluations.
+  * [info]     Location: (DocExamples.scala:42)
+  * [info]     Occurred when passed generated values (
+  * [info]       None = PosInt(399455539),
+  * [info]       None = PosInt(703518968)
+  * [info]     )
+  * [info]     Init Seed: 1568878346200
+  * }}}
+  * There must be a bug here -- but once we've fixed it, how can we make sure that we are
+  * re-testing exactly the same case that failed?
+  *
+  * This is where the pseudo-random nature of [[prop.Randomizer]] comes in, and why it is so
+  * important to use it consistently. So long as all of our "random" data comes from that,
+  * then all we need to do is re-run with the same seed.
+  *
+  * That's why the `Init Seed` shown in the message above is crucial. We can re-use that
+  * seed -- and therefore get exactly the same "random" data -- by using the `-S` flag to
+  * ScalaTest.
+  *
+  * So you can run this command in sbt to re-run exactly the same property check:
+  * {{{
+  *   testOnly *DocExamples -- -z "have a positive area" -S 1568878346200
+  * }}}
+  * Taking that apart:
+  *
+  *   - `testOnly *DocExamples` says that we only want to run suites whose paths end with `DocExamples`
+  *   - `-z "have a positive area"` says to only run tests whose names include that string.
+  *   - `-S 1568878346200` says to run all tests with a "random" seed of `1568878346200`
+  *
+  * By combining these flags, you can re-run exactly the property check you need, with the
+  * right random seed to make sure you are re-creating the failed test. You should get
+  * exactly the same failure over and over until you fix the bug, and then you can confirm
+  * your fix with confidence.
   */
 package object prop {
   /**
