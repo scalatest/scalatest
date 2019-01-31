@@ -519,7 +519,7 @@ import org.scalactic._
  * <p>
  * This trait contains one <code>exists</code>, <code>forAll</code>, and <code>forEvery</code> method for each <code>TableForN</code> class, <code>TableFor1</code>
  * through <code>TableFor22</code>, which allow properties to be checked against the rows of a table. It also
- * contains a <code>wherever</code> method that can be used to indicate a property need only hold whenever some
+ * contains a <code>whenever</code> method that can be used to indicate a property need only hold whenever some
  * condition is true.
  * </p>
  *
