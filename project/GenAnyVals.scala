@@ -49,6 +49,8 @@ object GenAnyVals {
              |
            """.stripMargin
 
+      val macroObjectModifier = if (dotty) "" else "private[anyvals]"  // TODO: Hopefully Dotty can allow this in later version.
+
       val content =
         s"""/*
            | * Copyright 2001-2016 Artima, Inc.
@@ -70,7 +72,7 @@ object GenAnyVals {
            |import org.scalactic.Resources
            |${importsForMacro(dotty)}
            |
-           |private[anyvals] object ${typeName}Macro extends CompileTimeAssertions {
+           |$macroObjectModifier object ${typeName}Macro extends CompileTimeAssertions {
            |
            |  def isValid(i: $primitiveTypeName): Boolean = $typeBooleanExpr
            |
