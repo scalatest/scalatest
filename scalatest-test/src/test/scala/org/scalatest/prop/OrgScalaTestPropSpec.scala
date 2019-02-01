@@ -41,16 +41,18 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPr
 
   // Enumeration of types that we might pass into valueOf(). You can make the test below more thorough by
   // adding more types here, but there doesn't seem much reason to get horribly comprehensive about it.
-  sealed trait TestType {
-    type Result
-    def gen: Generator[Result]
+  sealed abstract class TestType[R: Generator] {
+    type Result = R
+    def gen: Generator[Result] = implicitly[Generator[R]]
   }
-  case object TestInt extends TestType { type Result = Int; def gen = implicitly[Generator[Int]]}
-  case object TestString extends TestType { type Result = String; def gen = implicitly[Generator[String]]}
-  case object TestPosFloat extends TestType { type Result = PosFloat; def gen = implicitly[Generator[PosFloat]]}
-  case object TestStruct extends TestType { type Result = Person; def gen = implicitly[Generator[Person]]}
+  case object TestInt extends TestType[Int]
+  case object TestString extends TestType[String]
+  case object TestPosFloat extends TestType[PosFloat]
+  case object TestStruct extends TestType[Person]
 
-  implicit val typeGen: Generator[TestType] = specificValues(TestInt, TestString, TestPosFloat, TestStruct)
+  type AnyTestType = TestType[_]
+
+  implicit val typeGen: Generator[AnyTestType] = specificValues(TestInt, TestString, TestPosFloat, TestStruct)
 
   /**
     * Generates a single random value to use as a valueOf() parameter.
@@ -59,7 +61,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPr
     * @param rnd The current Randomizer.
     * @return A random value of the specified type.
     */
-  private def mkVal(tpe: TestType, rnd: Randomizer): (Any, List[Any], Randomizer) = {
+  private def mkVal(tpe: AnyTestType, rnd: Randomizer): (Any, List[Any], Randomizer) = {
     val (size, rnd2) = rnd.choosePosZInt(1, 100)
     val sizeParam = SizeParam(size, 0, size)
     tpe match {
@@ -82,13 +84,16 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPr
     //   - multiplier: the multiplier to pass into valueOf
     //   - valueSeed: the seed to use for randomization inside this property check
     "work consistently with a wide variety of inputs" in {
-      forAll(typeGen, posIntsBetween(1, 22), ints, longs) { (genTpe: TestType, nValues: PosInt, multiplier: Int, valueSeed: Long) =>
+      forAll(typeGen, posIntsBetween(1, 22), ints, longs) { (genTpe: AnyTestType, nValues: PosInt, multiplier: Int, valueSeed: Long) =>
+        // Needed to make some of the AnyTestType stuff below work without warnings:
+        import scala.language.existentials
+
         // The initial Randomizer that we will use to generate data internally:
         val vRand = Randomizer(valueSeed)
 
         // Generate nValues' worth of random *types*, for the valueOf parameters:
         @tailrec
-        def chooseTypes(remaining: Int, tpes: List[TestType], rnd: Randomizer): (List[TestType], Randomizer) = {
+        def chooseTypes(remaining: Int, tpes: List[AnyTestType], rnd: Randomizer): (List[AnyTestType], Randomizer) = {
           if (remaining <= 0)
             (tpes, rnd)
           else {
