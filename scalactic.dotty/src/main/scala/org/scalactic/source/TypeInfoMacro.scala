@@ -18,14 +18,18 @@ package org.scalactic.source
 import scala.quoted._
 import scala.tasty._
 
-class TypeInfo[T](val name: String)
-
 /**
-  * Companion object for <code>Position</code> that defines an implicit
-  * method that uses a macro to grab the enclosing position.
+  * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
   */
-object TypeInfo {
-  def apply[T](name: String): TypeInfo[T] = new TypeInfo[T](name)
+object TypeInfoMacro {
 
-  implicit inline def gen[T]: TypeInfo[T] = ~TypeInfoMacro.genTypeInfo('[T])
+  /**
+    * Helper method for TypeInfo macro.
+    */
+  def genTypeInfo[T](tp: Type[T])(implicit refl: Reflection): Expr[TypeInfo[T]] = {
+    import refl._
+
+    val name = typeOf(tp).show.toExpr
+    '{ TypeInfo[~tp](~name) }
+  }
 }
