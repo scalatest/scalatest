@@ -940,10 +940,12 @@ trait CommonGenerators {
 */
     // I think we actually need to say org.scalactic.Requirements.requirementsHelper in the thing not requirementsHelper
     // Oh, maybe that won't work. Anyway, see what's up.
+    // SKIP-DOTTY-START
     import org.scalactic.Requirements._
     require {
       distribution forall { case (w, _) => w >= 1 }
     }
+    // SKIP-DOTTY-END
     new Generator[T] {
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.

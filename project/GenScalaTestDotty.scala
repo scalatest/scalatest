@@ -178,6 +178,7 @@ object GenScalaTestDotty {
         "FutureOutcome.scala",
         "Informer.scala",
         "Informing.scala",
+        "Inspectors.scala",
         "InsertionOrderSet.scala",
         "JavaClassesWrappers.scala",
         "MatchersHelper.scala",
