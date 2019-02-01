@@ -3063,7 +3063,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
+  // In Dotty when Collected trait is private, object Matchers extends Matchers does not work, hopefully it can be fixed in future version of Dotty before it reaches final.
+  // SKIP-DOTTY-START
   private sealed trait Collected extends Product with Serializable
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY sealed trait Collected extends Product with Serializable
   private case object AllCollected extends Collected
   private case object EveryCollected extends Collected
   private case class BetweenCollected(from: Int, to: Int) extends Collected
@@ -7826,7 +7830,4 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  *
  * @author Bill Venners
  */
-// SKIP-DOTTY-START
 object Matchers extends Matchers
-// SKIP-DOTTY-END
-// Not sure why object Matchers does not compile in Dotty, the error message is empty.
