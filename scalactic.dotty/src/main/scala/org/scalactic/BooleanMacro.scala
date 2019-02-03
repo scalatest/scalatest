@@ -872,20 +872,8 @@ object BooleanMacro {
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
-    // AssertionsSpec.this.convertToEqualizer[scala.Int](a).===(5)(scalactic.Equality.default[scala.Int])
-    object TripleEqual {
-      def isEqualizer(tp: Type): Boolean = true // tp <:< typeOf[TripleEqualsSupport#Equalizer[_]]
-
-      def unapply(tree: Term): Option[(Term, Term, String, Term, Option[Term])] = tree match {
-        case Term.Apply(Term.Select(Term.Apply(fun, lhs :: Nil), op), rhs :: Nil) if isEqualizer(fun.tpe) =>
-          Some((fun, lhs, op, rhs, None))
-        case Term.Apply(Term.Apply(Term.Select(Term.Apply(fun, lhs :: Nil), op), rhs :: Nil), equality :: Nil) if isEqualizer(fun.tpe)  =>
-          Some((fun, lhs, op, rhs, Some(equality)))
-        case _ => None
-      }
-    }
-
     condition.unseal.underlyingArgument match {
+      //case Term.Apply(sel @ Term.Select(lhs, op), rhs :: Nil) =>
       case Term.Apply(Term.IsSelect(sel @ Term.Select(lhs, op)), rhs :: Nil) =>
         op match {
           case "||" =>
@@ -911,6 +899,7 @@ object BooleanMacro {
               case _ =>
                 let(lhs) { left =>
                   let(rhs) { right =>
+                    //let(Term.Select.overloaded(left, op, Nil, right :: Nil)) { result =>
                     let(Term.Apply(Term.Select.copy(sel)(left, op), right :: Nil)) { result =>
                       val l = left.seal[Any]
                       val r = right.seal[Any]
@@ -923,11 +912,11 @@ object BooleanMacro {
             }
         }
       // TODO: blocked by https://github.com/lampepfl/dotty/issues/5786
-      // case Term.Apply(f @ Term.Apply(Term.IsSelect(sel @ Term.Select(Term.Apply(qual, lhs :: Nil), "===")), rhs :: Nil), implicits)
+      // case Term.Apply(f @ Term.Apply(Term.Select(Term.Apply(qual, lhs :: Nil), "==="), rhs :: Nil), implicits)
       // if isImplicitMethodType(f.tpe) =>
       //   let(lhs) { left =>
       //     let(rhs) { right =>
-      //       let(Term.Apply(Term.Apply(Term.Select.copy(sel)(Term.Apply(qual, left :: Nil), "==="), right :: Nil), implicits)) { result =>
+      //       let(Term.Apply(Term.Select.overloaded(Term.Apply(qual, left :: Nil), "===", Nil, right :: Nil), implicits)) { result =>
       //         val l = left.seal[Any]
       //         val r = right.seal[Any]
       //         val b = result.seal[Boolean]
