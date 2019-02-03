@@ -221,11 +221,7 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
-      List(
-        "PropCheckerAsserting.scala"
-      )
-    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
@@ -239,7 +235,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    //copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++

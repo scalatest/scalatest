@@ -991,8 +991,8 @@ object ScalatestBuild {
       },
       sourceGenerators in Compile += {
         Def.task{
-          //GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          //GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForDotty((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactoriesDotty.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value) ++
           GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)

@@ -605,10 +605,10 @@ object Configuration extends Configuration {
 
     import org.scalactic.Requirements._
 
-    require(minSize + sizeRange >= 0)
+    require(minSize.value + sizeRange.value >= 0)
 
     lazy val maxSize: PosZInt = {
-      PosZInt.ensuringValid(minSize + sizeRange)
+      PosZInt.ensuringValid(minSize.value + sizeRange.value)
     }
   }
 
