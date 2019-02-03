@@ -461,7 +461,7 @@ object ScalatestBuild {
         ()
         //val loader: ClassLoader = ClasspathUtilities.toLoader(classpath.map(_.data).map(_.getAbsoluteFile))
         //loader.loadClass("your.class.Here").newInstance()
-      }.triggeredBy(compile in Compile)
+      }.triggeredBy(compile in Compile).value
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticMacroNative = Project("scalacticMacroNative", file("scalactic-macro.native"))
