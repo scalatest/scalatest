@@ -80,7 +80,7 @@ trait CommonGenerators {
     new Generator[T] {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
         // Start with the edges of the underlying generator:
-        val (base, nextRnd) = super.initEdges(maxLength, rnd)
+        val (base, nextRnd) = gen.initEdges(maxLength, rnd)
         // Snip away anything out of range:
         val valueEdges = base.filter(i => i >= from && i <= to)
         // Add the boundaries as edges for our new filter:
