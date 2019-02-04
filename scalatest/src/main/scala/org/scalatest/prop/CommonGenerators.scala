@@ -94,6 +94,31 @@ trait CommonGenerators {
     }
   }
 
+  def between[T](from: T, to: T)(implicit ord: Ordering[T], chooser: Chooser[T], gen: Generator[T]): Generator[T] = {
+    import ord.mkOrderingOps
+    require(from <= to)
+    new Generator[T] {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
+        // Start with the edges of the underlying generator:
+        val (base, nextRnd) = super.initEdges(maxLength, rnd)
+        // Snip away anything out of range:
+        val valueEdges = base.filter(i => i >= from && i <= to)
+        // Add the boundaries as edges for our new filter:
+        val fromToEdges = (from :: to :: valueEdges).distinct // distinct in case from equals to, and/or overlaps a value edge
+        val (allEdges, nextNextRnd) = Randomizer.shuffle(fromToEdges, nextRnd)
+        (allEdges.take(maxLength), nextNextRnd)
+      }
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+        edges match {
+          case head :: tail => (head, tail, rnd)
+          case _ =>
+            val (nextValue, nextRandomizer) = chooser.choose(from, to)(rnd)
+            (nextValue, Nil, nextRandomizer)
+        }
+      }
+    }
+  }
+
   /**
     * Create a [[Generator]] that returns [[Byte]]s in the specified range.
     *
