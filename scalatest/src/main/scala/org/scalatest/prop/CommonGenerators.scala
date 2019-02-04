@@ -37,8 +37,8 @@ trait CommonGenerators {
     * Create a [[Generator]] that returns values in the specified range.
     *
     * This is the general-purpose function that underlies all of the other `xxsBetween()` functions in
-    * CommonGenerators. It works with any type for which there is an [[Ordering]], making it easy to
-    * create [[Generator]]s for ranges within that type.
+    * CommonGenerators. It works with any type for which there is an [[Ordering]], a [[Generator]], and
+    * a [[Chooser]], making it easy to create [[Generator]]s for ranges within that type.
     *
     * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
@@ -47,53 +47,33 @@ trait CommonGenerators {
     * The value of `from` must be less than or equal to the value of `to`. (However "less than or equal"
     * is defined for this type.)
     *
-    * For this general-purpose version, you must also provide the "edges" -- the edge case values -- for
-    * this type. This may be an empty List, but you should think about the interesting edges that are
-    * worth testing for this type. The `from` and `to` values will automatically be added to the edges.
-    * Values within the list of edges that do not fall within the specified range will be automatically
-    * discarded, so you don't need to customize the list based on the range.
+    * The "edges" -- the edge case values -- for this type will be taken from the implicit
+    * [[Generator]]. This function then filters out any that aren't within the specified range,
+    * and adds the `from` and `to` values as edges.
     *
-    * You must also provide a `chooser` function. This should take three parameters -- the lower and upper
-    * bounds of the range (in practice, the values of `from` and `to`), and a [[Randomizer]] -- and return
-    * a random value within that range. If you use the [[Randomizer]] (which you should usually do), you
-    * should return the ''next'' [[Randomizer]], which is returned from all calls into it.
+    * The implicit [[Chooser]] is used to pick random values of the type. That should do most of
+    * the heavy lifting.
     *
-    * The parameters are curried, so you can fill in the first parameter list in order to get a
-    * function that only needs the range parameters. For example, `intsBetween` could be defined like:
+    * Since this underlies the more-specific `xxsBetween()` functions, you may use either those
+    * or this when appropriate. For example, this:
     * {{{
-    *   val intsBetween: (Int, Int) => Generator[Int] =
-    *     valuesBetween(Generator.intEdges, (from: Int, to: Int, rnd) => rnd.chooseInt(from, to))
+    *   intsBetween(1, 100)
     * }}}
+    * and
+    * {{{
+    *   between(1, 100)
+    * }}}
+    * are functionally identical so long as the types of the parameters are clear to the compiler.
+    * Use whichever suits your project's coding style better.
     *
-    * @param edges the edge cases to include for [[T]]
-    * @param chooser a function (described above) that chooses a random value within the range
     * @param from the lower bound of the range to choose from
     * @param to the upper bound of the range to choose from
-    * @param ord an instance of Ordering[T]`, which should usually be in implicit scope
+    * @param ord an instance of `Ordering[T]`, which should usually be in implicit scope
+    * @param chooser an instance of `Chooser[T]`, which should usually be in implicit scope
+    * @param gen an instance of `Generator[T]`, which should usually be in implicit scope
     * @tparam T the type to choose a value from
     * @return a new [[Generator]], that produces values in the specified range
     */
-  def valuesBetween[T](edges: List[T], chooser: (T, T, Randomizer) => (T, Randomizer))(from: T, to: T)(implicit ord: Ordering[T]): Generator[T] = {
-    import ord.mkOrderingOps
-    require(from <= to)
-    new Generator[T] {
-      private val valueEdges = edges.filter(i => i >= from && i <= to)
-      private val fromToEdges = (from :: to :: valueEdges).distinct // distinct in case from equals to, and/or overlaps a value edge
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(fromToEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextValue, nextRandomizer) = chooser(from, to, rnd)
-            (nextValue, Nil, nextRandomizer)
-        }
-      }
-    }
-  }
-
   def between[T](from: T, to: T)(implicit ord: Ordering[T], chooser: Chooser[T], gen: Generator[T]): Generator[T] = {
     import ord.mkOrderingOps
     require(from <= to)
@@ -132,8 +112,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def bytesBetween(from: Byte, to: Byte): Generator[Byte] =
-    valuesBetween(Generator.byteEdges, (from: Byte, to: Byte, rnd) => rnd.chooseByte(from, to))(from, to)
+  def bytesBetween(from: Byte, to: Byte): Generator[Byte] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Short]]s in the specified range.
@@ -148,8 +127,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def shortsBetween(from: Short, to: Short): Generator[Short] =
-    valuesBetween(Generator.shortEdges, (from: Short, to: Short, rnd) => rnd.chooseShort(from, to))(from, to)
+  def shortsBetween(from: Short, to: Short): Generator[Short] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Int]]s in the specified range.
@@ -164,8 +142,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def intsBetween(from: Int, to: Int): Generator[Int] =
-    valuesBetween(Generator.intEdges, (from: Int, to: Int, rnd) => rnd.chooseInt(from, to))(from, to)
+  def intsBetween(from: Int, to: Int): Generator[Int] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Long]]s in the specified range.
@@ -180,8 +157,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def longsBetween(from: Long, to: Long): Generator[Long] =
-    valuesBetween(Generator.longEdges, (from: Long, to: Long, rnd) => rnd.chooseLong(from, to))(from, to)
+  def longsBetween(from: Long, to: Long): Generator[Long] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Char]]s in the specified range.
@@ -196,8 +172,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def charsBetween(from: Char, to: Char): Generator[Char] =
-    valuesBetween(Generator.charEdges, (from: Char, to: Char, rnd) => rnd.chooseChar(from, to))(from, to)
+  def charsBetween(from: Char, to: Char): Generator[Char] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Float]]s in the specified range.
@@ -212,8 +187,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def floatsBetween(from: Float, to: Float): Generator[Float] =
-    valuesBetween(Generator.floatEdges, (from: Float, to: Float, rnd) => rnd.chooseFloat(from, to))(from, to)
+  def floatsBetween(from: Float, to: Float): Generator[Float] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[Double]]s in the specified range.
@@ -228,8 +202,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def doublesBetween(from: Double, to: Double): Generator[Double] =
-    valuesBetween(Generator.doubleEdges, (from: Double, to: Double, rnd) => rnd.chooseDouble(from, to))(from, to)
+  def doublesBetween(from: Double, to: Double): Generator[Double] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosInt]]s in the specified range.
@@ -244,8 +217,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] =
-    valuesBetween(Generator.posIntEdges, (f: PosInt, t: PosInt, rnd) => rnd.choosePosInt(f, t))(from, to)
+  def posIntsBetween(from: PosInt, to: PosInt): Generator[PosInt] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosLong]]s in the specified range.
@@ -260,8 +232,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] =
-    valuesBetween(Generator.posLongEdges, (from: PosLong, to: PosLong, rnd) => rnd.choosePosLong(from, to))(from, to)
+  def posLongsBetween(from: PosLong, to: PosLong): Generator[PosLong] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFloat]]s in the specified range.
@@ -276,8 +247,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] =
-    valuesBetween(Generator.posFloatEdges, (from: PosFloat, to: PosFloat, rnd) => rnd.choosePosFloat(from, to))(from, to)
+  def posFloatsBetween(from: PosFloat, to: PosFloat): Generator[PosFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFiniteFloat]]s in the specified range.
@@ -292,8 +262,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFiniteFloatsBetween(from: PosFiniteFloat, to: PosFiniteFloat): Generator[PosFiniteFloat] =
-    valuesBetween(Generator.posFiniteFloatEdges, (from: PosFiniteFloat, to: PosFiniteFloat, rnd) => rnd.choosePosFiniteFloat(from, to))(from, to)
+  def posFiniteFloatsBetween(from: PosFiniteFloat, to: PosFiniteFloat): Generator[PosFiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosDouble]]s in the specified range.
@@ -308,8 +277,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] =
-    valuesBetween(Generator.posDoubleEdges, (from: PosDouble, to: PosDouble, rnd) => rnd.choosePosDouble(from, to))(from, to)
+  def posDoublesBetween(from: PosDouble, to: PosDouble): Generator[PosDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosFiniteDouble]]s in the specified range.
@@ -324,8 +292,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posFiniteDoublesBetween(from: PosFiniteDouble, to: PosFiniteDouble): Generator[PosFiniteDouble] =
-    valuesBetween(Generator.posFiniteDoubleEdges, (from: PosFiniteDouble, to: PosFiniteDouble, rnd) => rnd.choosePosFiniteDouble(from, to))(from, to)
+  def posFiniteDoublesBetween(from: PosFiniteDouble, to: PosFiniteDouble): Generator[PosFiniteDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZInt]]s in the specified range.
@@ -340,8 +307,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] =
-    valuesBetween(Generator.posZIntEdges, (from: PosZInt, to: PosZInt, rnd) => rnd.choosePosZInt(from, to))(from, to)
+  def posZIntsBetween(from: PosZInt, to: PosZInt): Generator[PosZInt] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZLong]]s in the specified range.
@@ -356,8 +322,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] =
-    valuesBetween(Generator.posZLongEdges, (from: PosZLong, to: PosZLong, rnd) => rnd.choosePosZLong(from, to))(from, to)
+  def posZLongsBetween(from: PosZLong, to: PosZLong): Generator[PosZLong] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFloat]]s in the specified range.
@@ -372,8 +337,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] =
-    valuesBetween(Generator.posZFloatEdges, (from: PosZFloat, to: PosZFloat, rnd) => rnd.choosePosZFloat(from, to))(from, to)
+  def posZFloatsBetween(from: PosZFloat, to: PosZFloat): Generator[PosZFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFiniteFloat]]s in the specified range.
@@ -388,8 +352,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFiniteFloatsBetween(from: PosZFiniteFloat, to: PosZFiniteFloat): Generator[PosZFiniteFloat] =
-    valuesBetween(Generator.posZFiniteFloatEdges, (from: PosZFiniteFloat, to: PosZFiniteFloat, rnd) => rnd.choosePosZFiniteFloat(from, to))(from, to)
+  def posZFiniteFloatsBetween(from: PosZFiniteFloat, to: PosZFiniteFloat): Generator[PosZFiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZDouble]]s in the specified range.
@@ -404,8 +367,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] =
-    valuesBetween(Generator.posZDoubleEdges, (from: PosZDouble, to: PosZDouble, rnd) => rnd.choosePosZDouble(from, to))(from, to)
+  def posZDoublesBetween(from: PosZDouble, to: PosZDouble): Generator[PosZDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[PosZFiniteDouble]]s in the specified range.
@@ -420,8 +382,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def posZFiniteDoublesBetween(from: PosZFiniteDouble, to: PosZFiniteDouble): Generator[PosZFiniteDouble] =
-    valuesBetween(Generator.posZFiniteDoubleEdges, (from: PosZFiniteDouble, to: PosZFiniteDouble, rnd) => rnd.choosePosZFiniteDouble(from, to))(from, to)
+  def posZFiniteDoublesBetween(from: PosZFiniteDouble, to: PosZFiniteDouble): Generator[PosZFiniteDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegInt]]s in the specified range.
@@ -436,8 +397,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] =
-    valuesBetween(Generator.negIntEdges, (from: NegInt, to: NegInt, rnd) => rnd.chooseNegInt(from, to))(from, to)
+  def negIntsBetween(from: NegInt, to: NegInt): Generator[NegInt] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegLong]]s in the specified range.
@@ -452,8 +412,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] =
-    valuesBetween(Generator.negLongEdges, (from: NegLong, to: NegLong, rnd) => rnd.chooseNegLong(from, to))(from, to)
+  def negLongsBetween(from: NegLong, to: NegLong): Generator[NegLong] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFloat]]s in the specified range.
@@ -468,8 +427,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] =
-    valuesBetween(Generator.negFloatEdges, (from: NegFloat, to: NegFloat, rnd) => rnd.chooseNegFloat(from, to))(from, to)
+  def negFloatsBetween(from: NegFloat, to: NegFloat): Generator[NegFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFiniteFloat]]s in the specified range.
@@ -484,8 +442,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFiniteFloatsBetween(from: NegFiniteFloat, to: NegFiniteFloat): Generator[NegFiniteFloat] =
-    valuesBetween(Generator.negFiniteFloatEdges, (from: NegFiniteFloat, to: NegFiniteFloat, rnd) => rnd.chooseNegFiniteFloat(from, to))(from, to)
+  def negFiniteFloatsBetween(from: NegFiniteFloat, to: NegFiniteFloat): Generator[NegFiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegDouble]]s in the specified range.
@@ -500,8 +457,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] =
-    valuesBetween(Generator.negDoubleEdges, (from: NegDouble, to: NegDouble, rnd) => rnd.chooseNegDouble(from, to))(from, to)
+  def negDoublesBetween(from: NegDouble, to: NegDouble): Generator[NegDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegFiniteDouble]]s in the specified range.
@@ -516,8 +472,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negFiniteDoublesBetween(from: NegFiniteDouble, to: NegFiniteDouble): Generator[NegFiniteDouble] =
-    valuesBetween(Generator.negFiniteDoubleEdges, (from: NegFiniteDouble, to: NegFiniteDouble, rnd) => rnd.chooseNegFiniteDouble(from, to))(from, to)
+  def negFiniteDoublesBetween(from: NegFiniteDouble, to: NegFiniteDouble): Generator[NegFiniteDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZInt]]s in the specified range.
@@ -532,8 +487,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] =
-    valuesBetween(Generator.negZIntEdges, (from: NegZInt, to: NegZInt, rnd) => rnd.chooseNegZInt(from, to))(from, to)
+  def negZIntsBetween(from: NegZInt, to: NegZInt): Generator[NegZInt] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZLong]]s in the specified range.
@@ -548,8 +502,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] =
-    valuesBetween(Generator.negZLongEdges, (from: NegZLong, to: NegZLong, rnd) => rnd.chooseNegZLong(from, to))(from, to)
+  def negZLongsBetween(from: NegZLong, to: NegZLong): Generator[NegZLong] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFloat]]s in the specified range.
@@ -564,8 +517,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] =
-    valuesBetween(Generator.negZFloatEdges, (from: NegZFloat, to: NegZFloat, rnd) => rnd.chooseNegZFloat(from, to))(from, to)
+  def negZFloatsBetween(from: NegZFloat, to: NegZFloat): Generator[NegZFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFiniteFloat]]s in the specified range.
@@ -580,8 +532,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFiniteFloatsBetween(from: NegZFiniteFloat, to: NegZFiniteFloat): Generator[NegZFiniteFloat] =
-    valuesBetween(Generator.negZFiniteFloatEdges, (from: NegZFiniteFloat, to: NegZFiniteFloat, rnd) => rnd.chooseNegZFiniteFloat(from, to))(from, to)
+  def negZFiniteFloatsBetween(from: NegZFiniteFloat, to: NegZFiniteFloat): Generator[NegZFiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZDouble]]s in the specified range.
@@ -596,8 +547,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] =
-    valuesBetween(Generator.negZDoubleEdges, (from: NegZDouble, to: NegZDouble, rnd) => rnd.chooseNegZDouble(from, to))(from, to)
+  def negZDoublesBetween(from: NegZDouble, to: NegZDouble): Generator[NegZDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NegZFiniteDouble]]s in the specified range.
@@ -612,8 +562,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def negZFiniteDoublesBetween(from: NegZFiniteDouble, to: NegZFiniteDouble): Generator[NegZFiniteDouble] =
-    valuesBetween(Generator.negZFiniteDoubleEdges, (from: NegZFiniteDouble, to: NegZFiniteDouble, rnd) => rnd.chooseNegZFiniteDouble(from, to))(from, to)
+  def negZFiniteDoublesBetween(from: NegZFiniteDouble, to: NegZFiniteDouble): Generator[NegZFiniteDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroInt]]s in the specified range.
@@ -628,8 +577,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroIntsBetween(from: NonZeroInt, to: NonZeroInt): Generator[NonZeroInt] =
-    valuesBetween(Generator.nonZeroIntEdges, (from: NonZeroInt, to: NonZeroInt, rnd) => rnd.chooseNonZeroInt(from, to))(from, to)
+  def nonZeroIntsBetween(from: NonZeroInt, to: NonZeroInt): Generator[NonZeroInt] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroLong]]s in the specified range.
@@ -644,8 +592,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroLongsBetween(from: NonZeroLong, to: NonZeroLong): Generator[NonZeroLong] =
-    valuesBetween(Generator.nonZeroLongEdges, (from: NonZeroLong, to: NonZeroLong, rnd) => rnd.chooseNonZeroLong(from, to))(from, to)
+  def nonZeroLongsBetween(from: NonZeroLong, to: NonZeroLong): Generator[NonZeroLong] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFloat]]s in the specified range.
@@ -660,8 +607,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFloatsBetween(from: NonZeroFloat, to: NonZeroFloat): Generator[NonZeroFloat] =
-    valuesBetween(Generator.nonZeroFloatEdges, (from: NonZeroFloat, to: NonZeroFloat, rnd) => rnd.chooseNonZeroFloat(from, to))(from, to)
+  def nonZeroFloatsBetween(from: NonZeroFloat, to: NonZeroFloat): Generator[NonZeroFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFiniteFloat]]s in the specified range.
@@ -676,8 +622,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFiniteFloatsBetween(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): Generator[NonZeroFiniteFloat] =
-    valuesBetween(Generator.nonZeroFiniteFloatEdges, (from: NonZeroFiniteFloat, to: NonZeroFiniteFloat, rnd) => rnd.chooseNonZeroFiniteFloat(from, to))(from, to)
+  def nonZeroFiniteFloatsBetween(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat): Generator[NonZeroFiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroDouble]]s in the specified range.
@@ -692,8 +637,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroDoublesBetween(from: NonZeroDouble, to: NonZeroDouble): Generator[NonZeroDouble] =
-    valuesBetween(Generator.nonZeroDoubleEdges, (from: NonZeroDouble, to: NonZeroDouble, rnd) => rnd.chooseNonZeroDouble(from, to))(from, to)
+  def nonZeroDoublesBetween(from: NonZeroDouble, to: NonZeroDouble): Generator[NonZeroDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[NonZeroFiniteDouble]]s in the specified range.
@@ -708,8 +652,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def nonZeroFiniteDoublesBetween(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): Generator[NonZeroFiniteDouble] =
-    valuesBetween(Generator.nonZeroFiniteDoubleEdges, (from: NonZeroFiniteDouble, to: NonZeroFiniteDouble, rnd) => rnd.chooseNonZeroFiniteDouble(from, to))(from, to)
+  def nonZeroFiniteDoublesBetween(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble): Generator[NonZeroFiniteDouble] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[FiniteFloat]]s in the specified range.
@@ -724,8 +667,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] =
-    valuesBetween(Generator.finiteFloatEdges, (from: FiniteFloat, to: FiniteFloat, rnd) => rnd.chooseFiniteFloat(from, to))(from, to)
+  def finiteFloatsBetween(from: FiniteFloat, to: FiniteFloat): Generator[FiniteFloat] = between(from, to)
 
   /**
     * Create a [[Generator]] that returns [[FiniteDouble]]s in the specified range.
@@ -740,8 +682,7 @@ trait CommonGenerators {
     * @param to the other end of the desired range
     * @return a value within that range, inclusive of the bounds
     */
-  def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] =
-    valuesBetween(Generator.finiteDoubleEdges, (from: FiniteDouble, to: FiniteDouble, rnd) => rnd.chooseFiniteDouble(from, to))(from, to)
+  def finiteDoublesBetween(from: FiniteDouble, to: FiniteDouble): Generator[FiniteDouble] = between(from, to)
 
   /**
     * Given a list of values of type [[T]], this creates a [[Generator]] that will only
