@@ -422,6 +422,19 @@ import prop._
   * In general, `forAll()` works well out of the box. But you can tune several configuration parameters
   * when needed. See [[GeneratorDrivenPropertyChecks]] for info on how to set
   * configuration parameters for your test.
+  *
+  *
+  * ==Table-Driven Properties==
+  *
+  * Sometimes, you want something in between traditional hard-coded unit tests and Generator-driven,
+  * randomized tests. Instead, you sometimes want to check your properties against a specific set of
+  * inputs.
+  *
+  * (This is particularly useful for regression tests, when you have found certain inputs that have
+  * caused problems in the past, and want to make sure that they get consistently re-tested.)
+  *
+  * ScalaTest supports these, by mixing in [[TableDrivenPropertyChecks]]. See the documentation for
+  * that class for the full details.
   */
 package object prop {
   /**
