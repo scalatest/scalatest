@@ -43,6 +43,8 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   */
 class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
 
+  private[scalatest] lazy val scrambledSeed: Long =  seed
+
   /**
     * Computes the next Randomizer to use.
     *
@@ -56,7 +58,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return The next Randomizer, ready to use.
     */
   def nextRandomizer: Randomizer = {
-    val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
+    val newSeed = (scrambledSeed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     new Randomizer(newSeed)
   }
 
@@ -71,7 +73,7 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     * @return The random bits, and the next Randomizer to user.
     */
   def next(bits: Int): (Int, Randomizer) = {
-    val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
+    val newSeed = (scrambledSeed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     val newInt = (newSeed >>> (48 - bits)).toInt
     (newInt, new Randomizer(newSeed))
   }
@@ -2204,10 +2206,12 @@ object Randomizer {
     * @return A Randomizer, ready to begin producing random values.
     */
   def default(): Randomizer =
-    defaultSeed.get() match {
-      case Some(seed) => new Randomizer(seed)
-      case None => apply(System.currentTimeMillis())
-    }
+    apply(
+      defaultSeed.get() match {
+        case Some(seed) => seed
+        case None => System.currentTimeMillis()
+      }
+    )
 
   /**
     * A Randomizer, initialized with the specified seed value.
@@ -2227,7 +2231,10 @@ object Randomizer {
     * @param seed A number that will be used to initialize a new Randomizer.
     * @return A Randomizer, ready to begin producing random values.
     */
-  def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))
+  def apply(seed: Long): Randomizer =
+    new Randomizer(seed) {
+      override private[scalatest] lazy val scrambledSeed: Long = (seed ^ 0x5DEECE66DL) & ((1L << 48) - 1)
+    }
 
   /**
     * Randomizes the order of the provided List.
