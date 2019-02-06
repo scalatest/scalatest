@@ -1569,12 +1569,18 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
     decorateToStringValue(prettifier, arg.value)
 
   private[enablers] def prettyArgs(args: List[PropertyArgument], prettifier: Prettifier) = {
-    val strs = for((a, i) <- args.zipWithIndex) yield (
-      "    " +
-        (if (a.label == "") "arg" + i else a.label) +
-        " = " + decorateArgToStringValue(a, prettifier) + (if (i < args.length - 1) "," else "") /*+
+    val strs = for((a, i) <- args.zipWithIndex) yield {
+
+      val argString =
+        a.label match {
+          case None => ""
+          case Some(label) => s"$label = "
+        }
+
+      "    " + argString +
+        decorateArgToStringValue(a, prettifier) + (if (i < args.length - 1) "," else "") /*+
         (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")*/
-      )
+    }
     strs.mkString("\n")
   }
 
