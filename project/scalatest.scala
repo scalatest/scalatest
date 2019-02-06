@@ -1911,6 +1911,7 @@ object ScalatestBuild {
     scalacOptions in (Compile, doc) ++=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", scalatestDocSourceUrl)
@@ -1919,6 +1920,7 @@ object ScalatestBuild {
     scalacOptions in (Compile, doc) ++=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", scalacticDocSourceUrl)
