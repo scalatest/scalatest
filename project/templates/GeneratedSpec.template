@@ -215,13 +215,11 @@ class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues wi
         (p - long) shouldEqual (p.to$primitiveType$ - long)
       }
       forAll { (p: $typeName$, float: Float) =>
-        (p - float) shouldEqual (p.to$primitiveType$ - float)
         val x = p - float
         val y = p.to$primitiveType$ - float
         areEqualForgivingNaNs(x, y)
       }
       forAll { (p: $typeName$, double: Double) =>
-        (p - double) shouldEqual (p.to$primitiveType$ - double)
         val x = p - double
         val y = p.to$primitiveType$ - double
         areEqualForgivingNaNs(x, y)
