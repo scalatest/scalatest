@@ -460,7 +460,12 @@ class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
     (PosZFloat.ensuringValid(posZ), r)
   }
 
-  private def nextBit: (Int, Randomizer) = {
+  /**
+    * Get a 1 or a 0.
+    *
+    * @return a 1 or 0 as an Int.
+    */
+  def nextBit: (Int, Randomizer) = {
     val (i, rs) = nextInt
     (i & 1, rs)
   }

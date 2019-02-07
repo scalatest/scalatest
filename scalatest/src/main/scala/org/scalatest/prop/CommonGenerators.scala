@@ -1039,6 +1039,13 @@ trait CommonGenerators {
   //
 
   /**
+    * A [[Generator]] that produces [[Boolean]] values.
+    *
+    * @group Common
+    */
+  val booleans: Generator[Boolean] = Generator.booleanGenerator
+
+  /**
     * A [[Generator]] that produces [[Byte]] values.
     *
     * @group Common
