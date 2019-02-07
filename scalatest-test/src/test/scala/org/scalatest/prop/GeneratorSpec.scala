@@ -1691,6 +1691,34 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (NonZeroInt(1))
         edges should contain (NonZeroInt.MinValue)
       }
+      it("should produce NonZeroInt canonical values") {
+        import Generator._
+        val gen = nonZeroIntGenerator
+        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        canonicals.toList shouldBe List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
+      }
+      it("should shrink NonZeroInts by repeatedly halving and negating") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (i: NonZeroInt) =>
+          val generator = implicitly[Generator[NonZeroInt]]
+          val (shrinkIt, _) = generator.shrink(i, Randomizer.default)
+          val shrinks: List[NonZeroInt] = shrinkIt.toList
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 1 || i.value == -1)
+            shrinks shouldBe empty
+          else {
+            if (i > 1)
+              shrinks.last.value should be >= 1
+            else if (i < -1)
+              shrinks.last.value should be <= 1
+            import org.scalatest.Inspectors._
+            val pairs: List[(NonZeroInt, NonZeroInt)] = shrinks.zip(shrinks.tail)
+            forAll (pairs) { case (x, y) =>
+              assert(x == -y || x.value.abs == y.value.abs / 2)
+            }
+          }
+        }
+      }
     }
     describe("for NonZeroLongs") {
       it("should produce the same NonZeroLong values in the same order given the same Randomizer") {
