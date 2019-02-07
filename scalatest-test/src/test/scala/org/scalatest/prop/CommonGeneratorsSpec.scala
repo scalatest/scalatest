@@ -19,10 +19,13 @@ import org.scalactic.anyvals._
 import org.scalatest.WordSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
+
 import scala.annotation.tailrec
 import org.scalatest.Resources
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
+import org.scalatest.prop.Generator.booleanGenerator
+
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 
@@ -3232,6 +3235,30 @@ If it doesn't show up for a while, please delete this comment.
         } 
       }
       samplesLoop(100, originalRnd, Nil)
+    }
+
+    "offer a booleans method" that {
+      "returns the default implicit generator that produces arbitrary Booleans" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[Boolean]]
+        val namedGen = booleans
+        val rnd = Randomizer.default
+
+        @scala.annotation.tailrec
+        def loop(gen: Generator[Boolean], n: Int, rnd: Randomizer, results: List[Boolean]): List[Boolean] = {
+          if (n == 0)
+            results
+          else {
+            val (bool, _, nextRnd) = gen.next(SizeParam(0, 0, 0), Nil, rnd)
+            loop(gen, n - 1, nextRnd, bool :: results)
+          }
+        }
+
+        val fromImplicit = loop(implicitGen, 1000, rnd, Nil)
+        val fromNamed = loop(namedGen, 1000, rnd, Nil)
+
+        fromImplicit should contain theSameElementsAs(fromNamed)
+      }
     }
 
     "offer a bytes method" that {
