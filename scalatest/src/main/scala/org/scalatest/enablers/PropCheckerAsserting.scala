@@ -182,7 +182,27 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+            def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
+              shrinksRemaining match {
+                case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+                case shrinkHead :: shrinkTail =>
+                  val result: Try[T] = Try { fun(shrinkHead) }
+                  result match {
+                    case Success(_) => shrinkLoop(shrinkTail)
+                    case Failure(shrunkEx) =>
+                      val shrunkArgsPassed =
+                        List(
+                          if (names.isDefinedAt(0))
+                            PropertyArgument(Some(names(0)), shrinkHead)
+                          else
+                            PropertyArgument(None, shrinkHead)
+                        )
+                      new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
+                  }
+              }
+            }
+            val (it, _) = genA.shrink(a, rnd)
+            shrinkLoop(it.take(100).toList)
         }
       }
 
