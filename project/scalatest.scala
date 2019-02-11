@@ -700,10 +700,10 @@ object ScalatestBuild {
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-  /*sourceGenerators in Test += Def.task {
-    GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++
-    GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
-      }.taskValue*/
+      sourceGenerators in Test += Def.task {
+        GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
+        GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
+      }.taskValue
     ).dependsOn(scalacticDotty, scalatestDotty % "test", commonTestDotty % "test")
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))

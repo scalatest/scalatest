@@ -149,6 +149,30 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyFiles("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
+        //"AccumulationSpec.scala",
+        //"CanEqualSpec.scala",
+        //"CatcherSpec.scala",
+        //"ChainSpec.scala",
+        //"ConversionCheckedMapEqualityConstraintsSpec.scala",
+        //"ConversionCheckedSeqEqualityConstraintsSpec.scala",
+        "ConversionCheckedSetEqualityConstraintsSpec.scala",
+        //"ConversionCheckedTraversableEqualityConstraintsSpec.scala",
+        //"ConversionCheckedTripleEqualsExplicitlySpec.scala",
+        //"ConversionCheckedTripleEqualsSpec.scala",
+        //"DecidersSpec.scala",
+        "DefaultEqualitySpec.scala",
+        //"DeprecatedPrettyMethodsSpec.scala",
+        //"DifferSpec.scala",
+        //"DirectRequirementsSpec.scala",
+        //"EitherSugarSpec.scala",
+        "EqualitySpec.scala",
+        //"EverySpec.scala",
+        "ExplicitlySpecHelpers.scala",
+        //"FutureSugarSpec.scala",
+        //"NormalizationSpec.scala",
+        "NormalizingEqualitySpec.scala",
+        //"NormMethodsSpec.scala",
+        "NumericEqualityConstraintsSpec.scala", 
         "UnitSpec.scala"
       )
     )
