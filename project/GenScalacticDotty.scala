@@ -147,11 +147,16 @@ object GenScalacticDotty {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+    copyFiles("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "UnitSpec.scala"
+      )
+    )
+    /*copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "TripleEqualsSpec.for210"
       )) ++
-      copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
-      copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
+    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)*/
 
 }

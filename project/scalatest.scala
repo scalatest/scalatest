@@ -686,6 +686,26 @@ object ScalatestBuild {
     )
   )
 
+  lazy val scalacticTestDotty = Project("scalacticTestDotty", file("scalacticTestDotty"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test",
+      organization := "org.scalactic",
+      testOptions in Test ++=
+        Seq(Tests.Argument(TestFrameworks.ScalaTest,
+          "-oDIF",
+          "-W", "120", "60")),
+      logBuffered in Test := false,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+  /*sourceGenerators in Test += Def.task {
+    GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++
+    GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
+      }.taskValue*/
+    ).dependsOn(scalacticDotty, scalatestDotty % "test", commonTestDotty % "test")
+
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(
