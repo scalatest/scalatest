@@ -130,10 +130,11 @@ object GenScalaTestDotty {
       List(
         "Assertions.scala",                 // Re-implemented
         "AssertionsMacro.scala",            // Re-implemented
-        "CompileMacro.scala",               // Pending reimplementation
-        "DiagrammedAssertions.scala",       // Pending reimplementation
-        "DiagrammedAssertionsMacro.scala",  // Pending reimplementation
-        "DiagrammedExprMacro.scala",        // Pending reimplementation
+        "CompileMacro.scala",               // Re-implemented
+        "DiagrammedAssertions.scala",       // Re-implemented
+        "DiagrammedAssertionsMacro.scala",  // Re-implemented
+        "DiagrammedExprMacro.scala",        // Re-implemented
+        "DiagrammedExpr.scala",             // Re-implemented
         "Expectations.scala",               // Pending reimplementation
         "ExpectationsMacro.scala",          // Pending reimplementation
         "StreamlinedXml.scala",             // Hmm, not sure what to do with XML support, let's ask.
