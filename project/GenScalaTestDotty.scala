@@ -135,8 +135,8 @@ object GenScalaTestDotty {
         "DiagrammedAssertionsMacro.scala",  // Re-implemented
         "DiagrammedExprMacro.scala",        // Re-implemented
         "DiagrammedExpr.scala",             // Re-implemented
-        "Expectations.scala",               // Pending reimplementation
-        "ExpectationsMacro.scala",          // Pending reimplementation
+        "Expectations.scala",               // Re-implemented
+        "ExpectationsMacro.scala",          // Re-implemented
         "StreamlinedXml.scala",             // Hmm, not sure what to do with XML support, let's ask.
         "StreamlinedXmlEquality.scala",     // Hmm, not sure what to do with XML support, let's ask.
         "StreamlinedXmlNormMethods.scala"   // Hmm, not sure what to do with XML support, let's ask.
