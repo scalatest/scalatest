@@ -250,6 +250,37 @@ class GeneratorSpec extends FunSpec with Matchers {
       values should contain theSameElementsAs expectedInitEdges
     }
 
+    describe("for Booleans") {
+      it("should produce true and false more or less equally") {
+        import Generator._
+
+        val classification = CommonGenerators.classify(100000, booleanGenerator) {
+          case x if x => "true"
+          case _ => "false"
+        }
+        classification.portions("true") should be (0.5 +- 0.01)
+      }
+
+      it("should produce the same Boolean values in the same order given the same Randomizer") {
+        import Generator._
+        @scala.annotation.tailrec
+        def loop(n: Int, rnd: Randomizer, results: List[Boolean]): List[Boolean] = {
+          if (n == 0)
+            results
+          else {
+            val (bool, _, nextRnd) = booleanGenerator.next(SizeParam(0, 0, 0), Nil, rnd)
+            loop(n - 1, nextRnd, bool :: results)
+          }
+        }
+
+        val rnd = Randomizer.default
+        val firstRound = loop(100, rnd, Nil)
+        val secondRound = loop(100, rnd, Nil)
+
+        firstRound should contain theSameElementsAs(secondRound)
+      }
+    }
+
     describe("for Bytes") {
       it("should produce the same Byte values in the same order given the same Randomizer") {
         import Generator._
