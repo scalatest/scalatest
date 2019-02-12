@@ -482,10 +482,9 @@ trait Generator[T] { thisGeneratorOfT =>
 /**
   * Companion to the [[Generator]] trait, which contains many of the standard implicit Generators.
   *
-  * For the most part, you should not need to use the values and functions in here directly; so long as
-  * [[Generator]] is imported into scope, you will have these values available. But this listing shows
-  * you what types you can generally use in Properties without any further ado, unless you have special
-  * requirements.
+  * For the most part, you should not need to use the values and functions in here directly; the useful
+  * values in here are generally aliased in [[CommonGenerators]] (albeit with different names),
+  * which in turn is mixed into [[GeneratorDrivenPropertyChecks]] and [[TableDrivenPropertyChecks]].
   *
   * Note that this provides `Generator`s for the common Scalactic types, as well as the common standard
   * library ones.
@@ -578,6 +577,20 @@ object Generator {
   // likely be easier to understand and maintain. It's probably worth trying and seeing how it works. (Note: I'm not
   // suggesting changing the signatures of any of these, just merging their implementations.)
   //
+
+  /**
+    * A [[Generator]] that produces [[Boolean]] values.
+    */
+  implicit val booleanGenerator: Generator[Boolean] =
+    new Generator[Boolean] {
+      def next(szp: SizeParam, edges: List[Boolean], rnd: Randomizer): (Boolean, List[Boolean], Randomizer) = {
+        val (bit, nextRnd) = rnd.nextBit
+        val bool = if (bit == 1) true else false
+        (bool, Nil, nextRnd)
+      }
+
+      override def toString = "Generator[Boolean]"
+    }
 
   /**
     * A [[Generator]] that produces [[Byte]] values.
