@@ -589,27 +589,13 @@ abstract class UnitPropCheckerAsserting {
             pos
           )
 
-        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
+        case failure @ PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
           indicateFailure(
-            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
-              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
-              (
-                sde match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
-                  case _ => ""
-                }
-                ) +
-              "  " + FailureMessages.occurredOnValues + EOL +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
-              "  )" +
-              getLabelDisplay(labels.toSet) + EOL +
-              "  " + FailureMessages.initSeed(prettifier, initSeed),
+            sde => failureStr(failure, sde, prettifier, argNames, labels),
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
-            None,
+            ex,
             pos
           )
 
@@ -1353,23 +1339,9 @@ trait FuturePropCheckerAsserting {
             pos
           )
 
-        case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
+        case failure @ PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
           indicateFutureFailure(
-            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
-              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
-              (
-                sde match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
-                  case _ => ""
-                }
-                ) +
-              "  " + FailureMessages.occurredOnValues + EOL +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
-              "  )" +
-              getLabelDisplay(labels.toSet) + EOL +
-              "  " + FailureMessages.initSeed(prettifier, initSeed),
+            sde => failureStr(failure, sde, prettifier, argNames, labels),
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
@@ -1599,6 +1571,51 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
       "\n  " + (if (labels.size == 1) Resources.propCheckLabel else Resources.propCheckLabels) + "\n" + labels.map("    " + _).mkString("\n")
     else
       ""
+
+  /**
+    * This computes the string to display when a property check fails. It's showing quite a bit, so there's a lot
+    * to it.
+    *
+    * @param failure the actual property check failure, which contains lots of stuff we need to show
+    * @param outerEx the outer exception, generally pointing to the forAll itself
+    * @param prettifier the Prettifier that we will use to improve the error displays
+    * @param argNames the names on the property check arguments, if any
+    * @param labels
+    * @return the detailed error message to show to the user
+    */
+  private[enablers] def failureStr(failure: PropertyCheckResult.Failure, outerEx: StackDepthException, prettifier: Prettifier, argNames: Option[List[String]], labels: List[String]): String = {
+    // ex is the *inner* Exception, where we actually threw. If defined, this is typically the line
+    // that the user really cares about:
+    val PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) = failure
+    // If there is an inner Exception, show that message; otherwise, default to something
+    // more generic:
+    val msg = ex match {
+      case Some(ex) => ex.getMessage
+      case None => FailureMessages.propertyException(prettifier, UnquotedString(outerEx.getClass.getSimpleName))
+    }
+    // If there was an inner Exception, that's the line to focus on:
+    val filenameAndLine: Option[String] = ex match {
+      case Some(ex: StackDepthException) => ex.failedCodeFileNameAndLineNumberString
+      case _ => outerEx.failedCodeFileNameAndLineNumberString
+    }
+
+    msg + EOL +
+      ( filenameAndLine match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
+      "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
+      (
+        // This is where we display the location of the *outer* Exception, typically the forAll:
+        outerEx match {
+          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+            "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
+          case _ => ""
+        }
+      ) +
+      "  " + FailureMessages.occurredOnValues + EOL +
+      prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
+      "  )" +
+      getLabelDisplay(labels.toSet) + EOL +
+      "  " + FailureMessages.initSeed(prettifier, initSeed)
+  }
 
   def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
     @tailrec
