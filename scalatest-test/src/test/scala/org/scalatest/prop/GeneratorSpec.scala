@@ -2125,6 +2125,73 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals(3).head should (be >= '0' and be <= '9')
       }
     }
+
+    describe("for Options") {
+      it("should produce Nones with a reasonable frequency") {
+        import Generator._
+        val gen = optionGenerator[Int]
+
+        val classified = CommonGenerators.classify(1000, gen) {
+          case Some(_) => "Some"
+          case None => "None"
+        }
+
+        classified.portions("None") should be (0.1 +- 0.03)
+      }
+
+      it("should use the base type for edges") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intEdges, _) = baseGen.initEdges(100, rnd)
+        val (optEdges, _) = gen.initEdges(100, rnd)
+
+        optEdges should contain (None)
+        optEdges.filter(_.isDefined).map(_.get) should contain theSameElementsAs intEdges
+      }
+
+      it("should use the base type for canonicals") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intCanon, _) = baseGen.canonicals(rnd)
+        val (optCanonIter, _) = gen.canonicals(rnd)
+        val optCanon = optCanonIter.toList
+
+        optCanon should contain (None)
+        optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
+      }
+
+      it("should use the base type for shrinking") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intShrinkIter, _) = baseGen.shrink(10000, rnd)
+        val (optShrinkIter, _) = gen.shrink(Some(10000), rnd)
+        val intShrink = intShrinkIter.toList
+        val optShrink = optShrinkIter.toList
+
+        optShrink should contain (None)
+        optShrink.filter(_.isDefined).map(_.get) should contain theSameElementsAs(intShrink)
+      }
+
+      it("should not try to shrink None") {
+        import Generator._
+        val gen = optionGenerator[Int]
+        val rnd = Randomizer.default
+
+        val (optShrink, _) = gen.shrink(None, rnd)
+
+        assert(optShrink.isEmpty)
+      }
+    }
+
     describe("for Lists") {
       it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
   
