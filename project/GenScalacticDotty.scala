@@ -147,11 +147,11 @@ object GenScalacticDotty {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyFiles("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+    /*copyFiles("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         //"AccumulationSpec.scala",
         //"CanEqualSpec.scala",
-        //"CatcherSpec.scala",
+        "CatcherSpec.scala",
         //"ChainSpec.scala",
         //"ConversionCheckedMapEqualityConstraintsSpec.scala",
         //"ConversionCheckedSeqEqualityConstraintsSpec.scala",
@@ -161,25 +161,68 @@ object GenScalacticDotty {
         //"ConversionCheckedTripleEqualsSpec.scala",
         //"DecidersSpec.scala",
         "DefaultEqualitySpec.scala",
-        //"DeprecatedPrettyMethodsSpec.scala",
+        "DeprecatedPrettyMethodsSpec.scala",
         //"DifferSpec.scala",
         //"DirectRequirementsSpec.scala",
-        //"EitherSugarSpec.scala",
+        "EitherSugarSpec.scala",
         "EqualitySpec.scala",
-        //"EverySpec.scala",
+        //"EverySpec.scala",  This hangs dotty
         "ExplicitlySpecHelpers.scala",
-        //"FutureSugarSpec.scala",
-        //"NormalizationSpec.scala",
+        //"FutureSugarSpec.scala",   Implementation missing
+        //"NormalizationSpec.scala",  Compilation error to be investigated further.
         "NormalizingEqualitySpec.scala",
-        //"NormMethodsSpec.scala",
-        "NumericEqualityConstraintsSpec.scala", 
-        "UnitSpec.scala"
+        //"NormMethodsSpec.scala",  Compilation error to be investigated further.
+        "NumericEqualityConstraintsSpec.scala",
+        "OptionSugarSpec.scala",
+        //"OrSpec.scala",  Compilation error to be investigated further.
+        "PresentSpec.scala",
+        //"PrettifierSpec.scala",  Test failed with java.lang.IllegalAccessException
+        "PrettyMethodsSpec.scala",
+        //"RequirementsSpec.scala",  Error during macro expansion
+        //"SnapshotsSpec.scala",  Pending macro implementation
+        "SpreadSpec.scala",
+        "StringNormalizationsSpec.scala",
+        "TimesOnIntSpec.scala",
+        "ToleranceSpec.scala",
+        "TolerantEqualitySpec.scala",
+        //"TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
+        "TripleEqualsSpec.scala",
+        //"TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        //"TrySugarSpec.scala",  // Not implemented error when test runs
+        "TypeCheckedMapEqualityConstraintsSpec.scala",
+        "TypeCheckedSeqEqualityConstraintsSpec.scala",
+        "TypeCheckedSetEqualityConstraintsSpec.scala",
+        "TypeCheckedTraversableEqualityConstraintsSpec.scala",
+        "TypeCheckedTripleEqualsExplicitlySpec.scala",
+        "UnitSpec.scala",
+        "ValidationSpec.scala"
       )
-    )
-    /*copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+    )*/
+    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "TripleEqualsSpec.for210"
-      )) ++
+        "AccumulationSpec.scala",  // ClassFormatError: Illegal field modifiers in class org/scalatest/prop/Tables: 0x9
+        "CanEqualSpec.scala",  // NotImplementedError
+        "ChainSpec.scala",  // Hang the compiler
+        "ConversionCheckedMapEqualityConstraintsSpec.scala",  // macro expansion error
+        "ConversionCheckedSeqEqualityConstraintsSpec.scala",  // macro expansion error
+        "ConversionCheckedTraversableEqualityConstraintsSpec.scala",  // macro expansion error
+        "ConversionCheckedTripleEqualsExplicitlySpec.scala",  // macro expansion error
+        "ConversionCheckedTripleEqualsSpec.scala",  // macro expansion error
+        "DecidersSpec.scala",  // Compilation error to be investigated further
+        "DifferSpec.scala",  // macro expansion error: invalid prefix NoType
+        "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
+        "EverySpec.scala",  // This hangs dotty
+        "FutureSugarSpec.scala",   // Implementation missing
+        "NormalizationSpec.scala",  // Compilation error to be investigated further.
+        "NormMethodsSpec.scala",  // Compilation error to be investigated further.
+        "OrSpec.scala",  // Compilation error to be investigated further.
+        "PrettifierSpec.scala",  // Test failed with java.lang.IllegalAccessException
+        "RequirementsSpec.scala",  // Error during macro expansion
+        "SnapshotsSpec.scala",  // Pending macro implementation
+        "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
+        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        "TrySugarSpec.scala"  // Not implemented error when test runs
+      )) /*++
     copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)*/
 

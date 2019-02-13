@@ -686,7 +686,7 @@ object ScalatestBuild {
     )
   )
 
-  lazy val scalacticTestDotty = Project("scalacticTestDotty", file("scalacticTestDotty"))
+  lazy val scalacticTestDotty = Project("scalacticTestDotty", file("scalactic-test.dotty"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(
