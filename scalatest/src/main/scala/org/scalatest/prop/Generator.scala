@@ -2822,6 +2822,14 @@ object Generator {
         }
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+        val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
+        val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
+
+        (goodCanon.map(Good(_)) ++ badCanon.map(Bad(_)), nextNextRnd)
+      }
+
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (G Or B, List[G Or B], Randomizer) = {
         edges match {
           case head :: tail => 
@@ -2836,6 +2844,19 @@ object Generator {
               val (nextG, _, nextRnd) = genOfG.next(szp, Nil, rnd)
               (Good(nextG), Nil, nextRnd)
             }
+        }
+      }
+
+      override def shrink(value: Or[G, B], rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+        value match {
+          case Good(g) => {
+            val (gShrink, nextRnd) = genOfG.shrink(g, rnd)
+            (gShrink.map(Good(_)), nextRnd)
+          }
+          case Bad(b) => {
+            val (bShrink, nextRnd) = genOfB.shrink(b, rnd)
+            (bShrink.map(Bad(_)), nextRnd)
+          }
         }
       }
     }
