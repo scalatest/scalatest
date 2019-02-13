@@ -15,6 +15,7 @@
  */
 package org.scalatest.prop
 
+import org.scalactic._
 import org.scalactic.anyvals._
 
 import scala.annotation.tailrec
@@ -1780,6 +1781,17 @@ trait CommonGenerators {
     * @group Collections
     */
   def options[T](implicit genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
+
+  /**
+    * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
+    *
+    * @param genOfG a [[Generator]] that produces type [[G]]
+    * @param genOfB a [[Generator]] that produces type [[B]]
+    * @tparam G the "good" type for an [[Or]]
+    * @tparam B the "bad" type for an [[Or]]
+    * @return a [[Generator]] that produces `G Or B`
+    */
+  def ors[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
 
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.

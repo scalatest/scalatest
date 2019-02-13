@@ -2192,6 +2192,69 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
 
+    describe("for Ors") {
+      it("should use the base types for edges") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gEdges, _) = gGen.initEdges(100, rnd)
+        val (bEdges, _) = bGen.initEdges(100, rnd)
+        val (orEdges, _) = gen.initEdges(100, rnd)
+
+        orEdges should contain theSameElementsAs(gEdges.map(Good(_)) ++ bEdges.map(Bad(_)))
+      }
+
+      it("should use the base types for canonicals") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gCanon, _) = gGen.canonicals(rnd)
+        val (bCanon, _) = bGen.canonicals(rnd)
+        val (orCanon, _) = gen.canonicals(rnd)
+
+        orCanon.toList should contain theSameElementsAs((gCanon.map(Good(_)) ++ bCanon.map(Bad(_))).toList)
+      }
+
+      it("should produce an appropriate mix of Good and Bad") {
+        import Generator._
+        import org.scalactic._
+        val gen = orGenerator[Int, String]
+
+        val classification = CommonGenerators.classify(1000, gen) {
+          case Good(_) => "Good"
+          case Bad(_) => "Bad"
+        }
+
+        // It's arbitrary, but we know that it produces Bad about a quarter of the time:
+        classification.portions("Bad") should be (.25 +- .02)
+      }
+
+      it("should use the base types to shrink") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gShrink, _) = gGen.shrink(1000, rnd)
+        val (bShrink, _) = bGen.shrink("hello world!", rnd)
+        val (orGoodShrink, _) = gen.shrink(Good(1000), rnd)
+        val (orBadShrink, _) = gen.shrink(Bad("hello world!"), rnd)
+
+        orGoodShrink.toList should contain theSameElementsAs(gShrink.map(Good(_)).toList)
+        orBadShrink.toList should contain theSameElementsAs(bShrink.map(Bad(_)).toList)
+      }
+    }
+
     describe("for Lists") {
       it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
   
