@@ -2755,6 +2755,13 @@ object Generator {
         val edges = None :: edgesOfT.map(t => Some(t))
         (edges, nextRnd)
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+        // The canonicals of Option[T] are the canonicals of T, plus None
+        val (tCanonicals, nextRnd) = genOfT.canonicals(rnd)
+        (Iterator(None) ++ tCanonicals.map(Some(_)), nextRnd)
+      }
+
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
         edges match {
           case head :: tail =>
@@ -2769,6 +2776,21 @@ object Generator {
             }
         }
       }
+
+      override def shrink(value: Option[T], rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+        value match {
+          // If there is a real value, shrink that value, and return that and None.
+          case Some(t) => {
+            val (tShrinks, nextRnd) = genOfT.shrink(t, rnd)
+            (Iterator(None) ++ tShrinks.map(Some(_)), nextRnd)
+          }
+
+          // There's no way to simplify None:
+          case None => (Iterator.empty, rnd)
+        }
+      }
+
+      override def toString = "Generator[Option[T]]"
     }
 
   /**

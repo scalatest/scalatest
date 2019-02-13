@@ -3373,6 +3373,22 @@ If it doesn't show up for a while, please delete this comment.
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+
+    "offer an options method" that {
+      "returns the default implicit generator that produces arbitrary Options" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[Option[Int]]]
+        val namedGen = options[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+
     "offer a lists method" that {
       "returns the default implicit generator that produces arbitrary Lists" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
