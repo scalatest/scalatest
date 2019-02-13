@@ -1771,6 +1771,17 @@ trait CommonGenerators {
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
 
   /**
+    * Given an existing `Generator[T]`, this creates a `Generator[Option[T]]`.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type that we are producing an Option of
+    * @return a Generator that produces `Option[T]`
+    *
+    * @group Collections
+    */
+  def options[T](implicit genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
+
+  /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
     * @param genOfT a [[Generator]] that produces values of type [[T]]
