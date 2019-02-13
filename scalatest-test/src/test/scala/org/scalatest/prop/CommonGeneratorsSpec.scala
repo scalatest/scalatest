@@ -3389,6 +3389,22 @@ If it doesn't show up for a while, please delete this comment.
       }
     }
 
+    "offer an ors method" that {
+      "returns the default implicit generator that produces arbitrary Ors" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        import org.scalactic._
+        val implicitGen = implicitly[Generator[Int Or String]]
+        val namedGen = ors[Int, String]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges shouldEqual namedGenEdges
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+
     "offer a lists method" that {
       "returns the default implicit generator that produces arbitrary Lists" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
