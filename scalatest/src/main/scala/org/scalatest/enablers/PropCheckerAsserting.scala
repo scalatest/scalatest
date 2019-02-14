@@ -1408,7 +1408,7 @@ trait FuturePropCheckerAsserting {
 
         case PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) =>
           indicateFutureFailure(
-            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + EOL +
+            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
               "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
               (
