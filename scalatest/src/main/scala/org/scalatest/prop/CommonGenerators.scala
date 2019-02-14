@@ -1794,6 +1794,17 @@ trait CommonGenerators {
   def ors[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
 
   /**
+    * Given [[Generator]]s for two types, [[L]] and [[R]], this provides one for `Either[L, R]`.
+    *
+    * @param genOfL a [[Generator]] that produces type [[L]]
+    * @param genOfR a [[Generator]] that produces type [[R]]
+    * @tparam L the Left type for an [[Either]]
+    * @tparam R the Right type for an [[Either]]
+    * @return a [[Generator]] that produces `Either[L, R]`
+    */
+  def eithers[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] = Generator.eitherGenerator
+
+  /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
     * @param genOfT a [[Generator]] that produces values of type [[T]]
