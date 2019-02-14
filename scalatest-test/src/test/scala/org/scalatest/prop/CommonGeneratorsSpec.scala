@@ -3234,7 +3234,7 @@ If it doesn't show up for a while, please delete this comment.
           samplesLoop(count + 1, nextNextRnd, value :: acc)
         } 
       }
-      samplesLoop(100, originalRnd, Nil)
+      samplesLoop(0, originalRnd, Nil)
     }
 
     "offer a booleans method" that {
@@ -3374,34 +3374,38 @@ If it doesn't show up for a while, please delete this comment.
       }
     }
 
+    /**
+      * A common function to reduce the massive amounts of boilerplate in all of these
+      * tests.
+      *
+      * This takes two Generators, an explicit one from CommonGenerators and an
+      * implicit one of the same type, and confirms that they actually are the same.
+      * (Or more precisely, that they produce the same results.)
+      *
+      * @param namedGen the named Generator, from CommonGenerators
+      * @param implicitGen the implicit Generator of the same type, from Generators
+      * @tparam T the type being generated
+      */
+    def compareGens[T](namedGen: Generator[T])(implicit implicitGen: Generator[T]): Unit = {
+      val rnd = Randomizer.default
+      val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+      val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+      implicitGenEdges shouldEqual namedGenEdges
+      val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+      val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+      implicitGenSamples shouldEqual namedGenSamples
+    }
+
     "offer an options method" that {
       "returns the default implicit generator that produces arbitrary Options" in {
-        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-        val implicitGen = implicitly[Generator[Option[Int]]]
-        val namedGen = options[Int]
-        val rnd = Randomizer.default
-        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
-        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
-        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
-        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
-        implicitGenSamples shouldEqual namedGenSamples
+        compareGens(CommonGenerators.options[Int])
       }
     }
 
     "offer an ors method" that {
       "returns the default implicit generator that produces arbitrary Ors" in {
-        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         import org.scalactic._
-        val implicitGen = implicitly[Generator[Int Or String]]
-        val namedGen = ors[Int, String]
-        val rnd = Randomizer.default
-        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
-        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
-        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
-        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
-        implicitGenSamples shouldEqual namedGenSamples
+        compareGens(CommonGenerators.ors[Int, String])
       }
     }
 
@@ -4736,6 +4740,7 @@ If it doesn't show up for a while, please delete this comment.
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+
     "offer a function1s method" that {
       "should use the implicit provider that uses hashCode to tweak a seed and has a pretty toString" in {
         val implicitGen = implicitly[Generator[Long => Int]]
@@ -4744,11 +4749,18 @@ If it doesn't show up for a while, please delete this comment.
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
         implicitGenEdges shouldEqual namedGenEdges
-        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
-        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
-        implicitGenSamples shouldEqual namedGenSamples
+        val implicitGenSamples = samplesForGen(implicitGen, 1, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 1, rnd)
+        // We can't actually compare the functions themselves, which don't have
+        // equality operations. So instead, we spot-check that they are producing
+        // the same results:
+        val (param, _) = rnd.nextLong
+        val implicitGenResults = implicitGenSamples.map(_(param))
+        val namedGenResults = namedGenSamples.map(_(param))
+        implicitGenResults shouldEqual namedGenResults
       }
     }
+
     "offer a function2s method" that {
       "should use the implicit provider that uses hashCode to tweak a seed and has a pretty toString" in {
         val implicitGen = implicitly[Generator[(Long, String) => Int]]
@@ -4759,7 +4771,14 @@ If it doesn't show up for a while, please delete this comment.
         implicitGenEdges shouldEqual namedGenEdges
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
-        implicitGenSamples shouldEqual namedGenSamples
+        // We can't actually compare the functions themselves, which don't have
+        // equality operations. So instead, we spot-check that they are producing
+        // the same results:
+        val (param1, nextRnd) = rnd.nextLong
+        val (param2, _) = nextRnd.nextString(100)
+        val implicitGenResults = implicitGenSamples.map(_(param1, param2))
+        val namedGenResults = namedGenSamples.map(_(param1, param2))
+        implicitGenResults shouldEqual namedGenResults
       }
     }
     "offer a vectors method" that {
