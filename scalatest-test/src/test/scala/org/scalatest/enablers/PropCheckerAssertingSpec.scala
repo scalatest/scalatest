@@ -84,6 +84,27 @@ class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrive
      msg should include (Resources.thrownExceptionsLocation(innerTfe.failedCodeFileNameAndLineNumberString.value))
      msg should include (Resources.thrownExceptionsMessage(innerTfe.message.value))
     }
+
+    it("should include position and message indicating that a forAll failed as well as its underlying exception message if not a StackDepth") {
+      var thrownEx: Option[Exception] = None
+      val tfe =
+        intercept[TestFailedException] {
+          forAll(strings, posZIntsBetween(1, 10)) { (s: String, n: PosZInt) =>
+            val s2 = s * n.value
+            val innerEx =
+              intercept[Exception] {
+                throw new Exception("Well, this is embarassing!")
+              }
+            thrownEx = Some(innerEx)
+            throw innerEx
+          }
+        }
+     info(tfe.toString)
+     val msg = tfe.message.value
+     val innerEx = thrownEx.value
+     msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+     msg should include (Resources.thrownExceptionsMessage(innerEx.getMessage))
+    }
   }
 }
 
