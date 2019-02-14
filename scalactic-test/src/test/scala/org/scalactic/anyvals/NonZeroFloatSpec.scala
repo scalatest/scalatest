@@ -398,10 +398,14 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         (pfloat + long) shouldEqual (pfloat.toFloat + long)
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        (pfloat + float) shouldEqual (pfloat.toFloat + float)
+        val x = pfloat + float
+        val y = pfloat.toFloat + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        (pfloat + double) shouldEqual (pfloat.toFloat + double)
+        val x = pfloat + double
+        val y = pfloat.toFloat + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 

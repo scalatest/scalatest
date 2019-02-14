@@ -36,6 +36,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+import org.scalatest.prop.Randomizer
 
 
 /**
@@ -950,7 +951,8 @@ import java.net.{ServerSocket, InetAddress}
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      seedArgs
     ) = parseArgs(args)
     
     if (!runpathArgs.isEmpty)
@@ -1000,6 +1002,11 @@ import java.net.{ServerSocket, InetAddress}
     val runnerInstance = obj.asInstanceOf[Runner.type]
 
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    parseLongArgument(seedArgs, "-S") match {
+      case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+      case None => // do nothing
+    }
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 

@@ -36,14 +36,12 @@ private[scalatest] case class ParsedArgs(
   membersOnly: List[String],
   // SKIP-SCALATESTJS,NATIVE-START
   wildcard: List[String],
-  // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY wildcard: List[String]
-  // SKIP-SCALATESTJS,NATIVE-START
   testNGXMLFiles: List[String],
   genSuffixesPattern: Option[Pattern],
   chosenStyles: List[String], 
   spanScaleFactor: List[String], 
   testSortingReporterTimeout: List[String],
-  slowpokeParams: List[String]
+  slowpokeParams: List[String],
   // SKIP-SCALATESTJS,NATIVE-END
+  seeds: List[String]
 )

@@ -739,8 +739,6 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
     }
   }
 
-  import GeneratorDrivenPropertyChecks.prettyArgs
-
 """
 
   val propertyCheckForAllTemplate = """
@@ -818,26 +816,7 @@ $gens$,
 
   val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks {
-
-  import FailureMessages.decorateToStringValue
-  private def prettyArgs(args: List[Any], prettifier: Prettifier) = {
-    val strs = for((a, i) <- args.zipWithIndex) yield (
-      "    " +
-      (
-        a match {
-          case PropertyArgument(Some(label), value) => label + " = " + decorateToStringValue(prettifier, value)
-          case PropertyArgument(None, value) => "arg" + i + " = " + decorateToStringValue(prettifier, value)
-          case other => "arg" + i + " = " + decorateToStringValue(prettifier, other)
-        }
-      ) +
-      (if (i < args.length - 1) "," else "") // +
-      // (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
-    )
-    strs.mkString("\n")
-  }
-
-}
+object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 """
 
   val generatorSuitePreamble = """

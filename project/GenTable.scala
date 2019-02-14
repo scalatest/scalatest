@@ -519,7 +519,7 @@ import org.scalactic._
  * <p>
  * This trait contains one <code>exists</code>, <code>forAll</code>, and <code>forEvery</code> method for each <code>TableForN</code> class, <code>TableFor1</code>
  * through <code>TableFor22</code>, which allow properties to be checked against the rows of a table. It also
- * contains a <code>wherever</code> method that can be used to indicate a property need only hold whenever some
+ * contains a <code>whenever</code> method that can be used to indicate a property need only hold whenever some
  * condition is true.
  * </p>
  *
@@ -546,7 +546,7 @@ import org.scalactic._
  * between 1 and 22 columns and any number of rows. You create a table by passing
  * tuples to one of the factory methods of object <code>Table</code>. Each tuple must have the
  * same arity (number of members). The first tuple you pass must all be strings, because
- * it define names for the columns. Subsequent tuples define the data. After the initial tuple
+ * it defines names for the columns. Subsequent tuples define the data. After the initial tuple
  * that contains string column names, all tuples must have the same type. For example,
  * if the first tuple after the column names contains two <code>Int</code>s, all subsequent
  * tuples must contain two <code>Int</code> (<em>i.e.</em>, have type

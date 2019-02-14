@@ -45,15 +45,35 @@ import scala.collection.immutable.SortedMap
   * The list of appropriate edge cases will vary from type to type, but they should be chosen so as
   * to exercise the type broadly, and at extremes.
   *
-  * === Building a Generator ===
+  * ==Creating Your Own Generators==
   *
   * [[Generator.intGenerator]], and Generators for many other basic types, are already built into the
   * system, so you can just use them. You can (and should) define Generators for your own types, as well.
   *
-  * Each Generator involves a few important concepts:
+  * In most cases, you do not need to write Generators from scratch -- Generators for most non-primitive
+  * types can be composed using for comprehensions, as described in the section ''Composing Your Own
+  * Generators'' in the documentation for the [[org.scalatest.prop]] pacakge. You can also often create
+  * them using the [[CommonGenerators.instancesOf]] method. You should only need to write a Generator
+  * from scratch for relatively primitive types, that aren't composed of other types.
   *
-  * First, there is the type parameter '''T'''. This is the type of element that this Generator will
-  * be creating.
+  * If you decide that you ''do'' need to build a Generator from scratch, here is a rough outline
+  * of how to go about it.
+  *
+  * First, look at the source code for some of the Generators in the [[Generator]] companion object.
+  * These follow a pretty standard pattern, that you will likely want to follow.
+  *
+  * ===Size===
+  *
+  * Your Generator may optionally have a concept of '''size'''. What this means varies from type to type:
+  * for a String it might be the number of characters, whereas for a List it might be the number of
+  * elements. The test system will try using the Generator with a variety of sizes; you can control
+  * the maximum and minimum sizes via [[Configuration]].
+  *
+  * Decide whether the concept of ''size'' is relevant for your type. If it is relevant, you should mix the
+  * [[HavingSize]] or [[HavingLength]] trait into your Generator, and you'll want to take
+  * it into account in your `next` and `shrink` functions.
+  *
+  * ===Randomization===
   *
   * The Generator should do all of its '''"random" data generation''' using the [[Randomizer]] instance passed
   * in to it, and should return the next Randomizer with its results. [[Randomizer]] produces intentionally
@@ -62,15 +82,36 @@ import scala.collection.immutable.SortedMap
   * same values, when given an identically-seeded Randomizer. This can often make debugging much easier,
   * since it allows you to reproduce your "random" failures.
   *
+  * So figure out how to create a pseudo-random value of your type using [[Randomizer]]. This will
+  * likely involve writing a function similar to the various `nextT()` functions inside of
+  * Randomizer itself.
+  *
+  * ===next()===
+  *
+  * Using this randomization function, write a first draft of your Generator, filling in the
+  * `next()` method. This is the only required method, and should suffice to start playing with
+  * your Generator. Once this is working, you have a useful Generator.
+  *
+  * ===Edges===
+  *
   * The '''edges''' are the edge cases for this type. You may have as many or as few edge cases as seem
   * appropriate, but most types involve at least a few. Edges are generally values that are particularly
   * big/full, or particularly small/empty. The test system will prioritize applying the edge cases to
   * the property, since they are assumed to be the values most likely to cause failures.
   *
-  * Your Generator may optionally have a concept of '''size'''. What this means varies from type to type:
-  * for a String it might be the number of characters, whereas for a List it might be the number of
-  * elements. The test system will try using the Generator with a variety of sizes; you can control
-  * the maximum and minimum sizes via [[Configuration]].
+  * Figure out some appropriate edge cases for your type. Override `initEdges()` to return
+  * those, and enhance `next()` to produce them ahead of the random values. Identifying these will tend to make
+  * your property checks more effective, by catching these edge cases early.
+  *
+  * ===Canonicals===
+  *
+  * Now figure out some canonical values for your type -- a few common, ordinary values that
+  * are frequently worth testing. These will be used when shrinking your type in higher-order
+  * Generators, so it is helpful to have some. Override the `canonicals()` method to return
+  * these.
+  *
+  * ===Shrinking===
+  *
   *
   * Optionally but preferably, your Generator can have a concept of '''shrinking'''. This starts with a value
   * that is known to cause the property evaluation to fail, and produces a list of smaller/simpler
@@ -80,12 +121,8 @@ import scala.collection.immutable.SortedMap
   * You to ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
   *
-  * The Generator's key method is [[Generator.next]]. Note that this is properly functional: it takes parameters
-  * that indicate the state of the test, and returns the next value ''and'' the new state information.
-  *
-  * '''TODO:''' add documentation for composing Generators into higher-level Generators.
-  *
-  * '''TODO:''' add a game plan for the order of implementation of a Generator, with an example.
+  * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
+  * the values passed in. Otherwise, an infinite loop can result.
   *
   * @tparam T the type that this Generator produces
   */
@@ -445,10 +482,9 @@ trait Generator[T] { thisGeneratorOfT =>
 /**
   * Companion to the [[Generator]] trait, which contains many of the standard implicit Generators.
   *
-  * For the most part, you should not need to use the values and functions in here directly; so long as
-  * [[Generator]] is imported into scope, you will have these values available. But this listing shows
-  * you what types you can generally use in Properties without any further ado, unless you have special
-  * requirements.
+  * For the most part, you should not need to use the values and functions in here directly; the useful
+  * values in here are generally aliased in [[CommonGenerators]] (albeit with different names),
+  * which in turn is mixed into [[GeneratorDrivenPropertyChecks]] and [[TableDrivenPropertyChecks]].
   *
   * Note that this provides `Generator`s for the common Scalactic types, as well as the common standard
   * library ones.
@@ -541,6 +577,20 @@ object Generator {
   // likely be easier to understand and maintain. It's probably worth trying and seeing how it works. (Note: I'm not
   // suggesting changing the signatures of any of these, just merging their implementations.)
   //
+
+  /**
+    * A [[Generator]] that produces [[Boolean]] values.
+    */
+  implicit val booleanGenerator: Generator[Boolean] =
+    new Generator[Boolean] {
+      def next(szp: SizeParam, edges: List[Boolean], rnd: Randomizer): (Boolean, List[Boolean], Randomizer) = {
+        val (bit, nextRnd) = rnd.nextBit
+        val bool = if (bit == 1) true else false
+        (bool, Nil, nextRnd)
+      }
+
+      override def toString = "Generator[Boolean]"
+    }
 
   /**
     * A [[Generator]] that produces [[Byte]] values.
