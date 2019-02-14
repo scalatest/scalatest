@@ -1393,7 +1393,7 @@ trait FuturePropCheckerAsserting {
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
-            None,
+            ex,
             pos
           )
 
