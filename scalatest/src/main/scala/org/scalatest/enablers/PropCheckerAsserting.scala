@@ -616,12 +616,12 @@ abstract class UnitPropCheckerAsserting {
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
               "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
               (
-                sde match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                ex match {
+                  case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
                     "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
                   case _ => ""
                 }
-                ) +
+              ) +
               "  " + FailureMessages.occurredOnValues + EOL +
               prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
               "  )" +

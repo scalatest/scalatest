@@ -63,7 +63,7 @@ class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrive
        tfe.cause.value.getMessage should endWith ("3 equaled 3")
     }
 
-    it("should include position and message in the cause exception, if a cause exists") {
+    it("should include position and message indicating both that a forAll failed as well as its underlying assertion failure") {
       var thrownTfe: Option[TestFailedException] = None
       val tfe =
         intercept[TestFailedException] {
@@ -78,7 +78,10 @@ class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrive
           }
         }
      info(tfe.toString)
-     tfe.message.value should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+     val msg = tfe.message.value
+     val innerTfe = thrownTfe.value
+     msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+     msg should include (Resources.thrownExceptionsLocation(innerTfe.failedCodeFileNameAndLineNumberString.value))
     }
   }
 }
