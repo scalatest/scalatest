@@ -1415,6 +1415,7 @@ trait FuturePropCheckerAsserting {
               (
                 ex match {
                   case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                    "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(sd.message.get)) + EOL +
                     "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
                   case _ => ""
                 }

@@ -87,6 +87,7 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
               val msg = tfe.message.value
               msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
               msg should include (Resources.thrownExceptionsLocation(innerTfe.failedCodeFileNameAndLineNumberString.value))
+              msg should include (Resources.thrownExceptionsMessage(innerTfe.message.value))
           }
       }
     }
