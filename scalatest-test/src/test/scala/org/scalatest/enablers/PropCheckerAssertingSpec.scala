@@ -62,6 +62,24 @@ class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrive
        */
        tfe.cause.value.getMessage should endWith ("3 equaled 3")
     }
+
+    it("should include position and message in the cause exception, if a cause exists") {
+      var thrownTfe: Option[TestFailedException] = None
+      val tfe =
+        intercept[TestFailedException] {
+          forAll(strings, posZIntsBetween(1, 10)) { (s: String, n: PosZInt) =>
+            val s2 = s * n.value
+            val innerTfe =
+              intercept[TestFailedException] {
+                s2.length should equal (s.length * n.value + 1)
+              }
+            thrownTfe = Some(innerTfe)
+            throw innerTfe
+          }
+        }
+     info(tfe.toString)
+     tfe.message.value should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+    }
   }
 }
 
