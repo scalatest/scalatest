@@ -618,7 +618,8 @@ abstract class UnitPropCheckerAsserting {
               (
                 ex match {
                   case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL +
+                    "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(sd.message.get)) + EOL
                   case _ => ""
                 }
               ) +

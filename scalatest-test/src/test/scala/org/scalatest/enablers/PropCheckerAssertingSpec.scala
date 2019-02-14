@@ -82,6 +82,7 @@ class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrive
      val innerTfe = thrownTfe.value
      msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
      msg should include (Resources.thrownExceptionsLocation(innerTfe.failedCodeFileNameAndLineNumberString.value))
+     msg should include (Resources.thrownExceptionsMessage(innerTfe.message.value))
     }
   }
 }
