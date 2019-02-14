@@ -44,18 +44,19 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
       }
     }
 
-/*
-    it("forAll taking a Function1 should attempt to shrink the values that cause a property to fail") {
+    it("forAll taking a Function1 that result in Future[Assertion] should attempt to shrink the values that cause a property to fail") {
       implicit val stNonZeroIntGen =
         for {
          i <- ints
          j = if (i == 0) 1 else i
        } yield j
        var xs: List[Int] = Nil
-       val tfe =
-         intercept[TestFailedException] {
-           forAll { (i: Int) => xs ::= i; assert(i / i == 1 && (i < 1000 && i != 3)) }
+       val forAllFutureAssertion =
+         forAll { (i: Int) =>
+           xs ::= i
+           Future { assert(i / i == 1 && (i < 1000 && i != 3)) }
          }
+       info("values passed to async forAll: " + xs.toString)
        /*
          3 is one of the canonicals, all of which are less than 1000, so 3 is the smallest
          that would fail the test. The generator in ths case could occasionally produce a 3,
@@ -63,9 +64,13 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
          if the following assertion fails, there's a one in (2 ** 32) - 1 chance that the shrink
          values were tried.
        */
-       tfe.cause.value.getMessage should endWith ("3 equaled 3")
+      forAllFutureAssertion.recoverWith {
+        case tfe: TestFailedException =>
+          tfe.cause.value.getMessage should endWith ("3 equaled 3")
+      }
     }
 
+/*
     it("should include position and message in the cause exception, if a cause exists") {
       var thrownTfe: Option[TestFailedException] = None
       val tfe =
