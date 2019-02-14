@@ -2850,6 +2850,76 @@ object Generator {
       }
     }
 
+  // Note that this is identical to orGenerator *except* that the sides are reversed:
+  // Right is "Good", and Left is "Bad".
+  /**
+    * Given [[Generator]]s for two types, [[L]] and [[R]], this provides one for `Either[L, R]`.
+    *
+    * @param genOfL a [[Generator]] that produces type [[L]]
+    * @param genOfR a [[Generator]] that produces type [[R]]
+    * @tparam L the "left" type for an [[Either]]
+    * @tparam R the "right" type for an [[Either]]
+    * @return a [[Generator]] that produces `Either[L, R]`
+    */
+  implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
+    new Generator[Either[L, R]] {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
+        val (edgesOfL, nextRnd) = genOfL.initEdges(maxLength, rnd)
+        val (edgesOfR, nextNextRnd) = genOfR.initEdges(maxLength, nextRnd)
+        // Fill up to maxLength, favoring Right over Left if maxLength is odd. Else just dividing it
+        // down the middle, half Right, half Left. And filling in with the other if one side runs out.
+        @tailrec
+        def loop(count: Int, remainingR: List[R], remainingL: List[L], acc: List[Either[L, R]]): List[Either[L, R]] = {
+          (count, remainingR, remainingL) match {
+            case (0, _, _) => acc
+            case (_, Nil, Nil) => acc
+            case (c, rHead :: rTail, Nil) => loop(c - 1, rTail, Nil, Right(rHead) :: acc)
+            case (c, Nil, lHead :: lTail) => loop(c - 1, Nil, lTail, Left(lHead) :: acc)
+            case (c, rHead :: rTail, _) if c % 2 == 0 => loop(c - 1, rTail, remainingL, Right(rHead) :: acc)
+            case (c, _, lHead :: lTail) => loop(c - 1, remainingR, lTail, Left(lHead) :: acc)
+          }
+        }
+        (loop(maxLength, edgesOfR, edgesOfL, Nil), nextNextRnd)
+      }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+        val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
+        val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
+
+        (rightCanon.map(Right(_)) ++ leftCanon.map(Left(_)), nextNextRnd)
+      }
+
+      def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (Either[L, R], List[Either[L, R]], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRnd) = rnd.nextInt
+            if (nextInt % 4 == 0) {
+              val (nextL, _, nextRnd) = genOfL.next(szp, Nil, rnd)
+              (Left(nextL), Nil, nextRnd)
+            }
+            else {
+              val (nextR, _, nextRnd) = genOfR.next(szp, Nil, rnd)
+              (Right(nextR), Nil, nextRnd)
+            }
+        }
+      }
+
+      override def shrink(value: Either[L, R], rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+        value match {
+          case Right(r) => {
+            val (rShrink, nextRnd) = genOfR.shrink(r, rnd)
+            (rShrink.map(Right(_)), nextRnd)
+          }
+          case Left(l) => {
+            val (lShrink, nextRnd) = genOfL.shrink(l, rnd)
+            (lShrink.map(Left(_)), nextRnd)
+          }
+        }
+      }
+    }
+
   /**
     * Given [[Generator]]s for types [[A]] and [[B]], get one that produces Tuples of those types.
     *

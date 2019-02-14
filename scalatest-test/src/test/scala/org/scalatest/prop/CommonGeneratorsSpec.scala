@@ -3409,6 +3409,12 @@ If it doesn't show up for a while, please delete this comment.
       }
     }
 
+    "offer an eithers method" that {
+      "returns the default implicit generator that produces arbitrary Eithers" in {
+        compareGens(CommonGenerators.eithers[String, Int])
+      }
+    }
+
     "offer a lists method" that {
       "returns the default implicit generator that produces arbitrary Lists" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._

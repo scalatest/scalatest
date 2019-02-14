@@ -2234,7 +2234,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
 
         // It's arbitrary, but we know that it produces Bad about a quarter of the time:
-        classification.portions("Bad") should be (.25 +- .02)
+        classification.percentages("Bad").value should be (25 +- 2)
       }
 
       it("should use the base types to shrink") {
@@ -2252,6 +2252,65 @@ class GeneratorSpec extends FunSpec with Matchers {
 
         orGoodShrink.toList should contain theSameElementsAs(gShrink.map(Good(_)).toList)
         orBadShrink.toList should contain theSameElementsAs(bShrink.map(Bad(_)).toList)
+      }
+    }
+
+    describe("for Eithers") {
+      it("should use the base types for edges") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rEdges, _) = rGen.initEdges(100, rnd)
+        val (lEdges, _) = lGen.initEdges(100, rnd)
+        val (eitherEdges, _) = gen.initEdges(100, rnd)
+
+        eitherEdges should contain theSameElementsAs(rEdges.map(Right(_)) ++ lEdges.map(Left(_)))
+      }
+
+      it("should use the base types for canonicals") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rCanon, _) = rGen.canonicals(rnd)
+        val (lCanon, _) = lGen.canonicals(rnd)
+        val (eitherCanon, _) = gen.canonicals(rnd)
+
+        eitherCanon.toList should contain theSameElementsAs((rCanon.map(Right(_)) ++ lCanon.map(Left(_))).toList)
+      }
+
+      it("should produce an appropriate mix of Right and Left") {
+        import Generator._
+        val gen = eitherGenerator[String, Int]
+
+        val classification = CommonGenerators.classify(1000, gen) {
+          case Right(_) => "Right"
+          case Left(_) => "Left"
+        }
+
+        // It's arbitrary, but we know that it produces Left about a quarter of the time:
+        classification.percentages("Left").value should be (25 +- 2)
+      }
+
+      it("should use the base types to shrink") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rShrink, _) = rGen.shrink(1000, rnd)
+        val (lShrink, _) = lGen.shrink("hello world!", rnd)
+        val (eitherRightShrink, _) = gen.shrink(Right(1000), rnd)
+        val (eitherLeftShrink, _) = gen.shrink(Left("hello world!"), rnd)
+
+        eitherRightShrink.toList should contain theSameElementsAs(rShrink.map(Right(_)).toList)
+        eitherLeftShrink.toList should contain theSameElementsAs(lShrink.map(Left(_)).toList)
       }
     }
 
