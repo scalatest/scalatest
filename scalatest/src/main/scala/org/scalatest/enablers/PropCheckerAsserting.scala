@@ -182,6 +182,7 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
+            @tailrec
             def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
               shrinksRemaining match {
                 case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
