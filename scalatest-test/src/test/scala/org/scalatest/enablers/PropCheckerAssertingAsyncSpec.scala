@@ -70,20 +70,24 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
       }
     }
 
-    it("should include position and message in the cause exception, if a cause exists") {
-     //  var innerFutureAssertion: Option[Future[Assertion]] = None
+    it("should include position and message indicating both that a forAll failed as well as its underlying assertion failure") {
+     var innerFutureAssertion: Option[Future[Assertion]] = None
       val forAllFutureAssertion =
         forAll(strings, posZIntsBetween(1, 10)) { (s: String, n: PosZInt) =>
           val s2 = s * n.value
-          // val innerFut = Future { s2.length should equal (s.length * n.value + 1) }
-          // innerFutureAssertion = Some(innerFut)
-          // innerFut
-          Future { s2.length should equal (s.length * n.value + 1) }
+          val innerFut = Future { s2.length should equal (s.length * n.value + 1) }
+          innerFutureAssertion = Some(innerFut)
+          innerFut
         }
-      forAllFutureAssertion.recover {
+      forAllFutureAssertion.recoverWith {
         case tfe: TestFailedException => 
           info(tfe.toString)
-          tfe.message.value should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+          innerFutureAssertion.value.recover {
+            case innerTfe: TestFailedException =>
+              val msg = tfe.message.value
+              msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+              msg should include (Resources.thrownExceptionsLocation(innerTfe.failedCodeFileNameAndLineNumberString.value))
+          }
       }
     }
   }
