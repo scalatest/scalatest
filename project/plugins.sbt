@@ -14,4 +14,4 @@ addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.3.6")
 
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.2.0")
 
-addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.2.0")
+addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.3.0")

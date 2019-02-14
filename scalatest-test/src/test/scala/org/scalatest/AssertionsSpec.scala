@@ -465,7 +465,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
-    
+
+    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestFailedException] { 
         assert(a == null) 
@@ -483,6 +484,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
     
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestFailedException] { 
@@ -1914,6 +1916,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestFailedException] {
         assert(a == null, ". dude")
@@ -1931,6 +1934,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestFailedException] {
@@ -3358,6 +3362,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestCanceledException] {
         assume(a == null)
@@ -3375,6 +3380,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestCanceledException] {
@@ -4953,6 +4959,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestCanceledException] {
         assume(a == null, ", dude")
@@ -4970,6 +4977,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestCanceledException] {

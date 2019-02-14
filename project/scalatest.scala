@@ -2182,8 +2182,7 @@ object ScalatestBuild {
       name.value)
 
   import dotty.tools.sbtplugin.DottyPlugin.autoImport._
-  //lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.13.0-bin-20190125-af9264d-NIGHTLY"
+  lazy val dottyVersion = dottyLatestNightlyBuild.get
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
