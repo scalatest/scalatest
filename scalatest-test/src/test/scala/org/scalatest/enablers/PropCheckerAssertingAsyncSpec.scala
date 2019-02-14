@@ -91,6 +91,27 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
           }
       }
     }
+
+    it("should include position and message indicating that a forAll failed as well as its underlying exception message if not a StackDepth") {
+     var innerFutureAssertion: Option[Future[Assertion]] = None
+      val forAllFutureAssertion =
+        forAll(strings, posZIntsBetween(1, 10)) { (s: String, n: PosZInt) =>
+          val s2 = s * n.value
+          val innerFut = Future { throw new Exception("Well, this is embarassing!"); succeed }
+          innerFutureAssertion = Some(innerFut)
+          innerFut
+        }
+      forAllFutureAssertion.recoverWith {
+        case tfe: TestFailedException =>
+          info(tfe.toString)
+          innerFutureAssertion.value.recover {
+            case innerEx: Throwable =>
+              val msg = tfe.message.value
+              msg should include (Resources.propertyException("") + " (" + tfe.failedCodeFileNameAndLineNumberString.value + ")")
+              msg should include (Resources.thrownExceptionsMessage(innerEx.getMessage))
+          }
+      }
+    }
   }
 }
 

@@ -1411,11 +1411,15 @@ trait FuturePropCheckerAsserting {
           indicateFutureFailure(
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
-              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
-              (
+              "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL + (
+                ex match {
+                  case Some(ex: Throwable) if ex.getMessage != null =>
+                    "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(ex.getMessage)) + EOL
+                  case _ => ""
+                }
+              ) + (
                 ex match {
                   case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(sd.message.get)) + EOL +
                     "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
                   case _ => ""
                 }
