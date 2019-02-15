@@ -110,8 +110,15 @@ import scala.collection.immutable.SortedMap
   * Generators, so it is helpful to have some. Override the `canonicals()` method to return
   * these.
   *
-  * ===Shrinking===
+  * Canonicals should always be in order from "smallest" to less-small, in the shrinking sense.
+  * This is ''not'' the same thing as starting with the lowest number, though! For example, the
+  * canonicals for [[Generator.byteGenerator]] are:
+  * {{{
+  * private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
+  * }}}
+  * Zero is "smallest" -- the most-shrunk Byte.
   *
+  * ===Shrinking===
   *
   * Optionally but preferably, your Generator can have a concept of '''shrinking'''. This starts with a value
   * that is known to cause the property evaluation to fail, and produces a list of smaller/simpler
@@ -122,7 +129,8 @@ import scala.collection.immutable.SortedMap
   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
   *
   * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
-  * the values passed in. Otherwise, an infinite loop can result.
+  * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
+  * "smallest" values should be returned at the front of this Iterator, with less-small values later.
   *
   * @tparam T the type that this Generator produces
   */
