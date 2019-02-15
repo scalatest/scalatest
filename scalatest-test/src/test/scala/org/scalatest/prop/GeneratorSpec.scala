@@ -781,6 +781,46 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+
+    /**
+      * Boilerplate reduction for those `(Iterator[T], Randomizer)` pairs returned
+      * from `canonicals()` and `shrink()`
+      *
+      * @param pair the returned values from the Generator method
+      * @tparam T the type of the Generator
+      */
+    implicit class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {
+      /**
+        * Helper method for testing canonicals and shrinks, which should always be
+        * "growing".
+        *
+        * The definition of "growing" means, essentially, "moving further from zero".
+        * Sometimes that's in the positive direction (eg, PosInt), sometimes negative
+        * (NegFloat), sometimes both (NonZeroInt).
+        *
+        * This returns Unit, because it's all about the assertion.
+        *
+        * This is a bit loose and approximate, but sufficient for the various
+        * Scalactic types.
+        *
+        * @param iter an Iterator over a type, typically a Scalactic type
+        * @param conv a conversion function from the Scalactic type to an ordinary Numeric
+        * @tparam T the Scalactic type
+        * @tparam N the underlying ordered numeric type
+        */
+      def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+        val iter: Iterator[T] = pair._1
+        iter.reduce { (last, cur) =>
+          // Duplicates not allowed:
+          last should not equal cur
+          val nLast = nOps.abs(conv(last))
+          val nCur = nOps.abs(conv(cur))
+          nLast should be <= nCur
+          cur
+        }
+      }
+    }
+
     describe("for PosInts") {
       it("should produce the same PosInt values in the same order given the same Randomizer") {
         import Generator._
@@ -813,6 +853,13 @@ class GeneratorSpec extends FunSpec with Matchers {
         val edges = List(a1, a2)
         edges should contain (PosInt(1))
         edges should contain (PosInt.MaxValue)
+      }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val rnd = Randomizer.default
+        posIntGenerator.canonicals(rnd).shouldGrowWith(_.value)
+        posIntGenerator.shrink(PosInt(10000), rnd).shouldGrowWith(_.value)
       }
     }
     describe("for PosZInts") {

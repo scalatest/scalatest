@@ -938,6 +938,20 @@ object Generator {
             (posInt, Nil, nextRnd)
         }
       }
+      private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
+      override def shrink(i: PosInt, rnd: Randomizer): (Iterator[PosInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: PosInt, acc: List[PosInt]): List[PosInt] = {
+          val half: Int = i / 2
+          if (half == 0) acc
+          else {
+            val posIntHalf = PosInt.ensuringValid(half)
+            shrinkLoop(posIntHalf, posIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosInt]"
     }
 
