@@ -171,8 +171,8 @@ object GenScalacticDotty {
         "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
         "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
         "TrySugarSpec.scala"  // Not implemented error when test runs
-      )) /*++
-    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
-    copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)*/
+      )) ++
+    //copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }
