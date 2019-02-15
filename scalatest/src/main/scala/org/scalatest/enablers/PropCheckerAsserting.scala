@@ -1660,7 +1660,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
       prettyArgs(getArgsWithSpecifiedNames(argNames, argsPassed), prettifier) + EOL +
       "  )" +
       getLabelDisplay(labels.toSet) + EOL +
-      "  " + FailureMessages.initSeed(prettifier, initSeed),
+      "  " + FailureMessages.initSeed(prettifier, initSeed)
   }
 
   def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
