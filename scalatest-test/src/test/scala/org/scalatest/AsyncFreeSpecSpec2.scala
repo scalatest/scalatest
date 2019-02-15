@@ -22,13 +22,13 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFreeSpecSpec2 extends AsyncFunSpec {
+class AsyncFreeSpecSpec2 extends AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncFreeSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFreeSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -87,7 +87,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFreeSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -138,7 +138,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           Future {
@@ -181,7 +181,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           SleepHelper.sleep(30)
@@ -222,7 +222,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           Future {
@@ -265,7 +265,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           val promise = Promise[Assertion]
@@ -324,7 +324,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -356,7 +356,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           Future {
@@ -403,7 +403,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test 1" in {
           SleepHelper.sleep(60)
@@ -443,7 +443,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
         info(
           "hi there"
         )
@@ -463,7 +463,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scope body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           info(
@@ -487,7 +487,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -517,7 +517,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -549,7 +549,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
         note(
           "hi there"
         )
@@ -569,7 +569,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scope body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           note(
@@ -594,7 +594,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -617,7 +617,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -642,7 +642,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
         alert(
           "hi there"
         )
@@ -662,7 +662,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scope body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           alert(
@@ -687,7 +687,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -710,7 +710,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -735,7 +735,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
         markup(
           "hi there"
         )
@@ -755,7 +755,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scope body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           markup(
@@ -780,7 +780,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -810,7 +810,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends AsyncFreeSpec  {
+      class MySuite extends AsyncFreeSpec with DefaultFutureAssertionConverter {
 
         "test feature" - {
           "test 1" in {
@@ -842,7 +842,7 @@ class AsyncFreeSpecSpec2 extends AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFreeSpec {
+      class TestSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

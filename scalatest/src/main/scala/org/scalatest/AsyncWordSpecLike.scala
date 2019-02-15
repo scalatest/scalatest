@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
-import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
@@ -101,11 +100,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
@@ -128,8 +127,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => FutureSystem, pos: source.Position): Unit = {
+    def transformToOutcomeParam: FutureSystem = testFun()
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
@@ -156,8 +155,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => FutureSystem, pos: source.Position): Unit = {
+    def transformToOutcomeParam: FutureSystem = testFun()
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
 
@@ -272,7 +271,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
@@ -312,7 +311,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }
@@ -350,7 +349,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(f: => FutureSystem)(implicit pos: source.Position): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
 
@@ -370,7 +369,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(f: => FutureSystem)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 

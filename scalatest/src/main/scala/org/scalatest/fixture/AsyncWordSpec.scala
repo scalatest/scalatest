@@ -15,6 +15,8 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.DefaultFutureAssertionConverter
+
 /**
  * A sister class to <code>org.scalatest.AsyncWordSpec</code> that can pass a fixture object into its tests.
  *
@@ -261,7 +263,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncWordSpec extends org.scalatest.fixture.AsyncWordSpecLike {
+abstract class AsyncWordSpec extends org.scalatest.fixture.AsyncWordSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

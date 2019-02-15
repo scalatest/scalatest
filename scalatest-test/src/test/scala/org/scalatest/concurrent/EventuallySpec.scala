@@ -26,7 +26,7 @@ import SharedHelpers.serializeRoundtrip
 
 import scala.concurrent.Future
 
-class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with SeveredStackTraces*/ {
+class EventuallySpec extends AsyncFunSpec with DefaultFutureAssertionConverter with Matchers with OptionValues /*with SeveredStackTraces*/ {
 
   describe("The eventually construct when work with T") {
 

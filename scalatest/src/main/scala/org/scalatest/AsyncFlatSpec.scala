@@ -2216,7 +2216,7 @@ package org.scalatest
  * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor</code></li>
  * </ul>
  */
-abstract class AsyncFlatSpec extends AsyncFlatSpecLike {
+abstract class AsyncFlatSpec extends AsyncFlatSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

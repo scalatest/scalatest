@@ -29,7 +29,7 @@ class SuiteAbortingException(underlying: Throwable) {
 }
 */
 
-class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
+class FutureOutcomeSpec extends AsyncFreeSpec with DefaultFutureAssertionConverter with DiagrammedAssertions {
   "A FutureOutcome" - {
     "when representing a future outcome that completes with Succeeded" - {
       "should execute appropriate callbacks" in {

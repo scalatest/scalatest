@@ -28,7 +28,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -93,7 +93,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -150,7 +150,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -201,7 +201,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -250,7 +250,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -294,7 +294,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -354,7 +354,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -386,7 +386,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -436,7 +436,7 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global

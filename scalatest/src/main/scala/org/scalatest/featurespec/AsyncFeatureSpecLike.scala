@@ -97,16 +97,16 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   @deprecated("use Scenario instead", "ScalaTest 3.1.1")
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit =
     Scenario(specText, testTags: _*)(testFun)(pos)
 
   /**
@@ -127,7 +127,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def Scenario(specText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
   }
 
@@ -149,7 +149,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def ignore(specText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
   }
 

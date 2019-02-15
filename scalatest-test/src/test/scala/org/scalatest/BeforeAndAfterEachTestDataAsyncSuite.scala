@@ -23,9 +23,9 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.Promise
 
 // This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
-class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
+class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite with DefaultFutureAssertionConverter {
 
-  class TheSuper extends AsyncFunSuite {
+  class TheSuper extends AsyncFunSuite with DefaultFutureAssertionConverter {
 
     @volatile var runTestWasCalled = false
     @volatile var runWasCalled = false
@@ -215,7 +215,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, the status returned by runTest will contain that exception as its unreportedException.") {
        
-    class MySuite extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class MySuite extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       override def afterEach(td: TestData): Unit = { throw new NumberFormatException }
       test("test October") { succeed }
@@ -307,7 +307,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {
@@ -327,7 +327,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {
@@ -347,7 +347,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {
@@ -367,7 +367,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {
@@ -387,7 +387,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {
@@ -407,7 +407,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+    class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with BeforeAndAfterEachTestData {
 
       var afterAllCalled = false
       test("test 1") {

@@ -15,6 +15,8 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.DefaultFutureAssertionConverter
+
 /**
  * A sister class to <code>org.scalatest.AsyncFunSpec</code> that can pass a fixture object into its tests.
  *
@@ -259,7 +261,7 @@ package org.scalatest.fixture
  *
  * @author Bill Venners
  */
-abstract class AsyncFreeSpec extends org.scalatest.fixture.AsyncFreeSpecLike {
+abstract class AsyncFreeSpec extends org.scalatest.fixture.AsyncFreeSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

@@ -21,13 +21,13 @@ import org.scalatest.concurrent.SleepHelper
 
 import scala.util.Success
 
-class AsyncPropSpecSpec2 extends AsyncFunSpec {
+class AsyncPropSpecSpec2 extends AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncPropSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -86,7 +86,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -137,7 +137,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           Future {
@@ -180,7 +180,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           SleepHelper.sleep(30)
@@ -221,7 +221,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           Future {
@@ -264,7 +264,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           val promise = Promise[Assertion]
@@ -323,7 +323,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -355,7 +355,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           Future {
@@ -402,7 +402,7 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         property("test 1") {
           SleepHelper.sleep(60)

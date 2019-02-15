@@ -125,7 +125,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
   // SKIP-SCALATESTJS,NATIVE-START
   "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
     val ex = new OutOfMemoryError("I meant to do that!")
-    class MySpec extends AsyncFunSuite {
+    class MySpec extends AsyncFunSuite with DefaultFutureAssertionConverter {
       test("should abort the suite") {
         Future.failed(ex)
       }
@@ -142,7 +142,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     // way back up. Suite aborts were caused by before or after code that died. Now we have a new problem
     // in async of what do we do when a test dies with OutOfMemoryError. Can't just propagate it back.
     // Unless there's someplace we can throw it, maybe have to report SuiteAborted. 
-    class SuiteThatAborts extends AsyncFunSuite {
+    class SuiteThatAborts extends AsyncFunSuite with DefaultFutureAssertionConverter {
       // SKIP-SCALATESTJS,NATIVE-START
       implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
       // SKIP-SCALATESTJS,NATIVE-END

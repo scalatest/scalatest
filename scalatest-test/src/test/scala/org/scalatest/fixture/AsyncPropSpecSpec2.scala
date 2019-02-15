@@ -22,13 +22,13 @@ import org.scalatest.concurrent.SleepHelper
 
 import scala.util.Success
 
-class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
+class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncPropSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -91,7 +91,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -146,7 +146,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -193,7 +193,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -238,7 +238,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -285,7 +285,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -348,7 +348,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -384,7 +384,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -435,7 +435,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpec with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =

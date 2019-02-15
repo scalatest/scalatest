@@ -16,6 +16,7 @@
 package org.scalatest.featurespec
 
 import org.scalatest.Suite
+import org.scalatest.DefaultFutureAssertionConverter
 
 /**
  * Enables testing of asynchronous code without blocking,
@@ -2239,7 +2240,7 @@ import org.scalatest.Suite
  * <li><code>Pop is fired at non-empty stack actor: almost full stack actor</code></li>
  * </ul>
  */
-abstract class AsyncFeatureSpec extends AsyncFeatureSpecLike {
+abstract class AsyncFeatureSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

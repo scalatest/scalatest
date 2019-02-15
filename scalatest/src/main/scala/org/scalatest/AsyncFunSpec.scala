@@ -19,7 +19,7 @@ package org.scalatest
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funspec.AsyncFunSpec instead.
   */
 @deprecated("Please use org.scalatest.funspec.AsyncFunSpec instead")
-abstract class AsyncFunSpec extends AsyncFunSpecLike {
+abstract class AsyncFunSpec extends DefaultFutureAssertionConverter with AsyncFunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

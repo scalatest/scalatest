@@ -47,7 +47,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   import engine._
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem) {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -55,7 +55,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem) {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS,NATIVE-END
@@ -77,7 +77,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  protected def property(testName: String, testTags: Tag*)(testFun: => FutureSystem) {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -102,7 +102,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => FutureSystem) {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     val stackDepthAdjustment = -2

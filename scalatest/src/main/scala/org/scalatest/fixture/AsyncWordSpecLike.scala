@@ -18,7 +18,6 @@ package org.scalatest.fixture
 import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
-import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
 StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
@@ -95,11 +94,11 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
@@ -122,7 +121,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => FutureSystem, pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
@@ -149,7 +148,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => FutureSystem, pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
 
@@ -266,7 +265,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(specText, tags, "in", testFun, pos)
     }
 
@@ -288,7 +287,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
 
@@ -332,7 +331,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
 
@@ -354,7 +353,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
   }
@@ -396,7 +395,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(string, List(), "in", testFun, pos)
     }
 
@@ -418,7 +417,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
 
@@ -462,7 +461,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos)
     }
 
@@ -484,7 +483,7 @@ trait AsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
 
     }
