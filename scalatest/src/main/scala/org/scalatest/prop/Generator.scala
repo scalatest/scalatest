@@ -1309,6 +1309,17 @@ object Generator {
         }
       }
       override def toString = "Generator[NonZeroInt]"
+      private val nonZeroIntCanonicals = List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroInt], Randomizer) = (nonZeroIntCanonicals.iterator, rnd)
+      override def shrink(i: NonZeroInt, rnd: Randomizer): (Iterator[NonZeroInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: Int, acc: List[NonZeroInt]): List[NonZeroInt] = {
+          val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
+          if (half == 0) acc    // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
+          else shrinkLoop(half, NonZeroInt.ensuringValid(-half) :: NonZeroInt.ensuringValid(half) :: acc)
+        }
+        (shrinkLoop(i.value, Nil).iterator, rnd)
+      }
     }
 
   /**
