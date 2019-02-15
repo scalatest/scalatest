@@ -899,7 +899,6 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (PosZInt.MaxValue)
       }
 
-
       it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = posZIntGenerator
@@ -940,6 +939,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         val edges = List(a1, a2)
         edges should contain (PosLong(1L))
         edges should contain (PosLong.MaxValue)
+      }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = posLongGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(PosLong(10000), rnd).shouldGrowWith(_.value)
       }
     }
     describe("for PosZLongs") {
