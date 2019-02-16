@@ -654,7 +654,6 @@ object ScalatestBuild {
           GenScalacticDotty.genResource((resourceManaged in Compile).value)
         }.taskValue
       },
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty[String] else if (scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
@@ -1019,7 +1018,6 @@ object ScalatestBuild {
           //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       scalatestJSDocTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
@@ -1098,8 +1096,7 @@ object ScalatestBuild {
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
-      publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+      publishLocal := {}
     ).dependsOn(scalatestDotty % "test", commonTestDotty % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
