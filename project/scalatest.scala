@@ -59,28 +59,14 @@ object ScalatestBuild {
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
       "/scalactic/€{FILE_PATH}.scala"
 
-  def envVar(name: String): Option[String] =
-    try {
-      Some(sys.env(name))
-    }
-    catch {
-      case e: NoSuchElementException => None
-    }
-
   def getGPGFilePath: String =
-    envVar("SCALATEST_GPG_FILE") match {
-      case Some(path) => path
-      case None => (Path.userHome / ".gnupg" / "secring.gpg").getAbsolutePath
-    }
+    sys.env.getOrElse("SCALATEST_GPG_FILE", (Path.userHome / ".gnupg" / "secring.gpg").getAbsolutePath)
 
   def getGPGPassphase: Option[Array[Char]] =
-    envVar("SCALATEST_GPG_PASSPHASE") match {
-      case Some(passphase) => Some(passphase.toCharArray)
-      case None => None
-    }
+    sys.env.get("SCALATEST_GPG_PASSPHASE").map(_.toCharArray)
 
   def getNexusCredentials: Credentials =
-    (envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")) match {
+    (sys.env.get("SCALATEST_NEXUS_LOGIN"), sys.env.get("SCALATEST_NEXUS_PASSWORD")) match {
       case (Some(login), Some(password)) => Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", login, password)
       case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
