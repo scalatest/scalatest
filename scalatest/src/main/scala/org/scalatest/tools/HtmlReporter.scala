@@ -32,7 +32,6 @@ import java.text.DecimalFormat
 import java.util.Iterator
 import java.util.Set
 import java.util.UUID
-import org.pegdown.PegDownProcessor
 import org.scalatest.exceptions.StackDepth
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -46,6 +45,11 @@ import StringReporter.makeDurationString
 import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
+
+import com.vladsch.flexmark.profiles.pegdown.Extensions
+import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter
+import com.vladsch.flexmark.parser.Parser
+import com.vladsch.flexmark.html.HtmlRenderer
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
@@ -94,11 +98,9 @@ private[scalatest] class HtmlReporter(
   
   private def getResource(resourceName: String): URL = 
     classOf[Suite].getClassLoader.getResource(resourceName)
-  
-  cssUrl match {
-    case Some(cssUrl) => copyResource(cssUrl, cssDir, "custom.css")
-    case None => // Do nothing.
-  }
+
+  cssUrl.foreach(copyResource(_, cssDir, "custom.css"))
+
   copyResource(getResource("org/scalatest/HtmlReporter.css"), cssDir, "styles.css")
   copyResource(getResource("org/scalatest/sorttable.js"), jsDir, "sorttable.js")
   copyResource(getResource("org/scalatest/d3.v2.min.js"), jsDir, "d3.v2.min.js")
@@ -110,11 +112,13 @@ private[scalatest] class HtmlReporter(
   copyResource(getResource("images/yellowbullet.gif"), imagesDir, "testpending.gif")
   copyResource(getResource("images/graybullet.gif"), imagesDir, "infoprovided.gif")
   
-  private val results = resultHolder match {
-    case Some(holder) => holder
-    case None => new SuiteResultHolder()
-  }
-  private val pegDown = new PegDownProcessor
+  private val results = resultHolder.getOrElse(new SuiteResultHolder)
+
+  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(Extensions.ALL)
+  private val markdownParser = Parser.builder(pegdownOptions).build()
+  private val htmlRenderer = HtmlRenderer.builder(pegdownOptions).build()
+  
+  private def markdownToHtml(s: String): String = htmlRenderer.render(markdownParser.parse(s))
 
   private def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
     throwable match {
@@ -190,10 +194,7 @@ private[scalatest] class HtmlReporter(
   }
   
   private def getSuiteFileName(suiteResult: SuiteResult) = 
-    suiteResult.suiteClassName match {
-      case Some(suiteClassName) => suiteClassName
-      case None => suiteResult.suiteName
-    }
+    suiteResult.suiteClassName.getOrElse(suiteResult.suiteName)
   
   private def makeSuiteFile(suiteResult: SuiteResult): Unit = {
     val name = getSuiteFileName(suiteResult)
@@ -725,10 +726,7 @@ private[scalatest] class HtmlReporter(
       prefix
       
   private def durationDisplay(duration: Option[Long]) = 
-    duration match {
-      case Some(duration) => duration
-      case None => "-"
-    }
+    duration.getOrElse("-")
     
   private def suiteSummary(elementId: String, suiteFileName: String, suiteResult: SuiteResult) = {
     import suiteResult._
@@ -826,13 +824,9 @@ private[scalatest] class HtmlReporter(
         case None => (List(), List())
       }
     
-    val throwableTitle = 
-      throwable match {
-        case Some(throwable) => Some(throwable.getClass.getName)
-        case None => None
-      }
+    val throwableTitle = throwable.map(_.getClass.getName)
     
-    val fileAndLineOption: Option[String] = 
+    val fileAndLineOption: Option[String] =
       throwable match {
         case Some(throwable) =>
           throwable match {
@@ -901,7 +895,7 @@ private[scalatest] class HtmlReporter(
   // TODO: probably actually show the exception in the HTML report rather than blowing up the reporter, because that means
   // the whole suite doesn't get recorded. May want to do this more generally though.
   private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = {
-    val htmlString = convertAmpersand(convertSingleParaToDefinition(pegDown.markdownToHtml(text)))
+    val htmlString = convertAmpersand(convertSingleParaToDefinition(markdownToHtml(text)))
     <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * twoLess(indentLevel)) + "px;" }>
        {
          try XML.loadString(htmlString)
@@ -1003,36 +997,16 @@ private[scalatest] class HtmlReporter(
       
   def extractSuiteEvents(suiteId: String) = eventList partition { e => 
     e match {
-      case e: TestStarting => e.suiteId == suiteId
+      case e: TestStarting   => e.suiteId == suiteId
       case e: TestSucceeded  => e.suiteId == suiteId
       case e: TestIgnored    => e.suiteId == suiteId
       case e: TestFailed     => e.suiteId == suiteId
       case e: TestPending    => e.suiteId == suiteId
       case e: TestCanceled   => e.suiteId == suiteId
-      case e: InfoProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: AlertProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: NoteProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: MarkupProvided => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
+      case e: InfoProvided   => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: AlertProvided  => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: NoteProvided   => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: MarkupProvided => e.nameInfo.exists(_.suiteId == suiteId)
       case e: ScopeOpened    => e.nameInfo.suiteId == suiteId
       case e: ScopeClosed    => e.nameInfo.suiteId == suiteId
       case e: ScopePending   => e.nameInfo.suiteId == suiteId

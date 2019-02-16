@@ -44,7 +44,7 @@ object ScalatestBuild {
 
   val plusJUnitVersion = "1.0.0-SNAP7"
   val plusTestNGVersion = "1.0.0-SNAP6"
-  val pegdownVersion = "1.4.2"
+  val flexmarkVersion = "0.35.10"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
 
@@ -204,7 +204,7 @@ object ScalatestBuild {
       "com.google.inject" % "guice" % "4.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
+      flexmarkAll
     )
 
   def crossBuildTestLibraryDependencies = Def.setting {
@@ -224,6 +224,8 @@ object ScalatestBuild {
         Seq.empty
     }
   }
+
+  val flexmarkAll = "com.vladsch.flexmark" % "flexmark-all" % flexmarkVersion % "optional"
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
@@ -1437,7 +1439,7 @@ object ScalatestBuild {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
+      flexmarkAll,
       "org.scalatestplus" %% "scalatestplus-testng" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
     )
