@@ -2755,6 +2755,13 @@ object Generator {
         val edges = None :: edgesOfT.map(t => Some(t))
         (edges, nextRnd)
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+        // The canonicals of Option[T] are the canonicals of T, plus None
+        val (tCanonicals, nextRnd) = genOfT.canonicals(rnd)
+        (Iterator(None) ++ tCanonicals.map(Some(_)), nextRnd)
+      }
+
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
         edges match {
           case head :: tail =>
@@ -2769,6 +2776,21 @@ object Generator {
             }
         }
       }
+
+      override def shrink(value: Option[T], rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+        value match {
+          // If there is a real value, shrink that value, and return that and None.
+          case Some(t) => {
+            val (tShrinks, nextRnd) = genOfT.shrink(t, rnd)
+            (Iterator(None) ++ tShrinks.map(Some(_)), nextRnd)
+          }
+
+          // There's no way to simplify None:
+          case None => (Iterator.empty, rnd)
+        }
+      }
+
+      override def toString = "Generator[Option[T]]"
     }
 
   /**
@@ -2800,6 +2822,14 @@ object Generator {
         }
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+        val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
+        val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
+
+        (goodCanon.map(Good(_)) ++ badCanon.map(Bad(_)), nextNextRnd)
+      }
+
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (G Or B, List[G Or B], Randomizer) = {
         edges match {
           case head :: tail => 
@@ -2814,6 +2844,89 @@ object Generator {
               val (nextG, _, nextRnd) = genOfG.next(szp, Nil, rnd)
               (Good(nextG), Nil, nextRnd)
             }
+        }
+      }
+
+      override def shrink(value: Or[G, B], rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+        value match {
+          case Good(g) => {
+            val (gShrink, nextRnd) = genOfG.shrink(g, rnd)
+            (gShrink.map(Good(_)), nextRnd)
+          }
+          case Bad(b) => {
+            val (bShrink, nextRnd) = genOfB.shrink(b, rnd)
+            (bShrink.map(Bad(_)), nextRnd)
+          }
+        }
+      }
+    }
+
+  // Note that this is identical to orGenerator *except* that the sides are reversed:
+  // Right is "Good", and Left is "Bad".
+  /**
+    * Given [[Generator]]s for two types, [[L]] and [[R]], this provides one for `Either[L, R]`.
+    *
+    * @param genOfL a [[Generator]] that produces type [[L]]
+    * @param genOfR a [[Generator]] that produces type [[R]]
+    * @tparam L the "left" type for an [[Either]]
+    * @tparam R the "right" type for an [[Either]]
+    * @return a [[Generator]] that produces `Either[L, R]`
+    */
+  implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
+    new Generator[Either[L, R]] {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
+        val (edgesOfL, nextRnd) = genOfL.initEdges(maxLength, rnd)
+        val (edgesOfR, nextNextRnd) = genOfR.initEdges(maxLength, nextRnd)
+        // Fill up to maxLength, favoring Right over Left if maxLength is odd. Else just dividing it
+        // down the middle, half Right, half Left. And filling in with the other if one side runs out.
+        @tailrec
+        def loop(count: Int, remainingR: List[R], remainingL: List[L], acc: List[Either[L, R]]): List[Either[L, R]] = {
+          (count, remainingR, remainingL) match {
+            case (0, _, _) => acc
+            case (_, Nil, Nil) => acc
+            case (c, rHead :: rTail, Nil) => loop(c - 1, rTail, Nil, Right(rHead) :: acc)
+            case (c, Nil, lHead :: lTail) => loop(c - 1, Nil, lTail, Left(lHead) :: acc)
+            case (c, rHead :: rTail, _) if c % 2 == 0 => loop(c - 1, rTail, remainingL, Right(rHead) :: acc)
+            case (c, _, lHead :: lTail) => loop(c - 1, remainingR, lTail, Left(lHead) :: acc)
+          }
+        }
+        (loop(maxLength, edgesOfR, edgesOfL, Nil), nextNextRnd)
+      }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+        val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
+        val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
+
+        (rightCanon.map(Right(_)) ++ leftCanon.map(Left(_)), nextNextRnd)
+      }
+
+      def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (Either[L, R], List[Either[L, R]], Randomizer) = {
+        edges match {
+          case head :: tail =>
+            (head, tail, rnd)
+          case _ =>
+            val (nextInt, nextRnd) = rnd.nextInt
+            if (nextInt % 4 == 0) {
+              val (nextL, _, nextRnd) = genOfL.next(szp, Nil, rnd)
+              (Left(nextL), Nil, nextRnd)
+            }
+            else {
+              val (nextR, _, nextRnd) = genOfR.next(szp, Nil, rnd)
+              (Right(nextR), Nil, nextRnd)
+            }
+        }
+      }
+
+      override def shrink(value: Either[L, R], rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+        value match {
+          case Right(r) => {
+            val (rShrink, nextRnd) = genOfR.shrink(r, rnd)
+            (rShrink.map(Right(_)), nextRnd)
+          }
+          case Left(l) => {
+            val (lShrink, nextRnd) = genOfL.shrink(l, rnd)
+            (lShrink.map(Left(_)), nextRnd)
+          }
         }
       }
     }

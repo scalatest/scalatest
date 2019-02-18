@@ -2153,6 +2153,195 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals(3).head should (be >= '0' and be <= '9')
       }
     }
+
+    describe("for Options") {
+      it("should produce Nones with a reasonable frequency") {
+        import Generator._
+        val gen = optionGenerator[Int]
+
+        val classified = CommonGenerators.classify(1000, gen) {
+          case Some(_) => "Some"
+          case None => "None"
+        }
+
+        classified.portions("None") should be (0.1 +- 0.03)
+      }
+
+      it("should use the base type for edges") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intEdges, _) = baseGen.initEdges(100, rnd)
+        val (optEdges, _) = gen.initEdges(100, rnd)
+
+        optEdges should contain (None)
+        optEdges.filter(_.isDefined).map(_.get) should contain theSameElementsAs intEdges
+      }
+
+      it("should use the base type for canonicals") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intCanon, _) = baseGen.canonicals(rnd)
+        val (optCanonIter, _) = gen.canonicals(rnd)
+        val optCanon = optCanonIter.toList
+
+        optCanon should contain (None)
+        optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
+      }
+
+      it("should use the base type for shrinking") {
+        import Generator._
+        val baseGen = intGenerator
+        val gen = optionGenerator[Int]
+
+        val rnd = Randomizer.default
+        val (intShrinkIter, _) = baseGen.shrink(10000, rnd)
+        val (optShrinkIter, _) = gen.shrink(Some(10000), rnd)
+        val intShrink = intShrinkIter.toList
+        val optShrink = optShrinkIter.toList
+
+        optShrink should contain (None)
+        optShrink.filter(_.isDefined).map(_.get) should contain theSameElementsAs(intShrink)
+      }
+
+      it("should not try to shrink None") {
+        import Generator._
+        val gen = optionGenerator[Int]
+        val rnd = Randomizer.default
+
+        val (optShrink, _) = gen.shrink(None, rnd)
+
+        assert(optShrink.isEmpty)
+      }
+    }
+
+    describe("for Ors") {
+      it("should use the base types for edges") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gEdges, _) = gGen.initEdges(100, rnd)
+        val (bEdges, _) = bGen.initEdges(100, rnd)
+        val (orEdges, _) = gen.initEdges(100, rnd)
+
+        orEdges should contain theSameElementsAs(gEdges.map(Good(_)) ++ bEdges.map(Bad(_)))
+      }
+
+      it("should use the base types for canonicals") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gCanon, _) = gGen.canonicals(rnd)
+        val (bCanon, _) = bGen.canonicals(rnd)
+        val (orCanon, _) = gen.canonicals(rnd)
+
+        orCanon.toList should contain theSameElementsAs((gCanon.map(Good(_)) ++ bCanon.map(Bad(_))).toList)
+      }
+
+      it("should produce an appropriate mix of Good and Bad") {
+        import Generator._
+        import org.scalactic._
+        val gen = orGenerator[Int, String]
+
+        val classification = CommonGenerators.classify(1000, gen) {
+          case Good(_) => "Good"
+          case Bad(_) => "Bad"
+        }
+
+        // It's arbitrary, but we know that it produces Bad about a quarter of the time:
+        classification.percentages("Bad").value should be (25 +- 2)
+      }
+
+      it("should use the base types to shrink") {
+        import Generator._
+        import org.scalactic._
+        val gGen = intGenerator
+        val bGen = stringGenerator
+        val gen = orGenerator[Int, String]
+
+        val rnd = Randomizer.default
+        val (gShrink, _) = gGen.shrink(1000, rnd)
+        val (bShrink, _) = bGen.shrink("hello world!", rnd)
+        val (orGoodShrink, _) = gen.shrink(Good(1000), rnd)
+        val (orBadShrink, _) = gen.shrink(Bad("hello world!"), rnd)
+
+        orGoodShrink.toList should contain theSameElementsAs(gShrink.map(Good(_)).toList)
+        orBadShrink.toList should contain theSameElementsAs(bShrink.map(Bad(_)).toList)
+      }
+    }
+
+    describe("for Eithers") {
+      it("should use the base types for edges") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rEdges, _) = rGen.initEdges(100, rnd)
+        val (lEdges, _) = lGen.initEdges(100, rnd)
+        val (eitherEdges, _) = gen.initEdges(100, rnd)
+
+        eitherEdges should contain theSameElementsAs(rEdges.map(Right(_)) ++ lEdges.map(Left(_)))
+      }
+
+      it("should use the base types for canonicals") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rCanon, _) = rGen.canonicals(rnd)
+        val (lCanon, _) = lGen.canonicals(rnd)
+        val (eitherCanon, _) = gen.canonicals(rnd)
+
+        eitherCanon.toList should contain theSameElementsAs((rCanon.map(Right(_)) ++ lCanon.map(Left(_))).toList)
+      }
+
+      it("should produce an appropriate mix of Right and Left") {
+        import Generator._
+        val gen = eitherGenerator[String, Int]
+
+        val classification = CommonGenerators.classify(1000, gen) {
+          case Right(_) => "Right"
+          case Left(_) => "Left"
+        }
+
+        // It's arbitrary, but we know that it produces Left about a quarter of the time:
+        classification.percentages("Left").value should be (25 +- 2)
+      }
+
+      it("should use the base types to shrink") {
+        import Generator._
+        val rGen = intGenerator
+        val lGen = stringGenerator
+        val gen = eitherGenerator[String, Int]
+
+        val rnd = Randomizer.default
+        val (rShrink, _) = rGen.shrink(1000, rnd)
+        val (lShrink, _) = lGen.shrink("hello world!", rnd)
+        val (eitherRightShrink, _) = gen.shrink(Right(1000), rnd)
+        val (eitherLeftShrink, _) = gen.shrink(Left("hello world!"), rnd)
+
+        eitherRightShrink.toList should contain theSameElementsAs(rShrink.map(Right(_)).toList)
+        eitherLeftShrink.toList should contain theSameElementsAs(lShrink.map(Left(_)).toList)
+      }
+    }
+
     describe("for Lists") {
       it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
   

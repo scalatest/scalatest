@@ -15,6 +15,7 @@
  */
 package org.scalatest.prop
 
+import org.scalactic._
 import org.scalactic.anyvals._
 
 import scala.annotation.tailrec
@@ -1769,6 +1770,39 @@ trait CommonGenerators {
     * @group Collections
     */
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
+
+  /**
+    * Given an existing `Generator[T]`, this creates a `Generator[Option[T]]`.
+    *
+    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @tparam T the type that we are producing an Option of
+    * @return a Generator that produces `Option[T]`
+    *
+    * @group Collections
+    */
+  def options[T](implicit genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
+
+  /**
+    * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
+    *
+    * @param genOfG a [[Generator]] that produces type [[G]]
+    * @param genOfB a [[Generator]] that produces type [[B]]
+    * @tparam G the "good" type for an [[Or]]
+    * @tparam B the "bad" type for an [[Or]]
+    * @return a [[Generator]] that produces `G Or B`
+    */
+  def ors[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
+
+  /**
+    * Given [[Generator]]s for two types, [[L]] and [[R]], this provides one for `Either[L, R]`.
+    *
+    * @param genOfL a [[Generator]] that produces type [[L]]
+    * @param genOfR a [[Generator]] that produces type [[R]]
+    * @tparam L the Left type for an [[Either]]
+    * @tparam R the Right type for an [[Either]]
+    * @return a [[Generator]] that produces `Either[L, R]`
+    */
+  def eithers[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] = Generator.eitherGenerator
 
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
