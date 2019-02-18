@@ -1468,6 +1468,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (NegZLong(-1L))
         edges should contain (NegZLong.MaxValue)
       }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = negZLongGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZLong(-10000), rnd).shouldGrowWith(_.value)
+      }
     }
     describe("for NegFloat") {
       it("should produce the same NegFloat values in the same order given the same Randomizer") {
