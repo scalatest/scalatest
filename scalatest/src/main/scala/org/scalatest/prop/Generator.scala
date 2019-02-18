@@ -1262,6 +1262,34 @@ object Generator {
             (posZFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[PosZFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: PosZFloat, rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZFloat, acc: List[PosZFloat]): List[PosZFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f) PosZFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.PositiveInfinity || fv.isNaN)
+                Float.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = PosZFloat.ensuringValid(n.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            if (sqrt < 1.0f) PosZFloat(0.0f) :: acc
+            else {
+              val whole = PosZFloat.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosZFloat]"
     }
 
