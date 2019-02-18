@@ -2136,6 +2136,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (FiniteFloat(1.0f))
         edges should contain (FiniteFloat.MaxValue)
       }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = finiteFloatGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(FiniteFloat(10000), rnd).shouldGrowWith(_.value)
+      }
     }
     describe("for FiniteDouble") {
       it("should produce the same FiniteDouble values in the same order given the same Randomizer") {

@@ -1168,6 +1168,32 @@ object Generator {
             (finiteFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[FiniteFloat] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(FiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: FiniteFloat, rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: FiniteFloat, acc: List[FiniteFloat]): List[FiniteFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f && fv >= -1.0f) FiniteFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+            shrinkLoop(FiniteFloat.ensuringValid(nearest), FiniteFloat.ensuringValid(nearestNeg) :: FiniteFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
+            if (sqrt < 1.0f) FiniteFloat(0.0f) :: acc
+            else {
+              val whole: Float = sqrt.floor
+              val negWhole: Float = math.rint((-whole).toDouble).toFloat
+              val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(FiniteFloat.ensuringValid(first), FiniteFloat.ensuringValid(first) :: FiniteFloat.ensuringValid(second) :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[FiniteFloat]"
     }
 
