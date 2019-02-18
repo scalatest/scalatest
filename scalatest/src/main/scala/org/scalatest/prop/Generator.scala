@@ -1215,6 +1215,32 @@ object Generator {
             (finiteDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[FiniteDouble] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(FiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: FiniteDouble, rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: FiniteDouble, acc: List[FiniteDouble]): List[FiniteDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv <= 1.0 && fv >= -1.0) FiniteDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (fv > 0.0) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+            shrinkLoop(FiniteDouble.ensuringValid(nearest), FiniteDouble.ensuringValid(nearestNeg) :: FiniteDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv.abs)
+            if (sqrt < 1.0) FiniteDouble(0.0f) :: acc
+            else {
+              val whole: Double = sqrt.floor
+              val negWhole: Double = math.rint(-whole)
+              val (first, second) = if (f > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(FiniteDouble.ensuringValid(first), FiniteDouble.ensuringValid(first) :: FiniteDouble.ensuringValid(second) :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[FiniteDouble]"
     }
 
