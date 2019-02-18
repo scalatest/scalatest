@@ -736,9 +736,9 @@ trait FuturePropCheckerAsserting {
                 case Nil => Future.successful(pcr) // Can I reuse future here out of curiosity? That one is also completed.
                 case shrinkHead :: shrinkTail =>
                   val result: Future[T] = fun(shrinkHead)
-                  result.transformWith {
-                    case Success(_) => shrinkLoop(shrinkTail)
-                    case Failure(shrunkEx) =>
+                  // Once we drop support for Scala 2.11, we can use transformWith here
+                  result.flatMap(_ => shrinkLoop(shrinkTail)).recoverWith {
+                    case shrunkEx: Throwable =>
                       val shrunkArgsPassed =
                         List(
                           if (names.isDefinedAt(0))
