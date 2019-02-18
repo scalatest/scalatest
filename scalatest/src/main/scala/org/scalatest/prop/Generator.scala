@@ -1726,6 +1726,21 @@ object Generator {
             (negZInt, Nil, nextRnd)
         }
       }
+      private val negZIntCanonicals = List(0, -1, -2, -3).map(NegZInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZInt], Randomizer) = (negZIntCanonicals.iterator, rnd)
+      override def shrink(i: NegZInt, rnd: Randomizer): (Iterator[NegZInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: NegZInt, acc: List[NegZInt]): List[NegZInt] = {
+          if (i.value == 0)
+            acc
+          else {
+            val half: Int = i / 2
+            val negIntHalf = NegZInt.ensuringValid(half)
+            shrinkLoop(negIntHalf, negIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegZInt]"
     }
 
