@@ -1080,6 +1080,56 @@ object Generator {
             (posZFloat, Nil, nextRnd)
         }
       }
+//      private val posFloatCanonicals: List[PosFloat] = List(0.5f, 1.0f, 2.0f, 3.0f).map(PosFloat.ensuringValid(_))
+//      override def canonicals(rnd: Randomizer): (Iterator[PosFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
+//      override def shrink(f: PosFloat, rnd: Randomizer): (Iterator[PosFloat], Randomizer) = {
+//        @tailrec
+//        def shrinkLoop(f: PosFloat, acc: List[PosFloat]): List[PosFloat] = {
+//          val fv = f.value
+//          if (fv <= 1.0f) PosFloat(0.5f) :: acc
+//          else if (!fv.isWhole) {
+//            // We need to handle infinity and NaN specially because without it, this method
+//            // will go into an infinite loop. The reason is floor and ciel give back the same value
+//            // on these values:
+//            //
+//            // scala> val f = Float.PositiveInfinity
+//            // f: Float = Infinity
+//            //
+//            // scala> f.floor
+//            // res1: Float = Infinity
+//            //
+//            // scala> f.ceil
+//            // res3: Float = Infinity
+//            //
+//            // scala> Float.NaN.floor
+//            // res5: Float = NaN
+//            //
+//            // scala> Float.NaN.ceil
+//            // res6: Float = NaN
+//            //
+//            val n =
+//              if (fv == Float.PositiveInfinity || fv.isNaN)
+//                Float.MaxValue
+//              else if (fv == Float.NegativeInfinity)
+//                Float.MinValue
+//              else fv
+//            // Nearest whole numbers closer to zero
+//            val nearest = n.floor
+//            shrinkLoop(nearest, nearest :: acc)
+//          }
+//          else {
+//            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+//            if (sqrt < 1.0f) 0.5f :: acc
+//            else {
+//              val whole: Float = sqrt.floor
+//              val negWhole: Float = math.rint((-whole).toDouble).toFloat
+//              val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+//              shrinkLoop(first, first :: second :: acc)
+//            }
+//          }
+//        }
+//        (shrinkLoop(f, Nil).iterator, rnd)
+//      }
       override def toString = "Generator[PosFloat]"
     }
 
@@ -1405,6 +1455,17 @@ object Generator {
             val (nonZeroLong, nextRnd) = rnd.nextNonZeroLong
             (nonZeroLong, Nil, nextRnd)
         }
+      }
+      private val nonZeroLongCanonicals = List(1, -1, 2, -2, 3, -3).map(NonZeroLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = (nonZeroLongCanonicals.iterator, rnd)
+      override def shrink(i: NonZeroLong, rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: Long, acc: List[NonZeroLong]): List[NonZeroLong] = {
+          val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
+          if (half == 0) acc     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
+          else shrinkLoop(half, NonZeroLong.ensuringValid(-half) :: NonZeroLong.ensuringValid(half) :: acc)
+        }
+        (shrinkLoop(i.value, Nil).iterator, rnd)
       }
       override def toString = "Generator[NonZeroLong]"
     }
