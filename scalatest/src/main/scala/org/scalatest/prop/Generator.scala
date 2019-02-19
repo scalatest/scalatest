@@ -1538,6 +1538,38 @@ object Generator {
             (nonZeroDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[NonZeroDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroDouble, rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroDouble, acc: List[NonZeroDouble]): List[NonZeroDouble] = {
+          val d = raw.value
+          if (d <= 1.0 && d >= -1.0) acc
+          else if (!d.isWhole) {
+            val n =
+              if (d == Double.PositiveInfinity || d.isNaN)
+                Double.MaxValue
+              else if (d == Double.NegativeInfinity)
+                Double.MinValue
+              else d
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+            shrinkLoop(NonZeroDouble.ensuringValid(nearest), NonZeroDouble.ensuringValid(nearestNeg) :: NonZeroDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(d.abs)
+            if (sqrt < 1.0) acc
+            else {
+              val whole: NonZeroDouble = NonZeroDouble.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroDouble = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroDouble]"
     }
 
