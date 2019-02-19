@@ -2048,6 +2048,34 @@ object Generator {
             (negZDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[NegZDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: NegZDouble, rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegZDouble, acc: List[NegZDouble]): List[NegZDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv >= -1.0) NegZDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Double.NegativeInfinity || fv.isNaN)
+                Double.MinValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = NegZDouble.ensuringValid(n.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -math.sqrt(fv.abs)
+            if (sqrt > -1.0) NegZDouble(0.0) :: acc
+            else {
+              val whole = NegZDouble.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegZDouble]"
     }
 
