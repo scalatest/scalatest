@@ -1591,6 +1591,32 @@ object Generator {
             (nonZeroFiniteDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[NonZeroFiniteDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFiniteDouble, rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFiniteDouble, acc: List[NonZeroFiniteDouble]): List[NonZeroFiniteDouble] = {
+          val d = raw.value
+          if (d <= 1.0 && d >= -1.0) acc
+          else if (!d.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), NonZeroFiniteDouble.ensuringValid(nearestNeg) :: NonZeroFiniteDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(d.abs)
+            if (sqrt < 1.0) acc
+            else {
+              val whole: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
 
