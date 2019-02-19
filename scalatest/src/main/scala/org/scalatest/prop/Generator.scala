@@ -1638,6 +1638,38 @@ object Generator {
             (nonZeroFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[NonZeroFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFloat, rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFloat, acc: List[NonZeroFloat]): List[NonZeroFloat] = {
+          val d = raw.value
+          if (d <= 1.0f && d >= -1.0f) acc
+          else if (!d.isWhole) {
+            val n =
+              if (d == Float.PositiveInfinity || d.isNaN)
+                Float.MaxValue
+              else if (d == Float.NegativeInfinity)
+                Float.MinValue
+              else d
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+            shrinkLoop(NonZeroFloat.ensuringValid(nearest), NonZeroFloat.ensuringValid(nearestNeg) :: NonZeroFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
+            if (sqrt < 1.0f) acc
+            else {
+              val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroFloat]"
     }
 
