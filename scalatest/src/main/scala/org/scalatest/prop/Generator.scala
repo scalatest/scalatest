@@ -1848,6 +1848,27 @@ object Generator {
             (negFiniteDouble, Nil, nextRnd)
         }
       }
+      private val negDoubleCanonicals: List[NegFiniteDouble] = List(-1.0, -2.0, -3.0).map(NegFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
+      override def shrink(f: NegFiniteDouble, rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegFiniteDouble, acc: List[NegFiniteDouble]): List[NegFiniteDouble] = {
+          val fv = f.value
+          if (fv == -1.0) acc
+          else if (fv > -1.0) NegFiniteDouble(-1.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegFiniteDouble.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -(math.sqrt(fv.abs))
+            val whole = NegFiniteDouble.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegFiniteDouble]"
     }
 
