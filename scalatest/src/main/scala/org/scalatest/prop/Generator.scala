@@ -1936,6 +1936,27 @@ object Generator {
             (negFiniteFloat, Nil, nextRnd)
         }
       }
+      private val negFloatCanonicals: List[NegFiniteFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
+      override def shrink(f: NegFiniteFloat, rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegFiniteFloat, acc: List[NegFiniteFloat]): List[NegFiniteFloat] = {
+          val fv = f.value
+          if (fv == -1.0f) acc
+          else if (fv > -1.0f) NegFiniteFloat(-1.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
+            val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegFiniteFloat]"
     }
 

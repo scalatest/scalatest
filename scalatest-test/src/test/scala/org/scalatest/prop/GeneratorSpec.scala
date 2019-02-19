@@ -1622,6 +1622,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (NegFiniteFloat.MaxValue)
         edges should contain (NegFiniteFloat.MinValue)
       }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = negFiniteFloatGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(NegFiniteFloat(-10000), rnd).shouldGrowWith(_.value)
+      }
     }
     describe("for NegZFloat") {
       it("should produce the same NegZFloat values in the same order given the same Randomizer") {
