@@ -1691,6 +1691,32 @@ object Generator {
             (nonZeroFiniteFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[NonZeroFiniteFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFiniteFloat, rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFiniteFloat, acc: List[NonZeroFiniteFloat]): List[NonZeroFiniteFloat] = {
+          val d = raw.value
+          if (d <= 1.0f && d >= -1.0f) acc
+          else if (!d.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (d > 0.0f) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            shrinkLoop(NonZeroFiniteFloat.ensuringValid(nearest), NonZeroFiniteFloat.ensuringValid(nearestNeg) :: NonZeroFiniteFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
+            if (sqrt < 1.0f) acc
+            else {
+              val whole: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFiniteFloat = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroFiniteFloat]"
     }
 
