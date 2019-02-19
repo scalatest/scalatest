@@ -1172,6 +1172,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (PosZFiniteFloat(1.0f))
         edges should contain (PosZFiniteFloat.MaxValue)
       }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = posZFiniteFloatGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZFiniteFloat(10000), rnd).shouldGrowWith(_.value)
+      }
     }
     describe("for PosDouble") {
       it("should produce the same PosDouble values in the same order given the same Randomizer") {

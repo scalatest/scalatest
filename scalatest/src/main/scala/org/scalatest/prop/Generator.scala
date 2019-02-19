@@ -1311,6 +1311,30 @@ object Generator {
             (posZFiniteFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[PosZFiniteFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: PosZFiniteFloat, rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZFiniteFloat, acc: List[PosZFiniteFloat]): List[PosZFiniteFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f) PosZFiniteFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosZFiniteFloat.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            if (sqrt < 1.0f) PosZFiniteFloat(0.0f) :: acc
+            else {
+              val whole = PosZFiniteFloat.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosZFiniteFloat]"
     }
 
