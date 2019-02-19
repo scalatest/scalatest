@@ -1402,6 +1402,27 @@ object Generator {
             (posFiniteDouble, Nil, nextRnd)
         }
       }
+      private val posDoubleCanonicals: List[PosFiniteDouble] = List(1.0, 2.0, 3.0).map(PosFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
+      override def shrink(f: PosFiniteDouble, rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosFiniteDouble, acc: List[PosFiniteDouble]): List[PosFiniteDouble] = {
+          val fv = f.value
+          if (fv == 1.0) acc
+          else if (fv < 1.0) PosFiniteDouble(1.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosFiniteDouble.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv)
+            val whole = PosFiniteDouble.ensuringValid(sqrt.floor)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosFiniteDouble]"
     }
 

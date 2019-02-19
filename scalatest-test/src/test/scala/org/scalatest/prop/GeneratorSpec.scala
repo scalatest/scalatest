@@ -1262,6 +1262,14 @@ class GeneratorSpec extends FunSpec with Matchers {
         edges should contain (PosFiniteDouble(1.0))
         edges should contain (PosFiniteDouble.MaxValue)
       }
+
+      it("should have legitimate canonicals and shrink") {
+        import Generator._
+        val gen = posFiniteDoubleGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+        gen.shrink(PosFiniteDouble(10000), rnd).shouldGrowWith(_.value)
+      }
     }
     describe("for PosZDouble") {
       it("should produce the same PosZDouble values in the same order given the same Randomizer") {
