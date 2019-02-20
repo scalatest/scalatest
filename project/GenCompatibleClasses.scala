@@ -108,7 +108,7 @@ private[org] object CompatParColls {
           |    class MockParallelCol[T](oriCol: T) {
           |      $$PAR_METHOD$$
           |    }
-          |    implicit def convertToParallel[T](col: T) = new MockParallelCol(col)
+          |    implicit def convertToParallel[T](col: T): MockParallelCol[T] = new MockParallelCol(col)
           |  }
           |}
           |

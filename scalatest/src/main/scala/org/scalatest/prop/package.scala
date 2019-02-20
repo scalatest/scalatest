@@ -16,8 +16,6 @@
 package org.scalatest
 
 import org.scalactic.anyvals._
-import scala.annotation.tailrec
-import scala.reflect.runtime.universe.TypeTag
 
 import prop._
 

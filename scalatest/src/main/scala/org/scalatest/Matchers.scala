@@ -3063,14 +3063,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  private sealed trait Collected extends Product with Serializable
-  private case object AllCollected extends Collected
-  private case object EveryCollected extends Collected
-  private case class BetweenCollected(from: Int, to: Int) extends Collected
-  private case class AtLeastCollected(num: Int) extends Collected
-  private case class AtMostCollected(num: Int) extends Collected
-  private case object NoCollected extends Collected
-  private case class ExactlyCollected(num: Int) extends Collected
+  // In Dotty when Collected trait is private, object Matchers extends Matchers does not work, hopefully it can be fixed in future version of Dotty before it reaches final.
+  // SKIP-DOTTY-START
+  private sealed class Collected(name: String) extends Serializable {
+    override def toString: String = name
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY sealed class Collected(name: String) extends Serializable
+  private val AllCollected = new Collected("AllCollected")
+  private val EveryCollected = new Collected("EveryCollected")
+  private case class BetweenCollected(from: Int, to: Int) extends Collected("BetweenCollected")
+  private case class AtLeastCollected(num: Int) extends Collected("AtLeastCollected")
+  private case class AtMostCollected(num: Int) extends Collected("AtMostCollected")
+  private val NoCollected = new Collected("NoCollected")
+  private case class ExactlyCollected(num: Int) extends Collected("ExactlyCollected")
   
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
 
@@ -6748,7 +6754,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   // This is where ShouldMatchers.scala started 
 
-  private object ShouldMethodHelper {
+  // 13 Feb 2019: Current dotty does not seems to like inner object, this is a work around until the problem is fixed.
+  private class ShouldMethodHelperClass {
 
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
       val result = rightMatcher(left)
@@ -6778,6 +6785,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
   }
+
+  private val ShouldMethodHelper = new ShouldMethodHelperClass
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -7106,8 +7115,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeATypeImpl
-    
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = ~TypeMatcherMacro.shouldBeATypeImpl('(this), '(aType))
+
     /**
      * This method enables syntax such as the following:
      *
@@ -7116,8 +7128,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeAnTypeImpl
-    
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = ~TypeMatcherMacro.shouldBeAnTypeImpl('(this), '(anType))
+
     /**
      * This method enables syntax such as the following:
      *
@@ -7588,7 +7603,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ???
 
     /**
      * This method enables syntax such as the following:
@@ -7598,7 +7616,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ???
 
     /**
      * This method enables syntax such as the following:
@@ -7608,7 +7629,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ???
 
 /*
     /**

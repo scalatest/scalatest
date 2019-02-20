@@ -37,7 +37,10 @@ object ObjectMeta {
 
       lazy val fieldNames = {
         v.getClass.getDeclaredMethods.filter { m =>
+          // SKIP-DOTTY-START
           m.getParameterTypes.isEmpty && privFields.contains(m.getName)
+          // SKIP-DOTTY-END
+          //DOTTY-ONLY m.getParameterTypes.isEmpty && privFields.contains(m.getName) && m.getName != "$outer"
         }.map { f =>
           if (f.getName.endsWith("$mcI$sp"))
             f.getName.dropRight(7)

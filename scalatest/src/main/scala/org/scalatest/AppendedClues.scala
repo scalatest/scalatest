@@ -162,7 +162,7 @@ trait AppendedClues {
           if (clue.toString != "")
             throw e.modifyMessage(append)
           else
-            throw e
+            throw e.asInstanceOf[Throwable] // Safe cast because self type is Throwable, but Dotty is stricter and does not allow this without the cast.
       }
     }
   }
