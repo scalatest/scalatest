@@ -59,7 +59,7 @@ trait Messaging[T] {
  */
 object Messaging {
 
-  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
+  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Messaging</code> implementation for <code>java.lang.Throwable</code>

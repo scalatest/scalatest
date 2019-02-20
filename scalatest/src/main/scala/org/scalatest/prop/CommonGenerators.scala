@@ -934,38 +934,41 @@ trait CommonGenerators {
     // Take Int not PosInt, because Scala won't apply  multiple implicit
     // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
     // So just do a require.
-/*
-    TODO:
+    /*
+        TODO:
 
-     org.scalactic.Requirements.require {
-       distribution forall { case (w, _) => w >= 1 }
-     }
+         org.scalactic.Requirements.require {
+           distribution forall { case (w, _) => w >= 1 }
+         }
 
-[error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:154: exception during macro expansion: 
-[error] scala.reflect.macros.TypecheckException: not found: value requirementsHelper
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:34)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:28)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
-[error] 	at scala.reflect.macros.contexts.Typers$class.withContext$1(Typers.scala:25)
-[error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2.apply(Typers.scala:28)
+    [error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:154: exception during macro expansion:
+    [error] scala.reflect.macros.TypecheckException: not found: value requirementsHelper
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:34)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:28)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
+    [error] 	at scala.reflect.macros.contexts.Typers$class.withContext$1(Typers.scala:25)
+    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2.apply(Typers.scala:28)
 
-*/
+    */
     // I think we actually need to say org.scalactic.Requirements.requirementsHelper in the thing not requirementsHelper
     // Oh, maybe that won't work. Anyway, see what's up.
+    // TODO: We should try to remove this dotty skip when newer dotty is available.
+    // SKIP-DOTTY-START
     import org.scalactic.Requirements._
     require {
       distribution forall { case (w, _) => w >= 1 }
     }
+    // SKIP-DOTTY-END
     new Generator[T] {
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
-        // TODO: Try dropping toVector. distribution is already a Vector
+      // TODO: Try dropping toVector. distribution is already a Vector
         distribution.toVector flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
@@ -1574,7 +1577,7 @@ trait CommonGenerators {
 
   /**
     * A [[Generator]] that produces digit [[Char]]s.
-  *
+    *
     * @group Values
     */
   val numericCharValues: Generator[Char] = Generator.numericCharGenerator.map(_.value)
@@ -2211,7 +2214,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H](construct: (A, B, C, D, E, F, G) => H)(deconstruct: H => (A, B, C, D, E, F, G))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                  genOfG: Generator[G]): Generator[H] =
+                                                                                                                          genOfG: Generator[G]): Generator[H] =
     new GeneratorFor7[A, B, C, D, E, F, G, H](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG)
 
   /**
@@ -2220,7 +2223,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I](construct: (A, B, C, D, E, F, G, H) => I)(deconstruct: I => (A, B, C, D, E, F, G, H))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                  genOfG: Generator[G], genOfH: Generator[H]): Generator[I] =
+                                                                                                                                   genOfG: Generator[G], genOfH: Generator[H]): Generator[I] =
     new GeneratorFor8[A, B, C, D, E, F, G, H, I](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH)
 
   /**
@@ -2229,7 +2232,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J](construct: (A, B, C, D, E, F, G, H, I) => J)(deconstruct: J => (A, B, C, D, E, F, G, H, I))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                           genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[J] =
+                                                                                                                                            genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[J] =
     new GeneratorFor9[A, B, C, D, E, F, G, H, I, J](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI)
 
   /**
@@ -2238,7 +2241,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K](construct: (A, B, C, D, E, F, G, H, I, J) => K)(deconstruct: K => (A, B, C, D, E, F, G, H, I, J))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                    genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[K] =
+                                                                                                                                                     genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[K] =
     new GeneratorFor10[A, B, C, D, E, F, G, H, I, J, K](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ)
 
   /**
@@ -2247,7 +2250,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L](construct: (A, B, C, D, E, F, G, H, I, J, K) => L)(deconstruct: L => (A, B, C, D, E, F, G, H, I, J, K))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                             genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[L] =
+                                                                                                                                                              genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[L] =
     new GeneratorFor11[A, B, C, D, E, F, G, H, I, J, K, L](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK)
 
   /**
@@ -2256,7 +2259,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M](construct: (A, B, C, D, E, F, G, H, I, J, K, L) => M)(deconstruct: M => (A, B, C, D, E, F, G, H, I, J, K, L))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                      genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[M] =
+                                                                                                                                                                       genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[M] =
     new GeneratorFor12[A, B, C, D, E, F, G, H, I, J, K, L, M](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL)
 
   /**
@@ -2265,7 +2268,7 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M) => N)(deconstruct: N => (A, B, C, D, E, F, G, H, I, J, K, L, M))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                               genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[N] =
+                                                                                                                                                                                genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[N] =
     new GeneratorFor13[A, B, C, D, E, F, G, H, I, J, K, L, M, N](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM)
 
   /**
@@ -2274,8 +2277,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O)(deconstruct: O => (A, B, C, D, E, F, G, H, I, J, K, L, M, N))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                 genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                 genOfN: Generator[N]): Generator[O] =
+                                                                                                                                                                                         genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                         genOfN: Generator[N]): Generator[O] =
     new GeneratorFor14[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN)
 
   /**
@@ -2284,8 +2287,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P)(deconstruct: P => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                 genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                 genOfN: Generator[N], genOfO: Generator[O]): Generator[P] =
+                                                                                                                                                                                                  genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                  genOfN: Generator[N], genOfO: Generator[O]): Generator[P] =
     new GeneratorFor15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO)
 
   /**
@@ -2294,8 +2297,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q)(deconstruct: Q => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                          genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                          genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[Q] =
+                                                                                                                                                                                                           genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                           genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[Q] =
     new GeneratorFor16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP)
 
   /**
@@ -2304,8 +2307,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R)(deconstruct: R => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                   genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                   genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[R] =
+                                                                                                                                                                                                                    genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                    genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[R] =
     new GeneratorFor17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ)
 
   /**
@@ -2314,8 +2317,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S)(deconstruct: S => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                            genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                            genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[S] =
+                                                                                                                                                                                                                             genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                             genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[S] =
     new GeneratorFor18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR)
 
   /**
@@ -2324,8 +2327,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T)(deconstruct: T => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                                     genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                                     genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[T] =
+                                                                                                                                                                                                                                      genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                                      genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[T] =
     new GeneratorFor19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS)
 
   /**
@@ -2334,8 +2337,8 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U)(deconstruct: U => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                                              genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                                              genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[U] =
+                                                                                                                                                                                                                                               genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                                               genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[U] =
     new GeneratorFor20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT)
 
   /**
@@ -2344,9 +2347,9 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V)(deconstruct: V => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                                                       genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                                                       genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
-                                                                                                                                                                                                                                       genOfU: Generator[U]): Generator[V] =
+                                                                                                                                                                                                                                                        genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                                                        genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
+                                                                                                                                                                                                                                                        genOfU: Generator[U]): Generator[V] =
     new GeneratorFor21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU)
 
   /**
@@ -2355,9 +2358,9 @@ trait CommonGenerators {
     * @group InstancesOf
     */
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W)(deconstruct: W => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
-                                                                                                                                                                                                                                                genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
-                                                                                                                                                                                                                                                genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
-                                                                                                                                                                                                                                                genOfU: Generator[U], genOfV: Generator[V]): Generator[W] =
+                                                                                                                                                                                                                                                                 genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
+                                                                                                                                                                                                                                                                 genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
+                                                                                                                                                                                                                                                                 genOfU: Generator[U], genOfV: Generator[V]): Generator[W] =
     new GeneratorFor22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)
 
   /**
@@ -2456,23 +2459,23 @@ trait CommonGenerators {
 object CommonGenerators extends CommonGenerators {
   private val primeNumbers =
     Vector(
-         2,     3,     5,     7,    11,    13,    17,    19,    23,    29,
-        31,    37,    41,    43,    47,    53,    59,    61,    67,    71,
-        73,    79,    83,    89,    97,   101,   103,   107,   109,   113,
-       127,   131,   137,   139,   149,   151,   157,   163,   167,   173,
-       179,   181,   191,   193,   197,   199,   211,   223,   227,   229,
-       233,   239,   241,   251,   257,   263,   269,   271,   277,   281,
-       283,   293,   307,   311,   313,   317,   331,   337,   347,   349,
-       353,   359,   367,   373,   379,   383,   389,   397,   401,   409,
-       419,   421,   431,   433,   439,   443,   449,   457,   461,   463,
-       467,   479,   487,   491,   499,   503,   509,   521,   523,   541,
-       547,   557,   563,   569,   571,   577,   587,   593,   599,   601,
-       607,   613,   617,   619,   631,   641,   643,   647,   653,   659,
-       661,   673,   677,   683,   691,   701,   709,   719,   727,   733,
-       739,   743,   751,   757,   761,   769,   773,   787,   797,   809,
-       811,   821,   823,   827,   829,   839,   853,   857,   859,   863,
-       877,   881,   883,   887,   907,   911,   919,   929,   937,   941,
-       947,   953,   967,   971,   977,   983,   991,   997,  1009,  1013,
+      2,     3,     5,     7,    11,    13,    17,    19,    23,    29,
+      31,    37,    41,    43,    47,    53,    59,    61,    67,    71,
+      73,    79,    83,    89,    97,   101,   103,   107,   109,   113,
+      127,   131,   137,   139,   149,   151,   157,   163,   167,   173,
+      179,   181,   191,   193,   197,   199,   211,   223,   227,   229,
+      233,   239,   241,   251,   257,   263,   269,   271,   277,   281,
+      283,   293,   307,   311,   313,   317,   331,   337,   347,   349,
+      353,   359,   367,   373,   379,   383,   389,   397,   401,   409,
+      419,   421,   431,   433,   439,   443,   449,   457,   461,   463,
+      467,   479,   487,   491,   499,   503,   509,   521,   523,   541,
+      547,   557,   563,   569,   571,   577,   587,   593,   599,   601,
+      607,   613,   617,   619,   631,   641,   643,   647,   653,   659,
+      661,   673,   677,   683,   691,   701,   709,   719,   727,   733,
+      739,   743,   751,   757,   761,   769,   773,   787,   797,   809,
+      811,   821,   823,   827,   829,   839,   853,   857,   859,   863,
+      877,   881,   883,   887,   907,   911,   919,   929,   937,   941,
+      947,   953,   967,   971,   977,   983,   991,   997,  1009,  1013,
       1019,  1021,  1031,  1033,  1039,  1049,  1051,  1061,  1063,  1069,
       1087,  1091,  1093,  1097,  1103,  1109,  1117,  1123,  1129,  1151,
       1153,  1163,  1171,  1181,  1187,  1193,  1201,  1213,  1217,  1223,

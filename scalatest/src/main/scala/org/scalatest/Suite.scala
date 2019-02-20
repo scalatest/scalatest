@@ -15,9 +15,39 @@
  */
 package org.scalatest
 
-import org.scalactic.{Resources => _, _}
-import org.scalatest.events._
-import Requirements._
+import org.scalactic.{Resources => _, NameUtil, Requirements}
+import org.scalatest.events.{
+  TopOfClass,
+  Formatter,
+  Location,
+  TopOfMethod,
+  IndentedText,
+  RunStarting,
+  SuiteAborted,
+  SuiteStarting,
+  SeeStackDepthException,
+  SuiteCompleted,
+  RunCompleted,
+  RunAborted,
+  InfoProvided,
+  NameInfo,
+  MotionToSuppress,
+  RecordableEvent,
+  TestFailed,
+  TestStarting,
+  TestPending,
+  TestCanceled,
+  TestSucceeded,
+  NoteProvided,
+  AlertProvided,
+  MarkupProvided,
+  ScopeOpened,
+  ScopeClosed,
+  ScopePending,
+  LineInFile,
+  TestIgnored
+}
+import Requirements.requireNonNull
 import org.scalatest.exceptions._
 import java.lang.annotation.AnnotationFormatError
 import java.lang.reflect.{Method, Modifier}

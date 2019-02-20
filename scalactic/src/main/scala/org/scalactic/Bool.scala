@@ -115,7 +115,7 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>and</code>
    */
-  def &&(bool: Bool): Bool =
+  def &&(bool: => Bool): Bool =
     if (value)
       new AndBool(this, bool, prettifier)
     else
@@ -127,7 +127,7 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>and</code>
    */
-  def &(bool: Bool): Bool = &&(bool)
+  def &(bool: => Bool): Bool = &&(bool)
 
   /**
    * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
@@ -369,7 +369,7 @@ private[scalactic] class SimpleBool(expression: Boolean, val prettifier: Prettif
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class AndBool(bool1: Bool, bool2: Bool, val prettifier: Prettifier) extends Bool {
+private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Prettifier) extends Bool {
 
   /**
    * the result of <code>bool1.value</code> logical <code>AND</code> <code>bool2.value</code>
@@ -439,7 +439,7 @@ private[scalactic] class AndBool(bool1: Bool, bool2: Bool, val prettifier: Prett
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class OrBool(bool1: Bool, bool2: Bool, val prettifier: Prettifier) extends Bool {
+private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Prettifier) extends Bool {
 
   /**
    * the result of <code>bool1.value</code> logical <code>OR</code> <code>bool2.value</code>

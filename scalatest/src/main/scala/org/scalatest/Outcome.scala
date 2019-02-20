@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import Requirements._
-import org.scalatest.exceptions._
+import org.scalactic.{source, Requirements}
+import Requirements.requireNonNull
+import org.scalatest.exceptions.{TestPendingException, TestCanceledException, TestFailedException, StackDepthException}
 
 /**
  * Superclass for the possible outcomes of running a test.

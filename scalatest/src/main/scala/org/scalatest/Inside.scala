@@ -116,12 +116,7 @@ trait Inside {
       }
     }
 
-    if (Inside.level.get == null) {
-      Inside.level.set(1)
-    }
-    else {
-      Inside.level.set(Inside.level.get + 1)
-    }
+    Inside.level.set(Option(Inside.level.get).getOrElse(0) + 1)
 
     if (pf.isDefinedAt(value)) {
       try {
