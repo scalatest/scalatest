@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import org.scalactic.Requirements.requireNonNull
 import org.scalatest.events.{InfoProvided, NameInfo}
 
