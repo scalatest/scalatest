@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest.Suite.checkChosenStyles
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
 import org.scalatest.events.SeeStackDepthException
@@ -456,7 +457,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
     val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
     val statusBuffer = new ListBuffer[Status]()
@@ -496,7 +497,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
 
     val informerForThisSuite =
       ConcurrentInformer(
@@ -1090,7 +1091,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
     val newArgs = if (report eq reporter) args else args.copy(reporter = report)
 
     val informerForThisSuite =

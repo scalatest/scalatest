@@ -69,7 +69,7 @@ import Suite.getTopOfMethod
 import Suite.isTestMethodGoodies
 import Suite.reportTestIgnored
 import Suite.takesInformer
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
 import collection.GenTraversable
 import collection.mutable.ListBuffer
@@ -919,30 +919,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def testNames: Set[String] = Set.empty
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  // Leave this around for a while so can print out a warning if we find testXXX methods.
-  private[scalatest] def yeOldeTestNames: Set[String] = {
-
-    def isTestMethod(m: Method) = {
-
-      // Factored out to share code with fixture.Suite.testNames
-      val (isInstanceMethod, simpleName, firstFour, paramTypes, hasNoParams, isTestNames, isTestTags, isTestDataFor) = isTestMethodGoodies(m)
-
-      isInstanceMethod && (firstFour == "test") && !isTestDataFor && ((hasNoParams && !isTestNames && !isTestTags) || takesInformer(m))
-    }
-
-    val testNameArray =
-      for (m <- getClass.getMethods; if isTestMethod(m)) 
-        yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
-
-    val result = TreeSet.empty[String](EncodedOrdering) ++ testNameArray
-    if (result.size != testNameArray.length) {
-      throw new NotAllowedException("Howdy", 0)
-    }
-    result
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   /*
   Old style method names will have (Informer) at the end still, but new ones will
   not. This method will find the one without a Rep if the same name is used
@@ -1057,13 +1033,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   protected def runTests(testName: Option[String], args: Args): Status = {
 
     requireNonNull(testName, args)
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    if (!this.isInstanceOf[refspec.RefSpec] && yeOldeTestNames.nonEmpty) {
-      if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
-      else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     import args._
 
@@ -2133,14 +2102,6 @@ used for test events like succeeded/failed, etc.
     (stopper, report, testStartTime)
   }
 
-  // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
-  // so that exceptions are caught and transformed
-  // into error messages on the standard error stream.
-  def wrapReporterIfNecessary(theSuite: Suite, reporter: Reporter): Reporter = reporter match {
-    case cr: CatchReporter => cr
-    case _ => theSuite.createCatchReporter(reporter)
-  }
-
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
   def testMethodTakesAFixture(testName: String) = testName.endsWith(FixtureInParens)
 
@@ -2207,6 +2168,30 @@ used for test events like succeeded/failed, etc.
     (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
+
+  // SKIP-SCALATESTJS-START
+  // Leave this around for a while so can print out a warning if we find testXXX methods.
+  def yeOldeTestNames(theSuite: Suite): Set[String] = {
+
+    def isTestMethod(m: Method) = {
+
+      // Factored out to share code with fixture.Suite.testNames
+      val (isInstanceMethod, simpleName, firstFour, paramTypes, hasNoParams, isTestNames, isTestTags, isTestDataFor) = isTestMethodGoodies(m)
+
+      isInstanceMethod && (firstFour == "test") && !isTestDataFor && ((hasNoParams && !isTestNames && !isTestTags) || takesInformer(m))
+    }
+
+    val testNameArray =
+      for (m <- theSuite.getClass.getMethods; if isTestMethod(m))
+        yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
+
+    val result = TreeSet.empty[String](EncodedOrdering) ++ testNameArray
+    if (result.size != testNameArray.length) {
+      throw new NotAllowedException("Howdy", 0)
+    }
+    result
+  }
+  // SKIP-SCALATESTJS-END
 }
 
 
