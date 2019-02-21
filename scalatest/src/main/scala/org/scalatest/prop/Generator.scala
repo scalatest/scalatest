@@ -3962,7 +3962,6 @@ object Generator {
         }
       }
 
-
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = {
@@ -4029,6 +4028,50 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => SortedSet(t)), rnd1)
+      }
+      override def shrink(xs: SortedSet[T], rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[SortedSet[T]] = canonicalTs.map(t => SortedSet(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[SortedSet[T]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[SortedSet[T]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield SortedSet(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[SortedSet[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.size < xs.size
+              def next: SortedSet[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.size * 2)
+                result
+              }
+            }
+
+          (Iterator(SortedSet.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedSet[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedSet[T]] = {
