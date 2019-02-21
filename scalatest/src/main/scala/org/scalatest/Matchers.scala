@@ -3063,13 +3063,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  // In Dotty when Collected trait is private, object Matchers extends Matchers does not work, hopefully it can be fixed in future version of Dotty before it reaches final.
-  // SKIP-DOTTY-START
-  private sealed class Collected(name: String) extends Serializable {
+  private[scalatest] sealed class Collected(name: String) extends Serializable {
     override def toString: String = name
   }
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY sealed class Collected(name: String) extends Serializable
   private val AllCollected = new Collected("AllCollected")
   private val EveryCollected = new Collected("EveryCollected")
   private case class BetweenCollected(from: Int, to: Int) extends Collected("BetweenCollected")
@@ -3121,7 +3117,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfNotWordForCollectedAny[T](private val collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
      
     /**
@@ -4410,7 +4406,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfContainWordForCollectedAny[T](private val collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -4969,7 +4965,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  sealed class ResultOfBeWordForCollectedAny[T](private val collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
@@ -5169,7 +5165,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position)
+  final class ResultOfBeWordForCollectedArray[T](private val collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position)
     extends ResultOfBeWordForCollectedAny(collected, xs, original, shouldBeTrue, prettifier, pos) {
   
     /**
@@ -5201,7 +5197,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfCollectedAny[T](private val collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position) {
 
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
 /*
@@ -6094,7 +6090,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfHaveWordForCollectedExtent[A](private val collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6168,7 +6164,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfStartWithWordForCollectedString(private val collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6236,7 +6232,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfIncludeWordForCollectedString(private val collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6304,7 +6300,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfEndWithWordForCollectedString(private val collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6372,7 +6368,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfFullyMatchWordForCollectedString(private val collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
