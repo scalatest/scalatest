@@ -592,7 +592,11 @@ object GenScalaTestNative {
     //     "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
     //     "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
     //   )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir,
+      List(
+        "PropCheckerAssertingAsyncSpec.scala"
+      )
+    ) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
