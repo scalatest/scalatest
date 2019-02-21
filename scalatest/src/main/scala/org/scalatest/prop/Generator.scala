@@ -4141,6 +4141,51 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
+        val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
+        (canonicalsOfKV.map(t => Map(t)), rnd1)
+      }
+
+      override def shrink(xs: Map[K, V], rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[Map[K, V]] = canonicalTs.map(t => Map(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[Map[K, V]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[Map[K, V]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield Map(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val xsList = xs.toList
+          val lastBatch =
+            new Iterator[Map[K, V]] {
+              private var nextT = xsList.take(2)
+              def hasNext: Boolean = nextT.size < xsList.size
+              def next: Map[K, V] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xsList.take(result.size * 2)
+                result.toMap
+              }
+            }
+
+          (Iterator(Map.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = {

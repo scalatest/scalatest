@@ -3327,6 +3327,92 @@ class GeneratorSpec extends FunSpec with Matchers {
           s.size shouldBe 5
         }
       }
+
+      it("should shrink Maps using strategery") {
+        import GeneratorDrivenPropertyChecks._
+        val generator = implicitly[Generator[Map[PosInt, Int]]]
+        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
+        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicals = tupleCanonicalsIt.toList
+        forAll { (xs: Map[PosInt, Int]) =>
+          val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
+          val shrinks: List[Map[PosInt, Int]] = shrinkIt.toList
+          if (xs.isEmpty)
+            shrinks shouldBe empty
+          else {
+            // First one should be the empty list
+            shrinks(0) shouldBe empty
+
+            // Then should come one-element Lists of the canonicals of the type
+            val phase2 = shrinks.drop(1).take(tupleCanonicals.length)
+            phase2 shouldEqual (tupleCanonicals.map(i => Map(i)))
+
+            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
+            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
+            val xsList = xs.toList
+            val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
+            val phase3 = shrinks.drop(1 + tupleCanonicals.length).take(xsDistincts.length)
+            phase3 shouldEqual (xsDistincts.map(i => Map(i)))
+
+            // Phase 4 should be n-element lists that are prefixes cut in half
+            val theHalves = shrinks.drop(1 + tupleCanonicals.length + xsDistincts.length)
+            theHalves should not contain xs // This was a bug I noticed
+            if (theHalves.length > 1) {
+              import org.scalatest.Inspectors
+              val zipped = theHalves.zip(theHalves.tail)
+              Inspectors.forAll (zipped) { case (s, t) =>
+                s.size should be < t.size
+              }
+            } else succeed
+          }
+        }
+      }
+      it("should return an empty Iterator when asked to shrink a Map of size 0") {
+        val lstGen = implicitly[Generator[Map[PosInt, Int]]]
+        val xs = Map.empty[PosInt, Int]
+        lstGen.shrink(xs, Randomizer.default)._1.toSet shouldBe empty
+      }
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
+        val lstGen = implicitly[Generator[Map[PosInt, Int]]]
+        val canonicalLists =
+          for {
+            k <- Vector(1, 2, 3)
+            v <- Vector(0, 1, -1, 2, -2, 3, -3)
+          }
+            yield Map(PosInt.ensuringValid(k) -> v)
+        val expectedLists = Vector(Map.empty[PosInt, Int]) ++ canonicalLists
+        val nonCanonical = Map(PosInt(99) -> 99)
+        lstGen.shrink(nonCanonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+        val canonical = Map(PosInt(3) -> 3)
+        // Ensure 3 (an Int canonical value) does not show up twice in the output
+        lstGen.shrink(canonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+      }
+      it("should return an Iterator that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
+        val lstGen = implicitly[Generator[Map[PosInt, Int]]]
+        val shrinkees = lstGen.shrink(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.toList
+        shrinkees.distinct should contain theSameElementsAs shrinkees
+      }
+      it("should return an Iterator that does not repeat the passed map-to-shink even if that set has a power of 2 length") {
+        // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
+        // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,
+        // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
+        val lstGen = implicitly[Generator[Map[PosInt, Int]]]
+        val listToShrink: Map[PosInt, Int] = (Map.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
+          map + (PosInt.ensuringValid(n) -> n)
+        }
+        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.toList
+        shrinkees.distinct should not contain listToShrink
+      }
+      it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
+        import GeneratorDrivenPropertyChecks._
+        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
+        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicals = tupleCanonicalsIt.toList
+        val mapGenerator = Generator.mapGenerator[PosInt, Int]
+        val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
+        val mapCanonicals = mapCanonicalsIt.toList
+        mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
+      }
     }
 
     describe("for SortedMaps") {
