@@ -2630,30 +2630,32 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
 
-    import scala.collection.AbstractSeq
-    def shrinkByStrategery[F[_] <: AbstractSeq[_]](toF: Iterator[F[Int]] => AbstractSeq[AbstractSeq[Int]])(implicit generator: Generator[F[Int]]): Unit = {
+    import scala.collection.GenTraversable
+    import scala.collection.generic.GenericCompanion
+    def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: GenericCompanion[F])(implicit generator: Generator[F[Int]]): Unit = {
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
       val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
         val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
-        val shrinks: AbstractSeq[AbstractSeq[Int]] = toF(shrinkIt) //shrinkIt.toList
+        val shrinks: List[F[Int]] = shrinkIt.toList
         if (xs.isEmpty)
           shrinks shouldBe empty
         else {
           // First one should be the empty list
-          shrinks(0) shouldBe Nil
+          shrinks(0) shouldBe empty
 
           // Then should come one-element Lists of the canonicals of the type
           val phase2 = shrinks.drop(1).take(intCanonicals.length)
-          phase2 shouldEqual (intCanonicals.map(i => List(i)))
+          phase2 shouldEqual (intCanonicals.map(i => factory(i)))
 
           // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
           // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-          val xsDistincts = if (xs.length > 1) xs.distinct else Nil
+          val xsList = xs.toList
+          val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
           val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
-          phase3 shouldEqual (xsDistincts.map(i => List(i)))
+          phase3 shouldEqual (xsDistincts.map(i => factory(i)))
 
           // Phase 4 should be n-element lists that are prefixes cut in half
           val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
@@ -2662,7 +2664,7 @@ class GeneratorSpec extends FunSpec with Matchers {
             import org.scalatest.Inspectors
             val zipped = theHalves.zip(theHalves.tail)
             Inspectors.forAll (zipped) { case (s, t) =>
-              s.length should be < t.length
+              s.size should be < t.size
             }
           } else succeed
         }
@@ -2696,7 +2698,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         lstGen.shrink(xss, Randomizer.default)._1.toList should not contain xss
       }
       it("should shrink Lists using strategery") {
-        shrinkByStrategery[List](iter => iter.toList)
+        shrinkByStrategery[List](List)
       }
       it("should return an empty Iterator when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
@@ -2933,7 +2935,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
       it("should shrink Vectors using strategery") {
-        shrinkByStrategery[Vector](iter => iter.toVector)
+        shrinkByStrategery[Vector](Vector)
       }
 
       it("should return an empty Iterator when asked to shrink a Vector of size 0") {
@@ -3048,6 +3050,51 @@ class GeneratorSpec extends FunSpec with Matchers {
         forAll { s: Set[Int] =>
           s.size shouldBe 5
         }
+      }
+
+      it("should shrink Sets using strategery") {
+        shrinkByStrategery[Set](Set)
+      }
+      it("should return an empty Iterator when asked to shrink a Set of size 0") {
+        val lstGen = implicitly[Generator[Set[Int]]]
+        val xs = Set.empty[Int]
+        lstGen.shrink(xs, Randomizer.default)._1.toSet shouldBe empty
+      }
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
+        val lstGen = implicitly[Generator[Set[Int]]]
+        val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Set(i))
+        val expectedLists = Vector(Set.empty[Int]) ++ canonicalLists
+        val nonCanonical = Set(99)
+        lstGen.shrink(nonCanonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+        val canonical = Set(3)
+        // Ensure 3 (an Int canonical value) does not show up twice in the output
+        lstGen.shrink(canonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+      }
+      it("should return an Iterator that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
+        val lstGen = implicitly[Generator[Set[Int]]]
+        val shrinkees = lstGen.shrink(Set(3, 99), Randomizer.default)._1.toList
+        shrinkees.distinct should contain theSameElementsAs shrinkees
+      }
+      it("should return an Iterator that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
+        // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
+        // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,
+        // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
+        val lstGen = implicitly[Generator[Set[Int]]]
+        val listToShrink: Set[Int] = (Set.empty[Int] /: (1 to 16)) { (set, n) =>
+          set + n
+        }
+        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.toList
+        shrinkees.distinct should not contain listToShrink
+      }
+      it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
+        import GeneratorDrivenPropertyChecks._
+        val intGenerator = Generator.intGenerator
+        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+        val intCanonicals = intCanonicalsIt.toList
+        val listOfIntGenerator = Generator.setGenerator[Int]
+        val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        listOfIntCanonicals shouldEqual intCanonicals.map(i => Set(i))
       }
     }
 

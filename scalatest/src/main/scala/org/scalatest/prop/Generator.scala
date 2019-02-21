@@ -3918,6 +3918,51 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => Set(t)), rnd1)
+      }
+      override def shrink(xs: Set[T], rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[Set[T]] = canonicalTs.map(t => Set(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[Set[T]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[Set[T]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield Set(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[Set[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.size < xs.size
+              def next: Set[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.size * 2)
+                result
+              }
+            }
+
+          (Iterator(Set.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = {
