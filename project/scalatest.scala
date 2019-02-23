@@ -38,7 +38,7 @@ object ScalatestBuild {
   // > ++ 2.10.5
   lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7")
 
-  val releaseVersion = "3.1.0-SNAP8"
+  val releaseVersion = "3.1.0-SNAP7"
 
   val previousReleaseVersion = "3.0.5"
 
