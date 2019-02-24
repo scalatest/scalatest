@@ -3063,7 +3063,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  sealed class Collected(name: String) extends Serializable {
+  protected sealed class Collected(name: String) extends Serializable {
     override def toString: String = name
   }
   private val AllCollected = new Collected("AllCollected")
