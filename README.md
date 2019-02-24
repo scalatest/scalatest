@@ -167,4 +167,4 @@ To publish scalactic, scalatest and scalatest-app use the following command:
 
 To publish scalactic, scalatest and scalatest-app (for Scala-native version 2.11, and make sure you're on Java 8) to Sonatype, use the following command: 
 
-  `$ sbt "project scalatestAppNative" clean publishSigned`
+  `$ sbt ++2.11.12 "project scalatestAppNative" clean publishSigned`
