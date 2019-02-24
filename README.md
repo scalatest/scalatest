@@ -13,7 +13,7 @@ Using ScalaTest
 
 ### Setup
 
-Please visit [Download and Setup](http://www.scalatest.org/download) for download and setup instructions.
+Please visit [Download and Setup](https://www.scala-sbt.org/1.x/docs/Setup.html) for download and setup instructions.
 
 ### Quick Start
 
@@ -27,14 +27,10 @@ Building ScalaTest
 
 The followings are needed for building ScalaTest:
 
-*   JDK 6, 7, 8 or 9
-*   [SBT 0.13.2](http://www.scala-sbt.org/0.13.2/docs/Getting-Started/Setup.html)
+*   JDK 8
+*   [SBT 1.2.8](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
-for JDK 6 or 7, use the following options in your SBT launch file:
-
-    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
-
-for JDK 8 or 9, use the following SBT options instead:
+use the following SBT options instead:
 
     SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M  -XX:+UseConcMarkSweepGC -XX:NewRatio=8"
 
@@ -137,7 +133,7 @@ If you would like to export a particular private key into a separate GPG file, y
 
 With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
 
-Before publishing any patch release, binary compatibility with previous version should be checked, using Java 6 (for Scala 2.10 and 2.11):
+Before publishing any patch release, binary compatibility with previous version should be checked:
 
     $ sbt ++2.11.12 scalactic/package scalactic/mimaReportBinaryIssues
     $ sbt ++2.11.12 scalatest/package scalatest/mimaReportBinaryIssues
@@ -149,8 +145,6 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.10.7 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.10.7 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-and using Java 8 (for Scala 2.12 and 2.13): 
-
     $ sbt ++2.12.6 scalactic/package scalactic/mimaReportBinaryIssues
     $ sbt ++2.12.6 scalatest/package scalatest/mimaReportBinaryIssues
     $ sbt ++2.12.6 scalacticJS/package scalacticJS/mimaReportBinaryIssues
@@ -161,21 +155,16 @@ and using Java 8 (for Scala 2.12 and 2.13):
     $ sbt ++2.13.0-M5 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.13.0-M5 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
+To publish scalactic, scalatest and scalatest-app use the following command:
 
     $ export SCALAJS_VERSION=0.6.26
     $ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.12.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.13.0-M5 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned    
     $ export SCALAJS_VERSION=1.0.0-M3
     $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
-  
-To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
-
-    $ export SCALAJS_VERSION=0.6.25
-    $ sbt ++2.12.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.0-M5 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ export SCALAJS_VERSION=1.0.0-M3
-    $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned  
 
 To publish scalactic, scalatest and scalatest-app (for Scala-native version 2.11, and make sure you're on Java 8) to Sonatype, use the following command: 
 
-  `$ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 "project scalatestAppNative" clean publishSigned`
+  `$ sbt "project scalatestAppNative" clean publishSigned`
