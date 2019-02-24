@@ -3063,13 +3063,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  // In Dotty when Collected trait is private, object Matchers extends Matchers does not work, hopefully it can be fixed in future version of Dotty before it reaches final.
-  // SKIP-DOTTY-START
-  private sealed class Collected(name: String) extends Serializable {
+  protected sealed class Collected(name: String) extends Serializable {
     override def toString: String = name
   }
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY sealed class Collected(name: String) extends Serializable
   private val AllCollected = new Collected("AllCollected")
   private val EveryCollected = new Collected("EveryCollected")
   private case class BetweenCollected(from: Int, to: Int) extends Collected("BetweenCollected")
