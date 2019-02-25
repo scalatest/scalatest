@@ -22,9 +22,35 @@ object GenAnyVals {
 
   val generatorSource = new File("GenAnyVals.scala")
 
-  def genMacro(targetDir: File, primitiveTypeName: String, typeName: String, typeBooleanExpr: String): File = {
+  def genMacro(targetDir: File, primitiveTypeName: String, typeName: String, typeBooleanExpr: String, dotty: Boolean): File = {
     val targetFile = new File(targetDir, typeName + "Macro.scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
+
+      val macroCode =
+        if (dotty)
+          s"""def apply(value: Expr[$primitiveTypeName])(implicit refl: Reflection): Expr[$typeName] = {
+             |  val notValidMsg = Resources.notValid$typeName
+             |  val notLiteralMsg = Resources.notLiteral$typeName
+             |  import refl._
+             |  ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
+             |  '{ $typeName.ensuringValid(~value) }
+             |}
+             |
+           """.stripMargin
+        else
+          s"""
+             |def apply(c: Context)(value: c.Expr[$primitiveTypeName]): c.Expr[$typeName] = {
+             |  val notValidMsg = Resources.notValid$typeName
+             |  val notLiteralMsg = Resources.notLiteral$typeName
+             |  import c.universe._
+             |  ensureValid${primitiveTypeName}Literal(c)(value, notValidMsg, notLiteralMsg)(isValid)
+             |  reify { $typeName.ensuringValid(value.splice) }
+             |}
+             |
+           """.stripMargin
+
+      val macroObjectModifier = if (dotty) "" else "private[anyvals]"  // TODO: Hopefully Dotty can allow this in later version.
+
       val content =
         s"""/*
            | * Copyright 2001-2016 Artima, Inc.
@@ -44,21 +70,13 @@ object GenAnyVals {
            |package org.scalactic.anyvals
            |
            |import org.scalactic.Resources
-           |import reflect.macros.Context
+           |${importsForMacro(dotty)}
            |
-           |private[anyvals] object ${typeName}Macro extends CompileTimeAssertions {
+           |$macroObjectModifier object ${typeName}Macro extends CompileTimeAssertions {
            |
            |  def isValid(i: $primitiveTypeName): Boolean = $typeBooleanExpr
            |
-           |  def apply(c: Context)(value: c.Expr[$primitiveTypeName]): c.Expr[$typeName] = {
-           |    val notValidMsg = Resources.notValid$typeName
-           |    val notLiteralMsg = Resources.notLiteral$typeName
-           |
-           |    import c.universe._
-           |
-           |    ensureValid${primitiveTypeName}Literal(c)(value, notValidMsg, notLiteralMsg)(isValid)
-           |    reify { $typeName.ensuringValid(value.splice) }
-           |  }
+           |  $macroCode
            |}
       """.stripMargin
 
@@ -84,7 +102,7 @@ object GenAnyVals {
 
   def genIntAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                    typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                   widensToTypes: Seq[String]): List[File] = {
+                   widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/IntAnyVal.template")
@@ -121,6 +139,13 @@ object GenAnyVals {
 
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
 
+      val macroApplyMethod =
+        if (dotty)
+          s"inline implicit def apply(value: => Int): $typeName = ~${typeName}Macro('(value))"
+        else
+          s"implicit def apply(value: Int): $typeName = macro ${typeName}Macro.apply"
+      st.setAttribute("macroApplyMethod", macroApplyMethod)
+
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
       bw.write(st.toString)
@@ -128,12 +153,12 @@ object GenAnyVals {
       bw.close()
       println("Generated: " + targetFile.getAbsolutePath)
     }
-    List(targetFile, genMacro(targetDir, "Int", typeName, typeBooleanExpr))
+    List(targetFile, genMacro(targetDir, "Int", typeName, typeBooleanExpr, dotty))
   }
 
   def genLongAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                     typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                    widensToTypes: Seq[String]): List[File] = {
+                    widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/LongAnyVal.template")
@@ -167,8 +192,14 @@ object GenAnyVals {
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
           """.stripMargin
         }.mkString
-
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
+
+      val macroApplyMethod =
+        if (dotty)
+          s"inline implicit def apply(value: => Long): $typeName = ~${typeName}Macro('(value))"
+        else
+          s"implicit def apply(value: Long): $typeName = macro ${typeName}Macro.apply"
+      st.setAttribute("macroApplyMethod", macroApplyMethod)
 
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
@@ -177,12 +208,12 @@ object GenAnyVals {
       bw.close()
       println("Generated: " + targetFile.getAbsolutePath)
     }
-    List(targetFile, genMacro(targetDir, "Long", typeName, typeBooleanExpr))
+    List(targetFile, genMacro(targetDir, "Long", typeName, typeBooleanExpr, dotty))
   }
 
   def genFloatAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                      typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                     classExtraMethods: String, objectExtraMethods: String, widensToTypes: Seq[String]): List[File] = {
+                     classExtraMethods: String, objectExtraMethods: String, widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/FloatAnyVal.template")
@@ -221,6 +252,13 @@ object GenAnyVals {
 
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
 
+      val macroApplyMethod =
+        if (dotty)
+          s"inline implicit def apply(value: => Float): $typeName = ~${typeName}Macro('(value))"
+        else
+          s"implicit def apply(value: Float): $typeName = macro ${typeName}Macro.apply"
+      st.setAttribute("macroApplyMethod", macroApplyMethod)
+
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
       bw.write(st.toString)
@@ -228,12 +266,12 @@ object GenAnyVals {
       bw.close()
       println("Generated: " + targetFile.getAbsolutePath)
     }
-    List(targetFile, genMacro(targetDir, "Float", typeName, typeBooleanExpr))
+    List(targetFile, genMacro(targetDir, "Float", typeName, typeBooleanExpr, dotty))
   }
 
   def genDoubleAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                       typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                      classExtraMethods: String, objectExtraMethods: String, widensToTypes: Seq[String]): List[File] = {
+                      classExtraMethods: String, objectExtraMethods: String, widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/DoubleAnyVal.template")
@@ -269,9 +307,15 @@ object GenAnyVals {
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
           """.stripMargin
         }.mkString
-
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
 
+      val macroApplyMethod =
+        if (dotty)
+          s"inline implicit def apply(value: => Double): $typeName = ~${typeName}Macro('(value))"
+        else
+          s"implicit def apply(value: Double): $typeName = macro ${typeName}Macro.apply"
+      st.setAttribute("macroApplyMethod", macroApplyMethod)
+      
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
       bw.write(st.toString)
@@ -279,12 +323,12 @@ object GenAnyVals {
       bw.close()
       println("Generated: " + targetFile.getAbsolutePath)
     }
-    List(targetFile, genMacro(targetDir, "Double", typeName, typeBooleanExpr))
+    List(targetFile, genMacro(targetDir, "Double", typeName, typeBooleanExpr, dotty))
   }
 
   def genCharAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                    typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                   widensToTypes: Seq[String]): List[File] = {
+                   widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/CharAnyVal.template")
@@ -318,8 +362,14 @@ object GenAnyVals {
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
              |""".stripMargin
         }.mkString
-
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
+
+      val macroApplyMethod =
+        if (dotty)
+          s"inline implicit def apply(value: => Char): $typeName = ~${typeName}Macro('(value))"
+        else
+          s"implicit def apply(value: Char): $typeName = macro ${typeName}Macro.apply"
+      st.setAttribute("macroApplyMethod", macroApplyMethod)
 
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
@@ -328,7 +378,7 @@ object GenAnyVals {
       bw.close()
       println("Generated: " + targetFile.getAbsolutePath)
     }
-    List(targetFile, genMacro(targetDir, "Char", typeName, typeBooleanExpr))
+    List(targetFile, genMacro(targetDir, "Char", typeName, typeBooleanExpr, dotty))
   }
 
   val primitiveTypes =
@@ -619,13 +669,22 @@ object GenAnyVals {
         |
      """.stripMargin
 
-  def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
+  def importsForMacro(dotty: Boolean): String =
+    if (dotty)
+      """import scala.quoted._
+        |import scala.tasty._
+      """.stripMargin
+    else
+      "import reflect.macros.Context"
+
+
+  def genMain(dir: File, version: String, scalaVersion: String, dotty: Boolean): Seq[File] = {
     dir.mkdirs()
 
     genIntAnyVal(dir, "NonZeroInt", "non-zero", "Note: a <code>NonZeroInt</code> may not equal 0.", "i != 0", "NonZeroInt(42)", "NonZeroInt(0)", "42", "0", "Int.MinValue", "-2147483648",
-      "Int.MaxValue", "2147483647", nonZeroWidens("Int")) :::
+      "Int.MaxValue", "2147483647", nonZeroWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NonZeroLong", "non-zero", "Note: a <code>NonZeroLong</code> may not equal 0.", "i != 0L", "NonZeroLong(42)", "NonZeroLong(0)", "42", "0", "Long.MinValue", "-9223372036854775808",
-      "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long")) :::
+      "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       isPosInfinity("Float") +
@@ -633,7 +692,7 @@ object GenAnyVals {
       positiveInfinity("NonZero", "Float") +
       negativeInfinity("NonZero", "Float") +
       minPositiveValue("NonZero", "Float"),
-      nonZeroWidens("Float")) :::
+      nonZeroWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
       isPosInfinity("Double") +
@@ -641,21 +700,21 @@ object GenAnyVals {
       positiveInfinity("NonZero", "Double") +
       negativeInfinity("NonZero", "Double") +
       minPositiveValue("NonZero", "Double"),
-      nonZeroWidens("Double")) :::
+      nonZeroWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "NonZeroFiniteFloat", "finite non-zero", "Note: a <code>NonZeroFiniteFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN && i != Float.PositiveInfinity && i != Float.NegativeInfinity", "NonZeroFiniteFloat(1.1f)", "NonZeroFiniteFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       "",
       minPositiveValue("NonZeroFinite", "Float"),
-      nonZeroFiniteWidens("Float")) :::
+      nonZeroFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NonZeroFiniteDouble", "finite non-zero", "Note: a <code>NonZeroFiniteDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN && i != Double.PositiveInfinity && i != Double.NegativeInfinity", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
       "",
       minPositiveValue("NonZeroFinite", "Double"),
-      nonZeroFiniteWidens("Double")) :::
+      nonZeroFiniteWidens("Double"), dotty) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
-      "Int.MaxValue", "2147483647", posZWidens("Int")) :::
+      "Int.MaxValue", "2147483647", posZWidens("Int"), dotty) :::
     genLongAnyVal(dir, "PosZLong", "non-negative", "", "i >= 0L", "PosZLong(42)", "PosZLong(-1)", "42", "-1", "0L", "0L",
-      "Long.MaxValue", "9223372036854775807", posZWidens("Long")) :::
+      "Long.MaxValue", "9223372036854775807", posZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosZFloat", "non-negative", "", "i >= 0.0f", "PosZFloat(1.1f)", "PosZFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float") +
@@ -666,7 +725,7 @@ object GenAnyVals {
       positiveInfinity("PosZ", "Float") +
       minPositiveValue("PosZ", "Float") +
       sumOf("PosZ", "Float", "non-negative"),
-      posZWidens("Float")) :::
+      posZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZ", "Double") +
@@ -677,11 +736,11 @@ object GenAnyVals {
       positiveInfinity("PosZ", "Double") +
       minPositiveValue("PosZ", "Double") +
       sumOf("PosZ", "Double", "non-negative"),
-      posZWidens("Double")) :::
+      posZWidens("Double"), dotty) :::
     genIntAnyVal(dir, "PosInt", "positive", "Note: a <code>PosInt</code> may not equal 0. If you want positive number or 0, use [[PosZInt]].", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
-      "Int.MaxValue", "2147483647", posWidens("Int")) :::
+      "Int.MaxValue", "2147483647", posWidens("Int"), dotty) :::
     genLongAnyVal(dir, "PosLong", "positive", "Note: a <code>PosLong</code> may not equal 0. If you want positive number or 0, use [[PosZLong]].", "i > 0L", "PosLong(42L)", "PosLong(0L)", "42L", "0L", "1L", "1L",
-      "Long.MaxValue", "9223372036854775807", posWidens("Long")) :::
+      "Long.MaxValue", "9223372036854775807", posWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PosFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float") +
@@ -692,7 +751,7 @@ object GenAnyVals {
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float") +
       sumOf("Pos", "Float", "positive", "PosZ", "non-negative"),
-      posWidens("Float")) :::
+      posWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZ", "Double") +
@@ -703,11 +762,11 @@ object GenAnyVals {
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double") +
       sumOf("Pos", "Double", "positive", "PosZ", "non-negative"),
-      posWidens("Double")) :::
+      posWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegInt", "negative", "Note: a <code>NegInt</code> may not equal 0. If you want negative number or 0, use [[NegZInt]].", "i < 0", "NegInt(-42)", "NegInt(0)", "-42", "0", "Int.MinValue", "-2147483648", "-1", "-1",
-      negWidens("Int")) :::
+      negWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NegLong", "negative", "Note: a <code>NegLong</code> may not equal 0. If you want negative number or 0, use [[NegZLong]].", "i < 0L", "NegLong(-42L)", "NegLong(0L)", "-42L", "0L", "Long.MinValue", "-9223372036854775808", "-1L", "-1L",
-      negWidens("Long")) :::
+      negWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegFloat", "megative", "Note: a <code>NegFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFloat]].", "i < 0.0f", "NegFloat(-42.1f)", "NegFloat(0.0f)", "-42.1f", "0.0f", "Float.MinValue", "-3.4028235E38",
       "-Float.MinPositiveValue", "-1.4E-45",
       round("NegZ", "Float") +
@@ -717,7 +776,7 @@ object GenAnyVals {
       isNegInfinity("Float"),
       negativeInfinity("Neg", "Float") +
       sumOf("Neg", "Float", "negative", "NegZ", "non-positive"),
-      negWidens("Float")) :::
+      negWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegDouble", "negative", "", "i < 0.0", "NegDouble(-1.1)", "NegDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308",
       "-Double.MinPositiveValue", "-4.9E-324",
       round("NegZ", "Double") +
@@ -727,11 +786,11 @@ object GenAnyVals {
       isNegInfinity("Double"),
       negativeInfinity("Neg", "Double") +
       sumOf("Neg", "Double", "negative", "NegZ", "non-positive"),
-      negWidens("Double")) :::
+      negWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegZInt", "non-positive", "", "i <= 0", "NegZInt(-42)", "NegZInt(1)", "-42", "1", "Int.MinValue", "-2147483648",
-      "0", "0", negZWidens("Int")) :::
+      "0", "0", negZWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NegZLong", "non-positive", "", "i <= 0L", "NegZLong(-42L)", "NegZLong(-1L)", "-42", "1", "Long.MinValue", "-9223372036854775808",
-      "0L", "0L", negZWidens("Long")) :::
+      "0L", "0L", negZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegZFloat", "non-positive", "", "i <= 0.0f", "NegZFloat(-1.1f)", "NegZFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
       round("NegZ", "Float") +
       ceil("NegZ", "Float") +
@@ -740,7 +799,7 @@ object GenAnyVals {
       isNegInfinity("Float"),
       negativeInfinity("NegZ", "Float") +
       sumOf("NegZ", "Float", "non-positive"),
-      negZWidens("Float")) :::
+      negZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZDouble", "non-positive", "", "i <= 0.0", "NegZDouble(-1.1)", "NegZDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
       round("NegZ", "Double") +
       ceil("NegZ", "Double") +
@@ -749,75 +808,75 @@ object GenAnyVals {
       isNegInfinity("Double"),
       negativeInfinity("NegZ", "Double") +
       sumOf("NegZ", "Double", "non-positive"),
-      negZWidens("Double")) :::
+      negZWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
       round("PosZFinite", "Float") +
       ceil("PosFinite", "Float") +
       floor("PosZFinite", "Float"),
       minPositiveValue("Pos", "Float"),
-      posFiniteWidens("Float")) :::
+      posFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosFiniteDouble", "finite positive", "", "i > 0.0  && i != Double.PositiveInfinity", "PosFiniteDouble(1.1)", "PosFiniteDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZFinite", "Double") +
       ceil("PosFinite", "Double") +
       floor("PosZFinite", "Double"),
       minPositiveValue("PosFinite", "Double"),
-      posFiniteWidens("Double")) :::
+      posFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosZFiniteFloat", "finite non-negative", "", "i >= 0.0f && i != Float.PositiveInfinity", "PosZFiniteFloat(1.1f)", "PosZFiniteFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
       round("PosZFinite", "Float") +
       ceil("PosZFinite", "Float") +
       floor("PosZFinite", "Float"),
       minPositiveValue("PosZFinite", "Float"),
-      posZFiniteWidens("Float")) :::
+      posZFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZFiniteDouble", "finite non-negative", "", "i >= 0.0 && i != Double.PositiveInfinity", "PosZFiniteDouble(1.1)", "PosZFiniteDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
       round("PosZFinite", "Double") +
       ceil("PosZFinite", "Double") +
       floor("PosZFinite", "Double"),
       minPositiveValue("PosZFinite", "Double"),
-      posZFiniteWidens("Double")) :::
+      posZFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "NegFiniteFloat", "finite negative", "Note: a <code>NegFiniteFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFiniteFloat]].", "i < 0.0f && i != Float.NegativeInfinity", "NegFiniteFloat(-42.1f)", "NegFiniteFloat(0.0f)", "-42.1f", "0.0f",
       "Float.MinValue", "-3.4028235E38", "-Float.MinPositiveValue", "-1.4E-45",
       round("NegZFinite", "Float") +
       ceil("NegZFinite", "Float") +
       floor("NegFinite", "Float"),
       "",
-      negFiniteWidens("Float")) :::
+      negFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegFiniteDouble", "finite negative", "", "i < 0.0  && i != Double.NegativeInfinity", "NegFiniteDouble(-1.1)", "NegFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "-Double.MinPositiveValue", "-4.9E-324",
       round("NegZFinite", "Double") +
       ceil("NegZFinite", "Double") +
       floor("NegFinite", "Double"),
       "",
-      negFiniteWidens("Double")) :::
+      negFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "NegZFiniteFloat", "finite non-positive", "", "i <= 0.0f && i != Float.NegativeInfinity", "NegZFiniteFloat(-1.1f)", "NegZFiniteFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
       round("NegZFinite", "Float") +
       ceil("NegZFinite", "Float") +
       floor("NegZFinite", "Float"),
       "",
-      negZFiniteWidens("Float")) :::
+      negZFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZFiniteDouble", "finite non-positive", "", "i <= 0.0 && i != Double.NegativeInfinity", "PosZFiniteDouble(-1.1)", "NegZFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
       round("NegZFinite", "Double") +
       ceil("NegZFinite", "Double") +
       floor("NegZFinite", "Double"),
       "",
-      negZFiniteWidens("Double")) :::
+      negZFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "FiniteFloat", "finite", "", "i != Float.NegativeInfinity && i != Float.PositiveInfinity && !i.isNaN", "FiniteFloat(42.1f)", "FiniteFloat(Float.PositiveInfinity)", "42.1f", "Float.PositiveInfinity", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       round("Finite", "Float") +
       ceil("Finite", "Float") +
       floor("Finite", "Float"),
       minPositiveValue("Finite", "Float"),
-      finiteWidens("Float")) :::
+      finiteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "FiniteDouble", "finite", "", "i != Double.NegativeInfinity && i != Double.PositiveInfinity && !i.isNaN", "FiniteDouble(1.1)", "FiniteDouble(FiniteDouble.PositiveInfinity)", "1.1", "Finite.PositiveInfinity", "Double.MinValue", "-1.7976931348623157E308", "Double.MaxValue", "1.7976931348623157E308",
       round("Finite", "Double") +
       ceil("Finite", "Double") +
       floor("Finite", "Double"),
       minPositiveValue("Finite", "Double"),
-      finiteWidens("Double")) :::
+      finiteWidens("Double"), dotty) :::
     genCharAnyVal(dir, "NumericChar", "numeric", "Note: a <code>NumericChar</code> has a value between '0' and '9'.", "i >= '0' && i <= '9'", "NumericChar('4')", "NumericChar('a')", "'4'", "'a'", "'0'", "'0'",
-      "'9'", "'9'", numericCharWidens)
+      "'9'", "'9'", numericCharWidens, dotty)
 
   }
 

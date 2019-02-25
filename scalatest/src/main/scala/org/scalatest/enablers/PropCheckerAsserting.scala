@@ -182,7 +182,28 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+            @tailrec
+            def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
+              shrinksRemaining match {
+                case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+                case shrinkHead :: shrinkTail =>
+                  val result: Try[T] = Try { fun(shrinkHead) }
+                  result match {
+                    case Success(_) => shrinkLoop(shrinkTail)
+                    case Failure(shrunkEx) =>
+                      val shrunkArgsPassed =
+                        List(
+                          if (names.isDefinedAt(0))
+                            PropertyArgument(Some(names(0)), shrinkHead)
+                          else
+                            PropertyArgument(None, shrinkHead)
+                        )
+                      new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
+                  }
+              }
+            }
+            val (it, _) = genA.shrink(a, rnd)
+            shrinkLoop(it.take(100).toList)
         }
       }
 
@@ -705,7 +726,34 @@ trait FuturePropCheckerAsserting {
 
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
+
+      def shrunkenFuture(future: Future[PropertyCheckResult], a: A, rnd: Randomizer): Future[PropertyCheckResult] =
+        future.flatMap {
+          case pcr @ PropertyCheckResult.Failure(succeededCount, optEx, _, argsPassed, initSeed) => 
+            def shrinkLoop(shrinksRemaining: List[A]): Future[PropertyCheckResult] = {
+              shrinksRemaining match {
+                case Nil => Future.successful(pcr) // Can I reuse future here out of curiosity? That one is also completed.
+                case shrinkHead :: shrinkTail =>
+                  val result: Future[T] = fun(shrinkHead)
+                  // Once we drop support for Scala 2.11, we can use transformWith here
+                  result.flatMap(_ => shrinkLoop(shrinkTail)).recoverWith {
+                    case shrunkEx: Throwable =>
+                      val shrunkArgsPassed =
+                        List(
+                          if (names.isDefinedAt(0))
+                            PropertyArgument(Some(names(0)), shrinkHead)
+                          else
+                            PropertyArgument(None, shrinkHead)
+                        )
+                      Future.successful(new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed))
+                  }
+              }
+            }
+            val (it, _) = genA.shrink(a, rnd)
+            shrinkLoop(it.take(100).toList)
+          case pcr => Future.successful(pcr)
+        }
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -728,9 +776,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -738,25 +786,25 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(a))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
-            case ex =>
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+            case ex: Throwable =>
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
@@ -769,17 +817,17 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
             else
               loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
-            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+          case ex: Throwable =>
+            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a))
             Future.successful(result)
         }
       }
@@ -790,8 +838,13 @@ trait FuturePropCheckerAsserting {
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
       val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
 
-      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).map { accResult =>
-        accResult.result.get
+      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).flatMap { accResult =>
+        accResult match {
+          case AccumulatedResult(_, _, _, rnd, _, Some(candidate), Some(a)) =>
+            shrunkenFuture(Future.successful(candidate), a, rnd)
+          case _ =>
+            Future.successful(accResult.result.get)
+        }
       }
     }
 
@@ -852,7 +905,7 @@ trait FuturePropCheckerAsserting {
               else
                 AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
-            case ex =>
+            case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
@@ -875,7 +928,7 @@ trait FuturePropCheckerAsserting {
             else
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
+          case ex: Throwable =>
             val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
@@ -953,7 +1006,7 @@ trait FuturePropCheckerAsserting {
               else
                 AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
-            case ex =>
+            case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
@@ -976,7 +1029,7 @@ trait FuturePropCheckerAsserting {
             else
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
+          case ex: Throwable =>
             val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
@@ -1057,7 +1110,7 @@ trait FuturePropCheckerAsserting {
               else
                 AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
-            case ex =>
+            case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
@@ -1080,7 +1133,7 @@ trait FuturePropCheckerAsserting {
             else
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
+          case ex: Throwable =>
             val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
@@ -1164,7 +1217,7 @@ trait FuturePropCheckerAsserting {
               else
                 AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
-            case ex =>
+            case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
@@ -1187,7 +1240,7 @@ trait FuturePropCheckerAsserting {
             else
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
+          case ex: Throwable =>
             val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
@@ -1275,7 +1328,7 @@ trait FuturePropCheckerAsserting {
               else
                 AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
 
-            case ex =>
+            case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
           } flatMap { result =>
             if (result.result.isDefined)
@@ -1298,7 +1351,7 @@ trait FuturePropCheckerAsserting {
             else
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes, initSeed)
 
-          case ex =>
+          case ex: Throwable =>
             val result = AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
             Future.successful(result)
         }
@@ -1345,7 +1398,7 @@ trait FuturePropCheckerAsserting {
             FailureMessages.propertyFailed(prettifier, succeeded),
             argsPassed,
             labels,
-            None,
+            ex,
             pos
           )
 
@@ -1587,25 +1640,18 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
     // ex is the *inner* Exception, where we actually threw. If defined, this is typically the line
     // that the user really cares about:
     val PropertyCheckResult.Failure(succeeded, ex, names, argsPassed, initSeed) = failure
-    // If there is an inner Exception, show that message; otherwise, default to something
-    // more generic:
-    val msg = ex match {
-      case Some(ex) => ex.getMessage
-      case None => FailureMessages.propertyException(prettifier, UnquotedString(outerEx.getClass.getSimpleName))
-    }
-    // If there was an inner Exception, that's the line to focus on:
-    val filenameAndLine: Option[String] = ex match {
-      case Some(ex: StackDepthException) => ex.failedCodeFileNameAndLineNumberString
-      case _ => outerEx.failedCodeFileNameAndLineNumberString
-    }
 
-    msg + EOL +
-      ( filenameAndLine match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
-      "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL +
-      (
-        // This is where we display the location of the *outer* Exception, typically the forAll:
-        outerEx match {
-          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+    FailureMessages.propertyException(prettifier, UnquotedString(outerEx.getClass.getSimpleName)) +
+      ( outerEx.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + EOL +
+      "  " + FailureMessages.propertyFailed(prettifier, succeeded) + EOL + (
+        ex match {
+          case Some(ex: Throwable) if ex.getMessage != null =>
+            "  " + FailureMessages.thrownExceptionsMessage(prettifier, UnquotedString(ex.getMessage)) + EOL
+          case _ => ""
+        }
+      ) + (
+        ex match {
+          case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
             "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + EOL
           case _ => ""
         }

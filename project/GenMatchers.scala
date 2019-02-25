@@ -88,7 +88,7 @@ object GenMatchers {
       .replaceAll("MatcherWords", "FactMatcherWords")
   }
 
-  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
+  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
     if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
       val outputWriter = new BufferedWriter(new FileWriter(outputFile))
@@ -115,6 +115,24 @@ object GenMatchers {
               else
                 ""
             }
+            else if (dotty) {
+              if (line.trim == "// SKIP-DOTTY-START") {
+                skipMode = true
+                ""
+              }
+              else if (line.trim == "// SKIP-DOTTY-END") {
+                skipMode = false
+                ""
+              }
+              else if (!skipMode) {
+                if (line.trim.startsWith("//DOTTY-ONLY "))
+                  translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
+                else
+                  translateFun(line)
+              }
+              else
+                ""
+            }
             else
               translateFun(line)
 
@@ -131,7 +149,7 @@ object GenMatchers {
     outputFile
   }
 
-  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean): Seq[File] = {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
     matchersDir.mkdirs()
@@ -139,7 +157,7 @@ object GenMatchers {
     junitDir.mkdirs()
 
     Seq(
-      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
+      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
@@ -160,10 +178,14 @@ object GenMatchers {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, false)
+    genMainImpl(targetDir, version, scalaVersion, false, false)
   }
 
   def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, true)
+    genMainImpl(targetDir, version, scalaVersion, true, false)
+  }
+
+  def genMainForDotty(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    genMainImpl(targetDir, version, scalaVersion, false, true)
   }
 }

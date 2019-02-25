@@ -690,7 +690,7 @@ object $typeName$ {
    *     literal, the invocation of this method will not
    *     compile.)
    */
-  implicit def apply(value: Double): $typeName$ = macro $typeName$Macro.apply
+  $macroApplyMethod$
 
   /**
    * Implicit widening conversion from <code>$typeName$</code> to

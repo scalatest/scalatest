@@ -658,7 +658,7 @@ object NumericChar {
    *     a valid <code>Char</code> literal, the invocation of this method
    *     will not compile.)
    */
-  implicit def apply(value: Char): NumericChar = macro NumericCharMacro.apply
+  $macroApplyMethod$
 
   /** The smallest value representable as a $typeName$. */
   final val MinValue: $typeName$ = $typeName$.ensuringValid($typeMinValue$)

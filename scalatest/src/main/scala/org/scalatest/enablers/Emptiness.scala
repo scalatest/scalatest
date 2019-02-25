@@ -65,7 +65,7 @@ trait Emptiness[-T] {
 object Emptiness {
 
   import scala.language.higherKinds
-  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
+  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Emptiness</code> implementation for <code>scala.collection.GenTraversable</code>
