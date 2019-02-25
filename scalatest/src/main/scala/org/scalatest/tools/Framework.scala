@@ -1002,7 +1002,7 @@ import java.net.{ServerSocket, InetAddress}
       }
 
     val (runnerInstance, configurationInstance) =
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+      {
         val runnerCompanionClass = testClassLoader.loadClass("org.scalatest.tools.Runner$")
         val runnerModule = runnerCompanionClass.getField("MODULE$")
         val runnerObj = runnerModule.get(runnerCompanionClass)
@@ -1012,17 +1012,6 @@ import java.net.{ServerSocket, InetAddress}
         val configurationObj = configurationModule.get(runnerCompanionClass)
         
         (runnerObj.asInstanceOf[Runner.type], configurationObj.asInstanceOf[Configuration.type])
-      }
-      else {
-        // We need to use the following code to set Runner object instance for different Runner using different class loader.
-        import scala.reflect.runtime._
-
-        val runtimeMirror = universe.runtimeMirror(testClassLoader)
-
-        (
-          runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.tools.Runner$")).instance.asInstanceOf[Runner.type], 
-          runtimeMirror.reflectModule(runtimeMirror.staticModule("org.scalatest.prop.Configuration$")).instance.asInstanceOf[Configuration.type]
-        )
       }
 
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)

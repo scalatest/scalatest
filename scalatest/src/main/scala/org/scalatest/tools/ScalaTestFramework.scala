@@ -218,21 +218,11 @@ class ScalaTestFramework extends SbtFramework {
           val runtimeMirror = universe.runtimeMirror(testLoader)
           
           val runnerInstance =
-            if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
+            {
               val runnerCompanionClass = testLoader.loadClass("org.scalatest.tools.Runner$")
               val module = runnerCompanionClass.getField("MODULE$")
               val obj = module.get(runnerCompanionClass)
               obj.asInstanceOf[org.scalatest.tools.Runner.type]
-            }
-            else {
-              // We need to use the following code to set Runner object instance for different Runner using different class loader.
-              import scala.reflect.runtime._
-
-              val runtimeMirror = universe.runtimeMirror(testLoader)
-
-              val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
-              val obj = runtimeMirror.reflectModule(module)
-              obj.instance.asInstanceOf[org.scalatest.tools.Runner.type]
             }
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
