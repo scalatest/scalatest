@@ -2632,6 +2632,18 @@ class GeneratorSpec extends FunSpec with Matchers {
 
     import scala.collection.GenTraversable
     import scala.collection.generic.GenericCompanion
+    /**
+      * A common test for how we do shrinking in the collection Generators.
+      *
+      * Since we generally try to deal with shrink() the same way for collections, we use
+      * this common test to make sure it's consistent. Not every collection type manages
+      * to use this (because Scala 2.12 collections just aren't that consistent), but
+      * it generally works.
+      *
+      * @param factory the companion object for this collection type
+      * @param generator the Generator for this collection type
+      * @tparam F the collection type we are testing
+      */
     def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: GenericCompanion[F])(implicit generator: Generator[F[Int]]): Unit = {
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
@@ -3486,6 +3498,92 @@ class GeneratorSpec extends FunSpec with Matchers {
         forAll { s: SortedMap[Int, String] =>
           s.size shouldBe 5
         }
+      }
+
+      it("should shrink SortedMaps using strategery") {
+        import GeneratorDrivenPropertyChecks._
+        val generator = implicitly[Generator[SortedMap[PosInt, Int]]]
+        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
+        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicals = tupleCanonicalsIt.toList
+        forAll { (xs: SortedMap[PosInt, Int]) =>
+          val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
+          val shrinks: List[SortedMap[PosInt, Int]] = shrinkIt.toList
+          if (xs.isEmpty)
+            shrinks shouldBe empty
+          else {
+            // First one should be the empty list
+            shrinks(0) shouldBe empty
+
+            // Then should come one-element Lists of the canonicals of the type
+            val phase2 = shrinks.drop(1).take(tupleCanonicals.length)
+            phase2 shouldEqual (tupleCanonicals.map(i => SortedMap(i)))
+
+            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
+            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
+            val xsList = xs.toList
+            val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
+            val phase3 = shrinks.drop(1 + tupleCanonicals.length).take(xsDistincts.length)
+            phase3 shouldEqual (xsDistincts.map(i => SortedMap(i)))
+
+            // Phase 4 should be n-element lists that are prefixes cut in half
+            val theHalves = shrinks.drop(1 + tupleCanonicals.length + xsDistincts.length)
+            theHalves should not contain xs // This was a bug I noticed
+            if (theHalves.length > 1) {
+              import org.scalatest.Inspectors
+              val zipped = theHalves.zip(theHalves.tail)
+              Inspectors.forAll (zipped) { case (s, t) =>
+                s.size should be < t.size
+              }
+            } else succeed
+          }
+        }
+      }
+      it("should return an empty Iterator when asked to shrink a SortedMap of size 0") {
+        val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
+        val xs = SortedMap.empty[PosInt, Int]
+        lstGen.shrink(xs, Randomizer.default)._1.toSet shouldBe empty
+      }
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a SortedMap of size 1") {
+        val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
+        val canonicalLists =
+          for {
+            k <- Vector(1, 2, 3)
+            v <- Vector(0, 1, -1, 2, -2, 3, -3)
+          }
+            yield SortedMap(PosInt.ensuringValid(k) -> v)
+        val expectedLists = Vector(SortedMap.empty[PosInt, Int]) ++ canonicalLists
+        val nonCanonical = SortedMap(PosInt(99) -> 99)
+        lstGen.shrink(nonCanonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+        val canonical = SortedMap(PosInt(3) -> 3)
+        // Ensure 3 (an Int canonical value) does not show up twice in the output
+        lstGen.shrink(canonical, Randomizer.default)._1.toVector should contain theSameElementsAs expectedLists
+      }
+      it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
+        val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
+        val shrinkees = lstGen.shrink(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.toList
+        shrinkees.distinct should contain theSameElementsAs shrinkees
+      }
+      it("should return an Iterator that does not repeat the passed SortedMap-to-shink even if that SortedMap has a power of 2 length") {
+        // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
+        // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,
+        // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
+        val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
+        val listToShrink: SortedMap[PosInt, Int] = (SortedMap.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
+          map + (PosInt.ensuringValid(n) -> n)
+        }
+        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.toList
+        shrinkees.distinct should not contain listToShrink
+      }
+      it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
+        import GeneratorDrivenPropertyChecks._
+        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
+        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicals = tupleCanonicalsIt.toList
+        val mapGenerator = Generator.sortedMapGenerator[PosInt, Int]
+        val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
+        val mapCanonicals = mapCanonicalsIt.toList
+        mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
     }
     it("should be creatable for recursive types") {
