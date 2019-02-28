@@ -110,8 +110,15 @@ import scala.collection.immutable.SortedMap
   * Generators, so it is helpful to have some. Override the `canonicals()` method to return
   * these.
   *
-  * ===Shrinking===
+  * Canonicals should always be in order from "smallest" to less-small, in the shrinking sense.
+  * This is ''not'' the same thing as starting with the lowest number, though! For example, the
+  * canonicals for [[Generator.byteGenerator]] are:
+  * {{{
+  * private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
+  * }}}
+  * Zero is "smallest" -- the most-shrunk Byte.
   *
+  * ===Shrinking===
   *
   * Optionally but preferably, your Generator can have a concept of '''shrinking'''. This starts with a value
   * that is known to cause the property evaluation to fail, and produces a list of smaller/simpler
@@ -122,7 +129,8 @@ import scala.collection.immutable.SortedMap
   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
   *
   * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
-  * the values passed in. Otherwise, an infinite loop can result.
+  * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
+  * "smallest" values should be returned at the front of this Iterator, with less-small values later.
   *
   * @tparam T the type that this Generator produces
   */
@@ -930,6 +938,20 @@ object Generator {
             (posInt, Nil, nextRnd)
         }
       }
+      private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
+      override def shrink(i: PosInt, rnd: Randomizer): (Iterator[PosInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: PosInt, acc: List[PosInt]): List[PosInt] = {
+          val half: Int = i / 2
+          if (half == 0) acc
+          else {
+            val posIntHalf = PosInt.ensuringValid(half)
+            shrinkLoop(posIntHalf, posIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosInt]"
     }
 
@@ -950,6 +972,21 @@ object Generator {
             val (posZInt, nextRnd) = rnd.nextPosZInt
             (posZInt, Nil, nextRnd)
         }
+      }
+      private val posZIntCanonicals = List(0, 1, 2, 3).map(PosZInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZInt], Randomizer) = (posZIntCanonicals.iterator, rnd)
+      override def shrink(i: PosZInt, rnd: Randomizer): (Iterator[PosZInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: PosZInt, acc: List[PosZInt]): List[PosZInt] = {
+          if (i.value == 0)
+            acc
+          else {
+            val half: Int = i / 2
+            val posIntHalf = PosZInt.ensuringValid(half)
+            shrinkLoop(posIntHalf, posIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosZInt]"
     }
@@ -972,6 +1009,20 @@ object Generator {
             (posLong, Nil, nextRnd)
         }
       }
+      private val posLongCanonicals = List(1, 2, 3).map(PosLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosLong], Randomizer) = (posLongCanonicals.iterator, rnd)
+      override def shrink(i: PosLong, rnd: Randomizer): (Iterator[PosLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: PosLong, acc: List[PosLong]): List[PosLong] = {
+          val half: Long = i / 2
+          if (half == 0) acc
+          else {
+            val posLongHalf = PosLong.ensuringValid(half)
+            shrinkLoop(posLongHalf, posLongHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosLong]"
     }
 
@@ -992,6 +1043,21 @@ object Generator {
             val (posZLong, nextRnd) = rnd.nextPosZLong
             (posZLong, Nil, nextRnd)
         }
+      }
+      private val posZLongCanonicals = List(0, 1, 2, 3).map(PosZLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZLong], Randomizer) = (posZLongCanonicals.iterator, rnd)
+      override def shrink(i: PosZLong, rnd: Randomizer): (Iterator[PosZLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: PosZLong, acc: List[PosZLong]): List[PosZLong] = {
+          if (i.value == 0L)
+            acc
+          else {
+            val half: Long = i / 2
+            val posLongHalf = PosZLong.ensuringValid(half)
+            shrinkLoop(posLongHalf, posLongHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosZLong]"
     }
@@ -1014,6 +1080,31 @@ object Generator {
             (posZFloat, Nil, nextRnd)
         }
       }
+      private val posFloatCanonicals: List[PosFloat] = List(1.0f, 2.0f, 3.0f).map(PosFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
+      override def shrink(f: PosFloat, rnd: Randomizer): (Iterator[PosFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosFloat, acc: List[PosFloat]): List[PosFloat] = {
+          val fv = f.value
+          if (fv == 1.0f) acc
+          else if (fv < 1.0f) PosFloat(1.0f) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.PositiveInfinity || fv.isNaN)
+                Float.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = PosFloat.ensuringValid(n.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            val whole = PosFloat.ensuringValid(sqrt.floor)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosFloat]"
     }
 
@@ -1034,6 +1125,27 @@ object Generator {
             val (posFiniteFloat, nextRnd) = rnd.nextPosFiniteFloat
             (posFiniteFloat, Nil, nextRnd)
         }
+      }
+      private val posFloatCanonicals: List[PosFiniteFloat] = List(1.0f, 2.0f, 3.0f).map(PosFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosFiniteFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
+      override def shrink(f: PosFiniteFloat, rnd: Randomizer): (Iterator[PosFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosFiniteFloat, acc: List[PosFiniteFloat]): List[PosFiniteFloat] = {
+          val fv = f.value
+          if (fv == 1.0f) acc
+          else if (fv < 1.0f) PosFiniteFloat(1.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosFiniteFloat.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            val whole = PosFiniteFloat.ensuringValid(sqrt.floor)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosFiniteFloat]"
     }
@@ -1056,6 +1168,32 @@ object Generator {
             (finiteFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[FiniteFloat] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(FiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: FiniteFloat, rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: FiniteFloat, acc: List[FiniteFloat]): List[FiniteFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f && fv >= -1.0f) FiniteFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+            shrinkLoop(FiniteFloat.ensuringValid(nearest), FiniteFloat.ensuringValid(nearestNeg) :: FiniteFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
+            if (sqrt < 1.0f) FiniteFloat(0.0f) :: acc
+            else {
+              val whole: Float = sqrt.floor
+              val negWhole: Float = math.rint((-whole).toDouble).toFloat
+              val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(FiniteFloat.ensuringValid(first), FiniteFloat.ensuringValid(first) :: FiniteFloat.ensuringValid(second) :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[FiniteFloat]"
     }
 
@@ -1076,6 +1214,32 @@ object Generator {
             val (finiteDouble, nextRnd) = rnd.nextFiniteDouble
             (finiteDouble, Nil, nextRnd)
         }
+      }
+      private val doubleCanonicals: List[FiniteDouble] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(FiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: FiniteDouble, rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: FiniteDouble, acc: List[FiniteDouble]): List[FiniteDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv <= 1.0 && fv >= -1.0) FiniteDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (fv > 0.0) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+            shrinkLoop(FiniteDouble.ensuringValid(nearest), FiniteDouble.ensuringValid(nearestNeg) :: FiniteDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv.abs)
+            if (sqrt < 1.0) FiniteDouble(0.0f) :: acc
+            else {
+              val whole: Double = sqrt.floor
+              val negWhole: Double = math.rint(-whole)
+              val (first, second) = if (f > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(FiniteDouble.ensuringValid(first), FiniteDouble.ensuringValid(first) :: FiniteDouble.ensuringValid(second) :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[FiniteDouble]"
     }
@@ -1098,6 +1262,34 @@ object Generator {
             (posZFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[PosZFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: PosZFloat, rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZFloat, acc: List[PosZFloat]): List[PosZFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f) PosZFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.PositiveInfinity || fv.isNaN)
+                Float.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = PosZFloat.ensuringValid(n.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            if (sqrt < 1.0f) PosZFloat(0.0f) :: acc
+            else {
+              val whole = PosZFloat.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosZFloat]"
     }
 
@@ -1118,6 +1310,30 @@ object Generator {
             val (posZFiniteFloat, nextRnd) = rnd.nextPosZFiniteFloat
             (posZFiniteFloat, Nil, nextRnd)
         }
+      }
+      private val floatCanonicals: List[PosZFiniteFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: PosZFiniteFloat, rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZFiniteFloat, acc: List[PosZFiniteFloat]): List[PosZFiniteFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv <= 1.0f) PosZFiniteFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosZFiniteFloat.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+            if (sqrt < 1.0f) PosZFiniteFloat(0.0f) :: acc
+            else {
+              val whole = PosZFiniteFloat.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosZFiniteFloat]"
     }
@@ -1140,6 +1356,31 @@ object Generator {
             (posDouble, Nil, nextRnd)
         }
       }
+      private val posDoubleCanonicals: List[PosDouble] = List(1.0, 2.0, 3.0).map(PosDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
+      override def shrink(f: PosDouble, rnd: Randomizer): (Iterator[PosDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosDouble, acc: List[PosDouble]): List[PosDouble] = {
+          val fv = f.value
+          if (fv == 1.0) acc
+          else if (fv < 1.0) PosDouble(1.0) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Double.PositiveInfinity || fv.isNaN)
+                Double.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = PosDouble.ensuringValid(n.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv)
+            val whole = PosDouble.ensuringValid(sqrt.floor)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosDouble]"
     }
 
@@ -1160,6 +1401,27 @@ object Generator {
             val (posFiniteDouble, nextRnd) = rnd.nextPosFiniteDouble
             (posFiniteDouble, Nil, nextRnd)
         }
+      }
+      private val posDoubleCanonicals: List[PosFiniteDouble] = List(1.0, 2.0, 3.0).map(PosFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
+      override def shrink(f: PosFiniteDouble, rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosFiniteDouble, acc: List[PosFiniteDouble]): List[PosFiniteDouble] = {
+          val fv = f.value
+          if (fv == 1.0) acc
+          else if (fv < 1.0) PosFiniteDouble(1.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosFiniteDouble.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv)
+            val whole = PosFiniteDouble.ensuringValid(sqrt.floor)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosFiniteDouble]"
     }
@@ -1182,6 +1444,34 @@ object Generator {
             (posZDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[PosZDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: PosZDouble, rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZDouble, acc: List[PosZDouble]): List[PosZDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv <= 1.0) PosZDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Double.PositiveInfinity || fv.isNaN)
+                Double.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = PosZDouble.ensuringValid(n.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv)
+            if (sqrt < 1.0) PosZDouble(0.0) :: acc
+            else {
+              val whole = PosZDouble.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[PosZDouble]"
     }
 
@@ -1202,6 +1492,30 @@ object Generator {
             val (posZFiniteDouble, nextRnd) = rnd.nextPosZFiniteDouble
             (posZFiniteDouble, Nil, nextRnd)
         }
+      }
+      private val doubleCanonicals: List[PosZFiniteDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: PosZFiniteDouble, rnd: Randomizer): (Iterator[PosZFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: PosZFiniteDouble, acc: List[PosZFiniteDouble]): List[PosZFiniteDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv <= 1.0) PosZFiniteDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = PosZFiniteDouble.ensuringValid(fv.floor)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(fv)
+            if (sqrt < 1.0) PosZFiniteDouble(0.0) :: acc
+            else {
+              val whole = PosZFiniteDouble.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[PosZFiniteDouble]"
     }
@@ -1224,6 +1538,38 @@ object Generator {
             (nonZeroDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[NonZeroDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroDouble, rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroDouble, acc: List[NonZeroDouble]): List[NonZeroDouble] = {
+          val d = raw.value
+          if (d <= 1.0 && d >= -1.0) acc
+          else if (!d.isWhole) {
+            val n =
+              if (d == Double.PositiveInfinity || d.isNaN)
+                Double.MaxValue
+              else if (d == Double.NegativeInfinity)
+                Double.MinValue
+              else d
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+            shrinkLoop(NonZeroDouble.ensuringValid(nearest), NonZeroDouble.ensuringValid(nearestNeg) :: NonZeroDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(d.abs)
+            if (sqrt < 1.0) acc
+            else {
+              val whole: NonZeroDouble = NonZeroDouble.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroDouble = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroDouble]"
     }
 
@@ -1244,6 +1590,32 @@ object Generator {
             val (nonZeroFiniteDouble, nextRnd) = rnd.nextNonZeroFiniteDouble
             (nonZeroFiniteDouble, Nil, nextRnd)
         }
+      }
+      private val doubleCanonicals: List[NonZeroFiniteDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFiniteDouble, rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFiniteDouble, acc: List[NonZeroFiniteDouble]): List[NonZeroFiniteDouble] = {
+          val d = raw.value
+          if (d <= 1.0 && d >= -1.0) acc
+          else if (!d.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), NonZeroFiniteDouble.ensuringValid(nearestNeg) :: NonZeroFiniteDouble.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Double = math.sqrt(d.abs)
+            if (sqrt < 1.0) acc
+            else {
+              val whole: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
       }
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
@@ -1266,6 +1638,38 @@ object Generator {
             (nonZeroFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[NonZeroFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFloat, rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFloat, acc: List[NonZeroFloat]): List[NonZeroFloat] = {
+          val d = raw.value
+          if (d <= 1.0f && d >= -1.0f) acc
+          else if (!d.isWhole) {
+            val n =
+              if (d == Float.PositiveInfinity || d.isNaN)
+                Float.MaxValue
+              else if (d == Float.NegativeInfinity)
+                Float.MinValue
+              else d
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+            shrinkLoop(NonZeroFloat.ensuringValid(nearest), NonZeroFloat.ensuringValid(nearestNeg) :: NonZeroFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
+            if (sqrt < 1.0f) acc
+            else {
+              val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroFloat]"
     }
 
@@ -1286,6 +1690,32 @@ object Generator {
             val (nonZeroFiniteFloat, nextRnd) = rnd.nextNonZeroFiniteFloat
             (nonZeroFiniteFloat, Nil, nextRnd)
         }
+      }
+      private val floatCanonicals: List[NonZeroFiniteFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(d: NonZeroFiniteFloat, rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(raw: NonZeroFiniteFloat, acc: List[NonZeroFiniteFloat]): List[NonZeroFiniteFloat] = {
+          val d = raw.value
+          if (d <= 1.0f && d >= -1.0f) acc
+          else if (!d.isWhole) {
+            // Nearest whole numbers closer to zero
+            val (nearest, nearestNeg) = if (d > 0.0f) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+            shrinkLoop(NonZeroFiniteFloat.ensuringValid(nearest), NonZeroFiniteFloat.ensuringValid(nearestNeg) :: NonZeroFiniteFloat.ensuringValid(nearest) :: acc)
+          }
+          else {
+            val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
+            if (sqrt < 1.0f) acc
+            else {
+              val whole: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(sqrt.floor)
+              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+              val negWhole: NonZeroFiniteFloat = -whole  //math.rint(-whole)
+              val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
+              shrinkLoop(first, first :: second :: acc)
+            }
+          }
+        }
+        (shrinkLoop(d, Nil).iterator, rnd)
       }
       override def toString = "Generator[NonZeroFiniteFloat]"
     }
@@ -1340,6 +1770,17 @@ object Generator {
             (nonZeroLong, Nil, nextRnd)
         }
       }
+      private val nonZeroLongCanonicals = List(1, -1, 2, -2, 3, -3).map(NonZeroLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = (nonZeroLongCanonicals.iterator, rnd)
+      override def shrink(i: NonZeroLong, rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: Long, acc: List[NonZeroLong]): List[NonZeroLong] = {
+          val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
+          if (half == 0) acc     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
+          else shrinkLoop(half, NonZeroLong.ensuringValid(-half) :: NonZeroLong.ensuringValid(half) :: acc)
+        }
+        (shrinkLoop(i.value, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NonZeroLong]"
     }
 
@@ -1360,6 +1801,31 @@ object Generator {
             val (negDouble, nextRnd) = rnd.nextNegDouble
             (negDouble, Nil, nextRnd)
         }
+      }
+      private val negDoubleCanonicals: List[NegDouble] = List(-1.0, -2.0, -3.0).map(NegDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
+      override def shrink(f: NegDouble, rnd: Randomizer): (Iterator[NegDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegDouble, acc: List[NegDouble]): List[NegDouble] = {
+          val fv = f.value
+          if (fv == -1.0) acc
+          else if (fv > -1.0) NegDouble(-1.0) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Double.NegativeInfinity || fv.isNaN)
+                Double.MinValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = NegDouble.ensuringValid(n.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -(math.sqrt(fv.abs))
+            val whole = NegDouble.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegDouble]"
     }
@@ -1382,6 +1848,27 @@ object Generator {
             (negFiniteDouble, Nil, nextRnd)
         }
       }
+      private val negDoubleCanonicals: List[NegFiniteDouble] = List(-1.0, -2.0, -3.0).map(NegFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
+      override def shrink(f: NegFiniteDouble, rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegFiniteDouble, acc: List[NegFiniteDouble]): List[NegFiniteDouble] = {
+          val fv = f.value
+          if (fv == -1.0) acc
+          else if (fv > -1.0) NegFiniteDouble(-1.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegFiniteDouble.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -(math.sqrt(fv.abs))
+            val whole = NegFiniteDouble.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegFiniteDouble]"
     }
 
@@ -1402,6 +1889,31 @@ object Generator {
             val (negFloat, nextRnd) = rnd.nextNegFloat
             (negFloat, Nil, nextRnd)
         }
+      }
+      private val negFloatCanonicals: List[NegFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
+      override def shrink(f: NegFloat, rnd: Randomizer): (Iterator[NegFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegFloat, acc: List[NegFloat]): List[NegFloat] = {
+          val fv = f.value
+          if (fv == -1.0f) acc
+          else if (fv > -1.0f) NegFloat(-1.0f) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.NegativeInfinity || fv.isNaN)
+                Float.MinValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = NegFloat.ensuringValid(n.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
+            val whole = NegFloat.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegFloat]"
     }
@@ -1424,6 +1936,27 @@ object Generator {
             (negFiniteFloat, Nil, nextRnd)
         }
       }
+      private val negFloatCanonicals: List[NegFiniteFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
+      override def shrink(f: NegFiniteFloat, rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegFiniteFloat, acc: List[NegFiniteFloat]): List[NegFiniteFloat] = {
+          val fv = f.value
+          if (fv == -1.0f) acc
+          else if (fv > -1.0f) NegFiniteFloat(-1.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
+            val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
+            shrinkLoop(whole, whole :: acc)
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegFiniteFloat]"
     }
 
@@ -1444,6 +1977,20 @@ object Generator {
             val (negInt, nextRnd) = rnd.nextNegInt
             (negInt, Nil, nextRnd)
         }
+      }
+      private val negIntCanonicals = List(-1, -2, -3).map(NegInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegInt], Randomizer) = (negIntCanonicals.iterator, rnd)
+      override def shrink(i: NegInt, rnd: Randomizer): (Iterator[NegInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: NegInt, acc: List[NegInt]): List[NegInt] = {
+          val half: Int = i / 2
+          if (half == 0) acc
+          else {
+            val negIntHalf = NegInt.ensuringValid(half)
+            shrinkLoop(negIntHalf, negIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegInt]"
     }
@@ -1466,6 +2013,20 @@ object Generator {
             (negLong, Nil, nextRnd)
         }
       }
+      private val negLongCanonicals = List(-1, -2, -3).map(NegLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegLong], Randomizer) = (negLongCanonicals.iterator, rnd)
+      override def shrink(i: NegLong, rnd: Randomizer): (Iterator[NegLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: NegLong, acc: List[NegLong]): List[NegLong] = {
+          val half: Long = i / 2
+          if (half == 0) acc
+          else {
+            val negLongHalf = NegLong.ensuringValid(half)
+            shrinkLoop(negLongHalf, negLongHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegLong]"
     }
 
@@ -1486,6 +2047,34 @@ object Generator {
             val (negZDouble, nextRnd) = rnd.nextNegZDouble
             (negZDouble, Nil, nextRnd)
         }
+      }
+      private val doubleCanonicals: List[NegZDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: NegZDouble, rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegZDouble, acc: List[NegZDouble]): List[NegZDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv >= -1.0) NegZDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Double.NegativeInfinity || fv.isNaN)
+                Double.MinValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = NegZDouble.ensuringValid(n.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -math.sqrt(fv.abs)
+            if (sqrt > -1.0) NegZDouble(0.0) :: acc
+            else {
+              val whole = NegZDouble.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegZDouble]"
     }
@@ -1508,6 +2097,30 @@ object Generator {
             (negZFiniteDouble, Nil, nextRnd)
         }
       }
+      private val doubleCanonicals: List[NegZFiniteDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZFiniteDouble.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
+      override def shrink(f: NegZFiniteDouble, rnd: Randomizer): (Iterator[NegZFiniteDouble], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegZFiniteDouble, acc: List[NegZFiniteDouble]): List[NegZFiniteDouble] = {
+          val fv = f.value
+          if (fv == 0.0) acc
+          else if (fv >= -1.0) NegZFiniteDouble(0.0) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegZFiniteDouble.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Double = -math.sqrt(fv.abs)
+            if (sqrt > -1.0) NegZFiniteDouble(0.0) :: acc
+            else {
+              val whole = NegZFiniteDouble.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegZFiniteDouble]"
     }
 
@@ -1528,6 +2141,34 @@ object Generator {
             val (negZFloat, nextRnd) = rnd.nextNegZFloat
             (negZFloat, Nil, nextRnd)
         }
+      }
+      private val floatCanonicals: List[NegZFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: NegZFloat, rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegZFloat, acc: List[NegZFloat]): List[NegZFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv >= -1.0f) NegZFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.NegativeInfinity || fv.isNaN)
+                Float.MinValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = NegZFloat.ensuringValid(n.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
+            if (sqrt > -1.0f) NegZFloat(0.0f) :: acc
+            else {
+              val whole = NegZFloat.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegZFloat]"
     }
@@ -1550,6 +2191,30 @@ object Generator {
             (negZFiniteFloat, Nil, nextRnd)
         }
       }
+      private val floatCanonicals: List[NegZFiniteFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFiniteFloat.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
+      override def shrink(f: NegZFiniteFloat, rnd: Randomizer): (Iterator[NegZFiniteFloat], Randomizer) = {
+        @tailrec
+        def shrinkLoop(f: NegZFiniteFloat, acc: List[NegZFiniteFloat]): List[NegZFiniteFloat] = {
+          val fv = f.value
+          if (fv == 0.0f) acc
+          else if (fv >= -1.0f) NegZFiniteFloat(0.0f) :: acc
+          else if (!fv.isWhole) {
+            // Nearest whole numbers closer to zero
+            val nearest = NegZFiniteFloat.ensuringValid(fv.ceil)
+            shrinkLoop(nearest, nearest :: acc)
+          }
+          else {
+            val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
+            if (sqrt > -1.0f) NegZFiniteFloat(0.0f) :: acc
+            else {
+              val whole = NegZFiniteFloat.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, whole :: acc)
+            }
+          }
+        }
+        (shrinkLoop(f, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegZFiniteFloat]"
     }
 
@@ -1571,6 +2236,21 @@ object Generator {
             (negZInt, Nil, nextRnd)
         }
       }
+      private val negZIntCanonicals = List(0, -1, -2, -3).map(NegZInt.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZInt], Randomizer) = (negZIntCanonicals.iterator, rnd)
+      override def shrink(i: NegZInt, rnd: Randomizer): (Iterator[NegZInt], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: NegZInt, acc: List[NegZInt]): List[NegZInt] = {
+          if (i.value == 0)
+            acc
+          else {
+            val half: Int = i / 2
+            val negIntHalf = NegZInt.ensuringValid(half)
+            shrinkLoop(negIntHalf, negIntHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
+      }
       override def toString = "Generator[NegZInt]"
     }
 
@@ -1591,6 +2271,21 @@ object Generator {
             val (negZLong, nextRnd) = rnd.nextNegZLong
             (negZLong, Nil, nextRnd)
         }
+      }
+      private val negZLongCanonicals = List(0, -1, -2, -3).map(NegZLong.ensuringValid(_))
+      override def canonicals(rnd: Randomizer): (Iterator[NegZLong], Randomizer) = (negZLongCanonicals.iterator, rnd)
+      override def shrink(i: NegZLong, rnd: Randomizer): (Iterator[NegZLong], Randomizer) = {
+        @tailrec
+        def shrinkLoop(i: NegZLong, acc: List[NegZLong]): List[NegZLong] = {
+          if (i.value == 0)
+            acc
+          else {
+            val half: Long = i / 2
+            val negLongHalf = NegZLong.ensuringValid(half)
+            shrinkLoop(negLongHalf, negLongHalf :: acc)
+          }
+        }
+        (shrinkLoop(i, Nil).iterator, rnd)
       }
       override def toString = "Generator[NegZLong]"
     }
@@ -3113,6 +3808,50 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Vector[T]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => Vector(t)), rnd1)
+      }
+      override def shrink(xs: Vector[T], rnd: Randomizer): (Iterator[Vector[T]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toVector
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[Vector[T]] = canonicalTs.map(t => Vector(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[Vector[T]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: Vector[Vector[T]] =
+                for (x <- xs if !canonicalTs.contains(x)) yield Vector(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[Vector[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.length < xs.length
+              def next: Vector[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.length * 2)
+                result
+              }
+            }
+
+          (Iterator(Vector.empty) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = {
@@ -3179,6 +3918,50 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => Set(t)), rnd1)
+      }
+      override def shrink(xs: Set[T], rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[Set[T]] = canonicalTs.map(t => Set(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[Set[T]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[Set[T]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield Set(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[Set[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.size < xs.size
+              def next: Set[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.size * 2)
+                result
+              }
+            }
+
+          (Iterator(Set.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = {
@@ -3245,6 +4028,50 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
+        (canonicalsOfT.map(t => SortedSet(t)), rnd1)
+      }
+      override def shrink(xs: SortedSet[T], rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[SortedSet[T]] = canonicalTs.map(t => SortedSet(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[SortedSet[T]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[SortedSet[T]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield SortedSet(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[SortedSet[T]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.size < xs.size
+              def next: SortedSet[T] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.size * 2)
+                result
+              }
+            }
+
+          (Iterator(SortedSet.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedSet[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedSet[T]] = {
@@ -3312,6 +4139,51 @@ object Generator {
           case _ =>
             val gen = generatorWithSize(szp)
             gen.next(szp, List.empty, rnd)
+        }
+      }
+
+      override def canonicals(rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
+        val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
+        (canonicalsOfKV.map(t => Map(t)), rnd1)
+      }
+
+      override def shrink(xs: Map[K, V], rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[Map[K, V]] = canonicalTs.map(t => Map(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[Map[K, V]] =
+            if (xs.nonEmpty && (xs.size > 1)) {
+              val distinctListOfTs: List[Map[K, V]] =
+                for (x <- xs.toList if !canonicalTs.contains(x)) yield Map(x)
+              distinctListOfTs.iterator
+            }
+            else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val xsList = xs.toList
+          val lastBatch =
+            new Iterator[Map[K, V]] {
+              private var nextT = xsList.take(2)
+              def hasNext: Boolean = nextT.size < xsList.size
+              def next: Map[K, V] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xsList.take(result.size * 2)
+                result.toMap
+              }
+            }
+
+          (Iterator(Map.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
       // Members declared in org.scalatest.prop.HavingSize
@@ -3383,6 +4255,51 @@ object Generator {
             gen.next(szp, List.empty, rnd)
         }
       }
+
+      override def canonicals(rnd: Randomizer): (Iterator[SortedMap[K, V]], Randomizer) = {
+        val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
+        (canonicalsOfKV.map(t => SortedMap(t)), rnd1)
+      }
+
+      override def shrink(xs: SortedMap[K, V], rnd: Randomizer): (Iterator[SortedMap[K, V]], Randomizer) = {
+        if (xs.isEmpty) (Iterator.empty, rnd)
+        else {
+          val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
+          val canonicalTs = canonicalTsIt.toList
+          // Start with Lists of length one each of which contain one of the canonical values
+          // of the element type.
+          val canonicalListOfTsIt: Iterator[SortedMap[K, V]] = canonicalTs.map(t => SortedMap(t)).toIterator
+
+          // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+          // just one element itself. If it does, then xs will appear in the output, which
+          // we don't need, since we already know it fails.
+          val distinctListOfTsIt: Iterator[SortedMap[K, V]] =
+          if (xs.nonEmpty && (xs.size > 1)) {
+            val distinctListOfTs: List[SortedMap[K, V]] =
+              for (x <- xs.toList if !canonicalTs.contains(x)) yield SortedMap(x)
+            distinctListOfTs.iterator
+          }
+          else Iterator.empty
+
+          // The last batch of candidate shrunken values are just slices of the list starting at
+          // 0 with size doubling each time.
+          val lastBatch =
+            new Iterator[SortedMap[K, V]] {
+              private var nextT = xs.take(2)
+              def hasNext: Boolean = nextT.size < xs.size
+              def next: SortedMap[K, V] = {
+                if (!hasNext)
+                  throw new NoSuchElementException
+                val result = nextT
+                nextT = xs.take(result.size * 2)
+                result
+              }
+            }
+
+          (Iterator(SortedMap.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+        }
+      }
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedMap[K, V]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedMap[K, V]] = {

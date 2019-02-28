@@ -39,6 +39,12 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   * over, the way you would do in Java. Instead, each call to a [[Randomizer]] function returns the
   * ''next'' [[Randomizer]], which you should use for the next call.
   *
+  * '''If you are using random floating-point values:''' the algorithms in use here
+  * produce random values across the potential space of values. But due to the way
+  * floating-point works, this means that these values are strongly biased towards
+  * ''small'' numbers. There are many floating-point numbers with negative exponents,
+  * so you may get more numbers in the range between -1 and 1 than you expect.
+  *
   * @param seed
   */
 class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
