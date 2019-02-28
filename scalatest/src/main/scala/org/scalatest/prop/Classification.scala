@@ -38,7 +38,7 @@ case class Classification(val totalGenerated: PosInt, val totals: Map[String, Po
     * @return Exactly what proportion of the values fell into each bucket.
     */
   def portions: Map[String, Double] =
-    totals.mapValues(count => count.toDouble / totalGenerated.toDouble)
+    totals.mapValues(count => count.toDouble / totalGenerated.toDouble).toMap
 
   /**
     * For each bucket, what percentage of the generated values fell into it?
@@ -48,9 +48,9 @@ case class Classification(val totalGenerated: PosInt, val totals: Map[String, Po
     * @return Approximately what proportion of the values fell into each bucket.
     */
   def percentages: Map[String, PosZInt] =
-    totals mapValues { count =>
+    (totals mapValues { count =>
       PosZInt.ensuringValid((count * 100.0 / totalGenerated).round.toInt)
-    }
+    }).toMap
 
   override def toString = {
     val lines = percentages map { case (classification, percentage) => s"${percentage.value}% $classification" }

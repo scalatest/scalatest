@@ -36,7 +36,7 @@ object ScalatestBuild {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7")
+  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-M5")
 
   val releaseVersion = "3.1.0-SNAP7"
 
@@ -108,7 +108,7 @@ object ScalatestBuild {
     javaHome := getJavaHome(scalaBinaryVersion.value),
     crossScalaVersions := supportedScalaVersions,
     version := releaseVersion,
-    scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
+    scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
     /*publishTo <<= version { v: String =>
@@ -343,7 +343,8 @@ object ScalatestBuild {
       },
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -359,7 +360,8 @@ object ScalatestBuild {
       },
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
     lazy val commonTestNative = Project("commonTestNative", file("common-test.native"))
@@ -374,7 +376,8 @@ object ScalatestBuild {
         },
         publishArtifact := false,
         publish := {},
-        publishLocal := {}
+        publishLocal := {},
+        scalacOptions in (Compile, doc) := List.empty
       ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
   lazy val commonTestDotty = Project("commonTestDotty", file("common-test.dotty"))
@@ -410,29 +413,9 @@ object ScalatestBuild {
       // Disable publishing macros directly, included in scalactic main jar
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
     )
-
-  /*lazy val scalacticMacroDotty = Project("scalacticMacroDotty", file("scalactic-macro.dotty"))
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "Scalactic Macro",
-      organization := "org.scalactic",
-      sourceGenerators in Compile += {
-        Def.task{
-          GenScalacticDotty.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          //GenAnyVals.genMain((sourceManaged in Compile).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value) ++
-          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
-        }.taskValue
-      },
-      // Disable publishing macros directly, included in scalactic main jar
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
-    )*/
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
 
@@ -461,7 +444,8 @@ object ScalatestBuild {
         ()
         //val loader: ClassLoader = ClasspathUtilities.toLoader(classpath.map(_.data).map(_.getAbsoluteFile))
         //loader.loadClass("your.class.Here").newInstance()
-      }.triggeredBy(compile in Compile).value
+      }.triggeredBy(compile in Compile).value,
+      scalacOptions in (Compile, doc) := List.empty
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticMacroNative = Project("scalacticMacroNative", file("scalactic-macro.native"))
@@ -481,7 +465,8 @@ object ScalatestBuild {
       // Disable publishing macros directly, included in scalactic main jar
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
     ).enablePlugins(ScalaNativePlugin)
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
@@ -535,6 +520,7 @@ object ScalatestBuild {
   lazy val scalacticJS = Project("scalacticJS", file("scalactic.js"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
+    .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
@@ -585,6 +571,7 @@ object ScalatestBuild {
   lazy val scalacticNative = Project("scalacticNative", file("scalactic.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
+    .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic.native",
       organization := "org.scalactic",
@@ -897,6 +884,7 @@ object ScalatestBuild {
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
@@ -907,36 +895,33 @@ object ScalatestBuild {
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       //jsDependencies += RuntimeDOM % "test",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-        }.taskValue
+          GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+        }
       },
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Compile += javaSourceManaged.value,
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task{
           GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
+        }
       },
-      resourceGenerators in Compile += {
-        Def.task {
-          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
+
       //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task{
-          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
-          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-        }.taskValue
+          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenFactories.genMainJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+        }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       scalatestJSDocTaskSetting,
@@ -1143,6 +1128,7 @@ object ScalatestBuild {
   lazy val scalatestNative = Project("scalatestNative", file("scalatest.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
@@ -1154,7 +1140,7 @@ object ScalatestBuild {
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalaTestNative.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
 
           GenScalaTestNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
@@ -1268,6 +1254,7 @@ object ScalatestBuild {
   lazy val scalatestApp = Project("scalatestApp", file("."))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest App",
       name := "scalatest-app",
@@ -1288,6 +1275,7 @@ object ScalatestBuild {
           Seq.empty[File]
         }.taskValue
       },
+      scalatestDocSettings,
       unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -2164,7 +2152,7 @@ object ScalatestBuild {
                      docsrcDir.value)
 
   val scalatestDocScalacOptionsSetting =
-    scalacOptions in (Compile, doc) ++=
+    scalacOptions in (Compile, doc) :=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-groups", // enables the @group tags in Scaladocs
@@ -2173,7 +2161,7 @@ object ScalatestBuild {
         "-doc-source-url", scalatestDocSourceUrl)
 
   val scalacticDocScalacOptionsSetting =
-    scalacOptions in (Compile, doc) ++=
+    scalacOptions in (Compile, doc) :=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-groups", // enables the @group tags in Scaladocs
