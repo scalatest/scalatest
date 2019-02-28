@@ -15,9 +15,12 @@
  */
 package org.scalatest.enablers
 
+import java.nio.file.Files
+
 import Aggregating.tryEquality
 import org.scalactic.Equality
 import org.scalatest.FailureMessages
+
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 
@@ -69,6 +72,17 @@ object Writability {
   implicit def writabilityOfFile[FILE <: java.io.File]: Writability[FILE] =
     new Writability[FILE] {
       def isWritable(file: FILE): Boolean = file.canWrite
+    }
+
+  /**
+   * Enable <code>Writability</code> implementation for <code>java.nio.file.Path</code>.
+   *
+   * @tparam PATH any subtype of <code>java.nio.file.Path</code>
+   * @return <code>Writability[PATH]</code> that supports <code>java.nio.file.Path</code> in <code>be</code> <code>writable</code> syntax
+   */
+  implicit def writabilityOfPath[PATH <: java.nio.file.Path]: Writability[PATH] =
+    new Writability[PATH] {
+      def isWritable(path: PATH): Boolean = Files.isWritable(path)
     }
 
   import scala.language.reflectiveCalls

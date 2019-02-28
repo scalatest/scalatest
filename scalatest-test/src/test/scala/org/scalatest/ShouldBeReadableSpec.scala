@@ -131,6 +131,73 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
 
     }
 
+    describe("when work with 'path should be (readable)'") {
+
+      it("should do nothing when path is readable") {
+        readableFile.toPath should be (readable)
+      }
+
+      it("should throw TestFailedException with correct stack depth when path is not readable") {
+        val caught1 = intercept[TestFailedException] {
+          secretFile.toPath should be (readable)
+        }
+        assert(caught1.message === Some(wasNotReadable(secretFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+    }
+
+    describe("when work with 'path should not be readable'") {
+
+      it("should do nothing when path is not readable") {
+        secretFile.toPath should not be readable
+      }
+
+      it("should throw TestFailedException with correct stack depth when path is readable") {
+        val caught1 = intercept[TestFailedException] {
+          readableFile.toPath should not be readable
+        }
+        assert(caught1.message === Some(wasReadable(readableFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
+
+    describe("when work with 'path shouldBe readable'") {
+
+      it("should do nothing when path is readable") {
+        readableFile.toPath shouldBe readable
+      }
+
+      it("should throw TestFailedException with correct stack depth when path is not readable") {
+        val caught1 = intercept[TestFailedException] {
+          secretFile.toPath shouldBe readable
+        }
+        assert(caught1.message === Some(wasNotReadable(secretFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+    }
+
+    describe("when work with 'path shouldNot be (readable)'") {
+
+      it("should do nothing when path is not readable") {
+        secretFile.toPath shouldNot be (readable)
+      }
+
+      it("should throw TestFailedException with correct stack depth when path is readable") {
+        val caught1 = intercept[TestFailedException] {
+          readableFile.toPath shouldNot be (readable)
+        }
+        assert(caught1.message === Some(wasReadable(readableFile.toPath)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+    }
+
     describe("when work with 'all(xs) should be (readable)'") {
 
       it("should do nothing when all(xs) is readable") {
@@ -184,7 +251,7 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
       }
     }
 
-    describe("when work with 'all(xs) shouldNot be (readable)'") {
+    describe("when work with 'all(paths) shouldNot be (readable)'") {
 
       it("should do nothing when all(xs) is not readable") {
         all(List(secretFile)) shouldNot be (readable)
@@ -200,6 +267,77 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
+    }
+
+    describe("when work with 'all(paths) should be (readable)'") {
+
+      it("should do nothing when all(paths) is readable") {
+        all(List(readableFile.toPath)) should be (readable)
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(paths) is not readable") {
+        val left1 = List(secretFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) should be (readable)
+        }
+        assert(caught1.message === Some(allError(left1, wasNotReadable(secretFile.toPath), thisLineNumber - 2)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+    }
+
+    describe("when work with 'all(paths) should not be readable'") {
+
+      it("should do nothing when all(paths) is not readable") {
+        all(List(secretFile.toPath)) should not be readable
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(paths) is readable") {
+        val left1 = List(readableFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) should not be readable
+        }
+        assert(caught1.message === Some(allError(left1, wasReadable(readableFile.toPath), thisLineNumber - 2)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+    }
+
+    describe("when work with 'all(paths) shouldBe readable'") {
+
+      it("should do nothing when all(paths) is readable") {
+        all(List(readableFile.toPath)) shouldBe readable
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(paths) is not readable") {
+        val left1 = List(secretFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) shouldBe readable
+        }
+        assert(caught1.message === Some(allError(left1, wasNotReadable(secretFile.toPath), thisLineNumber - 2)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+    }
+
+    describe("when work with 'all(paths) shouldNot be (readable)'") {
+
+      it("should do nothing when all(paths) is not readable") {
+        all(List(secretFile.toPath)) shouldNot be (readable)
+      }
+
+      it("should throw TestFailedException with correct stack depth when all(paths) is readable") {
+        val left1 = List(readableFile.toPath)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) shouldNot be (readable)
+        }
+        assert(caught1.message === Some(allError(left1, wasReadable(readableFile.toPath), thisLineNumber - 2)))
+        assert(caught1.failedCodeFileName === Some(fileName))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
     }
   }
   

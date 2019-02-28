@@ -15,9 +15,12 @@
  */
 package org.scalatest.enablers
 
+import java.nio.file.Files
+
 import Aggregating.tryEquality
 import org.scalactic.Equality
 import org.scalatest.FailureMessages
+
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 
@@ -70,6 +73,17 @@ object Readability {
   implicit def readabilityOfFile[FILE <: java.io.File]: Readability[FILE] =
     new Readability[FILE] {
       def isReadable(file: FILE): Boolean = file.canRead
+    }
+
+  /**
+   * Enable <code>Readability</code> implementation for <code>java.nio.file.Path</code>.
+   *
+   * @tparam PATH any subtype of <code>java.nio.file.Path</code>
+   * @return <code>Readability[PATH]</code> that supports <code>java.nio.file.Path</code> in <code>be readable</code> syntax
+   */
+  implicit def readabilityOfPath[PATH <: java.nio.file.Path]: Readability[PATH] =
+    new Readability[PATH] {
+      def isReadable(path: PATH): Boolean = Files.isReadable(path)
     }
 
   import scala.language.reflectiveCalls

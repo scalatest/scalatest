@@ -15,6 +15,8 @@
  */
 package org.scalatest.enablers
 
+import java.nio.file.Files
+
 /**
  * Supertrait for typeclasses that enable the <code>exist</code> matcher syntax.
  *
@@ -56,5 +58,15 @@ object Existence {
     new Existence[FILE] {
       def exists(file: FILE): Boolean = file.exists
     }
-  
+
+  /**
+   * Enable <code>Existence</code> implementation for <code>java.nio.file.Path</code>
+   *
+   * @tparam PATH any subtype of <code>java.nio.file.Path</code>
+   * @return <code>Existence[PATH]</code> that supports <code>java.nio.file.Path</code> in <code>exist</code> syntax
+   */
+  implicit def existenceOfPath[PATH <: java.nio.file.Path]: Existence[PATH] =
+    new Existence[PATH] {
+      def exists(path: PATH): Boolean = Files.exists(path)
+    }
 }

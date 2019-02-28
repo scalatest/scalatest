@@ -7426,6 +7426,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * <pre class="stHighlight">
      * file should exist
      *      ^
+     *
+     * path should exist
+     *      ^
      * </pre>
      */
     def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
@@ -7440,6 +7443,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * <pre class="stHighlight">
      * file should not (exist)
      *      ^
+     *
+     * path should not (exist)
+     *      ^
      * </pre>
      */
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
@@ -7453,6 +7459,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * file shouldNot exist
+     *      ^
+     *
+     * path shouldNot exist
      *      ^
      * </pre>
      */
