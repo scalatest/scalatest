@@ -19,7 +19,7 @@ package org.scalatest
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.featurespec.AsyncFeatureSpec instead.
   */
 @deprecated("Please use org.scalatest.featurespec.AsyncFeatureSpec instead")
-abstract class AsyncFeatureSpec extends AsyncFeatureSpecLike {
+abstract class AsyncFeatureSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

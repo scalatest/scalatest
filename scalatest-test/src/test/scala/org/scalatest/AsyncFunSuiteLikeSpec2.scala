@@ -22,13 +22,13 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
+class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncFunSuiteLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
+      class ExampleSuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -87,7 +87,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
+      class ExampleSuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -138,7 +138,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends AsyncFunSuiteLike {
+      class ExampleSuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -181,7 +181,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends AsyncFunSuiteLike {
+      class ExampleSuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           SleepHelper.sleep(30)
@@ -222,7 +222,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFunSuiteLike {
+      class ExampleSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -265,7 +265,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFunSuiteLike {
+      class ExampleSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           val promise = Promise[Assertion]
@@ -324,7 +324,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncFunSuiteLike {
+      class ExampleSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -356,7 +356,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFunSuiteLike {
+      class ExampleSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -403,7 +403,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFunSuiteLike {
+      class ExampleSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           SleepHelper.sleep(60)
@@ -443,7 +443,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
         info(
           "hi there"
         )
@@ -463,7 +463,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           info("hi there")
@@ -491,7 +491,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -521,7 +521,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
         note(
           "hi there"
         )
@@ -541,7 +541,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           note("hi there")
@@ -562,7 +562,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -585,7 +585,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
         alert(
           "hi there"
         )
@@ -605,7 +605,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           alert("hi there")
@@ -626,7 +626,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -649,7 +649,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
         markup(
           "hi there"
         )
@@ -668,7 +668,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           markup("hi there")
@@ -696,7 +696,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends AsyncFunSuiteLike  {
+      class MySuite extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
 
         test("test 1") {
           Future {
@@ -726,7 +726,7 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFunSuiteLike {
+      class TestSpec extends AsyncFunSuiteLike with DefaultFutureAssertionConverter {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

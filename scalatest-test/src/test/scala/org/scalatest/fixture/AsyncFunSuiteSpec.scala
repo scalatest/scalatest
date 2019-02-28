@@ -30,7 +30,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with ParallelTestExecution {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -95,7 +95,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with ParallelTestExecution {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -152,7 +152,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -203,7 +203,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -252,7 +252,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -296,7 +296,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -356,7 +356,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -388,7 +388,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -438,7 +438,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -482,7 +482,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("should send an InfoProvided event for an info in main spec body") {
 
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -508,7 +508,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -541,7 +541,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -576,7 +576,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -602,7 +602,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -628,7 +628,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -656,7 +656,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -682,7 +682,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -708,7 +708,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -736,7 +736,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -762,7 +762,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -795,7 +795,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -830,7 +830,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
-      class TestSpec extends funsuite.FixtureAsyncFunSuite {
+      class TestSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
         test("test 1") { fixture => succeed }
@@ -845,7 +845,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
-      class TestSpec extends funsuite.FixtureAsyncFunSuite {
+      class TestSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
         test("test 1") { fixture => succeed }
@@ -860,7 +860,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends funsuite.FixtureAsyncFunSuite {
+      class TestSpec extends funsuite.FixtureAsyncFunSuite with DefaultFutureAssertionConverter {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

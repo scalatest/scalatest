@@ -23,13 +23,13 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
+class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncFeatureSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike with ParallelTestExecution {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -92,7 +92,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike with ParallelTestExecution {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -147,7 +147,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -194,7 +194,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -239,7 +239,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -286,7 +286,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -349,7 +349,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -385,7 +385,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -433,7 +433,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends fixture.AsyncFeatureSpecLike {
+      class ExampleSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -474,7 +474,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -499,7 +499,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in feature body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -528,7 +528,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -562,7 +562,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -598,7 +598,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -623,7 +623,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in feature body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -652,7 +652,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -679,7 +679,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -708,7 +708,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -733,7 +733,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in feature body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -762,7 +762,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -788,7 +788,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -817,7 +817,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -842,7 +842,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in feature body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -870,7 +870,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -904,7 +904,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends fixture.AsyncFeatureSpecLike  {
+      class MySuite extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter  {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -940,7 +940,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends fixture.AsyncFeatureSpecLike {
+      class TestSpec extends fixture.AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

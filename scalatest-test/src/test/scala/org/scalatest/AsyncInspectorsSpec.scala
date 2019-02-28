@@ -30,7 +30,7 @@ import FailureMessages.decorateToStringValue
 import scala.concurrent.Future
 import org.scalatest.exceptions.TestFailedException
 
-class AsyncInspectorsSpec extends AsyncFunSpec with Inspectors with TableDrivenPropertyChecks {
+class AsyncInspectorsSpec extends AsyncFunSpec with DefaultFutureAssertionConverter with Inspectors with TableDrivenPropertyChecks {
 
   describe("Inspectors") {
 

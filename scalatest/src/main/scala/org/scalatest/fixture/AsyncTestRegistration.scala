@@ -17,7 +17,6 @@ package org.scalatest.fixture
 
 import org.scalactic._
 import org.scalatest.Tag
-import scala.concurrent.Future
 import org.scalatest.compatible
 
 /**
@@ -33,7 +32,7 @@ trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => theSuite.type#FutureSystem)(implicit pos: source.Position)
 
   /**
    * Registers an ignored test.
@@ -42,5 +41,5 @@ trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => theSuite.type#FutureSystem)(implicit pos: source.Position)
 }

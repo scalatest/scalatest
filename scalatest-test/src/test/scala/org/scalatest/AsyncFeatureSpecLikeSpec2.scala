@@ -22,13 +22,13 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
+class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncFeatureSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -88,7 +88,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter with ParallelTestExecution {
 
         val a = 1
 
@@ -141,7 +141,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           Future {
@@ -185,7 +185,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           SleepHelper.sleep(30)
@@ -227,7 +227,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           Future {
@@ -270,7 +270,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           val promise = Promise[Assertion]
@@ -329,7 +329,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -361,7 +361,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           Future {
@@ -408,7 +408,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFeatureSpecLike {
+      class ExampleSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Scenario("test 1") {
           SleepHelper.sleep(60)
@@ -448,7 +448,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         info(
           "hi there"
         )
@@ -468,7 +468,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in feature body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           info(
@@ -493,7 +493,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -523,7 +523,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -555,7 +555,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         note(
           "hi there"
         )
@@ -575,7 +575,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in feature body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           note(
@@ -600,7 +600,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -623,7 +623,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -648,7 +648,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         alert(
           "hi there"
         )
@@ -668,7 +668,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in feature body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           alert(
@@ -693,7 +693,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -716,7 +716,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -741,7 +741,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         markup(
           "hi there"
         )
@@ -761,7 +761,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in feature body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           markup(
@@ -786,7 +786,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -816,7 +816,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -848,7 +848,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFeatureSpecLike {
+      class TestSpec extends AsyncFeatureSpecLike with DefaultFutureAssertionConverter {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

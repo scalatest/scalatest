@@ -211,7 +211,7 @@ import enablers.Futuristic
  * }
  * </pre>
  */
-trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
+trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly with FutureAssertionConverter { thisAsyncTestSuite =>
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
@@ -235,9 +235,9 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  private[scalatest] def transformToOutcome(testFun: => Future[compatible.Assertion]): () => AsyncOutcome =
+  private[scalatest] def transformToOutcome(testFun: => FutureSystem): () => AsyncOutcome =
     () => {
-      val futureSucceeded: Future[Succeeded.type] = testFun.map(_ => Succeeded)
+      val futureSucceeded: Future[Succeeded.type] = convertToScalaFuture(testFun).map(_ => Succeeded)
       InternalFutureOutcome(
         futureSucceeded.recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)

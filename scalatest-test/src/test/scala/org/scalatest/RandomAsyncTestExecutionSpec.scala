@@ -18,11 +18,11 @@ package org.scalatest
 import scala.collection.mutable.ListBuffer
 import org.scalatest.SharedHelpers.SilentReporter
 
-class RandomAsyncTestExecutionSpec extends AsyncFunSuite /* with RandomTestOrder*/ { thisOuterSuite =>
+class RandomAsyncTestExecutionSpec extends AsyncFunSuite with DefaultFutureAssertionConverter /* with RandomTestOrder*/ { thisOuterSuite =>
 
   private val buf = ListBuffer.empty[Int]
 
-  class ExampleSpec extends AsyncFunSuite with RandomTestOrder {
+  class ExampleSpec extends AsyncFunSuite with DefaultFutureAssertionConverter with RandomTestOrder {
 
     test("test one") { thisOuterSuite.synchronized { buf += 1 }; succeed }
     test("test two") { thisOuterSuite.synchronized { buf += 2 }; succeed }

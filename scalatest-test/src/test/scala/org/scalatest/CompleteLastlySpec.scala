@@ -26,7 +26,7 @@ import scala.util.Success
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.OutcomeOf.outcomeOf
 
-class CompleteLastlySpec extends AsyncFunSpec {
+class CompleteLastlySpec extends AsyncFunSpec with DefaultFutureAssertionConverter {
 
   describe("AsyncTestSuite's complete-lastly syntax") {
 /*

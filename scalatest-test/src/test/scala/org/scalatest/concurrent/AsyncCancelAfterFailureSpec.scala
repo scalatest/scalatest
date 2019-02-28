@@ -15,14 +15,15 @@
  */
 package org.scalatest.concurrent
 
+import org.scalatest.DefaultFutureAssertionConverter
 import org.scalatest.SharedHelpers._
 import org.scalatest.{Args, AsyncFlatSpec, AsyncFunSuite}
 import scala.concurrent.{Promise, Future}
 
-class AsyncCancelAfterFailureSpec extends AsyncFlatSpec {
+class AsyncCancelAfterFailureSpec extends AsyncFlatSpec with DefaultFutureAssertionConverter {
 
   "AsyncCancelAfterFailure" should "not interfere if no tests fail" in {
-    class MySuite extends AsyncFunSuite with AsyncCancelAfterFailure {
+    class MySuite extends AsyncFunSuite with DefaultFutureAssertionConverter with AsyncCancelAfterFailure {
       test("this test succeeds") {
         Future {
           assert(1 + 1 === 2)
@@ -56,7 +57,7 @@ class AsyncCancelAfterFailureSpec extends AsyncFlatSpec {
   }
 
   it should "cancel remaining tests if a test fails" in {
-    class MySuite extends AsyncFunSuite with AsyncCancelAfterFailure {
+    class MySuite extends AsyncFunSuite with DefaultFutureAssertionConverter with AsyncCancelAfterFailure {
       test("this test succeeds") {
         Future {
           assert(1 + 1 === 2)

@@ -18,7 +18,6 @@ package org.scalatest.featurespec
 import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
-import scala.concurrent.Future
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
@@ -96,19 +95,19 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.fixture.AsyncTestSuite w
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def apply(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def apply(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
   }
@@ -138,10 +137,10 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.fixture.AsyncTestSuite w
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def apply(testFun: FixtureParam => FutureSystem)(implicit pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def apply(testFun: () => FutureSystem)(implicit pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
   }

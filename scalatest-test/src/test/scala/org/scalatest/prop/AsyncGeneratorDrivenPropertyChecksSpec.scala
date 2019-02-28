@@ -16,11 +16,12 @@
 package org.scalatest.prop
 
 import org.scalatest.AsyncFunSpec
+import org.scalatest.DefaultFutureAssertionConverter
 import org.scalatest.exceptions.TestFailedException
 
 import scala.concurrent.Future
 
-class AsyncGeneratorDrivenPropertyChecksSpec extends AsyncFunSpec with GeneratorDrivenPropertyChecks {
+class AsyncGeneratorDrivenPropertyChecksSpec extends AsyncFunSpec with DefaultFutureAssertionConverter with GeneratorDrivenPropertyChecks {
 
   describe("GeneratorDrivenPropertyChecks") {
 

@@ -22,7 +22,7 @@ class AsyncTestDataFixtureSpec extends org.scalatest.FunSpec {
   describe("A AsyncTestDataFixture") {
     it("should pass the test data to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")
-      class MySuite extends fixture.AsyncFunSuite with AsyncTestDataFixture {
+      class MySuite extends fixture.AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTestDataFixture {
         var testDataPassed = false
         test("something") { (td: TestData) =>
           if (td.configMap == myConfigMap && td.name == "something")

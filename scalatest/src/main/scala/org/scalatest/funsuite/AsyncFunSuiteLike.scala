@@ -90,11 +90,11 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
@@ -112,7 +112,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     * @throws NotAllowedException if <code>testName</code> had been registered previously
     * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
     */
-  protected def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def test(testName: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
@@ -131,7 +131,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     * @throws DuplicateTestNameException if a test with the same name has been registered previously
     * @throws NotAllowedException if <code>testName</code> had been registered previously
     */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => FutureSystem)(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
   }
 

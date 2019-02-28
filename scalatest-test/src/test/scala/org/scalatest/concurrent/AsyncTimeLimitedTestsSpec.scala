@@ -27,7 +27,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
       describe("when it succeeds") {
         it("should succeed without Future") {
           val a =
-            new AsyncFunSuite with AsyncTimeLimitedTests {
+            new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
               val timeLimit = Span(1000L, Millis)
               test("plain old success") { assert(1 + 1 === 2) }
             }
@@ -38,7 +38,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
         }
         it("should succeed with Future") {
           val a =
-            new AsyncFunSuite with AsyncTimeLimitedTests {
+            new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
               val timeLimit = Span(100L, Millis)
               test("plain old success") { Future { assert(1 + 1 === 2) } }
             }
@@ -51,7 +51,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
       describe("when it fails") {
         it("should fail without Future") {
           val a =
-            new AsyncFunSuite with AsyncTimeLimitedTests {
+            new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
               val timeLimit = Span(100L, Millis)
               test("plain old failure") { assert(1 + 1 === 3) }
             }
@@ -62,7 +62,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
         }
         it("should fail with Future") {
           val a =
-            new AsyncFunSuite with AsyncTimeLimitedTests {
+            new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
               val timeLimit = Span(100L, Millis)
               test("plain old failure") { Future { assert(1 + 1 === 3) } }
             }
@@ -76,7 +76,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
     describe("when it times out") {
       it("should fail with a timeout exception with the proper error message test when timeout from main code") {
         val a =
-          new AsyncFunSuite with AsyncTimeLimitedTests {
+          new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
             val timeLimit = Span(100L, Millis)
             test("time out failure") { SleepHelper.sleep(500); succeed }
           }
@@ -89,7 +89,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
       }
       it("should fail with a timeout exception with the proper error message test when timeout from future returned") {
         val a =
-          new AsyncFunSuite with AsyncTimeLimitedTests {
+          new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
             val timeLimit = Span(100L, Millis)
             test("time out failure") { Future { SleepHelper.sleep(500); succeed } }
           }
@@ -102,7 +102,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
       }
       it("should fail directly with thrown exception, if the test timed out after it completed abruptly from main code") {
         val a =
-          new AsyncFunSuite with AsyncTimeLimitedTests {
+          new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
             val timeLimit = Span(10L, Millis)
             test("time out failure") {
               SleepHelper.sleep(50)
@@ -123,7 +123,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
       }
       it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly from future returned") {
         val a =
-          new AsyncFunSuite with AsyncTimeLimitedTests {
+          new AsyncFunSuite with DefaultFutureAssertionConverter with AsyncTimeLimitedTests {
             val timeLimit = Span(1000L, Millis)
             test("time out failure") {
               Future {

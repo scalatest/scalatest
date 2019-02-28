@@ -15,11 +15,13 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.DefaultFutureAssertionConverter
+
 /**
   * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funspec.FixtureAsyncFunSpec instead.
   */
 @deprecated("Please use org.scalatest.funspec.FixtureAsyncFunSpec instead")
-abstract class AsyncFunSpec extends org.scalatest.fixture.AsyncFunSpecLike {
+abstract class AsyncFunSpec extends org.scalatest.fixture.AsyncFunSpecLike with DefaultFutureAssertionConverter {
 
   /**
    * Returns a user friendly string for this suite, composed of the

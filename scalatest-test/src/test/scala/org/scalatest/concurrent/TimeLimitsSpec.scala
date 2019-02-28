@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 import scala.util.{Try, Success, Failure}
 
-class TimeLimitsSpec extends AsyncFunSpec with Matchers {
+class TimeLimitsSpec extends AsyncFunSpec with DefaultFutureAssertionConverter with Matchers {
 
 /*
   override def withFixture(test: NoArgTest) = {
