@@ -20,12 +20,6 @@ package org.scalatest
  */
 package object mock {
 
-  @deprecated("Please use org.scalatest.easymock.EasyMockSugar instead")
-  type EasyMockSugar = easymock.EasyMockSugar
-
-  @deprecated("Please use org.scalatest.easymock.EasyMockSugar instead")
-  val EasyMockSugar = easymock.EasyMockSugar
-
   @deprecated("Please use org.scalatest.jmock.JMockCycle instead")
   type JMockCycle = jmock.JMockCycle
 

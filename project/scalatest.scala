@@ -42,7 +42,6 @@ object ScalatestBuild {
 
   val previousReleaseVersion = "3.0.5"
 
-  val easyMockVersion = "3.2"
   val jmockVersion = "2.8.3"
   val mockitoVersion = "1.10.19"
   val testngVersion = "6.7"
@@ -204,7 +203,6 @@ object ScalatestBuild {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
       "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
       "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
@@ -813,7 +811,6 @@ object ScalatestBuild {
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
-        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -838,7 +835,6 @@ object ScalatestBuild {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalatestplus.scalacheck",
-        "org.scalatestplus.easymock",
         "org.scalatestplus.jmock",
         "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
@@ -1025,7 +1021,6 @@ object ScalatestBuild {
       "org.scalatest.compatible",
       "org.scalatest.concurrent",
       "org.scalatest.check",
-      "org.scalatest.easymock",
       "org.scalatest.enablers",
       "org.scalatest.events",
       "org.scalatest.exceptions",
@@ -1284,7 +1279,6 @@ object ScalatestBuild {
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
-        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -1312,7 +1306,6 @@ object ScalatestBuild {
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
         "org.scalactic.source",
-        "org.scalatestplus.easymock",
         "org.scalatestplus.jmock",
         "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
