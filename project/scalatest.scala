@@ -42,7 +42,6 @@ object ScalatestBuild {
 
   val previousReleaseVersion = "3.0.5"
 
-  val jmockVersion = "2.8.3"
   val mockitoVersion = "1.10.19"
   val testngVersion = "6.7"
   val junitVersion = "4.12"
@@ -203,7 +202,6 @@ object ScalatestBuild {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
       "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
@@ -258,7 +256,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.concurrent",
       "-m", "org.scalatest.testng",
       "-m", "org.scalatest.junit",
-      "-m", "org.scalatest.jmock",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
@@ -818,7 +815,6 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
@@ -835,7 +831,6 @@ object ScalatestBuild {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalatestplus.scalacheck",
-        "org.scalatestplus.jmock",
         "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
@@ -1028,7 +1023,6 @@ object ScalatestBuild {
       "org.scalatest.funsuite",
       "org.scalatest.featurespec",
       "org.scalatest.funspec",
-      "org.scalatest.jmock",
       "org.scalatest.junit",
       "org.scalatest.matchers",
       "org.scalatest.mock",
@@ -1286,7 +1280,6 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
@@ -1306,7 +1299,6 @@ object ScalatestBuild {
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
         "org.scalactic.source",
-        "org.scalatestplus.jmock",
         "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
@@ -1471,7 +1463,6 @@ object ScalatestBuild {
       "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
-      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
 
     )

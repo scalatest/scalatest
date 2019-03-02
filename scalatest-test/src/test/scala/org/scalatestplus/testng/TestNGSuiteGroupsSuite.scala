@@ -17,7 +17,7 @@ package org.scalatestplus.testng {
 
   import org.scalatest._
   import org.scalatest.Suite
-  import org.scalatest.jmock.TestReporter
+  import org.scalatest.SharedHelpers.EventRecordingReporter
   import org.testng.annotations.Test
   import org.scalatestplus.testng.test._
 
@@ -99,7 +99,7 @@ package org.scalatestplus.testng {
     
     def testGroups(groupsToInclude: Set[String], groupsToExclude: Set[String], successCount: Int) = {
       // given
-      val testReporter = new TestReporter
+      val testReporter = new EventRecordingReporter
 
       val filter = Filter(if (groupsToInclude.isEmpty) None else Some(groupsToInclude), groupsToExclude)
       val status = new StatefulStatus
@@ -108,7 +108,7 @@ package org.scalatestplus.testng {
       status.setCompleted()
 
       // then
-      assert(testReporter.successCount === successCount)
+      assert(testReporter.testSucceededEventsReceived.length === successCount)
     }
   }
 

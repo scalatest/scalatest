@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 import org.scalatest._
-import org.scalatest.jmock._
 import java.io.File
 import org.apache.commons.io.FileUtils
-import org.jmock.Expectations
-import org.jmock.Mockery
 import org.scalatest.events.Ordinal
+import org.scalatest.SharedHelpers.EventRecordingReporter
 
 package org.scalatestplus.testng {
 
-  class TestNGWrapperSuiteSuite extends FunSuite with SuiteExpectations {
+  class TestNGWrapperSuiteSuite extends FunSuite {
   
     val XML_SUITES_PROPERTY = "xml_suites"
       
@@ -39,21 +37,14 @@ package org.scalatestplus.testng {
     test("wrapper suite properly notifies reporter when tests start, and pass") {
     
       val xmlSuiteFile = this.createSuite( legacySuiteXml )
-          
-      val context = new Mockery
-      val reporter = context.mock(classOf[Reporter])
 
-      context.checking(
-        new Expectations() {
-          expectSingleTestToPass(this, reporter)
-        }
-      )
+      val reporter = new EventRecordingReporter
       
       val status = new StatefulStatus
       (new TestNGWrapperSuite(List(xmlSuiteFile))).runTestNG(reporter, new Tracker, status)
       status.setCompleted()
 
-      context.assertIsSatisfied()
+      assert(reporter.testSucceededEventsReceived.length == 1)
     }
 
     val legacySuiteWithThreeTestsXml = 
@@ -69,21 +60,14 @@ package org.scalatestplus.testng {
     test("wrapper suite should be notified for all tests") {
       
       val xmlSuiteFile = this.createSuite(legacySuiteWithThreeTestsXml)
-          
-      val context = new Mockery
-      val reporter = context.mock(classOf[Reporter])
 
-      context.checking(
-        new Expectations() {
-          expectNTestsToPass(this, 3, reporter) 
-        }
-      )
+      val reporter = new EventRecordingReporter
       
       val status = new StatefulStatus()
       (new TestNGWrapperSuite(List(xmlSuiteFile))).runTestNG(reporter, new Tracker, status)
       status.setCompleted()
 
-      context.assertIsSatisfied()
+      assert(reporter.testSucceededEventsReceived.length == 3)
     }
     
     def createSuite(suiteNode: scala.xml.Elem) : String = {

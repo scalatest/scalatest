@@ -16,51 +16,39 @@
 package org.scalatestplus.testng {
 
   import org.scalatest._
-import org.scalatest.jmock._
 import org.scalatest.events._
 import org.scalatestplus.testng.testpackage._
 import org.scalatest.fixture
-import org.scalatest.jmock.JMockCycleFixture
 import org.hamcrest.core.IsAnything
-import org.jmock.Expectations
-import org.jmock.Mockery
-import org.scalatest.jmock.JMockCycle
+import org.scalatest.SharedHelpers.EventRecordingReporter
 
-  class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
+  class TestNGSuiteSuite extends FunSuite {
 
-    test("Reporter should be notified when test passes") { cycle => import cycle._
+    test("Reporter should be notified when test passes") {
 
-      val reporter = mock[Reporter]
+      val reporter = new EventRecordingReporter
 
-      expecting { e =>
-        expectSingleTestToPass(e, reporter)
-      }
+      val status = new StatefulStatus
+      (new SuccessTestNGSuite()).runTestNG(reporter, new Tracker, status)
+      status.setCompleted()
 
-      whenExecuting {
-        val status = new StatefulStatus
-        (new SuccessTestNGSuite()).runTestNG(reporter, new Tracker, status)
-        status.setCompleted()
-      }
+      assert(reporter.testSucceededEventsReceived.length == 1)
     }
 
-    test("Reporter should be notified when test fails") { cycle => import cycle._
+    test("Reporter should be notified when test fails") {
 
-      val reporter = mock[Reporter]
+      val reporter = new EventRecordingReporter
 
-      expecting { e =>
-        expectSingleTestToFail(e, reporter)
-      }
+      val status = new StatefulStatus
+      (new FailureTestNGSuite()).runTestNG(reporter, new Tracker, status)
+      status.setCompleted()
 
-      whenExecuting {
-        val status = new StatefulStatus
-        (new FailureTestNGSuite()).runTestNG(reporter, new Tracker, status)
-        status.setCompleted()
-      }
+      assert(reporter.testFailedEventsReceived.length == 1)
     }
 
-    test("If a test fails due to an exception, Report should have the exception") { () =>
+    test("If a test fails due to an exception, Report should have the exception") {
       
-      val testReporter = new TestReporter
+      val testReporter = new EventRecordingReporter
 
       // when
       val status = new StatefulStatus
@@ -68,69 +56,53 @@ import org.scalatest.jmock.JMockCycle
       status.setCompleted
 
       // then
-      testReporter.lastEvent match {
+      testReporter.eventsReceived.lastOption match {
         case Some(TestFailed(_, _, _, _, _, _, _, _, _, throwable, _, _, _, _, _, _, _)) =>
           assert(throwable.get.getMessage === "fail")
         case _ => fail()
       }
     }
 
-    test("Report should be generated for each invocation") { cycle => import cycle._
+    test("Report should be generated for each invocation") {
       
-      val reporter = mock[Reporter]
+      val reporter = new EventRecordingReporter
 
-      // expect reporter gets 10 passing reports because invocationCount = 10
-      expecting { e =>
-        expectNTestsToPass(e, 10, reporter)
-      }
+      val status = new StatefulStatus
+      (new TestNGSuiteWithInvocationCount()).runTestNG(reporter, new Tracker, status)
+      status.setCompleted()
 
-      // when runnning the suite with method that has invocationCount = 10")
-      whenExecuting {
-        val status = new StatefulStatus
-        (new TestNGSuiteWithInvocationCount()).runTestNG(reporter, new Tracker, status)
-        status.setCompleted()
-      }
+      assert(reporter.testSucceededEventsReceived.length == 10)
     }
 
-    test("Reporter should be notified when test is skipped") { cycle => import cycle._
+    test("Reporter should be notified when test is skipped") {
 
-      val reporter = mock[Reporter]
+      val reporter = new EventRecordingReporter
 
-      // expect a single test should fail, followed by a single test being skipped
-      expecting { e => import e._
-        never(reporter).apply(`with`(new IsAnything[SuiteStarting]))
-        one(reporter).apply(`with`(new IsAnything[TestStarting]))
-        one(reporter).apply(`with`(new IsAnything[TestFailed]))
-        one(reporter).apply(`with`(new IsAnything[TestIgnored]))
-        never(reporter).apply(`with`(new IsAnything[SuiteCompleted]))
-      }
+      val status = new StatefulStatus
+      (new SuiteWithSkippedTest()).runTestNG(reporter, new Tracker, status)
+      status.setCompleted()
 
-      // when runnning the suite with a test that should fail and a test that should be skipped
-      whenExecuting {
-        val status = new StatefulStatus
-        (new SuiteWithSkippedTest()).runTestNG(reporter, new Tracker, status)
-        status.setCompleted()
-      }
+      assert(reporter.suiteStartingEventsReceived.isEmpty)
+      assert(reporter.testStartingEventsReceived.length == 1)
+      assert(reporter.testFailedEventsReceived.length == 1)
+      assert(reporter.testIgnoredEventsReceived.length == 1)
+      assert(reporter.suiteCompletedEventsReceived.isEmpty)
     }
     
-    test("Only the correct method should be run when specifying a single method to run") { cycle => import cycle._
+    test("Only the correct method should be run when specifying a single method to run") {
       
-      val reporter = mock[Reporter]
+      val reporter = new EventRecordingReporter
 
-      expecting { e =>
-        expectSingleTestToPass(e, reporter)
-      }
+      val status = new StatefulStatus
+      (new SuiteWithTwoTests()).runTestNG("testThatPasses", reporter, new Tracker, status)
+      status.setCompleted()
 
-      whenExecuting {
-        val status = new StatefulStatus
-        (new SuiteWithTwoTests()).runTestNG("testThatPasses", reporter, new Tracker, status)
-        status.setCompleted()
-      }
+      assert(reporter.testSucceededEventsReceived.length == 1)
     }
 
-    test("Report for failing tests should include rerunner") { () =>
+    test("Report for failing tests should include rerunner") {
       
-      val testReporter = new TestReporter
+      val testReporter = new EventRecordingReporter
 
       // when - run the failing suite
       val status = new StatefulStatus
@@ -138,16 +110,16 @@ import org.scalatest.jmock.JMockCycle
       status.setCompleted()
 
       // then get rerunnable from the event 
-      testReporter.lastEvent match {
+      testReporter.eventsReceived.lastOption match {
         case Some(TestFailed(_, _, _, _, _, _, _, _, _, _, _, _, _, rerunnable, _, _, _)) =>
           assert(rerunnable.isDefined)
         case _ => fail()
       }
     }
 
-    test("Report for passing tests should include rerunner") { () =>
+    test("Report for passing tests should include rerunner") {
       
-      val testReporter = new TestReporter
+      val testReporter = new EventRecordingReporter
 
       // when - run the passing suite
       val status = new StatefulStatus
@@ -155,17 +127,17 @@ import org.scalatest.jmock.JMockCycle
       status.setCompleted()
 
       // then get rerunner from report 
-      val rerunner = testReporter.lastEvent.get.asInstanceOf[TestSucceeded].rerunner
+      val rerunner = testReporter.eventsReceived.last.asInstanceOf[TestSucceeded].rerunner
       assert(rerunner != None)
       assert(rerunner.get === classOf[SuccessTestNGSuite].getName)
     }
     
     
-    test("infoProvided should be available for BeforeMethod/Class/Suite annotations") { () =>
+    test("infoProvided should be available for BeforeMethod/Class/Suite annotations") {
       // this needs to be written after i figure out the mock integration
     }     
     
-    test("infoProvided should be available for AfterMethod/Class/Suite annotations") { () =>
+    test("infoProvided should be available for AfterMethod/Class/Suite annotations") {
       // this needs to be written after i figure out the mock integration
     }     
   }
