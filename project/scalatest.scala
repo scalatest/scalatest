@@ -42,7 +42,6 @@ object ScalatestBuild {
 
   val previousReleaseVersion = "3.0.5"
 
-  val mockitoVersion = "1.10.19"
   val testngVersion = "6.7"
   val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
@@ -202,7 +201,6 @@ object ScalatestBuild {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % junitVersion % "optional",
@@ -261,7 +259,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
       "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
@@ -291,7 +288,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
       "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
@@ -317,7 +313,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
       "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
@@ -817,8 +812,6 @@ object ScalatestBuild {
         "org.scalatest.funspec",
         "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
-        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
@@ -831,7 +824,6 @@ object ScalatestBuild {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalatestplus.scalacheck",
-        "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
         "org.scalatestplus.testng"
@@ -1025,8 +1017,6 @@ object ScalatestBuild {
       "org.scalatest.funspec",
       "org.scalatest.junit",
       "org.scalatest.matchers",
-      "org.scalatest.mock",
-      "org.scalatest.mockito",
       "org.scalatest.path",
       "org.scalatest.prop",
       "org.scalatest.refspec",
@@ -1282,8 +1272,6 @@ object ScalatestBuild {
         "org.scalatest.funspec",
         "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
-        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
@@ -1299,7 +1287,6 @@ object ScalatestBuild {
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
         "org.scalactic.source",
-        "org.scalatestplus.mockito",
         "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
         "org.scalatestplus.testng"
@@ -1460,7 +1447,6 @@ object ScalatestBuild {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
       "junit" % "junit" % junitVersion % "optional",
       "org.testng" % "testng" % testngVersion % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
