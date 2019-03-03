@@ -204,7 +204,6 @@ object ScalatestBuild {
       "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % junitVersion % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
@@ -230,9 +229,7 @@ object ScalatestBuild {
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
+      "commons-io" % "commons-io" % "1.3.2" % "test"
     )
 
   val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
@@ -260,7 +257,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -289,7 +285,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -314,7 +309,6 @@ object ScalatestBuild {
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -815,7 +809,6 @@ object ScalatestBuild {
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
         "org.scalatest.testng",
@@ -824,7 +817,6 @@ object ScalatestBuild {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalatestplus.scalacheck",
-        "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
         "org.scalatestplus.testng"
       ),
@@ -1020,7 +1012,6 @@ object ScalatestBuild {
       "org.scalatest.path",
       "org.scalatest.prop",
       "org.scalatest.refspec",
-      "org.scalatest.selenium",
       "org.scalatest.tags",
       "org.scalatest.tagobjects",
       "org.scalatest.testng",
@@ -1275,7 +1266,6 @@ object ScalatestBuild {
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
         "org.scalatest.testng",
@@ -1287,7 +1277,6 @@ object ScalatestBuild {
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
         "org.scalactic.source",
-        "org.scalatestplus.selenium",
         "org.scalatestplus.junit",
         "org.scalatestplus.testng"
       ),
