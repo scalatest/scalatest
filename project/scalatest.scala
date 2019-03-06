@@ -372,6 +372,7 @@ object ScalatestBuild extends Build {
           ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenChain.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAccumulation.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
@@ -419,6 +420,7 @@ object ScalatestBuild extends Build {
           ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenChain.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAccumulation.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },

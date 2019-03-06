@@ -495,7 +495,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Set(Good[Int](3), Bad[Every[String]](Every("oops"))).combined shouldBe Bad(One("oops"))
 
     Set(Good(3)).combined shouldBe Good(Set(3))
-    convertGenSetOnceToCombinable3(Set(Bad(One("oops")))).combined shouldBe Bad(One("oops"))
+    Set(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
 
     Set(Good(3), Good(4)).combined shouldBe Good(Set(3, 4))
     Set(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
