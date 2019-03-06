@@ -15,7 +15,7 @@
  */
 package org.scalatest.testng
 
-import org.scalatest._
+import org.scalatest.{Resources => _, _}
 import org.scalatest.events._
 import exceptions._
 import org.scalactic.source

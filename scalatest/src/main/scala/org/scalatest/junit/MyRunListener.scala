@@ -15,7 +15,7 @@
  */
 package org.scalatest.junit;
 
-import org.scalatest._
+import org.scalatest.{Resources => _, _}
 import JUnitHelper.getIndentedTextForTest
 import org.junit.runner.JUnitCore
 import org.junit.runner.notification.RunListener
