@@ -131,10 +131,10 @@ Before publishing any patch release, binary compatibility with previous version 
 
 and using Java 8 (for Scala 2.12 and 2.13): 
 
-    $ sbt ++2.12.6 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.12.6 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.12.6 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.12.6 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.12.8 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.12.8 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.12.8 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.12.8 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
     $ sbt ++2.13.0-M4 scalactic/package scalactic/mimaReportBinaryIssues
     $ sbt ++2.13.0-M4 scalatest/package scalatest/mimaReportBinaryIssues
