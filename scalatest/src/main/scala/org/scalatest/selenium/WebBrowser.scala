@@ -47,6 +47,7 @@ import org.scalatest.exceptions.StackDepthException
 import org.openqa.selenium.JavascriptExecutor
 import org.scalatest.time.Nanosecond
 import org.scalatest.Resources
+import org.scalatest.ScreenshotCapturer
 import org.scalactic.source
 
 /**

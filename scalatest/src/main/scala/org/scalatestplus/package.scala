@@ -15,6 +15,7 @@
  */
 package org.scalatestplus
 
+// SKIP-SCALATESTJS-START
 /**
  * Package objects of type alias for deprecated easymock classes, there will be moved in these new packages in the future version of ScalaTest.
  */
@@ -88,27 +89,8 @@ package object selenium {
 }
 
 /**
- * Package objects of type alias for deprecated scalacheck classes, there will be moved in these new packages in the future version of ScalaTest.
- */
-package object scalacheck {
-
-  type Checkers = org.scalatest.prop.Checkers
-
-  lazy val Checkers = org.scalatest.prop.Checkers
-
-  type ScalaCheckDrivenPropertyChecks = org.scalatest.prop.GeneratorDrivenPropertyChecks
-
-  lazy val ScalaCheckDrivenPropertyChecks = org.scalatest.prop.PropertyChecks
-
-  type ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
-
-  lazy val ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
-
-}
-
-/**
- * Package objects of type alias for deprecated junit classes, there will be moved in these new packages in the future version of ScalaTest.
- */
+  * Package objects of type alias for deprecated junit classes, there will be moved in these new packages in the future version of ScalaTest.
+  */
 package object junit {
 
   type AssertionsForJUnit = org.scalatest.junit.AssertionsForJUnit
@@ -130,8 +112,8 @@ package object junit {
 }
 
 /**
- * Package objects of type alias for deprecated testng classes, there will be moved in these new packages in the future version of ScalaTest.
- */
+  * Package objects of type alias for deprecated testng classes, there will be moved in these new packages in the future version of ScalaTest.
+  */
 package object testng {
 
   type TestNGSuite = org.scalatest.testng.TestNGSuite
@@ -139,5 +121,26 @@ package object testng {
   type TestNGSuiteLike = org.scalatest.testng.TestNGSuiteLike
 
   type TestNGWrapperSuite = org.scalatest.testng.TestNGWrapperSuite
+
+}
+
+// SKIP-SCALATESTJS-END
+
+/**
+ * Package objects of type alias for deprecated scalacheck classes, there will be moved in these new packages in the future version of ScalaTest.
+ */
+package object scalacheck {
+
+  type Checkers = org.scalatest.prop.Checkers
+
+  lazy val Checkers = org.scalatest.prop.Checkers
+
+  type ScalaCheckDrivenPropertyChecks = org.scalatest.prop.GeneratorDrivenPropertyChecks
+
+  lazy val ScalaCheckDrivenPropertyChecks = org.scalatest.prop.PropertyChecks
+
+  type ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
+
+  lazy val ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
 
 }

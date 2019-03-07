@@ -145,7 +145,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    */
   override def run(testName: Option[String], args: Args): Status = {
     import args._
-    val status = new StatefulStatus
+    val status = new ScalaTestStatefulStatus
     runTestNG(testName, wrapReporterIfNecessary(thisSuite, reporter), filter, tracker, status)
     
     status.setCompleted()
@@ -201,7 +201,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * @param   reporter   the reporter to be notified of test events (success, failure, etc)
    * @param   status   Status of run.
    */
-  private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: StatefulStatus): Unit = {
+  private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     runTestNG(None, reporter, Filter(), tracker, status)
   }
 
@@ -211,7 +211,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * @param   reporter   the reporter to be notified of test events (success, failure, etc)
    * @param   status   Status of run.
    */
-  private[testng] def runTestNG(testName: String, reporter: Reporter, tracker: Tracker, status: StatefulStatus): Unit = {
+  private[testng] def runTestNG(testName: String, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     runTestNG(Some(testName), reporter, Filter(), tracker, status)
   }
   
@@ -225,7 +225,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * @param   status   Status of run.
    */  
   private[testng] def runTestNG(testName: Option[String], reporter: Reporter,
-      filter: Filter, tracker: Tracker, status: StatefulStatus): Unit = {
+      filter: Filter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     
     val tagsToInclude =
       filter.tagsToInclude match {
@@ -251,7 +251,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
   /**
    * Runs the TestNG object which calls back to the given Reporter.
    */
-  private[testng] def run(testng: TestNG, reporter: Reporter, tracker: Tracker, status: StatefulStatus): Unit = {
+  private[testng] def run(testng: TestNG, reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     
     // setup the callback mechanism
     val tla = new MyTestListenerAdapter(reporter, tracker, status)
@@ -308,7 +308,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * (12:02:27 AM) bvenners: onTestFailedButWithinSuccessPercentage(ITestResult tr) 
    * (12:02:34 AM) bvenners: maybe a TestSucceeded with some extra info in the report
    */
-  private[testng] class MyTestListenerAdapter(reporter: Reporter, tracker: Tracker, status: StatefulStatus) extends TestListenerAdapter {
+  private[testng] class MyTestListenerAdapter(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListenerAdapter {
     
     // TODO: Put the tracker in an atomic, because TestNG can go multithreaded?
 

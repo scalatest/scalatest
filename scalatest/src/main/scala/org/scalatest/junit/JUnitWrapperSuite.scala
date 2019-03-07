@@ -67,7 +67,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
     import args._
 
     theTracker = tracker
-    val status = new StatefulStatus
+    val status = new ScalaTestStatefulStatus
 
     val jUnitCore = new JUnitCore
 

@@ -131,15 +131,11 @@ object GenScalaTestJS {
         "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
         "JavaClassesWrappers.scala",
         "Shell.scala",
-        "StreamlinedXml.scala",
-        "StreamlinedXmlNormMethods.scala",
-        "StreamlinedXmlEquality.scala",
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
         "run.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "Spec.scala",
@@ -245,7 +241,8 @@ object GenScalaTestJS {
         "InternetExplorerBrowser.scala",  // skipped because selenium not supported.
         "SafariBrowser.scala"  // skipped because selenium not supported.
       )
-    )
+    ) ++
+      copyDir("scalatest/src/main/scala/org/scalatestplus", "org/scalatestplus", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -283,7 +280,8 @@ object GenScalaTestJS {
         "SuiteSuite.scala",          // skipped because it depends on java reflection
         "MatchersSerializableSpec.scala",   // skipped because testing java serialization
         "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
-        "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
+        "SeveredStackTracesFailureSpec.scala",  // skipped because stack trace isn't really helpful after linked in different js env like node.
+        "ScreenshotSpec.scala"  // skipped because selenium module is not supported in scala-js.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
@@ -302,7 +300,6 @@ object GenScalaTestJS {
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
@@ -350,7 +347,8 @@ object GenScalaTestJS {
         "SuiteDiscoveryHelperSuite.scala",
         "XmlSocketReporterSpec.scala"
       )
-    )
+    ) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatestplus", "org/scalatestplus", targetDir, List.empty)
   }
 
 }

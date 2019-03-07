@@ -232,7 +232,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
     import args._
 
     theTracker = tracker
-    val status = new StatefulStatus
+    val status = new ScalaTestStatefulStatus
 
     if (!filter.tagsToInclude.isDefined) {
       val jUnitCore = new JUnitCore
