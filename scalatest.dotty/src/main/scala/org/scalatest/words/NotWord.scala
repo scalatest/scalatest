@@ -795,7 +795,7 @@ final class NotWord {
    * </pre>
    **/
   inline def be(aType: ResultOfATypeInvocation[_]) =
-    ~TypeMatcherMacro.notATypeMatcher('(aType))
+    ${ TypeMatcherMacro.notATypeMatcher('{aType}) }
 
   /**
    * This method enables the following syntax:
@@ -806,7 +806,7 @@ final class NotWord {
    * </pre>
    **/
   inline def be(anType: ResultOfAnTypeInvocation[_]) =
-    ~TypeMatcherMacro.notAnTypeMatcher('(anType))
+    ${ TypeMatcherMacro.notAnTypeMatcher('{anType}) }
 
   /**
    * This method enables the following syntax:

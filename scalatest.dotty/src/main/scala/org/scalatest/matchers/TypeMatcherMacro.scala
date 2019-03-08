@@ -64,7 +64,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.aTypeMatcher(aType)
      */
-    '{ TypeMatcherHelper.aTypeMatcher(~aType) }
+    '{ TypeMatcherHelper.aTypeMatcher($aType) }
   }
 
   // Do checking on type parameter and generate AST that create a 'an type' matcher
@@ -80,7 +80,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.anTypeMatcher(anType)
      */
-    '{ TypeMatcherHelper.anTypeMatcher(~anType) }
+    '{ TypeMatcherHelper.anTypeMatcher($anType) }
   }
 
   // Do checking on type parameter and generate AST that create a negated 'a type' matcher
@@ -96,7 +96,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.notATypeMatcher(aType)
      */
-    '{ TypeMatcherHelper.notATypeMatcher(~aType) }
+    '{ TypeMatcherHelper.notATypeMatcher($aType) }
   }
 
   // Do checking on type parameter and generate AST that create a negated 'an type' matcher
@@ -112,7 +112,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.notAnTypeMatcher(anType)
      */
-    '{ TypeMatcherHelper.notAnTypeMatcher(~anType) }
+    '{ TypeMatcherHelper.notAnTypeMatcher($anType) }
   }
 
   // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'a type' matcher.
@@ -128,7 +128,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * owner.and(rhs)
      */
-    '{ (~self).owner.and(~rhs) }
+    '{ ($self).owner.and($rhs) }
   }
 
   // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'an type' matcher.
@@ -144,7 +144,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * owner.and(rhs)
      */
-    '{ (~self).owner.and(~rhs) }
+    '{ ($self).owner.and($rhs) }
   }
 
   // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'a type' matcher.
@@ -160,7 +160,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * owner.or(rhs)
      */
-    '{ (~self).owner.or(~rhs) }
+    '{ ($self).owner.or($rhs) }
   }
 
   // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'an type' matcher.
@@ -176,7 +176,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * owner.or(rhs)
      */
-    '{ (~self).owner.or(~rhs) }
+    '{ ($self).owner.or($rhs) }
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
@@ -184,7 +184,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(aType.unseal, "a")
     '{
-      TypeMatcherHelper.assertAType((~self).leftSideValue, ~aType, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
     }
   }
 
@@ -193,7 +193,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(aType.unseal, "a")
     '{
-      TypeMatcherHelper.assertAType((~self).leftSideValue, ~aType, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
     }
   }
 
@@ -202,7 +202,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(anType.unseal, "an")
     '{
-      TypeMatcherHelper.assertAnType((~self).leftSideValue, ~anType, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
     }
   }
 
@@ -211,7 +211,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(anType.unseal, "an")
     '{
-      TypeMatcherHelper.assertAnType((~self).leftSideValue, ~anType, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
     }
   }
 
@@ -263,7 +263,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(aType.unseal, "a")
     '{
-      TypeMatcherHelper.assertATypeShouldBeTrue((~self).left, ~aType, (~self).shouldBeTrue, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertATypeShouldBeTrue(($self).left, $aType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)
     }
   }
 
@@ -272,7 +272,7 @@ private[scalatest] object TypeMatcherMacro {
     import refl._
     checkTypeParameter(refl)(anType.unseal, "an")
     '{
-      TypeMatcherHelper.assertAnTypeShouldBeTrue((~self).left, ~anType, (~self).shouldBeTrue, (~self).prettifier, (~self).pos)
+      TypeMatcherHelper.assertAnTypeShouldBeTrue(($self).left, $anType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)
     }
   }
 

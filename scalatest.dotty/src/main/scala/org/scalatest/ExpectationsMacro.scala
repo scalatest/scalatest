@@ -29,6 +29,6 @@ private[scalatest] object ExpectationsMacro {
     import quoted.Toolbox.Default._
 
     val bool = BooleanMacro.parse(condition, prettifier)
-    '{ Expectations.expectationsHelper.macroExpect(~bool, "", ~prettifier, ~pos) }
+    '{ Expectations.expectationsHelper.macroExpect($bool, "", $prettifier, $pos) }
   }
 }

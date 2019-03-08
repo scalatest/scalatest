@@ -45,15 +45,15 @@ private[scalatest] object DiagrammedAssertionsMacro {
 
   def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
     macroImpl(
-      '(DiagrammedAssertions.diagrammedAssertionsHelper.macroAssert),
-      '(Assertions.assertionsHelper.macroAssert),
+      '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssert },
+      '{ Assertions.assertionsHelper.macroAssert },
       condition, clue, prettifier, pos)
   }
 
   def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
     macroImpl(
-      '(DiagrammedAssertions.diagrammedAssertionsHelper.macroAssume),
-      '(Assertions.assertionsHelper.macroAssume),
+      '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssume },
+      '{ Assertions.assertionsHelper.macroAssume },
       condition, clue, prettifier, pos)
   }
 }

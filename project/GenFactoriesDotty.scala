@@ -1125,7 +1125,7 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      ~MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('(this), '(aType))
+      \${ MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1136,7 +1136,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      ~MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('(this), '(anType))
+      \${ MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1518,7 +1518,8 @@ $endif$
      *                         ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) = ~MatcherFactory$arity$.andNotMatchPattern('(this), '(right))
+    inline def matchPattern(right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.andNotMatchPattern('{this}, '{right}) }
   }
                     """
 
@@ -2419,7 +2420,7 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      ~MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('(this), '(aType))
+      \${ MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2430,7 +2431,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      ~MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('(this), '(anType))
+      \${ MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2812,7 +2813,8 @@ $endif$
      *                        ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) = ~MatcherFactory$arity$.orNotMatchPattern('(this), '(right))
+    inline def matchPattern(right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.orNotMatchPattern('{this}, '{right}) }
   }
 
   /**
@@ -2871,44 +2873,44 @@ object MatcherFactory$arity$ {
   /**
    * This method is called by macro that supports 'and not a [Type]' syntax.
    */
-  def andNotATypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+  def andNotATypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     val rhs = TypeMatcherMacro.notATypeMatcher(aType)
 
-    '{ (~self).owner.and(~rhs) }
+    '{ (\$self).owner.and(\$rhs) }
   }
 
   /**
    * This method is called by macro that supports 'or not a [Type]' syntax.
    */
-  def orNotATypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+  def orNotATypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     val rhs = TypeMatcherMacro.notATypeMatcher(aType)
-    '{ (~self).owner.or(~rhs) }
+    '{ (\$self).owner.or(\$rhs) }
   }
 
   /**
    * This method is called by macro that supports 'and not a [Type]' syntax.
    */
-  def andNotAnTypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+  def andNotAnTypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     val rhs = TypeMatcherMacro.notAnTypeMatcher(anType)
-    '{ (~self).owner.and(~rhs) }
+    '{ (\$self).owner.and(\$rhs) }
   }
 
   /**
    * This method is called by macro that supports 'or not a [Type]' syntax.
    */
-  def orNotAnTypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+  def orNotAnTypeMatcherFactory$arity$[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     val rhs = TypeMatcherMacro.notAnTypeMatcher(anType)
-    '{ (~self).owner.or(~rhs) }
+    '{ (\$self).owner.or(\$rhs) }
   }
 
-  def andNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
-    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(~right) }
-    '{ (~self).owner.and(~notMatcher) }
+  def andNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
+    '{ (\$self).owner.and(\$notMatcher) }
   }
 
-  def orNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
-    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(~right) }
-    '{ (~self).owner.or(~notMatcher) }
+  def orNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
+    '{ (\$self).owner.or(\$notMatcher) }
   }
 }
                     """
@@ -2976,6 +2978,8 @@ object MatcherFactory$arity$ {
       st.setAttribute("arity", arity);
       val typeConstructors = (1 to arity).map("TC" + _ + "[_]").mkString(", ")
       st.setAttribute("typeConstructors", typeConstructors);
+      val typeConstructorsWithType = (1 to arity).map(i => s"tp$i: Type[TC$i]").mkString(", ")
+      st.setAttribute("typeConstructorsWithType", typeConstructorsWithType);
       val colonSeparatedTCNs = (1 to arity).map("TC" + _).mkString(" : ")
       st.setAttribute("colonSeparatedTCNs", colonSeparatedTCNs);
       val commaSeparatedTCNs = (1 to arity).map("TC" + _).mkString(", ")

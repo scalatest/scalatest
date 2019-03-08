@@ -33,7 +33,7 @@ object GenAnyVals {
              |  val notLiteralMsg = Resources.notLiteral$typeName
              |  import refl._
              |  ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
-             |  '{ $typeName.ensuringValid(~value) }
+             |  '{ $typeName.ensuringValid($$value) }
              |}
              |
            """.stripMargin
@@ -141,7 +141,7 @@ object GenAnyVals {
 
       val macroApplyMethod =
         if (dotty)
-          s"inline implicit def apply(value: => Int): $typeName = ~${typeName}Macro('(value))"
+          s"inline implicit def apply(value: => Int): $typeName = $${ ${typeName}Macro('{value}) }"
         else
           s"implicit def apply(value: Int): $typeName = macro ${typeName}Macro.apply"
       st.setAttribute("macroApplyMethod", macroApplyMethod)
@@ -196,7 +196,7 @@ object GenAnyVals {
 
       val macroApplyMethod =
         if (dotty)
-          s"inline implicit def apply(value: => Long): $typeName = ~${typeName}Macro('(value))"
+          s"inline implicit def apply(value: => Long): $typeName = $${ ${typeName}Macro('{value}) }"
         else
           s"implicit def apply(value: Long): $typeName = macro ${typeName}Macro.apply"
       st.setAttribute("macroApplyMethod", macroApplyMethod)
@@ -254,7 +254,7 @@ object GenAnyVals {
 
       val macroApplyMethod =
         if (dotty)
-          s"inline implicit def apply(value: => Float): $typeName = ~${typeName}Macro('(value))"
+          s"inline implicit def apply(value: => Float): $typeName = $${ ${typeName}Macro('{value}) }"
         else
           s"implicit def apply(value: Float): $typeName = macro ${typeName}Macro.apply"
       st.setAttribute("macroApplyMethod", macroApplyMethod)
@@ -311,11 +311,11 @@ object GenAnyVals {
 
       val macroApplyMethod =
         if (dotty)
-          s"inline implicit def apply(value: => Double): $typeName = ~${typeName}Macro('(value))"
+          s"inline implicit def apply(value: => Double): $typeName = $${ ${typeName}Macro('{value}) }"
         else
           s"implicit def apply(value: Double): $typeName = macro ${typeName}Macro.apply"
       st.setAttribute("macroApplyMethod", macroApplyMethod)
-      
+
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
       bw.write(st.toString)
@@ -366,7 +366,7 @@ object GenAnyVals {
 
       val macroApplyMethod =
         if (dotty)
-          s"inline implicit def apply(value: => Char): $typeName = ~${typeName}Macro('(value))"
+          s"inline implicit def apply(value: => Char): $typeName = $${ ${typeName}Macro('{value}) }"
         else
           s"implicit def apply(value: Char): $typeName = macro ${typeName}Macro.apply"
       st.setAttribute("macroApplyMethod", macroApplyMethod)

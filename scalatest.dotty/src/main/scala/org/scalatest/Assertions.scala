@@ -466,7 +466,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the condition is <code>false</code>.
    */
   inline def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-    ~AssertionsMacro.assert('(condition), '(prettifier), '(pos), '(""))
+    ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
     new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Left(pos), None, analysis)
@@ -525,7 +525,7 @@ trait Assertions extends TripleEquals  {
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   inline def assert(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-    ~AssertionsMacro.assert('(condition), '(prettifier), '(pos), '(clue))
+    ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
    * Assume that a boolean condition is true.
@@ -573,7 +573,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
   inline def assume(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-    ~AssertionsMacro.assume('(condition), '(prettifier), '(pos), '(""))
+    ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
    * Assume that a boolean condition, described in <code>String</code>
@@ -626,7 +626,7 @@ trait Assertions extends TripleEquals  {
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   inline def assume(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-    ~AssertionsMacro.assume('(condition), '(prettifier), '(pos), '(clue))
+    ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
    * Asserts that a given string snippet of code does not pass the Scala type checker, failing if the given

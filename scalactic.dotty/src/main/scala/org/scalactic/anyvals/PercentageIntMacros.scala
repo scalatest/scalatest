@@ -34,6 +34,6 @@ private[scalactic] object PercentageIntMacro {
       "PercentageInt.apply can only be invoked on Int literals, like PercentageInt(8)."+
       " Please use PercentageInt.from instead."
     ensureValidIntLiteral(value, notValidMsg, notLiteralMsg)(isValid)
-    '{ PercentageInt.ensuringValid(~value) }
+    '{ PercentageInt.ensuringValid($value) }
   }
 }

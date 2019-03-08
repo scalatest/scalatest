@@ -30,6 +30,6 @@ object TypeInfoMacro {
     import refl._
 
     val name = typeOf(tp).show.toExpr
-    '{ TypeInfo[~tp](~name) }
+    '{ TypeInfo[$tp]($name) }
   }
 }

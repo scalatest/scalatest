@@ -56,7 +56,7 @@ private[scalatest] object MatchPatternMacro {
   def matchPatternMatcher(right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
     // checkCaseDefinitions(context)(tree)
 
-    '{ MatchPatternHelper.matchPatternMatcher(~right) }
+    '{ MatchPatternHelper.matchPatternMatcher($right) }
   }
 
   /**
@@ -67,22 +67,22 @@ private[scalatest] object MatchPatternMacro {
   def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]]): Expr[Unit] = {
     // checkCaseDefinitions(context)(tree)
 
-    '{ MatchPatternHelper.checkMatchPattern(~left, ~right) }
+    '{ MatchPatternHelper.checkMatchPattern($left, $right) }
   }
 
   def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
     import quoted.Toolbox.Default._
 
-    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(~right) }
-    '{ (~self).owner.and(~notMatcher) }
+    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
+    '{ ($self).owner.and($notMatcher) }
   }
 
   def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
     import quoted.Toolbox.Default._
 
-    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(~right) }
-    '{ (~self).owner.or(~notMatcher) }
+    val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
+    '{ ($self).owner.or($notMatcher) }
   }
 }

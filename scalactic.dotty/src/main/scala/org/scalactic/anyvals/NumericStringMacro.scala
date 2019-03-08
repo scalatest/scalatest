@@ -36,6 +36,6 @@ private[anyvals] object NumericStringMacro {
       " Please use NumericString.from instead."
     ensureValidStringLiteral(value, notValidMsg, notLiteralMsg)(isValid)
 
-    '{ NumericString.ensuringValid(~value) }
+    '{ NumericString.ensuringValid($value) }
   }
 }

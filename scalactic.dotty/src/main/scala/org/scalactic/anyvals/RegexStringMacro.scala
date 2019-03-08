@@ -64,6 +64,6 @@ private[scalactic] object RegexStringMacro {
       "instead."
     ensureValidStringLiteral(value, notValidMsg, notLiteralMsg)(isValid)
 
-    '{ RegexString.ensuringValid(~value) }
+    '{ RegexString.ensuringValid($value) }
   }
 }

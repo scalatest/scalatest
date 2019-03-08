@@ -145,7 +145,7 @@ trait Requirements {
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    */
   inline def require(condition: Boolean)(implicit prettifier: Prettifier): Unit =
-    ~RequirementsMacro.require('(condition), '(prettifier), '(""))
+    ${ RequirementsMacro.require('{condition}, '{prettifier}, '{""}) }
 
   /**
    * Require that a boolean condition about an argument passed to a method, function, or constructor,
@@ -162,10 +162,8 @@ trait Requirements {
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  inline def require(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit = ()
-    // blocked by tasty constructors
-    // https://github.com/lampepfl/dotty/issues/5567
-    // ~RequirementsMacro.require('(condition), '(prettifier), '(clue))
+  inline def require(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
+    ${ RequirementsMacro.require('{condition}, '{prettifier}, '{clue}) }
 
   /**
    * Require that a boolean condition is true about the state of an object on which a method has been invoked.
@@ -183,7 +181,7 @@ trait Requirements {
    * @throws IllegalStateException if the condition is <code>false</code>.
    */
   inline def requireState(condition: Boolean)(implicit prettifier: Prettifier): Unit =
-    ~RequirementsMacro.requireState('(condition), '(prettifier), '(""))
+    ${ RequirementsMacro.requireState('{condition}, '{prettifier}, '{""}) }
 
   /**
    * Require that a boolean condition about the state of an object on which a method has been
@@ -203,7 +201,7 @@ trait Requirements {
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   inline def requireState(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
-    ~RequirementsMacro.requireState('(condition), '(prettifier), '(clue))
+    ${ RequirementsMacro.requireState('{condition}, '{prettifier}, '{clue}) }
 
   /**
    * Require that all passed arguments are non-null.
@@ -218,7 +216,7 @@ trait Requirements {
    * @throws NullArgumentException if any of the arguments are <code>null</code>.
    */
   inline def requireNonNull(arguments: Any*)(implicit prettifier: Prettifier, pos: source.Position): Unit =
-    ~RequirementsMacro.requireNonNull('(arguments), '(prettifier), '(pos))
+    ${ RequirementsMacro.requireNonNull('{arguments}, '{prettifier}, '{pos}) }
 }
 
 // /**
@@ -238,7 +236,7 @@ object RequirementsMacro {
     import quoted.Toolbox.Default._
 
     val bool = BooleanMacro.parse(condition, prettifier)
-    '{ Requirements.requirementsHelper.macroRequire(~bool, ~clue) }
+    '{ Requirements.requirementsHelper.macroRequire($bool, $clue) }
   }
 
   /**
@@ -253,7 +251,7 @@ object RequirementsMacro {
     import quoted.Toolbox.Default._
 
     val bool = BooleanMacro.parse(condition, prettifier)
-    '{ Requirements.requirementsHelper.macroRequireState(~bool, ~clue) }
+    '{ Requirements.requirementsHelper.macroRequireState($bool, $clue) }
   }
 
   /**
@@ -269,8 +267,8 @@ object RequirementsMacro {
     import quoted.Toolbox.Default._
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
-      case x :: xs  => '{ (~x) +: ~(liftSeq(xs))  }
-      case Nil => '(Seq(): Seq[String])
+      case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
+      case Nil => '{ Seq(): Seq[String] }
     }
 
     val argStr: List[Expr[String]] = arguments.unseal.underlyingArgument match {
@@ -300,12 +298,12 @@ object RequirementsMacro {
     // it will generate the following code:
     //
     // Array(a, b, c)
-    // val argumentsArray = '{ ~arguments.toArray }
+    // val argumentsArray = '{ $arguments.toArray }
 
     // Generate AST to call requirementsHelper.macroRequireNonNull and pass in both variable names and values array:
     //
     // requirementsHelper.macroRequireNonNull(variableNamesArray, valuesArray)
-    '{ Requirements.requirementsHelper.macroRequireNonNull((~argumentsS).toArray, (~arguments).toArray, ~prettifier, ~pos) }
+    '{ Requirements.requirementsHelper.macroRequireNonNull(($argumentsS).toArray, ($arguments).toArray, $prettifier, $pos) }
   }
 }
 

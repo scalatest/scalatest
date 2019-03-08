@@ -30,6 +30,6 @@ private[scalactic] object PercentageInt {
       throw new AssertionError(s"$value was not a valid PercentageInt")
     }
 
-  inline def apply(value: => Int): PercentageInt = ~PercentageIntMacro('(value))
+  inline def apply(value: => Int): PercentageInt = ${ PercentageIntMacro('{value}) }
 }
 

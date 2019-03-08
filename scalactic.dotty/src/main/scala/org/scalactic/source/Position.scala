@@ -57,7 +57,7 @@ object Position {
    *
    * @return the enclosing source position
    */
-  implicit inline def here: Position = ~genPosition
+  implicit inline def here: Position = ${ genPosition }
 
   private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
     val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
@@ -74,7 +74,7 @@ object Position {
     val fileName: String = file.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar()
     val lineNo: Int = refl.rootPosition.startLine
-    '(Position(~fileName.toExpr, ~filePath.toExpr, ~lineNo.toExpr))
+    '{ Position(${fileName.toExpr}, ${filePath.toExpr}, ${lineNo.toExpr}) }
   }
 
 }

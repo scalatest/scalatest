@@ -1455,7 +1455,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
-      ~TypeMatcherMacro.andNotATypeMatcher('(this), '(aType))
+      ${ TypeMatcherMacro.andNotATypeMatcher('{this}, '{aType}) }
 
     /**
      * This method enables the following syntax:
@@ -1466,7 +1466,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
-      ~TypeMatcherMacro.andNotAnTypeMatcher('(this), '(anType))
+      ${ TypeMatcherMacro.andNotAnTypeMatcher('{this}, '{anType}) }
 
     /**
      * This method enables the following syntax:
@@ -1850,7 +1850,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def matchPattern(right: PartialFunction[Any, _]) =
-      ~MatchPatternMacro.andNotMatchPatternMatcher('(this), '(right))
+      ${ MatchPatternMacro.andNotMatchPatternMatcher('{this}, '{right}) }
   }
 
   /**
@@ -2738,7 +2738,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
-      ~TypeMatcherMacro.orNotATypeMatcher('(this), '(aType))
+      ${ TypeMatcherMacro.orNotATypeMatcher('{this}, '{aType}) }
 
     /**
      * This method enables the following syntax:
@@ -2749,7 +2749,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
-      ~TypeMatcherMacro.orNotAnTypeMatcher('(this), '(anType))
+      ${ TypeMatcherMacro.orNotAnTypeMatcher('{this}, '{anType}) }
 
     /**
      * This method enables the following syntax:
@@ -3132,7 +3132,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def matchPattern(right: PartialFunction[Any, _]) =
-      ~MatchPatternMacro.orNotMatchPatternMatcher('(this), '(right))
+      ${ MatchPatternMacro.orNotMatchPatternMatcher('{this}, '{right}) }
   }
 
   /**

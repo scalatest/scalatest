@@ -204,7 +204,7 @@ trait CompileTimeAssertions {
   def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
@@ -239,7 +239,7 @@ trait CompileTimeAssertions {
   def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
@@ -274,7 +274,7 @@ trait CompileTimeAssertions {
   def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
@@ -309,7 +309,7 @@ trait CompileTimeAssertions {
   def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
@@ -344,7 +344,7 @@ trait CompileTimeAssertions {
   def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
@@ -379,7 +379,7 @@ trait CompileTimeAssertions {
   def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(implicit refl: Reflection): Unit = {
     import refl._
 
-    value.unseal match {
+    value.unseal.underlyingArgument match {
       case Term.Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))

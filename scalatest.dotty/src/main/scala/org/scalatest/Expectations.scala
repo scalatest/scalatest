@@ -109,7 +109,7 @@ private[scalatest] trait Expectations {
   import language.experimental.macros
 
   inline def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ~ExpectationsMacro.expect('(expression))('(prettifier), '(pos))
+    ${ ExpectationsMacro.expect('{expression})('{prettifier}, '{pos}) }
 
   def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = ??? //CompileMacro.expectDoesNotCompileImpl
 

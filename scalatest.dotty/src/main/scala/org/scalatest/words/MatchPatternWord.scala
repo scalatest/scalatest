@@ -36,7 +36,7 @@ final class MatchPatternWord {
    * </pre>
    */
   inline def apply(right: PartialFunction[Any, _]) =
-    ~org.scalatest.matchers.MatchPatternMacro.matchPatternMatcher('(right))
+    ${ org.scalatest.matchers.MatchPatternMacro.matchPatternMatcher('{right}) }
 
   /**
    * Overrides toString to return "matchPattern"
