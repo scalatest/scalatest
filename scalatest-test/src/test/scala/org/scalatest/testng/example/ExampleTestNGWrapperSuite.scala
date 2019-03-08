@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.testng.example
 
-/**
- * ScalaTest's main traits, classes, and other members, including members supporting ScalaTest's DSL for the Scala interpreter.
- */
-package object prop {
+import org.scalatest.testng._
+import org.scalatest.testng.TestNGWrapperSuite
 
-  
-
-  
-
-}
+class ExampleTestNGWrapperSuite extends TestNGWrapperSuite( 
+    List("./tests/org/scalatest/testng/example/testngsuite.xml" )) {}

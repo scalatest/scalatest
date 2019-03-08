@@ -25,7 +25,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.8"
 
-  val releaseVersion = "3.0.6"
+  val releaseVersion = "3.0.7-RC1"
 
   val previousReleaseVersion = "3.0.5"
 
@@ -372,6 +372,7 @@ object ScalatestBuild extends Build {
           ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenChain.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAccumulation.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
@@ -419,6 +420,7 @@ object ScalatestBuild extends Build {
           ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenChain.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAccumulation.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
@@ -496,6 +498,53 @@ object ScalatestBuild extends Build {
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || (scalaVersion.value startsWith "2.13")) Seq.empty else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestBinaryCompatibilityFilters =
+    Seq(
+      exclude[FinalClassProblem]("org.scalatest.InsertionOrderSet"),   // InsertionOrderSet is a private[scalatest]
+      exclude[DirectMissingMethodProblem]("org.scalatest.InsertionOrderSet.*"),
+      exclude[IncompatibleResultTypeProblem]("org.scalatest.InsertionOrderSet.apply"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.*.yeOldeTestNames"),   // yeOldeTestNames is private[scalatest], which we remove.
+      exclude[DirectMissingMethodProblem]("org.scalatest.tools.Framework#ScalaTestRunner.this"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.parseSimpleName"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.testSortingReporterTimeout_="),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.testSortingReporterTimeout"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.stripDollars"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.wrapReporterIfNecessary"),
+      exclude[DirectMissingMethodProblem]("org.scalatest.Suite.getSimpleNameOfAnObjectsClass"),
+      exclude[MissingClassProblem]("org.scalatest.ScreenshotCapturer"),  // We move this private[scalatest] class into org.scalatest.selenium
+      exclude[MissingClassProblem]("org.scalatest.ScreenshotOnFailure"),  // We move this private[scalatest] class into org.scalatest.selenium
+      exclude[DirectMissingMethodProblem]("org.scalatest.Resources.*"),  // Resources is a private[scalatest]
+      exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.*"),   // Resources is a private[scalatest]
+      exclude[InheritedNewAbstractMethodProblem]("org.scalatest.prop.GeneratorDrivenPropertyChecks.org$scalatest$prop$ScalaCheckConfiguration$$InternalPropertyCheckConfiguration"),  // private inner class, which we moved to ScalaCheckConfiguration
+      exclude[InheritedNewAbstractMethodProblem]("org.scalatest.prop.PropertyChecks.org$scalatest$prop$ScalaCheckConfiguration$$InternalPropertyCheckConfiguration"),  // private inner class, which we moved to ScalaCheckConfiguration
+      exclude[InheritedNewAbstractMethodProblem]("org.scalatest.prop.Checkers.org$scalatest$prop$ScalaCheckConfiguration$$InternalPropertyCheckConfiguration"),  // private inner class, which we moved to ScalaCheckConfiguration
+      exclude[DirectMissingMethodProblem]("org.scalatest.prop.Configuration.getParams"),  // private[scalatest] method, which we moved to ScalaCheckConfiguration
+      exclude[DirectMissingMethodProblem]("org.scalatest.prop.Configuration.getParams"),  // private[scalatest] method, which we moved to ScalaCheckConfiguration
+      exclude[DirectMissingMethodProblem]("org.scalatest.prop.GeneratorChecks.getParams"),  // private[scalatest] method, which we moved to ScalaCheckConfiguration
+      exclude[DirectMissingMethodProblem]("org.scalatest.tools.Runner.doRunRunRunDaDoRunRun"),  // private[scalatest] method.
+      exclude[DirectMissingMethodProblem]("org.scalatest.tools.RunnerJFrame.this"),  // private[scalatest] class
+      exclude[IncompatibleResultTypeProblem]("org.scalatest.tools.ScalaTestFramework#RunConfig.getConfigurations"),  // private[scalatest] inner object
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Matchers.atLeast"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Matchers.every"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Matchers.all"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Matchers.atMost"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Matchers.exactly"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.MustMatchers.atLeast"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.MustMatchers.every"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.MustMatchers.all"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.MustMatchers.atMost"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.MustMatchers.exactly"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forNo"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forBetween"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forAll"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forEvery"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forExactly"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forAtMost"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.Inspectors.forAtLeast"),  // Added new overload function to support -Ypartial-unification correctly
+      exclude[ReversedMissingMethodProblem]("org.scalatest.LoneElement.convertMapToCollectionLoneElementWrapper")  // Added new implicit function to support -Ypartial-unification correctly
+    )
+
+
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
    .settings(scalatestDocSettings: _*)
@@ -534,12 +583,7 @@ object ScalatestBuild extends Build {
      docTaskSetting,
      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-     mimaBinaryIssueFilters ++= {
-       Seq(
-         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
-         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser")
-       )
-     }
+     mimaBinaryIssueFilters ++= scalatestBinaryCompatibilityFilters
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -623,6 +667,7 @@ object ScalatestBuild extends Build {
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       //jsDependencies += RuntimeDOM % "test",
@@ -659,7 +704,22 @@ object ScalatestBuild extends Build {
       },
       scalatestJSDocTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
+      mimaBinaryIssueFilters ++=
+        scalatestBinaryCompatibilityFilters ++
+        Seq(
+          exclude[DirectMissingMethodProblem]("org.scalatest.Suite.xmlContent"),  // from private[scalatest] Suite
+          exclude[DirectMissingMethodProblem]("org.scalatest.Suite.unparsedXml"),  // from private[scalatest] Suite
+          exclude[MissingClassProblem]("org.scalatest.Doc"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.Doc$*"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.DocSpec"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.DocSpec$*"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.DocSpecLike"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.DocSpecLike$*"),  // private[scalatest]
+          exclude[DirectMissingMethodProblem]("org.scalatest.events.Event.EventXmlHelper"),  // private[scalatest]
+          exclude[MissingClassProblem]("org.scalatest.events.Event$EventXmlHelper$*"),  // private[scalatest]
+          exclude[DirectMissingMethodProblem]("org.scalatest.events.*.toXml")  // private[scalatest]
+        )
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",

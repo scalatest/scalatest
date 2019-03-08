@@ -15,13 +15,14 @@
  */
 package org.scalatest
 
+
 /**
- * ScalaTest's main traits, classes, and other members, including members supporting ScalaTest's DSL for the Scala interpreter.
+ * Trait containing one abstract method that can capture a screenshot and save it as a file to a given directory.
  */
-package object prop {
+private[scalatest] trait ScreenshotCapturer {
 
-  
-
-  
-
+  /**
+   * Captures a screenshot and saves it as a file in the specified directory.
+   */
+  def captureScreenshot(directory: String)
 }
