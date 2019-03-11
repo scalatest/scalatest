@@ -22,7 +22,7 @@ import SharedHelpers._
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import org.junit.Test
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.tools.TestSortingReporter
 import org.testng.annotations.{Test => TestNG }

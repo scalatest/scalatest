@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalatest.junit.{JUnitSuite, JUnit3Suite}
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
 import org.scalatest.refspec.RefSpec

@@ -20,7 +20,7 @@ import org.scalatest.events.Ordinal
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 

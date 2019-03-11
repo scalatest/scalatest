@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import scala.collection.mutable.ListBuffer

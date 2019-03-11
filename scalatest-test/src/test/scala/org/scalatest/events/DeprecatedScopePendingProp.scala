@@ -144,7 +144,7 @@ class ExampleScopePendingJUnitSuite extends junit.JUnitSuite with ScopePendingFi
 }
 
 @DoNotDiscover
-class ExampleScopePendingTestNGSuite extends testng.TestNGSuite with ScopePendingFixtureServices {
+class ExampleScopePendingTestNGSuite extends org.scalatestplus.testng.TestNGSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 // SKIP-SCALATESTJS,NATIVE-END
