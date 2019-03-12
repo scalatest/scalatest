@@ -16,8 +16,8 @@
 package org.scalatest.deprecated
 
 import org.scalatest._
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }

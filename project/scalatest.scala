@@ -42,7 +42,6 @@ object ScalatestBuild {
 
   val previousReleaseVersion = "3.0.5"
 
-  val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
@@ -201,7 +200,6 @@ object ScalatestBuild {
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
-      "junit" % "junit" % junitVersion % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
@@ -227,7 +225,8 @@ object ScalatestBuild {
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP1" % "test"
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP1" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP2" % "test"
     )
 
   val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
@@ -247,7 +246,6 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.junit",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
@@ -274,7 +272,6 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.junit",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
@@ -297,7 +294,6 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.junit",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
@@ -799,7 +795,6 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.path",
         "org.scalatest.prop",
@@ -810,8 +805,7 @@ object ScalatestBuild {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
-        "org.scalatestplus.scalacheck",
-        "org.scalatestplus.junit"
+        "org.scalatestplus.scalacheck"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -1000,7 +994,6 @@ object ScalatestBuild {
       "org.scalatest.funsuite",
       "org.scalatest.featurespec",
       "org.scalatest.funspec",
-      "org.scalatest.junit",
       "org.scalatest.matchers",
       "org.scalatest.path",
       "org.scalatest.prop",
@@ -1253,7 +1246,6 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.path",
         "org.scalatest.prop",
@@ -1267,8 +1259,7 @@ object ScalatestBuild {
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
-        "org.scalactic.source",
-        "org.scalatestplus.junit"
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -1426,7 +1417,6 @@ object ScalatestBuild {
 
   def gentestsLibraryDependencies =
     Seq(
-      "junit" % "junit" % junitVersion % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 

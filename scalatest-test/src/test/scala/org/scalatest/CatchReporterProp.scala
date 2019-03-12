@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalatest.events._
-import org.scalatest.junit._
+import org.scalatestplus.junit._
 import org.scalatest.time._
 import SharedHelpers._
 import java.io.ByteArrayOutputStream

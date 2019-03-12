@@ -15,7 +15,7 @@
  */
 package org.scalatest.events
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnit3Suite
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalatest.junit.{JUnitSuite, JUnit3Suite}
+import org.scalatestplus.junit.{JUnitSuite, JUnit3Suite}
 import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
