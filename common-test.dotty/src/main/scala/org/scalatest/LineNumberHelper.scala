@@ -4,7 +4,7 @@ import scala.quoted._
 import scala.tasty._
 
 private[scalatest] trait LineNumberHelper {
-  inline def thisLineNumber = $LineNumberMacro.thisLineNumberImpl
+  inline def thisLineNumber = ${ LineNumberMacro.thisLineNumberImpl }
 }
 
 object LineNumberMacro {
