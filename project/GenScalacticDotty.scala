@@ -152,11 +152,6 @@ object GenScalacticDotty {
         "AccumulationSpec.scala",  // ClassFormatError: Illegal field modifiers in class org/scalatest/prop/Tables: 0x9
         "CanEqualSpec.scala",  // NotImplementedError
         "ChainSpec.scala",  // Hang the compiler
-        "ConversionCheckedMapEqualityConstraintsSpec.scala",  // macro expansion error
-        "ConversionCheckedSeqEqualityConstraintsSpec.scala",  // macro expansion error
-        "ConversionCheckedTraversableEqualityConstraintsSpec.scala",  // macro expansion error
-        "ConversionCheckedTripleEqualsExplicitlySpec.scala",  // macro expansion error
-        "ConversionCheckedTripleEqualsSpec.scala",  // macro expansion error
         "DecidersSpec.scala",  // Compilation error to be investigated further
         "DifferSpec.scala",  // macro expansion error: invalid prefix NoType
         "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
