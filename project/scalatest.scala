@@ -1417,7 +1417,9 @@ object ScalatestBuild {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP1" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP2" % "test"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
