@@ -86,7 +86,7 @@ $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test:compile
 $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test
 ```
 
-### Building Exmaples
+### Building Examples
 
 You can build examples project using this command: 
 
