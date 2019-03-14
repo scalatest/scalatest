@@ -413,7 +413,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       test("i am pending")(pending)
     }
 
-    import org.scalatest.testng.TestNGSuite
+    import org.scalatestplus.testng.TestNGSuite
     private class SuiteWithSkippedTest extends TestNGSuite {
       import org.testng.annotations.Test
       @Test(groups = Array("run")) def dependeeThatFails(): Unit = { throw new Exception("fail") }

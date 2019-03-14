@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalatest.junit._
+import org.scalatestplus.junit._
 import org.junit.Test
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 
 class DeprecatedClassTaggingProp extends AllSuiteProp {
 

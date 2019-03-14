@@ -134,17 +134,17 @@ class ExampleScopePendingFixtureSpec extends fixture.Spec with ScopePendingFixtu
 }
 
 @DoNotDiscover
-class ExampleScopePendingJUnit3Suite extends junit.JUnit3Suite with ScopePendingFixtureServices {
+class ExampleScopePendingJUnit3Suite extends org.scalatestplus.junit.JUnit3Suite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingJUnitSuite extends junit.JUnitSuite with ScopePendingFixtureServices {
+class ExampleScopePendingJUnitSuite extends org.scalatestplus.junit.JUnitSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingTestNGSuite extends testng.TestNGSuite with ScopePendingFixtureServices {
+class ExampleScopePendingTestNGSuite extends org.scalatestplus.testng.TestNGSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 // SKIP-SCALATESTJS,NATIVE-END

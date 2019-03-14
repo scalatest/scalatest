@@ -17,10 +17,10 @@ package org.scalatest.deprecated
 import org.scalatest._
 // SKIP-SCALATESTJS,NATIVE-START
 import org.junit.Test
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._

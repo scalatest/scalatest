@@ -17,10 +17,10 @@ package org.scalatest
 
 import org.scalatest.events.Ordinal
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 

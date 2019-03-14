@@ -38,15 +38,10 @@ object ScalatestBuild {
   // > ++ 2.10.5
   lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-M5")
 
-  val releaseVersion = "3.1.0-SNAP7"
+  val releaseVersion = "3.1.0-SNAP8"
 
   val previousReleaseVersion = "3.0.5"
 
-  val easyMockVersion = "3.2"
-  val jmockVersion = "2.8.3"
-  val mockitoVersion = "1.10.19"
-  val testngVersion = "6.7"
-  val junitVersion = "4.12"
   val pegdownVersion = "1.4.2"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
@@ -204,13 +199,7 @@ object ScalatestBuild {
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
-      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
-      "org.testng" % "testng" % testngVersion % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
-      "junit" % "junit" % junitVersion % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
@@ -236,9 +225,8 @@ object ScalatestBuild {
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP2" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP3" % "test"
     )
 
   val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
@@ -258,17 +246,12 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.testng",
-      "-m", "org.scalatest.junit",
-      "-m", "org.scalatest.jmock",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -289,16 +272,12 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.testng",
-      "-m", "org.scalatest.junit",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -315,16 +294,12 @@ object ScalatestBuild {
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.testng",
-      "-m", "org.scalatest.junit",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
       "-m", "org.scalatest.matchers",
       "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.mock",
       "-m", "org.scalatest.path",
-      "-m", "org.scalatest.selenium",
       "-m", "org.scalatest.exceptions",
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
@@ -813,7 +788,6 @@ object ScalatestBuild {
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
-        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -821,29 +795,17 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.jmock",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
-        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
-        "org.scalatestplus.scalacheck",
-        "org.scalatestplus.easymock",
-        "org.scalatestplus.jmock",
-        "org.scalatestplus.mockito",
-        "org.scalatestplus.selenium",
-        "org.scalatestplus.junit",
-        "org.scalatestplus.testng"
+        "org.scalatestplus.scalacheck"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -1025,7 +987,6 @@ object ScalatestBuild {
       "org.scalatest.compatible",
       "org.scalatest.concurrent",
       "org.scalatest.check",
-      "org.scalatest.easymock",
       "org.scalatest.enablers",
       "org.scalatest.events",
       "org.scalatest.exceptions",
@@ -1033,18 +994,12 @@ object ScalatestBuild {
       "org.scalatest.funsuite",
       "org.scalatest.featurespec",
       "org.scalatest.funspec",
-      "org.scalatest.jmock",
-      "org.scalatest.junit",
       "org.scalatest.matchers",
-      "org.scalatest.mock",
-      "org.scalatest.mockito",
       "org.scalatest.path",
       "org.scalatest.prop",
       "org.scalatest.refspec",
-      "org.scalatest.selenium",
       "org.scalatest.tags",
       "org.scalatest.tagobjects",
-      "org.scalatest.testng",
       "org.scalatest.time",
       "org.scalatest.tools",
       "org.scalatest.verb",
@@ -1284,7 +1239,6 @@ object ScalatestBuild {
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
-        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -1292,18 +1246,12 @@ object ScalatestBuild {
         "org.scalatest.funsuite",
         "org.scalatest.featurespec",
         "org.scalatest.funspec",
-        "org.scalatest.jmock",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
-        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
@@ -1311,13 +1259,7 @@ object ScalatestBuild {
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
-        "org.scalactic.source",
-        "org.scalatestplus.easymock",
-        "org.scalatestplus.jmock",
-        "org.scalatestplus.mockito",
-        "org.scalatestplus.selenium",
-        "org.scalatestplus.junit",
-        "org.scalatestplus.testng"
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -1475,12 +1417,9 @@ object ScalatestBuild {
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.mockito" % "mockito-core" % mockitoVersion % "optional",
-      "junit" % "junit" % junitVersion % "optional",
-      "org.testng" % "testng" % testngVersion % "optional",
-      "org.jmock" % "jmock-legacy" % jmockVersion % "optional",
-      "org.pegdown" % "pegdown" % pegdownVersion % "optional"
-
+      "org.pegdown" % "pegdown" % pegdownVersion % "optional",
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP2" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP3" % "test"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(

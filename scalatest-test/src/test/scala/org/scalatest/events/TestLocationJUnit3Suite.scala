@@ -15,7 +15,7 @@
  */
 package org.scalatest.events
 
-import org.scalatest.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnit3Suite
 import org.scalatest.DoNotDiscover
 
 @DoNotDiscover
