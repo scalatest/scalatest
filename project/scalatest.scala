@@ -225,8 +225,8 @@ object ScalatestBuild {
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP2" % "test",
-      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP3" % "test"
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP3" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP4" % "test"
     )
 
   val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
@@ -1418,8 +1418,8 @@ object ScalatestBuild {
   def gentestsLibraryDependencies =
     Seq(
       "org.pegdown" % "pegdown" % pegdownVersion % "optional",
-      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP2" % "test",
-      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP3" % "test"
+      "org.scalatestplus" %% "scalatestplus-testng" % "1.0.0-SNAP3" % "test",
+      "org.scalatestplus" %% "scalatestplus-junit" % "1.0.0-SNAP4" % "test"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
