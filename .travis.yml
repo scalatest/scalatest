@@ -2,19 +2,20 @@ language: scala
 scala:
   - 2.10.7
   - 2.11.12
-  - 2.12.6
+  - 2.12.8
   #- 2.13.0-M5
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
 
 jdk:
   - openjdk6
   - oraclejdk8
 
-dist: trusty
+dist: precise
 sudo: true
+
+addons:
+  hosts:
+    - me
+  hostname: me
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
@@ -55,7 +56,7 @@ matrix:
   exclude:
     #- scala: "2.13.0-M5"
     #  jdk: openjdk6
-    - scala: "2.12.6"
+    - scala: "2.12.8"
       jdk: openjdk6
     - scala: "2.11.12"
       jdk: oraclejdk8
@@ -79,7 +80,7 @@ notifications:
 
 cache:
   directories:
-    - $HOME/.ivy2
+    - $HOME/.ivy2/cache
 
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node
