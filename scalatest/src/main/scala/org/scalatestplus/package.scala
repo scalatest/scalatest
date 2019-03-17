@@ -23,7 +23,7 @@ package object easymock {
 
   type EasyMockSugar = org.scalatest.easymock.EasyMockSugar
 
-  lazy val EasyMockSugar = org.scalatest.easymock.EasyMockSugar
+  val EasyMockSugar = org.scalatest.easymock.EasyMockSugar
 
 }
 
@@ -34,7 +34,7 @@ package object mockito {
 
   type MockitoSugar = org.scalatest.mockito.MockitoSugar
 
-  lazy val MockitoSugar = org.scalatest.mockito.MockitoSugar
+  val MockitoSugar = org.scalatest.mockito.MockitoSugar
 
 }
 
@@ -62,29 +62,29 @@ package object selenium {
 
   type WebBrowser = org.scalatest.selenium.WebBrowser
 
-  lazy val WebBrowser = org.scalatest.selenium.WebBrowser
+  val WebBrowser = org.scalatest.selenium.WebBrowser
 
   type Driver = org.scalatest.selenium.Driver
 
   type HtmlUnit = org.scalatest.selenium.HtmlUnit
 
-  lazy val HtmlUnit = org.scalatest.selenium.HtmlUnit
+  val HtmlUnit = org.scalatest.selenium.HtmlUnit
 
   type Firefox = org.scalatest.selenium.Firefox
 
-  lazy val Firefox = org.scalatest.selenium.Firefox
+  val Firefox = org.scalatest.selenium.Firefox
 
   type Safari = org.scalatest.selenium.Safari
 
-  lazy val Safari = org.scalatest.selenium.Safari
+  val Safari = org.scalatest.selenium.Safari
 
   type Chrome = org.scalatest.selenium.Chrome
 
-  lazy val Chrome = org.scalatest.selenium.Chrome
+  val Chrome = org.scalatest.selenium.Chrome
 
   type InternetExplorer = org.scalatest.selenium.InternetExplorer
 
-  lazy val InternetExplorer = org.scalatest.selenium.InternetExplorer
+  val InternetExplorer = org.scalatest.selenium.InternetExplorer
 
 }
 
@@ -95,7 +95,7 @@ package object junit {
 
   type AssertionsForJUnit = org.scalatest.junit.AssertionsForJUnit
 
-  lazy val AssertionsForJUnit = org.scalatest.junit.AssertionsForJUnit
+  val AssertionsForJUnit = org.scalatest.junit.AssertionsForJUnit
 
   type JUnit3Suite = org.scalatest.junit.JUnit3Suite
 
@@ -133,14 +133,14 @@ package object scalacheck {
 
   type Checkers = org.scalatest.prop.Checkers
 
-  lazy val Checkers = org.scalatest.prop.Checkers
+  val Checkers = org.scalatest.prop.Checkers
 
   type ScalaCheckDrivenPropertyChecks = org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-  lazy val ScalaCheckDrivenPropertyChecks = org.scalatest.prop.PropertyChecks
+  val ScalaCheckDrivenPropertyChecks = org.scalatest.prop.PropertyChecks
 
   type ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
 
-  lazy val ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
+  val ScalaCheckPropertyChecks = org.scalatest.prop.PropertyChecks
 
 }
