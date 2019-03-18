@@ -214,6 +214,9 @@ object GenScalaTestNative {
     copyDir("scalatest/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir,
       asyncs("scalatest/src/main/scala/org/scalatest/freespec")
     ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir,
+      asyncs("scalatest/src/main/scala/org/scalatest/flatspec")
+    ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
