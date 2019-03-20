@@ -242,7 +242,7 @@ object GenScalaTestJS {
         "SafariBrowser.scala"  // skipped because selenium not supported.
       )
     ) ++
-      copyDir("scalatest/src/main/scala/org/scalatestplus", "org/scalatestplus", targetDir, List.empty)
+    copyDir("scalatest/src/main/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -348,7 +348,7 @@ object GenScalaTestJS {
         "XmlSocketReporterSpec.scala"
       )
     ) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatestplus", "org/scalatestplus", targetDir, List.empty)
+    copyDir("scalatest-test/src/test/scala/org/scalatestplus/scalacheck", "org/scalatestplus/scalacheck", targetDir, List.empty)
   }
 
 }

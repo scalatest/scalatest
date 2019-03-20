@@ -30,7 +30,8 @@ import org.scalatest.Args
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.Ignore
 import org.scalatest.Matchers
-import org.scalatestplus.selenium.{WebBrowser, JettySpec, HtmlUnit, Firefox}
+import org.scalatest.selenium.{WebBrowser, HtmlUnit, Firefox}
+import org.scalatestplus.selenium.JettySpec
 
 @Ignore
 class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
