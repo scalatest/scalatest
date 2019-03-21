@@ -1074,11 +1074,15 @@ object ScalatestBuild {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
-      }/*,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)*/
+      },
+      sourceGenerators in Test +=
+        Def.task {
+          GenGen.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        },
+      sourceGenerators in Test +=
+        Def.task {
+          GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestNative = Project("scalatestNative", file("scalatest.native"))
@@ -1200,11 +1204,15 @@ object ScalatestBuild {
         Def.task {
           GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
-      }/*,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)*/
+      }, 
+      sourceGenerators in Test +=
+        Def.task {
+          GenGen.genTestForNative((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }/*,  // OOM even with 14gb heap size, will turn this one when 32gb machine is common or if newer scala-native use lesser memory.
+      sourceGenerators in Test +=
+        Def.task {
+          GenMustMatchersTests.genTestForScalaNative((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestApp = Project("scalatestApp", file("."))
@@ -1714,13 +1722,6 @@ object ScalatestBuild {
     }
     results
   }
-
-  /*def genFiles(generatorSource: File, generatedFile: File)(genFun: => Seq[File]): Seq[File] = {
-    if (generatedFile.exists || generatorSource.lastModified > generatedFile.lastModified)
-      genFun()
-    else
-      Seq.empty[File]
-  }*/
 
   def genJavaFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "java" / name
