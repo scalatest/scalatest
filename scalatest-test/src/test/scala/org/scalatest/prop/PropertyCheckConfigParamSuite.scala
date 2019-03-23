@@ -40,22 +40,6 @@ class PropertyCheckConfigParamSuite extends FunSuite with Matchers {
     MinSuccessful(5678).value.value should be (5678)
   }
 
-  test("maxDiscarded throws IAE if less than 0") {
-    intercept[IllegalArgumentException] {
-      MaxDiscarded(-1)
-    }
-    intercept[IllegalArgumentException] {
-      MaxDiscarded(-2)
-    }
-  }
-
-  test("maxDiscarded value is passed value, if valid") {
-      MaxDiscarded(0).value should be (0)
-      MaxDiscarded(1).value should be (1)
-      MaxDiscarded(2).value should be (2)
-      MaxDiscarded(5678).value should be (5678)
-  }
-
   test("maxDiscardedFactor value is passed value, if valid") {
     MaxDiscardedFactor(1.0).value.value should be (1.0)
     MaxDiscardedFactor(1.5).value.value should be (1.5)
@@ -76,22 +60,6 @@ class PropertyCheckConfigParamSuite extends FunSuite with Matchers {
     MinSize(1).value.value should be (1)
     MinSize(2).value.value should be (2)
     MinSize(5678).value.value should be (5678)
-  }
-
-  test("maxSize throws IAE if less than 0") {
-    intercept[IllegalArgumentException] {
-      MaxSize(-1)
-    }
-    intercept[IllegalArgumentException] {
-      MaxSize(-2)
-    }
-  }
-
-  test("maxSize value is passed value, if valid") {
-      MaxSize(0).value should be (0)
-      MaxSize(1).value should be (1)
-      MaxSize(2).value should be (2)
-      MaxSize(5678).value should be (5678)
   }
 
   test("sizeRange should not compile if less than 0") {
