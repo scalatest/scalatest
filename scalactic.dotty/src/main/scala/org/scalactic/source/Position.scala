@@ -71,7 +71,7 @@ object Position {
     import refl._
 
     val file = refl.rootPosition.sourceFile
-    val fileName: String = file.getFileName.toString
+    val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar()
     val lineNo: Int = refl.rootPosition.startLine
     '{ Position(${fileName.toExpr}, ${filePath.toExpr}, ${lineNo.toExpr}) }
