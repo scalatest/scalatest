@@ -1030,7 +1030,7 @@ object ScalatestBuild {
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
+      // libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
