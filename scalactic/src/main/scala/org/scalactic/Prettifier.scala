@@ -205,6 +205,7 @@ object Prettifier {
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
+            case aList: List[_] => "List(" + (aList map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
               ColCompatHelper.className(aGenMap) + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
