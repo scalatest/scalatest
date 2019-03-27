@@ -1404,17 +1404,15 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
     it("should offer a patch method consistent with StringOps") {
-      forAll { (numStr: NumericString, from: Int, that: String, replaced: Int) =>
-        numStr.patch(from, that, replaced) shouldEqual
-          numStr.value.patch(from, that, replaced)
+      forAll { (numStr: NumericString, from: PosZInt, that: String, replaced: PosZInt) =>
+        numStr.patch(from, that, replaced % numStr.length) shouldEqual
+          numStr.value.patch(from, that, replaced % numStr.length)
 
-        whenever (numStr.length > 0) {
-          val reasonableFrom = from % numStr.length
-          val reasonableReplaced = replaced % numStr.length
+        val reasonableFrom = from % numStr.length
+        val reasonableReplaced = replaced % numStr.length
 
-          numStr.patch(reasonableFrom, that, reasonableReplaced) shouldEqual
-            numStr.value.patch(reasonableFrom, that, reasonableReplaced)
-        }
+        numStr.patch(reasonableFrom, that, reasonableReplaced) shouldEqual
+          numStr.value.patch(reasonableFrom, that, reasonableReplaced)
       }
     }
     it("should offer a permutations method that is consistent with StringOps") {
@@ -1538,31 +1536,31 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
       forAll { (numStr: NumericString) =>
         numStr.reverseMap(plus1).mkString shouldEqual
-          numStr.value.reverseMap(plus1)
+          numStr.value.reverseMap(plus1).mkString
       }
     }
     it("should offer a scan method consistent with StringOps") {
       def sum(c1: Char, c2: Char) = (c1 + c2).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.scan('0')(sum).mkString shouldEqual
+        numStr.scan('0')(sum) shouldEqual
           numStr.value.scan('0')(sum)
       }
     }
     it("should offer a scanLeft method consistent with StringOps") {
-      def sum(c1: Char, c2: Char) = (c1 + c2).toChar
+      def sum(s: String, c2: Char) = s + c2
 
       forAll { (numStr: NumericString) =>
-        numStr.scanLeft('0')(sum).mkString shouldEqual
-          numStr.value.scanLeft('0')(sum)
+        numStr.scanLeft("0")(sum) shouldEqual
+          numStr.value.scanLeft("0")(sum)
       }
     }
     it("should offer a scanRight method consistent with StringOps") {
-      def sum(c1: Char, c2: Char) = (c1 + c2).toChar
+      def sum(c1: Char, s: String) = c1 + s
 
       forAll { (numStr: NumericString) =>
-        numStr.scanRight('0')(sum).mkString shouldEqual
-          numStr.value.scanRight('0')(sum)
+        numStr.scanRight("0")(sum) shouldEqual
+          numStr.value.scanRight("0")(sum)
       }
     }
     it("should offer a sameElements method consistent with StringOps") {
@@ -1902,7 +1900,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     }
     it("should offer a union method consistent with StringOps") {
       forAll { (numStr: NumericString, that: NumericString) =>
-        numStr.union(that.value).mkString shouldEqual
+        numStr.union(that.value) shouldEqual
           numStr.value.union(that.value)
       }
     }
