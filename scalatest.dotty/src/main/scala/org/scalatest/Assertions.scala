@@ -659,7 +659,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    */
   inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertTypeErrorImpl(code, 'pos) }
+    ${ CompileMacro.assertTypeErrorImpl(code, '{ pos }) }
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -691,7 +691,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    */
   inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertDoesNotCompileImpl(code, 'pos) }
+    ${ CompileMacro.assertDoesNotCompileImpl(code, '{ pos }) }
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -713,7 +713,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should compile
    */
   inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertCompilesImpl(code, 'pos) }
+    ${ CompileMacro.assertCompilesImpl(code, '{ pos }) }
 
   /**
    * Intercept and return an exception that's expected to
