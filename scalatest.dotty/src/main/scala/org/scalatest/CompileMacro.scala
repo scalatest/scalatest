@@ -180,30 +180,6 @@ object CompileMacro {
   def shouldNotCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
     assertNotCompileImpl(compileWord, pos)("should")
 
-  // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertNotCompileImpl(compileWord, pos)("must")
-
-  def expectNotCompileImpl(compileWord: Expr[CompileWord], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
-
-    def checkNotTypeCheck(code: String): Expr[Fact] =
-      if (!typing.typeChecks(code)) '{
-        val messageExpr = Resources.gotTypeErrorAsExpected(${ code.toExpr })
-        Fact.Yes(messageExpr)($prettifier)
-      }
-      else '{
-        val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
-        Fact.No(messageExpr)($prettifier)
-      }
-
-    ???
-  }
-
-  // used by willNot compile syntax, delegate to expectNotCompileImpl to generate code
-  def willNotCompileImpl(compileWord: Expr[CompileWord])(prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] =
-    expectNotCompileImpl(compileWord, prettifier, pos)
-
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
@@ -227,26 +203,6 @@ object CompileMacro {
   def mustNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
     assertNotTypeCheckImpl(typeCheckWord, pos)("must")
 
-  def expectNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord], prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
-
-    def checkNotTypeCheck(code: String): Expr[Fact] =
-      if (!typing.typeChecks(code)) '{
-        val messageExpr = Resources.gotTypeErrorAsExpected(${ code.toExpr })
-        Fact.Yes(messageExpr)($prettifier)
-      }
-      else '{
-        val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
-        Fact.No(messageExpr)($prettifier)
-      }
-
-    ???
-  }
-
-  // used by willNot typeCheck syntax, delegate to expectNotTypeCheckImpl to generate code
-  def willNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord])(prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Fact] =
-    expectNotTypeCheckImpl(typeCheckWord, prettifier)
-
   // check that a code snippet compiles
   def assertCompileImpl(compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
@@ -265,29 +221,4 @@ object CompileMacro {
   // used by should compile syntax, delegate to assertCompileImpl to generate code
   def shouldCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
     assertCompileImpl(compileWord, pos)("should")
-
-  // used by must compile syntax, delegate to assertCompileImpl to generate code
-  def mustCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertCompileImpl(compileWord, pos)("must")
-
-  def expectCompileImpl(compileWord: Expr[CompileWord], prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
-
-    // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
-    def checkNotTypeCheck(code: String): Expr[Fact] =
-      if (typing.typeChecks(code)) '{
-        val messageExpr = Resources.gotTypeErrorAsExpected(${ code.toExpr })
-        Fact.Yes(messageExpr)($prettifier)
-      }
-      else '{
-        val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
-        Fact.No(messageExpr)($prettifier)
-      }
-
-    ???
-  }
-
-  // used by will compile syntax, delegate to expectCompileImpl to generate code
-  def willCompileImpl(compileWord: Expr[CompileWord])(prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Fact] =
-    expectCompileImpl(compileWord, prettifier)
 }
