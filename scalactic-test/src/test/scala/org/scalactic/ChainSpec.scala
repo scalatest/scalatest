@@ -554,44 +554,48 @@ class ChainSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4)
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.indexOfSlice(List("one", "two")) shouldBe 0;
-    es.indexOfSlice(List("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(List("ONE", "TWO")) shouldBe -1;
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(List("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
+    es.indexOfSlice(List("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(List("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
+
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(List("one", "two")) shouldBe 0;
+      es.indexOfSlice(List("one", "two")) shouldBe 0
       es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
     }
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1)
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.indexOfSlice(Every("one", "two")) shouldBe 0;
-    es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1;
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(Every("one", "two")) shouldBe el.indexOfSlice(Every("one", "two"))
+    es.indexOfSlice(Every("one", "two"), 1) shouldBe el.indexOfSlice(Every("one", "two"), 1)
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe el.indexOfSlice(Every("ONE", "TWO"))
+
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(Every("one", "two")) shouldBe 0;
@@ -599,20 +603,22 @@ class ChainSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take a Chain" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), -1) shouldBe 0
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.indexOfSlice(Chain("one", "two")) shouldBe 0;
-    es.indexOfSlice(Chain("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Chain("ONE", "TWO")) shouldBe -1;
+    val el = Chain("one", "two", "three", "four", "five")
+    es.indexOfSlice(Chain("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
+    es.indexOfSlice(Chain("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(Chain("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
+
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(Chain("one", "two")) shouldBe 0;
