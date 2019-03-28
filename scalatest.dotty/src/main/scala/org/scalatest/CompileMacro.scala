@@ -162,8 +162,10 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl(compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
+  def assertNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
+    import Term._
+    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -173,39 +175,93 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    ???
+    self.unseal.underlyingArgument match {
+      case Apply(
+             Apply(
+               Select(
+                 Apply(
+                   Apply(
+                     _,
+                     List(
+                       Literal(
+                         String(code)
+                       )
+                     )
+                   ),
+                   _
+                 ),
+                 shouldOrMustTermName
+               ),
+               _
+             ),
+             _
+      ) if shouldOrMustTermName == shouldOrMust =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        checkNotCompile(code.toString)
+      case other =>
+        throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+    }
   }
 
   // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def shouldNotCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertNotCompileImpl(compileWord, pos)("should")
+  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+    assertNotCompileImpl(self, compileWord, pos)("should")
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
+  def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
+    import Term._
+    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
-    def checkNotCompile(code: String): Expr[Assertion] =
+    def checkNotTypeCheck(code: String): Expr[Assertion] =
       if (!typing.typeChecks(code)) '{ Succeeded }
       else '{
         val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    ???
+    val methodName = shouldOrMust + "Not"
+
+    self.unseal.underlyingArgument match {
+      case Apply(
+             Apply(
+               Select(
+                 Apply(
+                   Apply(
+                     _,
+                     List(
+                      Literal(String(code))
+                     )
+                   ),
+                   _
+                 ),
+                 methodNameTermName
+               ),
+               _
+             ),
+             _
+           ) if methodNameTermName == methodName =>
+        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
+        checkNotTypeCheck(code.toString)
+      case _ =>
+        throw QuoteError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
+    }
   }
 
   // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def shouldNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertNotTypeCheckImpl(typeCheckWord, pos)("should")
+  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+    assertNotTypeCheckImpl(self, typeCheckWord, pos)("should")
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertNotTypeCheckImpl(typeCheckWord, pos)("must")
+  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+    assertNotTypeCheckImpl(self, typeCheckWord, pos)("must")
 
   // check that a code snippet compiles
-  def assertCompileImpl(compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
+  def assertCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
+    import Term._
+    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
@@ -215,10 +271,35 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    ???
+    self.unseal.underlyingArgument match {
+      case Apply(
+             Apply(
+               Select(
+                 Apply(
+                   Apply(
+                     _,
+                     List(
+                       Literal(
+                         String(code)
+                       )
+                     )
+                   ),
+                   _
+                 ),
+                 shouldOrMustTermName
+               ),
+               _
+             ),
+             _
+      ) if shouldOrMustTermName == shouldOrMust =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        checkCompile(code.toString)
+      case other =>
+        throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+    }
   }
 
   // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def shouldCompileImpl(compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertCompileImpl(compileWord, pos)("should")
+  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+    assertCompileImpl(self, compileWord, pos)("should")
 }

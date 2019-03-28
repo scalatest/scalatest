@@ -7602,7 +7602,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldCompileImpl('{compileWord})('{pos}) }
+    //DOTTY-ONLY inline def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldCompileImpl('{this}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7615,7 +7615,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotCompileImpl('{compileWord})('{pos}) }
+    //DOTTY-ONLY inline def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotCompileImpl('{this}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7628,7 +7628,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotTypeCheckImpl('{typeCheckWord})('{pos}) }
+    //DOTTY-ONLY inline def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotTypeCheckImpl('{this}, '{typeCheckWord})('{pos}) }
 
 /*
     /**
