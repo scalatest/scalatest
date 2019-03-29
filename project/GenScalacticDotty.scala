@@ -149,11 +149,9 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        //"AccumulationSpec.scala",  // ClassFormatError: Illegal field modifiers in class org/scalatest/prop/Tables: 0x9
         "CanEqualSpec.scala",  // NotImplementedError
         "ChainSpec.scala",  // Compilation error to be investigated further
         "DecidersSpec.scala",  // Compilation error to be investigated further
-        "DefaultEqualitySpec.scala",  // Error during macro expansion: java.lang.AssertionError: NoDenotation.owner
         "DifferSpec.scala",  // Test failed when run to be investigate further.
         "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
         "EverySpec.scala",  // Compilation error to be investigated further
