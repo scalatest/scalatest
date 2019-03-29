@@ -77,7 +77,7 @@ class ShouldCompileSpec extends FunSpec {
       // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
-          """println(\"test)""" should compile
+          """println("test)""" should compile
         }
         val errMsg = Resources.expectedNoErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
