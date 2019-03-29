@@ -176,7 +176,7 @@ object CompileMacro {
       }
 
     self.unseal.underlyingArgument match {
-      case Apply(
+      /*case Apply(
              Apply(
                Select(
                  Apply(
@@ -184,7 +184,7 @@ object CompileMacro {
                      _,
                      List(
                        Literal(
-                         String(code)
+                         code
                        )
                      )
                    ),
@@ -197,7 +197,20 @@ object CompileMacro {
              _
       ) if shouldOrMustTermName == shouldOrMust =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        checkNotCompile(code.toString)*/
+      
+      case Apply(
+             Apply(
+               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(code)
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkNotCompile(code.toString)
+
       case other =>
         throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
@@ -276,7 +289,7 @@ object CompileMacro {
       }
 
     self.unseal.underlyingArgument match {
-      case Apply(
+      /*case Apply(
              Apply(
                Select(
                  Apply(
@@ -297,8 +310,34 @@ object CompileMacro {
              _
       ) if shouldOrMustTermName == shouldOrMust =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        checkCompile(code.toString)*/
+
+      case Apply(
+             Apply(
+               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(String(code))
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkCompile(code.toString)
+
+      case Apply(
+             Apply(
+               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(String(code))
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        checkCompile(code.toString)    
+
       case other =>
+        println("###other: " + other)
         throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
