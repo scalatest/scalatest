@@ -4230,4 +4230,19 @@ $okayAssertions$
     genGeneratorDrivenSuite(dir, false, true, generatorSuiteExpectTemplate, "expect", false)*/
 
   }
+
+  def genTestForNative(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteAssertTemplate, "assert", false) /*++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteExpectTemplate, "expect", false)*/
+  }
 }
