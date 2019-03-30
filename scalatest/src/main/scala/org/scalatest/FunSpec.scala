@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
-  * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.AnyFunSpec instead.
+  * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funspec.AnyFunSpec instead.
   */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 @deprecated("Please use org.scalatest.funspec.AnyFunSpec instead")

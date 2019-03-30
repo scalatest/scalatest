@@ -43,4 +43,20 @@ package object fixture {
   @deprecated("Please use org.scalatest.funspec.FixtureAsyncFunSpecLike instead")
   type AsyncFunSpecLike = org.scalatest.funspec.FixtureAsyncFunSpecLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.freespec.FixtureAnyFreeSpec instead")
+  type FreeSpecLike = org.scalatest.freespec.FixtureAnyFreeSpec
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.freespec.FixtureAsyncFreeSpecLike instead")
+  type AsyncFreeSpecLike = org.scalatest.freespec.FixtureAsyncFreeSpecLike
+  // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.flatspec.FixtureAnyFlatSpec instead")
+  type FlatSpecLike = org.scalatest.flatspec.FixtureAnyFlatSpec
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.flatspec.FixtureAsyncFlatSpecLike instead")
+  type AsyncFlatSpecLike = org.scalatest.flatspec.FixtureAsyncFlatSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }
