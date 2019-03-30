@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2014 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,44 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.freespec
 
-import org.scalatest._
+import org.scalatest.{Transformer => _, _}
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
-import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
+import org.scalatest.fixture.{Transformer, NoArgTestWrapper}
 
 
 /**
- * Implementation trait for class <code>fixture.AsyncFreeSpec</code>, which is
- * a sister class to <code>org.scalatest.AsyncFreeSpec</code> that can pass a
+ * Implementation trait for class <code>FixtureAnyFreeSpec</code>, which is
+ * a sister class to <code>org.scalatest.freespec.AnyFreeSpec</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="AsyncFreeSpec.html"><code>fixture.AsyncFreeSpec</code></a> is a class,
+ * <a href="FixtureAnyFreeSpec.html"><code>FixtureAnyFreeSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.AsyncFreeSpec</code> into some other
+ * to mix the behavior of <code>FixtureAnyFreeSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.AsyncFreeSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>FixtureAnyFreeSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="AsyncFreeSpec.html">detailed
- * overview of <code>fixture.AsyncFreeSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAnyFreeSpec.html">detailed
+ * overview of <code>FixtureAnyFreeSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFreeSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 
   import engine._
+
+  private[scalatest] val sourceFileName = "FixtureAnyFreeSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -67,7 +69,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * Returns an <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>fixture.FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -77,7 +79,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * Returns a <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>fixture.FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -94,12 +96,20 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -110,7 +120,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FreeSpec</code> instance.
+   * this <code>FixtureAnyFreeSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -121,12 +131,18 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
-    engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
-    engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -137,7 +153,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FreeSpec</code> instance.
+   * this <code>FixtureAnyFreeSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -148,12 +164,18 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, Some(pos), testTags: _*)
   }
   /*
  private def registerBranch(description: String, childPrefix: Option[String], fun: () => Unit) {
@@ -191,13 +213,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(specText, tags, "in", testFun, pos)
+    def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      registerTestToRun(specText, tags, "in", testFun, pos)
     }
 
     /**
@@ -213,13 +235,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
+    def in(testFun: () => Any /* Assertion */): Unit = {
+      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -235,7 +257,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
@@ -257,13 +279,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos)
+    def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      registerTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
 
     /**
@@ -279,13 +301,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
+    def ignore(testFun: () => Any /* Assertion */): Unit = {
+      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
   }
 
@@ -295,10 +317,10 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    *
    * <p>
-   * This class provides much of the syntax for <code>fixture.FreeSpec</code>, however, it does not add
+   * This class provides much of the syntax for <code>FixtureAnyFreeSpec</code>, however, it does not add
    * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
    * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
-   * traits, which <code>fixture.FreeSpec</code> mixes in, to avoid a conflict with implicit conversions provided
+   * traits, which <code>FixtureAnyFreeSpec</code> mixes in, to avoid a conflict with implicit conversions provided
    * in <code>Matchers</code> and <code>MustMatchers</code>.
    * </p>
    *
@@ -315,8 +337,14 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * and immediately invoke the passed function.
      */
     def -(fun: => Unit): Unit = {
+
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, None, pos)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None, Some(pos))
       }
       catch {
         case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
@@ -341,13 +369,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(string, List(), "in", testFun, pos)
+    def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      registerTestToRun(string, List(), "in", testFun, pos)
     }
 
     /**
@@ -363,13 +391,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
+    def in(testFun: () => Any /* Assertion */): Unit = {
+      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -385,7 +413,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
@@ -407,13 +435,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos)
+    def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      registerTestToIgnore(string, List(), "ignore", testFun, pos)
     }
 
     /**
@@ -429,13 +457,13 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
+    def ignore(testFun: () => Any /* Assertion */): Unit = {
+      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -451,7 +479,7 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="FixtureAnyFreeSpec.html">main documentation</a> for trait <code>FixtureAnyFreeSpec</code>.
      * </p>
      *
      * @param firstTestTag the first mandatory test tag
@@ -473,8 +501,8 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
   protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FreeSpec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>FreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFreeSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAnyFreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
@@ -500,33 +528,30 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * @throws NullArgumentException if <code>testName</code> or <code><args/code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
-      val theConfigMap = args.configMap
-      val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
-        withFixture(
-          new OneArgAsyncTest {
-            val name = testData.name
 
-            def apply(fixture: FixtureParam): FutureOutcome =
-              theTest.testFun(fixture).toFutureOutcome
-
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-            val pos = testData.pos
+    def invokeWithFixture(theTest: TestLeaf): Outcome = {
+      theTest.testFun match {
+        case transformer: org.scalatest.fixture.Transformer[_] =>
+          transformer.exceptionalTestFun match {
+            case wrapper: NoArgTestWrapper[_, _] =>
+              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
           }
-        ).underlying
-      )
+        case other =>
+          other match {
+            case wrapper: NoArgTestWrapper[_, _] =>
+              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+          }
+      }
     }
 
-    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, invokeWithFixture)
   }
 
   /**
    * <p>
-   * Run zero to many of this <code>FreeSpec</code>'s tests.
+   * Run zero to many of this <code>FixtureAnyFreeSpec</code>'s tests.
    * </p>
    *
    * <p>
@@ -558,17 +583,17 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * </p>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FreeSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FixtureAnyFreeSpec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, runTest)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>fixture.FreeSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAnyFreeSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -585,11 +610,11 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
   }
 
   override def run(testName: Option[String], args: Args): Status = {
-    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
+    runImpl(thisSuite, testName, args, super.run)
   }
 
   /**
-   * Supports shared test registration in <code>fixture.FreeSpec</code>s.
+   * Supports shared test registration in <code>FixtureAnyFreeSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following:
@@ -601,8 +626,8 @@ trait AsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.sc
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of <cod>behave</code>, see the <a href="../FreeSpec.html#SharedTests">Shared tests section</a>
-   * in the main documentation for trait <code>FreeSpec</code>.
+   * For more information and examples of the use of <cod>behave</code>, see the <a href="AnyFreeSpec.html#SharedTests">Shared tests section</a>
+   * in the main documentation for trait <code>AnyFreeSpec</code>.
    * </p>
    */
   protected val behave = new BehaveWord
