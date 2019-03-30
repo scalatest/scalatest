@@ -176,28 +176,6 @@ object CompileMacro {
       }
 
     self.unseal.underlyingArgument match {
-      /*case Apply(
-             Apply(
-               Select(
-                 Apply(
-                   Apply(
-                     _,
-                     List(
-                       Literal(
-                         code
-                       )
-                     )
-                   ),
-                   _
-                 ),
-                 shouldOrMustTermName
-               ),
-               _
-             ),
-             _
-      ) if shouldOrMustTermName == shouldOrMust =>
-        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkNotCompile(code.toString)*/
       
       case Apply(
              Apply(
@@ -210,6 +188,17 @@ object CompileMacro {
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkNotCompile(code.toString)
+
+      case Apply(
+             Apply(
+               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(String(code))
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        checkNotCompile(code.toString)     
 
       case other =>
         throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
@@ -289,28 +278,6 @@ object CompileMacro {
       }
 
     self.unseal.underlyingArgument match {
-      /*case Apply(
-             Apply(
-               Select(
-                 Apply(
-                   Apply(
-                     _,
-                     List(
-                       Literal(
-                         String(code)
-                       )
-                     )
-                   ),
-                   _
-                 ),
-                 shouldOrMustTermName
-               ),
-               _
-             ),
-             _
-      ) if shouldOrMustTermName == shouldOrMust =>
-        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkCompile(code.toString)*/
 
       case Apply(
              Apply(

@@ -177,7 +177,8 @@ object GenScalaTestDotty {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "AssertionsSpec.scala", 
-        "ShouldCompileSpec.scala"
+        "ShouldCompileSpec.scala", 
+        "ShouldNotCompileSpec.scala"
       )
     ) /*++
       copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
