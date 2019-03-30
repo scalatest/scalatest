@@ -106,23 +106,25 @@ private[scalatest] trait Expectations {
     }
   }
 
-  import language.experimental.macros
-
   inline def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
     ${ ExpectationsMacro.expect('{expression})('{prettifier}, '{pos}) }
 
-  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = ??? //CompileMacro.expectDoesNotCompileImpl
+  inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+    ${ CompileMacro.expectDoesNotCompileImpl(code, 'prettifier, 'pos) }
 
-  def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = ??? //CompileMacro.expectCompilesImpl
+  inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+    ${ CompileMacro.expectCompilesImpl(code, 'prettifier, 'pos) }
 
-  def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = ??? //CompileMacro.expectTypeErrorImpl
+  inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+    ${ CompileMacro.expectTypeErrorImpl(code, 'prettifier, 'pos) }
 
   import scala.language.implicitConversions
 
   /**
     * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
     */
-  implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = ??? //ExpectationsMacro.expect
+  implicit inline def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+    ${ ExpectationsMacro.expect('expression)('prettifier, 'pos) }
 
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
