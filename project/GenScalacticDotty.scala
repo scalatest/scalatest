@@ -149,13 +149,12 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "AccumulationSpec.scala",  // ClassFormatError: Illegal field modifiers in class org/scalatest/prop/Tables: 0x9
         "CanEqualSpec.scala",  // NotImplementedError
-        "ChainSpec.scala",  // Hang the compiler
+        "ChainSpec.scala",  // Compilation error to be investigated further
         "DecidersSpec.scala",  // Compilation error to be investigated further
-        "DifferSpec.scala",  // macro expansion error: invalid prefix NoType
+        "DifferSpec.scala",  // Test failed when run to be investigate further.
         "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
-        "EverySpec.scala",  // This hangs dotty
+        "EverySpec.scala",  // Compilation error to be investigated further
         "FutureSugarSpec.scala",   // Implementation missing
         "NormalizationSpec.scala",  // Compilation error to be investigated further.
         "NormMethodsSpec.scala",  // Compilation error to be investigated further.
