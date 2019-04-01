@@ -120,7 +120,11 @@ trait GenMustMatchersTestsBase {
     genTestImpl(targetBaseDir, version, scalaVersion, false)
   }
 
-  def genTestForScalaJS(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
+  def genTestForScalaJS(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
+    genTestImpl(targetBaseDir, version, scalaVersion, true)
+  }
+
+  def genTestForScalaNative(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     genTestImpl(targetBaseDir, version, scalaVersion, true)
   }
 

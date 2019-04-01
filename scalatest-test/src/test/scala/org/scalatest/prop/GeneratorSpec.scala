@@ -2631,7 +2631,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     }
 
     import scala.collection.GenTraversable
-    import scala.collection.generic.GenericCompanion
+    import org.scalactic.ColCompatHelper
     /**
       * A common test for how we do shrinking in the collection Generators.
       *
@@ -2644,7 +2644,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       * @param generator the Generator for this collection type
       * @tparam F the collection type we are testing
       */
-    def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: GenericCompanion[F])(implicit generator: Generator[F[Int]]): Unit = {
+    def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: ColCompatHelper.Factory[Int, F[Int]])(implicit generator: Generator[F[Int]]): Unit = {  
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
       val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
@@ -2660,14 +2660,14 @@ class GeneratorSpec extends FunSpec with Matchers {
 
           // Then should come one-element Lists of the canonicals of the type
           val phase2 = shrinks.drop(1).take(intCanonicals.length)
-          phase2 shouldEqual (intCanonicals.map(i => factory(i)))
+          phase2 shouldEqual (intCanonicals.map(i => ColCompatHelper.newBuilder(factory).+=(i).result))
 
           // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
           // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
           val xsList = xs.toList
           val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
           val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
-          phase3 shouldEqual (xsDistincts.map(i => factory(i)))
+          phase3 shouldEqual (xsDistincts.map(i => ColCompatHelper.newBuilder(factory).+=(i).result))
 
           // Phase 4 should be n-element lists that are prefixes cut in half
           val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
@@ -2682,6 +2682,8 @@ class GeneratorSpec extends FunSpec with Matchers {
         }
       }
     }
+
+    import org.scalactic.ColCompatHelper.Factory._
 
     describe("for Lists") {
       it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {

@@ -32,22 +32,6 @@ class ConfigurationSuite extends FunSuite with Matchers {
     minSuccessful(5678).value.value should be (5678)
   }
 
-  test("maxDiscarded throws IAE if less than 0") {
-    intercept[IllegalArgumentException] {
-      maxDiscarded(-1)
-    }
-    intercept[IllegalArgumentException] {
-      maxDiscarded(-2)
-    }
-  }
-
-  test("maxDiscarded value is passed value, if valid") {
-      maxDiscarded(0).value should be (0)
-      maxDiscarded(1).value should be (1)
-      maxDiscarded(2).value should be (2)
-      maxDiscarded(5678).value should be (5678)
-  }
-
   test("maxDiscardedFactor should not compile if less than 0 or a non-double") {
     "maxDiscardedFactor(-0.1)" shouldNot compile
     "maxDiscardedFactor(-100.0)" shouldNot compile
@@ -71,22 +55,6 @@ class ConfigurationSuite extends FunSuite with Matchers {
     minSize(1).value.value should be (1)
     minSize(2).value.value should be (2)
     minSize(5678).value.value should be (5678)
-  }
-
-  test("maxSize throws IAE if less than 0") {
-    intercept[IllegalArgumentException] {
-      maxSize(-1)
-    }
-    intercept[IllegalArgumentException] {
-      maxSize(-2)
-    }
-  }
-
-  test("maxSize value is passed value, if valid") {
-      maxSize(0).value should be (0)
-      maxSize(1).value should be (1)
-      maxSize(2).value should be (2)
-      maxSize(5678).value should be (5678)
   }
 
   test("sizeRange should not compile if less than 0") {

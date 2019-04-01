@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.freespec
 
-import org.scalactic.{FailureMessages => _, UnquotedString => _, _}
-import Suite.autoTagClassAnnotations
-import words.BehaveWord
+import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
+import org.scalatest._
+import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalatest.words.BehaveWord
 import org.scalatest.exceptions._
 
 /**
- * Implementation trait for class <code>FreeSpec</code>, which 
+ * Implementation trait for class <code>AnyFreeSpec</code>, which 
  * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
  * in which tests are nested inside text clauses denoted with the dash
  * operator (<code>-</code>).
  * 
  * <p>
- * <a href="FreeSpec.html"><code>FreeSpec</code></a> is a class, not a trait,
+ * <a href="AnyFreeSpec.html"><code>AnyFreeSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FreeSpec</code> into some other class, you can use this
- * trait instead, because class <code>FreeSpec</code> does nothing more than
+ * behavior of <code>AnyFreeSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AnyFreeSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FreeSpec.html">detailed
- * overview of <code>FreeSpec</code></a>.
+ * See the documentation of the class for a <a href="AnyFreeSpec.html">detailed
+ * overview of <code>AnyFreeSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait FreeSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
   import engine._
@@ -64,7 +65,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -74,7 +75,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -96,7 +97,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -104,7 +105,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -115,7 +116,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FreeSpec</code> instance.
+   * this <code>AnyFreeSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -133,7 +134,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "AnyFreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -144,7 +145,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>FreeSpec</code> instance.
+   * this <code>AnyFreeSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -162,7 +163,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "AnyFreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -190,7 +191,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def in(testFun: => Any /* Assertion */): Unit = {
@@ -210,7 +211,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement): Unit = {
@@ -230,7 +231,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */): Unit = {
@@ -261,7 +262,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(pos))
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "AnyFreeSpecLike.scala", "-", stackDepth, -2, None, Some(pos))
       }
       catch {
         case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.position.getOrElse(pos))
@@ -286,7 +287,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def in(f: => Any /* Assertion */): Unit = {
@@ -306,7 +307,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def ignore(f: => Any /* Assertion */): Unit = {
@@ -326,7 +327,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def is(f: => PendingStatement): Unit = {
@@ -346,7 +347,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
@@ -366,7 +367,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AnyFreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
@@ -416,7 +417,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
   }
 
   /**
-   * Run zero to many of this <code>FreeSpec</code>'s tests.
+   * Run zero to many of this <code>AnyFreeSpec</code>'s tests.
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
@@ -475,20 +476,20 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FreeSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AnyFreeSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FreeSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>AnyFreeSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.FreeSpec
+   * import org.scalatest.freespec.AnyFreeSpec
    *
-   * class StackSpec extends FreeSpec {
+   * class StackSpec extends AnyFreeSpec {
    *   "A Stack" - {
    *     "when not empty" - {
    *       "must allow me to pop" in {}
@@ -501,7 +502,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>FreeSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AnyFreeSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -519,7 +520,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
   }
 
   /**
-   * Supports shared test registration in <code>FreeSpec</code>s.
+   * Supports shared test registration in <code>AnyFreeSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following:
