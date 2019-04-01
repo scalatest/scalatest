@@ -223,7 +223,7 @@ object CompileMacro {
     def checkNotTypeCheck(code: String): Expr[Assertion] =
       if (!typing.typeChecks(code)) '{ Succeeded }
       else '{
-        val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
+        val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
@@ -232,24 +232,28 @@ object CompileMacro {
     self.unseal.underlyingArgument match {
       case Apply(
              Apply(
-               Select(
-                 Apply(
-                   Apply(
-                     _,
-                     List(
-                      Literal(String(code))
-                     )
-                   ),
-                   _
-                 ),
-                 methodNameTermName
-               ),
-               _
+               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(code)
+               )
              ),
              _
-           ) if methodNameTermName == methodName =>
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
         checkNotTypeCheck(code.toString)
+
+      case Apply(
+             Apply(
+               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(String(code))
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
+        checkNotTypeCheck(code.toString)   
+
       case _ =>
         throw QuoteError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
     }
