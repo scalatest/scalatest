@@ -151,6 +151,8 @@ object GenScalaTestDotty {
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir,
       List(
         "Matcher.scala",           // Re-implemented with new macro
@@ -176,7 +178,9 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "AssertionsSpec.scala"
+        "AssertionsSpec.scala", 
+        "ShouldCompileSpec.scala", 
+        "ShouldNotCompileSpec.scala"
       )
     ) /*++
       copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
