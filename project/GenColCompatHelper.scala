@@ -45,11 +45,18 @@ object GenColCompatHelper {
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
-          |  def className(col: scala.collection.Iterable[_]): String = org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
-          |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
           |  object Factory {}
+          |
+          |  def className(col: scala.collection.Iterable[_]): String = {
+          |    val colToString = col.toString
+          |    val bracketIdx = colToString.indexOf("(")
+          |    if (bracketIdx >= 0)
+          |      colToString.take(bracketIdx)
+          |    else
+          |      org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
+          |  }
           |
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
           |
