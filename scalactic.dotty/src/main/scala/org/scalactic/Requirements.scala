@@ -263,7 +263,6 @@ object RequirementsMacro {
    */
   def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit reflect: Reflection): Expr[Unit] = {
     import reflect._
-    import Term._
     import quoted.Toolbox.Default._
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {

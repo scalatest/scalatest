@@ -29,8 +29,6 @@ private[scalatest] object TypeMatcherMacro {
 //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(refl: Reflection)(tree: refl.Term, methodName: String): Unit = {
     import refl._
-    import Term._
-    import TypeTree._
     import quoted.Toolbox.Default._
 
     // TODO#Macros: Select lack unapply

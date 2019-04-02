@@ -31,7 +31,6 @@ private[scalatest] object DiagrammedAssertionsMacro {
     prettifier: Expr[Prettifier],
     pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import quoted.Toolbox.Default._
 
     val startLine = refl.rootPosition.startLine // Get the expression first line number

@@ -164,7 +164,6 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -216,7 +215,6 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -270,7 +268,6 @@ object CompileMacro {
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded

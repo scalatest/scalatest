@@ -205,7 +205,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(intConst) =>
+      case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)
@@ -240,7 +240,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(longConst) =>
+      case Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)
@@ -275,7 +275,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(floatConst) =>
+      case Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)
@@ -310,7 +310,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(doubleConst) =>
+      case Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)
@@ -345,7 +345,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(stringConst) =>
+      case Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)
@@ -380,7 +380,7 @@ trait CompileTimeAssertions {
     import refl._
 
     value.unseal.underlyingArgument match {
-      case Term.Literal(charConst) =>
+      case Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))
           throw new TastyTypecheckError(notValidMsg)

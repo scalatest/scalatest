@@ -2133,9 +2133,9 @@ object ScalatestBuild {
       name.value)
 
   import dotty.tools.sbtplugin.DottyPlugin.autoImport._
-  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.13/
+  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
   //lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.14.0-bin-20190331-c059b64-NIGHTLY"
+  lazy val dottyVersion = "0.14.0-bin-20190401-f62e286-NIGHTLY"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),

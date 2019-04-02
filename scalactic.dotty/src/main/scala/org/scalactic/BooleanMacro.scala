@@ -30,10 +30,10 @@ object BooleanMacro {
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
     condition.unseal.underlyingArgument match {
-      case Term.Apply(Term.Select(Term.Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
+      case Apply(Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
         let(lhs) { left =>
           let(rhs) { right =>
-            let(Term.Select.overloaded(Term.Apply(qual, left :: Nil), op, Nil, right :: Nil)) { result =>
+            let(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil)) { result =>
               val l = left.seal[Any]
               val r = right.seal[Any]
               val b = result.seal[Boolean]
@@ -42,7 +42,7 @@ object BooleanMacro {
             }
           }
         }.seal[Bool]
-      case Term.Apply(sel @ Term.Select(lhs, op), rhs :: Nil) =>
+      case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         op match {
           case "||" =>
             val left = parse(lhs.seal[Boolean], prettifier)
@@ -67,7 +67,7 @@ object BooleanMacro {
               case _ =>
                 let(lhs) { left =>
                   let(rhs) { right =>
-                    val app = Term.Select.overloaded(left, op, Nil, right :: Nil)
+                    val app = Select.overloaded(left, op, Nil, right :: Nil)
                     assert(app.symbol == sel.symbol, app.symbol.fullName -> sel.symbol.fullName)
                     let(app) { result =>
                       val l = left.seal[Any]
@@ -80,11 +80,11 @@ object BooleanMacro {
                 }.seal[Bool]
             }
         }
-      case Term.Apply(f @ Term.Apply(Term.Select(Term.Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
+      case Apply(f @ Apply(Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
       if isImplicitMethodType(f.tpe) =>
         let(lhs) { left =>
           let(rhs) { right =>
-            let(Term.Apply(Term.Select.overloaded(Term.Apply(qual, left :: Nil), op, Nil, right :: Nil), implicits)) { result =>
+            let(Apply(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil), implicits)) { result =>
               val l = left.seal[Any]
               val r = right.seal[Any]
               val b = result.seal[Boolean]
@@ -93,10 +93,10 @@ object BooleanMacro {
             }
           }
         }.seal[Bool]
-      case Term.Select(left, "unary_!") =>
+      case Select(left, "unary_!") =>
         val receiver = parse(left.seal[Boolean], prettifier)
         '{ !($receiver) }
-      case Term.Literal(_) =>
+      case Literal(_) =>
         '{ Bool.simpleMacroBool($condition, "", $prettifier) }
       case _ =>
         defaultCase

@@ -39,7 +39,6 @@ object DiagrammedExprMacro {
   def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
     import quoted.Toolbox.Default._
-    import Term._
 
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
@@ -63,13 +62,12 @@ object DiagrammedExprMacro {
   def applyExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
     import quoted.Toolbox.Default._
-    import Term._
 
     def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
-      Term.Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal[T]
+      Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal[T]
 
     expr.unseal.underlyingArgument match {
-      case Term.Apply(Term.Select(lhs, op), rhs :: Nil) =>
+      case Apply(Select(lhs, op), rhs :: Nil) =>
         op match {
           case "||" | "|" =>
             val left = parse(lhs.seal[T & Boolean])
@@ -99,7 +97,7 @@ object DiagrammedExprMacro {
               DiagrammedExpr.applyExpr(l, r :: Nil, res, ${ getAnchor(expr) })
             }
         }
-      case Term.Apply(Term.Select(lhs, op), args) =>
+      case Apply(Select(lhs, op), args) =>
         val left = parse(lhs.seal[Any])
         val rights = args.map(arg => parse(arg.seal[Any]))
 
@@ -117,7 +115,6 @@ object DiagrammedExprMacro {
   def selectExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
     import quoted.Toolbox.Default._
-    import Term._
 
     def selectField(o: Expr[_], name: String): Expr[T] = ???
 
