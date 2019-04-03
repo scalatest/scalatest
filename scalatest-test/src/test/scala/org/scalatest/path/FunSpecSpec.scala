@@ -137,7 +137,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     "should create new instance as FunSpecLike" in {
       val spec = new ExampleFunSpecLike
-      assert(spec.newInstance.isInstanceOf[FunSpecLike])
+      assert(spec.newInstance.isInstanceOf[org.scalatest.path.FunSpecLike])
     }
 
     "(with info calls)" - {
