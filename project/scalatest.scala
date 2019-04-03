@@ -365,7 +365,6 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
-      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
