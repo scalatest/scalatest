@@ -135,8 +135,10 @@ trait SpecLike extends org.scalatest.fixture.TestSuite with Informing with Notif
                 case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, (_: StackDepthException) => 8))
                 case dtne: DuplicateTestNameException => throw dtne
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
-                  if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
+                  if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
                     throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 9))
+                  else if (ScalaTestVersions.BuiltForScalaVersion startsWith "2.13")
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 7))
                   else
                     throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 8))
                 case other: Throwable => throw other
