@@ -1435,19 +1435,19 @@ object ScalatestBuild {
         )
       ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").aggregate(scalacticMacroNative, scalacticNative, scalatestNative, commonTestNative, scalacticTestNative, scalatestTestNative).enablePlugins(ScalaNativePlugin)
 
-  def gentestsLibraryDependencies =
+  def gentestsLibraryDependencies(scalaVersion: String) =
     Seq(
       "org.pegdown" % "pegdown" % pegdownVersion % "optional",
       "org.scalatestplus" %% "scalatestplus-testng" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
-    )
+    ) ++ scalaXmlDependency(scalaVersion)
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= gentestsLibraryDependencies,
+    libraryDependencies ++= gentestsLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
@@ -1511,7 +1511,6 @@ object ScalatestBuild {
     .settings(
       genRegularTask5,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies ++= gentestsLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Test += javaSourceManaged.value,
