@@ -21,7 +21,7 @@ import scala.tasty._
 object BooleanMacro {
   def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Bool] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
     import util._
 
     def exprStr: String = condition.show
@@ -34,31 +34,31 @@ object BooleanMacro {
         let(lhs) { left =>
           let(rhs) { right =>
             let(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil)) { result =>
-              val l = left.seal[Any]
-              val r = right.seal[Any]
-              val b = result.seal[Boolean]
+              val l = left.seal
+              val r = right.seal
+              val b = result.seal.cast[Boolean]
               val code = '{ Bool.binaryMacroBool($l, ${ op.toExpr }, $r, $b, $prettifier) }
               code.unseal
             }
           }
-        }.seal[Bool]
+        }.seal.cast[Bool]
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         op match {
           case "||" =>
-            val left = parse(lhs.seal[Boolean], prettifier)
-            val right = parse(rhs.seal[Boolean], prettifier)
+            val left = parse(lhs.seal.cast[Boolean], prettifier)
+            val right = parse(rhs.seal.cast[Boolean], prettifier)
             '{ $left || $right }
           case "|" =>
-            val left = parse(lhs.seal[Boolean], prettifier)
-            val right = parse(rhs.seal[Boolean], prettifier)
+            val left = parse(lhs.seal.cast[Boolean], prettifier)
+            val right = parse(rhs.seal.cast[Boolean], prettifier)
             '{ $left | $right }
           case "&&" =>
-            val left = parse(lhs.seal[Boolean], prettifier)
-            val right = parse(rhs.seal[Boolean], prettifier)
+            val left = parse(lhs.seal.cast[Boolean], prettifier)
+            val right = parse(rhs.seal.cast[Boolean], prettifier)
             '{ $left && $right }
           case "&" =>
-            val left = parse(lhs.seal[Boolean], prettifier)
-            val right = parse(rhs.seal[Boolean], prettifier)
+            val left = parse(lhs.seal.cast[Boolean], prettifier)
+            val right = parse(rhs.seal.cast[Boolean], prettifier)
             '{ $left & $right }
           case _ =>
             sel.tpe.widen match {
@@ -70,14 +70,14 @@ object BooleanMacro {
                     val app = Select.overloaded(left, op, Nil, right :: Nil)
                     assert(app.symbol == sel.symbol, app.symbol.fullName -> sel.symbol.fullName)
                     let(app) { result =>
-                      val l = left.seal[Any]
-                      val r = right.seal[Any]
-                      val b = result.seal[Boolean]
+                      val l = left.seal
+                      val r = right.seal
+                      val b = result.seal.cast[Boolean]
                       val code = '{ Bool.binaryMacroBool($l, ${op.toExpr}, $r, $b, $prettifier) }
                       code.unseal
                     }
                   }
-                }.seal[Bool]
+                }.seal.cast[Bool]
             }
         }
       case Apply(f @ Apply(Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
@@ -85,16 +85,16 @@ object BooleanMacro {
         let(lhs) { left =>
           let(rhs) { right =>
             let(Apply(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil), implicits)) { result =>
-              val l = left.seal[Any]
-              val r = right.seal[Any]
-              val b = result.seal[Boolean]
+              val l = left.seal
+              val r = right.seal
+              val b = result.seal.cast[Boolean]
               val code = '{ Bool.binaryMacroBool($l, ${ op.toExpr }, $r, $b, $prettifier) }
               code.unseal
             }
           }
-        }.seal[Bool]
+        }.seal.cast[Bool]
       case Select(left, "unary_!") =>
-        val receiver = parse(left.seal[Boolean], prettifier)
+        val receiver = parse(left.seal.cast[Boolean], prettifier)
         '{ !($receiver) }
       case Literal(_) =>
         '{ Bool.simpleMacroBool($condition, "", $prettifier) }

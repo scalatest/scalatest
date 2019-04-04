@@ -51,7 +51,7 @@ object AssertionsMacro {
   (implicit refl: Reflection): Expr[Assertion] = {
 
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ ($helper)($bool, $clue, $pos) }

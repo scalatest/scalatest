@@ -29,7 +29,7 @@ private[scalatest] object TypeMatcherMacro {
 //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(refl: Reflection)(tree: refl.Term, methodName: String): Unit = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // TODO#Macros: Select lack unapply
     /*
@@ -52,7 +52,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that create a 'a type' matcher
   def aTypeMatcherImpl(aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // check type parameter
     checkTypeParameter(refl)(aType.unseal, "a")
@@ -68,7 +68,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that create a 'an type' matcher
   def anTypeMatcherImpl(anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // check type parameter
     checkTypeParameter(refl)(anType.unseal, "an")
@@ -84,7 +84,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that create a negated 'a type' matcher
   def notATypeMatcher(aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // check type parameter
     checkTypeParameter(refl)(aType.unseal, "a")
@@ -100,7 +100,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that create a negated 'an type' matcher
   def notAnTypeMatcher(anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // check type parameter
     checkTypeParameter(refl)(anType.unseal, "an")
@@ -116,7 +116,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'a type' matcher.
   def andNotATypeMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // create a negated matcher from notATypeMatcher
     val rhs = notATypeMatcher(aType)
@@ -132,7 +132,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'an type' matcher.
   def andNotAnTypeMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // create a negated matcher from notAnTypeMatcher
     val rhs = notAnTypeMatcher(anType)
@@ -148,7 +148,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'a type' matcher.
   def orNotATypeMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], aType: Expr[ResultOfATypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // create a negated matcher from notATypeMatcher
     val rhs = notATypeMatcher(aType)
@@ -164,7 +164,7 @@ private[scalatest] object TypeMatcherMacro {
   // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'an type' matcher.
   def orNotAnTypeMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     // create a negated matcher from notAnTypeMatcher
     val rhs = notAnTypeMatcher(anType)

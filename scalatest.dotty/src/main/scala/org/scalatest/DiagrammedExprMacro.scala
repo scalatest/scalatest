@@ -38,7 +38,7 @@ object DiagrammedExprMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
@@ -54,24 +54,24 @@ object DiagrammedExprMacro {
       case IsSelect(x) if isJavaStatic(x) => simpleExpr(expr)
       case IsSelect(select) => selectExpr(expr) // delegate to selectExpr if it is a Select
       case Block(stats, expr) =>
-        Block(stats, parse(expr.seal[T]).unseal).seal[DiagrammedExpr[T]] // call parse recursively using the expr argument if it is a block
+        Block(stats, parse(expr.seal.cast[T]).unseal).seal.cast[DiagrammedExpr[T]] // call parse recursively using the expr argument if it is a block
       case _ => simpleExpr(expr) // for others, just delegate to simpleExpr
     }
   }
 
   def applyExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
-      Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal[T]
+      Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal.cast[T]
 
     expr.unseal.underlyingArgument match {
       case Apply(Select(lhs, op), rhs :: Nil) =>
         op match {
           case "||" | "|" =>
-            val left = parse(lhs.seal[T & Boolean])
-            val right = parse(rhs.seal[T & Boolean])
+            val left = parse(lhs.seal.cast[T & Boolean])
+            val right = parse(rhs.seal.cast[T & Boolean])
             '{
               val l = $left
               val r = $right
@@ -79,8 +79,8 @@ object DiagrammedExprMacro {
               else DiagrammedExpr.applyExpr(l, r :: Nil, r.value, ${ getAnchor(expr) })
             }
           case "&&" | "&" =>
-            val left = parse(lhs.seal[T & Boolean])
-            val right = parse(rhs.seal[T & Boolean])
+            val left = parse(lhs.seal.cast[T & Boolean])
+            val right = parse(rhs.seal.cast[T & Boolean])
             '{
               val l = $left
               val r = $right
@@ -88,8 +88,8 @@ object DiagrammedExprMacro {
               else l
             }
           case _ =>
-            val left = parse(lhs.seal[Any])
-            val right = parse(rhs.seal[Any])
+            val left = parse(lhs.seal.cast[Any])
+            val right = parse(rhs.seal.cast[Any])
             '{
               val l = $left
               val r = $right
@@ -98,8 +98,8 @@ object DiagrammedExprMacro {
             }
         }
       case Apply(Select(lhs, op), args) =>
-        val left = parse(lhs.seal[Any])
-        val rights = args.map(arg => parse(arg.seal[Any]))
+        val left = parse(lhs.seal)
+        val rights = args.map(arg => parse(arg.seal))
 
         let(left) { (l: Expr[DiagrammedExpr[_]]) =>
           lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
@@ -114,13 +114,13 @@ object DiagrammedExprMacro {
 
   def selectExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     def selectField(o: Expr[_], name: String): Expr[T] = ???
 
     expr.unseal match {
       case Select(qual, name) =>
-        val obj = parse(qual.seal[Any])
+        val obj = parse(qual.seal)
 
         '{
           val o = $obj
@@ -147,7 +147,7 @@ object DiagrammedExprMacro {
 
   def getAnchor(expr: Expr[_])(implicit refl: Reflection): Expr[Int] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
     (expr.unseal.pos.endColumn - expr.unseal.pos.startColumn).toExpr
   }
 }

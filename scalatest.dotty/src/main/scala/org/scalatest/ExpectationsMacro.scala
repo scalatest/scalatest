@@ -26,7 +26,7 @@ private[scalatest] object ExpectationsMacro {
 
   def expect(condition: Expr[Boolean])(prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
     import refl._
-    import quoted.Toolbox.Default._
+    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Expectations.expectationsHelper.macroExpect($bool, "", $prettifier, $pos) }
