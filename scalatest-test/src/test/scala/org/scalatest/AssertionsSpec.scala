@@ -894,20 +894,20 @@ class AssertionsSpec extends AnyFunSpec {
       assert(a == 3 && { println("hi"); b == 5})
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else // for dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assert({ println("hi"); b == 5} && a == 3)
     }
