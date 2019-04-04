@@ -27,8 +27,7 @@ object CompileMacro {
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertTypeErrorImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })

@@ -233,8 +233,7 @@ object RequirementsMacro {
    */
   def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit refl: Reflection): Expr[Unit] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequire($bool, $clue) }
   }
@@ -248,8 +247,7 @@ object RequirementsMacro {
    */
   def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit refl: Reflection): Expr[Unit] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequireState($bool, $clue) }
   }

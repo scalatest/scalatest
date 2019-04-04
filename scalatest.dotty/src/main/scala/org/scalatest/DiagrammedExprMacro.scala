@@ -38,8 +38,7 @@ object DiagrammedExprMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
 
@@ -61,8 +60,7 @@ object DiagrammedExprMacro {
 
   def applyExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
       Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal.cast[T]
 
@@ -114,8 +112,7 @@ object DiagrammedExprMacro {
 
   def selectExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
-
+    
     def selectField(o: Expr[_], name: String): Expr[T] = ???
 
     expr.unseal match {
@@ -147,7 +144,6 @@ object DiagrammedExprMacro {
 
   def getAnchor(expr: Expr[_])(implicit refl: Reflection): Expr[Int] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
     (expr.unseal.pos.endColumn - expr.unseal.pos.startColumn).toExpr
   }
 }
