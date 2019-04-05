@@ -18,9 +18,6 @@ package org.scalactic
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
-// SKIP-SCALATESTJS-START
-import scala.xml
-// SKIP-SCALATESTJS-END
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -206,11 +203,6 @@ object Prettifier {
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            // SKIP-SCALATESTJS-START
-            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
-            case anXMLNodeBuffer: xml.NodeBuffer =>
-              xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
-            // SKIP-SCALATESTJS-END
             case aGenTraversable: GenTraversable[_] =>
               val isSelf =
                 if (aGenTraversable.size == 1) {
@@ -220,11 +212,17 @@ object Prettifier {
                   }
                 }
                 else
-                  false
+                  false    
               if (isSelf)
                 aGenTraversable.toString
-              else
-                ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+              else {
+                val className = aGenTraversable.getClass.getName
+                if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer")
+                  aGenTraversable.mkString
+                else
+                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+              }  
+                
             // SKIP-SCALATESTJS-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
