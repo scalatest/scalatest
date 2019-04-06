@@ -597,7 +597,6 @@ object ScalatestBuild {
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
-      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           // From scalactic-macro
@@ -2133,8 +2132,9 @@ object ScalatestBuild {
       name.value)
 
   import dotty.tools.sbtplugin.DottyPlugin.autoImport._
-  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.13/
-  lazy val dottyVersion = dottyLatestNightlyBuild.get
+  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
+  //lazy val dottyVersion = dottyLatestNightlyBuild.get
+  lazy val dottyVersion = "0.14.0-bin-20190403-d00a7ba-NIGHTLY"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
