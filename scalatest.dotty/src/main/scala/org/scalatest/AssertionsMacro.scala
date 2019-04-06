@@ -51,8 +51,7 @@ object AssertionsMacro {
   (implicit refl: Reflection): Expr[Assertion] = {
 
     import refl._
-    import quoted.Toolbox.Default._
-
+    
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ ($helper)($bool, $clue, $pos) }
   }

@@ -27,8 +27,7 @@ object CompileMacro {
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertTypeErrorImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import quoted.Toolbox.Default._
-
+    
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
@@ -164,7 +163,6 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -216,14 +214,13 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
       if (!typing.typeChecks(code)) '{ Succeeded }
       else '{
-        val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
+        val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
@@ -232,24 +229,28 @@ object CompileMacro {
     self.unseal.underlyingArgument match {
       case Apply(
              Apply(
-               Select(
-                 Apply(
-                   Apply(
-                     _,
-                     List(
-                      Literal(String(code))
-                     )
-                   ),
-                   _
-                 ),
-                 methodNameTermName
-               ),
-               _
+               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(code)
+               )
              ),
              _
-           ) if methodNameTermName == methodName =>
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
         checkNotTypeCheck(code.toString)
+
+      case Apply(
+             Apply(
+               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
+               List(
+                 Literal(String(code))
+               )
+             ),
+             _
+           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
+        checkNotTypeCheck(code.toString)   
+
       case _ =>
         throw QuoteError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
     }
@@ -266,7 +267,6 @@ object CompileMacro {
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    import Term._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded

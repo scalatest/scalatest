@@ -149,13 +149,11 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "CanEqualSpec.scala",  // NotImplementedError
         "ChainSpec.scala",  // Compilation error to be investigated further
         "DecidersSpec.scala",  // Compilation error to be investigated further
         "DifferSpec.scala",  // Test failed when run to be investigate further.
         "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
         "EverySpec.scala",  // Compilation error to be investigated further
-        "FutureSugarSpec.scala",   // Implementation missing
         "NormalizationSpec.scala",  // Compilation error to be investigated further.
         "NormMethodsSpec.scala",  // Compilation error to be investigated further.
         "OrSpec.scala",  // Compilation error to be investigated further.
@@ -163,8 +161,7 @@ object GenScalacticDotty {
         "RequirementsSpec.scala",  // Error during macro expansion
         "SnapshotsSpec.scala",  // Pending macro implementation
         "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
-        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
-        "TrySugarSpec.scala"  // Not implemented error when test runs
+        "TripleEqualsSpec.for210"  // Old staff, we shall delete this soon.
       )) ++
     //copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)

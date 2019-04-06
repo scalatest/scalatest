@@ -72,16 +72,14 @@ private[scalatest] object MatchPatternMacro {
 
   def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
-
+    
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.and($notMatcher) }
   }
 
   def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
     import refl._
-    import quoted.Toolbox.Default._
-
+    
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.or($notMatcher) }
   }
