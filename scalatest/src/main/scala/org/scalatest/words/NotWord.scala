@@ -793,7 +793,7 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  def be(aType: ResultOfATypeInvocation[_]) = macro TypeMatcherMacro.notATypeMatcher
+  def be(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.notATypeMatcher
   
   /**
    * This method enables the following syntax:
@@ -803,7 +803,7 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  def be(anType: ResultOfAnTypeInvocation[_]) = macro TypeMatcherMacro.notAnTypeMatcher
+  def be(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.notAnTypeMatcher
 
   /**
    * This method enables the following syntax: 

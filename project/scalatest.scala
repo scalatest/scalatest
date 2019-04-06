@@ -170,7 +170,7 @@ object ScalatestBuild extends Build {
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
+      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.2.0")
       case other => Seq.empty
     }
 
@@ -412,7 +412,6 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
       moduleName := "scalactic",
-      //libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "1.1.0",
       sourceGenerators in Compile += {
         Def.task {
           GenScalacticJS.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++

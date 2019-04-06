@@ -130,7 +130,8 @@ object GenConfigMap {
           |
           |  override def +[A >: Any](kv: (String, A)): ConfigMap = new ConfigMap(underlying + kv)
           |
-          |  def remove(key: String): ConfigMap = new ConfigMap(underlying - key)
+          |  //def remove(key: String): ConfigMap = new ConfigMap(underlying - key)
+          |  def removed(key: String): ConfigMap = new ConfigMap(underlying - key)
           |
           |  override def empty: ConfigMap = new ConfigMap(Map.empty[String, Any])
           |
@@ -211,25 +212,6 @@ object GenConfigMap {
           |            throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef])), None, pos, None)
           |      case None => throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryNotFound(key)), None, pos, None)
           |    }
-          |  }
-          |
-          |  // https://github.com/scala/scala-dev/issues/562
-          |  // TODO: This is to fix the serialization problem in 2.13.0-M5, we should try to remove this when newer 2.13 release is available.
-          |
-          |  override protected[this] def writeReplace(): AnyRef = new java.io.Serializable {
-          |    @throws(classOf[java.io.IOException])
-          |    private def writeObject(out: java.io.ObjectOutputStream): Unit = {
-          |      out.writeObject(underlying)
-          |    }
-          |
-          |    var map: Map[String, Any] = _
-          |
-          |    @throws(classOf[java.io.IOException])
-          |    private def readObject(in: java.io.ObjectInputStream): Unit = {
-          |      map = in.readObject().asInstanceOf[Map[String, Any]]
-          |    }
-          |
-          |    protected[this] def readResolve(): Any = new ConfigMap(map)
           |  }
           |
           |}

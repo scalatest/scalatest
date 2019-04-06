@@ -191,7 +191,7 @@ private[scalatest] object MatchPatternMacro {
    *
    * org.scalatest.matchers.MatchPatternHelper.checkPatternMatcher(left, right)
    */
-  def matchPattern(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[_] = {
+  def matchPattern(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[Unit] = {
     import context.universe._
 
     val tree = right.tree
