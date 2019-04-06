@@ -76,7 +76,10 @@ private[scalatest] object TypeMatcherMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
                 newTermName("scalatest")
               ),
               newTermName("matchers")
@@ -112,7 +115,10 @@ private[scalatest] object TypeMatcherMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
                 newTermName("scalatest")
               ),
               newTermName("matchers")
@@ -147,7 +153,10 @@ private[scalatest] object TypeMatcherMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
                 newTermName("scalatest")
               ),
               newTermName("matchers")
@@ -181,7 +190,10 @@ private[scalatest] object TypeMatcherMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
                 newTermName("scalatest")
               ),
               newTermName("matchers")
@@ -353,7 +365,10 @@ private[scalatest] object TypeMatcherMacro {
                 Select(
                   Select(
                     Select(
-                      Ident(newTermName("org")),
+                      Select(
+                        Ident(newTermName("_root_")),
+                        newTermName("org")
+                      ),
                       newTermName("scalatest")
                     ),
                     newTermName("matchers")
@@ -407,7 +422,10 @@ private[scalatest] object TypeMatcherMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
+                    Select(
+                      Ident(newTermName("_root_")),
+                      newTermName("org")
+                    ),
                     newTermName("scalatest")
                   ),
                   newTermName("matchers")
@@ -460,7 +478,10 @@ private[scalatest] object TypeMatcherMacro {
                 Select(
                   Select(
                     Select(
-                      Ident(newTermName("org")),
+                      Select(
+                        Ident(newTermName("_root_")),
+                        newTermName("org")
+                      ),
                       newTermName("scalatest")
                     ),
                     newTermName("matchers")
@@ -506,7 +527,10 @@ private[scalatest] object TypeMatcherMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
+                    Select(
+                      Ident(newTermName("_root_")),
+                      newTermName("org")
+                    ),
                     newTermName("scalatest")
                   ),
                   newTermName("matchers")
