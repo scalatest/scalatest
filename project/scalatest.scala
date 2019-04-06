@@ -788,7 +788,6 @@ object ScalatestBuild extends Build {
       //jsEnv := PhantomJSEnv().value,
       //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
-      jsEnv := NodeJSEnv(args = Seq("--max_old_space_size=4096")).value, 
       parallelExecution in Test := false,
       fork in Test := false,
       testOptions in Test := scalatestTestJSOptions,
