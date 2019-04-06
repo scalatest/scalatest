@@ -23,7 +23,7 @@ class ResultOfAfterWordApplicationSpec extends FunSpec {
   describe("ResultOfAfterWordApplication ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfAfterWordApplication("some description", () => Unit)
+      val result = new ResultOfAfterWordApplication("some description", () => ())
       result.toString should be ("some description")
     }
   }
