@@ -231,7 +231,7 @@ object ScalatestBuild {
       "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
     )
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.27")
 
   def scalatestJSLibraryDependencies =
     Seq(
