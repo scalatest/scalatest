@@ -556,23 +556,24 @@ class NonEmptyListSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe 4
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4)
 
     val es = NonEmptyList("one", "two", "three", "four", "five")
-    es.indexOfSlice(List("one", "two")) shouldBe 0;
-    es.indexOfSlice(List("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(List("ONE", "TWO")) shouldBe -1;
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(List("one", "two")) shouldBe el.indexOfSlice(List("one", "two"));
+    es.indexOfSlice(List("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(List("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"));
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(List("one", "two")) shouldBe 0;
@@ -580,20 +581,21 @@ class NonEmptyListSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe 4
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1)
 
     val es = NonEmptyList("one", "two", "three", "four", "five")
-    es.indexOfSlice(Every("one", "two")) shouldBe 0;
-    es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1;
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(Every("one", "two")) shouldBe el.indexOfSlice(Every("one", "two"));
+    es.indexOfSlice(Every("one", "two"), 1) shouldBe el.indexOfSlice(Every("one", "two"), 1)
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe el.indexOfSlice(Every("ONE", "TWO"));
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(Every("one", "two")) shouldBe 0;
@@ -601,20 +603,21 @@ class NonEmptyListSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyList" in {
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3)) shouldBe 1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5)) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5)) shouldBe 4
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5)) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0) shouldBe 0
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1) shouldBe 0
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1)
 
     val es = NonEmptyList("one", "two", "three", "four", "five")
-    es.indexOfSlice(NonEmptyList("one", "two")) shouldBe 0;
-    es.indexOfSlice(NonEmptyList("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe -1;
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(NonEmptyList("one", "two")) shouldBe el.indexOfSlice(NonEmptyList("one", "two"));
+    es.indexOfSlice(NonEmptyList("one", "two"), 1) shouldBe el.indexOfSlice(NonEmptyList("one", "two"), 1)
+    es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe el.indexOfSlice(NonEmptyList("ONE", "TWO"));
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(NonEmptyList("one", "two")) shouldBe 0;
