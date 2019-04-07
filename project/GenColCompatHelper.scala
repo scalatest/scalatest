@@ -45,7 +45,22 @@ object GenColCompatHelper {
           |
           |  def aggregate[A, B](col: Iterable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.foldLeft(z)(seqop)
           |
-          |  def className(col: scala.collection.Iterable[_]): String = org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
+          |  type Factory[-A, +C] = scala.collection.Factory[A, C]
+          |
+          |  object Factory {}
+          |
+          |  def className(col: scala.collection.Iterable[_]): String = {
+          |    val colToString = col.toString
+          |    val bracketIdx = colToString.indexOf("(")
+          |    if (bracketIdx >= 0)
+          |      colToString.take(bracketIdx)
+          |    else
+          |      org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
+          |  }
+          |
+          |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
+          |
+          |  type StringOps = scala.collection.StringOps
           |}
         """.stripMargin
       else
@@ -74,6 +89,34 @@ object GenColCompatHelper {
           |
           |  def className(col: scala.collection.GenTraversable[_]): String = col.stringPrefix
           |
+          |  type Factory[-A, +C] = scala.collection.generic.CanBuildFrom[Nothing, A, C] // Ideally, this would be an opaque type
+          |
+          |  object Factory {
+          |
+          |    def simpleCBF[A, C](f: => scala.collection.mutable.Builder[A, C]): scala.collection.generic.CanBuildFrom[Any, A, C] =
+          |      new scala.collection.generic.CanBuildFrom[Any, A, C] {
+          |        def apply(from: Any): scala.collection.mutable.Builder[A, C] = apply()
+          |        def apply(): scala.collection.mutable.Builder[A, C]          = f
+          |      }
+          |
+          |    implicit def fromCanBuildFrom[A, C](implicit cbf: scala.collection.generic.CanBuildFrom[Nothing, A, C]): Factory[A, C] =
+          |      cbf.asInstanceOf[Factory[A, C]]
+          |
+          |    implicit def fromCanBuildFromConversion[X, A, C](x: X)(
+          |      implicit toCanBuildFrom: X => scala.collection.generic.CanBuildFrom[Nothing, A, C]): Factory[A, C] =
+          |      fromCanBuildFrom(toCanBuildFrom(x))
+          |
+          |    implicit def genericCompanionToCBF[A, CC[X] <: scala.collection.GenTraversable[X]](
+          |      fact: scala.collection.generic.GenericCompanion[CC]): scala.collection.generic.CanBuildFrom[Any, A, CC[A]] =
+          |      simpleCBF(fact.newBuilder[A])
+          |
+          |    implicit def arrayCompanionToCBF[A: scala.reflect.ClassTag](fact: Array.type): scala.collection.generic.CanBuildFrom[Any, A, Array[A]] =
+          |      simpleCBF(Array.newBuilder[A])
+          |  }
+          |
+          |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.apply()
+          |
+          |  type StringOps = scala.collection.immutable.StringOps
           |}
         """.stripMargin
     Seq(

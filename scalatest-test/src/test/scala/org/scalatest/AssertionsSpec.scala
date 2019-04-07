@@ -261,53 +261,49 @@ class AssertionsSpec extends FunSpec {
   def wasTrue(left: String): String =
     left + " was true"
 
-  def quoteString(value: Any): String =
-    value match {
-      case s: String => "\"" + value + "\""
-      case _ => value.toString
-    }
+  def prettify(value: Any): String = Prettifier.default.apply(value)
 
   def didNotStartWith(left: Any, right: Any): String =
-    quoteString(left) + " did not start with " + quoteString(right)
+    prettify(left) + " did not start with " + prettify(right)
 
   def startedWith(left: Any, right: Any): String =
-    quoteString(left) + " started with " + quoteString(right)
+    prettify(left) + " started with " + prettify(right)
 
   def didNotEndWith(left: Any, right: Any): String =
-    quoteString(left) + " did not end with " + quoteString(right)
+    prettify(left) + " did not end with " + prettify(right)
 
   def endedWith(left: Any, right: Any): String =
-    quoteString(left) + " ended with " + quoteString(right)
+    prettify(left) + " ended with " + prettify(right)
 
   def didNotContain(left: Any, right: Any): String =
-    quoteString(left) + " did not contain " + quoteString(right)
+    prettify(left) + " did not contain " + prettify(right)
 
   def contained(left: Any, right: Any): String =
-    quoteString(left) + " contained " + quoteString(right)
+    prettify(left) + " contained " + prettify(right)
 
   def didNotContainKey(left: Any, right: Any): String =
-    Prettifier.default(left) + " did not contain key " + quoteString(right)
+    prettify(left) + " did not contain key " + prettify(right)
 
   def containedKey(left: Any, right: Any): String =
-    Prettifier.default(left) + " contained key " + quoteString(right)
+    prettify(left) + " contained key " + prettify(right)
 
   def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    quoteString(left) + " was not the same instance as " + quoteString(right)
+    prettify(left) + " was not the same instance as " + prettify(right)
 
   def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    quoteString(left) + " was the same instance as " + quoteString(right)
+    prettify(left) + " was the same instance as " + prettify(right)
 
   def wasNotEmpty(left: Any): String =
-    quoteString(left) + " was not empty"
+    prettify(left) + " was not empty"
 
   def wasEmpty(left: Any): String =
-    quoteString(left) + " was empty"
+    prettify(left) + " was empty"
 
   def wasNotInstanceOf(left: Any, className: String) =
-    quoteString(left) + " was not instance of " + className
+    prettify(left) + " was not instance of " + className
 
   def wasInstanceOf(left: Any, className: String) =
-    quoteString(left) + " was instance of " + className
+    prettify(left) + " was instance of " + className
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
     FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, actual, expected)

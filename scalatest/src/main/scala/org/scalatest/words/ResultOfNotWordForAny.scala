@@ -1091,7 +1091,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.matchPattern
+  def matchPattern(right: PartialFunction[Any, _]): Unit = macro MatchPatternMacro.matchPattern
   
   /**
    * Overrides toString to return pretty text.

@@ -179,6 +179,16 @@ if [[ $MODE = 'genGenTests' ]] ; then
   exit $rc
 fi
 
+if [[ $MODE = 'genScalaCheckGenTests' ]] ; then
+  echo "Doing 'sbt genScalaCheckGenTests/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION genScalaCheckGenTests/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
 if [[ $MODE = 'genTablesTests' ]] ; then
   echo "Doing 'sbt genTablesTests/test'"
 

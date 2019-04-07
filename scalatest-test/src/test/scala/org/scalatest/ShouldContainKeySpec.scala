@@ -571,8 +571,7 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should contain key ("three")
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\"")
+        assert(caught1.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"three\"")
       }
 
       it("should throw TestFailedException if contains the specified key when used with not") {
@@ -580,20 +579,17 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain key ("two"))
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
-
+        assert(caught1.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
+        
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should not (contain key ("two"))
         }
-        //assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
-
+        assert(caught2.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
+        
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should not contain key ("two")
         }
-        //assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
+        assert(caught3.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression") {
@@ -601,20 +597,17 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { contain key ("five") and (contain key ("two")) }
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
-
+        assert(caught1.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"five\"")
+        
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((contain key ("five")) and (contain key ("two")))
         }
-        //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
-
+        assert(caught2.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"five\"")
+        
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (contain key ("five") and contain key ("two"))
         }
-        //assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
+        assert(caught3.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"five\"")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression") {
@@ -622,20 +615,17 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { contain key ("fifty five") or (contain key ("twenty two")) }
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
+        assert(caught1.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"fifty five\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"twenty two\"")
 
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((contain key ("fifty five")) or (contain key ("twenty two")))
         }
-        //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
+        assert(caught2.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"fifty five\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"twenty two\"")
 
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (contain key ("fifty five") or contain key ("twenty two"))
         }
-        // assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
+        assert(caught3.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"fifty five\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"twenty two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-and expression with not") {
@@ -643,20 +633,17 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { not { contain key ("three") } and not { contain key ("two") }}
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
-
+        assert(caught1.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"three\", but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
+        
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((not contain key ("three")) and (not contain key ("two")))
         }
-        //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
+        assert(caught2.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"three\", but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain key ("three") and not contain key ("two"))
         }
-        //assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
+        assert(caught3.getMessage == Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain key \"three\", but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
       }
 
       it("should throw an TestFailedException when map contains specified key and used in a logical-or expression with not") {
@@ -664,20 +651,17 @@ class ShouldContainKeySpec extends FunSpec with Checkers with ReturnsNormallyThr
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("two") }}
         }
-        //assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
-
+        assert(caught1.getMessage === Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
+        
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("two")))
         }
-        //assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
+        assert(caught2.getMessage === Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("two"))
         }
-        //assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
-        caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
+        assert(caught3.getMessage === Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
       }
 
       // SKIP-SCALATESTJS-START

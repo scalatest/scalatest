@@ -38,6 +38,7 @@ env:
     - MODE=genMustMatchersTests3
     - MODE=genMustMatchersTests4
     - MODE=genGenTests
+    - MODE=genScalaCheckGenTests
     - MODE=genTablesTests
     - MODE=genInspectorsTests
     - MODE=genInspectorsShorthandsTests1

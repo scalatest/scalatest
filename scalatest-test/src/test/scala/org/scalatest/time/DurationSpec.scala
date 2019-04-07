@@ -20,6 +20,8 @@ import scala.concurrent.duration._
 
 class DurationSpec extends FunSpec with Matchers {
 
+  import scala.language.postfixOps
+
   def span(passed: Span): Span = passed
   def duration(passed: Duration): Duration = passed
   def finiteDuration(passed: FiniteDuration): FiniteDuration = passed

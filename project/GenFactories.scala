@@ -1518,7 +1518,7 @@ $endif$
      *                         ^
      * </pre>
      */
-     def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.andNotMatchPatternMatcher
+     def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.andNotMatchPatternMatcher
   }
                     """
 
@@ -2812,7 +2812,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.orNotMatchPatternMatcher
+    def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.orNotMatchPatternMatcher
   }
 
   /**
