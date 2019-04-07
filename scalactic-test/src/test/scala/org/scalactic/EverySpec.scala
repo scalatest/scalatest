@@ -480,18 +480,18 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe 4
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4)
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1

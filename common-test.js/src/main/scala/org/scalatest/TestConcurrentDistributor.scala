@@ -18,5 +18,5 @@ class TestConcurrentDistributor(poolSize: Int) extends Distributor {
     status
   }
 
-  def waitUntilDone() = Unit
+  def waitUntilDone() = ()
 }

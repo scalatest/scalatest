@@ -136,23 +136,23 @@ and using Java 8 (for Scala 2.12 and 2.13):
     $ sbt ++2.12.8 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.12.8 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.0-M4 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.0-M4 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.13.0-M4 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.0-M4 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0-RC1 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.0-RC1 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.0-RC1 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0-RC1 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
-    $ export SCALAJS_VERSION=0.6.26
+    $ export SCALAJS_VERSION=0.6.27
     $ sbt ++2.10.7 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ export SCALAJS_VERSION=1.0.0-M3
+    $ export SCALAJS_VERSION=1.0.0-M7
     $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
   
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12 and 2.13, and make sure you're on Java 8) to Sonatype, use the following command:
 
-    $ export SCALAJS_VERSION=0.6.26
+    $ export SCALAJS_VERSION=0.6.27
     $ sbt ++2.12.8 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.0-M5 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ export SCALAJS_VERSION=1.0.0-M3
+    $ sbt ++2.13.0-RC1 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
+    $ export SCALAJS_VERSION=1.0.0-M7
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
