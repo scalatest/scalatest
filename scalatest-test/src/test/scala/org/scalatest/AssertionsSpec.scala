@@ -890,37 +890,37 @@ class AssertionsSpec extends AnyFunSpec {
       assert(a == 3 && { println("hi"); b == 5})
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else // for dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assert({ println("hi"); b == 5} && a == 3)
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
 
     it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")))
@@ -958,7 +958,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s1 startsWith "hi")
       assert(s1.startsWith("hi"))
     }
-    // SKIP-DOTTY-START
+    
     it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
       val e1 = intercept[TestFailedException] {
         assert(s2 startsWith "hi")
@@ -1064,6 +1064,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assert(s3 contains "hi")
       assert(s3.contains("hi"))
@@ -1236,7 +1237,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-
+    
     it("should do nothing when is used to check ci1 eq ci3") {
       assert(ci1 eq ci3)
       assert(ci1.eq(ci3))
@@ -2350,37 +2351,37 @@ class AssertionsSpec extends AnyFunSpec {
       assert(a == 3 && { println("hi"); b == 5}, ", dude")
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       assert({ println("hi"); b == 5} && a == 3, ", dude")
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
 
     it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")), "should not fail!")
@@ -2419,7 +2420,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s1.startsWith("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
       val e1 = intercept[TestFailedException] {
         assert(s2 startsWith "hi", ", dude")
@@ -2525,6 +2525,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assert(s3 contains "hi", ", dude")
       assert(s3.contains("hi"), ", dude")
@@ -3801,40 +3802,38 @@ class AssertionsSpec extends AnyFunSpec {
       assume(a == 3 && { println("hi"); b == 5})
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3})
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assume({ println("hi"); b == 5} && a == 3)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5)
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should preserve side effects when Apply with single argument is passed in") {
       assume(neverRuns1(sys.error("Sad times 1")))
     }
@@ -3872,8 +3871,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(s1.startsWith("hi"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s2 startsWith "hi")
@@ -3889,15 +3886,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check ci1 startsWith 1") {
       assume(ci1 startsWith 1)
       assume(ci1.startsWith(1))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
       val e1 = intercept[TestCanceledException] {
         assume(ci2 startsWith 1)
@@ -3913,14 +3907,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       assume(!s2.startsWith("hi"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s1.startsWith("hi"))
@@ -3929,15 +3920,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       assume(s2 endsWith "hi")
       assume(s2.endsWith("hi"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s1 endsWith "hi")
@@ -3953,15 +3941,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check ci2 endsWith 1") {
       assume(ci2 endsWith 1)
       assume(ci2.endsWith(1))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 endsWith 1)
@@ -3977,14 +3962,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       assume(!s1.endsWith("hi"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s2.endsWith("hi"))
@@ -3993,8 +3975,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assume(s3 contains "hi")
       assume(s3.contains("hi"))
@@ -5396,40 +5377,38 @@ class AssertionsSpec extends AnyFunSpec {
       assume(a == 3 && { println("hi"); b == 5}, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       assume({ println("hi"); b == 5} && a == 3, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is usesd to { println(\"hi\"); b == 5} && a == 5") {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
-      else
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
         assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should preserve side effects when Apply with single argument is passed in") {
       assume(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -5467,8 +5446,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(s1.startsWith("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s2 startsWith "hi", ", dude")
@@ -5484,15 +5461,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci1 startsWith 1") {
       assume(ci1 startsWith 1, ", dude")
       assume(ci1.startsWith(1), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
       val e1 = intercept[TestCanceledException] {
         assume(ci2 startsWith 1, ", dude")
@@ -5508,14 +5482,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       assume(!s2.startsWith("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s1.startsWith("hi"), ", dude")
@@ -5524,15 +5495,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       assume(s2 endsWith "hi", ", dude")
       assume(s2.endsWith("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s1 endsWith "hi", ", dude")
@@ -5548,15 +5516,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci2 endsWith 1") {
       assume(ci2 endsWith 1, ", dude")
       assume(ci2.endsWith(1), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 endsWith 1, ", dude")
@@ -5572,14 +5537,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       assume(!s1.endsWith("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s2.endsWith("hi"), ", dude")
@@ -5588,7 +5550,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assume(s3 contains "hi", ", dude")

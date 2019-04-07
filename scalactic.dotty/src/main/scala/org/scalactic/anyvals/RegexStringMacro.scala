@@ -48,7 +48,7 @@ private[scalactic] object RegexStringMacro {
 
     val notValidExceptionMsg: String = {
       value.unseal match {
-          case Term.Literal(stringConst) =>
+          case Literal(stringConst) =>
             checkIsValid(stringConst.value.toString)._2
           case _ =>
             ""
