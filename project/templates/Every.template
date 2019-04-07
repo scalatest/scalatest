@@ -537,9 +537,9 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * That is, every key <code>k</code> is bound to an <code>Every</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
    * </p>
    */
-  final def groupBy[K](f: T => K): Map[K, Every[T]] = {
+  final def groupBy[K](f: T => K) = {
     val mapKToVec = underlying.groupBy(f)
-    mapKToVec.mapValues { vec => Every(vec.head, vec.tail: _*) }
+    (mapKToVec.mapValues { vec => Every(vec.head, vec.tail: _*) }).toMap
   }
 
   /**

@@ -25,6 +25,7 @@ import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import org.scalactic.Every
+import org.scalactic.Resources
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -580,8 +581,12 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @return An iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last will be truncated if the characters don't divide evenly.
     */
   final def grouped(size: Int): Iterator[NonEmptyString] = {
-    val itOfString = theString.grouped(size)
-    itOfString.map { list => new NonEmptyString(list) }
+    if (size > 0) {
+      val itOfString = theString.grouped(size)
+      itOfString.map { list => new NonEmptyString(list) }
+    }
+    else
+      throw new IllegalArgumentException(Resources.invalidSize(size))
   }
 
   /**

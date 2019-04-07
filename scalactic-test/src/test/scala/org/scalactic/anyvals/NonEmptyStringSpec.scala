@@ -451,23 +451,24 @@ class NonEmptyStringSpec extends UnitSpec {
     }
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    NonEmptyString("12345").indexOfSlice(List('2', '3')) shouldBe 1
-    NonEmptyString("12345").indexOfSlice(List('2', '3'), 3) shouldBe -1
-    NonEmptyString("12345").indexOfSlice(List('2', '3', '5'), 3) shouldBe -1
-    NonEmptyString("12345").indexOfSlice(List('2', '3', '5')) shouldBe -1
-    NonEmptyString("12345").indexOfSlice(List('5')) shouldBe 4
-    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5')) shouldBe 0
-    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 0) shouldBe 0
-    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 1) shouldBe -1
-    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), -1) shouldBe 0
-    NonEmptyString("12345").indexOfSlice(List.empty) shouldBe 0
-    NonEmptyString("12345").indexOfSlice(List.empty, 6) shouldBe -1
-    NonEmptyString("12345").indexOfSlice(List.empty, 4) shouldBe 4
+    NonEmptyString("12345").indexOfSlice(List('2', '3')) shouldBe "12345".indexOfSlice(List('2', '3'))
+    NonEmptyString("12345").indexOfSlice(List('2', '3'), 3) shouldBe "12345".indexOfSlice(List('2', '3'), 3)
+    NonEmptyString("12345").indexOfSlice(List('2', '3', '5'), 3) shouldBe "12345".indexOfSlice(List('2', '3', '5'), 3)
+    NonEmptyString("12345").indexOfSlice(List('2', '3', '5')) shouldBe "12345".indexOfSlice(List('2', '3', '5'))
+    NonEmptyString("12345").indexOfSlice(List('5')) shouldBe "12345".indexOfSlice(List('5'))
+    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5')) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'))
+    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 0) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), 0)
+    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 1) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), 1)
+    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), -1) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), -1)
+    NonEmptyString("12345").indexOfSlice(List.empty) shouldBe "12345".indexOfSlice(List.empty)
+    NonEmptyString("12345").indexOfSlice(List.empty, 6) shouldBe "12345".indexOfSlice(List.empty, 6)
+    NonEmptyString("12345").indexOfSlice(List.empty, 4) shouldBe "12345".indexOfSlice(List.empty, 4)
 
     val es = NonEmptyString("abcde")
-    es.indexOfSlice(List('a', 'b')) shouldBe 0;
-    es.indexOfSlice(List('a', 'b'), 1) shouldBe -1
-    es.indexOfSlice(List('A', 'B')) shouldBe -1;
+    val s = "abcde"
+    es.indexOfSlice(List('a', 'b')) shouldBe s.indexOfSlice(List('a', 'b'));
+    es.indexOfSlice(List('a', 'b'), 1) shouldBe s.indexOfSlice(List('a', 'b'), 1)
+    es.indexOfSlice(List('A', 'B')) shouldBe s.indexOfSlice(List('A', 'B'));
     {
       implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(List('a', 'b')) shouldBe 0;

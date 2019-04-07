@@ -192,7 +192,7 @@ object Prettifier {
             case null => "null"
             case aUnit: Unit => "<(), the Unit value>"
             case aString: String => "\"" + aString + "\""
-            case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
+            case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
             case aChar: Char =>  "\'" + aChar + "\'"
             case Some(e) => "Some(" + apply(e) + ")"
             case Success(e) => "Success(" + apply(e) + ")"
@@ -205,7 +205,7 @@ object Prettifier {
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
-            case aGenMap: GenMap[_, _] =>
+            case aGenMap: scala.collection.GenMap[_, _] =>
               ColCompatHelper.className(aGenMap) + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
