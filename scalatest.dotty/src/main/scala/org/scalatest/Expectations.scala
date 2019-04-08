@@ -21,7 +21,13 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
+import scala.tasty._
+import scala.quoted._
+
 private[scalatest] trait Expectations {
+
+  inline def (inline x: String) stripMargin <: String =
+    ${ Expectations.stripMarginImpl(x) }
 
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
@@ -130,6 +136,8 @@ private[scalatest] trait Expectations {
 }
 
 object Expectations extends Expectations {
+  def stripMarginImpl(x: String)(implicit refl: Reflection): Expr[String] =
+    new scala.collection.immutable.StringOps(x).stripMargin.toExpr
 
   class ExpectationsHelper {
 
