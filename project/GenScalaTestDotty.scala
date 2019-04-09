@@ -178,10 +178,10 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "AssertionsSpec.scala", 
+        "AssertionsSpec.scala",
         "ExpectationsSpec.scala",
-        "ShouldCompileSpec.scala", 
-        "ShouldNotCompileSpec.scala", 
+        "ShouldCompileSpec.scala",
+        "ShouldNotCompileSpec.scala",
         "ShouldNotTypeCheckSpec.scala"
       )
     ) /*++

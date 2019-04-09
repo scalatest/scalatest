@@ -31,7 +31,6 @@ private[scalatest] object DiagrammedAssertionsMacro {
     prettifier: Expr[Prettifier],
     pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
 
     val startLine = refl.rootPosition.startLine // Get the expression first line number
     val endLine = refl.rootPosition.endLine // Get the expression last line number
