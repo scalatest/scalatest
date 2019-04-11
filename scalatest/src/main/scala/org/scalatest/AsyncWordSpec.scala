@@ -236,10 +236,8 @@ package org.scalatest
  * 
  * <p>
  * On both the JVM and Scala.js, the default execution context provided by ScalaTest's asynchronous
- * testing styles confines execution to a single thread per test. On JavaScript, where single-threaded
- * execution is the only possibility, the default execution context is
- * <code>scala.scalajs.concurrent.JSExecutionContext.Implicits.queue</code>. On the JVM, 
- * the default execution context is a <em>serial execution context</em> provided by ScalaTest itself.
+ * testing styles confines execution to a single thread per test, which is a <em>serial execution context</em>
+ * provided by ScalaTest itself.
  * </p>
  * 
  * <p>
