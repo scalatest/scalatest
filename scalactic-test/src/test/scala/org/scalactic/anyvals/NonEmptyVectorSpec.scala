@@ -135,9 +135,12 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3)(1) shouldEqual 2
     NonEmptyVector("hi")(0) shouldEqual "hi"
     NonEmptyVector(7, 8, 9)(2) shouldEqual 9
+    val vectorOutOfBoundException = intercept[IndexOutOfBoundsException] {
+      Vector(1, 2, 3)(3)
+    }
     the [IndexOutOfBoundsException] thrownBy {
       NonEmptyVector(1, 2, 3)(3)
-    } should have message "3"
+    } should have message vectorOutOfBoundException.getMessage
   }
   it should "have a length method" in {
     NonEmptyVector(1).length shouldBe 1

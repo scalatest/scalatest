@@ -37,7 +37,7 @@ final class MatchPatternWord {
    *               ^
    * </pre>
    */
-  def apply(right: PartialFunction[Any, _]) = macro MatchPatternMacro.matchPatternMatcher
+  def apply(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.matchPatternMatcher
 
   /**
    * Overrides toString to return "matchPattern"

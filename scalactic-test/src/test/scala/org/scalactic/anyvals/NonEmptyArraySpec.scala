@@ -1470,7 +1470,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1).updated(0, 2) shouldBe NonEmptyArray(2)
     def willThrowIndexOutOfBoundsException(): Unit = {
       NonEmptyArray(1).updated(1, 2)
-      Unit
+      ()
     }
     an [IndexOutOfBoundsException] should be thrownBy {
       willThrowIndexOutOfBoundsException()

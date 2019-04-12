@@ -1847,7 +1847,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      **/
-    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.andNotMatchPatternMatcher
+    def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.andNotMatchPatternMatcher
   }
 
   /**
@@ -3128,7 +3128,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      **/
-    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.orNotMatchPatternMatcher
+    def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.orNotMatchPatternMatcher
   }
 
   /**
