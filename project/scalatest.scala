@@ -1209,7 +1209,7 @@ object ScalatestBuild {
         Def.task {
           GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
-      }, 
+      },
       sourceGenerators in Test +=
         Def.task {
           GenGen.genTestForNative((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -2133,8 +2133,8 @@ object ScalatestBuild {
 
   import dotty.tools.sbtplugin.DottyPlugin.autoImport._
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
-  //lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.14.0-bin-20190403-d00a7ba-NIGHTLY"
+  lazy val dottyVersion = dottyLatestNightlyBuild.get
+  // lazy val dottyVersion = "0.14.0-bin-20190403-d00a7ba-NIGHTLY"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),

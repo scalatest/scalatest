@@ -22,7 +22,7 @@ import scala.tasty._
 /**
  * Macro implementation that provides rich error message for boolean expression assertion.
  */
-private[scalatest] object ExpectationsMacro {
+object ExpectationsMacro {
 
   def expect(condition: Expr[Boolean])(prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
     import refl._

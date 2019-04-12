@@ -21,10 +21,12 @@ import scala.tasty._
 object BooleanMacro {
   def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Bool] = {
     import refl._
-    implicit val toolbox: scala.quoted.Toolbox = scala.quoted.Toolbox.make(this.getClass.getClassLoader)
     import util._
 
-    def exprStr: String = condition.show
+    // TODO: remove once `Expr[T].show` handles color correctly
+    def (str: String) clean: String = str.replaceAll("\u001B\\[[;\\d]*m", "")
+
+    def exprStr: String = condition.show.clean
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${exprStr.toExpr}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
