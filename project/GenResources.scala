@@ -22,6 +22,8 @@ trait GenResources {
 
   val generatorSource = new File("GenResources.scala")
 
+  def packagePrefix: String
+
   def packageName: String
 
   def resourcesTemplate(methods: String): String
@@ -117,7 +119,7 @@ trait GenResources {
 trait GenResourcesJVM extends GenResources {
 
   def resourcesTemplate(methods: String): String =
-    s"""package org.$packageName
+    s"""package $packagePrefix.$packageName
        |
        |import java.util.ResourceBundle
        |import java.text.MessageFormat
@@ -142,7 +144,7 @@ trait GenResourcesJVM extends GenResources {
     """.stripMargin
 
   def failureMessagesTemplate(methods: String): String =
-    s"""package org.$packageName
+    s"""package $packagePrefix.$packageName
        |
        |private[$packageName] object FailureMessages {
        |
@@ -168,17 +170,19 @@ trait GenResourcesJVM extends GenResources {
 }
 
 object ScalacticGenResourcesJVM extends GenResourcesJVM {
+  def packagePrefix: String = "org"
   def packageName: String = "scalactic"
   def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
 
 }
 
 object ScalaTestGenResourcesJVM extends GenResourcesJVM {
+  def packagePrefix: String = "org"
   def packageName: String = "scalatest"
   def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 
   override def resourcesTemplate(methods: String): String =
-    s"""package org.$packageName
+    s"""package $packagePrefix.$packageName
         |
         |import java.util.ResourceBundle
         |import java.text.MessageFormat
@@ -210,7 +214,7 @@ object ScalaTestGenResourcesJVM extends GenResourcesJVM {
 trait GenResourcesJSVM extends GenResources {
 
   def resourcesTemplate(methods: String): String =
-    s"""package org.$packageName
+    s"""package $packagePrefix.$packageName
         |
         |private[$packageName] object Resources {
         |
@@ -230,7 +234,7 @@ trait GenResourcesJSVM extends GenResources {
     """.stripMargin
 
   def failureMessagesTemplate(methods: String): String =
-    s"""package org.$packageName
+    s"""package $packagePrefix.$packageName
         |
         |private[$packageName] object FailureMessages {
         |
@@ -269,11 +273,19 @@ trait GenResourcesJSVM extends GenResources {
 }
 
 object ScalacticGenResourcesJSVM extends GenResourcesJSVM {
+  def packagePrefix: String = "org"
   def packageName: String = "scalactic"
   def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
 }
 
 object ScalaTestGenResourcesJSVM extends GenResourcesJSVM {
+  def packagePrefix: String = "org"
   def packageName: String = "scalatest"
   def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+}
+
+object ScalaTestGenScalaCheckResourcesJSVM extends GenResourcesJSVM {
+  def packagePrefix: String = "org.scalatestplus"
+  def packageName: String = "scalacheck"
+  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatestplus/scalacheck/MessageBundle.properties")
 }
