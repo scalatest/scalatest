@@ -25,7 +25,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
 
   describe("The expectResult method") {
     it("should give a correct Fact result when the expectation fails") {
-      val fact = expectResult(3) { 2 } 
+      val fact = expectResult(3) { 2 }
       assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 2")
       assert(fact.simplifiedFactMessage == "3 did not equal 2")
@@ -43,7 +43,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(!fact.isVacuousYes)
     }
     it("should give a correct Fact result when the expectation succeeds") {
-      val fact = expectResult(3) { 3 } 
+      val fact = expectResult(3) { 3 }
       assert(fact.isYes)
       assert(fact.factMessage  == "Expected 3, and got 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
@@ -118,11 +118,11 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact2.isNo)
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
-        "No(" + NEWLINE + 
-        "  Yes(expected 3, and got 3) &&" + NEWLINE + 
-        "  No(" + NEWLINE + 
-        "    !Yes(expected 4, and got 4)" + NEWLINE + 
-        "  )" + NEWLINE + 
+        "No(" + NEWLINE +
+        "  Yes(expected 3, and got 3) &&" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    !Yes(expected 4, and got 4)" + NEWLINE +
+        "  )" + NEWLINE +
         ")"
       )
       assert(!fact2.isVacuousYes)
@@ -206,7 +206,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "      !Yes(expected 4, and got 4)" + NEWLINE +
         "    )" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE + 
+        "  No(expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(fact.toString ==
@@ -324,6 +324,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
     }
   }
 
+  // SKIP-DOTTY-START
   describe("The expectThrows method") {
     it("should catch subtypes") {
       class MyException extends RuntimeException
@@ -368,6 +369,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
       }
     }
   }
+  // SKIP-DOTTY-END
 
   describe("The expect method") {
 
@@ -525,6 +527,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact = expectCompiles("val a: String = 2")
         assert(fact.isInstanceOf[Fact.Leaf])
@@ -545,6 +548,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
 
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
 
       it("should return Yes with correct fact message when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -581,6 +585,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact =
           expectCompiles(
@@ -620,6 +625,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           ))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
 
       it("should return Yes with correct fact message when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -663,6 +669,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact = expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
@@ -673,6 +680,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
 
       it("should return Yes with correct fact message when used with 'val i: Int = null'") {
         val fact = expectTypeError("val i: Int = null")
@@ -735,6 +743,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact =
           expectTypeError(
@@ -756,6 +765,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           ))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
 
       it("should return Yes with correct fact message when used with 'val i: Int = null'") {
         val fact =

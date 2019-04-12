@@ -27,7 +27,7 @@ object CompileMacro {
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertTypeErrorImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    
+
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
@@ -54,7 +54,7 @@ object CompileMacro {
        }
     else
       '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
+          val messageExpr = Resources.gotTypeErrorAsExpected(${ code.toExpr })
 
           Fact.Yes(
             messageExpr,
@@ -86,7 +86,7 @@ object CompileMacro {
 
     if (typing.typeChecks(code))
       '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
+          val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
           Fact.No(
             messageExpr,
             messageExpr,
@@ -100,7 +100,7 @@ object CompileMacro {
        }
     else
       '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
+          val messageExpr = Resources.didNotCompile(${ code.toExpr })
 
           Fact.Yes(
             messageExpr,
@@ -131,7 +131,7 @@ object CompileMacro {
 
     if (typing.typeChecks(code))
       '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
+          val messageExpr = Resources.compiledSuccessfully(${ code.toExpr })
           Fact.Yes(
             messageExpr,
             messageExpr,
@@ -145,7 +145,7 @@ object CompileMacro {
        }
     else
       '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
+          val messageExpr = Resources.expectedNoErrorButGotTypeError("", ${ code.toExpr })
 
           Fact.No(
             messageExpr,
@@ -174,7 +174,7 @@ object CompileMacro {
       }
 
     self.unseal.underlyingArgument match {
-      
+
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
@@ -196,7 +196,7 @@ object CompileMacro {
              ),
              _
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        checkNotCompile(code.toString)     
+        checkNotCompile(code.toString)
 
       case other =>
         throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
@@ -209,7 +209,7 @@ object CompileMacro {
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
   def mustNotCompileImpl(self: Expr[MustMatchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
-    assertNotCompileImpl(self, compileWord, pos)("must")  
+    assertNotCompileImpl(self, compileWord, pos)("must")
 
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
@@ -249,7 +249,7 @@ object CompileMacro {
              _
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
-        checkNotTypeCheck(code.toString)   
+        checkNotTypeCheck(code.toString)
 
       case _ =>
         throw QuoteError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
@@ -301,7 +301,7 @@ object CompileMacro {
              _
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkCompile(code.toString)    
+        checkCompile(code.toString)
 
       case other =>
         println("###other: " + other)

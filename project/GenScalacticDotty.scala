@@ -159,7 +159,6 @@ object GenScalacticDotty {
         "OrSpec.scala",  // Compilation error to be investigated further.
         "PrettifierSpec.scala",  // Test failed with java.lang.IllegalAccessException
         "RequirementsSpec.scala",  // Error during macro expansion
-        "SnapshotsSpec.scala",  // Pending macro implementation
         "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
         "TripleEqualsSpec.for210"  // Old staff, we shall delete this soon.
       )) ++

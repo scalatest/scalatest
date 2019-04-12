@@ -29,7 +29,10 @@ object TypeInfoMacro {
   def genTypeInfo[T](tp: Type[T])(implicit refl: Reflection): Expr[TypeInfo[T]] = {
     import refl._
 
-    val name = typeOf(tp).show.toExpr
+    // TODO: remove once `Expr[T].show` handles color correctly
+    def (str: String) clean: String = str.replaceAll("\u001B\\[[;\\d]*m", "")
+
+    val name = tp.show.clean.toExpr
     '{ TypeInfo[$tp]($name) }
   }
 }
