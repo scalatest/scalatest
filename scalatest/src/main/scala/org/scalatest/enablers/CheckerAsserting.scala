@@ -40,6 +40,7 @@ import org.scalatest.exceptions.StackDepth
  * else it will have result type <code>Unit</code>.
  * </p>
  */
+ @deprecated("CheckerCheckerAssertings has been moved from org.scalatest.enablers to org.scalatestplus.scalacheck. Please update your imports, as this deprecated type will be removed in a future version of ScalaTest.")
 trait CheckerAsserting[T] {
   /**
    * The result type of the <code>check</code> method.
@@ -209,6 +210,7 @@ abstract class UnitCheckerAsserting {
  * Companion object to <code>CheckerAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
+ @deprecated("CheckerCheckerAssertings has been moved from org.scalatest.enablers to org.scalatestplus.scalacheck. Please update your imports, as this deprecated type will be removed in a future version of ScalaTest.")
 object CheckerAsserting extends UnitCheckerAsserting /*ExpectationCheckerAsserting*/ {
 
   /**
