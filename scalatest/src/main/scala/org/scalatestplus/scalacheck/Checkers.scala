@@ -15,7 +15,6 @@
  */
 package org.scalatestplus.scalacheck
 
-import org.scalatest.enablers.CheckerAsserting
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
 import org.scalacheck.util.Pretty
