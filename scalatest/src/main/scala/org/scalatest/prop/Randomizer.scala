@@ -47,7 +47,7 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   *
   * @param seed
   */
-class Randomizer(private[scalatest] val seed: Long) { thisRandomizer =>
+class Randomizer(val seed: Long) { thisRandomizer =>
 
   private[scalatest] lazy val scrambledSeed: Long =  seed
 
