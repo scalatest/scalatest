@@ -104,7 +104,7 @@ package org.scalactic
  * </pre>
  *
  */
-trait Equivalence[T] {
+trait Equivalence[T] extends Serializable {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
