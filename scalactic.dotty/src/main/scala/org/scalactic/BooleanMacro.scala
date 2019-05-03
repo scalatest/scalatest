@@ -23,10 +23,7 @@ object BooleanMacro {
     import refl._
     import util._
 
-    // TODO: remove once `Expr[T].show` handles color correctly
-    def (str: String) clean: String = str.replaceAll("\u001B\\[[;\\d]*m", "")
-
-    def exprStr: String = condition.show.clean
+    def exprStr: String = condition.show(the[Context].withoutColors)
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${exprStr.toExpr}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty

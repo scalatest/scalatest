@@ -38,7 +38,7 @@ object DiagrammedExprMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    
+
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
 
@@ -60,7 +60,7 @@ object DiagrammedExprMacro {
 
   def applyExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    
+
     def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
       Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal.cast[T]
 
@@ -112,7 +112,7 @@ object DiagrammedExprMacro {
 
   def selectExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
-    
+
     def selectField(o: Expr[_], name: String): Expr[T] = ???
 
     expr.unseal match {
@@ -128,9 +128,11 @@ object DiagrammedExprMacro {
 
   def transform(
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
-    condition: Expr[Boolean], prettifier: Expr[Prettifier],
-    pos: Expr[source.Position], clue: Expr[Any], sourceText: String
-  )(implicit refl: Reflection): Expr[Assertion] = ???
+    condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
+  )(implicit refl: Reflection): Expr[Assertion] = {
+    val diagExpr = parse(condition)
+    '{ $helper($diagExpr, $clue, ${sourceText.toExpr}, $pos) }
+  }
 
 
   /**

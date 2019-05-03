@@ -223,8 +223,6 @@ object SnapshotsMacro {
 
   def snap(expressions: Expr[Seq[Any]])(implicit refl: Reflection): Expr[SnapshotSeq] = {
     import refl._
-    // TODO: remove once `Expr[T].show` handles color correctly
-    def (str: String) clean: String = str.replaceAll("\u001B\\[[;\\d]*m", "")
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
@@ -234,7 +232,7 @@ object SnapshotsMacro {
     val snapshots: List[Expr[Snapshot]] = expressions.unseal.underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map { arg =>
-          val str = arg.seal.cast[Any].show.clean.toExpr
+          val str = arg.seal.cast[Any].show(the[Context].withoutColors).toExpr
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>

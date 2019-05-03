@@ -26,7 +26,7 @@ import scala.quoted._
 
 private[scalatest] trait Expectations {
 
-  inline def (inline x: String) stripMargin <: String =
+  inline def (inline x: String) stripMargin : String =
     ${ Expectations.stripMarginImpl(x) }
 
   // TODO: Need to make this and assertResult use custom equality I think.
