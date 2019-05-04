@@ -237,6 +237,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
+
       it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestFailedException] {
           assert(a == null)
@@ -274,6 +276,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -2427,6 +2431,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
       // SKIP-SCALATESTJS,NATIVE-END
 
+      // SKIP-DOTTY-START
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
           """
@@ -2513,11 +2518,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(org.exists(_ == 'b'))
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check new String(\"test\") != \"test\"") {
         assert(new String("test") == "test")
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when is used to check new String(\"test\") != \"testing\"") {
         val e = intercept[TestFailedException] {
           assert(new String("test") == "testing")
@@ -2547,6 +2554,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
     }
 
     describe("The assert(boolean, clue) method") {
@@ -2685,6 +2693,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestFailedException] {
           assert(a == null, "this is a clue")
@@ -2722,6 +2731,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -4875,6 +4885,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
       // SKIP-SCALATESTJS,NATIVE-END
 
+      // SKIP-DOTTY-START
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
           """
@@ -4961,6 +4972,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(org.exists(_ == 'b'), "this is a clue")
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check new String(\"test\") != \"test\"") {
         assert(new String("test") == "test", "this is a clue")
@@ -4985,6 +4997,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should compile when used with Java static method") {
         assertCompiles(
           """
@@ -4995,6 +5008,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
     }
 
     describe("The assume(boolean) method") {
@@ -5133,6 +5147,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestCanceledException] {
           assume(a == null)
@@ -5170,6 +5185,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
@@ -7323,6 +7339,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
       // SKIP-SCALATESTJS,NATIVE-END
 
+      // SKIP-DOTTY-START
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
           """
@@ -7409,6 +7426,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assume(org.exists(_ == 'b'))
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check new String(\"test\") != \"test\"") {
         assume(new String("test") == "test")
@@ -7433,6 +7451,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should compile when used with Java static method") {
         assertCompiles(
           """
@@ -7443,6 +7462,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO)
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
     }
 
     describe("The assume(boolean, clue) method") {
@@ -7581,6 +7601,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestCanceledException] {
           assume(a == null, "this is a clue")
@@ -7618,6 +7639,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
@@ -9771,6 +9793,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
       // SKIP-SCALATESTJS,NATIVE-END
 
+      // SKIP-DOTTY-START
       it("should compile when used with org == xxx that shadow org.scalactic ") {
         assertCompiles(
           """
@@ -9857,6 +9880,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assume(org.exists(_ == 'b'), "this is a clue")
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check new String(\"test\") != \"test\"") {
         assume(new String("test") == "test", "this is a clue")
@@ -9881,6 +9905,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should compile when used with Java static method") {
         assertCompiles(
           """
@@ -9891,6 +9916,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
     }
 
   }

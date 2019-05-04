@@ -176,7 +176,7 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestFailedException if the condition is <code>false</code>.
    */
   inline override def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-    ${ DiagrammedAssertionsMacro.assert('condition, 'prettifier, 'pos, '{""}) }
+    ${ DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
    * Assert that a boolean condition, described in <code>String</code>

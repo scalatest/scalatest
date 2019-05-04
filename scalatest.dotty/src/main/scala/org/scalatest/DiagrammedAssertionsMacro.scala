@@ -19,7 +19,7 @@ import org.scalactic._
 import scala.tasty._
 import scala.quoted._
 
-private[scalatest] object DiagrammedAssertionsMacro {
+object DiagrammedAssertionsMacro {
   /**
    * The macro implementation, it'll try to detect if it is a multiline expression, if it is, it'll just fallback to use BooleanMacro.
    *
