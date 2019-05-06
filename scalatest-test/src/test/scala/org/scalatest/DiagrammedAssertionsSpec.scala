@@ -256,6 +256,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
+      // Dotty does a better job here!
+
       it("should throw TestFailedException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestFailedException] {
           assert(0 == a)
@@ -274,6 +277,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -498,6 +503,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(alice != "bob")
       }
 
+      // SKIP-DOTTY-START
+      // Dotty does well too or even better, just position difference
+
       it("should throw TestFailedException with correct message and stack depth when is used to check bob == \"alice\"") {
         val e = intercept[TestFailedException] {
           assert(bob == "alice")
@@ -578,9 +586,14 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
+      // SKIP-DOTTY-END
+
       it("should do nothing when is used to check a === 3") {
         assert(a === 3)
       }
+
+      // SKIP-DOTTY-START
+      // TODO: support === and !==
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 ") {
         val e = intercept[TestFailedException] {
@@ -669,6 +682,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a == 3 && b == 5") {
         assert(a == 3 && b == 5)
@@ -929,6 +944,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
       it("should do nothing when is used to check (a == 3) == (b == 5)") {
         assert((a == 3) == (b == 5))
       }
@@ -2547,7 +2563,10 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
     }
+
+    // SKIP-DOTTY-START
 
     describe("The assert(boolean, clue) method") {
       it("should do nothing when is used to check a == 3") {
@@ -9893,6 +9912,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
     }
 
+    // SKIP-DOTTY-END
   }
-
 }
