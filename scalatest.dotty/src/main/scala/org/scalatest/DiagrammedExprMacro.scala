@@ -85,18 +85,22 @@ object DiagrammedExprMacro {
 
             '{
               val l = $left
-              val r = $right
               if (l.value) l
-              else DiagrammedExpr.applyExpr(l, r :: Nil, r.value, $anchor)
+              else {
+                val r = $right
+                DiagrammedExpr.applyExpr(l, r :: Nil, r.value, $anchor)
+              }
             }
           case "&&" | "&" =>
             val left = parse(lhs.seal.cast[Boolean & T])
             val right = parse(rhs.seal.cast[Boolean & T])
             '{
               val l = $left
-              val r = $right
-              if (l.value) DiagrammedExpr.applyExpr(l, r :: Nil, r.value, $anchor)
-              else l
+              if (!l.value) l
+              else {
+                val r = $right
+                DiagrammedExpr.applyExpr(l, r :: Nil, r.value, $anchor)
+              }
             }
           case _ =>
             type S
