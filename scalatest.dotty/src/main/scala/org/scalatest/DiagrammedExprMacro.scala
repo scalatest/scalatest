@@ -127,7 +127,6 @@ object DiagrammedExprMacro {
         val rights = args.map { arg =>
           type V
           implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
-          parse(arg.seal)
           parse[V](arg.seal.asInstanceOf[Expr[V]])
         }
 
@@ -148,7 +147,6 @@ object DiagrammedExprMacro {
       //   val rights = args.map { arg =>
       //     type V
       //     implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
-      //     parse(arg.seal)
       //     parse[V](arg.seal.asInstanceOf[Expr[V]])
       //   }
 
