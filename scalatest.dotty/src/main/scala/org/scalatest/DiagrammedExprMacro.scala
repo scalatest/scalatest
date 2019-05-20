@@ -42,8 +42,8 @@ object DiagrammedExprMacro {
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
 
-    def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
-      Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal.cast[T]
+    def apply(l: Expr[_], name: String, targs: List[TypeTree], r: List[Expr[_]]): Expr[T] =
+      Select.overloaded(l.unseal, name, targs.map(_.tpe), r.map(_.unseal)).seal.cast[T]
 
     def selectField(o: Expr[_], name: String): Expr[T] = Select.unique(o.unseal, name).seal.cast[T]
 
@@ -113,7 +113,7 @@ object DiagrammedExprMacro {
             '{
               val l = $left
               val r = $right
-              val res = ${ apply('{l.value}, op, '{r.value} :: Nil) }
+              val res = ${ apply('{l.value}, op, Nil, '{r.value} :: Nil) }
               DiagrammedExpr.applyExpr(l, r :: Nil, res, $anchor)
             }
         }
@@ -133,10 +133,31 @@ object DiagrammedExprMacro {
 
         let(left) { (l: Expr[DiagrammedExpr[_]]) =>
           lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
-            val res = apply('{($l).value}, op, rs)
+            val res = apply('{($l).value}, op, Nil, rs)
             '{ DiagrammedExpr.applyExpr($l, ${rs.toExprOfList}, $res, $anchor) }
           }
         }
+
+      // TODO: Dotty produces a confusing error message about `let`
+      // case Apply(TypeApply(sel @ Select(lhs, op), targs), args) =>
+      //   type S
+      //   implicit val tpS: quoted.Type[S] = lhs.tpe.seal.asInstanceOf[quoted.Type[S]]
+      //   val left = parse[S](lhs.seal.asInstanceOf[Expr[S]])
+      //   val anchor = getAnchorForSelect(refl)(sel.asInstanceOf[Select])
+
+      //   val rights = args.map { arg =>
+      //     type V
+      //     implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
+      //     parse(arg.seal)
+      //     parse[V](arg.seal.asInstanceOf[Expr[V]])
+      //   }
+
+      //   let(left) { (l: Expr[DiagrammedExpr[_]]) =>
+      //     lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
+      //       val res = apply('{($l).value}, op, targs, rs)
+      //       '{ DiagrammedExpr.applyExpr($l, ${rs.toExprOfList}, $res, $anchor) }
+      //     }
+      //   }
 
       case _ =>
         default
@@ -164,6 +185,7 @@ object DiagrammedExprMacro {
   def getAnchor(expr: Expr[_])(implicit refl: Reflection): Expr[Int] = {
     import refl._
     // -1 to match scala2 position
-    ((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn).toExpr
+    // ((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn).toExpr
+    (expr.unseal.pos.startColumn - rootPosition.startColumn).toExpr
   }
 }

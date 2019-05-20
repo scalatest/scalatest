@@ -67,7 +67,6 @@ object BooleanMacro {
                 let(lhs) { left =>
                   let(rhs) { right =>
                     val app = Select.overloaded(left, op, Nil, right :: Nil)
-                    assert(app.symbol == sel.symbol, app.symbol.fullName -> sel.symbol.fullName)
                     let(app) { result =>
                       val l = left.seal
                       val r = right.seal
@@ -92,6 +91,20 @@ object BooleanMacro {
             }
           }
         }.seal.cast[Bool]
+      case Apply(TypeApply(Select(lhs, op), targs), rhs :: Nil) =>
+        let(lhs) { left =>
+          let(rhs) { right =>
+            val app = Select.overloaded(left, op, targs.map(_.tpe), right :: Nil)
+            let(app) { result =>
+              val l = left.seal
+              val r = right.seal
+              val b = result.seal.cast[Boolean]
+              val code = '{ Bool.binaryMacroBool($l, ${op.toExpr}, $r, $b, $prettifier) }
+              code.unseal
+            }
+          }
+        }.seal.cast[Bool]
+
       case Select(left, "unary_!") =>
         val receiver = parse(left.seal.cast[Boolean], prettifier)
         '{ !($receiver) }

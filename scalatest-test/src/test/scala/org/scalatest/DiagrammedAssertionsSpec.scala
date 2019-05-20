@@ -198,6 +198,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(3 == 3)
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -217,6 +219,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
+
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestFailedException] {
@@ -503,9 +507,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(alice != "bob")
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does well too or even better, just position difference
-
       it("should throw TestFailedException with correct message and stack depth when is used to check bob == \"alice\"") {
         val e = intercept[TestFailedException] {
           assert(bob == "alice")
@@ -585,8 +586,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a === 3") {
         assert(a === 3)
@@ -1063,9 +1062,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(s1.startsWith("hi"))
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does an equally good job
-
       it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
         val e1 = intercept[TestFailedException] {
           assert(s2 startsWith "hi")
@@ -1101,15 +1097,11 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e2.failedCodeFileName should be (Some(fileName))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check ci1 startsWith 1") {
         assert(ci1 startsWith 1)
         assert(ci1.startsWith(1))
       }
-
-      // SKIP-DOTTY-START
-      // Dotty does an equally good job
 
       it("should throw TestFailedException with correct message and stack depth when is used to check ci2 startsWith 1") {
         val e1 = intercept[TestFailedException] {
@@ -1145,14 +1137,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      // SKIP-DOTTY-END
-
       it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
         assert(!s2.startsWith("hi"))
       }
-
-      // SKIP-DOTTY-START
-      // Dotty does an equally good job
 
       it("should throw TestFailedException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
         val e1 = intercept[TestFailedException] {
@@ -1174,15 +1161,10 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-END
-
       it("should do nothing when is used to check s2 endsWith \"hi\"") {
         assert(s2 endsWith "hi")
         assert(s2.endsWith("hi"))
       }
-
-      // SKIP-DOTTY-START
-      // Dotty does an equally good job
 
       it("should throw TestFailedException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
         val e1 = intercept[TestFailedException] {
@@ -1391,6 +1373,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(l1 contains 2)
         assert(l1.contains(2))
       }
+
+      // SKIP-DOTTY-START
 
       it("should throw TestFailedException with correct message and stack depth when is used to check l1 contains 5") {
         val e1 = intercept[TestFailedException] {
@@ -1620,6 +1604,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
+      // SKIP-DOTTY-END
+
       it("should do nothing when is used to check ci1 eq ci3") {
         assert(ci1 eq ci3)
         assert(ci1.eq(ci3))
@@ -1795,6 +1781,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      // SKIP-DOTTY-START
+      // Dotty does an equally good job
 
       it("should do nothing when is used to check l2.isEmpty") {
         assert(l2.isEmpty)
