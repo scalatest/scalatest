@@ -60,6 +60,25 @@ trait AccumulationLowPriorityImplicits {
       }
     }
 
+  implicit def convertGenTraversableOnceToCombinable3[E, TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Bad[Every[E]]]): Combinable[Nothing, E, TRAVONCE] =
+    new Combinable[Nothing, E, TRAVONCE] {
+      override def combined: Or[TRAVONCE[Nothing], Every[E]] = {
+        val either: Either[Every[E], TRAVONCE[Nothing]] =
+          if (xs.isEmpty)
+            Right(Vector.empty[Nothing].asInstanceOf[TRAVONCE[Nothing]])
+          else {
+            val i = xs.toIterable
+            Left(
+              (i.tail.foldLeft(i.head.b) { case (res, ele) =>
+                res ++ ele.b
+              }.asInstanceOf[Every[E]])
+            )
+          }
+
+        Or.from(either)
+      }
+    }
+
 }
 
 /**
@@ -146,25 +165,6 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         )
       }
 
-    }
-
-  implicit def convertGenTraversableOnceToCombinable3[E, TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Bad[Every[E]]]): Combinable[Nothing, E, TRAVONCE] =
-    new Combinable[Nothing, E, TRAVONCE] {
-      override def combined: Or[TRAVONCE[Nothing], Every[E]] = {
-        val either: Either[Every[E], TRAVONCE[Nothing]] =
-          if (xs.isEmpty)
-            Right(Vector.empty[Nothing].asInstanceOf[TRAVONCE[Nothing]])
-          else {
-            val i = xs.toIterable
-            Left(
-              (i.tail.foldLeft(i.head.b) { case (res, ele) =>
-                res ++ ele.b
-              }.asInstanceOf[Every[E]])
-            )
-          }
-
-        Or.from(either)
-      }
     }
 
   // Must have another one for Sets, because they are not covariant. Will need to handle Good/Nothing case specially therefore, and plan to do that

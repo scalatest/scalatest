@@ -36,14 +36,14 @@ object ScalatestBuild {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-RC1")
+  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-RC2")
 
-  val releaseVersion = "3.1.0-SNAP9"
+  val releaseVersion = "3.1.0-SNAP11"
 
   val previousReleaseVersion = "3.0.5"
 
-  val plusJUnitVersion = "1.0.0-SNAP5"
-  val plusTestNGVersion = "1.0.0-SNAP4"
+  val plusJUnitVersion = "1.0.0-SNAP7"
+  val plusTestNGVersion = "1.0.0-SNAP6"
   val pegdownVersion = "1.4.2"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
