@@ -174,6 +174,7 @@ object ScalatestBuild {
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
+      case Some((0, _)) => Seq("org.scala-lang.modules" %% "scala-xml" % "1.2.0")
       case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.2.0")
       case other => Seq.empty
     }
@@ -597,6 +598,7 @@ object ScalatestBuild {
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       sourceGenerators in Compile += {
         Def.task{
           // From scalactic-macro
