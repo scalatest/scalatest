@@ -285,11 +285,13 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
     timeoutTask match {
         case Some(task) => 
           if (head.suiteId != task.slot.suiteId) {
+            timer.cancel()
             task.cancel()
             timeoutTask = Some(new TimeoutTask(head)) // Replace the old with the new
             timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
           }
         case None => 
+          timer.cancel()
           timeoutTask = Some(new TimeoutTask(head)) // Just create a new one
           timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
       }
