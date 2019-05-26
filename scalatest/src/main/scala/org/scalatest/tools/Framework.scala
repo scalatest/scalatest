@@ -434,9 +434,7 @@ class Framework extends SbtFramework {
       if (accessible || runnable) {
         val suite =
           try {
-            if (accessible)
-              suiteClass.newInstance.asInstanceOf[Suite]
-            else {
+            if (runnable) { // When it is runnable WrapWith is available, this will take precedence and this behavior will be consistent with Runner and the old ScalaTestFramework.
               val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
               val suiteClazz = wrapWithAnnotation.value
               val constructorList = suiteClazz.getDeclaredConstructors()
@@ -446,6 +444,8 @@ class Framework extends SbtFramework {
               }
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
+            else
+              suiteClass.newInstance.asInstanceOf[Suite] 
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
