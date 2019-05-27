@@ -21,23 +21,10 @@ import scala.quoted._
 
 
 object DiagrammedExprMacro {
-  def let[S: Type, T: Type](expr: Expr[S])(body: Expr[S] => Expr[T]): Expr[T] =
-    '{
-      val x = $expr
-      ${ body('{x}) }
-    }
-
-  def lets[S: Type, T: Type](xs: List[Expr[S]])(body: List[Expr[S]] => Expr[T]): Expr[T] = {
-    def rec(xs: List[Expr[S]], acc: List[Expr[S]]): Expr[T] = xs match {
-      case Nil => body(acc)
-      case x :: xs => let(x) { (x: Expr[S]) => rec(xs, x :: acc) }
-    }
-    rec(xs, Nil)
-  }
-
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
     import refl._
+    import util._
 
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
@@ -48,6 +35,14 @@ object DiagrammedExprMacro {
     def selectField(o: Expr[_], name: String): Expr[T] = Select.unique(o.unseal, name).seal.cast[T]
 
     def default: Expr[DiagrammedExpr[T]] = '{ DiagrammedExpr.simpleExpr($expr, ${ getAnchor(expr) } ) }
+
+    def lets(xs: List[Term])(body: List[Term] => Term): Term = {
+      def rec(xs: List[Term], acc: List[Term]): Term = xs match {
+        case Nil => body(acc)
+        case x :: xs => let(x) { (x: Term) => rec(xs, x :: acc) }
+      }
+      rec(xs, Nil)
+    }
 
     expr.unseal.underlyingArgument match {
       case Apply(Select(New(_), _), _) => default
@@ -121,41 +116,45 @@ object DiagrammedExprMacro {
       case Apply(sel @ Select(lhs, op), args) =>
         type S
         implicit val tpS: quoted.Type[S] = lhs.tpe.seal.asInstanceOf[quoted.Type[S]]
-        val left = parse[S](lhs.seal.asInstanceOf[Expr[S]])
+        val left = parse[S](lhs.seal.asInstanceOf[Expr[S]]).unseal
         val anchor = getAnchorForSelect(refl)(sel.asInstanceOf[Select])
 
         val rights = args.map { arg =>
           type V
           implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
-          parse[V](arg.seal.asInstanceOf[Expr[V]])
+          parse[V](arg.seal.asInstanceOf[Expr[V]]).unseal
         }
 
-        let(left) { (l: Expr[DiagrammedExpr[_]]) =>
-          lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
-            val res = apply('{($l).value}, op, Nil, rs)
-            '{ DiagrammedExpr.applyExpr($l, ${rs.toExprOfList}, $res, $anchor) }
+        let(left) { l =>
+          lets(rights) { rs =>
+            val left = l.seal.cast[DiagrammedExpr[_]]
+            val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
+            val res = Select.overloaded('{$left.value}.unseal, op, Nil, rs).seal.cast[T]
+            '{ DiagrammedExpr.applyExpr($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
           }
-        }
+        }.seal.cast[DiagrammedExpr[T]]
 
       // TODO: Dotty produces a confusing error message about `let`
-      // case Apply(TypeApply(sel @ Select(lhs, op), targs), args) =>
-      //   type S
-      //   implicit val tpS: quoted.Type[S] = lhs.tpe.seal.asInstanceOf[quoted.Type[S]]
-      //   val left = parse[S](lhs.seal.asInstanceOf[Expr[S]])
-      //   val anchor = getAnchorForSelect(refl)(sel.asInstanceOf[Select])
+      case Apply(TypeApply(sel @ Select(lhs, op), targs), args) =>
+        type S
+        implicit val tpS: quoted.Type[S] = lhs.tpe.seal.asInstanceOf[quoted.Type[S]]
+        val left = parse[S](lhs.seal.asInstanceOf[Expr[S]]).unseal
+        val anchor = getAnchorForSelect(refl)(sel.asInstanceOf[Select])
 
-      //   val rights = args.map { arg =>
-      //     type V
-      //     implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
-      //     parse[V](arg.seal.asInstanceOf[Expr[V]])
-      //   }
+        val rights = args.map { arg =>
+          type V
+          implicit val tpV: quoted.Type[V] = arg.tpe.seal.asInstanceOf[quoted.Type[V]]
+          parse[V](arg.seal.asInstanceOf[Expr[V]]).unseal
+        }
 
-      //   let(left) { (l: Expr[DiagrammedExpr[_]]) =>
-      //     lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
-      //       val res = apply('{($l).value}, op, targs, rs)
-      //       '{ DiagrammedExpr.applyExpr($l, ${rs.toExprOfList}, $res, $anchor) }
-      //     }
-      //   }
+        let(left) { l =>
+          lets(rights) { rs =>
+            val left = l.seal.cast[DiagrammedExpr[_]]
+            val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
+            val res = Select.overloaded('{$left.value}.unseal, op, targs.map(_.tpe), rs).seal.cast[T]
+            '{ DiagrammedExpr.applyExpr($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+          }
+        }.seal.cast[DiagrammedExpr[T]]
 
       case _ =>
         default
