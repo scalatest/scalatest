@@ -25,7 +25,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.8"
 
-  val releaseVersion = "3.0.8-RC2"
+  val releaseVersion = "3.0.8-RC4"
 
   val previousReleaseVersion = "3.0.5"
 
@@ -790,7 +790,7 @@ object ScalatestBuild extends Build {
       //jsEnv := PhantomJSEnv().value,
       //scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
-      jsEnv := NodeJSEnv(args = Seq("--max_old_space_size=4096")).value, 
+      //jsEnv := NodeJSEnv(args = Seq("--max_old_space_size=4096")).value, 
       parallelExecution in Test := false,
       fork in Test := false,
       testOptions in Test := scalatestTestJSOptions,
