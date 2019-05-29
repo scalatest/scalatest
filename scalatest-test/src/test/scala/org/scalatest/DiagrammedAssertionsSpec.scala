@@ -591,9 +591,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(a === 3)
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support === and !==
-
       it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 ") {
         val e = intercept[TestFailedException] {
           assert(a === 5)
@@ -681,8 +678,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a == 3 && b == 5") {
         assert(a == 3 && b == 5)
@@ -1041,8 +1036,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-
       it("should preserve side effects when Apply with single argument is passed in") {
         assert(neverRuns1(sys.error("Sad times 1")))
       }
@@ -1054,8 +1047,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should preserve side effects when typed Apply with 2 argument list is passed in") {
         assert(neverRuns3(sys.error("Sad times 3"))(0))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1 startsWith \"hi\"") {
         assert(s1 startsWith "hi")
@@ -1374,8 +1365,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(l1.contains(2))
       }
 
-      // SKIP-DOTTY-START
-
       it("should throw TestFailedException with correct message and stack depth when is used to check l1 contains 5") {
         val e1 = intercept[TestFailedException] {
           assert(l1 contains 5)
@@ -1603,8 +1592,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check ci1 eq ci3") {
         assert(ci1 eq ci3)
@@ -2166,8 +2153,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
-      // SKIP-DOTTY-START
-
       it("should do nothing when is used to check l1.exists(_ == 3)") {
         assert(l1.exists(_ == 3))
       }
@@ -2359,8 +2344,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -3072,9 +3055,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(a === 3, "this is a clue")
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support === and !==
-
       it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 ") {
         val e = intercept[TestFailedException] {
           assert(a === 5, "this is a clue")
@@ -3162,8 +3142,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a == 3 && b == 5") {
         assert(a == 3 && b == 5, "this is a clue")
@@ -3522,8 +3500,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-
       it("should preserve side effects when Apply with single argument is passed in") {
         assert(neverRuns1(sys.error("Sad times 1")), "this is a clue")
       }
@@ -3535,8 +3511,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should preserve side effects when typed Apply with 2 argument list is passed in") {
         assert(neverRuns3(sys.error("Sad times 3"))(0), "this is a clue")
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1 startsWith \"hi\"") {
         assert(s1 startsWith "hi", "this is a clue")
@@ -3855,8 +3829,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(l1.contains(2), "this is a clue")
       }
 
-      // SKIP-DOTTY-START
-
       it("should throw TestFailedException with correct message and stack depth when is used to check l1 contains 5") {
         val e1 = intercept[TestFailedException] {
           assert(l1 contains 5, "this is a clue")
@@ -4084,8 +4056,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check ci1 eq ci3") {
         assert(ci1 eq ci3, "this is a clue")
@@ -4647,8 +4617,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
-      // SKIP-DOTTY-START
-
       it("should do nothing when is used to check l1.exists(_ == 3)") {
         assert(l1.exists(_ == 3), "this is a clue")
       }
@@ -4840,8 +4808,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -5559,9 +5525,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(a === 3)
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support === and !==
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check a === 5 ") {
         val e = intercept[TestCanceledException] {
           assume(a === 5)
@@ -5649,8 +5612,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a == 3 && b == 5") {
         assume(a == 3 && b == 5)
@@ -6009,8 +5970,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-
       it("should preserve side effects when Apply with single argument is passed in") {
         assume(neverRuns1(sys.error("Sad times 1")))
       }
@@ -6022,8 +5981,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should preserve side effects when typed Apply with 2 argument list is passed in") {
         assume(neverRuns3(sys.error("Sad times 3"))(0))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1 startsWith \"hi\"") {
         assume(s1 startsWith "hi")
@@ -6342,8 +6299,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(l1.contains(2))
       }
 
-      // SKIP-DOTTY-START
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
         val e1 = intercept[TestCanceledException] {
           assume(l1 contains 5)
@@ -6571,8 +6526,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check ci1 eq ci3") {
         assume(ci1 eq ci3)
@@ -7134,8 +7087,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
-      // SKIP-DOTTY-START
-
       it("should do nothing when is used to check l1.exists(_ == 3)") {
         assume(l1.exists(_ == 3))
       }
@@ -7327,8 +7278,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=
@@ -8047,9 +7996,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(a === 3, "this is a clue")
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support === and !==
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check a === 5 ") {
         val e = intercept[TestCanceledException] {
           assume(a === 5, "this is a clue")
@@ -8137,8 +8083,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check a == 3 && b == 5") {
         assume(a == 3 && b == 5, "this is a clue")
@@ -8497,8 +8441,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-
       it("should preserve side effects when Apply with single argument is passed in") {
         assume(neverRuns1(sys.error("Sad times 1")), "this is a clue")
       }
@@ -8510,8 +8452,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should preserve side effects when typed Apply with 2 argument list is passed in") {
         assume(neverRuns3(sys.error("Sad times 3"))(0), "this is a clue")
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1 startsWith \"hi\"") {
         assume(s1 startsWith "hi", "this is a clue")
@@ -8830,8 +8770,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(l1.contains(2), "this is a clue")
       }
 
-      // SKIP-DOTTY-START
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
         val e1 = intercept[TestCanceledException] {
           assume(l1 contains 5, "this is a clue")
@@ -9059,8 +8997,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check ci1 eq ci3") {
         assume(ci1 eq ci3, "this is a clue")
@@ -9622,8 +9558,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
-      // SKIP-DOTTY-START
-
       it("should do nothing when is used to check l1.exists(_ == 3)") {
         assume(l1.exists(_ == 3), "this is a clue")
       }
@@ -9815,8 +9749,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=
