@@ -4310,9 +4310,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support a.f[T]
-
       it("should do nothing when is used to check s1.isInstanceOf[String]") {
         assert(s1.isInstanceOf[String], "this is a clue")
       }
@@ -4453,8 +4450,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1.length == 9") {
         assert(s1.length == 12, "this is a clue")
@@ -6802,9 +6797,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support a.f[T]
-
       it("should do nothing when is used to check s1.isInstanceOf[String]") {
         assume(s1.isInstanceOf[String])
       }
@@ -6945,8 +6937,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1.length == 9") {
         assume(s1.length == 12)
@@ -9295,9 +9285,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      // SKIP-DOTTY-START
-      // TODO: support a.f[T]
-
       it("should do nothing when is used to check s1.isInstanceOf[String]") {
         assume(s1.isInstanceOf[String], "this is a clue")
       }
@@ -9438,8 +9425,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
-
-      // SKIP-DOTTY-END
 
       it("should do nothing when is used to check s1.length == 9") {
         assume(s1.length == 12, "this is a clue")
