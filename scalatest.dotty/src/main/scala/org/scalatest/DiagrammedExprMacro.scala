@@ -40,14 +40,6 @@ object DiagrammedExprMacro {
     def default: Term =
       '{ DiagrammedExpr.simpleExpr[R](${expr.seal.cast[R]}, ${ getAnchor(expr) } ) }.unseal
 
-    def lets(xs: List[Term])(body: List[Term] => Term): Term = {
-      def rec(xs: List[Term], acc: List[Term]): Term = xs match {
-        case Nil => body(acc)
-        case x :: xs => let(x) { (x: Term) => rec(xs, x :: acc) }
-      }
-      rec(xs, Nil)
-    }
-
     def getAnchorForSelect(sel: Select): Expr[Int] = {
       if (sel.name == "unary_!")
         (sel.pos.startColumn - rootPosition.startColumn).toExpr
@@ -90,7 +82,6 @@ object DiagrammedExprMacro {
       case Block(stats, expr) =>
         // call parse recursively using the expr argument if it is a block
         Block(stats, parse(refl)(expr))
-
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
         op match {
@@ -128,7 +119,7 @@ object DiagrammedExprMacro {
               let(right) { r =>
                 val left = l.seal.cast[DiagrammedExpr[T]]
                 val right = r.seal.cast[DiagrammedExpr[_]]
-                val res = apply('{$left.value}.unseal, op, Nil, '{$right.value}.unseal :: Nil).seal.cast[R]
+                val res = apply(Select.unique(l, "value"), op, Nil, Select.unique(r, "value") :: Nil).seal.cast[R]
                 '{ DiagrammedExpr.applyExpr[R]($left, $right :: Nil, $res, $anchor) }.unseal
               }
             }
@@ -147,7 +138,7 @@ object DiagrammedExprMacro {
           lets(rights) { rs =>
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
-            val res = Select.overloaded('{$left.value}.unseal, op, Nil, rs).seal.cast[R]
+            val res = Select.overloaded(Select.unique(l, "value"), op, Nil, rs.map(r => Select.unique(r, "value"))).seal.cast[R]
             '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
           }
         }
@@ -165,7 +156,7 @@ object DiagrammedExprMacro {
           lets(rights) { rs =>
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
-            val res = Select.overloaded('{$left.value}.unseal, op, targs.map(_.tpe), rs).seal.cast[R]
+            val res = Select.overloaded(Select.unique(l, "value"), op, targs.map(_.tpe), rs.map(r => Select.unique(r, "value"))).seal.cast[R]
             '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
           }
         }
