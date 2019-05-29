@@ -161,6 +161,19 @@ object DiagrammedExprMacro {
           }
         }
 
+      case TypeApply(sel @ Select(lhs, op), targs) =>
+        type T
+        implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+
+        val left = parse(refl)(lhs)
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+
+        let(left) { l =>
+          val left = l.seal.cast[DiagrammedExpr[T]]
+          val res = TypeApply(Select.unique(Select.unique(l, "value"), op), targs).seal.cast[R]
+          '{ DiagrammedExpr.applyExpr[R]($left, Nil, $res, $anchor) }.unseal
+        }
+
       case _ =>
         default
     }
