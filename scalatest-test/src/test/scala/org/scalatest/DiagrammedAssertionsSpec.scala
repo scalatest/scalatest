@@ -272,9 +272,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """
               |
               |assert(0 == a)
-              |       |    |  |
+              |       | |  |
               |       0 |  3
-              |            false
+              |         false
               |""".stripMargin
           )
         )
@@ -2737,9 +2737,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """this is a clue
               |
               |assert(0 == a, "this is a clue")
-              |       |    |  |
+              |       | |  |
               |       0 |  3
-              |            false
+              |         false
               |""".stripMargin
           )
         )
@@ -5207,9 +5207,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """
               |
               |assume(0 == a)
-              |       |    |  |
+              |       | |  |
               |       0 |  3
-              |            false
+              |         false
               |""".stripMargin
           )
         )
@@ -7677,9 +7677,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """this is a clue
               |
               |assume(0 == a, "this is a clue")
-              |       |    |  |
+              |       | |  |
               |       0 |  3
-              |            false
+              |         false
               |""".stripMargin
           )
         )
