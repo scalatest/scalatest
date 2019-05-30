@@ -260,9 +260,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does a better job here!
-
       it("should throw TestFailedException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestFailedException] {
           assert(0 == a)
@@ -281,8 +278,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -2725,9 +2720,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does a better job here!
-
       it("should throw TestFailedException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestFailedException] {
           assert(0 == a, "this is a clue")
@@ -2746,7 +2738,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -5195,9 +5186,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does a better job here!
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestCanceledException] {
           assume(0 == a)
@@ -5216,7 +5204,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
@@ -7665,9 +7652,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      // SKIP-DOTTY-START
-      // Dotty does a better job here!
-
       it("should throw TestCanceledException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestCanceledException] {
           assume(0 == a, "this is a clue")
@@ -7686,8 +7670,6 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
-
-      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
