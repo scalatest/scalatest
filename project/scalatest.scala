@@ -1576,7 +1576,7 @@ object ScalatestBuild extends Build {
   val scalatestDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) ++=
       Seq[String](
-        //"-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", scalatestDocSourceUrl)
@@ -1584,7 +1584,7 @@ object ScalatestBuild extends Build {
   val scalacticDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) ++=
       Seq[String](
-        //"-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", scalacticDocSourceUrl)
