@@ -19,7 +19,7 @@ import org.scalactic._
 import scala.tasty._
 import scala.quoted._
 
-private[scalatest] object DiagrammedAssertionsMacro {
+object DiagrammedAssertionsMacro {
   /**
    * The macro implementation, it'll try to detect if it is a multiline expression, if it is, it'll just fallback to use BooleanMacro.
    *
@@ -36,7 +36,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
     val endLine = refl.rootPosition.endLine // Get the expression last line number
 
     if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
-      DiagrammedExprMacro.transform(helper, condition, prettifier, pos, clue, condition.show)
+      DiagrammedExprMacro.transform(helper, condition, pos, clue, rootPosition.sourceCode)
     else // otherwise we'll just fallback to use BooleanMacro
       AssertionsMacro.transform(fallback, condition, prettifier, pos, clue)
   }

@@ -262,9 +262,6 @@ object RequirementsMacro {
   def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit reflect: Reflection): Expr[Unit] = {
     import reflect._
 
-    // TODO: remove once `Expr[T].show` handles color correctly
-    def (str: String) clean: String = str.replaceAll("\u001B\\[[;\\d]*m", "")
-
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
       case Nil => '{ Seq(): Seq[String] }
@@ -272,7 +269,7 @@ object RequirementsMacro {
 
     val argStr: List[Expr[String]] = arguments.unseal.underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
-        args.map(arg => arg.seal.cast[Any].show.clean.toExpr)
+        args.map(arg => arg.seal.cast[Any].show(the[Context].withoutColors).toExpr)
       case _ =>
         throw QuoteError("requireNonNull can only be used with sequence literal, not `seq : _*`")
     }
