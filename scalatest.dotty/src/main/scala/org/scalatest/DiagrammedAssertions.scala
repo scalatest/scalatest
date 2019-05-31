@@ -157,6 +157,9 @@ trait DiagrammedAssertions extends Assertions {
   import scala.tasty._
   import scala.quoted._
 
+  inline def (inline x: String) stripMargin : String =
+    ${ org.scalatest.Expectations.stripMarginImpl(x) }
+
   /**
    * Assert that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
@@ -175,8 +178,8 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  // def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-  //   ~DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""})
+  inline override def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+    ${ DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -197,8 +200,8 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  // def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-  //   ~DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue})
+  inline override def assert(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+    ${ DiagrammedAssertionsMacro.assert('condition, 'prettifier, 'pos, 'clue) }
 
   /**
    * Assume that a boolean condition is true.
@@ -218,8 +221,8 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  // def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-  //   ~DiagrammedAssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{""})
+  inline override def assume(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+    ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, '{""}) }
 
   /**
    * Assume that a boolean condition, described in <code>String</code>
@@ -240,9 +243,8 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  // def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
-  //   ~DiagrammedAssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{clue})
-
+  inline override def assume(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+    ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, 'clue) }
 }
 
 /**

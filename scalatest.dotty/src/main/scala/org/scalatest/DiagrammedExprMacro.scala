@@ -21,129 +21,209 @@ import scala.quoted._
 
 
 object DiagrammedExprMacro {
-  def let[S: Type, T: Type](expr: Expr[S])(body: Expr[S] => Expr[T]): Expr[T] =
-    '{
-      val x = $expr
-      ${ body('{x}) }
-    }
-
-  def lets[S: Type, T: Type](xs: List[Expr[S]])(body: List[Expr[S]] => Expr[T]): Expr[T] = {
-    def rec(xs: List[Expr[S]], acc: List[Expr[S]]): Expr[T] = xs match {
-      case Nil => body(acc)
-      case x :: xs => let(x) { (x: Expr[S]) => rec(xs, x :: acc) }
-    }
-    rec(xs, Nil)
-  }
-
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
-  def parse[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
+  def parse(refl: Reflection)(expr: refl.Term): refl.Term = {
     import refl._
-    
+    import util._
+
+    type R
+    implicit val resTp: quoted.Type[R] = expr.tpe.seal.asInstanceOf[quoted.Type[R]]
+
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
+    def isImplicitMethodType(tp: Type): Boolean =
+      Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
-    expr.unseal match {
-      case Apply(Select(New(_), _), _) => simpleExpr(expr)  // delegate to simpleExpr if it is a New expression
-      case IsApply(apply) if isXmlSugar(apply) => simpleExpr(expr)
-      case IsApply(apply) if isJavaStatic(apply) => simpleExpr(expr)
-      case IsApply(apply) => applyExpr(expr) // delegate to applyExpr if it is Apply
-      case IsTypeApply(apply) => applyExpr(expr) // delegate to applyExpr if it is Apply
-      case Select(This(_), _) => simpleExpr(expr) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
-      case IsSelect(x) if x.symbol.flags.is(Flags.Object) => simpleExpr(expr) // don't traverse packages
-      case IsSelect(x) if isJavaStatic(x) => simpleExpr(expr)
-      case IsSelect(select) => selectExpr(expr) // delegate to selectExpr if it is a Select
-      case Block(stats, expr) =>
-        Block(stats, parse(expr.seal.cast[T]).unseal).seal.cast[DiagrammedExpr[T]] // call parse recursively using the expr argument if it is a block
-      case _ => simpleExpr(expr) // for others, just delegate to simpleExpr
+    def apply(l: Term, name: String, targs: List[TypeTree], args: List[Term]): Term =
+      Select.overloaded(l, name, targs.map(_.tpe), args)
+
+    def selectField(o: Term, name: String): Term = Select.unique(o, name)
+
+    def default(term: Term): Term = {
+      type T
+      implicit val resTp: quoted.Type[T] = term.tpe.seal.asInstanceOf[quoted.Type[T]]
+      '{ DiagrammedExpr.simpleExpr[T](${term.seal.cast[T]}, ${ getAnchor(term) } ) }.unseal
     }
-  }
 
-  def applyExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
-    import refl._
-    
-    def apply(l: Expr[_], name: String, r: List[Expr[_]]): Expr[T] =
-      Select.overloaded(l.unseal, name, Nil, r.map(_.unseal)).seal.cast[T]
-
-    expr.unseal.underlyingArgument match {
-      case Apply(Select(lhs, op), rhs :: Nil) =>
-        op match {
-          case "||" | "|" =>
-            val left = parse(lhs.seal.cast[T & Boolean])
-            val right = parse(rhs.seal.cast[T & Boolean])
-            '{
-              val l = $left
-              val r = $right
-              if (l.value) l
-              else DiagrammedExpr.applyExpr(l, r :: Nil, r.value, ${ getAnchor(expr) })
-            }
-          case "&&" | "&" =>
-            val left = parse(lhs.seal.cast[T & Boolean])
-            val right = parse(rhs.seal.cast[T & Boolean])
-            '{
-              val l = $left
-              val r = $right
-              if (l.value) DiagrammedExpr.applyExpr(l, r :: Nil, r.value, ${ getAnchor(expr) })
-              else l
-            }
-          case _ =>
-            val left = parse(lhs.seal.cast[Any])
-            val right = parse(rhs.seal.cast[Any])
-            '{
-              val l = $left
-              val r = $right
-              val res = ${ apply('{l.value}, op, '{r.value} :: Nil) }
-              DiagrammedExpr.applyExpr(l, r :: Nil, res, ${ getAnchor(expr) })
-            }
-        }
-      case Apply(Select(lhs, op), args) =>
-        val left = parse(lhs.seal)
-        val rights = args.map(arg => parse(arg.seal))
-
-        let(left) { (l: Expr[DiagrammedExpr[_]]) =>
-          lets(rights) { (rs: List[Expr[DiagrammedExpr[_]]]) =>
-            val res = apply('{($l).value}, op, rs)
-            '{ DiagrammedExpr.applyExpr($l, ${rs.toExprOfList}, $res, ${getAnchor(expr)}) }
-          }
-        }
-      case _ =>
-        simpleExpr(expr)
+    def getAnchorForSelect(sel: Select): Expr[Int] = {
+      if (sel.name == "unary_!")
+        (sel.pos.startColumn - rootPosition.startColumn).toExpr
+      else {
+        val selOffset = sel.pos.endColumn - sel.qualifier.pos.endColumn - sel.name.length
+        (sel.qualifier.pos.endColumn + selOffset - rootPosition.startColumn).toExpr
+      }
     }
-  }
 
-  def selectExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
-    import refl._
-    
-    def selectField(o: Expr[_], name: String): Expr[T] = ???
+    def getAnchor(expr: Term): Expr[Int] = {
+      // -1 to match scala2 position
+      // ((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn).toExpr
+      (expr.pos.startColumn - rootPosition.startColumn).toExpr
+    }
 
-    expr.unseal match {
-      case Select(qual, name) =>
-        val obj = parse(qual.seal)
+    def handleArgs(argTps: List[Type], args: List[Term]): (List[Term], List[Term]) =
+      args.zip(argTps).foldLeft(Nil -> Nil : (List[Term], List[Term])) { case ((diagrams, others), pair) =>
+        pair match {
+          case (arg, Type.ByNameType(_)) =>
+            (diagrams, others :+ arg)
+          case (arg, tp) =>
+            if (tp.widen.typeSymbol.show.startsWith("scala.Function")) (diagrams, others :+ arg)
+            else (diagrams :+ parse(refl)(arg), others)
+        }
+      }
+
+    expr match {
+      case Apply(Select(New(_), _), _) => default(expr)
+
+      case IsApply(apply) if isXmlSugar(apply) => default(expr)
+
+      case IsApply(apply) if isJavaStatic(apply) => default(expr)
+
+      case Select(This(_), _) => default(expr)
+
+      case IsSelect(x) if x.symbol.flags.is(Flags.Object) => default(expr)
+
+      case IsSelect(x) if isJavaStatic(x) => default(expr)
+
+      case sel @ Select(qual, name) =>
+        type T
+        implicit val objTp: quoted.Type[T] = qual.tpe.seal.asInstanceOf[quoted.Type[T]]
+        val obj = parse(refl)(qual).seal.cast[DiagrammedExpr[T]]
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         '{
           val o = $obj
-          DiagrammedExpr.selectExpr(o, ${ selectField('{o.value}, name) }, ${ getAnchor(expr) })
+          DiagrammedExpr.selectExpr[R](o, ${ selectField('{o.value}.unseal, name).seal.cast[R] }, $anchor)
+        }.unseal
+
+      case Block(stats, expr) =>
+        // call parse recursively using the expr argument if it is a block
+        Block(stats, parse(refl)(expr))
+      case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+        op match {
+          case "||" | "|" =>
+            val left = parse(refl)(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(refl)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+
+            '{
+              val l = $left
+              if (l.value) l
+              else {
+                val r = $right
+                DiagrammedExpr.applyExpr[Boolean](l, r :: Nil, r.value, $anchor)
+              }
+            }.unseal
+          case "&&" | "&" =>
+            val left = parse(refl)(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(refl)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+            '{
+              val l = $left
+              if (!l.value) l
+              else {
+                val r = $right
+                DiagrammedExpr.applyExpr[Boolean](l, r :: Nil, r.value, $anchor)
+              }
+            }.unseal
+          case _ =>
+            type T
+            implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+            val left = parse(refl)(lhs)
+
+            val methTp = sel.tpe.widen.asInstanceOf[MethodType]
+            val (diagrams, others) = handleArgs(methTp.paramTypes, rhs :: Nil)
+
+            let(left) { l =>
+              lets(diagrams) { rs =>
+                val left = l.seal.cast[DiagrammedExpr[T]]
+                val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
+                val res = apply(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+                '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+              }
+            }
         }
+
+      case Apply(sel @ Select(lhs, op), args) =>
+        type T
+        implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+
+        val left = parse(refl)(lhs)
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+
+        val methTp = sel.tpe.widen.asInstanceOf[MethodType]
+        val (diagrams, others) = handleArgs(methTp.paramTypes, args)
+
+        let(left) { l =>
+          lets(diagrams) { rs =>
+            val left = l.seal.cast[DiagrammedExpr[T]]
+            val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
+            val res = Select.overloaded(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+          }
+        }
+
+      case Apply(f @ Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
+      if isImplicitMethodType(f.tpe) =>
+        type T
+        implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+        val left = parse(refl)(lhs)
+        val right = parse(refl)(rhs)
+
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+
+        let(left) { left =>
+          let(right) { right =>
+            let(Apply(Select.overloaded(Apply(qual, Select.unique(left, "value") :: Nil), op, Nil, Select.unique(right, "value") :: Nil), implicits)) { result =>
+              val l = left.seal.cast[DiagrammedExpr[_]]
+              val r = right.seal.cast[DiagrammedExpr[_]]
+              val b = result.seal.cast[Boolean]
+              '{ DiagrammedExpr.applyExpr[Boolean]($l, $r :: Nil, $b, $anchor) }.unseal
+            }
+          }
+        }
+
+      case Apply(fun @ TypeApply(sel @ Select(lhs, op), targs), args) =>
+        type T
+        implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+
+        val left = parse(refl)(lhs)
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+
+        val methTp = fun.tpe.widen.asInstanceOf[MethodType]
+        val (diagrams, others) = handleArgs(methTp.paramTypes, args)
+
+        let(left) { l =>
+          lets(diagrams) { rs =>
+            val left = l.seal.cast[DiagrammedExpr[T]]
+            val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
+            val res = Select.overloaded(Select.unique(l, "value"), op, targs.map(_.tpe), diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+          }
+        }
+
+      case TypeApply(sel @ Select(lhs, op), targs) =>
+        type T
+        implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
+
+        val left = parse(refl)(lhs)
+        val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
+
+        let(left) { l =>
+          val left = l.seal.cast[DiagrammedExpr[T]]
+          val res = TypeApply(Select.unique(Select.unique(l, "value"), op), targs).seal.cast[R]
+          '{ DiagrammedExpr.applyExpr[R]($left, Nil, $res, $anchor) }.unseal
+        }
+
+      case _ =>
+        default(expr)
     }
   }
 
   def transform(
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
-    condition: Expr[Boolean], prettifier: Expr[Prettifier],
-    pos: Expr[source.Position], clue: Expr[Any], sourceText: String
-  )(implicit refl: Reflection): Expr[Assertion] = ???
-
-
-  /**
-   * For a given expression (passed in as tree), generate AST for the following code:
-   *
-   * org.scalatest.DiagrammedExpr.simpleExpr(expr, anchorOfExpr)
-   */
-  def simpleExpr[T:Type](expr: Expr[T])(implicit refl: Reflection): Expr[DiagrammedExpr[T]] = {
-    '{ DiagrammedExpr.simpleExpr($expr, ${ getAnchor(expr) } ) }
-  }
-
-  def getAnchor(expr: Expr[_])(implicit refl: Reflection): Expr[Int] = {
+    condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
+  )(implicit refl: Reflection): Expr[Assertion] = {
     import refl._
-    (expr.unseal.pos.endColumn - expr.unseal.pos.startColumn).toExpr
+    val diagExpr = parse(refl)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
+    '{ $helper($diagExpr, $clue, ${sourceText.toExpr}, $pos) }
   }
 }

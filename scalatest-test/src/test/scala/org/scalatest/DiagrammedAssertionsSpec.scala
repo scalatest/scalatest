@@ -198,6 +198,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(3 == 3)
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -217,6 +219,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
+
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestFailedException] {
@@ -237,17 +241,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check a == 0") {
         val e = intercept[TestFailedException] {
-          assert(a == null)
+          assert(a == 0)
         }
         e.message should be (
           Some(
             """
               |
-              |assert(a == null)
+              |assert(a == 0)
               |       | |  |
-              |       3 |  null
+              |       3 |  0
               |         false
               |""".stripMargin
           )
@@ -256,18 +260,18 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestFailedException] {
-          assert(null == a)
+          assert(0 == a)
         }
         e.message should be (
           Some(
             """
               |
-              |assert(null == a)
-              |       |    |  |
-              |       null |  3
-              |            false
+              |assert(0 == a)
+              |       | |  |
+              |       0 |  3
+              |         false
               |""".stripMargin
           )
         )
@@ -2341,6 +2345,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           a))
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
       it("should throw friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestFailedException] {
           assert((b == a + 2) && (b - 1 <=
@@ -2350,6 +2356,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assert {
@@ -2381,6 +2388,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestFailedException] {
           assert {
@@ -2402,6 +2411,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -2443,6 +2453,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
 
+      // SKIP-DOTTY-START
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
@@ -2454,6 +2465,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |}
           """.stripMargin)
       }
+      // SKIP-DOTTY-END
 
       it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
         assertCompiles(
@@ -2646,6 +2658,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assert(3 == 3, "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
+
       it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -2665,6 +2680,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestFailedException] {
@@ -2685,17 +2701,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check a == 0") {
         val e = intercept[TestFailedException] {
-          assert(a == null, "this is a clue")
+          assert(a == 0, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assert(a == null, "this is a clue")
+              |assert(a == 0, "this is a clue")
               |       | |  |
-              |       3 |  null
+              |       3 |  0
               |         false
               |""".stripMargin
           )
@@ -2704,18 +2720,18 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestFailedException] {
-          assert(null == a, "this is a clue")
+          assert(0 == a, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assert(null == a, "this is a clue")
-              |       |    |  |
-              |       null |  3
-              |            false
+              |assert(0 == a, "this is a clue")
+              |       | |  |
+              |       0 |  3
+              |         false
               |""".stripMargin
           )
         )
@@ -4789,6 +4805,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           a), "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
+
       it("should throw friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestFailedException] {
           assert((b == a + 2) && (b - 1 <=
@@ -4798,6 +4817,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assert({
@@ -4829,6 +4850,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
+
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestFailedException] {
           assert({
@@ -4850,6 +4874,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -4891,6 +4916,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
 
+      // SKIP-DOTTY-START
+
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
@@ -4902,6 +4929,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |}
           """.stripMargin)
       }
+
+      // SKIP-DOTTY-END
 
       it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
         assertCompiles(
@@ -4996,6 +5025,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
     }
+
 
     describe("The assume(boolean) method") {
       it("should do nothing when is used to check a == 3") {
@@ -5094,6 +5124,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(3 == 3)
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
+
       it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -5113,6 +5146,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestCanceledException] {
@@ -5133,17 +5167,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 0") {
         val e = intercept[TestCanceledException] {
-          assume(a == null)
+          assume(a == 0)
         }
         e.message should be (
           Some(
             """
               |
-              |assume(a == null)
+              |assume(a == 0)
               |       | |  |
-              |       3 |  null
+              |       3 |  0
               |         false
               |""".stripMargin
           )
@@ -5152,18 +5186,18 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestCanceledException] {
-          assume(null == a)
+          assume(0 == a)
         }
         e.message should be (
           Some(
             """
               |
-              |assume(null == a)
-              |       |    |  |
-              |       null |  3
-              |            false
+              |assume(0 == a)
+              |       | |  |
+              |       0 |  3
+              |         false
               |""".stripMargin
           )
         )
@@ -7237,6 +7271,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           a))
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
+
       it("should throw TestCanceledException with friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestCanceledException] {
           assume((b == a + 2) && (b - 1 <=
@@ -7246,6 +7283,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assume {
@@ -7277,6 +7315,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
+
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestCanceledException] {
           assume {
@@ -7298,6 +7339,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -7339,6 +7382,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
 
+      // SKIP-DOTTY-START
+
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
@@ -7350,6 +7395,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |}
           """.stripMargin)
       }
+
+      // SKIP-DOTTY-END
 
       it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
         assertCompiles(
@@ -7542,6 +7589,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assume(3 == 3, "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
+
       it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -7562,6 +7612,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
+      // SKIP-DOTTY-END
+
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestCanceledException] {
           assume(a == b, "this is a clue")
@@ -7581,17 +7633,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 0") {
         val e = intercept[TestCanceledException] {
-          assume(a == null, "this is a clue")
+          assume(a == 0, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assume(a == null, "this is a clue")
+              |assume(a == 0, "this is a clue")
               |       | |  |
-              |       3 |  null
+              |       3 |  0
               |         false
               |""".stripMargin
           )
@@ -7600,18 +7652,18 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 0 == a") {
         val e = intercept[TestCanceledException] {
-          assume(null == a, "this is a clue")
+          assume(0 == a, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assume(null == a, "this is a clue")
-              |       |    |  |
-              |       null |  3
-              |            false
+              |assume(0 == a, "this is a clue")
+              |       | |  |
+              |       0 |  3
+              |         false
               |""".stripMargin
           )
         )
@@ -9685,6 +9737,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           a), "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
+
       it("should throw friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestCanceledException] {
           assume((b == a + 2) && (b - 1 <=
@@ -9694,6 +9749,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assume({
@@ -9725,6 +9781,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
+
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestCanceledException] {
           assume({
@@ -9746,6 +9805,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -9787,6 +9847,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
 
+      // SKIP-DOTTY-START
+
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
@@ -9798,6 +9860,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |}
           """.stripMargin)
       }
+
+      // SKIP-DOTTY-END
 
       it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
         assertCompiles(
@@ -9892,7 +9956,5 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """.stripMargin)
       }
     }
-
   }
-
 }
