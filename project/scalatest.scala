@@ -212,8 +212,7 @@ object ScalatestBuild {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
         Seq(
-          // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
-          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
+          "org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0",
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
 
@@ -330,7 +329,7 @@ object ScalatestBuild {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
-      //libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
