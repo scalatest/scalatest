@@ -25,6 +25,8 @@ import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurre
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
+import dotty.tools.sbtplugin.DottyPlugin.autoImport._
+
 object ScalatestBuild {
 
   // To run gentests
@@ -174,8 +176,10 @@ object ScalatestBuild {
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.2.0")
-      case other => Seq.empty
+      case Some((scalaEpoch, scalaMajor)) if scalaEpoch != 2 || scalaMajor >= 11 =>
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "1.2.0").withDottyCompat(theScalaVersion))
+      case other =>
+        Seq.empty
     }
 
 
@@ -946,6 +950,7 @@ object ScalatestBuild {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       sourceGenerators in Compile += {
         Def.task {
@@ -2133,7 +2138,6 @@ object ScalatestBuild {
       (resourceManaged in Compile).value,
       name.value)
 
-  import dotty.tools.sbtplugin.DottyPlugin.autoImport._
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
   lazy val dottyVersion = dottyLatestNightlyBuild.get
   // lazy val dottyVersion = "0.15.0-bin-20190522-ffb250d-NIGHTLY"
