@@ -59,4 +59,12 @@ package object fixture {
   @deprecated("Please use org.scalatest.flatspec.FixtureAsyncFlatSpecLike instead")
   type AsyncFlatSpecLike = org.scalatest.flatspec.FixtureAsyncFlatSpecLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.propspec.FixtureAnyPropSpec instead")
+  type PropSpecLike = org.scalatest.propspec.FixtureAnyPropSpec
+
+  // SKIP-SCALATESTNATIVE-START
+  //@deprecated("Please use org.scalatest.propspec.FixtureAsyncPropSpecLike instead")
+  //type AsyncPropSpecLike = org.scalatest.propspec.FixtureAsyncPropSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }

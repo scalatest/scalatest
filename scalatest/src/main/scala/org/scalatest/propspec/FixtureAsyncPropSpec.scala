@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*package org.scalatest.fixture
+/*package org.scalatest.propspec
 
-abstract class AsyncPropSpec extends org.scalatest.fixture.AsyncPropSpecLike {
+abstract class FixtureAsyncPropSpec extends org.scalatest.propspec.FixtureAsyncPropSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.propspec
 
 import org.scalactic._
+import org.scalatest._
 import Suite.autoTagClassAnnotations
 
 /**
- * Implementation trait for class <code>PropSpec</code>, which represents
+ * Implementation trait for class <code>AnyPropSpec</code>, which represents
  * a suite of property-based tests.
  * 
  * <p>
- * <a href="PropSpec.html"><code>PropSpec</code></a> is a class, not a trait,
+ * <a href="AnyPropSpec.html"><code>AnyPropSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>PropSpec</code> into some other class, you can use this
- * trait instead, because class <code>PropSpec</code> does nothing more than
+ * behavior of <code>AnyPropSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AnyPropSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PropSpec.html">detailed
- * overview of <code>PropSpec</code></a>.
+ * See the documentation of the class for a <a href="AnyPropSpec.html">detailed
+ * overview of <code>AnyPropSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait PropSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
   import engine._
@@ -60,7 +61,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyPropSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -70,7 +71,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyPropSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -92,7 +93,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyPropSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
@@ -100,14 +101,14 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyPropSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
    * Register a property-based test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
    * methods. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>AnyPropSpec</code> instance.
    *
    * @param testName the name of the property
    * @param testTags the optional list of tags for this property
@@ -124,7 +125,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerTest(testName, Transformer(() => testFun), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    engine.registerTest(testName, Transformer(() => testFun), Resources.propertyCannotAppearInsideAnotherProperty, "AnyPropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -133,7 +134,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
    * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
    * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>AnyPropSpec</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -149,11 +150,11 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(testName, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAProperty, "AnyPropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
-  * An immutable <code>Set</code> of test names. If this <code>PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
+  * An immutable <code>Set</code> of test names. If this <code>AnyPropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
   *
   * <p>
   * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -171,7 +172,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>PropSpec</code>
+   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>AnyPropSpec</code>
    * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
@@ -198,7 +199,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>PropSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AnyPropSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
@@ -214,7 +215,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-   * Run zero to many of this <code>PropSpec</code>'s tests.
+   * Run zero to many of this <code>AnyPropSpec</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -237,7 +238,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * Registers shared tests.
    *
    * <p>
-   * This method enables the following syntax for shared tests in a <code>PropSpec</code>:
+   * This method enables the following syntax for shared tests in a <code>AnyPropSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
