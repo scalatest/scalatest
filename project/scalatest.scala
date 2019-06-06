@@ -810,7 +810,8 @@ object ScalatestBuild {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words"
+        "org.scalatest.words", 
+        "org.scalatest.wordspec"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -918,7 +919,8 @@ object ScalatestBuild {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words"
+        "org.scalatest.words", 
+        "org.scalatest.wordspec"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -1014,7 +1016,8 @@ object ScalatestBuild {
       "org.scalatest.time",
       "org.scalatest.tools",
       "org.scalatest.verb",
-      "org.scalatest.words"
+      "org.scalatest.words", 
+      "org.scalatest.wordspec"
     ),
     OsgiKeys.importPackage := Seq(
       "org.scalatest.*",
@@ -1164,7 +1167,8 @@ object ScalatestBuild {
       "org.scalatest.time",
       "org.scalatest.tools",
       "org.scalatest.verb",
-      "org.scalatest.words"
+      "org.scalatest.words", 
+      "org.scalatest.wordspec"
     ),
     OsgiKeys.importPackage := Seq(
       "org.scalatest.*",
@@ -1279,6 +1283,7 @@ object ScalatestBuild {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
+        "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
@@ -1351,6 +1356,7 @@ object ScalatestBuild {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
+        "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions",
@@ -1422,6 +1428,7 @@ object ScalatestBuild {
           "org.scalatest.tools",
           "org.scalatest.verb",
           "org.scalatest.words",
+          "org.scalatest.wordspec",
           "org.scalactic",
           "org.scalactic.anyvals",
           "org.scalactic.exceptions",

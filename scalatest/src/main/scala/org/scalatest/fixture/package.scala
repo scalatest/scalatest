@@ -67,4 +67,12 @@ package object fixture {
   //@deprecated("Please use org.scalatest.propspec.FixtureAsyncPropSpecLike instead")
   //type AsyncPropSpecLike = org.scalatest.propspec.FixtureAsyncPropSpecLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.wordspec.FixtureAnyWordSpec instead")
+  type WordSpecLike = org.scalatest.wordspec.FixtureAnyWordSpec
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.wordspec.FixtureAsyncWordSpecLike instead")
+  type AsyncWordSpecLike = org.scalatest.wordspec.FixtureAsyncWordSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }
