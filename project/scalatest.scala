@@ -15,11 +15,11 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEn
 
 import sbtcrossproject.CrossPlugin.autoImport._
 
-import scalanative.sbtplugin.ScalaNativePlugin
-import scalanative.tools
-import scalanative.optimizer.{inject, pass}
-import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
-import ScalaNativePlugin.autoImport._
+//import scalanative.sbtplugin.ScalaNativePlugin
+//import scalanative.tools
+//import scalanative.optimizer.{inject, pass}
+//import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
+//import ScalaNativePlugin.autoImport._
 
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
 import com.typesafe.tools.mima.core._
@@ -34,9 +34,10 @@ object ScalatestBuild {
   // To enable deprecation warnings on the fly
   // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
+  lazy val defaultScalaVersion = "2.13.0"
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-RC2")
+  lazy val supportedScalaVersions = Seq(defaultScalaVersion, "2.12.8", "2.11.12", "2.10.7")
 
   val releaseVersion = "3.1.0-SNAP11"
 
@@ -103,6 +104,7 @@ object ScalatestBuild {
 
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
+    scalaVersion := defaultScalaVersion,
     crossScalaVersions := supportedScalaVersions,
     version := releaseVersion,
     scalacOptions ++= Seq("-feature"),
@@ -212,15 +214,14 @@ object ScalatestBuild {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
         Seq(
-          // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
-          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
+          "org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
 
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
 
-      case other =>
+      case _ =>
         Seq.empty
     }
   }
@@ -233,7 +234,7 @@ object ScalatestBuild {
       "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
     )
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.27")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.28")
 
   def scalatestJSLibraryDependencies =
     Seq(
@@ -726,7 +727,7 @@ object ScalatestBuild {
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       nativeOptimizerDriver in NativeTest := {
-        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
+        val orig = Driver((nativeConfig in NativeTest).value)
         orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
       },
       nativeLinkStubs in NativeTest := true,
@@ -1446,6 +1447,7 @@ object ScalatestBuild {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
+    scalaVersion := defaultScalaVersion,
     crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -1711,11 +1713,13 @@ object ScalatestBuild {
 
   lazy val examples = Project("examples", file("examples"))
     .settings(
+      scalaVersion := defaultScalaVersion,
       crossScalaVersions := supportedScalaVersions
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"))
     .settings(
+      scalaVersion := defaultScalaVersion,
       crossScalaVersions := supportedScalaVersions,
       sourceGenerators in Test += {
         Def.task {
