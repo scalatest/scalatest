@@ -13,42 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.propspec
 
 import org.scalatest._
 import org.scalactic.source
 import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
- * Implementation trait for class <code>fixture.PropSpec</code>, which is
- * a sister class to <a href="../PropSpec.html"><code>org.scalatest.PropSpec</code></a> that can pass a
+ * Implementation trait for class <code>FixtureAnyPropSpec</code>, which is
+ * a sister class to <a href="AnyPropSpec.html"><code>org.scalatest.propspec.AnyPropSpec</code></a> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="PropSpec.html"><code>fixture.PropSpec</code></a> is a class,
+ * <a href="FixtureAnyPropSpec.html"><code>FixtureAnyPropSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.PropSpec</code> into some other
+ * to mix the behavior of <code>FixtureAnyPropSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.PropSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>FixtureAnyPropSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PropSpec.html">detailed
- * overview of <code>fixture.PropSpec</code></a>.
+ * See the documentation of the class for a <a href="FixtureAnyPropSpec.html">detailed
+ * overview of <code>FixtureAnyPropSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyPropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 
   import engine._
 
-  private[scalatest] val sourceFileName = "PropSpecLike.scala"
+  private[scalatest] val sourceFileName = "FixtureAnyPropSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -65,7 +65,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>fixture.PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyPropSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -75,7 +75,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>fixture.PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FixtureAnyPropSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -133,7 +133,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * Register a property-based test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
    * methods. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>FixtureAnyPropSpec</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -173,7 +173,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
    * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
    * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>FixtureAnyPropSpec</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -186,7 +186,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
     new ResultOfIgnoreInvocation(testName, testTags: _*)
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>fixture.PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
+   * An immutable <code>Set</code> of test names. If this <code>FixtureAnyPropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -205,7 +205,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * @param testName the name of one test to run.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>fixture.PropSpec</code>
+   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FixtureAnyPropSpec</code>
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -214,13 +214,13 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
       theTest.testFun match {
         case transformer: org.scalatest.fixture.Transformer[_] =>
           transformer.exceptionalTestFun match {
-            case wrapper: NoArgTestWrapper[_, _] =>
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
               withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
             case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
           }
         case other =>
           other match {
-            case wrapper: NoArgTestWrapper[_, _] =>
+            case wrapper: fixture.NoArgTestWrapper[_, _] =>
               withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
             case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
           }
@@ -231,8 +231,8 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>fixture.PropSpec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>fixture.PropSpec</code> contains no tags, this method returns an empty
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyPropSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FixtureAnyPropSpec</code> contains no tags, this method returns an empty
    * <code>Map</code>.
    *
    * <p>
@@ -249,7 +249,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
 
   /**
    * <p>
-   * Run zero to many of this <code>fixture.PropSpecLike</code>'s tests.
+   * Run zero to many of this <code>FixtureAnyPropSpecLike</code>'s tests.
    * </p>
    *
    * <p>
@@ -298,7 +298,7 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * Registers shared tests.
    *
    * <p>
-   * This method enables the following syntax for shared tests in a <code>fixture.PropSpec</code>:
+   * This method enables the following syntax for shared tests in a <code>FixtureAnyPropSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
@@ -310,8 +310,8 @@ trait PropSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fi
    * Because the parameter passed to it is
    * type <code>Unit</code>, the expression will be evaluated before being passed, which
    * is sufficient to register the shared tests. For examples of shared tests, see the
-   * <a href="../PropSpec.html#SharedTests">Shared tests section</a> in the main documentation for
-   * trait <code>PropSpec</code>.
+   * <a href="AnyPropSpec.html#SharedTests">Shared tests section</a> in the main documentation for
+   * trait <code>AnyPropSpec</code>.
    * </p>
    *
    * @param unit a <code>Unit</code>

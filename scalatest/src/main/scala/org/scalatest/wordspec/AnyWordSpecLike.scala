@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,50 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.wordspec
 
-import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
-import scala.concurrent.Future
-import Suite.autoTagClassAnnotations
+import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
+import org.scalatest._
 import org.scalatest.exceptions._
+import Suite.autoTagClassAnnotations
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
+  MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 
 /**
- * Implementation trait for class <code>AsyncWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
+ * Implementation trait for class <code>AnyWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
- *
+ * 
  * <p>
- * <a href="AsyncWordSpec.html"><code>AsyncWordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
- * mixing in traits compared to extending classes. If you need to mix the behavior of <code>AsyncWordSpec</code>
- * into some other class, you can use this trait instead, because class <code>AsyncWordSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <a href="AnyWordSpec.html"><code>AnyWordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
+ * mixing in traits compared to extending classes. If you need to mix the behavior of <code>AnyWordSpec</code>
+ * into some other class, you can use this trait instead, because class <code>AnyWordSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="AsyncWordSpec.html">detailed overview of <code>AsyncWordSpec</code></a>.
+ * See the documentation of the class for a <a href="AnyWordSpec.html">detailed overview of <code>AnyWordSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
-    () => {
-      PastOutcome(
-        try { testFun; Succeeded }
-        catch {
-          case ex: TestCanceledException => Canceled(ex)
-          case _: TestPendingException => Pending
-          case tfe: TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
-
-  private final val engine = new AsyncEngine(Resources.concurrentWordSpecMod, "WordSpecLike")
-
+  private final val engine = new Engine(Resources.concurrentWordSpecMod, "WordSpecLike")
   import engine._
 
   /**
@@ -74,7 +60,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>WordSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyWordSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -84,7 +70,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>WordSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>AnyWordSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -101,12 +87,20 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepthAdjustment = -1
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
+    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -117,7 +111,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>WordSpec</code> instance.
+   * this <code>AnyWordSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -128,13 +122,14 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
-    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
-  }
-
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
-    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "AnyWordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -145,7 +140,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * report will be sent that indicates the test was ignored. The name of the test will be a concatenation of the text of all surrounding describers,
    * from outside in, and the passed spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.) The resulting test name must not have been registered previously on
-   * this <code>WordSpec</code> instance.
+   * this <code>AnyWordSpec</code> instance.
    *
    * @param specText the specification text, which will be combined with the descText of any surrounding describers
    * to form the test name
@@ -156,13 +151,14 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
-  }
-
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "AnyWordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =
@@ -175,7 +171,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       case "can" => FailureMessages.exceptionWasThrownInCanClause(Prettifier.default, className, description, errorMessage)
     }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, pos: source.Position, fun: () => Unit): Unit = {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit = {
+
     def registrationClosedMessageFun: String =
       verb match {
         case "should" => Resources.shouldCannotAppearInsideAnIn
@@ -187,7 +184,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       }
 
     try {
-      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, None, pos)
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "AnyWordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(pos))
     }
     catch {
       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
@@ -199,7 +196,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       case other: Throwable => throw other
     }
   }
-
+  
   private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit = {
 
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
@@ -207,7 +204,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       val currentBranch = engine.atomic.get.currentBranch
       // headOption because subNodes are in reverse order
       currentBranch.subNodes.headOption match {
-        case Some(last) =>
+        case Some(last) => 
           last match {
             case DescriptionBranch(_, descriptionText, _, _) =>
 
@@ -221,7 +218,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
                   case "can" => Resources.canCannotAppearInsideAnIn
                 }
               try {
-                registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, None, pos)
+                registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "AnyWordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(pos))
               }
               catch {
                 case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
@@ -233,10 +230,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
                 case other: Throwable => throw other
               }
 
-            case _ =>
+            case _ => 
               throw new NotAllowedException(notAllowMessage, None, pos)
           }
-        case None =>
+        case None => 
           throw new NotAllowedException(notAllowMessage, None, pos)
       }
     }
@@ -248,8 +245,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * Class that supports the registration of tagged tests.
    *
    * <p>
-   * Instances of this class are returned by the <code>taggedAs</code> method of
-   * class <code>WordSpecStringWrapper</code>.
+   * Instances of this class are returned by the <code>taggedAs</code> method of 
+   * class <code>AnyWordSpecStringWrapper</code>.
    * </p>
    *
    * @author Bill Venners
@@ -269,10 +266,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
@@ -289,11 +286,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(specText, tags, "is", () => testFun, pos)
+      registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
 
     /**
@@ -309,13 +306,13 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
-  }
+  }       
 
   /**
    * A class that via an implicit conversion (named <code>convertToWordSpecStringWrapper</code>) enables
@@ -323,11 +320,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    *
    * <p>
-   * This class provides much of the syntax for <code>WordSpec</code>, however, it does not add
+   * This class provides much of the syntax for <code>AnyWordSpec</code>, however, it does not add
    * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
    * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
-   * traits, which <code>WordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
-   * in <code>Matchers</code> and <code>MustMatchers</code>.
+   * traits, which <code>AnyWordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
+   * in <code>Matchers</code> and <code>MustMatchers</code>. 
    * </p>
    *
    * @author Bill Venners
@@ -347,10 +344,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def in(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def in(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
 
@@ -367,10 +364,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def ignore(f: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    def ignore(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 
@@ -387,11 +384,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def is(f: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerPendingTestToRun(string, List(), "is", () => f, pos)
+      registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
 
     /**
@@ -407,7 +404,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -428,11 +425,15 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def when(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string, Some("when"), "when", pos, () => f)
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
 
     /**
@@ -450,11 +451,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", pos, resultOfAfterWordApplication.f)
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -470,11 +471,15 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def that(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " that", None, "that", pos, () => f)
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)
     }
 
     /**
@@ -490,11 +495,15 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def which(f: => Unit)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " which", None, "which", pos, () => f)
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)
     }
 
     /**
@@ -512,13 +521,13 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", pos, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     }
-
+    
     /**
      * Registers a <code>which</code> clause that is followed by an <em>after word</em>.
      *
@@ -534,11 +543,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </pre>
      *
      * <p>
-     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", pos, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     }
   }
 
@@ -557,14 +566,14 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.WordSpec
-   *
-   * class ScalaTestGUISpec extends WordSpec {
-   *
+   * import org.scalatest._
+   * 
+   * class ScalaTestGUISpec extends wordspec.AnyWordSpec {
+   * 
    *   def theUser = afterWord("the user")
    *   def display = afterWord("display")
    *   def is = afterWord("is")
-   *
+   * 
    *   "The ScalaTest GUI" when theUser {
    *     "clicks on an event report in the list box" should display {
    *       "a blue background in the clicked-on row in the list box" in {}
@@ -579,12 +588,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * Running the previous <code>WordSpec</code> in the Scala interpreter would yield:
+   * Running the previous <code>AnyWordSpec</code> in the Scala interpreter would yield:
    * </p>
    *
    * <pre class="stREPL">
    * scala> (new ScalaTestGUISpec).execute()
-   * <span class="stGreen">The ScalaTest GUI (when the user clicks on an event report in the list box)
+   * <span class="stGreen">The ScalaTest GUI (when the user clicks on an event report in the list box) 
    * - should display a blue background in the clicked-on row in the list box
    * - should display the details for the event in the details area
    * - should display a rerun button that is enabled if the clicked-on event is rerunnable
@@ -599,7 +608,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * <p>
      * This method transforms a block of code into a <code>ResultOfAfterWordApplication</code>, which
      * is accepted by <code>when</code>, <code>should</code>, <code>must</code>, <code>can</code>, and <code>which</code>
-     * methods.  For more information, see the <a href="WordSpec.html#AfterWords">main documentation</code></a> for trait <code>WordSpec</code>.
+     * methods.  For more information, see the <a href="AnyWordSpec.html#AfterWords">main documentation</code></a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
     def apply(f: => Unit) = new ResultOfAfterWordApplication(text, () => f)
@@ -620,14 +629,14 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.WordSpec
-   *
-   * class ScalaTestGUISpec extends WordSpec {
-   *
+   * import org.scalatest._
+   * 
+   * class ScalaTestGUISpec extends wordspec.AnyWordSpec {
+   * 
    *   def theUser = afterWord("the user")
    *   def display = afterWord("display")
    *   def is = afterWord("is")
-   *
+   * 
    *   "The ScalaTest GUI" when theUser {
    *     "clicks on an event report in the list box" should display {
    *       "a blue background in the clicked-on row in the list box" in {}
@@ -642,12 +651,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * </pre>
    *
    * <p>
-   * Running the previous <code>WordSpec</code> in the Scala interpreter would yield:
+   * Running the previous <code>AnyWordSpec</code> in the Scala interpreter would yield:
    * </p>
    *
    * <pre class="stREPL">
    * scala> (new ScalaTestGUISpec).execute()
-   * <span class="stGreen">The ScalaTest GUI (when the user clicks on an event report in the list box)
+   * <span class="stGreen">The ScalaTest GUI (when the user clicks on an event report in the list box) 
    * - should display a blue background in the clicked-on row in the list box
    * - should display the details for the event in the details area
    * - should display a rerun button that is enabled if the clicked-on event is rerunnable
@@ -660,9 +669,9 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   private[scalatest] val stackDepth = 3
   // SKIP-SCALATESTJS,NATIVE-END
   //SCALATESTJS,NATIVE-ONLY private[scalatest] val stackDepth: Int = 10
-
+  
   /**
-   * Class that supports shorthand scope registration via the instance referenced from <code>WordSpecLike</code>'s <code>it</code> field.
+   * Class that supports shorthand scope registration via the instance referenced from <code>AnyWordSpecLike</code>'s <code>it</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -670,20 +679,20 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <pre class="stHighlight">
    * "A Stack" when { ... }
-   *
+   * 
    * it should { ... }
    * ^
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation
-   * for <code>WordSpec</code>.
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * for <code>AnyWordSpec</code>.
    * </p>
    */
   protected final class ItWord {
-
+    
     /**
-     * Supports the registration of scope with <code>should</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>should</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -691,22 +700,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "A Stack" when { ... }
-     *
+     * 
      * it should { ... }
      *    ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>must</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>must</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -714,22 +723,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "A Stack" when { ... }
-     *
+     * 
      * it must { ... }
      *    ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>can</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>can</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -737,22 +746,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "A Stack" when { ... }
-     *
+     * 
      * it can { ... }
      *    ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>when</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>when</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -760,23 +769,23 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "A Stack" should { ... }
-     *
+     * 
      * it when { ... }
      *    ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
     }
   }
-
+  
   /**
-   * Supports shorthand scope registration in <code>WordSpecLike</code>s.
+   * Supports shorthand scope registration in <code>AnyWordSpecLike</code>s.
    *
    * <p>
    * This field enables syntax such as the following test registration:
@@ -784,20 +793,20 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <pre class="stHighlight">
    * "A Stack" when { ... }
-   *
+   * 
    * it should { ... }
    * ^
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation
-   * for <code>WordSpec</code>.
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * for <code>AnyWordSpec</code>.
    * </p>
    */
   protected val it = new ItWord
-
+  
   /**
-   * Class that supports shorthand scope registration via the instance referenced from <code>WordSpecLike</code>'s <code>they</code> field.
+   * Class that supports shorthand scope registration via the instance referenced from <code>AnyWordSpecLike</code>'s <code>they</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -805,20 +814,20 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <pre class="stHighlight">
    * "Basketball players" when { ... }
-   *
+   * 
    * they should { ... }
    * ^
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>they</code> field, see the main documentation
-   * for <code>WordSpec</code>.
+   * For more information and examples of the use of the <code>they</code> field, see the main documentation 
+   * for <code>AnyWordSpec</code>.
    * </p>
    */
   protected final class TheyWord {
-
+    
     /**
-     * Supports the registration of scope with <code>should</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>should</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -826,22 +835,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "Basketball players" when { ... }
-     *
+     * 
      * they should { ... }
      *      ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>must</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>must</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -849,22 +858,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "Basketball players" when { ... }
-     *
+     * 
      * they must { ... }
      *      ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>can</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>can</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -872,22 +881,22 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "Basketball players" when { ... }
-     *
+     * 
      * they can { ... }
      *      ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
     }
-
+    
     /**
-     * Supports the registration of scope with <code>when</code> in a <code>WordSpecLike</code>.
+     * Supports the registration of scope with <code>when</code> in a <code>AnyWordSpecLike</code>.
      *
      * <p>
      * This method supports syntax such as the following:
@@ -895,23 +904,23 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * <pre class="stHighlight">
      * "Basketball players" should { ... }
-     *
+     * 
      * they when { ... }
      *      ^
      * </pre>
      *
      * <p>
-     * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
-     * for <code>WordSpec</code>.
+     * For examples of scope registration, see the <a href="AnyWordSpec.html">main documentation</a>
+     * for <code>AnyWordSpec</code>.
      * </p>
      */
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
     }
   }
-
+  
   /**
-   * Supports shorthand scope registration in <code>WordSpecLike</code>s.
+   * Supports shorthand scope registration in <code>AnyWordSpecLike</code>s.
    *
    * <p>
    * This field enables syntax such as the following test registration:
@@ -919,14 +928,14 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * <pre class="stHighlight">
    * "A Stack" when { ... }
-   *
+   * 
    * they should { ... }
    * ^
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>they</code> field, see the main documentation
-   * for <code>WordSpec</code>.
+   * For more information and examples of the use of the <code>they</code> field, see the main documentation 
+   * for <code>AnyWordSpec</code>.
    * </p>
    */
   protected val they = new TheyWord
@@ -943,9 +952,9 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   // Used to enable should/can/must to take a block (except one that results in type string. May
   // want to mention this as a gotcha.)
   /*
-import org.scalatest.WordSpec
+import org.scalatest._
 
-class MySpec extends WordSpec {
+class MySpec extends wordspec.AnyWordSpec {
 
   "bla bla bla" should {
      "do something" in {
@@ -958,7 +967,7 @@ delme.scala:6: error: no implicit argument matching parameter type (String, Stri
   "bla bla bla" should {
                 ^
 one error found
-
+  
    */
   /**
    * Supports the registration of subjects.
@@ -982,7 +991,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, pos, f)
+      def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
     }
 
   /**
@@ -1010,25 +1019,33 @@ one error found
   protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
     new SubjectWithAfterWordRegistration {
       def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
-      val afterWordFunction =
-        () => {
-          registerBranch(resultOfAfterWordApplication.text, None, verb, pos, resultOfAfterWordApplication.f)
-        }
-      registerBranch(left, Some(verb), verb, pos, afterWordFunction)
+        val afterWordFunction =
+          () => {
+            // SKIP-SCALATESTJS,NATIVE-START
+            val stackDepth = 10
+            // SKIP-SCALATESTJS,NATIVE-END
+            //SCALATESTJS,NATIVE-ONLY val stackDepth = 15
+            registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, pos, resultOfAfterWordApplication.f)
+          }
+        // SKIP-SCALATESTJS,NATIVE-START
+        val stackDepth = 7
+        // SKIP-SCALATESTJS,NATIVE-END
+        //SCALATESTJS,NATIVE-ONLY val stackDepth = 9
+        registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, pos, afterWordFunction)
+      }
     }
-  }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>WordSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>AnyWordSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
-   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
-   * <code>taggedAs</code>.
+   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
+   * <code>taggedAs</code>. 
    * </p>
-   *
+   * 
    * <p>
-   * In addition, this trait's implementation will also auto-tag tests with class level annotations.
+   * In addition, this trait's implementation will also auto-tag tests with class level annotations.  
    * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
    * <code>org.scalatest.Ignore</code>.
    * </p>
@@ -1049,29 +1066,28 @@ one error found
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+
+    def invokeWithFixture(theTest: TestLeaf): Outcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
-        withFixture(
-          new NoArgAsyncTest {
-            val name = testData.name
-            def apply(): FutureOutcome = { theTest.testFun().toFutureOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-            val pos = testData.pos
-          }
-        ).underlying
+      withFixture(
+        new NoArgTest {
+          val name = testData.name
+          def apply(): Outcome = { theTest.testFun() }
+          val configMap = testData.configMap
+          val scopes = testData.scopes
+          val text = testData.text
+          val tags = testData.tags
+          val pos = testData.pos
+        }
       )
     }
 
-    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, invokeWithFixture)
   }
 
   /**
-   * Run zero to many of this <code>WordSpec</code>'s tests.
+   * Run zero to many of this <code>AnyWordSpec</code>'s tests.
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
@@ -1126,22 +1142,22 @@ one error found
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, runTest)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>WordSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>AnyWordSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>WordSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>AnyWordSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.WordSpec
+   * import org.scalatest._
    *
    * class StackSpec {
    *   "A Stack" when {
@@ -1156,7 +1172,7 @@ one error found
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>WordSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>AnyWordSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -1171,11 +1187,11 @@ one error found
 
   override def run(testName: Option[String], args: Args): Status = {
 
-    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
+    runImpl(thisSuite, testName, args, super.run)
   }
 
   /**
-   * Supports shared test registration in <code>WordSpec</code>s.
+   * Supports shared test registration in <code>AnyWordSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following:
@@ -1192,11 +1208,11 @@ one error found
    * </p>
    */
   protected val behave = new BehaveWord
-
+  
   /**
    * Suite style name.
    */
   final override val styleName: String = "org.scalatest.WordSpec"
-
+    
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
