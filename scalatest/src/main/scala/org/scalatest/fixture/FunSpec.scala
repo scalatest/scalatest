@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 
 /**
-  * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funsuite.FixtureAnyFunSuite instead.
+  * This class is deprecated and will be removed in future version of ScalaTest, please use org.scalatest.funspec.FixtureAnyFunSpec instead.
   */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 @deprecated("Please use org.scalatest.funspec.FixtureAnyFunSpec instead")

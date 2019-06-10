@@ -218,6 +218,12 @@ object GenScalaTestNative {
       asyncs("scalatest/src/main/scala/org/scalatest/flatspec")
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir,
+      asyncs("scalatest/src/main/scala/org/scalatest/propspec")
+    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir,
+      asyncs("scalatest/src/main/scala/org/scalatest/wordspec")
+    ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
