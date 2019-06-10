@@ -155,4 +155,20 @@ package object scalatest {
   @deprecated("Please use org.scalatest.flatspec.AsyncFlatSpecLike instead")
   type AsyncFlatSpecLike = flatspec.AsyncFlatSpecLike
   // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.propspec.AnyPropSpecLike instead")
+  type PropSpecLike = propspec.AnyPropSpecLike
+
+  // SKIP-SCALATESTNATIVE-START
+  //@deprecated("Please use org.scalatest.propspec.AsyncPropSpecLike instead")
+  //type AsyncPropSpecLike = propspec.AsyncPropSpecLike
+  // SKIP-SCALATESTNATIVE-END
+
+  @deprecated("Please use org.scalatest.wordspec.AnyWordSpecLike instead")
+  type WordSpecLike = wordspec.AnyWordSpecLike
+
+  // SKIP-SCALATESTNATIVE-START
+  @deprecated("Please use org.scalatest.wordspec.AsyncWordSpecLike instead")
+  type AsyncWordSpecLike = wordspec.AsyncWordSpecLike
+  // SKIP-SCALATESTNATIVE-END
 }
