@@ -601,6 +601,7 @@ object ScalatestBuild {
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
+      moduleName := "scalactic",
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile += {
         Def.task{
@@ -622,12 +623,9 @@ object ScalatestBuild {
           GenScalacticDotty.genResource((resourceManaged in Compile).value)
         }.taskValue
       },
-      // include the macro classes and resources in the main jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
-      // include the macro sources in the main source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      scalacticDocSourcesSetting,
-      docTaskSetting,
+      //scalacticDocSourcesSetting,
+      //docTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -987,7 +985,8 @@ object ScalatestBuild {
           //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalatestJSDocTaskSetting,
+      //scalatestJSDocTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
       mimaBinaryIssueFilters ++= {
