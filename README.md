@@ -150,10 +150,10 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.12.8 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.12.8 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.0-RC3 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC3 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC3 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC3 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 To publish scalactic, scalatest and scalatest-app use the following command:
 
@@ -161,10 +161,10 @@ To publish scalactic, scalatest and scalatest-app use the following command:
     $ sbt ++2.10.7 clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.12.8 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.0-RC3 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned    
+    $ sbt ++2.13.0 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned    
     $ sbt ++2.11.12 "project scalatestAppNative" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M3
     $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.13.0-RC3 "project scalatestAppJS" clean publishSigned  
+    $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned  

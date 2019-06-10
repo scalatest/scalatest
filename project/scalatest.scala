@@ -40,12 +40,12 @@ object ScalatestBuild {
 
   lazy val supportedScalaVersions = List("2.13.0", "2.12.8", "2.11.12", "2.10.7")
 
-  val releaseVersion = "3.1.0-SNAP12"
+  val releaseVersion = "3.1.0-SNAP13"
 
   val previousReleaseVersion = "3.0.5"
 
-  val plusJUnitVersion = "1.0.0-SNAP8"
-  val plusTestNGVersion = "1.0.0-SNAP7"
+  val plusJUnitVersion = "1.0.0-SNAP9"
+  val plusTestNGVersion = "1.0.0-SNAP8"
   val flexmarkVersion = "0.35.10"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
@@ -216,7 +216,7 @@ object ScalatestBuild {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
+          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
 
