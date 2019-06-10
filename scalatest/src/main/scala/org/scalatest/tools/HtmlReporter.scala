@@ -240,25 +240,25 @@ private[scalatest] class HtmlReporter(
             case None => NodeSeq.Empty
           }
         }
-        <script type="text/javascript"><![CDATA[
-          { unparsedXml(
-            "function toggleDetails(contentId, linkId) {" + "\n" + 
-            "  var ele = document.getElementById(contentId);" + "\n" + 
-            "  var text = document.getElementById(linkId);" + "\n" + 
-            "  if(ele.style.display == \"block\") {" + "\n" + 
-            "    ele.style.display = \"none\";" + "\n" + 
-            "    text.innerHTML = \"(Show Details)\";" + "\n" + 
-            "  }" + "\n" + 
-            "  else {" + "\n" + 
-            "    ele.style.display = \"block\";" + "\n" + 
-            "    text.innerHTML = \"(Hide Details)\";" + "\n" + 
-            "  }" + "\n" + 
-            "}" + "\n" + 
-            "function hideOpenInNewTabIfRequired() {" + "\n" + 
-            "  if (top === self) { document.getElementById('printlink').style.display = 'none'; }" + "\n" + 
-            "}" + "\n")
-          }
-        ]]></script>
+        <script type="text/javascript">
+        //<![CDATA[
+            function toggleDetails(contentId, linkId) { 
+              var ele = document.getElementById(contentId); 
+              var text = document.getElementById(linkId); 
+              if(ele.style.display == "block") { 
+                ele.style.display = "none"; 
+                text.innerHTML = "(Show Details)"; 
+              } 
+              else { 
+                ele.style.display = "block"; 
+                text.innerHTML = "(Hide Details)";
+              }
+            } 
+            function hideOpenInNewTabIfRequired() { 
+              if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
+            }
+        //]]>
+        </script>
       </head>
       <body class="specification">
         <div id="suite_header_name">{ suiteResult.suiteName }</div>
@@ -402,7 +402,9 @@ private[scalatest] class HtmlReporter(
            <div id="printlink">(<a href={ getSuiteFileName(suiteResult) + ".html" } target="_blank">Open { suiteResult.suiteName } in new tab</a>)</div>
       </body>
       <script type="text/javascript">
-        { unparsedXml("hideOpenInNewTabIfRequired();") }
+        //<![CDATA[
+          hideOpenInNewTabIfRequired();
+        //]]>
       </script>
     </html>
 
@@ -520,50 +522,51 @@ private[scalatest] class HtmlReporter(
         }
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
-        <script type="text/javascript"><![CDATA[
-          { unparsedXml(
-            "var tagMap = {};" + "\n" +     
-            "var SUCCEEDED_BIT = 1;" + "\n" + 
-            "var FAILED_BIT = 2;" + "\n" + 
-            "var IGNORED_BIT = 4;" + "\n" + 
-            "var PENDING_BIT = 8;" + "\n" + 
-            "var CANCELED_BIT = 16;" + "\n" + 
-            "function applyFilter() {" + "\n" + 
-            "  var mask = 0;" + "\n" + 
-            "  if (document.getElementById('succeeded_checkbox').checked)" + "\n" + 
-            "    mask |= SUCCEEDED_BIT;" + "\n" +  
-            "  if (document.getElementById('failed_checkbox').checked)" + "\n" + 
-            "    mask |= FAILED_BIT;" + "\n" + 
-            "  if (document.getElementById('ignored_checkbox').checked)" + "\n" + 
-            "    mask |= IGNORED_BIT;" + "\n" + 
-            "  if (document.getElementById('pending_checkbox').checked)" + "\n" + 
-            "    mask |= PENDING_BIT;" + "\n" + 
-            "  if (document.getElementById('canceled_checkbox').checked)" + "\n" + 
-            "    mask |= CANCELED_BIT;" + "\n" + 
-            "  for (var key in tagMap) {" + "\n" + 
-            "    if (tagMap.hasOwnProperty(key)) {" + "\n" + 
-            "      var bitSet = tagMap[key];" + "\n" + 
-            "      var element = document.getElementById(key);" + "\n" + 
-            "      if ((bitSet & mask) != 0)" + "\n" +  
-            "        element.style.display = \"table-row\";" + "\n" + 
-            "      else " + "\n" +  
-            "        element.style.display = \"none\";" + "\n" + 
-            "    }" + "\n" + 
-            "  }" + "\n" + 
-            "}" + "\n" + 
-            "function showDetails(suiteName) {" + "\n" + 
-            "  document.getElementById('details_view').innerHTML = \"<iframe src='\" + suiteName + \".html' width='100%' height='100%'></iframe>\";" + "\n" + 
-            "}" + "\n" + 
-            "function resizeDetailsView() {" + "\n" + 
-            "  var headerView = document.getElementById('scalatest-header');" + "\n" + 
-            "  var detailsView = document.getElementById('details_view');" + "\n" + 
-            "  var summaryView = document.getElementById('summary_view');" + "\n" + 
-            "  var left = summaryView.offsetWidth + 30;" + "\n" + 
-            "  detailsView.style.left = left + \"px\";" + "\n" + 
-            "  detailsView.style.width = (window.innerWidth - left - 30) + \"px\";" + "\n" + 
-            "  detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + \"px\";" + "\n" + 
-            "}\n") }
-        ]]></script>
+        <script type="text/javascript">
+        //<![CDATA[
+            var tagMap = {};     
+            var SUCCEEDED_BIT = 1; 
+            var FAILED_BIT = 2; 
+            var IGNORED_BIT = 4; 
+            var PENDING_BIT = 8;
+            var CANCELED_BIT = 16;
+            function applyFilter() {
+              var mask = 0;
+              if (document.getElementById('succeeded_checkbox').checked) 
+                mask |= SUCCEEDED_BIT;  
+              if (document.getElementById('failed_checkbox').checked) 
+                mask |= FAILED_BIT; 
+              if (document.getElementById('ignored_checkbox').checked) 
+                mask |= IGNORED_BIT; 
+              if (document.getElementById('pending_checkbox').checked) 
+                mask |= PENDING_BIT; 
+              if (document.getElementById('canceled_checkbox').checked)
+                mask |= CANCELED_BIT;
+              for (var key in tagMap) { 
+                if (tagMap.hasOwnProperty(key)) { 
+                  var bitSet = tagMap[key]; 
+                  var element = document.getElementById(key);
+                  if ((bitSet & mask) != 0) 
+                    element.style.display = "table-row"; 
+                  else  
+                    element.style.display = "none";
+                }
+              }
+            }
+            function showDetails(suiteName) {
+              document.getElementById('details_view').innerHTML = "<iframe src='" + suiteName + ".html' width='100%' height='100%'></iframe>";
+            }
+            function resizeDetailsView() {
+              var headerView = document.getElementById('scalatest-header'); 
+              var detailsView = document.getElementById('details_view'); 
+              var summaryView = document.getElementById('summary_view');
+              var left = summaryView.offsetWidth + 30;
+              detailsView.style.left = left + "px"; 
+              detailsView.style.width = (window.innerWidth - left - 30) + "px";
+              detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
+            }
+        //]]>
+        </script>
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
@@ -622,7 +625,9 @@ private[scalatest] class HtmlReporter(
           { unparsedXml(tagMapScript) }
         </script>
         <script type="text/javascript">
-          { unparsedXml("resizeDetailsView();") }
+          //<![CDATA[
+          resizeDetailsView();
+          //]]>
         </script>
       </body>
     </html>
