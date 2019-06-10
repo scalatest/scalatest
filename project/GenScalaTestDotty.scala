@@ -162,6 +162,7 @@ object GenScalaTestDotty {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
@@ -172,7 +173,8 @@ object GenScalaTestDotty {
         "NotWord.scala",
         "ResultOfNotWordForAny.scala"
       )
-    )
+    ) ++ 
+    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
