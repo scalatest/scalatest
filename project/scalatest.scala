@@ -35,10 +35,10 @@ object ScalatestBuild {
 
   // To enable deprecation warnings on the fly
   // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
-
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-RC3")
+
+  lazy val supportedScalaVersions = List("2.13.0", "2.12.8", "2.11.12", "2.10.7")
 
   val releaseVersion = "3.1.0-SNAP12"
 
@@ -216,15 +216,14 @@ object ScalatestBuild {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
         Seq(
-          // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
-          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
+          "org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
 
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
 
-      case other =>
+      case _ =>
         Seq.empty
     }
   }
