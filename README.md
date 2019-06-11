@@ -136,10 +136,10 @@ and using Java 8 (for Scala 2.12 and 2.13):
     $ sbt ++2.12.8 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.12.8 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.0-RC2 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC2 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC2 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.0-RC2 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.0 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10, and make sure you're on Java 6) to Sonatype, use the following command:
 
@@ -153,8 +153,8 @@ To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, versi
 
     $ export SCALAJS_VERSION=0.6.28
     $ sbt ++2.12.8 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.0-RC3 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.13.0 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M3
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.13.0-RC3 "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned
