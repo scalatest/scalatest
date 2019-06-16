@@ -25,6 +25,8 @@ import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurre
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
+import dotty.tools.sbtplugin.DottyPlugin.autoImport._
+
 object ScalatestBuild {
 
   // To run gentests
@@ -33,17 +35,17 @@ object ScalatestBuild {
 
   // To enable deprecation warnings on the fly
   // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
-
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  lazy val supportedScalaVersions = List("2.12.8", "2.11.12", "2.10.7", "2.13.0-RC3")
 
-  val releaseVersion = "3.1.0-SNAP12"
+  lazy val supportedScalaVersions = List("2.13.0", "2.12.8", "2.11.12", "2.10.7")
+
+  val releaseVersion = "3.1.0-SNAP13"
 
   val previousReleaseVersion = "3.0.5"
 
-  val plusJUnitVersion = "1.0.0-SNAP8"
-  val plusTestNGVersion = "1.0.0-SNAP7"
+  val plusJUnitVersion = "1.0.0-SNAP9"
+  val plusTestNGVersion = "1.0.0-SNAP8"
   val flexmarkVersion = "0.35.10"
 
   val githubTag = "release-3.1.0" // for scaladoc source urls
@@ -174,8 +176,10 @@ object ScalatestBuild {
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq("org.scala-lang.modules" %% "scala-xml" % "1.2.0")
-      case other => Seq.empty
+      case Some((scalaEpoch, scalaMajor)) if scalaEpoch != 2 || scalaMajor >= 11 =>
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "1.2.0").withDottyCompat(theScalaVersion))
+      case other =>
+        Seq.empty
     }
 
 
@@ -212,7 +216,6 @@ object ScalatestBuild {
       // if scala 2.13+ is used, add dependency on scala-parallel-collections module
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
         Seq(
-          // We'll do without scala-parallel-collections until it catches up with Scala 2.13.0-M4.
           //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
@@ -220,7 +223,7 @@ object ScalatestBuild {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
 
-      case other =>
+      case _ =>
         Seq.empty
     }
   }
@@ -597,6 +600,7 @@ object ScalatestBuild {
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
+      moduleName := "scalactic",
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile += {
         Def.task{
@@ -618,12 +622,9 @@ object ScalatestBuild {
           GenScalacticDotty.genResource((resourceManaged in Compile).value)
         }.taskValue
       },
-      // include the macro classes and resources in the main jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
-      // include the macro sources in the main source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      scalacticDocSourcesSetting,
-      docTaskSetting,
+      //scalacticDocSourcesSetting,
+      //docTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -950,6 +951,7 @@ object ScalatestBuild {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       sourceGenerators in Compile += {
         Def.task {
@@ -982,7 +984,8 @@ object ScalatestBuild {
           //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalatestJSDocTaskSetting,
+      //scalatestJSDocTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
       mimaBinaryIssueFilters ++= {
@@ -2147,7 +2150,6 @@ object ScalatestBuild {
       (resourceManaged in Compile).value,
       name.value)
 
-  import dotty.tools.sbtplugin.DottyPlugin.autoImport._
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
   lazy val dottyVersion = dottyLatestNightlyBuild.get
   // lazy val dottyVersion = "0.15.0-bin-20190522-ffb250d-NIGHTLY"
