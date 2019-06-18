@@ -149,7 +149,6 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "DecidersSpec.scala",  // Compilation error to be investigated further
         "DifferSpec.scala",  // Test failed when run to be investigate further.
         "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
         "EverySpec.scala",  // Compilation error to be investigated further
