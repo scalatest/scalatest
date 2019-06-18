@@ -22,9 +22,9 @@ package org.scalatest.prop
   * [[org.scalatest.prop.PropertyCheckResult.Exhausted]], or [[org.scalatest.prop.PropertyCheckResult.Failure]].
   * See those subclasses for details on what each one means.
   */
-sealed trait PropertyCheckResult
+private[scalatest] sealed trait PropertyCheckResult
 
-object PropertyCheckResult {
+private[scalatest] object PropertyCheckResult {
 
   /**
     * This Property Check was successful -- after running for the desired number of times, it was not falsified.
@@ -82,5 +82,4 @@ object PropertyCheckResult {
     *                 test your fixes.
     */
   case class Failure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument], initSeed: Long) extends PropertyCheckResult
-
 }

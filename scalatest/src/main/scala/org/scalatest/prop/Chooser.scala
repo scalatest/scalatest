@@ -59,7 +59,7 @@ private[scalatest] trait Chooser[T] {
   * should use that for randomization, but will not usually be direct calls to its
   * built-in "choose" functions.
   */
-object Chooser {
+private[scalatest] object Chooser {
   // The order of the following typeclass instances is arbitrary, but matches the order
   // of the declarations in Randomizer.
 

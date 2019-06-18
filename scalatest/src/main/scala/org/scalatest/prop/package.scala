@@ -19,7 +19,7 @@ import org.scalactic.anyvals._
 
 import prop._
 
-/**
+/*
   * Scalatest support for Property-based testing.
   *
   * ==Introduction to Property-based Testing==
@@ -455,7 +455,7 @@ package object prop {
     * @tparam A The type of the Generator.
     * @return An instance of A, computed by feeding the calculated seed into the Generator.
     */
-  def valueOf[A](first: Any, others: Any*)(multiplier: Int)(implicit genOfA: Generator[A]): A = {
+  private[scalatest] def valueOf[A](first: Any, others: Any*)(multiplier: Int)(implicit genOfA: Generator[A]): A = {
     val combinedHashCode: Int =
       others.foldLeft(first.hashCode) { (acc, next) =>
         (37 * (acc + 37)) + next.hashCode

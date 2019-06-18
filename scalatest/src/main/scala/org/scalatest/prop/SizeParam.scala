@@ -52,7 +52,7 @@ import org.scalactic.Requirements._
   * @param sizeRange the range above [[minSize]] to consider allowable
   * @param size the actual size to use for this specific invocation of [[Generator.next()]]
   */
-case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
+private[scalatest] case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
   require(size >= minSize, s"the passed size ($size.value) must be greater than or equal to the passed minSize ($minSize.value)")
   require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
 

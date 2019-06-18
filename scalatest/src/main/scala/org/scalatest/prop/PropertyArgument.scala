@@ -24,4 +24,4 @@ package org.scalatest.prop
   * @param label The label provided for that argument, if any.
   * @param value The value of the argument.
   */
-case class PropertyArgument(label: Option[String], value: Any)
+private[scalatest] case class PropertyArgument(label: Option[String], value: Any)

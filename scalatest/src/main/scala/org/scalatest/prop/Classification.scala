@@ -30,7 +30,7 @@ import org.scalactic.anyvals.{PosInt,PosZInt}
   * @param totalGenerated How many values were actually created by the Generator overall.
   * @param totals For each of the buckets defined in the PartialFunction, how many values belonged in each one.
   */
-case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
+private[scalatest] case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
 
   /**
     * For each bucket, what fraction of the generated values fell into it?
