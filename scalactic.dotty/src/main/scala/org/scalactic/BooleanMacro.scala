@@ -29,10 +29,10 @@ object BooleanMacro {
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
     condition.unseal.underlyingArgument match {
-      case Apply(Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
+      case Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
         let(lhs) { left =>
           let(rhs) { right =>
-            let(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil)) { result =>
+            let(qual.appliedTo(left).select(sel.symbol).appliedTo(right)) { result =>
               val l = left.seal
               val r = right.seal
               val b = result.seal.cast[Boolean]
@@ -66,7 +66,7 @@ object BooleanMacro {
               case _ =>
                 let(lhs) { left =>
                   let(rhs) { right =>
-                    val app = Select.overloaded(left, op, Nil, right :: Nil)
+                    val app = left.select(sel.symbol).appliedTo(right)
                     let(app) { result =>
                       val l = left.seal
                       val r = right.seal
@@ -78,11 +78,12 @@ object BooleanMacro {
                 }.seal.cast[Bool]
             }
         }
-      case Apply(f @ Apply(Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
+      case Apply(f @ Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
       if isImplicitMethodType(f.tpe) =>
         let(lhs) { left =>
           let(rhs) { right =>
-            let(Apply(Select.overloaded(Apply(qual, left :: Nil), op, Nil, right :: Nil), implicits)) { result =>
+            val app = qual.appliedTo(left).select(sel.symbol).appliedTo(right).appliedToArgs(implicits)
+            let(app) { result =>
               val l = left.seal
               val r = right.seal
               val b = result.seal.cast[Boolean]
@@ -91,10 +92,10 @@ object BooleanMacro {
             }
           }
         }.seal.cast[Bool]
-      case Apply(TypeApply(Select(lhs, op), targs), rhs :: Nil) =>
+      case Apply(TypeApply(sel @ Select(lhs, op), targs), rhs :: Nil) =>
         let(lhs) { left =>
           let(rhs) { right =>
-            val app = Select.overloaded(left, op, targs.map(_.tpe), right :: Nil)
+            val app = left.select(sel.symbol).appliedToTypes(targs.map(_.tpe)).appliedTo(right)
             let(app) { result =>
               val l = left.seal
               val r = right.seal

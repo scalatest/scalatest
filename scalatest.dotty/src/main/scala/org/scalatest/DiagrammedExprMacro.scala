@@ -34,9 +34,6 @@ object DiagrammedExprMacro {
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
-    def apply(l: Term, name: String, targs: List[TypeTree], args: List[Term]): Term =
-      Select.overloaded(l, name, targs.map(_.tpe), args)
-
     def selectField(o: Term, name: String): Term = Select.unique(o, name)
 
     def default(term: Term): Term = {
@@ -136,7 +133,7 @@ object DiagrammedExprMacro {
               lets(diagrams) { rs =>
                 val left = l.seal.cast[DiagrammedExpr[T]]
                 val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
-                val res = apply(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+                val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
                 '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
               }
             }
@@ -156,7 +153,7 @@ object DiagrammedExprMacro {
           lets(diagrams) { rs =>
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
-            val res = Select.overloaded(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+            val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
             '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
           }
         }
@@ -172,7 +169,9 @@ object DiagrammedExprMacro {
 
         let(left) { left =>
           let(right) { right =>
-            let(Apply(Select.overloaded(Apply(qual, Select.unique(left, "value") :: Nil), op, Nil, Select.unique(right, "value") :: Nil), implicits)) { result =>
+            val app = qual.appliedTo(Select.unique(left, "value")).select(sel.symbol)
+                          .appliedTo(Select.unique(right, "value")).appliedToArgs(implicits)
+            let(app) { result =>
               val l = left.seal.cast[DiagrammedExpr[_]]
               val r = right.seal.cast[DiagrammedExpr[_]]
               val b = result.seal.cast[Boolean]
@@ -195,7 +194,8 @@ object DiagrammedExprMacro {
           lets(diagrams) { rs =>
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
-            val res = Select.overloaded(Select.unique(l, "value"), op, targs.map(_.tpe), diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
+            val res = Select.unique(l, "value").select(sel.symbol).appliedToTypes(targs.map(_.tpe))
+                            .appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
             '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
           }
         }
@@ -209,7 +209,7 @@ object DiagrammedExprMacro {
 
         let(left) { l =>
           val left = l.seal.cast[DiagrammedExpr[T]]
-          val res = TypeApply(Select.unique(Select.unique(l, "value"), op), targs).seal.cast[R]
+          val res = Select.unique(l, "value").select(sel.symbol).appliedToTypes(targs.map(_.tpe)).seal.cast[R]
           '{ DiagrammedExpr.applyExpr[R]($left, Nil, $res, $anchor) }.unseal
         }
 
