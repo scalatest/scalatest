@@ -149,7 +149,6 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "NormalizationSpec.scala",  // Compilation error to be investigated further.
         "NormMethodsSpec.scala",  // Compilation error to be investigated further.
         "OrSpec.scala",  // Compilation error to be investigated further.
         "PrettifierSpec.scala",  // Test failed with java.lang.IllegalAccessException
